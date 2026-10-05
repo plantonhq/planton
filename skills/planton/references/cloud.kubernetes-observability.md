@@ -453,8 +453,11 @@ signals, and asks for less than the user's own software does:
 - **Admit the platform at the collector.** A traces collector's intake policy
   that lists namespaces drops every span from one it does not list, with no
   error anywhere.
-- **It needs operator chart 0.27.0 or newer.** An older definition drops the
-  field silently, and the platform traces nothing.
+- **It needs operator chart 0.27.0 or newer.** Through the catalog kind, an
+  older definition refuses the declaration, because the modules apply
+  server-side (`.spec.observability: field not declared in schema`). Through
+  the `planton` Helm chart, the API server prunes the unknown field with a
+  warning and the platform traces nothing. Upgrade the operator first.
 
 ## The alerts that page, and the ones that post
 

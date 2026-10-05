@@ -235,8 +235,9 @@ disagree with it. Start from the **Observability** preset.
   network policy must admit the platform's namespace on 4318, or every
   span is dropped silently.
 - Requires a planton-operator chart that knows `observability` (0.27.0 or
-  newer); an older definition drops the field without a word, and the
-  platform traces nothing.
+  newer); the modules apply the platform server-side, so an older
+  definition refuses the declaration (`.spec.observability: field not
+  declared in schema`) and nothing changes until the operator is upgraded.
 
 ## Back up the platform's own database, and bring it back
 

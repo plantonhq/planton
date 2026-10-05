@@ -106,5 +106,5 @@ Collect the platform's pod logs into Loki (or any store that keeps a log line's 
 
 ## Requirements
 
-- The operator chart 0.27.0 or newer. Its definition knows `spec.observability`, and an older one drops the field without a word.
+- The operator chart 0.27.0 or newer, whose definition knows `spec.observability`. With an older one, the Helm install prunes the field with a warning and the platform traces nothing; the catalog kind refuses the declaration outright. Upgrade the operator first.
 - Platform release v0.0.140 or newer, the operator's floor.

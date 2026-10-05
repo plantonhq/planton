@@ -21,8 +21,9 @@ each carrying its `trace_id`, so a log line opens its trace.
 ## Prerequisites
 
 - A planton-operator chart that knows `observability` (0.27.0 or newer, the
-  catalog default); an older definition drops the field, and the platform
-  traces nothing
+  catalog default); an older definition refuses the declaration
+  (`.spec.observability: field not declared in schema`), so upgrade the
+  operator first
 - A `KubernetesOtelCollector` named `cluster-traces` whose configuration
   declares the standard `otlp` receiver (so it exports
   `otlp_http_endpoint`), and whose network policy, if any, admits the

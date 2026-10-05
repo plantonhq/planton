@@ -792,8 +792,9 @@ spec:
   Write the collector's exported value instead
   (`http://<collector>-collector.<namespace>.svc.cluster.local:4318`): spans
   sent before the collector answers are dropped, and nothing else waits.
-- **It needs operator chart 0.27.0 or newer.** An older definition drops the
-  field without a word, and the platform traces nothing.
+- **It needs operator chart 0.27.0 or newer.** An older definition refuses the
+  declaration (`.spec.observability: field not declared in schema`), so
+  upgrade the operator first.
 
 ## Who can open the hub
 
