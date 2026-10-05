@@ -1,4 +1,4 @@
-# GCP Global Forwarding Rule
+# GCP Forwarding Rule
 
 Deploys a Compute Engine forwarding rule — the VIP node of a load balancer. The forwarding rule is where traffic enters: it binds an IP address and port to a target proxy, or — for the passthrough Network Load Balancers — straight to a backend service. It is also the entry point for Private Service Connect, forwarding a VPC's traffic privately to Google APIs or a producer's service attachment.
 

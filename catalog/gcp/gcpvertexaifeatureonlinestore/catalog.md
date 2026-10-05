@@ -121,4 +121,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 - [**GCP Vertex AI Feature Group**](/infra-catalog/gcp-vertex-ai-feature-group) -- the registered features views serve
 - [**GCP BigQuery Table**](/infra-catalog/gcp-big-query-table) -- a view's direct source
 - [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- customer-managed encryption
-- [**GCP Global Forwarding Rule**](/infra-catalog/gcp-global-forwarding-rule) -- the consumer-side PSC endpoint
+- [**GCP Forwarding Rule**](/infra-catalog/gcp-global-forwarding-rule) -- the consumer-side PSC endpoint

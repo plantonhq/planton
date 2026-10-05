@@ -115,5 +115,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 - [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the proxy is created
 - [**GCP URL Map**](/infra-catalog/gcp-url-map) -- the routing table this proxy consults
-- [**GCP Global Forwarding Rule**](/infra-catalog/gcp-global-forwarding-rule) -- consumes this proxy's `self_link` as its target
+- [**GCP Forwarding Rule**](/infra-catalog/gcp-global-forwarding-rule) -- consumes this proxy's `self_link` as its target
 - [**GCP Target HTTPS Proxy**](/infra-catalog/gcp-target-https-proxy) -- the TLS sibling serving the application half

@@ -1,13 +1,10 @@
 package pulumigoogleprovider
 
 import (
-	"errors"
-	"os"
-	"path/filepath"
-	"regexp"
 	"testing"
 
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
+	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -38,46 +35,42 @@ func webIdentityConfig() *gcpprovider.GcpProviderConfig {
 	}
 }
 
-// requireWebIdentityCredentialsEntry unwraps the raw keyless property map down to the single
-// external_credentials entry, asserting the wire shape on the way: the field must be a
-// single-element ARRAY (the raw terraform list form the provider-config encoder accepts --
-// see the package doc), never the typed object form.
-func requireWebIdentityCredentialsEntry(t *testing.T, inputs *providerInputs) pulumi.Map {
+// requireWebIdentityCredentials asserts the keyless dispatch's shape and returns its
+// external_credentials block: the typed OBJECT (gcp.ProviderExternalCredentialsArgs), the shape
+// the provider-config encoder demands from pulumi-gcp v9.37 on. The single-element list this arm
+// once sent (the pulumi-gcp#3869 workaround) fails at ValidateProviderConfig with "Expected an
+// Object PropertyValue, found []" -- see the package doc.
+func requireWebIdentityCredentials(t *testing.T, args *gcp.ProviderArgs) *gcp.ProviderExternalCredentialsArgs {
 	t.Helper()
 
-	require.NotNil(t, inputs.webIdentityProps)
-	// The keyless form never populates typed args: exactly one form per dispatch.
-	require.Nil(t, inputs.args)
+	require.NotNil(t, args)
+	// Keyless never also carries a static or pre-minted credential.
+	require.Nil(t, args.Credentials)
+	require.Nil(t, args.AccessToken)
 
-	require.Len(t, inputs.webIdentityProps, 1, "keyless props must carry only externalCredentials")
-	credentials, ok := inputs.webIdentityProps["externalCredentials"].(pulumi.Array)
-	require.True(t, ok, "externalCredentials must be a pulumi.Array (raw list wire shape)")
-	require.Len(t, credentials, 1, "external_credentials is a max-items-one block: exactly one entry")
-
-	entry, ok := credentials[0].(pulumi.Map)
-	require.True(t, ok, "the external credentials entry must be a pulumi.Map")
-	return entry
+	credentials, ok := args.ExternalCredentials.(*gcp.ProviderExternalCredentialsArgs)
+	require.True(t, ok, "externalCredentials must be the typed object, never a list")
+	require.NotNil(t, credentials)
+	return credentials
 }
 
 func TestBuildProviderInputs_NilConfig_Ambient(t *testing.T) {
-	inputs, err := buildProviderInputs(nil)
+	args, err := buildProviderInputs(nil)
 	require.NoError(t, err)
-	require.NotNil(t, inputs.args)
+	require.NotNil(t, args)
 
-	assert.Nil(t, inputs.args.Credentials)
-	assert.Nil(t, inputs.args.ExternalCredentials)
-	assert.Nil(t, inputs.webIdentityProps)
+	assert.Nil(t, args.Credentials)
+	assert.Nil(t, args.ExternalCredentials)
 }
 
 func TestBuildProviderInputs_EmptyConfig_Ambient(t *testing.T) {
 	// No service-account key and no web identity -> ambient ADC chain.
-	inputs, err := buildProviderInputs(&gcpprovider.GcpProviderConfig{})
+	args, err := buildProviderInputs(&gcpprovider.GcpProviderConfig{})
 	require.NoError(t, err)
-	require.NotNil(t, inputs.args)
+	require.NotNil(t, args)
 
-	assert.Nil(t, inputs.args.Credentials)
-	assert.Nil(t, inputs.args.ExternalCredentials)
-	assert.Nil(t, inputs.webIdentityProps)
+	assert.Nil(t, args.Credentials)
+	assert.Nil(t, args.ExternalCredentials)
 }
 
 func TestBuildProviderInputs_ServiceAccountKey(t *testing.T) {
@@ -85,14 +78,13 @@ func TestBuildProviderInputs_ServiceAccountKey(t *testing.T) {
 		ServiceAccountKey: validServiceAccountKey,
 	}
 
-	inputs, err := buildProviderInputs(cfg)
+	args, err := buildProviderInputs(cfg)
 	require.NoError(t, err)
-	require.NotNil(t, inputs.args)
+	require.NotNil(t, args)
 
-	assert.Equal(t, pulumi.String(validServiceAccountKey), inputs.args.Credentials)
+	assert.Equal(t, pulumi.String(validServiceAccountKey), args.Credentials)
 	// Static and keyless are mutually exclusive.
-	assert.Nil(t, inputs.args.ExternalCredentials)
-	assert.Nil(t, inputs.webIdentityProps)
+	assert.Nil(t, args.ExternalCredentials)
 }
 
 func TestBuildProviderInputs_ServiceAccountKey_InvalidJson_Errors(t *testing.T) {
@@ -121,61 +113,56 @@ func TestBuildProviderInputs_ServiceAccountKey_NonPemPrivateKey_Errors(t *testin
 	assert.Error(t, err)
 }
 
-func TestBuildProviderInputs_WebIdentity_RawArrayWireShape(t *testing.T) {
-	inputs, err := buildProviderInputs(webIdentityConfig())
+func TestBuildProviderInputs_WebIdentity_TypedObjectShape(t *testing.T) {
+	args, err := buildProviderInputs(webIdentityConfig())
 	require.NoError(t, err)
 
-	entry := requireWebIdentityCredentialsEntry(t, inputs)
-
-	// Exactly the three provider-schema keys, nothing else.
-	require.Len(t, entry, 3)
+	credentials := requireWebIdentityCredentials(t, args)
 
 	// The audience must be passed through verbatim (byte-identity with the token's `aud`).
-	assert.Equal(t, pulumi.String(testWifProvider), entry["audience"])
-	assert.Equal(t, pulumi.String(testServiceAccountEmail), entry["serviceAccountEmail"])
+	assert.Equal(t, pulumi.String(testWifProvider), credentials.Audience)
+	assert.Equal(t, pulumi.String(testServiceAccountEmail), credentials.ServiceAccountEmail)
 }
 
 func TestBuildProviderInputs_WebIdentity_IdentityTokenIsSecretWrapped(t *testing.T) {
-	inputs, err := buildProviderInputs(webIdentityConfig())
+	args, err := buildProviderInputs(webIdentityConfig())
 	require.NoError(t, err)
 
-	entry := requireWebIdentityCredentialsEntry(t, inputs)
+	credentials := requireWebIdentityCredentials(t, args)
 
 	// The SDK does NOT auto-secret-wrap identity_token, so the builder must: the wrapped
 	// value is a secret Output, no longer the plain pulumi.String.
-	require.NotNil(t, entry["identityToken"])
-	assert.NotEqual(t, pulumi.String(testIdentityToken), entry["identityToken"])
-	_, isPlainString := entry["identityToken"].(pulumi.String)
+	require.NotNil(t, credentials.IdentityToken)
+	_, isPlainString := credentials.IdentityToken.(pulumi.String)
 	assert.False(t, isPlainString, "identityToken must be a ToSecret-wrapped Output, not a plain string")
 }
 
 func TestBuildProviderInputs_AccessToken_TypedArg(t *testing.T) {
-	inputs, err := buildProviderInputs(&gcpprovider.GcpProviderConfig{
+	args, err := buildProviderInputs(&gcpprovider.GcpProviderConfig{
 		AccessToken: "ya29.test-token",
 	})
 	require.NoError(t, err)
-	require.NotNil(t, inputs.args)
+	require.NotNil(t, args)
 
 	// The token rides the typed AccessToken field (the one field the SDK's NewProvider
 	// auto-secret-wraps itself, so the builder passes it plain), never the raw keyless map.
-	assert.Equal(t, pulumi.String("ya29.test-token"), inputs.args.AccessToken)
-	assert.Nil(t, inputs.args.Credentials)
-	assert.Nil(t, inputs.args.ExternalCredentials)
-	assert.Nil(t, inputs.webIdentityProps)
+	assert.Equal(t, pulumi.String("ya29.test-token"), args.AccessToken)
+	assert.Nil(t, args.Credentials)
+	assert.Nil(t, args.ExternalCredentials)
 }
 
 func TestBuildProviderInputs_AccessToken_WinsOverStaleKey(t *testing.T) {
 	// An explicitly supplied short-lived token is the deliberate credential for this run;
 	// a lingering service_account_key must not win.
-	inputs, err := buildProviderInputs(&gcpprovider.GcpProviderConfig{
+	args, err := buildProviderInputs(&gcpprovider.GcpProviderConfig{
 		AccessToken:       "ya29.test-token",
 		ServiceAccountKey: validServiceAccountKey,
 	})
 	require.NoError(t, err)
-	require.NotNil(t, inputs.args)
+	require.NotNil(t, args)
 
-	assert.Equal(t, pulumi.String("ya29.test-token"), inputs.args.AccessToken)
-	assert.Nil(t, inputs.args.Credentials)
+	assert.Equal(t, pulumi.String("ya29.test-token"), args.AccessToken)
+	assert.Nil(t, args.Credentials)
 }
 
 func TestBuildProviderInputs_WebIdentity_WinsOverAccessToken(t *testing.T) {
@@ -184,10 +171,10 @@ func TestBuildProviderInputs_WebIdentity_WinsOverAccessToken(t *testing.T) {
 	cfg := webIdentityConfig()
 	cfg.AccessToken = "ya29.test-token"
 
-	inputs, err := buildProviderInputs(cfg)
+	args, err := buildProviderInputs(cfg)
 	require.NoError(t, err)
 
-	requireWebIdentityCredentialsEntry(t, inputs)
+	requireWebIdentityCredentials(t, args)
 }
 
 func TestBuildProviderInputs_WebIdentity_TakesPrecedenceOverStaleKey(t *testing.T) {
@@ -196,10 +183,10 @@ func TestBuildProviderInputs_WebIdentity_TakesPrecedenceOverStaleKey(t *testing.
 	cfg := webIdentityConfig()
 	cfg.ServiceAccountKey = validServiceAccountKey
 
-	inputs, err := buildProviderInputs(cfg)
+	args, err := buildProviderInputs(cfg)
 	require.NoError(t, err)
 
-	requireWebIdentityCredentialsEntry(t, inputs)
+	requireWebIdentityCredentials(t, args)
 }
 
 func TestBuildProviderInputs_WebIdentity_MissingToken_Errors(t *testing.T) {
@@ -224,52 +211,6 @@ func TestBuildProviderInputs_WebIdentity_MissingServiceAccountEmail_Errors(t *te
 
 	_, err := buildProviderInputs(cfg)
 	assert.Error(t, err)
-}
-
-func TestGcpPluginVersion_NonEmptySemver(t *testing.T) {
-	version := gcpPluginVersion()
-	require.NotEmpty(t, version)
-	assert.NotEqual(t, "v", version[:1], "plugin version must be a bare semver, no v prefix")
-}
-
-// TestGcpPluginVersion_MatchesSdkPin guards fallbackGcpPluginVersion against go.mod drift: the
-// repo's pulumi-gcp pin must equal the fallback constant, so an SDK bump fails here until the
-// constant is updated to match. (Test binaries embed no dependency build info, so the guard
-// reads go.mod directly; in sandboxed build modes without go.mod on disk it skips.)
-func TestGcpPluginVersion_MatchesSdkPin(t *testing.T) {
-	goMod, err := findRepoGoMod()
-	if err != nil {
-		t.Skipf("go.mod not reachable in this build mode; drift guard not applicable: %v", err)
-	}
-
-	content, err := os.ReadFile(goMod)
-	require.NoError(t, err)
-
-	pinPattern := regexp.MustCompile(regexp.QuoteMeta(gcpSdkModulePath) + `\s+v(\S+)`)
-	match := pinPattern.FindSubmatch(content)
-	require.NotNil(t, match, "pulumi-gcp SDK pin not found in %s", goMod)
-
-	assert.Equal(t, fallbackGcpPluginVersion, string(match[1]),
-		"fallbackGcpPluginVersion must match the pulumi-gcp pin in go.mod")
-}
-
-// findRepoGoMod ascends from the test's working directory to the module root's go.mod.
-func findRepoGoMod() (string, error) {
-	dir, err := os.Getwd()
-	if err != nil {
-		return "", err
-	}
-	for {
-		candidate := filepath.Join(dir, "go.mod")
-		if _, err := os.Stat(candidate); err == nil {
-			return candidate, nil
-		}
-		parent := filepath.Dir(dir)
-		if parent == dir {
-			return "", errors.New("no go.mod found walking up from the test working directory")
-		}
-		dir = parent
-	}
 }
 
 func TestProviderResourceName(t *testing.T) {

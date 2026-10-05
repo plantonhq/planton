@@ -113,6 +113,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Global Forwarding Rule**](/infra-catalog/gcp-global-forwarding-rule) -- the producer's internal load balancer (regional arm, `INTERNAL` scheme) this attachment publishes; and the consumer's PSC endpoint (regional arm, empty scheme) that targets it
+- [**GCP Forwarding Rule**](/infra-catalog/gcp-global-forwarding-rule) -- the producer's internal load balancer (regional arm, `INTERNAL` scheme) this attachment publishes; and the consumer's PSC endpoint (regional arm, empty scheme) that targets it
 - [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) -- the PSC NAT subnets
 - [**GCP Backend Service**](/infra-catalog/gcp-backend-service) -- the regional backend service behind the producer's forwarding rule

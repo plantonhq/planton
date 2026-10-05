@@ -1,4 +1,4 @@
-# GCP Global Forwarding Rule - Pulumi Module
+# GCP Forwarding Rule - Pulumi Module
 
 ## Overview
 

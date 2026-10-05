@@ -112,6 +112,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 ## Works With
 
 - [**GCP Redis Cluster**](/infra-catalog/gcp-redis-cluster) -- the cluster whose attachments the connections target
-- [**GCP Global Forwarding Rule**](/infra-catalog/gcp-global-forwarding-rule) -- the consumer endpoints (regional arm, empty scheme)
+- [**GCP Forwarding Rule**](/infra-catalog/gcp-global-forwarding-rule) -- the consumer endpoints (regional arm, empty scheme)
 - [**GCP Address**](/infra-catalog/gcp-address) -- the reserved internal addresses
 - [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- the consumer networks

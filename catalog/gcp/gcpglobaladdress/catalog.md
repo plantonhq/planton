@@ -118,5 +118,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 - [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the address reservation is created
 - [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- provides the VPC network for internal address IP allocation
-- [**GCP Global Forwarding Rule**](/infra-catalog/gcp-global-forwarding-rule) -- consumes the reserved external IP as a load-balancer frontend
+- [**GCP Forwarding Rule**](/infra-catalog/gcp-global-forwarding-rule) -- consumes the reserved external IP as a load-balancer frontend
 - [**GCP Service Networking Connection**](/infra-catalog/gcp-service-networking-connection) -- consumes VPC_PEERING ranges by name for private services access
