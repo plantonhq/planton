@@ -39,6 +39,28 @@ Every component under `status.components` carries a phase, a one-word `reason`, 
 
 Failure reasons become a Warning Event on the platform when a component enters them, once, and a Normal Event when it recovers -- `kubectl -n <ns> get events --field-selector involvedObject.kind=PlantonPlatform` is the timeline when the person asks "when did this start".
 
+## What it reports beyond its status
+
+The platform's status says whether each component runs. How well it serves is
+in its own telemetry, which every operator-run platform publishes:
+
+- **Metrics** on the control plane's and the runner's Services' port named
+  `metrics` (9464): `planton_api_requests_total` by outcome (`ok`,
+  `caller_error`, `server_fault`; only the last is the platform failing),
+  `planton_deployment_start_latency_seconds`, and
+  `planton_runner_job_attempts_total`. Read them from the person's
+  Prometheus when they have one, or for a one-off read with
+  `kubectl -n <ns> port-forward svc/<name>-control-plane 9464` and
+  `curl -s localhost:9464/actuator/prometheus` (the runner's is
+  `svc/<name>-runner` at `/metrics`). Both are read-only.
+- **Traces**, only when `spec.observability.otlpHttpEndpoint` names a trace
+  store: every request is a trace there, and each control-plane log line
+  carries its `trace_id`. When the person asks why one call failed, find its
+  log line, take its `trace_id`, and open the trace: the failed step and its
+  error code are on it.
+- **Logs** are one JSON object per line: `kubectl -n <ns> logs
+  deploy/<name>-control-plane | jq 'select(.level=="ERROR")'`.
+
 ## What the console already shows
 
 Settings pages on the self-hosted console render the same facts as sentences: License (the entitlements and seats), Email (the declaration or the two setup hints when nothing is declared), Directory (the identity manifest's verdicts and the live checks, `self-hosted.identity-connecting.md`). When the person is looking at the console, read the page they are on before reading the cluster; the words match.

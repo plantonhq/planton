@@ -1,0 +1,29 @@
+# The adopter who wants to watch Planton: the minimal platform plus where its
+# traces go. Metrics need no setting, and this scenario proves both halves.
+#
+# The verifier proves the whole boot (phase Ready) and then:
+# - the control plane's container carries the tracing switch from this
+#   declaration: OBSERVABILITY_ENABLED=true, the declared address and the
+#   http transport;
+# - the console relays browser spans to the same store, at its /v1/traces;
+# - the control plane and the runner serve Prometheus text on their Services'
+#   port named metrics (/actuator/prometheus, /metrics), read through a
+#   port-forward the way a monitor inside the cluster reads them.
+#
+# The address is a literal no collector answers on this lane's cluster: the
+# exporter sends in the background and drops what it cannot deliver, so the
+# platform boots and serves exactly as it would beside a real collector. A
+# reference to a KubernetesOtelCollector resolves to this same string before
+# the modules run.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPlantonPlatform
+metadata:
+  name: planton
+spec:
+  namespace:
+    value: planton
+  create_namespace: true
+  version: v0.0.140
+  observability:
+    otlp_http_endpoint:
+      value: http://cluster-traces-collector.observability.svc.cluster.local:4318

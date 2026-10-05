@@ -190,6 +190,54 @@ cluster without a word, and that list is where it shows (as the default).
 - The catalog carries CPU and memory; ephemeral storage and any other
   resource stay reachable on the `PlantonPlatform` resource itself.
 
+## Watch your Planton: metrics need nothing, traces need an address
+
+A platform you depend on should tell you it is failing before a person
+does. Two of the three signals need no setting at all:
+
+- **Metrics are always served,** inside the cluster only, on the control
+  plane's and the runner's Services' port named `metrics` (9464). The
+  control plane serves `/actuator/prometheus` — the API counted by outcome
+  (`planton_api_requests_total`, a failure inside a gRPC-Web HTTP 200
+  included), a deployment's wait for its runner
+  (`planton_deployment_start_latency_seconds`), how deployments end — and
+  the runner serves `/metrics` (`planton_runner_job_attempts_total`). No
+  front door routes the port, and no series carries a customer identifier.
+- **Logs are one JSON object per line** on stdout, each carrying its
+  `trace_id`.
+
+Traces are the one signal with a setting, because they need somewhere to
+go: `observability.otlp_http_endpoint` names a trace store's OTLP/HTTP base
+address, by reference to a `KubernetesOtelCollector` (or `KubernetesTempo`,
+or `KubernetesSignoz`) and its `otlp_http_endpoint` output. Set, every API
+request is traced there and the console relays its browser spans to the
+same store; absent, nothing is traced. There is no `enabled` flag to
+disagree with it. Start from the **Observability** preset.
+
+- **One monitor per component, labelled by name.** The two paths differ, so
+  declare a `KubernetesServiceMonitor` for each, selecting
+  `app.kubernetes.io/managed-by: planton-operator` and the component's
+  `app.kubernetes.io/name`, port `metrics`, with
+  `job_label: app.kubernetes.io/name`. The series then read
+  `job="control-plane"` and `job="runner"` whatever the platform is named,
+  the same job a hosted Planton's dashboards query.
+- **A literal is a base address.** `http://…:4318` with no trailing slash
+  and no `/v1/traces`: the platform appends the signal path itself, and the
+  declaration refuses one that already carries it.
+- **Reference the collector unless it is built after the platform.** A
+  reference waits for the collector's output. When the same chart that
+  creates the cluster also declares the platform, and the collector can
+  only install once that cluster exists, give the collector's address as a
+  literal instead (its exported value is
+  `http://<collector>-collector.<namespace>.svc.cluster.local:4318`):
+  spans sent before it answers are dropped, and nothing else waits.
+- **The collector's fence admits the platform.** A collector behind a
+  network policy must admit the platform's namespace on 4318, or every
+  span is dropped silently.
+- Requires a planton-operator chart that knows `observability` (0.27.0 or
+  newer); an older definition drops the field without a word, and the
+  platform traces nothing.
+
 ## Back up the platform's own database, and bring it back
 
 Without `database.postgresql.backup`, everything a platform knows —

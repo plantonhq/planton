@@ -30,6 +30,9 @@ allowed:
   # CloudflareAiGateway's preset configures a user-chosen daily spend cap;
   # the doc explicitly tells the reader to change it.
   - "catalog/cloudflare/cloudflareaigateway/presets/01-guarded-gateway.md:$50"
+  # A Prometheus label_replace capture group ("$1") that names an environment
+  # from a namespace, not a price.
+  - "catalog/_patterns/observability-stack.md:$1"
   # Regex backreferences in listener-rule rewrite examples ("/v2/$1"), not prices.
   - "catalog/aws/awslblistenerrule/presets/01-path-based-routing.md:$1"
   - "catalog/aws/awslblistenerrule/v1alpha1/reference.md:$1"

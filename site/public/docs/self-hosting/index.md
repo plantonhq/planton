@@ -186,6 +186,10 @@ crane digest asia-south1-docker.pkg.dev/plantonhq/planton/control-plane:v0.0.75
 
 The components the operator bundles (PostgreSQL, Temporal, OpenFGA, OpenBao, Valkey) still pull from their own registries.
 
+## Watch it
+
+The control plane and the runner always serve Prometheus metrics on their Services' port named `metrics`, inside the cluster, and every log line is JSON carrying its trace's id. One setting, `spec.observability.otlpHttpEndpoint`, sends every request's trace to your collector. See [Watch Your Planton](/docs/self-hosting/observability).
+
 ## Upgrades and uninstall
 
 Config changes are edits to the `PlantonPlatform` resource; the operator reconciles them. The platform version is `spec.version` on that resource — `helm upgrade planton --set platform.spec.version=<version>` rolls the platform with its data intact. The operator upgrades through its own chart, and that chart carries the `PlantonPlatform` definition with it, so the schema always matches the operator that reads it. An operator runs platform releases from a floor upward: declare a version older than the oldest it supports and the resource goes to phase `Error` with the reason in its `MESSAGE` column, nothing is created, and a platform already running is left as it is — move the version, or install an operator release built for it.

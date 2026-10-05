@@ -39,6 +39,8 @@ After the operator is up, it judges `spec.version` against its floor. A platform
 
 > spec.version vX is older than the oldest platform release this operator runs (vY); the settings and images this operator expects belong to vY and newer. Nothing running was changed. Set spec.version to vY or newer …
 
+Since operator 0.26.0 the floor is v0.0.140: the infra-hub queues carry their product names, and an older control plane binds the old names and never comes up. Operator 0.27.0 states that floor, so a platform below v0.0.140 is refused in the sentence above instead of crash-looping. A person on an older platform moves `spec.version` to v0.0.140 or newer in the same change as the operator, operator first.
+
 Move the version the way the platform was declared -- `helm upgrade planton oci://ghcr.io/plantonhq/charts/planton -n <ns> --set platform.spec.version=<release>` when the `planton` chart declared it, `kubectl -n <ns> patch plantonplatform <name> --type merge -p '{"spec":{"version":"<release>"}}'` when a manifest did, or the catalog kind's field when infrastructure as code did. Then watch:
 
 ```bash

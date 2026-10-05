@@ -73,6 +73,7 @@ resource's outputs.
 | `vault.service_account_annotations` | no | — | Workload-identity annotations on the vault's ServiceAccount (`<platform>-openbao`) — the keyless seal identity (IRSA, GKE Workload Identity, AKS Workload Identity) |
 | `components` | no | off | Opt-in: graph (Neo4j) |
 | `control_plane`, `console` | no | — | Replicas, image mirrors, extra env via Secret, the platform's own cloud identity |
+| `observability.otlp_http_endpoint` | no | traces off | Where traces go: a trace store's OTLP/HTTP base address, by reference to a KubernetesOtelCollector (or KubernetesTempo, or KubernetesSignoz) `otlp_http_endpoint` output or as a literal; every API request is traced there and the console relays its browser spans to the same store. Metrics need no setting: the control plane and runner always serve them on their Services' port `metrics` (planton-operator chart 0.27.0+) |
 | `<component>.resources` | no | the operator's measured size | CPU and memory for any component — `control_plane`, `console`, `runner`, `gateway`, `identity`, `database.postgresql`, `database.redis` (with `max_memory`, its dataset ceiling), `vault`, `components.graph`, `openfga`, and `temporal.{frontend,history,matching,worker}`; each quantity set wins and the rest keep the operator's default (planton-operator chart 0.23.0+) |
 
 ## Example

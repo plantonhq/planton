@@ -807,6 +807,14 @@ Fields that can point at another resource's outputs:
 | `spec.clickhouse.passwordSecret.secretName` | KubernetesClickHouse | `status.outputs.auth_secret_name` |
 | `spec.server.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| KubernetesPlantonPlatform | `spec.observability.otlpHttpEndpoint` | `status.outputs.otlp_http_endpoint` |
+
 ## See Also
 
 - [Overview](../README.md)

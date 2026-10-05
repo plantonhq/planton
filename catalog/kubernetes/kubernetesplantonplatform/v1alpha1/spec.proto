@@ -288,6 +288,54 @@ message KubernetesPlantonPlatformSpec {
    * (0.14.1 or newer) and a platform version whose control plane reads it.
    */
   KubernetesPlantonPlatformGithub github = 23;
+
+  /**
+   * Where the platform's traces go. Metrics need no setting: the control
+   * plane and the runner always serve Prometheus metrics, inside the cluster
+   * only, on their Services' port named `metrics` (9464; the control plane
+   * at `/actuator/prometheus`, the runner at `/metrics`), and logs are one
+   * JSON object per line on stdout, each carrying its trace_id. Absent,
+   * nothing is traced. Requires a planton-operator chart that knows this
+   * field (0.27.0 or newer).
+   */
+  KubernetesPlantonPlatformObservability observability = 24;
+}
+
+/**
+ * Where the platform sends its traces.
+ */
+message KubernetesPlantonPlatformObservability {
+  /**
+   * The OTLP/HTTP base address of the trace store, such as
+   * `http://cluster-traces-collector.observability.svc.cluster.local:4318`.
+   * Set, every API request is traced there, and the console relays its
+   * browser spans to the same store, so a page load and the calls it made
+   * are one trace; the platform appends `/v1/traces` itself. By reference to
+   * the collector (or Tempo, or SigNoz) the address follows that resource's
+   * `otlp_http_endpoint` output. Setting it is the switch: there is no
+   * separate enabled flag to disagree with it.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef otlp_http_endpoint = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesOtelCollector,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.otlp_http_endpoint",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: KubernetesOtelCollector
+      field_path: "status.outputs.otlp_http_endpoint"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: KubernetesTempo
+      field_path: "status.outputs.otlp_http_endpoint"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: KubernetesSignoz
+      field_path: "status.outputs.otlp_http_endpoint"
+    },
+    (buf.validate.field).cel = {
+      id: "spec.observability.otlp_http_endpoint.base_address"
+      message: "otlp_http_endpoint is the trace store's OTLP/HTTP base address, such as http://cluster-traces-collector.observability.svc.cluster.local:4318: http:// or https://, no trailing slash, and no /v1/ signal path (the platform adds /v1/traces itself)"
+      expression: "!has(this.value) || this.value == '' || (this.value.matches('^https?://[^/]+(/.*)?$') && !this.value.endsWith('/') && !this.value.contains('/v1/'))"
+    }
+  ];
 }
 
 /**

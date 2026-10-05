@@ -1,0 +1,19 @@
+# Dependency-install profile for the operator: the catalog's default chart,
+# installed when another scenario needs a running operator -- every
+# KubernetesPlantonPlatform lane. No chart_version, so a dependent lane always
+# runs the operator this catalog release was validated against, and a field
+# the platform kind gained with that operator reaches a definition that knows
+# it. (This kind's own minimal scenario pins the PREVIOUS chart, because its
+# second act is the upgrade to the default; it is not an install profile.)
+#
+# The namespace is every lane's "planton-operator": the release name is fixed
+# (one operator per cluster), and Helm binds kept definitions to that release
+# identity.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPlantonOperator
+metadata:
+  name: e2e-planton-operator
+spec:
+  namespace:
+    value: planton-operator
+  create_namespace: true

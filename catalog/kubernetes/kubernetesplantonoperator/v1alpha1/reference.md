@@ -64,7 +64,7 @@ spec:
   namespace:
     value: planton-operator
   create_namespace: true
-  chart_version: 0.15.0
+  chart_version: 0.27.0
   crds:
     install: true
     keep_on_uninstall: true
@@ -94,7 +94,7 @@ spec:
     - mirror-pull
   image:
     repository: ghcr.io/plantonhq/planton/operator
-    tag: v0.15.0
+    tag: v0.27.0
 ```
 
 ## Spec Fields
@@ -103,7 +103,7 @@ spec:
 |---|---|---|---|---|
 | `spec.namespace` | `string \| valueFrom` | yes |  | KubernetesNamespace (`spec.name`) |
 | `spec.createNamespace` | `bool` |  |  |  |
-| `spec.chartVersion` | `string` |  | `0.23.3` |  |
+| `spec.chartVersion` | `string` |  | `0.27.0` |  |
 | `spec.replicas` | `int32` |  | `1` |  |
 | `spec.leaderElection` | `bool` |  | `true` |  |
 | `spec.resources` | `ContainerResources` |  |  |  |
@@ -171,7 +171,7 @@ Versions must exist as published charts at spec.chart_repository.
 Charts older than 0.8.0 do not own their definitions and are refused
 at plan time: the `crds` dials would have nothing to act on.
 
-- default: `0.23.3`
+- default: `0.27.0`
 - rule: chart version must be an exact semver like "0.15.0" — ranges are not reproducible
 
 ### spec.replicas

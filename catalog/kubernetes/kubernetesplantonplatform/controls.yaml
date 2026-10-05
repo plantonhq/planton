@@ -63,8 +63,12 @@ spec:
       status: not_applicable
       notes: Platform-level audit surfaces belong to the deployed product (its own activity/audit records), versioned with spec.version — not modeled as installation configuration. Operator mutations are Kubernetes API operations captured by the cluster's audit policy.
     - control_id: monitoring-integration
-      status: not_applicable
-      notes: No monitoring seam is modeled on this spec — the operator publishes per-component health in the CR's status (phase, per-component messages, the Ready condition), which cluster monitoring can watch; metrics endpoints are a product surface versioned with spec.version.
+      status: configurable
+      field_path: observability.otlp_http_endpoint
+      evidence:
+        type: spec_default
+        reference: Metrics need no setting — the control plane and the runner always serve Prometheus text, inside the cluster only, on their Services' port named metrics (9464; /actuator/prometheus and /metrics), found by one monitor per component selecting app.kubernetes.io/managed-by=planton-operator and its app.kubernetes.io/name (also the monitor's jobLabel). Traces are off until observability.otlp_http_endpoint names a trace store's OTLP/HTTP base address (by reference to a KubernetesOtelCollector, KubernetesTempo, or KubernetesSignoz, or as a literal); then every API request is traced there and the console relays its browser spans to the same store. Logs are one JSON object per line on stdout, each carrying its trace_id.
+      notes: Requires a planton-operator chart that knows the field (0.27.0 or newer). The operator also publishes per-component health in the CR's status (phase, per-component messages, the Ready condition). The 08-observability preset declares the trace store by reference.
     - control_id: backup-recovery
       status: configurable
       field_path: database.postgresql.backup

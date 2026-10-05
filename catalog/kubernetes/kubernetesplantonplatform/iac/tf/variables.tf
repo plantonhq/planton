@@ -471,5 +471,10 @@ variable "spec" {
       replicas                    = optional(number)
       external_config_secret_name = optional(string, "")
     }))
+    # The trace store's OTLP/HTTP base address, resolved from its reference
+    # before the module runs; empty traces nothing.
+    observability = optional(object({
+      otlp_http_endpoint = optional(string, "")
+    }))
   })
 }

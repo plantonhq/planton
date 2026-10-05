@@ -140,3 +140,6 @@ spec:
         requests:
           cpu: 250m
           memory: 512Mi
+  observability:
+    otlp_http_endpoint:
+      value: http://cluster-traces-collector.observability.svc.cluster.local:4318

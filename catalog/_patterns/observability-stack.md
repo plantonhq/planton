@@ -730,6 +730,71 @@ authentication backend could not judge.
 into a class with `label_replace` on the queue name before a dashboard or an
 alert reads them.
 
+## Planton's own signals
+
+A self-hosted Planton reports the way the applications above do, and asks for
+less: an operator-run platform always serves its metrics, and one field on the
+`KubernetesPlantonPlatform` turns on its traces.
+
+- **Metrics need no setting.** The control plane and the runner serve
+  Prometheus text on their Services' port named `metrics` (9464), inside the
+  cluster only: the API counted by outcome (`planton_api_requests_total`, the
+  gRPC-Web failures inside an HTTP 200 included), a deployment's wait for its
+  runner, how deployments end, and the runner's job attempts. Declare one
+  monitor per component, because the paths differ, with
+  `job_label: app.kubernetes.io/name`, so the series read `job="control-plane"`
+  and `job="runner"` whatever the platform is named:
+
+```yaml
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesServiceMonitor
+metadata:
+  name: planton-control-plane
+spec:
+  namespace:
+    value: planton
+  job_label: app.kubernetes.io/name
+  selector:
+    match_labels:
+      app.kubernetes.io/managed-by: planton-operator
+      app.kubernetes.io/name: control-plane
+  endpoints:
+    - port: metrics
+      path: /actuator/prometheus
+      interval: 30s
+# The runner's is the same with app.kubernetes.io/name: runner and path /metrics.
+```
+
+- **Traces point at the collector by reference.** `observability.otlp_http_endpoint`
+  follows the collector's `otlp_http_endpoint` output (a `KubernetesTempo` or
+  `KubernetesSignoz` exports the same one). Every request is traced there, the
+  console relays its browser spans to the same store, and the JSON log lines
+  carry each trace's id, so the log-to-trace link above works with no
+  per-service setup:
+
+```yaml
+spec:
+  observability:
+    otlp_http_endpoint:
+      valueFrom:
+        kind: KubernetesOtelCollector
+        name: cluster-traces
+        fieldPath: status.outputs.otlp_http_endpoint
+```
+
+- **Admit the platform's namespace at the collector.** The collector's intake
+  policy names the namespaces it accepts (`values: [shop-prod]` above). Add the
+  platform's namespace, or every span is dropped without an error.
+- **Give the address as a literal when the platform comes first.** A reference
+  waits for its target's output. When one composition declares both the cluster
+  and the platform, and the collector installs with the agent after that
+  cluster exists, the reference would wait on a child of its own composition.
+  Write the collector's exported value instead
+  (`http://<collector>-collector.<namespace>.svc.cluster.local:4318`): spans
+  sent before the collector answers are dropped, and nothing else waits.
+- **It needs operator chart 0.27.0 or newer.** An older definition drops the
+  field without a word, and the platform traces nothing.
+
 ## Who can open the hub
 
 Grafana shows every system at once, so who can sign in is part of the

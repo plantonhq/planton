@@ -1,0 +1,22 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPlantonPlatform
+metadata:
+  name: planton
+spec:
+  namespace:
+    value: planton
+  create_namespace: true
+  version: v0.0.140
+  # Metrics need no setting: the control plane and the runner always serve
+  # them on their Services' port named metrics (9464), inside the cluster
+  # only. Traces need somewhere to go, so this names the cluster's trace
+  # collector by reference: the address follows the KubernetesOtelCollector's
+  # otlp_http_endpoint output, and every API request is traced there with the
+  # console's browser spans joined to it. A KubernetesTempo or a
+  # KubernetesSignoz exports the same output and works the same way.
+  observability:
+    otlp_http_endpoint:
+      valueFrom:
+        kind: KubernetesOtelCollector
+        name: cluster-traces
+        fieldPath: status.outputs.otlp_http_endpoint

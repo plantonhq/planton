@@ -100,6 +100,8 @@ These are the most important decisions when configuring a Planton Platform. Expl
 
 **Back up the platform's own database, by reference** — without `database.postgresql.backup` every record the platform keeps lives on one volume in the cluster, and the `BACKUP` column says `NotConfigured`. Declaring it turns on continuous WAL archiving plus a base backup on a schedule (the first one immediately) into an S3, GCS, Azure Blob, or Cloudflare R2 bucket you own, with a retention the store enforces. On R2 the declaration is composed from a `CloudflareR2Bucket` and a `CloudflareAccountApiToken` scoped to it — the arm references the bucket's `accountId` and `jurisdiction` outputs and the token's S3 key pair, and the module materializes the credential as a Secret before the platform so the database is born archiving. `database.postgresql.recoverFrom` declares a new platform restored from such an archive (the same store plus the source's `status.backup.serverName`), honored when its database is first created; the restored platform archives under a new name and never writes over its source. The archive carries the bundled secrets manager too — it stores in the same database — so every connection credential, managed secret, and signing key comes back with the records; what it cannot carry is the keys that open the vault, so a backup requires `vault.autoUnseal` (a cloud key opens the restored vault by itself) or `vault.initSecretName` (a Secret you own holds the keys; keep a copy outside the cluster), and the declaration is refused with neither. `status.backup.vault` states the coverage and names the Secret to keep.
 
+**Watch the platform, by reference** — the control plane and the runner always serve Prometheus metrics, inside the cluster only, on their Services' port named `metrics` (9464; `/actuator/prometheus` on the control plane, `/metrics` on the runner), so one monitor per component — selecting `app.kubernetes.io/managed-by: planton-operator` and its `app.kubernetes.io/name`, which is also the monitor's `jobLabel` — puts the API's outcomes, deployment waits and endings, and the runner's job attempts in your Prometheus. Traces are the one signal with a setting, because they need somewhere to go: `observability.otlpHttpEndpoint` references a `KubernetesOtelCollector` (or a `KubernetesTempo`, or a `KubernetesSignoz`) by its `otlp_http_endpoint` output, and from then on every API request is traced there and the console's browser spans join the same traces. Logs are one JSON object per line on stdout, each carrying its `trace_id`, so a collector reading pod logs links a line to its trace. Requires a planton-operator chart 0.27.0 or later.
+
 **Cluster-shared sub-operators are shared on purpose** — `prerequisites` defaults every sub-operator (CloudNativePG, its Barman Cloud backup plugin, Tekton Pipelines) to `auto`: installed only when absent, respected when something else manages them, and deliberately left behind on destroy because sibling platforms may ride them.
 
 **Destroy takes the databases with it** — deleting the resource tears the whole platform down; every operator-created object is owner-referenced to the declaration, so garbage collection completes the teardown even when the operator is already gone, and the database layer removes its volumes and credentials together. Build caches and workflow volumes can survive in the namespace; when this resource owned the namespace (`createNamespace: true`), its deletion sweeps them.
@@ -113,6 +115,7 @@ These are the most important decisions when configuring a Planton Platform. Expl
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 | **CloudflareR2Bucket** | `database.postgresql.backup.objectStore.r2.accountId`, `.jurisdiction` (and the same under `recoverFrom`) | `status.outputs.account_id`, `status.outputs.jurisdiction` |
 | **CloudflareAccountApiToken** | `database.postgresql.backup.objectStore.r2.credentials.accessKeyId`, `.secretAccessKey` (and the same under `recoverFrom`) | `status.outputs.r2_access_key_id`, `status.outputs.r2_secret_access_key` |
+| **KubernetesOtelCollector** (or **KubernetesTempo**, **KubernetesSignoz**) | `observability.otlpHttpEndpoint` | `status.outputs.otlp_http_endpoint` |
 
 ### What This Kind Provides
 
@@ -140,6 +143,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 **A platform that survives its cluster** — the platform's own database archiving continuously to a Cloudflare R2 bucket declared beside it, the credential a reference to the token resource that minted it, and the same declaration plus `recoverFrom` bringing the platform back as itself. Start from the **Backups to Cloudflare R2** preset.
 
+**A platform you can watch** — the platform's traces sent to the cluster's trace collector by reference, and a monitor reading the metrics both components always serve, so the API's outcomes, a slow deployment's wait, and the failing call's trace are in the same Grafana as everything else the cluster runs. Start from the **Observability** preset.
+
 ## Works With
 
 - [**Planton Operator**](/infra-catalog/kubernetes-planton-operator) — the hard prerequisite: the manager that reconciles this declaration; one per cluster serves every platform
@@ -147,3 +152,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 - [**Cert Manager**](/infra-catalog/kubernetes-cert-manager) — issues and renews the ingress certificate when `ingress.tls.issuer` is used, and secures the operator's link to the database backup plugin when a backup is declared
 - [**Cloudflare R2 Bucket**](/infra-catalog/cloudflare-r2-bucket) — the archive the platform's database backs up to on the `r2` arm; its `account_id` and `jurisdiction` outputs are referenced, never typed
 - [**Cloudflare Account API Token**](/infra-catalog/cloudflare-account-api-token) — the bucket-scoped credential for that archive, exported as the S3 key pair the `r2` arm references
+- [**OpenTelemetry Collector**](/infra-catalog/kubernetes-otel-collector) — the trace store the platform's traces go to; its `otlp_http_endpoint` output is referenced, never typed (Tempo and SigNoz export the same output)
+- [**Kubernetes Service Monitor**](/infra-catalog/kubernetes-service-monitor) — reads the metrics the control plane and the runner always serve on their `metrics` port

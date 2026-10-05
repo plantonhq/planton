@@ -508,6 +508,32 @@ func TestPlatformSpecBody_ImageRegistryAndRunnerImageRenderOnlyWhenDeclared(t *t
 	}
 }
 
+// The trace store's address renders only when declared, under the CR's own
+// key, so a manifest that traces nothing keeps rendering a CR an older operator
+// definition accepts. The Terraform module renders the same map
+// (iac/tf/locals.tf observability_body).
+func TestPlatformSpecBody_ObservabilityRendersOnlyWhenDeclared(t *testing.T) {
+	for name, spec := range map[string]*kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformSpec{
+		"absent": {},
+		"empty":  {Observability: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformObservability{}},
+	} {
+		if got, present := platformSpecBody(localsFor(spec))["observability"]; present {
+			t.Errorf("%s: observability rendered when nothing is traced: %#v", name, got)
+		}
+	}
+
+	const endpoint = "http://cluster-traces-collector.observability.svc.cluster.local:4318"
+	spec := platformSpecBody(localsFor(&kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformSpec{
+		Observability: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformObservability{
+			OtlpHttpEndpoint: literal(endpoint),
+		},
+	}))
+	want := map[string]interface{}{"otlpHttpEndpoint": endpoint}
+	if got := spec["observability"]; !reflect.DeepEqual(got, want) {
+		t.Errorf("observability = %#v, want %#v", got, want)
+	}
+}
+
 // GitHub renders only when declared, hosts in declaration order, an App's
 // secrets as Secret key references, and the webhook posture only when set,
 // so the CRD's own default (auto) decides an omitted one. The Terraform

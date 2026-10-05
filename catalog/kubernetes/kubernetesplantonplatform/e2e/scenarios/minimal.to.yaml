@@ -1,0 +1,15 @@
+# The upgrade act of the minimal scenario: the same platform, the next
+# release. Only `version` differs from minimal.yaml; the operator rolls the
+# versioned components to the new images in place and the data layer stays.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPlantonPlatform
+metadata:
+  name: planton
+  annotations:
+    # The second act of minimal.yaml, not a scenario of its own.
+    planton.dev/e2e-second-act: minimal.yaml
+spec:
+  namespace:
+    value: planton
+  create_namespace: true
+  version: v0.0.141

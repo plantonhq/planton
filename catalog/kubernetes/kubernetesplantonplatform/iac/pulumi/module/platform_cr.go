@@ -568,6 +568,14 @@ func platformSpecBody(locals *Locals) map[string]interface{} {
 		}
 	}
 
+	// ---- observability -----------------------------------------------------------
+	// The trace store's address, resolved from its reference before the module
+	// runs. Renders only when set, so a manifest that traces nothing keeps
+	// rendering a CR an older operator definition accepts.
+	if endpoint := spec.GetObservability().GetOtlpHttpEndpoint().GetValue(); endpoint != "" {
+		out["observability"] = map[string]interface{}{"otlpHttpEndpoint": endpoint}
+	}
+
 	return out
 }
 

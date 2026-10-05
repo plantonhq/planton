@@ -906,6 +906,14 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| KubernetesPlantonPlatform | `spec.observability.otlpHttpEndpoint` | `status.outputs.otlp_http_endpoint` |
+
 ## See Also
 
 - [Overview](../README.md)

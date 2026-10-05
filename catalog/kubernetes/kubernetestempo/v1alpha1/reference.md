@@ -824,6 +824,14 @@ Fields that can point at another resource's outputs:
 | `spec.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
 | `spec.metricsGenerator.remoteWriteUrl` | KubernetesKubePrometheusStack | `status.outputs.prometheus_endpoint` |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| KubernetesPlantonPlatform | `spec.observability.otlpHttpEndpoint` | `status.outputs.otlp_http_endpoint` |
+
 ## See Also
 
 - [Overview](../README.md)

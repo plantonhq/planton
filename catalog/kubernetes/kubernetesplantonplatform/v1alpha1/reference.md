@@ -200,6 +200,9 @@ spec:
         requests:
           cpu: 250m
           memory: 512Mi
+  observability:
+    otlp_http_endpoint:
+      value: http://cluster-traces-collector.observability.svc.cluster.local:4318
 ```
 
 ## Spec Fields
@@ -527,6 +530,8 @@ spec:
 | `spec.github.hosts[].app.webhookSecretRef.key` | `string` | yes |  |  |
 | `spec.github.hosts[].webhooks` | `string` |  | `auto` |  |
 | `spec.github.hostLogin` | `bool` |  |  |  |
+| `spec.observability` | `KubernetesPlantonPlatformObservability` |  |  |  |
+| `spec.observability.otlpHttpEndpoint` | `string \| valueFrom` |  |  | KubernetesOtelCollector (`status.outputs.otlp_http_endpoint`), KubernetesTempo (`status.outputs.otlp_http_endpoint`), KubernetesSignoz (`status.outputs.otlp_http_endpoint`) |
 
 ## Field Details
 
@@ -3367,6 +3372,35 @@ Let connections use a GitHub sign-in the control plane's own process
 carries (a GITHUB_TOKEN in its environment). Off by default on a
 shared install, because that token would act for everyone.
 
+### spec.observability
+
+`KubernetesPlantonPlatformObservability`
+
+Where the platform's traces go. Metrics need no setting: the control
+plane and the runner always serve Prometheus metrics, inside the cluster
+only, on their Services' port named `metrics` (9464; the control plane
+at `/actuator/prometheus`, the runner at `/metrics`), and logs are one
+JSON object per line on stdout, each carrying its trace_id. Absent,
+nothing is traced. Requires a planton-operator chart that knows this
+field (0.27.0 or newer).
+
+### spec.observability.otlpHttpEndpoint
+
+`string | valueFrom`
+
+The OTLP/HTTP base address of the trace store, such as
+`http://cluster-traces-collector.observability.svc.cluster.local:4318`.
+Set, every API request is traced there, and the console relays its
+browser spans to the same store, so a page load and the calls it made
+are one trace; the platform appends `/v1/traces` itself. By reference to
+the collector (or Tempo, or SigNoz) the address follows that resource's
+`otlp_http_endpoint` output. Setting it is the switch: there is no
+separate enabled flag to disagree with it.
+
+- references: KubernetesOtelCollector (`status.outputs.otlp_http_endpoint`), KubernetesTempo (`status.outputs.otlp_http_endpoint`), KubernetesSignoz (`status.outputs.otlp_http_endpoint`)
+- rule: otlp_http_endpoint is the trace store's OTLP/HTTP base address, such as http://cluster-traces-collector.observability.svc.cluster.local:4318: http:// or https://, no trailing slash, and no /v1/ signal path (the platform adds /v1/traces itself)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesOtelCollector, name: <that resource's name>, fieldPath: status.outputs.otlp_http_endpoint}} -- a bare string does not parse
+
 ## Validation Rules
 
 - `spec.vault.backup_needs_surviving_keys`: a backup carries the vault's data, but under the built-in seal the vault's keys live in a Secret that is deleted with the platform — set vault.init_secret_name to a Secret you own (and keep a copy outside the cluster), or declare vault.auto_unseal so a restored vault opens from your cloud key
@@ -3406,6 +3440,9 @@ Fields that can point at another resource's outputs:
 | `spec.vault.autoUnseal.gcpKms.keyRing` | GcpKmsKeyRing | `status.outputs.key_ring_name` |
 | `spec.vault.autoUnseal.gcpKms.cryptoKey` | GcpKmsKey | `status.outputs.key_name` |
 | `spec.vault.autoUnseal.gcpKms.workloadIdentityServiceAccount` | GcpServiceAccount | `status.outputs.email` |
+| `spec.observability.otlpHttpEndpoint` | KubernetesOtelCollector | `status.outputs.otlp_http_endpoint` |
+| `spec.observability.otlpHttpEndpoint` | KubernetesTempo | `status.outputs.otlp_http_endpoint` |
+| `spec.observability.otlpHttpEndpoint` | KubernetesSignoz | `status.outputs.otlp_http_endpoint` |
 
 ## See Also
 

@@ -90,6 +90,18 @@ func githubWithApp(host string) *KubernetesPlantonPlatformGithub {
 var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func() {
 
 	ginkgo.Describe("When valid input is passed", func() {
+		ginkgo.It("should accept a trace store's base address, as a literal or by reference", func() {
+			for _, endpoint := range []*foreignkeyv1.StringValueOrRef{
+				literalRef("http://cluster-traces-collector.observability.svc.cluster.local:4318"),
+				literalRef("https://otel.example.com/otlp"),
+				refTo(catalogkind.CatalogKind_KubernetesOtelCollector, "cluster-traces", "status.outputs.otlp_http_endpoint"),
+				refTo(catalogkind.CatalogKind_KubernetesTempo, "traces", "status.outputs.otlp_http_endpoint"),
+			} {
+				input := minimalValidPlatform()
+				input.Spec.Observability = &KubernetesPlantonPlatformObservability{OtlpHttpEndpoint: endpoint}
+				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil(), endpoint.String())
+			}
+		})
 
 		ginkgo.It("should not return a validation error for the zero-config platform", func() {
 			err := protovalidate.Validate(minimalValidPlatform())
@@ -680,6 +692,21 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 			err := protovalidate.Validate(input)
 			gomega.Expect(err).NotTo(gomega.BeNil())
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("cannot be set with build.enabled: false"))
+		})
+
+		ginkgo.It("should fail on a trace store address the exporter cannot use as a base", func() {
+			for _, endpoint := range []string{
+				"cluster-traces-collector.observability:4318",                  // no scheme
+				"http://cluster-traces-collector.observability:4318/",          // trailing slash
+				"http://cluster-traces-collector.observability:4318/v1/traces", // the signal path
+				"grpc://cluster-traces-collector.observability:4317",           // not OTLP/HTTP
+			} {
+				input := minimalValidPlatform()
+				input.Spec.Observability = &KubernetesPlantonPlatformObservability{OtlpHttpEndpoint: literalRef(endpoint)}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).NotTo(gomega.BeNil(), endpoint)
+				gomega.Expect(err.Error()).To(gomega.ContainSubstring("OTLP/HTTP base address"), endpoint)
+			}
 		})
 
 		ginkgo.It("should fail on a registry root with a scheme or a trailing slash", func() {

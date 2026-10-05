@@ -398,6 +398,11 @@ locals {
       enabled = try(var.spec.remote_runners.enabled, null)
     } : k => v if v != null
   }
+  observability_body = {
+    for k, v in {
+      otlpHttpEndpoint = try(var.spec.observability.otlp_http_endpoint, "") != "" ? var.spec.observability.otlp_http_endpoint : null
+    } : k => v if v != null
+  }
 
   # ---- email -----------------------------------------------------------------
   # One declaration for both senders. Each nested object is its own local so
@@ -656,6 +661,7 @@ locals {
       console       = length(local.console_body) > 0 ? local.console_body : null
       temporal      = length(local.temporal_body) > 0 ? local.temporal_body : null
       openfga       = length(local.openfga_body) > 0 ? local.openfga_body : null
+      observability = length(local.observability_body) > 0 ? local.observability_body : null
     } : k => v if v != null
   }
 }

@@ -233,6 +233,11 @@ type PlantonPlatformVerifier struct {
 	// platform's status must report them -- the path a size takes from the
 	// kind, through its module and the operator's merge, to the pod.
 	ControlPlaneSizing map[string]string
+	// TracesEndpoint is the literal the manifest declares in
+	// `spec.observability.otlp_http_endpoint`, or "" when it traces nothing.
+	// When set, the control plane must carry it as its tracing switch and the
+	// console must relay browser spans to it.
+	TracesEndpoint string
 }
 
 // newPlantonPlatformVerifier reads the declared version and the vault's keys
@@ -247,6 +252,7 @@ func newPlantonPlatformVerifier(namespace, name, manifestPath string) *PlantonPl
 	return &PlantonPlatformVerifier{
 		Namespace: namespace, Name: name, Version: version, VaultKeysSecret: keysSecret,
 		ControlPlaneSizing: declaredSizing(specField(specFieldMap(manifestSpecMap(manifestPath), "controlPlane"), "resources")),
+		TracesEndpoint:     declaredString(specField(specFieldMap(specFieldMap(manifestSpecMap(manifestPath), "observability"), "otlpHttpEndpoint"), "value")),
 	}
 }
 
@@ -254,6 +260,12 @@ func newPlantonPlatformVerifier(namespace, name, manifestPath string) *PlantonPl
 func specFieldMap(m map[string]interface{}, camel string) map[string]interface{} {
 	nested, _ := specField(m, camel).(map[string]interface{})
 	return nested
+}
+
+// declaredString reads a manifest leaf as a string; "" when absent.
+func declaredString(leaf interface{}) string {
+	value, _ := leaf.(string)
+	return value
 }
 
 // declaredSizing flattens a manifest's resources block into
@@ -383,6 +395,98 @@ func (v *PlantonPlatformVerifier) VerifyExists(ctx context.Context, kubeconfig s
 			return err
 		}
 	}
+	if err := v.verifyMetricsServed(ctx, kubeconfig); err != nil {
+		return err
+	}
+	if v.TracesEndpoint != "" {
+		if err := v.verifyTracing(ctx, kubeconfig); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// platformMetricsPort is the port the operator serves the control plane's
+// and the runner's metrics on, named "metrics" on both Services.
+const platformMetricsPort = "9464"
+
+// verifyMetricsServed proves the metrics surface every platform serves with
+// no setting: each Service names a metrics port, and reading it the way a
+// monitor inside the cluster does returns Prometheus text with a series the
+// process always has (an idle install has no request or job counted yet, so
+// the JVM's and the Go runtime's own series are the honest probe).
+func (v *PlantonPlatformVerifier) verifyMetricsServed(ctx context.Context, kubeconfig string) error {
+	for _, target := range []struct{ component, path, series, localPort string }{
+		{"control-plane", "/actuator/prometheus", "jvm_memory_used_bytes", "19464"},
+		{"runner", "/metrics", "go_goroutines", "19465"},
+	} {
+		service := v.Name + "-" + target.component
+		port, err := kubectlGetJSONPath(ctx, kubeconfig, "service", service, v.Namespace, `{.spec.ports[?(@.name=="metrics")].port}`)
+		if err != nil {
+			return errors.Wrapf(err, "reading the %s Service's ports", service)
+		}
+		if strings.TrimSpace(port) != platformMetricsPort {
+			return errors.Errorf("the %s Service names no metrics port %s (got %q) -- the installed operator predates the always-on metrics surface", service, platformMetricsPort, port)
+		}
+		cancel, err := startPortForward(ctx, kubeconfig, "svc/"+service, v.Namespace, target.localPort+":"+platformMetricsPort)
+		if err != nil {
+			return errors.Wrapf(err, "port-forwarding to %s's metrics port", service)
+		}
+		body, err := httpRoundTrip(ctx, "GET", "http://127.0.0.1:"+target.localPort+target.path, "", "", 3*time.Minute)
+		cancel()
+		if err != nil {
+			return errors.Wrapf(err, "reading %s%s through the metrics port", service, target.path)
+		}
+		if !strings.Contains(body, target.series) {
+			return errors.Errorf("%s%s answered without %s: %s", service, target.path, target.series, firstLines(body, 2))
+		}
+		fmt.Printf("  [verify] METRICS: %s serves %s on port metrics (%s present)\n", service, target.path, target.series)
+	}
+	return nil
+}
+
+// verifyTracing proves the trace store the manifest names reaches both
+// consumers: the control plane's tracing switch (on, to the declared base
+// address, over OTLP/HTTP) and the console's browser-span relay (the same
+// store's /v1/traces). An operator whose definition dropped the field reads
+// here as tracing off beside the declared address.
+func (v *PlantonPlatformVerifier) verifyTracing(ctx context.Context, kubeconfig string) error {
+	want := map[string]map[string]string{
+		"control-plane": {
+			"OBSERVABILITY_ENABLED":        "true",
+			"OTEL_EXPORTER_OTLP_ENDPOINT":  v.TracesEndpoint,
+			"OTEL_EXPORTER_OTLP_TRANSPORT": "http",
+		},
+		"console": {
+			"OTEL_EXPORTER_OTLP_TRACES_ENDPOINT": v.TracesEndpoint + "/v1/traces",
+		},
+	}
+	var mismatches []string
+	for container, vars := range want {
+		raw, err := kubectlGetJSONPath(ctx, kubeconfig, "deployment", v.Name+"-"+container, v.Namespace,
+			fmt.Sprintf(`{range .spec.template.spec.containers[?(@.name=="%s")].env[*]}{.name}={.value}{"\n"}{end}`, container))
+		if err != nil {
+			return errors.Wrapf(err, "reading the %s container's environment", container)
+		}
+		env := map[string]string{}
+		for _, line := range strings.Split(raw, "\n") {
+			if name, value, ok := strings.Cut(line, "="); ok {
+				env[name] = value
+			}
+		}
+		for name, value := range vars {
+			if env[name] != value {
+				mismatches = append(mismatches, fmt.Sprintf("%s %s=%q, want %q", container, name, env[name], value))
+			}
+		}
+	}
+	if len(mismatches) > 0 {
+		sort.Strings(mismatches)
+		return errors.Errorf("the trace store declared in spec.observability.otlp_http_endpoint did not reach the platform: %s -- "+
+			"check that both modules render the field and that the installed operator's definition carries spec.observability",
+			strings.Join(mismatches, "; "))
+	}
+	fmt.Printf("  [verify] TRACING: the control plane and the console send to %s\n", v.TracesEndpoint)
 	return nil
 }
 
@@ -423,11 +527,16 @@ func (v *PlantonPlatformVerifier) verifyVaultKeysSecret(ctx context.Context, kub
 	if err := KubectlResourceExists(ctx, kubeconfig, "secret", v.VaultKeysSecret, v.Namespace); err != nil {
 		return errors.Wrapf(err, "the vault keys Secret %s the manifest named is missing on a Ready platform", v.VaultKeysSecret)
 	}
-	keys, err := kubectlGetJSONPath(ctx, kubeconfig, "secret", v.VaultKeysSecret, v.Namespace, `{range $k, $v := .data}{$k}{" "}{end}`)
+	// The data map as JSON: kubectl's JSONPath has no way to list a map's
+	// keys, and only the key names are read -- never a value.
+	raw, err := kubectlGetJSONPath(ctx, kubeconfig, "secret", v.VaultKeysSecret, v.Namespace, `{.data}`)
 	if err != nil {
 		return errors.Wrapf(err, "reading the vault keys Secret %s", v.VaultKeysSecret)
 	}
-	held := strings.Fields(keys)
+	held, err := mapKeys(raw)
+	if err != nil {
+		return errors.Wrapf(err, "reading the vault keys Secret %s's data", v.VaultKeysSecret)
+	}
 	hasRoot, hasShares := false, false
 	for _, key := range held {
 		switch key {
@@ -446,6 +555,23 @@ func (v *PlantonPlatformVerifier) verifyVaultKeysSecret(ctx context.Context, kub
 	}
 	fmt.Printf("  [verify] VAULT KEYS: Secret %s holds %v and is owned by nobody\n", v.VaultKeysSecret, held)
 	return nil
+}
+
+// mapKeys lists a JSON object's keys, sorted; an empty document is no keys.
+func mapKeys(raw string) ([]string, error) {
+	if strings.TrimSpace(raw) == "" {
+		return nil, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal([]byte(raw), &m); err != nil {
+		return nil, err
+	}
+	keys := make([]string, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	return keys, nil
 }
 
 // waitForDeclaredVersion waits until status.version mirrors the manifest's

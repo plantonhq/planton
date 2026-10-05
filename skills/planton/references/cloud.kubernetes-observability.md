@@ -423,6 +423,39 @@ that trace's id. Compose it like this:
   the window, then let someone who was not told what broke diagnose it from
   the screens alone.
 
+## A Planton instance's own signals
+
+A self-hosted Planton (a `KubernetesPlantonPlatform`) reports the same three
+signals, and asks for less than the user's own software does:
+
+- **Metrics are always on.** The control plane serves `/actuator/prometheus`
+  and the runner `/metrics`, each on its Service's port named `metrics`
+  (9464), inside the cluster only. Declare one `KubernetesServiceMonitor` per
+  component (the paths differ), selecting
+  `app.kubernetes.io/managed-by: planton-operator` and the component's
+  `app.kubernetes.io/name`, with `job_label: app.kubernetes.io/name`. Without
+  `job_label` the job is the Service's name, `<platform>-control-plane`, and a
+  dashboard that reads `job="control-plane"` (a hosted Planton's, or the
+  agent's class monitors') shows the instance as missing.
+- **Traces take one field.** `observability.otlp_http_endpoint` references the
+  trace collector's `otlp_http_endpoint` output (`KubernetesTempo` and
+  `KubernetesSignoz` export the same). It is a base address: the platform adds
+  `/v1/traces`, and the declaration refuses an address that already carries a
+  `/v1/` path or ends in a slash. Setting it is the switch, and the console's
+  browser spans go to the same store.
+- **A reference waits; a literal does not.** When the composition that
+  declares the platform also builds the cluster the collector runs on, the
+  collector can only install after that composition's first apply, so a
+  reference would wait on its own child. Write the collector's exported value
+  as a literal there
+  (`http://<collector>-collector.<namespace>.svc.cluster.local:4318`); spans
+  sent before the collector answers are dropped and nothing else waits.
+- **Admit the platform at the collector.** A traces collector's intake policy
+  that lists namespaces drops every span from one it does not list, with no
+  error anywhere.
+- **It needs operator chart 0.27.0 or newer.** An older definition drops the
+  field silently, and the platform traces nothing.
+
 ## The alerts that page, and the ones that post
 
 Write the user's page-class rules once the components they read are

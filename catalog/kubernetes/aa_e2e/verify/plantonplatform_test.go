@@ -136,3 +136,43 @@ func TestSizingMismatches(t *testing.T) {
 		t.Error("a manifest that declares no size has nothing to verify")
 	}
 }
+
+// The verifier reads the declared trace store the way manifests write it, in
+// either key spelling, and reads nothing when a scenario traces nothing -- so
+// the tracing check runs exactly on the scenarios that declare one.
+func TestPlantonPlatformVerifierReadsTheDeclaredTraceStore(t *testing.T) {
+	const endpoint = "http://cluster-traces-collector.observability.svc.cluster.local:4318"
+	for name, spec := range map[string]string{
+		"snake_case": "observability:\n    otlp_http_endpoint:\n      value: " + endpoint,
+		"camelCase":  "observability:\n    otlpHttpEndpoint:\n      value: " + endpoint,
+		"absent":     "create_namespace: true",
+	} {
+		path := t.TempDir() + "/scenario.yaml"
+		manifest := fmt.Sprintf("kind: KubernetesPlantonPlatform\nspec:\n  version: v0.0.140\n  %s\n", spec)
+		if err := os.WriteFile(path, []byte(manifest), 0o600); err != nil {
+			t.Fatal(err)
+		}
+		want := endpoint
+		if name == "absent" {
+			want = ""
+		}
+		if got := newPlantonPlatformVerifier("planton", "planton", path).TracesEndpoint; got != want {
+			t.Errorf("%s: TracesEndpoint = %q, want %q", name, got, want)
+		}
+	}
+}
+
+// The vault keys check reads only the Secret's key names, from the data map
+// kubectl prints as JSON (its JSONPath cannot list a map's keys).
+func TestMapKeysListsASecretsKeyNames(t *testing.T) {
+	keys, err := mapKeys(`{"unseal-keys":"c2hhcmVz","root-token":"dG9rZW4="}`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if fmt.Sprint(keys) != "[root-token unseal-keys]" {
+		t.Errorf("keys = %v, want [root-token unseal-keys]", keys)
+	}
+	if keys, err := mapKeys(""); err != nil || len(keys) != 0 {
+		t.Errorf("an empty Secret = %v, %v; want no keys", keys, err)
+	}
+}
