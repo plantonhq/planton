@@ -1,4 +1,4 @@
-# GO Feature Flag Flag File
+# GO Feature Flag File
 
 Deploys a GO Feature Flag flag file -- typed, validated feature flags with their variations, targeting rules, percentage, progressive and scheduled rollouts -- rendered into a ConfigMap that a GO Feature Flag relay reads. A flag flip edits only this resource: the relay is never re-applied and serves the change on its next poll, with no restart.
 
@@ -26,7 +26,7 @@ When you deploy this Infra Component, the IaC module provisions:
 
 ### Console
 
-Open the deployment store, find **GO Feature Flag Flag File**, and click **Deploy**. The creation wizard walks you through preset selection, environment and connection configuration, and spec fields. Start from the **Release Flags** preset in the [Presets](#presets) tab.
+Open the deployment store, find **GO Feature Flag File**, and click **Deploy**. The creation wizard walks you through preset selection, environment and connection configuration, and spec fields. Start from the **Release Flags** preset in the [Presets](#presets) tab.
 
 ### CLI
 

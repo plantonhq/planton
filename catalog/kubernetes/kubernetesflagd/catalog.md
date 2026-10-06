@@ -152,4 +152,4 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 - [**flagd Flag File**](/infra-catalog/kubernetes-flagd-flag-file) -- the typed flag definitions flagd serves through a `configMap` source
 - [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- the namespace flagd and its flag files share
 - [**GO Feature Flag**](/infra-catalog/kubernetes-go-feature-flag) -- the alternative engine: choose it for readable YAML flag files read through the Kubernetes API (a flip in about one polling interval instead of a kubelet sync), change notifications, evaluation export, and API-key-isolated flag sets; choose flagd for JSONLogic targeting, a CNCF-governed project, and the in-process sync protocol
-- [**GO Feature Flag Flag File**](/infra-catalog/kubernetes-go-feature-flag-flag-file) -- the flag file format of the alternative engine
+- [**GO Feature Flag File**](/infra-catalog/kubernetes-go-feature-flag-flag-file) -- the flag file format of the alternative engine

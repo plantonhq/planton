@@ -2,7 +2,7 @@
 
 Deploys a GO Feature Flag relay proxy -- an OpenFeature-native feature flag server -- from the official `relay-proxy` chart at `charts.gofeatureflag.org`. The relay reads flag files from one or more retrievers (a ConfigMap, Git hosting, HTTP, object storage or a database), evaluates flags for any OpenFeature SDK over REST, OFREP and the flag-configuration endpoint in-process providers sync from, notifies on every flag change and exports evaluation events.
 
-Know the grain before you deploy: this component deploys the ENGINE, never the FLAGS. Declare flags as a GO Feature Flag Flag File and point a `configMap` retriever at it, so a flag flip edits only the flag file and the relay serves it on its next poll with no restart. And know the default posture: without `authorizedKeys` the API is OPEN -- anyone who can reach the Service evaluates every flag and reads the full flag configuration.
+Know the grain before you deploy: this component deploys the ENGINE, never the FLAGS. Declare flags as a GO Feature Flag File and point a `configMap` retriever at it, so a flag flip edits only the flag file and the relay serves it on its next poll with no restart. And know the default posture: without `authorizedKeys` the API is OPEN -- anyone who can reach the Service evaluates every flag and reads the full flag configuration.
 
 ## What Gets Created
 
@@ -32,7 +32,7 @@ Deliberately absent: no ingress -- exposure composes from Gateway API kinds -- a
 
 ### Kubernetes Cluster
 
-- **A flag source** -- a GO Feature Flag Flag File (or any ConfigMap holding a GO Feature Flag flag file), or a repository, bucket, URL or database the relay can reach. With `startWithRetrieverError: true` the source may arrive after the relay.
+- **A flag source** -- a GO Feature Flag File (or any ConfigMap holding a GO Feature Flag flag file), or a repository, bucket, URL or database the relay can reach. With `startWithRetrieverError: true` the source may arrive after the relay.
 - **Permission to grant ConfigMap reads** -- the runner must itself hold `get` on configmaps in every namespace a `configMap` retriever names; Kubernetes refuses to create a Role granting more than its creator holds.
 - **Cloud identity** (only for S3, Google Cloud Storage, Azure Blob Storage, SQS, Kinesis, Pub/Sub or BigQuery) -- workload identity through `serviceAccount.annotations`, or credentials through `extraEnv` / `extraEnvFromSecret`.
 - **Prometheus Operator CRDs** (only when enabling the ServiceMonitor).
@@ -113,7 +113,7 @@ These are the most important decisions when configuring GO Feature Flag. Explore
 
 **One flag source or flag sets** -- `flagSource` and `flagSets` are one required choice. `flagSource` serves the same flags to every caller. `flagSets` gives each team or client its own flags behind its own API keys -- a key selects exactly one set, sets share nothing, set names are unique and never `default`, and a key shared between sets fails the deploy. The relay ignores top-level sources beside flag sets, which is why the spec makes the choice exclusive.
 
-**Where the flags live** -- A `configMap` retriever pointed at a GO Feature Flag Flag File keeps flags typed, validated at plan time and separate from the relay's lifecycle. Git retrievers make every flag change a reviewed commit; set a `token` to lift the provider's anonymous rate limit, which a short polling interval otherwise exhausts. Later retrievers win on a flag several define.
+**Where the flags live** -- A `configMap` retriever pointed at a GO Feature Flag File keeps flags typed, validated at plan time and separate from the relay's lifecycle. Git retrievers make every flag change a reviewed commit; set a `token` to lift the provider's anonymous rate limit, which a short polling interval otherwise exhausts. Later retrievers win on a flag several define.
 
 **Flip latency** -- `pollingIntervalMs` (relay default 60000, minimum 1000) is how long a flag change takes to reach evaluations. Shorter means faster flips and more retriever reads per replica; `enablePollingJitter` spreads replicas' reads apart. A negative value disables polling -- flags then load once at startup.
 
@@ -164,7 +164,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GO Feature Flag Flag File**](/infra-catalog/kubernetes-go-feature-flag-flag-file) -- the typed flags this relay reads through its ConfigMap retriever
+- [**GO Feature Flag File**](/infra-catalog/kubernetes-go-feature-flag-flag-file) -- the typed flags this relay reads through its ConfigMap retriever
 - [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the namespace for the relay install
 - [**Kubernetes ConfigMap**](/infra-catalog/kubernetes-config-map) -- any ConfigMap holding a GO Feature Flag flag file works as a source
 - [**flagd**](/infra-catalog/kubernetes-flagd) -- the CNCF OpenFeature alternative engine, for teams that prefer flagd's flag format and gRPC sync

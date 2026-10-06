@@ -1,4 +1,4 @@
-# Kubernetes GO Feature Flag Flag File
+# Kubernetes GO Feature Flag File
 
 ## When NOT to Use This
 

@@ -121,4 +121,4 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 
 - [**flagd**](/infra-catalog/kubernetes-flagd) -- the daemon that mounts and serves this file through a `configMap` source
 - [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- the namespace the file shares with its flagd
-- [**GO Feature Flag Flag File**](/infra-catalog/kubernetes-go-feature-flag-flag-file) -- the alternative engine's flag file: query-language targeting, percentage and progressive rollouts, and scheduled changes, read through the Kubernetes API within one polling interval
+- [**GO Feature Flag File**](/infra-catalog/kubernetes-go-feature-flag-flag-file) -- the alternative engine's flag file: query-language targeting, percentage and progressive rollouts, and scheduled changes, read through the Kubernetes API within one polling interval
