@@ -368,14 +368,7 @@ shared state and needs the user's explicit go-ahead:
 
 ## Service delivery
 
-A **Service** is the unit of push-to-deploy: a record declaring where the
-code lives (`spec.gitRepo`), how it builds (`spec.build`), and what runs in
-each environment (`spec.deploy.environments` -- full infra-component
-manifests per environment, the ONE home every surface reads). The
-`service.yaml` a repository carries IS the Service record's YAML. A push
-births a **run**; every environment that succeeds writes a **deployment
-record** -- an immutable receipt with the exact artifact, applied
-manifests, URLs, and a staged rollout verdict.
+A **Service** is the unit of push-to-deploy: a record declaring where the code lives (`spec.gitRepo`), how it builds (`spec.build`), and what runs in each environment (`spec.deploy.environments` -- full infra-component manifests per environment, the ONE home every surface reads). The `service.yaml` a repository carries IS the Service record's YAML. A push births a **run**; every environment that succeeds writes a **deployment record** -- an immutable receipt with the exact artifact, applied manifests, URLs, and a staged rollout verdict.
 
 Hold these invariants in every service answer:
 
@@ -396,13 +389,7 @@ the connected repository's default branch
 (`references/service.push-to-register.md`); and a CI step with proven
 repository identity (`references/service.external-ci.md`). Every door needs a GitHub connection and a registry; on a machine that is already signed in, both come from that sign-in with nothing pasted (`references/service.connecting-github-and-registries.md`).
 
-**Services deploy with or without a Planton backend.** Connected, the
-control plane runs pipelines, gates, and rollout verification. With NO
-backend configured, `planton service deploy --env <env>` deploys the
-repository's own kustomize tree entirely offline through the open-source
-engine -- preflight report first, dependency-ordered deploys, honest exit
-codes -- and the same published GitHub Action serves both postures, the
-mode inferred from its inputs. The complete offline journey -- authoring offline-clean trees, wiring GitHub Actions keylessly, verifying everything before declaring ready -- is `references/service.offline-deploy.md`.
+**Services deploy with or without a Planton backend.** Connected, the control plane runs pipelines, gates, and rollout verification. With NO backend configured, `planton service deploy --env <env>` deploys the repository's own kustomize tree entirely offline through the open-source engine -- preflight report first, dependency-ordered deploys, honest exit codes -- and the same published GitHub Action serves both postures, the mode inferred from its inputs. The complete offline journey -- authoring offline-clean trees, wiring GitHub Actions keylessly, verifying everything before declaring ready -- is `references/service.offline-deploy.md`.
 
 ## Self-hosted Planton
 
