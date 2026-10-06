@@ -780,6 +780,25 @@ Based on scenario:
   declares the user without the password, the presets drop their
   placeholder passwords, and the import map gains the by-value row below.
   Reference shapes: `KubernetesValkey`, `KubernetesNeo4j`, `KubernetesNats`.
+- **A credential only the running server can mint is written by a
+  module-owned Job into a Secret the Job creates, owned through an owner
+  reference by a module object -- never a module-owned Secret.** Some
+  credentials cannot be generated ahead of the server (a Grafana service
+  account token is created and hashed by Grafana itself), so a Job run
+  after the release is Ready mints it. A module-owned Secret with
+  ignore-changes on its data still has that data read into Terraform and
+  Pulumi state on every refresh, so the credential would rest in state.
+  Instead the Job creates or replaces the Secret with an owner reference
+  to the module's own ServiceAccount (the one the Job runs as): Kubernetes
+  deletes the Secret with that ServiceAccount, so removing the block or
+  the resource leaves no orphan, and nothing in state ever held the
+  value. The Job's Role names that Secret for get, update and delete,
+  grants create unscoped (Kubernetes cannot scope create to a name), and
+  names the ServiceAccount for get (its uid). The Secret's key still
+  ships as an output (`KubernetesSecretKey`). Name the Job by a hash of
+  what it reconciles plus its script's text, so a raised generation or a
+  fixed script is a new run, and let the deploy await it -- it waits on
+  no human. Reference shape: `KubernetesGrafana` (`agent_reader`).
 - **A module-owned Secret the workload reads only at start carries a
   checksum on the pod template.** Env variables and most config files are
   read once, at process start; nothing rolls a Deployment or StatefulSet

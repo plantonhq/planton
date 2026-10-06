@@ -1,0 +1,21 @@
+# The second act of behavioral-agent-reader.yaml: token_generation raised
+# to 2, which is how a token is replaced. The Job's name moves with the
+# generation, so the apply runs it again: the Secret now holds a
+# generation 2 token that signs in, the account still holds exactly one
+# token, and the token act one read is refused (401). Not a scenario of
+# its own (the second-act annotation keeps discovery from running it as a
+# lane).
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGrafana
+metadata:
+  name: e2e-grafana-agent
+  annotations:
+    planton.dev/e2e-second-act: behavioral-agent-reader.yaml
+spec:
+  namespace:
+    value: e2e-grafana-agent
+  create_namespace: true
+  storage:
+    size: 1Gi
+  agent_reader:
+    token_generation: 2

@@ -60,6 +60,10 @@ type Locals struct {
 	// no provider is declared.
 	SsoSecretName string
 	SignIn        *signIn
+
+	// Agent teammates' read-only way in (spec.agent_reader); nil when the
+	// block is not declared.
+	AgentReader *agentReader
 }
 
 // initializeLocals extracts and transforms spec fields into module-local
@@ -105,6 +109,7 @@ func initializeLocals(_ *pulumi.Context, iacInput *kubernetesgrafanav1alpha1.Kub
 	ssoSecretName := releaseName + vars.SsoSecretSuffix
 
 	return &Locals{
+		AgentReader:     buildAgentReader(spec, releaseName, adminSecretName, labels),
 		SsoSecretName:   ssoSecretName,
 		SignIn:          buildSignIn(spec.GetAuth(), ssoSecretName),
 		Spec:            spec,

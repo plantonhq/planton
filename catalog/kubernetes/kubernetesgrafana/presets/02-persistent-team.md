@@ -32,6 +32,15 @@ narrows. Once sign-in is declared, Grafana's own authentication screen
 can no longer change it, so the manifest stays the only record of who
 can get in.
 
+Agent teammates: `agent_reader` gives the team's coding agents a
+read-only way in. The module keeps a Viewer service account and one
+current token for it in `team-grafana-agent-reader` (key `token`); an
+agent's launcher reads it at each start of Grafana's MCP server
+(`mcp-grafana --disable-write`), so the token never sits on a laptop.
+The volume is what keeps the account across pod restarts. Raise
+`token_generation` to replace the token after someone leaves, and set
+`disabled` to refuse it at once.
+
 Change first: replace the `root_url` placeholder with the real
 hostname and compose the ingress or gateway route over the exported
 `service` handle; then let other teams ship dashboards through

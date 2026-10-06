@@ -1,0 +1,23 @@
+# THE agent-teammates proof, act one: declaring agent_reader with its
+# defaults. The module's Job completes, its Role grants exactly the token
+# Secret and its owner, and the `<name>-agent-reader` Secret holds a
+# generation 1 token, owned by the module's ServiceAccount, that signs in
+# as the `agent-reader` service account: a Viewer that may query
+# datasources, holds no write action and is refused a dashboard write,
+# with exactly one token on the account. The Job runs the moment the
+# release is Ready, so its bounded wait for Grafana's health call runs
+# against a fresh pod. Act two (behavioral-agent-reader.to.yaml) raises
+# the generation.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGrafana
+metadata:
+  name: e2e-grafana-agent
+  annotations:
+    planton.dev/e2e-upgrade-manifest: behavioral-agent-reader.to.yaml
+spec:
+  namespace:
+    value: e2e-grafana-agent
+  create_namespace: true
+  storage:
+    size: 1Gi
+  agent_reader: {}

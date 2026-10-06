@@ -26,6 +26,7 @@ go_test(
     srcs = ["spec_test.go"],
     embed = [":v1alpha1"],
     deps = [
+        "//catalog/kubernetes",
         "//shared",
         "//shared/catalogkind",
         "//shared/foreignkey/v1:foreignkey",

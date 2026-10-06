@@ -1,0 +1,19 @@
+# The refusal proof, act one: agent_reader on a named account -- the
+# `agent-teammates` Viewer and its one token in the
+# `<name>-agent-reader` Secret, held to the same checks as
+# behavioral-agent-reader. Act two
+# (behavioral-agent-reader-disabled.to.yaml) sets disabled.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGrafana
+metadata:
+  name: e2e-grafana-agentoff
+  annotations:
+    planton.dev/e2e-upgrade-manifest: behavioral-agent-reader-disabled.to.yaml
+spec:
+  namespace:
+    value: e2e-grafana-agentoff
+  create_namespace: true
+  storage:
+    size: 1Gi
+  agent_reader:
+    service_account_name: agent-teammates

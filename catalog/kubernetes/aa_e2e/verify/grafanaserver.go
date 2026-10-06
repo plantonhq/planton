@@ -24,6 +24,11 @@ import (
 // The behavioral-sso scenario (recognized by name) signs in end to end
 // through a stand-in for Google's token endpoint (grafana_signin.go).
 //
+// A manifest declaring spec.agent_reader proves agent teammates' read-only
+// way in (grafana_agent_reader.go): the module's Job, its exact Role, the
+// token Secret, a Viewer that is refused writes, one token, and -- in a
+// second act -- the replaced or disabled token refused.
+//
 // The behavioral-persistence scenario (recognized by name) additionally
 // CREATES a dashboard through the API, deletes the pod, waits for a
 // REPLACEMENT pod (a new UID — status flapping back Ready on the dying
@@ -48,6 +53,10 @@ type GrafanaVerifier struct {
 	// SignIn switches on the end-to-end Google sign-in proof against a
 	// stand-in token endpoint (grafana_signin.go).
 	SignIn bool
+	// AgentReader is the manifest's spec.agent_reader with its defaults
+	// applied; nil when the block is not declared. Declared, it switches
+	// on the agent teammates' read-only path proof (grafana_agent_reader.go).
+	AgentReader *grafanaAgentReader
 }
 
 func (v *GrafanaVerifier) VerifyExists(ctx context.Context, kubeconfig string) error {
@@ -189,6 +198,12 @@ func (v *GrafanaVerifier) proveApiRoundTrip(ctx context.Context, kubeconfig stri
 
 	if v.SignIn {
 		if err := v.proveSignIn(ctx, kubeconfig, base, user, password); err != nil {
+			return err
+		}
+	}
+
+	if v.AgentReader != nil {
+		if err := v.proveAgentReader(ctx, kubeconfig, base, user, password); err != nil {
 			return err
 		}
 	}

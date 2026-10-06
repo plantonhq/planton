@@ -25,6 +25,7 @@ go_library(
         "gatewayrouting.go",
         "generic.go",
         "gharunner.go",
+        "grafana_agent_reader.go",
         "grafana_signin.go",
         "grafanaserver.go",
         "harbor.go",

@@ -22,6 +22,15 @@ import (
 func Resources(ctx *pulumi.Context, iacInput *kubernetesgrafanav1alpha1.KubernetesGrafanaIacInput) error {
 	locals := initializeLocals(ctx, iacInput)
 
+	// NAME BUDGET: the agent reader's Job is `<name>-agent-reader-<8 hex>`
+	// and Kubernetes caps a Job's name at 63 characters. Refused before
+	// anything is created (twin of the release's precondition in main.tf).
+	if locals.AgentReader != nil && len(locals.ReleaseName) > vars.AgentReaderNameBudget {
+		return errors.Errorf("metadata.name %q is %d characters, and with agent_reader declared it is at most %d: "+
+			"the agent reader's Job is <name>-agent-reader-<8 hex> under Kubernetes' 63-character Job name cap. "+
+			"Use a shorter name", locals.ReleaseName, len(locals.ReleaseName), vars.AgentReaderNameBudget)
+	}
+
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
 		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
@@ -94,9 +103,17 @@ func Resources(ctx *pulumi.Context, iacInput *kubernetesgrafanav1alpha1.Kubernet
 
 	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, releaseDeps...)
 
-	_, err = helmv3.NewRelease(ctx, locals.ReleaseName, releaseArgs, opts...)
+	release, err := helmv3.NewRelease(ctx, locals.ReleaseName, releaseArgs, opts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to install grafana helm release")
+	}
+
+	// ------------------------ agent teammates' way in ---------------------
+	// After the release: the Job talks to a Ready Grafana (agentreader.go).
+	if locals.AgentReader != nil {
+		if err := agentReaderResources(ctx, locals, kubernetesProvider, []pulumi.Resource{release}); err != nil {
+			return err
+		}
 	}
 
 	exportOutputs(ctx, locals)
@@ -115,4 +132,18 @@ func exportOutputs(ctx *pulumi.Context, locals *Locals) {
 	ctx.Export(OpEndpoint, pulumi.String(locals.Endpoint))
 	ctx.Export(OpAdminSecretName, pulumi.String(locals.AdminSecretName))
 	ctx.Export(OpPortForwardCommand, pulumi.String(locals.PortForwardCommand))
+
+	// The token Secret exists while the reader is on; the Job's name
+	// whenever the block is declared (a disabled reader still runs one).
+	tokenSecretName, tokenSecretKey, jobName := "", "", ""
+	if reader := locals.AgentReader; reader != nil {
+		jobName = reader.JobName
+		if !reader.Disabled {
+			tokenSecretName = reader.Name
+			tokenSecretKey = vars.AgentReaderTokenKey
+		}
+	}
+	ctx.Export(OpAgentReaderTokenSecretName, pulumi.String(tokenSecretName))
+	ctx.Export(OpAgentReaderTokenSecretKey, pulumi.String(tokenSecretKey))
+	ctx.Export(OpAgentReaderJobName, pulumi.String(jobName))
 }

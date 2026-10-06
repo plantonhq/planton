@@ -46,6 +46,13 @@ reference the modules write into their own `<name>-sso` Secret; once
 either is declared the manifest owns sign-in and Grafana's
 Administration > Authentication screen can no longer change it.
 
+AGENT TEAMMATES: `agent_reader` gives coding agents (through Grafana's
+own MCP server, `mcp-grafana`) a read-only way in — a Viewer service
+account whose one current token the modules keep in the
+`<name>-agent-reader` Secret, replaced by raising a number and refused
+at once by `disabled`. An in-cluster Job mints it, because Grafana
+cannot provision service accounts from files.
+
 EXPOSURE: the service stays ClusterIP; expose via first-class kinds
 (KubernetesIngress, Gateway API kinds) over the exported service
 handle. Set `server.root_url` to the public URL when composing
@@ -73,9 +80,10 @@ through Secrets and environment variables instead.
 # module-owned `<name>-sso` Secret, the admin-screen lock and the
 # credentials checksum), SMTP with a credentials Secret, the
 # ServiceMonitor toggle, a private-mirror image with a pull secret,
-# scheduling, and an escape-hatch entry — so the offline tofu plan and
-# pulumi preview proofs cover the full typed surface. Placeholder values;
-# never applied to a real cluster.
+# scheduling, an escape-hatch entry, and the agent reader (a named
+# account at a raised generation on a mirrored Job image) — so the
+# offline tofu plan and pulumi preview proofs cover the full typed
+# surface. Placeholder values; never applied to a real cluster.
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesGrafana
 metadata:
@@ -185,6 +193,12 @@ spec:
     priorityClassName: system-cluster-critical
   helmValues: |
     revisionHistoryLimit: 5
+  agentReader:
+    serviceAccountName: agent-teammates
+    tokenGeneration: 2
+    image:
+      repo: mirror.example.com/alpine/k8s
+      pullSecretName: mirror-pull
 ```
 
 ## Spec Fields
@@ -291,6 +305,14 @@ spec:
 | `spec.scheduling.tolerations[].tolerationSeconds` | `int64` |  |  |  |
 | `spec.scheduling.priorityClassName` | `string` |  |  |  |
 | `spec.helmValues` | `string` |  |  |  |
+| `spec.agentReader` | `KubernetesGrafanaAgentReader` |  |  |  |
+| `spec.agentReader.serviceAccountName` | `string` |  | `agent-reader` |  |
+| `spec.agentReader.tokenGeneration` | `int32` |  | `1` |  |
+| `spec.agentReader.disabled` | `bool` |  |  |  |
+| `spec.agentReader.image` | `ContainerImage` |  |  |  |
+| `spec.agentReader.image.repo` | `string` |  |  |  |
+| `spec.agentReader.image.tag` | `string` |  |  |  |
+| `spec.agentReader.image.pullSecretName` | `string` |  |  |  |
 
 ## Field Details
 
@@ -1126,6 +1148,86 @@ substitute for them. Sign-in has typed fields (`auth.google`,
 `auth.generic_oauth`). Do not put secrets here; credential material
 belongs in the typed secret references.
 
+### spec.agentReader
+
+`KubernetesGrafanaAgentReader`
+
+A read-only way into this Grafana for agent teammates — coding
+agents (Claude Code, Cursor, any MCP client) reading dashboards,
+metrics, logs and traces through Grafana's MCP server. Declaring the
+block turns it on: the modules keep a Viewer service account and one
+current token for it in the `<name>-agent-reader` Secret (keys
+`token` and `generation`), exported as `agent_reader_token_secret`.
+See `KubernetesGrafanaAgentReader` for replacing the token, refusing
+it, and turning the block off.
+
+### spec.agentReader.serviceAccountName
+
+`string` · optional (explicit presence)
+
+The service account's name. Its login is `sa-<org id>-<name>`.
+Lowercase letters, digits and dashes, starting and ending with a
+letter or digit, at most 63 characters: Grafana lowercases a name and
+turns spaces into dashes to make the login, and this form makes the
+name and the login read the same. Empty = "agent-reader". Renaming it
+creates a second account; disable the first before renaming.
+
+- default: `agent-reader`
+- rule: {"string":{"maxLen":"63","pattern":"^[a-z0-9]([a-z0-9-]*[a-z0-9])?$"}}
+
+### spec.agentReader.tokenGeneration
+
+`int32` · optional (explicit presence)
+
+The token's generation. Raise it to replace the token — after an
+offboarding, or any doubt about who has read it: the next apply mints
+a token of the new generation, writes it into the Secret, and only
+then revokes the old one, which answers 401 from then on. Agents pick
+up the new token at their next start. Empty = 1.
+
+- default: `1`
+- rule: {"int32":{"gte":1}}
+
+### spec.agentReader.disabled
+
+`bool`
+
+Refuse every token of the account now — Grafana's own `isDisabled`
+on the service account (the Grafana Terraform provider's
+`is_disabled`). The next apply disables the account and deletes the
+Secret; the account and its history stay. Setting it back to false
+enables the account again with a fresh token, after revoking every
+token it held. This is how access ends: disable, apply, and only then
+remove the block if you want the module to stop managing it.
+
+### spec.agentReader.image
+
+`ContainerImage`
+
+Override the Job's image (air-gap path). The Job needs a POSIX shell
+with curl, jq and kubectl. Empty = `docker.io/alpine/k8s` at the
+module's pinned tag, whose kubectl tracks a recent Kubernetes minor;
+the Job only reads a ServiceAccount and writes one Secret, which every
+supported cluster version answers the same way.
+
+### spec.agentReader.image.repo
+
+`string`
+
+The repository of the image (e.g., "gcr.io/project/image").
+
+### spec.agentReader.image.tag
+
+`string`
+
+The tag of the image (e.g., "latest" or "1.0.0").
+
+### spec.agentReader.image.pullSecretName
+
+`string`
+
+The name of the image pull secret for private image repositories.
+
 ## Validation Rules
 
 - `spec.auth.sign_in_requires_root_url`: Google or OAuth sign-in needs server.root_url, the public address people open Grafana at: the provider sends people back to <root_url>/login/google (or /login/generic_oauth), and without it Grafana hands the provider http://localhost:3000, which no browser can reach. Set server.root_url to the URL the exposure layer serves (e.g. https://grafana.example.com)
@@ -1144,6 +1246,10 @@ Reference an output from another manifest as `valueFrom: {kind: KubernetesGrafan
 | `status.outputs.endpoint` | `string` | in-cluster endpoint for browsers behind composed exposure and for in-cluster API clients, e.g. http://dashboards.observability.svc.cluster.local |
 | `status.outputs.admin_secret_name` | `string` | name of the Secret holding the admin credentials — `<name>`, keys `admin-user` / `admin-password` (the chart generates it once and keeps it stable across upgrades; when spec.admin_secret points at an existing Secret, that name is echoed here instead). |
 | `status.outputs.port_forward_command` | `string` | command to port-forward the Grafana UI to a developer laptop, e.g. kubectl port-forward svc/dashboards -n observability 3000:80 |
+| `status.outputs.agent_reader_token_secret` | `KubernetesSecretKey` | the Secret key holding agent teammates' read-only Grafana token — `<name>-agent-reader`, key `token` (a sibling key `generation` names the token's generation). Unset when spec.agent_reader is not declared or is disabled. Read it at each start of Grafana's MCP server (`GRAFANA_SERVICE_ACCOUNT_TOKEN`) rather than copying it anywhere. |
+| `status.outputs.agent_reader_token_secret.name` | `string` | The name of the Kubernetes Secret. |
+| `status.outputs.agent_reader_token_secret.key` | `string` | The key within the Kubernetes Secret. |
+| `status.outputs.agent_reader_job_name` | `string` | the Job that keeps the agent teammates' account and token (`<name>-agent-reader-<8 hex>`, the hex hashing the declaration and the Job's script) — `kubectl logs job/<this>` is where it explains itself. Empty when spec.agent_reader is not declared. |
 
 ## References
 

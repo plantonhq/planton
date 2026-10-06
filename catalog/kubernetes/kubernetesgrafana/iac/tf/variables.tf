@@ -134,5 +134,15 @@ variable "spec" {
       priority_class_name = optional(string, "")
     }))
     helm_values = optional(string, "")
+    agent_reader = optional(object({
+      service_account_name = optional(string)
+      token_generation     = optional(number)
+      disabled             = optional(bool, false)
+      image = optional(object({
+        repo             = optional(string, "")
+        tag              = optional(string, "")
+        pull_secret_name = optional(string, "")
+      }))
+    }))
   })
 }

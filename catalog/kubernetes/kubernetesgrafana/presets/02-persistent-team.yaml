@@ -49,3 +49,9 @@ spec:
         - <your-domain>
       hosted_domain: <your-domain>
       role_attribute_path: "email == 'lead@<your-domain>' && 'Admin' || 'Viewer'"
+  # The team's coding agents read this Grafana through its MCP server
+  # with a Viewer token the module keeps in team-grafana-agent-reader
+  # (key token). The volume above is what keeps the account across pod
+  # restarts. Raise token_generation to replace the token; set disabled
+  # to refuse it at once.
+  agent_reader: {}

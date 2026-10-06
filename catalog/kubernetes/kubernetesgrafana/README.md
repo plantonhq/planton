@@ -74,6 +74,11 @@ in rendered Helm values; the Secret name lands in the outputs.
   their own `<name>-sso` Secret. Declaring either locks Grafana's
   Administration > Authentication screen so the manifest stays the only
   source of truth, and a rotated secret rolls the pods on the next apply.
+- **Agent teammates read it through MCP** — `agent_reader` keeps a
+  Viewer service account and its one token in the `<name>-agent-reader`
+  Secret for Grafana's MCP server (`mcp-grafana --disable-write`): a
+  short Job mints it after the release is Ready, `token_generation`
+  replaces it, and `disabled` refuses it at once.
 - **`helm_values` is the escape hatch** — merged LAST (Helm `-f`
   semantics, identical engines) for LDAP, the image renderer, alerting
   provisioning, extra sidecars. Never for secrets:
@@ -111,6 +116,10 @@ in rendered Helm values; the Secret name lands in the outputs.
   (credentials via Secret)
 - **`spec.service_monitor_enabled`**: scrape Grafana's own /metrics
   (requires the Prometheus Operator CRDs)
+- **`spec.agent_reader`**: agent teammates' read-only way in —
+  `service_account_name` (default `agent-reader`), `token_generation`
+  (raise to replace the token), `disabled` (refuse every token), and
+  the Job's `image`
 - **`spec.image` / `spec.helm_values`**: the air-gap path and the
   escape hatch
 
@@ -124,6 +133,8 @@ in rendered Helm values; the Secret name lands in the outputs.
 | `endpoint` | In-cluster URL (`http://<name>.<ns>.svc.cluster.local`) |
 | `admin_secret_name` | The credentials Secret — chart-owned `<name>`, or the referenced Secret echoed |
 | `port_forward_command` | Workstation access without composed exposure |
+| `agent_reader_token_secret` | Agent teammates' read-only token — `<name>-agent-reader`, key `token`; unset unless `agent_reader` is declared and not disabled |
+| `agent_reader_job_name` | The Job keeping that account and token (`<name>-agent-reader-<8 hex>`) |
 
 ## Composing in Infra Charts
 

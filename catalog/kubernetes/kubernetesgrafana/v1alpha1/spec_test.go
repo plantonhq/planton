@@ -6,6 +6,7 @@ import (
 	"buf.build/go/protovalidate"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
+	"github.com/plantonhq/planton/catalog/kubernetes"
 	"github.com/plantonhq/planton/shared"
 	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
@@ -229,6 +230,25 @@ var _ = ginkgo.Describe("KubernetesGrafana Validation Tests", func() {
 			}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
+
+		ginkgo.It("an empty agent_reader block should be valid (the account name and generation default)", func() {
+			input.Spec.AgentReader = &KubernetesGrafanaAgentReader{}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("an agent_reader with a named account, a raised generation and an image override should be valid", func() {
+			input.Spec.AgentReader = &KubernetesGrafanaAgentReader{
+				ServiceAccountName: stringPtr("agent-teammates"),
+				TokenGeneration:    int32Ptr(3),
+				Image:              &kubernetes.ContainerImage{Repo: "mirror.example.com/alpine/k8s", Tag: "1.35.8"},
+			}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("a disabled agent_reader should be valid", func() {
+			input.Spec.AgentReader = &KubernetesGrafanaAgentReader{Disabled: true}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
 	})
 
 	ginkgo.Describe("When invalid input is passed", func() {
@@ -378,6 +398,27 @@ var _ = ginkgo.Describe("KubernetesGrafana Validation Tests", func() {
 			err := protovalidate.Validate(input)
 			gomega.Expect(err).NotTo(gomega.BeNil())
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("groups_attribute_path"))
+		})
+
+		ginkgo.It("an agent_reader token generation of zero should fail", func() {
+			input.Spec.AgentReader = &KubernetesGrafanaAgentReader{TokenGeneration: int32Ptr(0)}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("an agent_reader account name Grafana would rewrite into a different login should fail", func() {
+			for _, name := range []string{"Agent Reader", "agent_reader", "-agent", "agent-", "agent.reader"} {
+				input.Spec.AgentReader = &KubernetesGrafanaAgentReader{ServiceAccountName: stringPtr(name)}
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil(), name)
+			}
+		})
+
+		ginkgo.It("an agent_reader account name over 63 characters should fail", func() {
+			long := "a"
+			for len(long) < 64 {
+				long += "a"
+			}
+			input.Spec.AgentReader = &KubernetesGrafanaAgentReader{ServiceAccountName: stringPtr(long)}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 		})
 	})
 })

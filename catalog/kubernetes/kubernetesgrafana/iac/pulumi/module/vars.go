@@ -45,6 +45,44 @@ var vars = struct {
 	// Secret Grafana reads only at start; the same key on every catalog
 	// module that uses the pattern.
 	CredentialsChecksumAnnotation string
+	// Agent reader (spec.agent_reader): the module-owned objects are
+	// `<name>` plus these suffixes — the ServiceAccount, Role and
+	// RoleBinding share the first, and the token Secret the Job writes
+	// carries it too; the Job is `<name>-agent-reader-<8 hex>`. The
+	// Terraform module uses the same literals (agent_reader.tf, locals.tf).
+	AgentReaderSuffix       string
+	AgentReaderScriptSuffix string
+	// Mirrors of the proto defaults for the account name and the token
+	// generation.
+	DefaultAgentReaderServiceAccount  string
+	DefaultAgentReaderTokenGeneration int32
+	// The token Secret's keys.
+	AgentReaderTokenKey      string
+	AgentReaderGenerationKey string
+	// The Job's image: a POSIX shell with curl, jq and kubectl. A repo or
+	// tag left empty in the override keeps the default's, so a mirror
+	// never floats to `latest`.
+	DefaultAgentReaderImageRepo string
+	DefaultAgentReaderImageTag  string
+	// The Job's bounds: the script waits up to five minutes for Grafana's
+	// health call itself; the deadline caps the whole run, retries
+	// included, and a failed run stays visible with its log.
+	AgentReaderJobBackoffLimit    int
+	AgentReaderJobDeadlineSeconds int
+	// The Job runs as `nobody`; kubectl writes its cache under HOME, an
+	// emptyDir, because the root filesystem is read-only.
+	AgentReaderRunAsUser   int
+	AgentReaderScriptsPath string
+	AgentReaderHomePath    string
+	// Requests and limits for the Job's one container.
+	AgentReaderCpuRequest    string
+	AgentReaderMemoryRequest string
+	AgentReaderCpuLimit      string
+	AgentReaderMemoryLimit   string
+	// NAME BUDGET: Kubernetes caps a Job's name at 63 characters (its pods
+	// carry it in the job-name label), and the Job is the release name
+	// plus 22 characters.
+	AgentReaderNameBudget int
 }{
 	HelmChartName:                 "grafana",
 	HelmChartRepo:                 "https://grafana-community.github.io/helm-charts",
@@ -62,4 +100,23 @@ var vars = struct {
 	DefaultOAuthScopes:            []string{"openid", "email", "profile"},
 	NoConfigurableProviders:       "none",
 	CredentialsChecksumAnnotation: "checksum/credentials",
+
+	AgentReaderSuffix:                 "-agent-reader",
+	AgentReaderScriptSuffix:           "-agent-reader-script",
+	DefaultAgentReaderServiceAccount:  "agent-reader",
+	DefaultAgentReaderTokenGeneration: 1,
+	AgentReaderTokenKey:               "token",
+	AgentReaderGenerationKey:          "generation",
+	DefaultAgentReaderImageRepo:       "docker.io/alpine/k8s",
+	DefaultAgentReaderImageTag:        "1.35.8",
+	AgentReaderJobBackoffLimit:        6,
+	AgentReaderJobDeadlineSeconds:     900,
+	AgentReaderRunAsUser:              65534,
+	AgentReaderScriptsPath:            "/scripts",
+	AgentReaderHomePath:               "/tmp",
+	AgentReaderCpuRequest:             "50m",
+	AgentReaderMemoryRequest:          "64Mi",
+	AgentReaderCpuLimit:               "200m",
+	AgentReaderMemoryLimit:            "128Mi",
+	AgentReaderNameBudget:             41,
 }

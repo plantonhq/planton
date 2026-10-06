@@ -39,7 +39,7 @@ spec:
           - delete
         cluster_scoped: false
         provenance: derived
-        notes: Chart-rendered objects applied by helm_release.grafana -- the Service (ClusterIP), ServiceAccount, configuration and provisioning ConfigMaps, and the state PVC when spec.storage is declared.
+        notes: Chart-rendered objects applied by helm_release.grafana -- the Service (ClusterIP), ServiceAccount, configuration and provisioning ConfigMaps, and the state PVC when spec.storage is declared -- and, when spec.agent_reader is declared, the module-owned `<name>-agent-reader` ServiceAccount and `<name>-agent-reader-script` ConfigMap (agent_reader.tf; agentreader.go in Pulumi).
       - api_groups:
           - ""
         resources:
@@ -96,7 +96,21 @@ spec:
           - delete
         cluster_scoped: false
         provenance: derived
-        notes: Namespaced RBAC objects the chart renders for its ServiceAccount.
+        notes: Namespaced RBAC objects the chart renders for its ServiceAccount, and, when spec.agent_reader is declared, the module-owned `<name>-agent-reader` Role and RoleBinding granting the agent reader's Job its one token Secret (agent_reader.tf; agentreader.go).
+      - api_groups:
+          - batch
+        resources:
+          - jobs
+        verbs:
+          - get
+          - list
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: Module-owned -- kubernetes_job_v1.agent_reader (agent_reader.tf; agentreader.go in Pulumi), rendered when spec.agent_reader is declared, the run that keeps agent teammates' Viewer account and its token. Both engines wait for it to complete. The token Secret it writes is the Job's own ServiceAccount's, not the runner's, so it needs no grant here.
       - api_groups:
           - ""
         resources:
@@ -107,3 +121,44 @@ spec:
         cluster_scoped: true
         provenance: derived
         notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the Namespace in namespace.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.
+      - api_groups:
+          - batch
+        resources:
+          - jobs
+        verbs:
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. The Job in agentreader.go is awaited until it completes (provider/pkg/await/job.go:102-103), and destroying it waits on an informer of its own kind until it is gone (await.go:984-1006, condition/deleted.go:69-96). An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.
+      - api_groups:
+          - ""
+        resources:
+          - pods
+          - events
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- while it awaits the agent reader's Job (agentreader.go), pulumi-kubernetes v4.33.0 watches the Job's pods (provider/pkg/await/job.go:113-114) and aggregates the namespace's events into its progress messages (await.go:352 NewEventAggregator, watchers.go:213-215). OpenTofu polls the Job alone. A forbidden list keeps the informer from syncing, so the deploy hangs with no error instead of failing.
+      - api_groups:
+          - ""
+        resources:
+          - configmaps
+          - serviceaccounts
+        verbs:
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the agent reader's ConfigMap and ServiceAccount in agentreader.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.
+      - api_groups:
+          - rbac.authorization.k8s.io
+        resources:
+          - roles
+          - rolebindings
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the agent reader's Role and RoleBinding in agentreader.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.

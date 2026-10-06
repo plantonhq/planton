@@ -7,6 +7,7 @@
 package kubernetesgrafanav1alpha1
 
 import (
+	kubernetes "github.com/plantonhq/planton/catalog/kubernetes"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -43,6 +44,17 @@ type KubernetesGrafanaOutputs struct {
 	// command to port-forward the Grafana UI to a developer laptop,
 	// e.g. kubectl port-forward svc/dashboards -n observability 3000:80
 	PortForwardCommand string `protobuf:"bytes,6,opt,name=port_forward_command,json=portForwardCommand,proto3" json:"port_forward_command,omitempty"`
+	// the Secret key holding agent teammates' read-only Grafana token —
+	// `<name>-agent-reader`, key `token` (a sibling key `generation` names
+	// the token's generation). Unset when spec.agent_reader is not declared
+	// or is disabled. Read it at each start of Grafana's MCP server
+	// (`GRAFANA_SERVICE_ACCOUNT_TOKEN`) rather than copying it anywhere.
+	AgentReaderTokenSecret *kubernetes.KubernetesSecretKey `protobuf:"bytes,7,opt,name=agent_reader_token_secret,json=agentReaderTokenSecret,proto3" json:"agent_reader_token_secret,omitempty"`
+	// the Job that keeps the agent teammates' account and token
+	// (`<name>-agent-reader-<8 hex>`, the hex hashing the declaration and
+	// the Job's script) — `kubectl logs job/<this>` is where it explains
+	// itself. Empty when spec.agent_reader is not declared.
+	AgentReaderJobName string `protobuf:"bytes,8,opt,name=agent_reader_job_name,json=agentReaderJobName,proto3" json:"agent_reader_job_name,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -119,18 +131,34 @@ func (x *KubernetesGrafanaOutputs) GetPortForwardCommand() string {
 	return ""
 }
 
+func (x *KubernetesGrafanaOutputs) GetAgentReaderTokenSecret() *kubernetes.KubernetesSecretKey {
+	if x != nil {
+		return x.AgentReaderTokenSecret
+	}
+	return nil
+}
+
+func (x *KubernetesGrafanaOutputs) GetAgentReaderJobName() string {
+	if x != nil {
+		return x.AgentReaderJobName
+	}
+	return ""
+}
+
 var File_catalog_kubernetes_kubernetesgrafana_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_kubernetes_kubernetesgrafana_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/kubernetes/kubernetesgrafana/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetesgrafana.v1alpha1\"\xef\x01\n" +
+	";catalog/kubernetes/kubernetesgrafana/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetesgrafana.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\x8a\x03\n" +
 	"\x18KubernetesGrafanaOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x12\x18\n" +
 	"\aservice\x18\x03 \x01(\tR\aservice\x12\x1a\n" +
 	"\bendpoint\x18\x04 \x01(\tR\bendpoint\x12*\n" +
 	"\x11admin_secret_name\x18\x05 \x01(\tR\x0fadminSecretName\x120\n" +
-	"\x14port_forward_command\x18\x06 \x01(\tR\x12portForwardCommandB\x94\x03\n" +
+	"\x14port_forward_command\x18\x06 \x01(\tR\x12portForwardCommand\x12f\n" +
+	"\x19agent_reader_token_secret\x18\a \x01(\v2+.dev.planton.kubernetes.KubernetesSecretKeyR\x16agentReaderTokenSecret\x121\n" +
+	"\x15agent_reader_job_name\x18\b \x01(\tR\x12agentReaderJobNameB\x94\x03\n" +
 	"5com.dev.planton.kubernetes.kubernetesgrafana.v1alpha1B\fOutputsProtoP\x01Zdgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesgrafana/v1alpha1;kubernetesgrafanav1alpha1\xa2\x02\x04DPKK\xaa\x021Dev.Planton.Kubernetes.Kubernetesgrafana.V1alpha1\xca\x021Dev\\Planton\\Kubernetes\\Kubernetesgrafana\\V1alpha1\xe2\x02=Dev\\Planton\\Kubernetes\\Kubernetesgrafana\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Kubernetes::Kubernetesgrafana::V1alpha1b\x06proto3"
 
 var (
@@ -147,14 +175,16 @@ func file_catalog_kubernetes_kubernetesgrafana_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesGrafanaOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaOutputs
+	(*KubernetesGrafanaOutputs)(nil),       // 0: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaOutputs
+	(*kubernetes.KubernetesSecretKey)(nil), // 1: dev.planton.kubernetes.KubernetesSecretKey
 }
 var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_outputs_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	1, // 0: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaOutputs.agent_reader_token_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_catalog_kubernetes_kubernetesgrafana_v1alpha1_outputs_proto_init() }

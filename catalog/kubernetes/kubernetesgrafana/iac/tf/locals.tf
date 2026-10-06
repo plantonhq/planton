@@ -65,6 +65,11 @@ locals {
   # its lookup).
   admin_secret_name = try(var.spec.admin_secret.name, null) != null ? var.spec.admin_secret.name : local.release_name
 
+  # In-cluster endpoint (the chart serves plain HTTP on the Service; TLS
+  # terminates at the composed exposure layer). Feeds the endpoint output
+  # and the agent reader's Job.
+  endpoint = "http://${local.service_name}.${local.namespace}.svc.cluster.local"
+
   # ---- image registry/repository split -----------------------------------
   # The spec's repository carries the registry
   # ("my.registry.com/grafana/grafana") but the chart keeps them as
@@ -421,4 +426,63 @@ locals {
       envValueFrom = length(local.env_value_from) > 0 ? local.env_value_from : null
     } : k => v if v != null && v != {}
   }
+
+  # ---- agent teammates' way in (spec.agent_reader) -------------------------
+  # Twin of buildAgentReader in the Pulumi module's agentreader.go. Grafana
+  # cannot provision service accounts from files, so a Job run after the
+  # release is Ready keeps a Viewer account and its one token
+  # (agent_reader.tf, scripts.tf).
+  agent_reader          = try(var.spec.agent_reader, null)
+  agent_reader_declared = local.agent_reader != null
+
+  # `<name>-agent-reader`: the ServiceAccount the Job runs as, its Role and
+  # RoleBinding, and the token Secret the Job writes and the ServiceAccount
+  # owns.
+  agent_reader_name        = "${local.release_name}-agent-reader"
+  agent_reader_script_name = "${local.release_name}-agent-reader-script"
+
+  # The account and the generation, defaulted as the proto declares.
+  agent_reader_service_account  = try(coalesce(local.agent_reader.service_account_name), "agent-reader")
+  agent_reader_token_generation = try(coalesce(local.agent_reader.token_generation), 1)
+  agent_reader_disabled         = try(local.agent_reader.disabled, false) == true
+
+  # The Job's image: a POSIX shell with curl, jq and kubectl. A repo or tag
+  # left empty in the override keeps the default's, so a mirror never
+  # floats to `latest`.
+  agent_reader_image            = "${try(coalesce(local.agent_reader.image.repo), "docker.io/alpine/k8s")}:${try(coalesce(local.agent_reader.image.tag), "1.35.8")}"
+  agent_reader_pull_secret_name = try(coalesce(local.agent_reader.image.pull_secret_name), "")
+
+  # The admin keys follow the credential arm: the declared Secret's keys
+  # (defaulting to the chart's names) or the chart-generated Secret's.
+  agent_reader_admin_user_key     = try(coalesce(var.spec.admin_secret.user_key), "admin-user")
+  agent_reader_admin_password_key = try(coalesce(var.spec.admin_secret.password_key), "admin-password")
+
+  # `<name>-agent-reader-<8 hex>`: the hex hashes what the Job reconciles --
+  # the account, the generation, whether it is disabled, and the script's
+  # own text -- so an unchanged declaration is a no-op on every apply and a
+  # changed one is a new run. Twin of agentReaderJobName in agentreader.go;
+  # the canonical string is identical on both engines.
+  agent_reader_job_name = local.agent_reader_declared ? "${local.agent_reader_name}-${substr(sha256(join("|", [
+    local.agent_reader_service_account,
+    tostring(local.agent_reader_token_generation),
+    local.agent_reader_disabled ? "true" : "false",
+    sha256(local.agent_reader_script),
+  ])), 0, 8)}" : ""
+
+  # The script's plain environment (scripts.go lists the contract), in the
+  # Pulumi module's order. SECRET_LABELS is the resource's labels as
+  # key-sorted JSON, the labels the script stamps on the token Secret.
+  agent_reader_env = [
+    ["GRAFANA_URL", local.endpoint],
+    ["ADMIN_SECRET", local.admin_secret_name],
+    ["NAMESPACE", local.namespace],
+    ["RELEASE_NAME", local.release_name],
+    ["SERVICE_ACCOUNT", local.agent_reader_service_account],
+    ["TOKEN_GENERATION", tostring(local.agent_reader_token_generation)],
+    ["DISABLED", local.agent_reader_disabled ? "true" : "false"],
+    ["TOKEN_SECRET", local.agent_reader_name],
+    ["OWNER_SERVICE_ACCOUNT", local.agent_reader_name],
+    ["SECRET_LABELS", jsonencode(local.labels)],
+    ["HOME", "/tmp"],
+  ]
 }

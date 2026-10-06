@@ -780,7 +780,9 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 	// and every declared datasource provisioned. The
 	// behavioral-persistence scenario (recognized by name) proves a
 	// UI-authored dashboard survives a pod REPLACEMENT through the PVC;
-	// behavioral-sso signs in end to end through a stand-in Google.
+	// behavioral-sso signs in end to end through a stand-in Google. A
+	// manifest declaring agent_reader proves agent teammates' read-only
+	// way in, and its second act the replaced or refused token.
 	case "kubernetesgrafana":
 		spec := manifestSpecMap(manifestPath)
 		return &GrafanaVerifier{
@@ -792,6 +794,7 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 			Datasources:      grafanaDatasourceNames(spec),
 			Persistence:      strings.Contains(manifestPath, "behavioral-persistence"),
 			SignIn:           strings.Contains(manifestPath, "behavioral-sso"),
+			AgentReader:      grafanaAgentReaderOf(spec),
 		}, nil
 
 	// A Grafana Loki log store: the monolithic StatefulSet ready, the

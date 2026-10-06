@@ -8,9 +8,10 @@
 # module-owned `<name>-sso` Secret, the admin-screen lock and the
 # credentials checksum), SMTP with a credentials Secret, the
 # ServiceMonitor toggle, a private-mirror image with a pull secret,
-# scheduling, and an escape-hatch entry — so the offline tofu plan and
-# pulumi preview proofs cover the full typed surface. Placeholder values;
-# never applied to a real cluster.
+# scheduling, an escape-hatch entry, and the agent reader (a named
+# account at a raised generation on a mirrored Job image) — so the
+# offline tofu plan and pulumi preview proofs cover the full typed
+# surface. Placeholder values; never applied to a real cluster.
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesGrafana
 metadata:
@@ -120,3 +121,9 @@ spec:
     priorityClassName: system-cluster-critical
   helmValues: |
     revisionHistoryLimit: 5
+  agentReader:
+    serviceAccountName: agent-teammates
+    tokenGeneration: 2
+    image:
+      repo: mirror.example.com/alpine/k8s
+      pullSecretName: mirror-pull

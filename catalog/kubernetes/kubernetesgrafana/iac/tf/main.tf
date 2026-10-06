@@ -76,6 +76,17 @@ resource "helm_release" "grafana" {
     [yamlencode({ fullnameOverride = local.release_name })]
   )
 
+  lifecycle {
+    # NAME BUDGET: the agent reader's Job is `<name>-agent-reader-<8 hex>`
+    # and Kubernetes caps a Job's name at 63 characters. Refused before
+    # anything is created (twin of the check in the Pulumi module's
+    # main.go).
+    precondition {
+      condition     = !local.agent_reader_declared || length(local.release_name) <= 41
+      error_message = "metadata.name is longer than 41 characters, the most agent_reader allows: the agent reader's Job is <name>-agent-reader-<8 hex> under Kubernetes' 63-character Job name cap. Use a shorter name."
+    }
+  }
+
   depends_on = [
     kubernetes_namespace_v1.grafana,
     kubernetes_secret_v1.sso,

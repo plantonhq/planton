@@ -3,11 +3,13 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "module",
     srcs = [
+        "agentreader.go",
         "helpers.go",
         "locals.go",
         "main.go",
         "namespace.go",
         "outputs.go",
+        "scripts.go",
         "signin.go",
         "values.go",
         "vars.go",
@@ -21,9 +23,11 @@ go_library(
         "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider",
         "//shared/catalogkind",
         "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/batch/v1:batch",
         "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/core/v1:core",
         "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/helm/v3:helm",
         "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/meta/v1:meta",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/rbac/v1:rbac",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
         "@io_k8s_sigs_yaml//:yaml",
     ],
@@ -31,9 +35,13 @@ go_library(
 
 go_test(
     name = "module_test",
-    srcs = ["signin_test.go"],
+    srcs = [
+        "agentreader_test.go",
+        "signin_test.go",
+    ],
     embed = [":module"],
     deps = [
+        "//catalog/kubernetes",
         "//catalog/kubernetes/kubernetesgrafana/v1alpha1",
         "//shared",
         "//shared/foreignkey/v1:foreignkey",

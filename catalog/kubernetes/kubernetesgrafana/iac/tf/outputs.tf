@@ -23,7 +23,7 @@ output "service" {
 
 output "endpoint" {
   description = "In-cluster endpoint (plain HTTP on the Service; TLS composes at the exposure layer)"
-  value       = "http://${local.service_name}.${local.namespace}.svc.cluster.local"
+  value       = local.endpoint
 }
 
 output "admin_secret_name" {
@@ -34,4 +34,17 @@ output "admin_secret_name" {
 output "port_forward_command" {
   description = "kubectl one-liner for reaching the UI from a workstation"
   value       = "kubectl port-forward svc/${local.service_name} -n ${local.namespace} 3000:80"
+}
+
+output "agent_reader_token_secret" {
+  description = "Secret key holding agent teammates' read-only Grafana token (<name>-agent-reader, key token); unset when agent_reader is not declared or is disabled"
+  value = local.agent_reader_declared && !local.agent_reader_disabled ? {
+    name = local.agent_reader_name
+    key  = "token"
+  } : null
+}
+
+output "agent_reader_job_name" {
+  description = "The Job keeping the agent teammates' account and token (<name>-agent-reader-<8 hex>); empty when agent_reader is not declared"
+  value       = local.agent_reader_job_name
 }

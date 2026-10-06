@@ -212,12 +212,14 @@ Ask these before composing, in the person's words, not the chart's:
   dashboards, the three datasources and links a person can open. Its
   identity is a **Viewer** service account: the Explore page is
   Editor-only, but the query API the server calls is open to Viewers, and
-  Grafana refuses every write. Service accounts cannot be provisioned from
-  files and `KubernetesGrafana` has no field for them, so mint the token
-  with a declared Job beside the Grafana (the pattern's "Agent teammates
-  read the hub too": a ServiceAccount, a role writing one Secret, the admin
-  read by `secretRef` on `admin_secret_name`, `GRAFANA_URL` as a
-  `valueFrom` on `endpoint`). Run the server with `--disable-write` (in
+  Grafana refuses every write. Declare `agent_reader` on the
+  `KubernetesGrafana` (the pattern's "Agent teammates read the hub too"):
+  the modules keep the Viewer account and one token for it in the
+  `<name>-agent-reader` Secret, exported as `agent_reader_token_secret`.
+  Give it `storage` or `database` so the account survives a pod restart.
+  Raise `token_generation` to replace the token after someone leaves, and
+  set `disabled` (then apply) before removing the block, because removal
+  cannot revoke inside Grafana. Run the server with `--disable-write` (in
   the datasource category even `create_datasource` and
   `update_datasource` exist without it) and only the categories an
   investigation needs, and pin the datasource uids, because every tool

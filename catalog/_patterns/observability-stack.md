@@ -842,60 +842,43 @@ Editors, but the query API the server calls needs only "query this
 datasource", which Viewers hold. The agent then reads exactly what a
 person reads, and Grafana refuses every write it might try.
 
-Grafana's service accounts cannot be provisioned from files and the kind
-has no field for them, so mint the token the way a first boot is done: a
-declared Job beside the Grafana, with its own ServiceAccount and a role
-that can write one Secret.
+Declare `agent_reader` on the hub's Grafana. Grafana cannot provision
+service accounts from files, so the modules run a short Job after the
+release is Ready that keeps the Viewer account and one current token for
+it in the `<name>-agent-reader` Secret.
 
 ```yaml
 apiVersion: kubernetes.planton.dev/v1alpha1
-kind: KubernetesJob
+kind: KubernetesGrafana
 metadata:
-  name: hub-agent-token
+  name: hub
 spec:
   namespace:
     value: observability
-  pod:
-    serviceAccount:
-      valueFrom:
-        kind: KubernetesServiceAccount
-        name: hub-agent-token
-        fieldPath: status.outputs.service_account_name
-  container:
-    app:
-      image:
-        repo: alpine/k8s # curl, jq and kubectl; pin the tag to the cluster's minor
-        tag: "1.35.8"
-      command: ["/bin/sh", "-ec", "..."] # find or create the Viewer account, mint, write, revoke the rest
-      env:
-        variables:
-          - name: GRAFANA_URL # also what orders the Job after Grafana
-            valueFrom:
-              kind: KubernetesGrafana
-              name: hub
-              fieldPath: status.outputs.endpoint
-          - name: TOKEN_GENERATION
-            value: "1" # bump to replace the token: a changed spec re-runs the Job
-        secrets:
-          - name: GRAFANA_ADMIN_PASSWORD
-            secretRef:
-              name: hub # the Secret admin_secret_name names; keys admin-user, admin-password
-              key: admin-password
-  restartPolicy: OnFailure
+  storage:
+    size: 10Gi # the account lives in Grafana's database; keep it across restarts
+  datasources:
+    - name: Prometheus
+      uid: prometheus # agents' tools name datasources by uid; pin it
+      url:
+        value: http://hub-metrics-prometheus.observability.svc.cluster.local:9090
+  agent_reader:
+    service_account_name: agent-teammates
+    token_generation: 1 # raise to replace the token; the old one answers 401
 ```
 
-- **The role** (`KubernetesRbac`, namespace scope) grants `get`, `update`
-  and `patch` on the token's Secret by name, and `create` on Secrets
-  unnamed: Kubernetes never satisfies a create rule limited by name.
-- **The script mints only when it must** (no token, a refused token, or an
-  older generation), writes the Secret, and only then revokes the
-  account's other tokens, so a failed write never leaves agents locked
-  out.
-- **The token reaches the agent's machine only in memory.** The
-  repository's MCP configuration starts a launcher that reads the Secret
+- **Replacing and ending access.** Raise `token_generation` after someone
+  leaves: the next apply writes a new token and only then revokes the old
+  one, so agents are never locked out mid-change. Set `disabled` to end
+  access at once (Grafana refuses every token of the account), and only
+  then remove the block if the module should stop managing it.
+- **The token never rests anywhere it should not.** The Job writes the
+  Secret, owned by the module's ServiceAccount, so it never passes
+  through deployment state and goes with the block. The repository's MCP
+  configuration starts a launcher that reads `agent_reader_token_secret`
   with the person's own cluster credentials and runs `mcp-grafana
-  --disable-write` with the token in its environment. Whoever can read the
-  cluster can read Grafana; nobody else can.
+  --disable-write` with the token in its environment only. Whoever can
+  read the cluster can read Grafana; nobody else can.
 
 ## A hub beside a cluster's agent
 

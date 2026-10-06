@@ -211,14 +211,30 @@ the question "who can sign in" belongs in the proposal, not after it.
 
 Coding agents read a hub best through Grafana's own MCP server,
 `mcp-grafana`: the same dashboards, datasources and links a person sees.
-Give it a service account with the **Viewer** role, never more.
+Declare `agent_reader` and the modules give them a read-only way in.
 
+```yaml
+agent_reader: {}                 # the "agent-reader" Viewer, generation 1
+# agent_reader:
+#   service_account_name: agent-teammates
+#   token_generation: 2          # raised: the old token answers 401
+#   disabled: true               # every token of the account refused
+```
+
+- **What the block keeps.** A Viewer service account and exactly one
+  current token for it, in the `<name>-agent-reader` Secret (keys `token`
+  and `generation`), exported as `agent_reader_token_secret`. Grafana
+  cannot provision service accounts from files, so a short Job
+  (`agent_reader_job_name`) does it after the release is Ready: it signs
+  in as the admin, holds the account at Viewer, and mints a token only
+  when the stored one is missing, refused or of an older generation. It
+  writes the new token before revoking every other one.
 - **Viewer is enough to query.** Open-source Grafana keeps the Explore
   *page* for Editors, but the API an MCP server calls
   (`/api/ds/query`, `/api/datasources/proxy/uid/<uid>/...`) checks only
   "query this datasource", which Viewers hold on every datasource. Metrics,
   log and trace queries, dashboard search and panel queries all work as a
-  Viewer, and every write is refused by Grafana itself.
+  Viewer, and every write is refused by Grafana itself (403).
 - **Run the server read-only as well.** `--disable-write` removes the
   write tools (in the datasource category these include
   `create_datasource` and `update_datasource`); `--enabled-tools
@@ -230,29 +246,24 @@ Give it a service account with the **Viewer** role, never more.
   take a `datasourceUid`, and its Tempo tools reach Tempo through
   Grafana's datasource proxy by that uid, so a stable uid is what an
   agent's instructions can name.
-- **Minting the token is a declared Job, not a module step.** The kind has
-  no service-account field, and Grafana's service accounts cannot be
-  provisioned from files. Declare, beside the Grafana:
-  - a `KubernetesServiceAccount` and a namespaced `KubernetesRbac`: `get`,
-    `update` and `patch` on the token's Secret by name, plus an unscoped
-    `create` (Kubernetes never satisfies a create limited by name);
-  - a `KubernetesJob` (an image with curl, jq and kubectl) that reads the
-    admin through `container.app.env.secrets[].secretRef` on the Secret
-    `admin_secret_name` names (keys `admin-user` and `admin-password`), and
-    takes `GRAFANA_URL` as a `valueFrom` on this kind's `endpoint` output.
-    That reference orders the Job after Grafana.
-  - The script finds or creates the service account as Viewer, mints a
-    token only when the Secret's token is missing, refused or of an older
-    generation, writes the Secret, and only then revokes every other token
-    of the account. A generation value in the Job's environment makes
-    replacing the token a one-line, reviewed change: any change to a Job's
-    spec replaces and re-runs it on both engines.
 - **Hand the token to the server, never to a file.** Have the MCP
   configuration start a small launcher that reads the Secret with the
   person's own cluster credentials and starts `mcp-grafana` with
   `GRAFANA_URL` and `GRAFANA_SERVICE_ACCOUNT_TOKEN` in its environment
-  only. Whoever can read the cluster can read Grafana, and offboarding is
-  the cluster's access plus one token replacement.
+  only. Whoever can read the cluster can read Grafana.
+- **Replacing and ending access.** Raise `token_generation` after someone
+  leaves or on any doubt about who read the token: the next apply mints a
+  new one and the old one answers 401. Set `disabled` to end access: the
+  account is disabled in Grafana (every token refused) and the Secret is
+  deleted. Removing the block cannot revoke anything inside Grafana, so
+  disable first, apply, and only then remove it.
+- **Know the edges.** The account lives in Grafana's database, so a
+  Grafana without `storage` or `database` forgets it on a pod restart
+  until the next apply. The token never passes through deployment state:
+  the Job writes the Secret, owned by the module's
+  `<name>-agent-reader` ServiceAccount, so Kubernetes deletes it with the
+  block. With the block declared, `metadata.name` is at most 41
+  characters (the Job's name budget).
 
 ## Trace to logs, and back
 

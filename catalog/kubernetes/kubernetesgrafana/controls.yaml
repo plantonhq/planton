@@ -38,7 +38,7 @@ spec:
       evidence:
         type: module_default
         reference: Access is governed by Grafana's own organization role model (Admin/Editor/Viewer). The chart generates the admin credential ONCE at first install into its own Secret (keys admin-user/admin-password) -- or admin_secret points at a team-owned Secret; credentials never appear in rendered Helm values.
-      notes: auth.anonymous_org_role defaults to Viewer -- never hand anonymous visitors more than Viewer on a reachable endpoint.
+      notes: auth.anonymous_org_role defaults to Viewer -- never hand anonymous visitors more than Viewer on a reachable endpoint. agent_reader adds exactly one non-human identity, a Viewer service account for agent teammates (Grafana answers 403 to its writes), whose token its Job keeps in one Secret through a namespaced Role naming that Secret alone; disabled refuses every token of the account at once.
     - control_id: workload-identity
       status: not_applicable
       notes: Every credential this spec touches (admin, database password, datasource basic auth, SMTP) rides an existing Kubernetes Secret through environment expansion -- there is no cloud API access and no seam for platform-issued cloud identities.

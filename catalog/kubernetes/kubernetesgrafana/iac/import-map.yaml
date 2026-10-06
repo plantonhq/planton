@@ -6,10 +6,16 @@ spec:
   # Grafana installs as one Helm release NAMED AFTER metadata.name
   # (fullnameOverride pins the Service, the ConfigMap and the
   # chart-generated `<name>` admin Secret the same way), plus the optional
-  # anchor namespace and, when sign-in is declared, the module-materialized
-  # `<name>-sso` client-secret Secret (count-indexed). The admin Secret is
+  # anchor namespace, when sign-in is declared, the module-materialized
+  # `<name>-sso` client-secret Secret (count-indexed), and, when
+  # agent_reader is declared, the agent reader's ServiceAccount, Role and
+  # RoleBinding (`<name>-agent-reader`), its scripts ConfigMap
+  # (`<name>-agent-reader-script`) and its Job, whose name hashes what it
+  # reconciles and so rides in as an output. The admin Secret is
   # CHART-owned (generated once via the chart's lookup, or the user's own
-  # existing Secret) and travels with the release import — no row.
+  # existing Secret) and travels with the release import — no row; the
+  # agent reader's token Secret is the Job's, owned by its ServiceAccount
+  # and never module state — no row either.
   values:
     - name: release_name
       derivations:
@@ -51,3 +57,79 @@ spec:
       where_to_find: >-
         Only imported when create_namespace is true; the installation
         namespace itself.
+    # ── the agent reader (when spec.agent_reader is declared) ───────────
+    # Deterministic names; count-indexed, so the scoped suffix derivations
+    # serve them.
+    - name: service_account_name
+      tofu_resource_name: agent_reader
+      derivations:
+        - from_metadata_name_suffix: "-agent-reader"
+      where_to_find: >-
+        Always "<resource-name>-agent-reader" when agent_reader is declared
+        — `kubectl get serviceaccounts -n <namespace>`.
+    - name: service_account_namespace
+      tofu_resource_name: agent_reader
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Same namespace as the installation.
+    - name: role_name
+      tofu_resource_name: agent_reader
+      derivations:
+        - from_metadata_name_suffix: "-agent-reader"
+      where_to_find: >-
+        Always "<resource-name>-agent-reader" when agent_reader is declared
+        — `kubectl get roles -n <namespace>`.
+    - name: role_namespace
+      tofu_resource_name: agent_reader
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Same namespace as the installation.
+    - name: role_binding_name
+      tofu_resource_name: agent_reader
+      derivations:
+        - from_metadata_name_suffix: "-agent-reader"
+      where_to_find: >-
+        Always "<resource-name>-agent-reader" when agent_reader is declared
+        — `kubectl get rolebindings -n <namespace>`.
+    - name: role_binding_namespace
+      tofu_resource_name: agent_reader
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Same namespace as the installation.
+    - name: config_map_name
+      tofu_resource_name: agent_reader_script
+      derivations:
+        - from_metadata_name_suffix: "-agent-reader-script"
+      where_to_find: >-
+        Always "<resource-name>-agent-reader-script" when agent_reader is
+        declared — `kubectl get configmaps -n <namespace>`.
+    - name: config_map_namespace
+      tofu_resource_name: agent_reader_script
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Same namespace as the installation.
+    # Its name hashes what it reconciles, so it rides in as an output
+    # rather than a derivation the recipe could recompute.
+    - name: job_name
+      tofu_resource_name: agent_reader
+      derivations:
+        - from_output: agent_reader_job_name
+      where_to_find: >-
+        The Job's metadata.name (`<resource-name>-agent-reader-<8 hex>`) —
+        the `agent_reader_job_name` output, or `kubectl get jobs -n
+        <namespace>`.
+    - name: job_namespace
+      tofu_resource_name: agent_reader
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Same namespace as the installation.

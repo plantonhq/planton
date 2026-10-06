@@ -118,6 +118,13 @@ func (KubernetesGrafanaDatabaseEngine) EnumDescriptor() ([]byte, []int) {
 // either is declared the manifest owns sign-in and Grafana's
 // Administration > Authentication screen can no longer change it.
 //
+// AGENT TEAMMATES: `agent_reader` gives coding agents (through Grafana's
+// own MCP server, `mcp-grafana`) a read-only way in — a Viewer service
+// account whose one current token the modules keep in the
+// `<name>-agent-reader` Secret, replaced by raising a number and refused
+// at once by `disabled`. An in-cluster Job mints it, because Grafana
+// cannot provision service accounts from files.
+//
 // EXPOSURE: the service stays ClusterIP; expose via first-class kinds
 // (KubernetesIngress, Gateway API kinds) over the exported service
 // handle. Set `server.root_url` to the public URL when composing
@@ -233,7 +240,17 @@ type KubernetesGrafanaSpec struct {
 	// substitute for them. Sign-in has typed fields (`auth.google`,
 	// `auth.generic_oauth`). Do not put secrets here; credential material
 	// belongs in the typed secret references.
-	HelmValues    string `protobuf:"bytes,19,opt,name=helm_values,json=helmValues,proto3" json:"helm_values,omitempty"`
+	HelmValues string `protobuf:"bytes,19,opt,name=helm_values,json=helmValues,proto3" json:"helm_values,omitempty"`
+	// *
+	// A read-only way into this Grafana for agent teammates — coding
+	// agents (Claude Code, Cursor, any MCP client) reading dashboards,
+	// metrics, logs and traces through Grafana's MCP server. Declaring the
+	// block turns it on: the modules keep a Viewer service account and one
+	// current token for it in the `<name>-agent-reader` Secret (keys
+	// `token` and `generation`), exported as `agent_reader_token_secret`.
+	// See `KubernetesGrafanaAgentReader` for replacing the token, refusing
+	// it, and turning the block off.
+	AgentReader   *KubernetesGrafanaAgentReader `protobuf:"bytes,20,opt,name=agent_reader,json=agentReader,proto3" json:"agent_reader,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -399,6 +416,13 @@ func (x *KubernetesGrafanaSpec) GetHelmValues() string {
 		return x.HelmValues
 	}
 	return ""
+}
+
+func (x *KubernetesGrafanaSpec) GetAgentReader() *KubernetesGrafanaAgentReader {
+	if x != nil {
+		return x.AgentReader
+	}
+	return nil
 }
 
 // *
@@ -1707,11 +1731,147 @@ func (x *KubernetesGrafanaScheduling) GetPriorityClassName() string {
 	return ""
 }
 
+// *
+// Agent teammates' read-only way into Grafana: one Viewer service
+// account and one current token for it.
+//
+// HOW IT WORKS: Grafana cannot provision service accounts from files, so
+// the modules run a short in-cluster Job after the release is Ready. It
+// signs in as the admin (`admin_secret`, or the chart-generated `<name>`
+// Secret), finds or creates the account, holds it at the Viewer role,
+// and keeps exactly one token for it, written into the
+// `<name>-agent-reader` Secret (keys `token` and `generation`) before
+// every other token of the account is revoked. A run whose stored token
+// still answers at the current generation changes nothing. The Secret is
+// owned by the module's `<name>-agent-reader` ServiceAccount, so
+// Kubernetes deletes it with the block or the resource, and the token
+// never passes through deployment state.
+//
+// READ-ONLY, TWICE: a Viewer may query every datasource through the API
+// and change nothing (Grafana answers 403 to a dashboard write). Run the
+// MCP server with its write tools removed too — `mcp-grafana
+// --disable-write`.
+//
+// READING IT: an agent's launcher reads the Secret at each start with the
+// person's own cluster credentials and hands the token to the MCP server
+// as `GRAFANA_SERVICE_ACCOUNT_TOKEN`; the token then never rests on a
+// laptop. A recreated Grafana mints a new one.
+//
+// KNOW THIS:
+//   - Service accounts live in Grafana's database. Without `storage` or
+//     `database` a Grafana pod restart forgets the account, and its token
+//     answers 401 until the next apply mints a new one.
+//   - The Job reaches Grafana's HTTP API at the in-cluster endpoint with
+//     the admin's basic credentials; a `helm_values` override that turns
+//     basic authentication off, or serves Grafana from a sub-path, breaks
+//     it.
+//   - Removing the block deletes the Job, the Secret and its permissions
+//     but cannot revoke the token inside Grafana (no deploy runs a Job on
+//     removal). Set `disabled` and apply first when access must end.
+//   - NAME BUDGET: the Job is `<name>-agent-reader-<8 hex>` and Kubernetes
+//     caps a Job's name at 63 characters, so `metadata.name` is at most 41
+//     characters with this block declared. A longer name fails the deploy
+//     before anything is created.
+type KubernetesGrafanaAgentReader struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// The service account's name. Its login is `sa-<org id>-<name>`.
+	// Lowercase letters, digits and dashes, starting and ending with a
+	// letter or digit, at most 63 characters: Grafana lowercases a name and
+	// turns spaces into dashes to make the login, and this form makes the
+	// name and the login read the same. Empty = "agent-reader". Renaming it
+	// creates a second account; disable the first before renaming.
+	ServiceAccountName *string `protobuf:"bytes,1,opt,name=service_account_name,json=serviceAccountName,proto3,oneof" json:"service_account_name,omitempty"`
+	// *
+	// The token's generation. Raise it to replace the token — after an
+	// offboarding, or any doubt about who has read it: the next apply mints
+	// a token of the new generation, writes it into the Secret, and only
+	// then revokes the old one, which answers 401 from then on. Agents pick
+	// up the new token at their next start. Empty = 1.
+	TokenGeneration *int32 `protobuf:"varint,2,opt,name=token_generation,json=tokenGeneration,proto3,oneof" json:"token_generation,omitempty"`
+	// *
+	// Refuse every token of the account now — Grafana's own `isDisabled`
+	// on the service account (the Grafana Terraform provider's
+	// `is_disabled`). The next apply disables the account and deletes the
+	// Secret; the account and its history stay. Setting it back to false
+	// enables the account again with a fresh token, after revoking every
+	// token it held. This is how access ends: disable, apply, and only then
+	// remove the block if you want the module to stop managing it.
+	Disabled bool `protobuf:"varint,3,opt,name=disabled,proto3" json:"disabled,omitempty"`
+	// *
+	// Override the Job's image (air-gap path). The Job needs a POSIX shell
+	// with curl, jq and kubectl. Empty = `docker.io/alpine/k8s` at the
+	// module's pinned tag, whose kubectl tracks a recent Kubernetes minor;
+	// the Job only reads a ServiceAccount and writes one Secret, which every
+	// supported cluster version answers the same way.
+	Image         *kubernetes.ContainerImage `protobuf:"bytes,4,opt,name=image,proto3" json:"image,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesGrafanaAgentReader) Reset() {
+	*x = KubernetesGrafanaAgentReader{}
+	mi := &file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesGrafanaAgentReader) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesGrafanaAgentReader) ProtoMessage() {}
+
+func (x *KubernetesGrafanaAgentReader) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesGrafanaAgentReader.ProtoReflect.Descriptor instead.
+func (*KubernetesGrafanaAgentReader) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *KubernetesGrafanaAgentReader) GetServiceAccountName() string {
+	if x != nil && x.ServiceAccountName != nil {
+		return *x.ServiceAccountName
+	}
+	return ""
+}
+
+func (x *KubernetesGrafanaAgentReader) GetTokenGeneration() int32 {
+	if x != nil && x.TokenGeneration != nil {
+		return *x.TokenGeneration
+	}
+	return 0
+}
+
+func (x *KubernetesGrafanaAgentReader) GetDisabled() bool {
+	if x != nil {
+		return x.Disabled
+	}
+	return false
+}
+
+func (x *KubernetesGrafanaAgentReader) GetImage() *kubernetes.ContainerImage {
+	if x != nil {
+		return x.Image
+	}
+	return nil
+}
+
 var File_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/kubernetes/kubernetesgrafana/v1alpha1/spec.proto\x121dev.planton.kubernetes.kubernetesgrafana.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xbe\x15\n" +
+	"8catalog/kubernetes/kubernetesgrafana/v1alpha1/spec.proto\x121dev.planton.kubernetes.kubernetesgrafana.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xb2\x16\n" +
 	"\x15KubernetesGrafanaSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x124\n" +
@@ -1736,7 +1896,8 @@ const file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_rawDesc = ""
 	"scheduling\x18\x12 \x01(\v2N.dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSchedulingR\n" +
 	"scheduling\x12\x1f\n" +
 	"\vhelm_values\x18\x13 \x01(\tR\n" +
-	"helmValues:\xaf\b\xbaH\xab\b\x1a\x92\x04\n" +
+	"helmValues\x12r\n" +
+	"\fagent_reader\x18\x14 \x01(\v2O.dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaAgentReaderR\vagentReader:\xaf\b\xbaH\xab\b\x1a\x92\x04\n" +
 	"#spec.auth.sign_in_requires_root_url\x12\xe7\x02Google or OAuth sign-in needs server.root_url, the public address people open Grafana at: the provider sends people back to <root_url>/login/google (or /login/generic_oauth), and without it Grafana hands the provider http://localhost:3000, which no browser can reach. Set server.root_url to the URL the exposure layer serves (e.g. https://grafana.example.com)\x1a\x80\x01!has(this.auth) || (!has(this.auth.google) && !has(this.auth.generic_oauth)) || (has(this.server) && this.server.root_url != '')\x1a\xb5\x02\n" +
 	"\x1espec.replicas.require_database\x12\xd1\x01replicas above 1 require the database block — Grafana's embedded SQLite state cannot be shared between pods, so a scaled deployment without an external database splits dashboards and sessions across replicas\x1a?!has(this.replicas) || this.replicas <= 1 || has(this.database)\x1a\xdb\x01\n" +
 	"\x1aspec.storage.single_writer\x12|storage (a ReadWriteOnce volume) cannot back more than one replica — for HA use database for state and leave storage unset\x1a?!has(this.storage) || !has(this.replicas) || this.replicas <= 1B\x10\n" +
@@ -1853,7 +2014,14 @@ const file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_rawDesc = ""
 	"\x13priority_class_name\x18\x03 \x01(\tR\x11priorityClassName\x1a?\n" +
 	"\x11NodeSelectorEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01*n\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xd5\x02\n" +
+	"\x1cKubernetesGrafanaAgentReader\x12o\n" +
+	"\x14service_account_name\x18\x01 \x01(\tB8\xbaH%r#\x18?2\x1f^[a-z0-9]([a-z0-9-]*[a-z0-9])?$\x8a\xa6\x1d\fagent-readerH\x00R\x12serviceAccountName\x88\x01\x01\x12<\n" +
+	"\x10token_generation\x18\x02 \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x01R\x0ftokenGeneration\x88\x01\x01\x12\x1a\n" +
+	"\bdisabled\x18\x03 \x01(\bR\bdisabled\x12<\n" +
+	"\x05image\x18\x04 \x01(\v2&.dev.planton.kubernetes.ContainerImageR\x05imageB\x17\n" +
+	"\x15_service_account_nameB\x13\n" +
+	"\x11_token_generation*n\n" +
 	"\x1fKubernetesGrafanaDatabaseEngine\x122\n" +
 	".kubernetes_grafana_database_engine_unspecified\x10\x00\x12\f\n" +
 	"\bpostgres\x10\x01\x12\t\n" +
@@ -1873,7 +2041,7 @@ func file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_rawDescGZIP()
 }
 
 var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_goTypes = []any{
 	(KubernetesGrafanaDatabaseEngine)(0),         // 0: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatabaseEngine
 	(*KubernetesGrafanaSpec)(nil),                // 1: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec
@@ -1891,14 +2059,16 @@ var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_goTypes = []an
 	(*KubernetesGrafanaSmtp)(nil),                // 13: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSmtp
 	(*KubernetesGrafanaImage)(nil),               // 14: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaImage
 	(*KubernetesGrafanaScheduling)(nil),          // 15: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaScheduling
-	nil,                                          // 16: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaScheduling.NodeSelectorEntry
-	(*v1.StringValueOrRef)(nil),                  // 17: dev.planton.shared.foreignkey.v1.StringValueOrRef
-	(*kubernetes.ContainerResources)(nil),        // 18: dev.planton.kubernetes.ContainerResources
-	(*kubernetes.WorkloadToleration)(nil),        // 19: dev.planton.kubernetes.WorkloadToleration
+	(*KubernetesGrafanaAgentReader)(nil),         // 16: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaAgentReader
+	nil,                                          // 17: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaScheduling.NodeSelectorEntry
+	(*v1.StringValueOrRef)(nil),                  // 18: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*kubernetes.ContainerResources)(nil),        // 19: dev.planton.kubernetes.ContainerResources
+	(*kubernetes.WorkloadToleration)(nil),        // 20: dev.planton.kubernetes.WorkloadToleration
+	(*kubernetes.ContainerImage)(nil),            // 21: dev.planton.kubernetes.ContainerImage
 }
 var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_depIdxs = []int32{
-	17, // 0: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	18, // 1: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	18, // 0: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	19, // 1: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.resources:type_name -> dev.planton.kubernetes.ContainerResources
 	2,  // 2: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.admin_secret:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaAdminSecret
 	3,  // 3: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.storage:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaStorage
 	4,  // 4: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.database:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatabase
@@ -1909,24 +2079,26 @@ var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_depIdxs = []in
 	13, // 9: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.smtp:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSmtp
 	14, // 10: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.image:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaImage
 	15, // 11: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.scheduling:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaScheduling
-	17, // 12: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaStorage.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	0,  // 13: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatabase.engine:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatabaseEngine
-	17, // 14: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatabase.host:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	5,  // 15: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatabase.password_secret:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSecretKeyRef
-	17, // 16: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatasource.url:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	7,  // 17: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatasource.basic_auth:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatasourceBasicAuth
-	5,  // 18: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatasourceBasicAuth.password_secret:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSecretKeyRef
-	11, // 19: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaAuth.google:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaGoogleSignIn
-	12, // 20: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaAuth.generic_oauth:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaGenericOAuthSignIn
-	17, // 21: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaGoogleSignIn.client_secret:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	17, // 22: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaGenericOAuthSignIn.client_secret:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	16, // 23: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaScheduling.node_selector:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaScheduling.NodeSelectorEntry
-	19, // 24: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaScheduling.tolerations:type_name -> dev.planton.kubernetes.WorkloadToleration
-	25, // [25:25] is the sub-list for method output_type
-	25, // [25:25] is the sub-list for method input_type
-	25, // [25:25] is the sub-list for extension type_name
-	25, // [25:25] is the sub-list for extension extendee
-	0,  // [0:25] is the sub-list for field type_name
+	16, // 12: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.agent_reader:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaAgentReader
+	18, // 13: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaStorage.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	0,  // 14: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatabase.engine:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatabaseEngine
+	18, // 15: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatabase.host:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	5,  // 16: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatabase.password_secret:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSecretKeyRef
+	18, // 17: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatasource.url:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	7,  // 18: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatasource.basic_auth:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatasourceBasicAuth
+	5,  // 19: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatasourceBasicAuth.password_secret:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSecretKeyRef
+	11, // 20: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaAuth.google:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaGoogleSignIn
+	12, // 21: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaAuth.generic_oauth:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaGenericOAuthSignIn
+	18, // 22: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaGoogleSignIn.client_secret:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	18, // 23: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaGenericOAuthSignIn.client_secret:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	17, // 24: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaScheduling.node_selector:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaScheduling.NodeSelectorEntry
+	20, // 25: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaScheduling.tolerations:type_name -> dev.planton.kubernetes.WorkloadToleration
+	21, // 26: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaAgentReader.image:type_name -> dev.planton.kubernetes.ContainerImage
+	27, // [27:27] is the sub-list for method output_type
+	27, // [27:27] is the sub-list for method input_type
+	27, // [27:27] is the sub-list for extension type_name
+	27, // [27:27] is the sub-list for extension extendee
+	0,  // [0:27] is the sub-list for field type_name
 }
 
 func init() { file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_init() }
@@ -1941,13 +2113,14 @@ func file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_init() {
 	file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[9].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[10].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[11].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[15].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_rawDesc), len(file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   16,
+			NumMessages:   17,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

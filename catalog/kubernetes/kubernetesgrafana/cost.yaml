@@ -23,5 +23,6 @@ spec:
   estimate_exclusions:
     - the price of reserved CPU and memory is the target cluster's node economics, which this catalog cannot know
     - "the external database's capacity and storage ride its own component when the database block is declared"
+    - "agent_reader's Job reserves 50m CPU and 64Mi of memory only for the seconds it runs during an apply, then holds nothing"
     - "helm_values merges LAST over the typed rendering and can override modeled values, including resources, replicas, and persistence -- estimates state the spec's declaration"
   notes: "This component creates no cloud SKU of its own -- its cost is the share of the cluster its pods and volume reserve, realized on the cluster's bill. An honest manifest-time statement is the capacity footprint: replicas x requests plus the storage volume when declared."

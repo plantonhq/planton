@@ -1,0 +1,20 @@
+# The second act of behavioral-agent-reader-disabled.yaml: disabled set,
+# which is how access ends. The apply disables the account in Grafana and
+# deletes the Secret; the token act one read is refused (401) and the
+# account stays, disabled. Not a scenario of its own (the second-act
+# annotation keeps discovery from running it as a lane).
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGrafana
+metadata:
+  name: e2e-grafana-agentoff
+  annotations:
+    planton.dev/e2e-second-act: behavioral-agent-reader-disabled.yaml
+spec:
+  namespace:
+    value: e2e-grafana-agentoff
+  create_namespace: true
+  storage:
+    size: 1Gi
+  agent_reader:
+    service_account_name: agent-teammates
+    disabled: true

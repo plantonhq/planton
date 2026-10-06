@@ -10,6 +10,8 @@ When you deploy this Infra Component, the IaC module provisions:
 
 - **Helm release** (official `grafana` chart, pinned `12.8.0` — ships Grafana 13.1.1 — named `metadata.name`) — the Grafana Deployment, a ClusterIP Service (port 80 → container 3000), provisioning ConfigMaps for the declared datasources and community dashboards, the dashboard-discovery sidecar (on by default), and any declared plugins installed at startup
 - **Admin credentials Secret** (`<name>`, keys `admin-user` / `admin-password`) — generated ONCE at first install and stable across upgrades; skipped when `adminSecret` points at an existing Secret you own (that name is echoed in the outputs instead)
+- **Sign-in Secret** (`<name>-sso`) — only when `auth.google` or `auth.genericOauth` is declared; holds the client secrets Grafana reads as environment variables
+- **Agent reader** — only when `agentReader` is declared: a ServiceAccount, Role and RoleBinding (`<name>-agent-reader`), a scripts ConfigMap (`<name>-agent-reader-script`), and a Job (`<name>-agent-reader-<8 hex>`) that keeps a Viewer service account in Grafana and its one token in the `<name>-agent-reader` Secret (keys `token`, `generation`), which the Job writes and the ServiceAccount owns
 - **PersistentVolumeClaim** — only when `storage` is declared; a ReadWriteOnce volume under the embedded database
 - **ServiceMonitor** — only when `serviceMonitorEnabled` is true (requires the Prometheus Operator CRDs)
 - **Kubernetes Namespace** — created only when `createNamespace` is true; otherwise the namespace must already exist
@@ -125,6 +127,8 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 | `endpoint` | In-cluster endpoint, e.g. `http://dashboards.observability.svc.cluster.local` | In-cluster API clients, embedded links |
 | `admin_secret_name` | The Secret holding the admin credentials (keys `admin-user` / `admin-password`) — chart-generated, or your own name echoed back | Sign-in, credential automation |
 | `port_forward_command` | Copy-paste `kubectl port-forward` for the UI | Local development access |
+| `agent_reader_token_secret` | The Secret key holding agent teammates' read-only token (`<name>-agent-reader`, key `token`) — unset unless `agentReader` is declared and not disabled | Grafana's MCP server (`GRAFANA_SERVICE_ACCOUNT_TOKEN`), read at each start |
+| `agent_reader_job_name` | The Job keeping the agent teammates' account and token — `kubectl logs job/<this>` explains each run | Diagnosing the agent reader |
 
 ## Common Patterns
 

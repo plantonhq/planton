@@ -1685,7 +1685,8 @@ func TestOutputsConformance(t *testing.T) {
 		{
 			// KubernetesGrafana: the pinned-fullname naming contract — the Service
 			// and the chart-generated admin Secret share the resource name — plus
-			// the endpoint and port-forward composition handles.
+			// the endpoint and port-forward composition handles, and the agent
+			// reader's token Secret key and Job when agent_reader is declared.
 			name: "KubernetesGrafana",
 			kind: catalogkind.CatalogKind_KubernetesGrafana,
 			rawOutputs: map[string]interface{}{
@@ -1695,10 +1696,16 @@ func TestOutputsConformance(t *testing.T) {
 				"endpoint":             "http://dashboards.observability.svc.cluster.local",
 				"admin_secret_name":    "dashboards",
 				"port_forward_command": "kubectl port-forward svc/dashboards -n observability 3000:80",
+				"agent_reader_token_secret": map[string]interface{}{
+					"name": "dashboards-agent-reader",
+					"key":  "token",
+				},
+				"agent_reader_job_name": "dashboards-agent-reader-1a2b3c4d",
 			},
 			mustPopulate: []string{
 				"namespace", "release_name", "service", "endpoint",
 				"admin_secret_name", "port_forward_command",
+				"agent_reader_token_secret", "agent_reader_job_name",
 			},
 		},
 		{

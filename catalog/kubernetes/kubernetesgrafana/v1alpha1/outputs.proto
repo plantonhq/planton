@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesgrafana.v1alpha1;
 
+import "catalog/kubernetes/kubernetes.proto";
+
 //grafana-kubernetes outputs
 message KubernetesGrafanaOutputs {
   //namespace Grafana runs in.
@@ -28,4 +30,17 @@ message KubernetesGrafanaOutputs {
   //command to port-forward the Grafana UI to a developer laptop,
   //e.g. kubectl port-forward svc/dashboards -n observability 3000:80
   string port_forward_command = 6;
+
+  //the Secret key holding agent teammates' read-only Grafana token —
+  //`<name>-agent-reader`, key `token` (a sibling key `generation` names
+  //the token's generation). Unset when spec.agent_reader is not declared
+  //or is disabled. Read it at each start of Grafana's MCP server
+  //(`GRAFANA_SERVICE_ACCOUNT_TOKEN`) rather than copying it anywhere.
+  dev.planton.kubernetes.KubernetesSecretKey agent_reader_token_secret = 7;
+
+  //the Job that keeps the agent teammates' account and token
+  //(`<name>-agent-reader-<8 hex>`, the hex hashing the declaration and
+  //the Job's script) — `kubectl logs job/<this>` is where it explains
+  //itself. Empty when spec.agent_reader is not declared.
+  string agent_reader_job_name = 8;
 }
