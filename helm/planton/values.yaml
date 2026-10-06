@@ -44,8 +44,8 @@ platform:
     #   serviceAccountAnnotations:
     #     eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/planton-runner
     # vault:                  # the bundled secrets manager, deployed by default;
-    #   enabled: false        #   opting out loses pasted-credential storage and
-    #                         #   keyless connections (see README "Secrets")
+    #   enabled: false        #   opting out keeps secrets in the platform's own
+    #                         #   database under an operator-held key (see README "Secrets")
     # observability:          # metrics are always served (port "metrics"); traces
     #   otlpHttpEndpoint: http://cluster-traces-collector.observability.svc.cluster.local:4318
     #                         #   go to this OTLP/HTTP base address once it is set

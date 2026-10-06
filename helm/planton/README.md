@@ -116,9 +116,6 @@ platform:
     # runner:
     #   storageSize: 2Gi
     #   storageClassName: your-class
-    # vault:
-    #   storageSize: 2Gi
-    #   storageClassName: your-class
 ```
 
 Set storage before installing: Kubernetes fixes a volume's class and size at
@@ -136,27 +133,39 @@ kubectl get plantonplatform planton -n planton -o jsonpath='{.status.components}
 
 Every install ships with a bundled secrets manager (OpenBAO, the open-source
 Vault fork), deployed and bootstrapped automatically: the operator
-initializes it, unseals it after every restart, and registers it as the
-organization's default secret store -- pasting a cloud credential into a
-connection works on a fresh install with zero configuration. The unseal keys
-and root token live in the `<name>-openbao-init` Secret next to the platform
-(the Secret's annotation explains itself); teams that prefer to hold their
-own keys set `spec.vault.initMode: manual` and run the unseal ceremony
-themselves.
+initializes it, unseals it after every restart, and the platform registers it
+as every organization's default secret store -- pasting a cloud credential
+into a connection works on a fresh install with zero configuration. The
+unseal keys and root token live in the `<name>-openbao-init` Secret next to
+the platform (the Secret's annotation explains itself); teams that want the
+keys to outlive the platform name a Secret they own in
+`spec.vault.initSecretName`, or let a cloud key open the vault with
+`spec.vault.autoUnseal`.
 
 Preferring a cloud secret store is a layered choice, not an opt-out: declare
 it and it wins (see `values.eks.yaml` for AWS Secrets Manager with pod
 identity -- no stored keys at all). The vault still runs underneath, serving
-the platform's own signing and encryption keys.
+the platform's own signing key.
 
-Opting out entirely is supported but deliberate:
+Turning the vault off is a whole posture of its own: the platform keeps its
+secrets in its own database, envelope-encrypted under a secrets key the
+operator mints into the `<name>-secrets-key` Secret, and pasted credentials
+keep working. Only keyless connections go away (their signing key lives in
+the vault). Before backing up or restoring the database, name a Secret you
+own for that key, and keep a copy outside the cluster -- it is what opens a
+restored database's secrets:
 
 ```yaml
 platform:
   spec:
     vault:
-      enabled: false   # loses pasted-credential storage and keyless connections
+      enabled: false
+    controlPlane:
+      secretsKeySecretName: planton-secrets-key-kept   # required with backups
 ```
+
+Decide it before installing: turning the vault on or off on a running
+platform strands the secrets already stored.
 
 ## One operator per cluster
 

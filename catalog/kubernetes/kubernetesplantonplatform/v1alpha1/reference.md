@@ -343,7 +343,6 @@ spec:
 | `spec.bootstrap.secretBackend.type` | `string` | yes |  |  |
 | `spec.bootstrap.secretBackend.awsSecretsManager` | `KubernetesPlantonPlatformAwsSecretsManager` |  |  |  |
 | `spec.bootstrap.secretBackend.awsSecretsManager.region` | `string` | yes |  |  |
-| `spec.bootstrap.secretBackend.awsSecretsManager.kmsKeyArn` | `string` | yes |  |  |
 | `spec.runner` | `KubernetesPlantonPlatformRunner` |  |  |  |
 | `spec.runner.enabled` | `bool` |  | `true` |  |
 | `spec.runner.storageSize` | `string` |  |  |  |
@@ -435,6 +434,7 @@ spec:
 | `spec.controlPlane.resources.requests` | `CpuMemory` |  |  |  |
 | `spec.controlPlane.resources.requests.cpu` | `string` |  |  |  |
 | `spec.controlPlane.resources.requests.memory` | `string` |  |  |  |
+| `spec.controlPlane.secretsKeySecretName` | `string` |  |  |  |
 | `spec.console` | `KubernetesPlantonPlatformConsole` |  |  |  |
 | `spec.console.image` | `KubernetesPlantonPlatformImage` |  |  |  |
 | `spec.console.image.repository` | `string` |  |  |  |
@@ -1785,10 +1785,12 @@ The IaC provisioner the in-cluster runner deploys with.
 
 `KubernetesPlantonPlatformSecretBackend`
 
-Where the platform's managed secrets live: the bundled secrets
-manager ("platform", the default) or a cloud backend.
+The bootstrap organization's declared default secret backend: the
+bundled secrets manager ("platform") or a cloud backend. Unset, the
+platform picks the one it can serve — the bundled vault when it runs,
+otherwise its own database under the secrets key.
 
-- rule: awsSecretsManager needs its configuration block: aws_secrets_manager.region and aws_secrets_manager.kms_key_arn are required
+- rule: awsSecretsManager needs its configuration block: aws_secrets_manager.region is required
 
 ### spec.bootstrap.secretBackend.type
 
@@ -1812,14 +1814,6 @@ workload identity — see control_plane.service_account_annotations.
 `string` · required
 
 AWS region (e.g. "us-east-1").
-
-- rule: {"string":{"minLen":"1"}}
-
-### spec.bootstrap.secretBackend.awsSecretsManager.kmsKeyArn
-
-`string` · required
-
-KMS key ARN encrypting the secrets.
 
 - rule: {"string":{"minLen":"1"}}
 
@@ -2037,9 +2031,10 @@ after the taint appears. Unset means tolerate forever.
 
 The bundled secrets manager (OpenBAO). ON by default — a
 version-only platform stores connection secrets with zero
-configuration. Explicit `enabled: false` is the deliberate opt-out
-(bring a cloud secret backend through bootstrap.secret_backend
-instead). The vault stores its data in the platform's own PostgreSQL,
+configuration. Explicit `enabled: false` is the deliberate opt-out:
+the platform then keeps its secrets in its own database under a
+secrets key the operator mints (control_plane.secrets_key_secret_name
+names a Secret you own for it). The vault stores its data in the platform's own PostgreSQL,
 so `database.postgresql.backup` archives it with the records; what
 opens the restored vault is declared here — a cloud key (`auto_unseal`)
 or a keys Secret you own (`init_secret_name`).
@@ -2051,9 +2046,11 @@ or a keys Secret you own (`init_secret_name`).
 `bool` · optional (explicit presence)
 
 Deploy the bundled secrets manager (OpenBAO). Platform default:
-true. Explicit false is the deliberate opt-out — pair it with a
-cloud backend in bootstrap.secret_backend or connection secrets have
-nowhere to live.
+true. Explicit false is the deliberate opt-out: the platform keeps its
+secrets in its own database under an operator-held secrets key, and
+keyless connections (whose signing key is in the vault) go away.
+Decide it before installing — switching it on a running platform
+strands the secrets already stored.
 
 - default: `true`
 
@@ -2545,7 +2542,7 @@ escape hatch for configuration the spec does not model.
 `map<string, string>`
 
 Workload-identity annotations on the control plane's ServiceAccount
-— the platform's OWN cloud identity (cloud secret backends, KMS).
+— the platform's OWN cloud identity (cloud secret backends).
 Distinct from runner.service_account_annotations, which is the
 DEPLOY-TIME identity.
 
@@ -2612,6 +2609,19 @@ Specify the minimum amount of CPU and memory that the container is guaranteed.
 ### spec.controlPlane.resources.requests.memory
 
 `string`
+
+### spec.controlPlane.secretsKeySecretName
+
+`string`
+
+A Secret you own, in the platform's namespace, holding the platform's
+secrets key: the key that seals every secret the platform keeps in its
+own database when the vault is off. The operator mints the key into it
+when it holds none and never deletes it; keep a copy outside the
+cluster — it is what opens a restored database's secrets. Required with
+the vault off once the database is backed up or restored. Unset, the
+operator keeps the key in a Secret it owns, deleted with the platform.
+Requires a planton-operator chart >= 0.28.0.
 
 ### spec.console
 
@@ -3404,7 +3414,8 @@ separate enabled flag to disagree with it.
 ## Validation Rules
 
 - `spec.vault.backup_needs_surviving_keys`: a backup carries the vault's data, but under the built-in seal the vault's keys live in a Secret that is deleted with the platform — set vault.init_secret_name to a Secret you own (and keep a copy outside the cluster), or declare vault.auto_unseal so a restored vault opens from your cloud key
-- `spec.vault.disabled_needs_cloud_secret_backend`: bootstrap.secret_backend.type 'platform' stores secrets in the bundled vault, which vault.enabled: false has opted out of — re-enable the vault or use type awsSecretsManager
+- `spec.vault.off_keeps_its_secrets_key_for_backups`: with the vault off, the platform's secrets are sealed with its secrets key, which lives in a Secret deleted with the platform — to back up or restore the database, set control_plane.secrets_key_secret_name to a Secret you own (and keep a copy outside the cluster)
+- `spec.bootstrap.secret_backend.platform_needs_vault`: bootstrap.secret_backend.type 'platform' stores secrets in the bundled vault, which vault.enabled: false has opted out of — re-enable the vault or use type awsSecretsManager
 
 ## Outputs
 

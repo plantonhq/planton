@@ -197,8 +197,7 @@ variable "spec" {
       secret_backend = optional(object({
         type = string
         aws_secrets_manager = optional(object({
-          region      = string
-          kms_key_arn = string
+          region = string
         }))
       }))
     }))
@@ -452,6 +451,9 @@ variable "spec" {
       # Override of the release official IaC modules are downloaded from; unset
       # means the platform's own catalog release (the shape every install should have).
       iac_modules_version = optional(string, "")
+      # A Secret you own for the platform's secrets key (vault off); unset means
+      # the operator's own Secret, deleted with the platform.
+      secrets_key_secret_name = optional(string, "")
     }))
     console = optional(object({
       resources = optional(object({

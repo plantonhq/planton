@@ -336,8 +336,7 @@ locals {
     for k, v in {
       type = var.spec.bootstrap.secret_backend.type
       awsSecretsManager = try(var.spec.bootstrap.secret_backend.aws_secrets_manager, null) == null ? null : {
-        region    = var.spec.bootstrap.secret_backend.aws_secrets_manager.region
-        kmsKeyArn = var.spec.bootstrap.secret_backend.aws_secrets_manager.kms_key_arn
+        region = var.spec.bootstrap.secret_backend.aws_secrets_manager.region
       }
     } : k => v if v != null
   }
@@ -618,6 +617,7 @@ locals {
       externalConfigSecretName  = try(var.spec.control_plane.external_config_secret_name, "") != "" ? var.spec.control_plane.external_config_secret_name : null
       serviceAccountAnnotations = length(try(var.spec.control_plane.service_account_annotations, {})) > 0 ? var.spec.control_plane.service_account_annotations : null
       iacModulesVersion         = try(var.spec.control_plane.iac_modules_version, "") != "" ? var.spec.control_plane.iac_modules_version : null
+      secretsKeySecretName      = try(var.spec.control_plane.secrets_key_secret_name, "") != "" ? var.spec.control_plane.secrets_key_secret_name : null
       resources                 = length(local.sizing.control_plane) > 0 ? local.sizing.control_plane : null
     } : k => v if v != null
   }

@@ -14,10 +14,10 @@ spec:
       notes: The platform's data lives on Kubernetes persistent volumes whose encryption is the STORAGE CLASS's posture (spec.storage.storage_class_name selects it; e.g. gp3 volumes encrypt when the class says so) — the platform neither adds nor removes volume encryption.
     - control_id: enc-at-rest-cmk
       status: configurable
-      field_path: bootstrap.secret_backend.aws_secrets_manager.kms_key_arn
+      field_path: vault.auto_unseal
       evidence:
         type: spec_default
-        reference: Two surfaces take a customer-managed key. The bundled secrets manager's seal — vault.auto_unseal wraps the vault's master key with a key in your cloud (AWS KMS, GCP Cloud KMS, Azure Key Vault, or a central OpenBao's transit engine), so the vault opens itself on every start and a restored vault opens from the same key; the key and its grants must exist before the platform (the seal is checked at server start, and a GCP identity needs both cryptoKeyEncrypterDecrypter and cloudkms.viewer). And the awsSecretsManager cloud backend, which requires a KMS key ARN. Volume-level CMKs ride the chosen StorageClass.
+        reference: The bundled secrets manager's seal — vault.auto_unseal wraps the vault's master key with a key in your cloud (AWS KMS, GCP Cloud KMS, Azure Key Vault, or a central OpenBao's transit engine), so the vault opens itself on every start and a restored vault opens from the same key; the key and its grants must exist before the platform (the seal is checked at server start, and a GCP identity needs both cryptoKeyEncrypterDecrypter and cloudkms.viewer). The awsSecretsManager cloud backend keeps values provider-native, encrypted under the account's own Secrets Manager key policy. Volume-level CMKs ride the chosen StorageClass.
     - control_id: enc-in-transit
       status: configurable
       field_path: ingress.tls
@@ -50,7 +50,7 @@ spec:
       field_path: runner.service_account_annotations
       evidence:
         type: spec_default
-        reference: The runner's cloud identity is keyless workload identity (EKS role-arn / GKE service-account / AKS client-id annotations) or a customer-owned credentials Secret — the platform stores no cloud credentials either way. The control plane's OWN cloud identity (for cloud secret backends and KMS) is the sibling control_plane.service_account_annotations; the database backup's identity is database.postgresql.backup.service_account_annotations; the vault's seal identity is vault.service_account_annotations (the GCP seal arm's workload_identity_service_account writes the GKE annotation by reference). Each identity reaches only what it is for.
+        reference: The runner's cloud identity is keyless workload identity (EKS role-arn / GKE service-account / AKS client-id annotations) or a customer-owned credentials Secret — the platform stores no cloud credentials either way. The control plane's OWN cloud identity (for cloud secret backends) is the sibling control_plane.service_account_annotations; the database backup's identity is database.postgresql.backup.service_account_annotations; the vault's seal identity is vault.service_account_annotations (the GCP seal arm's workload_identity_service_account writes the GKE annotation by reference). Each identity reaches only what it is for.
     - control_id: no-legacy-auth
       status: enforced_by_default
       evidence:

@@ -150,9 +150,10 @@ type KubernetesPlantonPlatformSpec struct {
 	// *
 	// The bundled secrets manager (OpenBAO). ON by default — a
 	// version-only platform stores connection secrets with zero
-	// configuration. Explicit `enabled: false` is the deliberate opt-out
-	// (bring a cloud secret backend through bootstrap.secret_backend
-	// instead). The vault stores its data in the platform's own PostgreSQL,
+	// configuration. Explicit `enabled: false` is the deliberate opt-out:
+	// the platform then keeps its secrets in its own database under a
+	// secrets key the operator mints (control_plane.secrets_key_secret_name
+	// names a Secret you own for it). The vault stores its data in the platform's own PostgreSQL,
 	// so `database.postgresql.backup` archives it with the records; what
 	// opens the restored vault is declared here — a cloud key (`auto_unseal`)
 	// or a keys Secret you own (`init_secret_name`).
@@ -3024,8 +3025,10 @@ type KubernetesPlantonPlatformBootstrap struct {
 	// The IaC provisioner the in-cluster runner deploys with.
 	IacProvisioner *string `protobuf:"bytes,4,opt,name=iac_provisioner,json=iacProvisioner,proto3,oneof" json:"iac_provisioner,omitempty"`
 	// *
-	// Where the platform's managed secrets live: the bundled secrets
-	// manager ("platform", the default) or a cloud backend.
+	// The bootstrap organization's declared default secret backend: the
+	// bundled secrets manager ("platform") or a cloud backend. Unset, the
+	// platform picks the one it can serve — the bundled vault when it runs,
+	// otherwise its own database under the secrets key.
 	SecretBackend *KubernetesPlantonPlatformSecretBackend `protobuf:"bytes,5,opt,name=secret_backend,json=secretBackend,proto3" json:"secret_backend,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -3279,10 +3282,7 @@ type KubernetesPlantonPlatformAwsSecretsManager struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// AWS region (e.g. "us-east-1").
-	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
-	// *
-	// KMS key ARN encrypting the secrets.
-	KmsKeyArn     string `protobuf:"bytes,2,opt,name=kms_key_arn,json=kmsKeyArn,proto3" json:"kms_key_arn,omitempty"`
+	Region        string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3320,13 +3320,6 @@ func (*KubernetesPlantonPlatformAwsSecretsManager) Descriptor() ([]byte, []int) 
 func (x *KubernetesPlantonPlatformAwsSecretsManager) GetRegion() string {
 	if x != nil {
 		return x.Region
-	}
-	return ""
-}
-
-func (x *KubernetesPlantonPlatformAwsSecretsManager) GetKmsKeyArn() string {
-	if x != nil {
-		return x.KmsKeyArn
 	}
 	return ""
 }
@@ -3603,9 +3596,11 @@ type KubernetesPlantonPlatformVault struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// Deploy the bundled secrets manager (OpenBAO). Platform default:
-	// true. Explicit false is the deliberate opt-out — pair it with a
-	// cloud backend in bootstrap.secret_backend or connection secrets have
-	// nowhere to live.
+	// true. Explicit false is the deliberate opt-out: the platform keeps its
+	// secrets in its own database under an operator-held secrets key, and
+	// keyless connections (whose signing key is in the vault) go away.
+	// Decide it before installing — switching it on a running platform
+	// strands the secrets already stored.
 	Enabled *bool `protobuf:"varint,1,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	// *
 	// Auto-unseal: delegate master-key protection to a key in your cloud
@@ -4477,7 +4472,7 @@ type KubernetesPlantonPlatformControlPlane struct {
 	ExternalConfigSecretName string `protobuf:"bytes,3,opt,name=external_config_secret_name,json=externalConfigSecretName,proto3" json:"external_config_secret_name,omitempty"`
 	// *
 	// Workload-identity annotations on the control plane's ServiceAccount
-	// — the platform's OWN cloud identity (cloud secret backends, KMS).
+	// — the platform's OWN cloud identity (cloud secret backends).
 	// Distinct from runner.service_account_annotations, which is the
 	// DEPLOY-TIME identity.
 	ServiceAccountAnnotations map[string]string `protobuf:"bytes,4,rep,name=service_account_annotations,json=serviceAccountAnnotations,proto3" json:"service_account_annotations,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
@@ -4506,9 +4501,19 @@ type KubernetesPlantonPlatformControlPlane struct {
 	// Changing it rolls the component's pods. Requires a planton-operator chart
 	// >= 0.23.0: an older operator's definition drops the field without a word,
 	// which the status's sizing then shows as the default.
-	Resources     *kubernetes.ContainerResources `protobuf:"bytes,6,opt,name=resources,proto3" json:"resources,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	Resources *kubernetes.ContainerResources `protobuf:"bytes,6,opt,name=resources,proto3" json:"resources,omitempty"`
+	// *
+	// A Secret you own, in the platform's namespace, holding the platform's
+	// secrets key: the key that seals every secret the platform keeps in its
+	// own database when the vault is off. The operator mints the key into it
+	// when it holds none and never deletes it; keep a copy outside the
+	// cluster — it is what opens a restored database's secrets. Required with
+	// the vault off once the database is backed up or restored. Unset, the
+	// operator keeps the key in a Secret it owns, deleted with the platform.
+	// Requires a planton-operator chart >= 0.28.0.
+	SecretsKeySecretName string `protobuf:"bytes,7,opt,name=secrets_key_secret_name,json=secretsKeySecretName,proto3" json:"secrets_key_secret_name,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
 }
 
 func (x *KubernetesPlantonPlatformControlPlane) Reset() {
@@ -4581,6 +4586,13 @@ func (x *KubernetesPlantonPlatformControlPlane) GetResources() *kubernetes.Conta
 		return x.Resources
 	}
 	return nil
+}
+
+func (x *KubernetesPlantonPlatformControlPlane) GetSecretsKeySecretName() string {
+	if x != nil {
+		return x.SecretsKeySecretName
+	}
+	return ""
 }
 
 // *
@@ -4923,7 +4935,7 @@ var File_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto protor
 
 const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/kubernetes/kubernetesplantonplatform/v1alpha1/spec.proto\x129dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a catalog/kubernetes/options.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xe2\x1e\n" +
+	"@catalog/kubernetes/kubernetesplantonplatform/v1alpha1/spec.proto\x129dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a catalog/kubernetes/options.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xd0#\n" +
 	"\x1dKubernetesPlantonPlatformSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x12!\n" +
@@ -4952,9 +4964,10 @@ const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawD
 	"\btemporal\x18\x15 \x01(\v2\\.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalR\btemporal\x12u\n" +
 	"\aopenfga\x18\x16 \x01(\v2[.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformOpenFgaR\aopenfga\x12r\n" +
 	"\x06github\x18\x17 \x01(\v2Z.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGithubR\x06github\x12\x87\x01\n" +
-	"\robservability\x18\x18 \x01(\v2a.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObservabilityR\robservability:\xf9\a\xbaH\xf5\a\x1a\xd5\x04\n" +
-	"&spec.vault.backup_needs_surviving_keys\x12\xa7\x02a backup carries the vault's data, but under the built-in seal the vault's keys live in a Secret that is deleted with the platform — set vault.init_secret_name to a Secret you own (and keep a copy outside the cluster), or declare vault.auto_unseal so a restored vault opens from your cloud key\x1a\x80\x02!has(this.database) || !has(this.database.postgresql) || !has(this.database.postgresql.backup) || (has(this.vault) && has(this.vault.enabled) && !this.vault.enabled) || (has(this.vault) && (has(this.vault.auto_unseal) || this.vault.init_secret_name != ''))\x1a\x9a\x03\n" +
-	".spec.vault.disabled_needs_cloud_secret_backend\x12\xaf\x01bootstrap.secret_backend.type 'platform' stores secrets in the bundled vault, which vault.enabled: false has opted out of — re-enable the vault or use type awsSecretsManager\x1a\xb5\x01!has(this.bootstrap) || !has(this.bootstrap.secret_backend) || this.bootstrap.secret_backend.type != 'platform' || !has(this.vault) || !has(this.vault.enabled) || this.vault.enabled\"\xfe\x05\n" +
+	"\robservability\x18\x18 \x01(\v2a.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObservabilityR\robservability:\xe7\f\xbaH\xe3\f\x1a\xd5\x04\n" +
+	"&spec.vault.backup_needs_surviving_keys\x12\xa7\x02a backup carries the vault's data, but under the built-in seal the vault's keys live in a Secret that is deleted with the platform — set vault.init_secret_name to a Secret you own (and keep a copy outside the cluster), or declare vault.auto_unseal so a restored vault opens from your cloud key\x1a\x80\x02!has(this.database) || !has(this.database.postgresql) || !has(this.database.postgresql.backup) || (has(this.vault) && has(this.vault.enabled) && !this.vault.enabled) || (has(this.vault) && (has(this.vault.auto_unseal) || this.vault.init_secret_name != ''))\x1a\xe7\x04\n" +
+	"0spec.vault.off_keeps_its_secrets_key_for_backups\x12\x89\x02with the vault off, the platform's secrets are sealed with its secrets key, which lives in a Secret deleted with the platform — to back up or restore the database, set control_plane.secrets_key_secret_name to a Secret you own (and keep a copy outside the cluster)\x1a\xa6\x02!has(this.vault) || !has(this.vault.enabled) || this.vault.enabled || !has(this.database) || !has(this.database.postgresql) || (!has(this.database.postgresql.backup) && !has(this.database.postgresql.recover_from)) || (has(this.control_plane) && this.control_plane.secrets_key_secret_name != '')\x1a\x9e\x03\n" +
+	"2spec.bootstrap.secret_backend.platform_needs_vault\x12\xaf\x01bootstrap.secret_backend.type 'platform' stores secrets in the bundled vault, which vault.enabled: false has opted out of — re-enable the vault or use type awsSecretsManager\x1a\xb5\x01!has(this.bootstrap) || !has(this.bootstrap.secret_backend) || this.bootstrap.secret_backend.type != 'platform' || !has(this.vault) || !has(this.vault.enabled) || this.vault.enabled\"\xfe\x05\n" +
 	"&KubernetesPlantonPlatformObservability\x12\xd3\x05\n" +
 	"\x12otlp_http_endpoint\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xf0\x04\xbaH\xc4\x03\xba\x01\xc0\x03\n" +
 	"2spec.observability.otlp_http_endpoint.base_address\x12\xf3\x01otlp_http_endpoint is the trace store's OTLP/HTTP base address, such as http://cluster-traces-collector.observability.svc.cluster.local:4318: http:// or https://, no trailing slash, and no /v1/ signal path (the platform adds /v1/traces itself)\x1a\x93\x01!has(this.value) || this.value == '' || (this.value.matches('^https?://[^/]+(/.*)?$') && !this.value.endsWith('/') && !this.value.contains('/v1/'))\x88\xd4a\xec\x1f\x92\xd4a!status.outputs.otlp_http_endpoint\xa2\xd4a&\b\xec\x1f\x12!status.outputs.otlp_http_endpoint\xa2\xd4a&\b\xea\x1f\x12!status.outputs.otlp_http_endpoint\xa2\xd4a&\b\xe8\x1f\x12!status.outputs.otlp_http_endpointR\x10otlpHttpEndpoint\"\xee\x02\n" +
@@ -5167,14 +5180,13 @@ const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawD
 	"%KubernetesPlantonPlatformBootstrapEnv\x12$\n" +
 	"\x04slug\x18\x01 \x01(\tB\v\x8a\xa6\x1d\adefaultH\x00R\x04slug\x88\x01\x01\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04nameB\a\n" +
-	"\x05_slug\"\xd3\x04\n" +
+	"\x05_slug\"\xff\x03\n" +
 	"&KubernetesPlantonPlatformSecretBackend\x129\n" +
 	"\x04type\x18\x01 \x01(\tB%\xbaH\"\xc8\x01\x01r\x1dR\bplatformR\x11awsSecretsManagerR\x04type\x12\x95\x01\n" +
-	"\x13aws_secrets_manager\x18\x02 \x01(\v2e.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformAwsSecretsManagerR\x11awsSecretsManager:\xd5\x02\xbaH\xd1\x02\x1a\xce\x02\n" +
-	"1spec.bootstrap.secret_backend.aws_requires_config\x12|awsSecretsManager needs its configuration block: aws_secrets_manager.region and aws_secrets_manager.kms_key_arn are required\x1a\x9a\x01this.type != 'awsSecretsManager' || (has(this.aws_secrets_manager) && this.aws_secrets_manager.region != '' && this.aws_secrets_manager.kms_key_arn != '')\"v\n" +
+	"\x13aws_secrets_manager\x18\x02 \x01(\v2e.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformAwsSecretsManagerR\x11awsSecretsManager:\x81\x02\xbaH\xfd\x01\x1a\xfa\x01\n" +
+	"1spec.bootstrap.secret_backend.aws_requires_config\x12WawsSecretsManager needs its configuration block: aws_secrets_manager.region is required\x1althis.type != 'awsSecretsManager' || (has(this.aws_secrets_manager) && this.aws_secrets_manager.region != '')\"M\n" +
 	"*KubernetesPlantonPlatformAwsSecretsManager\x12\x1f\n" +
-	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12'\n" +
-	"\vkms_key_arn\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\tkmsKeyArn\"\xf6\x06\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\"\xf6\x06\n" +
 	"\x1fKubernetesPlantonPlatformRunner\x12'\n" +
 	"\aenabled\x18\x01 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01\x12\xca\x01\n" +
 	"\fstorage_size\x18\x02 \x01(\tB\xa6\x01\xbaH\xa2\x01\xba\x01\x9b\x01\n" +
@@ -5270,7 +5282,7 @@ const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawD
 	"\x16postgres_backup_plugin\x18\x04 \x01(\tB\x1b\xbaH\x10r\x0eR\x00R\x04autoR\x04skip\x8a\xa6\x1d\x04autoH\x02R\x14postgresBackupPlugin\x88\x01\x01B\x14\n" +
 	"\x12_postgres_operatorB\x13\n" +
 	"\x11_tekton_pipelinesB\x19\n" +
-	"\x17_postgres_backup_plugin\"\xd4\x05\n" +
+	"\x17_postgres_backup_plugin\"\x8b\x06\n" +
 	"%KubernetesPlantonPlatformControlPlane\x12o\n" +
 	"\x05image\x18\x01 \x01(\v2Y.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImageR\x05image\x12-\n" +
 	"\breplicas\x18\x02 \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x00R\breplicas\x88\x01\x01\x12=\n" +
@@ -5279,7 +5291,8 @@ const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawD
 	"\x13iac_modules_version\x18\x05 \x01(\tB\x1a\xbaH\x17\xd8\x01\x01r\x122\x10^v\\d+\\.\\d+\\.\\d+$R\x11iacModulesVersion\x12c\n" +
 	"\tresources\x18\x06 \x01(\v2*.dev.planton.kubernetes.ContainerResourcesB\x19\xba\xfb\xa4\x02\x14\n" +
 	"\x05\x12\x036Gi\x12\v\n" +
-	"\x04250m\x12\x031GiR\tresources\x1aL\n" +
+	"\x04250m\x12\x031GiR\tresources\x125\n" +
+	"\x17secrets_key_secret_name\x18\a \x01(\tR\x14secretsKeySecretName\x1aL\n" +
 	"\x1eServiceAccountAnnotationsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\v\n" +

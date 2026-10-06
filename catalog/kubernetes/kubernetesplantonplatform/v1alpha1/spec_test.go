@@ -296,8 +296,7 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 				SecretBackend: &KubernetesPlantonPlatformSecretBackend{
 					Type: "awsSecretsManager",
 					AwsSecretsManager: &KubernetesPlantonPlatformAwsSecretsManager{
-						Region:    "us-east-1",
-						KmsKeyArn: "arn:aws:kms:us-east-1:123456789012:key/abc",
+						Region: "us-east-1",
 					},
 				},
 			}
@@ -664,11 +663,17 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 			optedOut := minimalValidPlatform()
 			optedOut.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{ObjectStore: r2StoreByReference("s3://acme-platform-backups/platform")})
 			optedOut.Spec.Vault = &KubernetesPlantonPlatformVault{Enabled: &off}
-			optedOut.Spec.Bootstrap = &KubernetesPlantonPlatformBootstrap{SecretBackend: &KubernetesPlantonPlatformSecretBackend{
-				Type:              "awsSecretsManager",
-				AwsSecretsManager: &KubernetesPlantonPlatformAwsSecretsManager{Region: "us-east-1", KmsKeyArn: "arn:aws:kms:us-east-1:123456789012:key/abc"},
-			}}
-			gomega.Expect(protovalidate.Validate(optedOut)).To(gomega.BeNil())
+			optedOut.Spec.ControlPlane = &KubernetesPlantonPlatformControlPlane{SecretsKeySecretName: "acme-platform-key"}
+			gomega.Expect(protovalidate.Validate(optedOut)).To(gomega.BeNil(),
+				"with the vault off, a backup is kept once the adopter owns the secrets key")
+		})
+
+		ginkgo.It("should accept a vault-off platform that declares nowhere for its secrets", func() {
+			off := false
+			input := minimalValidPlatform()
+			input.Spec.Vault = &KubernetesPlantonPlatformVault{Enabled: &off}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil(),
+				"the platform keeps its secrets in its own database under the operator's key")
 		})
 	})
 
@@ -1347,12 +1352,22 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 				input.Spec.Vault = vault
 				input.Spec.Bootstrap = &KubernetesPlantonPlatformBootstrap{SecretBackend: &KubernetesPlantonPlatformSecretBackend{
 					Type:              "awsSecretsManager",
-					AwsSecretsManager: &KubernetesPlantonPlatformAwsSecretsManager{Region: "us-east-1", KmsKeyArn: "arn:aws:kms:us-east-1:123456789012:key/abc"},
+					AwsSecretsManager: &KubernetesPlantonPlatformAwsSecretsManager{Region: "us-east-1"},
 				}}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).NotTo(gomega.BeNil(), name)
 				gomega.Expect(err.Error()).To(gomega.ContainSubstring("vault.enabled: false opts out"), name)
 			}
+		})
+
+		ginkgo.It("should refuse a vault-off backup or restore whose secrets key dies with the platform", func() {
+			off := false
+			backedUp := minimalValidPlatform()
+			backedUp.Spec.Vault = &KubernetesPlantonPlatformVault{Enabled: &off}
+			backedUp.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{ObjectStore: r2StoreByReference("s3://acme-platform-backups/platform")})
+			err := protovalidate.Validate(backedUp)
+			gomega.Expect(err).NotTo(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("control_plane.secrets_key_secret_name"))
 		})
 
 		ginkgo.It("should refuse the platform secret backend on an opted-out vault", func() {

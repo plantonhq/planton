@@ -46,7 +46,7 @@ platform:
 
     # -- Secrets work with zero values: the bundled secrets manager deploys
     # by default (initialized, unsealed, registered as the default secret
-    # store). Opt out only if you accept losing pasted-credential storage
-    # and keyless connections:
+    # store). Opting out keeps secrets in the platform's own database under
+    # an operator-held key and loses keyless connections (README "Secrets"):
     # vault:
     #   enabled: false

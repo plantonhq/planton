@@ -162,9 +162,10 @@ message KubernetesPlantonPlatformSpec {
   /**
    * The bundled secrets manager (OpenBAO). ON by default — a
    * version-only platform stores connection secrets with zero
-   * configuration. Explicit `enabled: false` is the deliberate opt-out
-   * (bring a cloud secret backend through bootstrap.secret_backend
-   * instead). The vault stores its data in the platform's own PostgreSQL,
+   * configuration. Explicit `enabled: false` is the deliberate opt-out:
+   * the platform then keeps its secrets in its own database under a
+   * secrets key the operator mints (control_plane.secrets_key_secret_name
+   * names a Secret you own for it). The vault stores its data in the platform's own PostgreSQL,
    * so `database.postgresql.backup` archives it with the records; what
    * opens the restored vault is declared here — a cloud key (`auto_unseal`)
    * or a keys Secret you own (`init_secret_name`).
@@ -256,7 +257,12 @@ message KubernetesPlantonPlatformSpec {
     expression: "!has(this.database) || !has(this.database.postgresql) || !has(this.database.postgresql.backup) || (has(this.vault) && has(this.vault.enabled) && !this.vault.enabled) || (has(this.vault) && (has(this.vault.auto_unseal) || this.vault.init_secret_name != ''))"
   };
   option (buf.validate.message).cel = {
-    id: "spec.vault.disabled_needs_cloud_secret_backend"
+    id: "spec.vault.off_keeps_its_secrets_key_for_backups"
+    message: "with the vault off, the platform's secrets are sealed with its secrets key, which lives in a Secret deleted with the platform — to back up or restore the database, set control_plane.secrets_key_secret_name to a Secret you own (and keep a copy outside the cluster)"
+    expression: "!has(this.vault) || !has(this.vault.enabled) || this.vault.enabled || !has(this.database) || !has(this.database.postgresql) || (!has(this.database.postgresql.backup) && !has(this.database.postgresql.recover_from)) || (has(this.control_plane) && this.control_plane.secrets_key_secret_name != '')"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.bootstrap.secret_backend.platform_needs_vault"
     message: "bootstrap.secret_backend.type 'platform' stores secrets in the bundled vault, which vault.enabled: false has opted out of — re-enable the vault or use type awsSecretsManager"
     expression: "!has(this.bootstrap) || !has(this.bootstrap.secret_backend) || this.bootstrap.secret_backend.type != 'platform' || !has(this.vault) || !has(this.vault.enabled) || this.vault.enabled"
   };
@@ -1661,8 +1667,10 @@ message KubernetesPlantonPlatformBootstrap {
   ];
 
   /**
-   * Where the platform's managed secrets live: the bundled secrets
-   * manager ("platform", the default) or a cloud backend.
+   * The bootstrap organization's declared default secret backend: the
+   * bundled secrets manager ("platform") or a cloud backend. Unset, the
+   * platform picks the one it can serve — the bundled vault when it runs,
+   * otherwise its own database under the secrets key.
    */
   KubernetesPlantonPlatformSecretBackend secret_backend = 5;
 }
@@ -1703,8 +1711,8 @@ message KubernetesPlantonPlatformBootstrapEnv {
 message KubernetesPlantonPlatformSecretBackend {
   option (buf.validate.message).cel = {
     id: "spec.bootstrap.secret_backend.aws_requires_config"
-    message: "awsSecretsManager needs its configuration block: aws_secrets_manager.region and aws_secrets_manager.kms_key_arn are required"
-    expression: "this.type != 'awsSecretsManager' || (has(this.aws_secrets_manager) && this.aws_secrets_manager.region != '' && this.aws_secrets_manager.kms_key_arn != '')"
+    message: "awsSecretsManager needs its configuration block: aws_secrets_manager.region is required"
+    expression: "this.type != 'awsSecretsManager' || (has(this.aws_secrets_manager) && this.aws_secrets_manager.region != '')"
   };
 
   /**
@@ -1737,11 +1745,6 @@ message KubernetesPlantonPlatformAwsSecretsManager {
    * AWS region (e.g. "us-east-1").
    */
   string region = 1 [(buf.validate.field).string.min_len = 1];
-
-  /**
-   * KMS key ARN encrypting the secrets.
-   */
-  string kms_key_arn = 2 [(buf.validate.field).string.min_len = 1];
 }
 
 /**
@@ -1890,9 +1893,11 @@ message KubernetesPlantonPlatformVault {
 
   /**
    * Deploy the bundled secrets manager (OpenBAO). Platform default:
-   * true. Explicit false is the deliberate opt-out — pair it with a
-   * cloud backend in bootstrap.secret_backend or connection secrets have
-   * nowhere to live.
+   * true. Explicit false is the deliberate opt-out: the platform keeps its
+   * secrets in its own database under an operator-held secrets key, and
+   * keyless connections (whose signing key is in the vault) go away.
+   * Decide it before installing — switching it on a running platform
+   * strands the secrets already stored.
    */
   optional bool enabled = 1 [(dev.planton.shared.options.default) = "true"];
 
@@ -2318,7 +2323,7 @@ message KubernetesPlantonPlatformControlPlane {
 
   /**
    * Workload-identity annotations on the control plane's ServiceAccount
-   * — the platform's OWN cloud identity (cloud secret backends, KMS).
+   * — the platform's OWN cloud identity (cloud secret backends).
    * Distinct from runner.service_account_annotations, which is the
    * DEPLOY-TIME identity.
    */
@@ -2362,6 +2367,18 @@ message KubernetesPlantonPlatformControlPlane {
       memory: "1Gi"
     }
   }];
+
+  /**
+   * A Secret you own, in the platform's namespace, holding the platform's
+   * secrets key: the key that seals every secret the platform keeps in its
+   * own database when the vault is off. The operator mints the key into it
+   * when it holds none and never deletes it; keep a copy outside the
+   * cluster — it is what opens a restored database's secrets. Required with
+   * the vault off once the database is backed up or restored. Unset, the
+   * operator keeps the key in a Secret it owns, deleted with the platform.
+   * Requires a planton-operator chart >= 0.28.0.
+   */
+  string secrets_key_secret_name = 7;
 }
 
 /**

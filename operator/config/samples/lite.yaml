@@ -21,7 +21,9 @@ spec:
       storageSize: 256Mi
   # The bundled secrets manager (spec.vault) is deployed by default and keeps
   # its data in the platform's database, so a lab install has nothing to size
-  # for it. Opting out is the deliberate act:
+  # for it. Opting out is the deliberate act -- the platform then keeps its
+  # secrets in its own database under a key the operator mints into
+  # {name}-secrets-key:
   #   vault:
   #     enabled: false
   controlPlane:

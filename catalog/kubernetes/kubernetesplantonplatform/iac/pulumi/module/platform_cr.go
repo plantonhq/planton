@@ -271,8 +271,7 @@ func platformSpecBody(locals *Locals) map[string]interface{} {
 			}
 			if aws := sb.GetAwsSecretsManager(); aws != nil {
 				secretBackend["awsSecretsManager"] = map[string]interface{}{
-					"region":    aws.GetRegion(),
-					"kmsKeyArn": aws.GetKmsKeyArn(),
+					"region": aws.GetRegion(),
 				}
 			}
 			bootstrap["secretBackend"] = secretBackend
@@ -521,6 +520,9 @@ func platformSpecBody(locals *Locals) map[string]interface{} {
 		}
 		if cp.GetIacModulesVersion() != "" {
 			controlPlane["iacModulesVersion"] = cp.GetIacModulesVersion()
+		}
+		if cp.GetSecretsKeySecretName() != "" {
+			controlPlane["secretsKeySecretName"] = cp.GetSecretsKeySecretName()
 		}
 		if res := resourcesMap(cp.GetResources()); res != nil {
 			controlPlane["resources"] = res
