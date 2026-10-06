@@ -4,6 +4,8 @@ Runs flagd -- the OpenFeature project's flag evaluation daemon -- as a central s
 
 This kind deploys the ENGINE. The flags are data with their own lifecycle: declare them as a **KubernetesFlagdFlagFile** (typed, validated flags rendered into a ConfigMap) and point a `config_map` source at it, or let flagd read flags over HTTP, gRPC, from object storage, or from the OpenFeature Operator's FeatureFlag resources.
 
+Choose **KubernetesGoFeatureFlag** instead for readable YAML flag files read through the Kubernetes API (a flip in about one polling interval instead of a kubelet sync), change notifications, evaluation export, and API-key-isolated flag sets; choose flagd for JSONLogic targeting, a CNCF-governed project, and the in-process sync protocol.
+
 ## What Gets Created
 
 | Object | Name | When |
