@@ -87,7 +87,7 @@ The install's `NOTES` print the exact commands. In short:
 kubectl -n planton port-forward svc/planton-gateway 8080:80
 ```
 
-Open `http://localhost:8080`. The first person to open the console becomes the administrator: enter your email plus the cluster setup code (the `NOTES` print the `kubectl` command that reads it — holding cluster access IS the admin proof), and receive a one-time password.
+Open `http://localhost:8080`. The first person to open the console becomes the administrator: enter your email plus the cluster setup code (the `NOTES` print the `kubectl` command that reads it — holding cluster access IS the admin proof). The console then shows the administrator's password once, on screen: copy it before you leave the page, because nothing is emailed.
 
 ## Publish at your own URL
 
