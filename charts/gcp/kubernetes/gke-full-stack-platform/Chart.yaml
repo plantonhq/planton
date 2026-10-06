@@ -6,7 +6,7 @@ spec:
   selector:
     kind: platform
   description: The GKE cluster your full-stack apps land on — everything in the GKE baseline plus the cluster-resident database and messaging operators (Postgres always; MySQL, MongoDB, Kafka, RabbitMQ, and KEDA as toggles) so applications declare their data services in their own namespaces.
-  iconUrl: https://downloads.planton.dev/catalog/logos/gcp/gcpgkecluster/logo.svg
+  iconUrl: https://downloads.planton.ai/catalog/logos/gcp/gcpgkecluster/logo.svg
   webLinks:
     chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/gcp/kubernetes/gke-full-stack-platform
     readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/gcp/kubernetes/gke-full-stack-platform/README.md

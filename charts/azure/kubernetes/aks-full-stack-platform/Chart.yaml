@@ -6,7 +6,7 @@ spec:
   selector:
     kind: platform
   description: The AKS cluster your full-stack apps land on — the complete self-scaling, self-backing-up baseline plus the cluster-resident data operators (PostgreSQL always; MySQL, MongoDB, Kafka, RabbitMQ, and KEDA on toggles).
-  iconUrl: https://downloads.planton.dev/catalog/logos/azure/azureakscluster/logo.svg
+  iconUrl: https://downloads.planton.ai/catalog/logos/azure/azureakscluster/logo.svg
   webLinks:
     chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/azure/kubernetes/aks-full-stack-platform
     readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/azure/kubernetes/aks-full-stack-platform/README.md

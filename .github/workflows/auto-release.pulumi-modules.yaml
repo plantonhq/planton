@@ -2,7 +2,7 @@
 # Pulumi Modules Auto-Release
 # =============================================================================
 # Builds pre-compiled binaries for Pulumi modules, uploads them
-# to Cloudflare R2 (downloads.planton.dev), and creates a GitHub release with
+# to Cloudflare R2 (downloads.planton.ai), and creates a GitHub release with
 # download links.
 #
 # Tag Format: v{semver}-pulumi.{kind}.{YYYYMMDD}.{N}
@@ -15,9 +15,9 @@
 #   - darwin_amd64   - Intel Macs
 #   - windows_amd64  - Windows
 #
-# Upload path: s3://downloads-dot-planton-dot-dev-bucket/releases/{tag}/modules/pulumi/{kind}/{platform}.gz
+# Upload path: s3://planton-foundation-downloads/releases/{tag}/modules/pulumi/{kind}/{platform}.gz
 #              (windows artifacts carry the executable suffix: {platform}.exe.gz)
-# Public URL:  https://downloads.planton.dev/releases/{tag}/modules/pulumi/{kind}/{platform}.gz
+# Public URL:  https://downloads.planton.ai/releases/{tag}/modules/pulumi/{kind}/{platform}.gz
 #
 # The kind's module SOURCE is also published alongside the binaries
 # (source.zip, uploaded once from the linux_amd64 leg) — same layout the full
@@ -53,7 +53,7 @@ permissions:
   contents: write
 
 env:
-  R2_BUCKET: downloads-dot-planton-dot-dev-bucket
+  R2_BUCKET: planton-foundation-downloads
 
 jobs:
   # ===========================================================================
@@ -74,7 +74,7 @@ jobs:
           PROVIDER="${{ inputs.provider }}"
           # One live module set per kind: artifacts carry no API version
           # segment -- same layout the full release workflow writes.
-          BASE_URL="https://downloads.planton.dev/releases/${TAG}/modules/pulumi/${KIND}"
+          BASE_URL="https://downloads.planton.ai/releases/${TAG}/modules/pulumi/${KIND}"
           
           if gh release view "${TAG}" >/dev/null 2>&1; then
             echo "Release ${TAG} already exists"
@@ -216,8 +216,9 @@ jobs:
           
           # Upload to R2
           aws s3 cp "${ARTIFACT_NAME}" "s3://${R2_BUCKET}/${R2_KEY}" \
-            --endpoint-url "${AWS_ENDPOINT_URL}"
-          echo "✓ Uploaded: https://downloads.planton.dev/${R2_KEY}"
+            --endpoint-url "${AWS_ENDPOINT_URL}" \
+            --cache-control "public, max-age=31536000, immutable"
+          echo "✓ Uploaded: https://downloads.planton.ai/${R2_KEY}"
           
           # Publish the module source once (source is platform-independent;
           # the linux_amd64 leg is the designated writer). Apache-2.0 §4(d):
@@ -231,8 +232,9 @@ jobs:
             zip -q -j "${SOURCE_ARTIFACT}" LICENSE NOTICE
             
             aws s3 cp "${SOURCE_ARTIFACT}" "s3://${R2_BUCKET}/${SOURCE_R2_KEY}" \
-              --endpoint-url "${AWS_ENDPOINT_URL}"
-            echo "✓ Uploaded: https://downloads.planton.dev/${SOURCE_R2_KEY}"
+              --endpoint-url "${AWS_ENDPOINT_URL}" \
+              --cache-control "public, max-age=31536000, immutable"
+            echo "✓ Uploaded: https://downloads.planton.ai/${SOURCE_R2_KEY}"
           fi
 
   # ===========================================================================
@@ -249,7 +251,7 @@ jobs:
           PROVIDER="${{ inputs.provider }}"
           # One live module set per kind: artifacts carry no API version
           # segment -- same layout the full release workflow writes.
-          BASE_URL="https://downloads.planton.dev/releases/${TAG}/modules/pulumi/${KIND}"
+          BASE_URL="https://downloads.planton.ai/releases/${TAG}/modules/pulumi/${KIND}"
           
           echo "## Pulumi Module Auto-Release Complete" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY

@@ -173,7 +173,7 @@ protos: buf-lint buf-fmt proto-tools
 #  Prebuilt stub SDK artifacts (release cargo for the platform repo)
 #
 #  The platform consumes this repo's Java and TypeScript stubs as prebuilt
-#  release artifacts (downloads.planton.dev/releases/{tag}/stubs/) instead of
+#  release artifacts (downloads.planton.ai/releases/{tag}/stubs/) instead of
 #  cloning this repo and regenerating ~26k files on every pin upgrade. The
 #  trees must be byte-identical to what the platform's retired local
 #  generation produced, which is why the SDK templates mirror the platform's

@@ -107,7 +107,7 @@ func BuildBinaryName(kindName string) string {
 // Examples (on darwin/arm64):
 //
 //	BuildDownloadURL("AwsEcsService", "v0.3.50")
-//	  -> https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/awsecsservice/darwin_arm64.gz
+//	  -> https://downloads.planton.ai/releases/v0.3.50/modules/pulumi/awsecsservice/darwin_arm64.gz
 func BuildDownloadURL(kindName, releaseVersion string) (string, error) {
 	// Validate against the registry before composing: an unknown kind must
 	// fail plainly here, not as a 404 the fallback path silently absorbs.

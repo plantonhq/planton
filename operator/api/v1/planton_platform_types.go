@@ -318,7 +318,7 @@ type ControlPlaneSpec struct {
 	// published releases and controls nothing else -- deliberately NOT the
 	// platform image version (spec.version) and NOT the chart bundle. Every
 	// value must have a published artifact set under
-	// downloads.planton.dev/releases/<version>/ or deploys fail at module
+	// downloads.planton.ai/releases/<version>/ or deploys fail at module
 	// download.
 	// +kubebuilder:validation:Pattern=`^v\d+\.\d+\.\d+$`
 	// +optional

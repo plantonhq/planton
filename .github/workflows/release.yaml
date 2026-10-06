@@ -10,7 +10,7 @@
 # Architecture:
 #   1. The github-release job creates the GitHub Release for the tag
 #   2. Pulumi modules, Terraform modules, Content, and Definitions jobs
-#      upload to Cloudflare R2 (downloads.planton.dev) after it completes
+#      upload to Cloudflare R2 (downloads.planton.ai) after it completes
 #   3. Charts job attaches the InfraChart catalog zip to the GitHub Release
 #
 # Job visibility: the content and definitions workflows run ONE JOB PER
@@ -19,13 +19,13 @@
 # the release's artifact inventory.
 #
 # Artifact hosting:
-#   - Pulumi modules -> Cloudflare R2 (downloads.planton.dev/releases/{tag}/modules/pulumi/)
-#   - Terraform zips -> Cloudflare R2 (downloads.planton.dev/releases/{tag}/modules/terraform/)
-#   - Content zips   -> Cloudflare R2 (downloads.planton.dev/releases/{tag}/content/)
-#   - Stub SDKs      -> Cloudflare R2 (downloads.planton.dev/releases/{tag}/stubs/)
+#   - Pulumi modules -> Cloudflare R2 (downloads.planton.ai/releases/{tag}/modules/pulumi/)
+#   - Terraform zips -> Cloudflare R2 (downloads.planton.ai/releases/{tag}/modules/terraform/)
+#   - Content zips   -> Cloudflare R2 (downloads.planton.ai/releases/{tag}/content/)
+#   - Stub SDKs      -> Cloudflare R2 (downloads.planton.ai/releases/{tag}/stubs/)
 #   - Buf module     -> BSR (buf.build/planton/planton, labeled with the tag)
 #   - Chart catalog  -> GitHub Release (infra-charts.zip + .sha256 + version.txt)
-#   - Definitions    -> Cloudflare R2 (downloads.planton.dev/releases/{tag}/definitions/)
+#   - Definitions    -> Cloudflare R2 (downloads.planton.ai/releases/{tag}/definitions/)
 #
 # Trigger: git tag v0.1.0 && git push origin v0.1.0
 # Note: Only triggers on strict semver tags (v1.2.3) and release candidates

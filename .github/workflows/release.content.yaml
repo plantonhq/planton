@@ -2,7 +2,7 @@
 # Content Distribution Release (Reusable Workflow)
 # =============================================================================
 # Packages Planton content into eight zips and uploads them to Cloudflare R2
-# (downloads.planton.dev). These zips decouple downstream consumers (e.g. the
+# (downloads.planton.ai). These zips decouple downstream consumers (e.g. the
 # Planton upgrade-planton script) from needing a local Planton checkout.
 #
 # Every artifact is built by its OWN job so the Actions UI shows exactly what
@@ -38,13 +38,13 @@
 #                            Verified against the compiled registry BEFORE
 #                            upload; an incomplete artifact fails the release.
 #
-# Upload path: s3://downloads-dot-planton-dot-dev-bucket/releases/{tag}/content/{name}.zip
-# Public URL:  https://downloads.planton.dev/releases/{tag}/content/{name}.zip
+# Upload path: s3://planton-foundation-downloads/releases/{tag}/content/{name}.zip
+# Public URL:  https://downloads.planton.ai/releases/{tag}/content/{name}.zip
 #
 # Kind logos publish separately to VERSIONLESS keys -- they are branding
 # assets, not release-coupled binaries, so their URLs must never churn:
-#   s3://downloads-dot-planton-dot-dev-bucket/catalog/logos/{provider}/{kind}/logo.svg
-#   https://downloads.planton.dev/catalog/logos/{provider}/{kind}/logo.svg
+#   s3://planton-foundation-downloads/catalog/logos/{provider}/{kind}/logo.svg
+#   https://downloads.planton.ai/catalog/logos/{provider}/{kind}/logo.svg
 # Chart iconUrl fields and platform-generated seed iconUrls embed these URLs.
 # A changed logo may serve stale for the CDN cache TTL (accepted: logos
 # change rarely; add a purge step only if that ever matters).
@@ -82,7 +82,7 @@ permissions:
   contents: read
 
 env:
-  R2_BUCKET: downloads-dot-planton-dot-dev-bucket
+  R2_BUCKET: planton-foundation-downloads
 
 jobs:
   # One matrix entry per source-file zip, displayed by artifact name.
@@ -117,8 +117,9 @@ jobs:
         run: |
           R2_KEY="releases/${GITHUB_REF_NAME}/content/${{ matrix.zip }}.zip"
           aws s3 cp "${{ matrix.zip }}.zip" "s3://${R2_BUCKET}/${R2_KEY}" \
-            --endpoint-url "${AWS_ENDPOINT_URL}"
-          echo "uploaded: https://downloads.planton.dev/${R2_KEY}"
+            --endpoint-url "${AWS_ENDPOINT_URL}" \
+            --cache-control "public, max-age=31536000, immutable"
+          echo "uploaded: https://downloads.planton.ai/${R2_KEY}"
 
   logos:
     if: ${{ !inputs.prerelease }}
@@ -161,8 +162,9 @@ jobs:
         run: |
           aws s3 sync build/logos "s3://${R2_BUCKET}/catalog/logos" \
             --content-type image/svg+xml \
+            --cache-control "public, max-age=3600" \
             --endpoint-url "${AWS_ENDPOINT_URL}"
-          echo "uploaded: https://downloads.planton.dev/catalog/logos/{provider}/{kind}/logo.svg"
+          echo "uploaded: https://downloads.planton.ai/catalog/logos/{provider}/{kind}/logo.svg"
 
       - name: Verify every logo serves through the CDN
         run: |
@@ -175,8 +177,9 @@ jobs:
           checked=0
           for f in build/logos/*/*/logo.svg; do
             key="${f#build/logos/}"
-            url="https://downloads.planton.dev/catalog/logos/${key}"
-            read -r code ctype <<<"$(curl -sI -o /dev/null -w '%{http_code} %{content_type}' "$url")"
+            url="https://downloads.planton.ai/catalog/logos/${key}"
+            read -r code ctype <<<"$(curl -sfI -o /dev/null -w '%{http_code} %{content_type}' \
+              --retry 3 --retry-delay 5 --retry-all-errors "$url")"
             checked=$((checked + 1))
             if [ "$code" != "200" ] || [ "${ctype%%;*}" != "image/svg+xml" ]; then
               echo "FAIL: $url -> $code $ctype"
@@ -217,8 +220,9 @@ jobs:
         run: |
           R2_KEY="releases/${GITHUB_REF_NAME}/content/catalog-bundle.zip"
           aws s3 cp "build/catalog-bundle.zip" "s3://${R2_BUCKET}/${R2_KEY}" \
-            --endpoint-url "${AWS_ENDPOINT_URL}"
-          echo "uploaded: https://downloads.planton.dev/${R2_KEY}"
+            --endpoint-url "${AWS_ENDPOINT_URL}" \
+            --cache-control "public, max-age=31536000, immutable"
+          echo "uploaded: https://downloads.planton.ai/${R2_KEY}"
 
   catalog-schemas:
     runs-on: ubuntu-latest
@@ -251,5 +255,6 @@ jobs:
         run: |
           R2_KEY="releases/${GITHUB_REF_NAME}/content/catalog-schemas.zip"
           aws s3 cp "build/catalog-schemas.zip" "s3://${R2_BUCKET}/${R2_KEY}" \
-            --endpoint-url "${AWS_ENDPOINT_URL}"
-          echo "uploaded: https://downloads.planton.dev/${R2_KEY}"
+            --endpoint-url "${AWS_ENDPOINT_URL}" \
+            --cache-control "public, max-age=31536000, immutable"
+          echo "uploaded: https://downloads.planton.ai/${R2_KEY}"

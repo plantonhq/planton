@@ -9,7 +9,7 @@ const (
 	// BaseURL is the base URL for Planton artifact downloads hosted on Cloudflare R2.
 	// All non-CLI release artifacts (Pulumi binaries, Terraform modules, content zips)
 	// are published here. CLI binaries remain on GitHub Releases via GoReleaser.
-	BaseURL = "https://downloads.planton.dev/releases"
+	BaseURL = "https://downloads.planton.ai/releases"
 )
 
 // This package is pure URL grammar: every function composes the R2 key shapes
@@ -29,13 +29,13 @@ const (
 
 // BuildPulumiDownloadURL constructs the R2 download URL for a Pulumi module binary.
 //
-// URL format: https://downloads.planton.dev/releases/{version}/modules/pulumi/{kind}/{platform}.gz
+// URL format: https://downloads.planton.ai/releases/{version}/modules/pulumi/{kind}/{platform}.gz
 // (windows artifacts carry the executable suffix: {platform}.exe.gz)
 //
 // Examples (on darwin/arm64):
 //
 //	BuildPulumiDownloadURL("AwsEcsService", "v0.3.50", "darwin_arm64")
-//	  -> https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/awsecsservice/darwin_arm64.gz
+//	  -> https://downloads.planton.ai/releases/v0.3.50/modules/pulumi/awsecsservice/darwin_arm64.gz
 func BuildPulumiDownloadURL(kindDir, releaseVersion, platform string) string {
 	// The release lane gzips "{kind}.exe" on windows, so the remote
 	// artifact name carries ".exe.gz" there; local cache naming re-adds the
@@ -52,24 +52,24 @@ func BuildPulumiDownloadURL(kindDir, releaseVersion, platform string) string {
 // compiled per-platform binaries served by BuildPulumiDownloadURL. Source is
 // platform-independent, so the key carries no platform segment.
 //
-// URL format: https://downloads.planton.dev/releases/{version}/modules/pulumi/{kind}/source.zip
+// URL format: https://downloads.planton.ai/releases/{version}/modules/pulumi/{kind}/source.zip
 //
 // Examples:
 //
 //	BuildPulumiSourceDownloadURL("AwsEcsService", "v0.3.50")
-//	  -> https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/awsecsservice/source.zip
+//	  -> https://downloads.planton.ai/releases/v0.3.50/modules/pulumi/awsecsservice/source.zip
 func BuildPulumiSourceDownloadURL(kindDir, releaseVersion string) string {
 	return fmt.Sprintf("%s/%s/modules/pulumi/%s/source.zip", BaseURL, releaseVersion, strings.ToLower(kindDir))
 }
 
 // BuildTerraformDownloadURL constructs the R2 download URL for a Terraform module zip.
 //
-// URL format: https://downloads.planton.dev/releases/{version}/modules/terraform/{kind}/module.zip
+// URL format: https://downloads.planton.ai/releases/{version}/modules/terraform/{kind}/module.zip
 //
 // Examples:
 //
 //	BuildTerraformDownloadURL("AwsEcsService", "v0.3.50")
-//	  -> https://downloads.planton.dev/releases/v0.3.50/modules/terraform/awsecsservice/module.zip
+//	  -> https://downloads.planton.ai/releases/v0.3.50/modules/terraform/awsecsservice/module.zip
 func BuildTerraformDownloadURL(kindDir, releaseVersion string) string {
 	return fmt.Sprintf("%s/%s/modules/terraform/%s/module.zip", BaseURL, releaseVersion, strings.ToLower(kindDir))
 }
@@ -79,14 +79,14 @@ func BuildTerraformDownloadURL(kindDir, releaseVersion string) string {
 // pkg/skills/defspack: per-skill zips, agent instruction files, and the
 // definitions-manifest.json that indexes them with checksums).
 //
-// URL format: https://downloads.planton.dev/releases/{version}/definitions/{file}
+// URL format: https://downloads.planton.ai/releases/{version}/definitions/{file}
 //
 // Examples:
 //
 //	BuildDefinitionsDownloadURL("v0.4.0", "definitions-manifest.json")
-//	  -> https://downloads.planton.dev/releases/v0.4.0/definitions/definitions-manifest.json
+//	  -> https://downloads.planton.ai/releases/v0.4.0/definitions/definitions-manifest.json
 //	BuildDefinitionsDownloadURL("v0.4.0", "skill-planton.zip")
-//	  -> https://downloads.planton.dev/releases/v0.4.0/definitions/skill-planton.zip
+//	  -> https://downloads.planton.ai/releases/v0.4.0/definitions/skill-planton.zip
 func BuildDefinitionsDownloadURL(releaseVersion, file string) string {
 	return fmt.Sprintf("%s/%s/definitions/%s", BaseURL, releaseVersion, file)
 }
@@ -97,12 +97,12 @@ func BuildDefinitionsDownloadURL(releaseVersion, file string) string {
 // file per click instead of the whole archive. The release's
 // definitions-browse.json lists every path this shape serves.
 //
-// URL format: https://downloads.planton.dev/releases/{version}/definitions/exploded/{skillSlug}/{path}
+// URL format: https://downloads.planton.ai/releases/{version}/definitions/exploded/{skillSlug}/{path}
 //
 // Examples:
 //
 //	BuildDefinitionsExplodedFileURL("v0.4.0", "planton", "references/chart-format.md")
-//	  -> https://downloads.planton.dev/releases/v0.4.0/definitions/exploded/planton/references/chart-format.md
+//	  -> https://downloads.planton.ai/releases/v0.4.0/definitions/exploded/planton/references/chart-format.md
 func BuildDefinitionsExplodedFileURL(releaseVersion, skillSlug, path string) string {
 	return fmt.Sprintf("%s/%s/definitions/exploded/%s/%s", BaseURL, releaseVersion, skillSlug, path)
 }

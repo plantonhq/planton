@@ -6,7 +6,7 @@ spec:
   selector:
     kind: platform
   description: A complete Kafka platform on your own cluster in one deploy — a KRaft cluster with TLS and SCRAM authentication on by default, topics and client identities declared as code with operator-generated credentials, a schema registry and a management console wired in by reference, and optional Kafka Connect plus a MirrorMaker 2 migration arm that streams an existing cluster's topics and consumer offsets in.
-  iconUrl: https://downloads.planton.dev/catalog/logos/kubernetes/kuberneteskafka/logo.svg
+  iconUrl: https://downloads.planton.ai/catalog/logos/kubernetes/kuberneteskafka/logo.svg
   webLinks:
     chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/kubernetes/kafka-streaming-platform
     readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/kubernetes/kafka-streaming-platform/README.md

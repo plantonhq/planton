@@ -14,7 +14,7 @@ spec:
     workflow objects themselves, and every credential flowing by
     reference through operator-maintained Secrets. SSO is one toggle
     away; nothing is exposed until you compose exposure in front.
-  iconUrl: https://downloads.planton.dev/catalog/logos/kubernetes/kubernetesargocd/logo.svg
+  iconUrl: https://downloads.planton.ai/catalog/logos/kubernetes/kubernetesargocd/logo.svg
   webLinks:
     chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/kubernetes/gitops-delivery-platform
     readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/kubernetes/gitops-delivery-platform/README.md

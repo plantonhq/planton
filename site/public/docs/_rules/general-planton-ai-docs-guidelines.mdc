@@ -60,8 +60,9 @@ tags:
 Always use real, working commands:
 
 ```bash
-# Good: Actual command with real version
-curl -Lo planton https://downloads.planton.ai/cli/v0.0.3/planton-v0.0.3-linux-amd64
+# Good: Actual command that resolves a real version
+VERSION=$(curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/latest/version.txt)
+curl -Lo planton "https://downloads.planton.ai/client-apps/planton/cli/${VERSION}/planton-${VERSION}-linux-amd64"
 
 # Bad: Placeholder that won't work
 curl -Lo planton https://example.com/cli/<version>/planton

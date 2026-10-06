@@ -18,7 +18,7 @@ var ModulesVersion = &cobra.Command{
 downloads, and the version currently checked out in the local staging area.
 
 Every apply, plan, and destroy downloads the published module for a kind from
-the pinned release (downloads.planton.dev/releases/<release>/...) so the module
+the pinned release (downloads.planton.ai/releases/<release>/...) so the module
 always matches the schemas compiled into this binary. A binary with no release
 pin (a development build) falls back to the staging area instead.
 

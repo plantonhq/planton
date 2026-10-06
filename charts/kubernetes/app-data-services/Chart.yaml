@@ -6,7 +6,7 @@ spec:
   selector:
     kind: platform
   description: Your application's data layer in one deploy — a dedicated PostgreSQL database reconciled by the cluster's resident CloudNativePG operator plus an authenticated Valkey cache, living in the app's own namespace with operator-managed credentials the app reads from Secrets. One manifest per application, repeated as often as you have applications.
-  iconUrl: https://downloads.planton.dev/catalog/logos/kubernetes/kubernetespostgres/logo.svg
+  iconUrl: https://downloads.planton.ai/catalog/logos/kubernetes/kubernetespostgres/logo.svg
   webLinks:
     chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/kubernetes/app-data-services
     readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/kubernetes/app-data-services/README.md

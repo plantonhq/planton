@@ -134,7 +134,7 @@ func initHandler(cmd *cobra.Command, args []string) {
 		ui.Failure(
 			fmt.Sprintf("no OpenTofu module could be resolved for %s: %v", kindName, err),
 			"the current directory holds no module, and the published module for this release could not be downloaded or staged",
-			"pass --module-dir <dir> to run a module you have on disk, or check network access to downloads.planton.dev",
+			"pass --module-dir <dir> to run a module you have on disk, or check network access to downloads.planton.ai",
 		)
 	}
 

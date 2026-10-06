@@ -15,7 +15,7 @@ const DefaultPlantonGitRepo = "~/scm/github.com/plantonhq/planton"
 // Options configures the engine command set for the binary that registers it.
 type Options struct {
 	// ModulesVersion pins the released IaC module artifacts
-	// (downloads.planton.dev/releases/<version>/...) that match the proto
+	// (downloads.planton.ai/releases/<version>/...) that match the proto
 	// schemas compiled into the binary. The standalone planton binary carries
 	// its own version stamped via ldflags and leaves this empty; a host binary
 	// that embeds the engine as a Go module passes the resolved module version

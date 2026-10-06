@@ -173,7 +173,7 @@ runs:
         set -euo pipefail
         VERSION="${{ inputs.cli-version }}"
         if [ "${VERSION}" = "latest" ]; then
-          VERSION="$(curl -fsSL https://downloads.planton.app/cli/latest/version.txt | tr -d '[:space:]')"
+          VERSION="$(curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/latest/version.txt | tr -d '[:space:]')"
         fi
         case "${RUNNER_OS}" in
           Linux)  OS=linux ;;
@@ -188,8 +188,8 @@ runs:
         BIN="planton-${VERSION}-${OS}-${ARCH}"
         DIR="${RUNNER_TEMP}/planton-cli"
         mkdir -p "${DIR}"
-        curl -fsSL -o "${DIR}/${BIN}" "https://downloads.planton.app/cli/${VERSION}/${BIN}"
-        curl -fsSL -o "${DIR}/checksums.txt" "https://downloads.planton.app/cli/${VERSION}/checksums.txt"
+        curl -fsSL -o "${DIR}/${BIN}" "https://downloads.planton.ai/client-apps/planton/cli/${VERSION}/${BIN}"
+        curl -fsSL -o "${DIR}/checksums.txt" "https://downloads.planton.ai/client-apps/planton/cli/${VERSION}/checksums.txt"
         # The release's checksums are the integrity contract: a binary that
         # does not match is never executed.
         EXPECTED="$(grep -E "  ?${BIN}\$" "${DIR}/checksums.txt" | awk '{print $1}')"

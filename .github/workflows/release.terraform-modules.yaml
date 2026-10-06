@@ -2,7 +2,7 @@
 # Terraform Modules Release (Reusable Workflow)
 # =============================================================================
 # Zips all Terraform kind folders across all providers and
-# uploads them to Cloudflare R2 (downloads.planton.dev).
+# uploads them to Cloudflare R2 (downloads.planton.ai).
 #
 # Features:
 #   - Dynamic kind discovery from directory structure
@@ -11,8 +11,8 @@
 #   - Clear progress logging with kind counts
 #   - No hardcoded kind paths - auto-discovers from filesystem
 #
-# Upload path: s3://downloads-dot-planton-dot-dev-bucket/releases/{tag}/modules/terraform/{kind}/module.zip
-# Public URL:  https://downloads.planton.dev/releases/{tag}/modules/terraform/{kind}/module.zip
+# Upload path: s3://planton-foundation-downloads/releases/{tag}/modules/terraform/{kind}/module.zip
+# Public URL:  https://downloads.planton.ai/releases/{tag}/modules/terraform/{kind}/module.zip
 #
 # Path pattern: catalog/{provider}/{kind}/iac/tf (one live module set per
 # kind -- the key carries no API version segment; the release tag
@@ -38,7 +38,7 @@ permissions:
 
 env:
   CATALOG_ROOT: catalog
-  R2_BUCKET: downloads-dot-planton-dot-dev-bucket
+  R2_BUCKET: planton-foundation-downloads
 
 jobs:
   # ============================================================================
@@ -139,8 +139,9 @@ jobs:
               
               # Upload to R2
               if aws s3 cp "${ARTIFACT_NAME}" "s3://${R2_BUCKET}/${R2_KEY}" \
-                --endpoint-url "${AWS_ENDPOINT_URL}"; then
-                echo "✓ Uploaded: https://downloads.planton.dev/${R2_KEY}"
+                --endpoint-url "${AWS_ENDPOINT_URL}" \
+                --cache-control "public, max-age=31536000, immutable"; then
+                echo "✓ Uploaded: https://downloads.planton.ai/${R2_KEY}"
                 LAST_UPLOADED_KEY="${R2_KEY}"
               else
                 echo "✗ ERROR: Failed to upload ${ARTIFACT_NAME} to R2"
@@ -162,8 +163,9 @@ jobs:
           # it, a key-shape change here ships silently and every released CLI
           # degrades module fetches into full git clones.
           if [ -n "${LAST_UPLOADED_KEY:-}" ]; then
-            PROBE_URL="https://downloads.planton.dev/${LAST_UPLOADED_KEY}"
-            PROBE_CODE=$(curl -s -o /dev/null -w "%{http_code}" -I "${PROBE_URL}")
+            PROBE_URL="https://downloads.planton.ai/${LAST_UPLOADED_KEY}"
+            PROBE_CODE=$(curl -sf -I -o /dev/null -w "%{http_code}" \
+              --retry 3 --retry-delay 5 --retry-all-errors "${PROBE_URL}" || true)
             if [ "${PROBE_CODE}" = "200" ]; then
               echo "✓ Public URL probe passed: ${PROBE_URL}"
             else

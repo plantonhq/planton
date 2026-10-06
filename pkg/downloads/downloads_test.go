@@ -19,7 +19,7 @@ func TestBuildTerraformDownloadURL(t *testing.T) {
 			name:    "canonical kind",
 			kindDir: "AwsEcsService",
 			release: "v0.3.50",
-			want:    "https://downloads.planton.dev/releases/v0.3.50/modules/terraform/awsecsservice/module.zip",
+			want:    "https://downloads.planton.ai/releases/v0.3.50/modules/terraform/awsecsservice/module.zip",
 		},
 		{
 			// One live module set per kind: the key stays identical when
@@ -27,7 +27,7 @@ func TestBuildTerraformDownloadURL(t *testing.T) {
 			name:    "key carries no API version segment",
 			kindDir: "AwsS3Bucket",
 			release: "v0.4.0",
-			want:    "https://downloads.planton.dev/releases/v0.4.0/modules/terraform/awss3bucket/module.zip",
+			want:    "https://downloads.planton.ai/releases/v0.4.0/modules/terraform/awss3bucket/module.zip",
 		},
 	}
 	for _, tt := range tests {
@@ -52,14 +52,14 @@ func TestBuildPulumiDownloadURL(t *testing.T) {
 			kindDir:  "AwsEcsService",
 			release:  "v0.3.50",
 			platform: "darwin_arm64",
-			want:     "https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/awsecsservice/darwin_arm64.gz",
+			want:     "https://downloads.planton.ai/releases/v0.3.50/modules/pulumi/awsecsservice/darwin_arm64.gz",
 		},
 		{
 			name:     "linux amd64",
 			kindDir:  "AwsS3Bucket",
 			release:  "v0.3.50",
 			platform: "linux_amd64",
-			want:     "https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/awss3bucket/linux_amd64.gz",
+			want:     "https://downloads.planton.ai/releases/v0.3.50/modules/pulumi/awss3bucket/linux_amd64.gz",
 		},
 		{
 			// Every ARM runner the platform ships (Graviton, kind on an Apple
@@ -68,7 +68,7 @@ func TestBuildPulumiDownloadURL(t *testing.T) {
 			kindDir:  "KubernetesDeployment",
 			release:  "v0.3.50",
 			platform: "linux_arm64",
-			want:     "https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/kubernetesdeployment/linux_arm64.gz",
+			want:     "https://downloads.planton.ai/releases/v0.3.50/modules/pulumi/kubernetesdeployment/linux_arm64.gz",
 		},
 		{
 			// The release lane gzips "{kind}.exe" on windows, so the
@@ -78,7 +78,7 @@ func TestBuildPulumiDownloadURL(t *testing.T) {
 			kindDir:  "AwsEcsService",
 			release:  "v0.3.50",
 			platform: "windows_amd64",
-			want:     "https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/awsecsservice/windows_amd64.exe.gz",
+			want:     "https://downloads.planton.ai/releases/v0.3.50/modules/pulumi/awsecsservice/windows_amd64.exe.gz",
 		},
 	}
 	for _, tt := range tests {
@@ -101,7 +101,7 @@ func TestBuildPulumiSourceDownloadURL(t *testing.T) {
 			name:    "canonical kind",
 			kindDir: "AwsEcsService",
 			release: "v0.3.50",
-			want:    "https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/awsecsservice/source.zip",
+			want:    "https://downloads.planton.ai/releases/v0.3.50/modules/pulumi/awsecsservice/source.zip",
 		},
 		{
 			// Source is platform-independent -- pin that the key carries no
@@ -109,7 +109,7 @@ func TestBuildPulumiSourceDownloadURL(t *testing.T) {
 			name:    "key carries no platform segment",
 			kindDir: "AwsS3Bucket",
 			release: "v0.4.0",
-			want:    "https://downloads.planton.dev/releases/v0.4.0/modules/pulumi/awss3bucket/source.zip",
+			want:    "https://downloads.planton.ai/releases/v0.4.0/modules/pulumi/awss3bucket/source.zip",
 		},
 	}
 	for _, tt := range tests {
@@ -122,14 +122,14 @@ func TestBuildPulumiSourceDownloadURL(t *testing.T) {
 }
 
 func TestBuildDefinitionsDownloadURL(t *testing.T) {
-	want := "https://downloads.planton.dev/releases/v0.4.0/definitions/definitions-manifest.json"
+	want := "https://downloads.planton.ai/releases/v0.4.0/definitions/definitions-manifest.json"
 	if got := BuildDefinitionsDownloadURL("v0.4.0", "definitions-manifest.json"); got != want {
 		t.Errorf("BuildDefinitionsDownloadURL() = %q, want %q", got, want)
 	}
 }
 
 func TestBuildDefinitionsExplodedFileURL(t *testing.T) {
-	want := "https://downloads.planton.dev/releases/v0.4.0/definitions/exploded/planton/references/chart-format.md"
+	want := "https://downloads.planton.ai/releases/v0.4.0/definitions/exploded/planton/references/chart-format.md"
 	if got := BuildDefinitionsExplodedFileURL("v0.4.0", "planton", "references/chart-format.md"); got != want {
 		t.Errorf("BuildDefinitionsExplodedFileURL() = %q, want %q", got, want)
 	}

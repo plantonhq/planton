@@ -60,7 +60,8 @@ If you prefer not to use Homebrew, download the binary directly:
 **Apple Silicon (M1/M2/M3):**
 
 ```bash
-curl -Lo planton https://downloads.planton.ai/cli/v0.0.3/planton-v0.0.3-darwin-arm64
+VERSION=$(curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/latest/version.txt)
+curl -Lo planton "https://downloads.planton.ai/client-apps/planton/cli/${VERSION}/planton-${VERSION}-darwin-arm64"
 chmod +x planton
 sudo mv planton /usr/local/bin/
 ```
@@ -68,7 +69,8 @@ sudo mv planton /usr/local/bin/
 **Intel Mac:**
 
 ```bash
-curl -Lo planton https://downloads.planton.ai/cli/v0.0.3/planton-v0.0.3-darwin-amd64
+VERSION=$(curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/latest/version.txt)
+curl -Lo planton "https://downloads.planton.ai/client-apps/planton/cli/${VERSION}/planton-${VERSION}-darwin-amd64"
 chmod +x planton
 sudo mv planton /usr/local/bin/
 ```
@@ -94,7 +96,8 @@ If you use WSL, install the Linux binary using curl:
 **x86_64 (most systems):**
 
 ```bash
-curl -Lo planton https://downloads.planton.ai/cli/v0.0.3/planton-v0.0.3-linux-amd64
+VERSION=$(curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/latest/version.txt)
+curl -Lo planton "https://downloads.planton.ai/client-apps/planton/cli/${VERSION}/planton-${VERSION}-linux-amd64"
 chmod +x planton
 sudo mv planton /usr/local/bin/
 ```
@@ -102,7 +105,8 @@ sudo mv planton /usr/local/bin/
 **ARM64:**
 
 ```bash
-curl -Lo planton https://downloads.planton.ai/cli/v0.0.3/planton-v0.0.3-linux-arm64
+VERSION=$(curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/latest/version.txt)
+curl -Lo planton "https://downloads.planton.ai/client-apps/planton/cli/${VERSION}/planton-${VERSION}-linux-arm64"
 chmod +x planton
 sudo mv planton /usr/local/bin/
 ```
@@ -114,8 +118,9 @@ For native Windows without WSL, open PowerShell as Administrator and run:
 **Windows x64 (most systems):**
 
 ```powershell
-# Download the CLI
-Invoke-WebRequest -Uri "https://downloads.planton.ai/cli/v0.0.3/planton-v0.0.3-windows-amd64.exe" -OutFile "planton.exe"
+# Download the latest CLI
+$version = (Invoke-RestMethod -Uri "https://downloads.planton.ai/client-apps/planton/cli/latest/version.txt").Trim()
+Invoke-WebRequest -Uri "https://downloads.planton.ai/client-apps/planton/cli/$version/planton-$version-windows-amd64.exe" -OutFile "planton.exe"
 
 # Move to a directory in your PATH (create if needed)
 New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\bin"
@@ -131,8 +136,9 @@ if ($userPath -notlike "*$env:USERPROFILE\bin*") {
 **Windows ARM64:**
 
 ```powershell
-# Download the CLI
-Invoke-WebRequest -Uri "https://downloads.planton.ai/cli/v0.0.3/planton-v0.0.3-windows-arm64.exe" -OutFile "planton.exe"
+# Download the latest CLI
+$version = (Invoke-RestMethod -Uri "https://downloads.planton.ai/client-apps/planton/cli/latest/version.txt").Trim()
+Invoke-WebRequest -Uri "https://downloads.planton.ai/client-apps/planton/cli/$version/planton-$version-windows-arm64.exe" -OutFile "planton.exe"
 
 # Move to a directory in your PATH (create if needed)
 New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\bin"
@@ -151,12 +157,14 @@ After adding to PATH, restart your terminal for changes to take effect.
 
 ### Verify checksum on Windows
 
+Run this in the same PowerShell session that installed the CLI (it reuses `$version`):
+
 ```powershell
-# Download checksums
-Invoke-WebRequest -Uri "https://downloads.planton.ai/cli/v0.0.3/checksums.txt" -OutFile "checksums.txt"
+# Download the checksums published with that version
+Invoke-WebRequest -Uri "https://downloads.planton.ai/client-apps/planton/cli/$version/checksums.txt" -OutFile "checksums.txt"
 
 # Calculate hash of downloaded file
-(Get-FileHash -Path "planton.exe" -Algorithm SHA256).Hash.ToLower()
+(Get-FileHash -Path "$env:USERPROFILE\bin\planton.exe" -Algorithm SHA256).Hash.ToLower()
 
 # Compare with checksum in checksums.txt
 Get-Content checksums.txt | Select-String "windows-amd64"
@@ -173,7 +181,8 @@ Download the binary directly for your architecture.
 Most Linux servers and desktops use x86_64:
 
 ```bash
-curl -Lo planton https://downloads.planton.ai/cli/v0.0.3/planton-v0.0.3-linux-amd64
+VERSION=$(curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/latest/version.txt)
+curl -Lo planton "https://downloads.planton.ai/client-apps/planton/cli/${VERSION}/planton-${VERSION}-linux-amd64"
 chmod +x planton
 sudo mv planton /usr/local/bin/
 ```
@@ -183,7 +192,8 @@ sudo mv planton /usr/local/bin/
 For ARM-based systems like Raspberry Pi 4, AWS Graviton, or ARM cloud instances:
 
 ```bash
-curl -Lo planton https://downloads.planton.ai/cli/v0.0.3/planton-v0.0.3-linux-arm64
+VERSION=$(curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/latest/version.txt)
+curl -Lo planton "https://downloads.planton.ai/client-apps/planton/cli/${VERSION}/planton-${VERSION}-linux-arm64"
 chmod +x planton
 sudo mv planton /usr/local/bin/
 ```
@@ -192,14 +202,14 @@ sudo mv planton /usr/local/bin/
 
 ### Verify checksum on Linux
 
-For security-conscious installations, verify the download:
+For security-conscious installations, verify the download. Run this in the same shell that installed the CLI (it reuses `VERSION`):
 
 ```bash
-# Download checksums
-curl -LO https://downloads.planton.ai/cli/v0.0.3/checksums.txt
+# Download the checksums published with that version
+curl -fsSLO "https://downloads.planton.ai/client-apps/planton/cli/${VERSION}/checksums.txt"
 
-# Verify (replace filename with your download)
-sha256sum -c checksums.txt --ignore-missing
+# Verify (use linux-arm64 if that is the binary you downloaded)
+grep "planton-${VERSION}-linux-amd64$" checksums.txt | awk '{print $1 "  /usr/local/bin/planton"}' | sha256sum -c -
 ```
 
 ---
@@ -215,7 +225,7 @@ planton version
 You should see output like:
 
 ```
-planton version v0.0.3
+planton version v0.0.145
 ```
 
 If you get a "command not found" error, ensure the binary location is in your PATH.

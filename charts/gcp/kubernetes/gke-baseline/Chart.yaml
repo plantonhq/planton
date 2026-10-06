@@ -6,7 +6,7 @@ spec:
   selector:
     kind: platform
   description: A production GKE cluster that provisions its own machines through node auto-provisioning, consolidates them when idle, and backs itself up on a schedule — with TLS, DNS, ingress, and secrets syncing already wired, keylessly.
-  iconUrl: https://downloads.planton.dev/catalog/logos/gcp/gcpgkecluster/logo.svg
+  iconUrl: https://downloads.planton.ai/catalog/logos/gcp/gcpgkecluster/logo.svg
   webLinks:
     chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/gcp/kubernetes/gke-baseline
     readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/gcp/kubernetes/gke-baseline/README.md

@@ -6,7 +6,7 @@ spec:
   selector:
     kind: platform
   description: Turns an existing Kubernetes cluster into a production platform in one deploy — automatic TLS certificates from Let's Encrypt, DNS records published for every exposed service, an ingress or Gateway API entry point, cloud secrets synced into the cluster, and the metrics API autoscaling depends on, with keyless cloud authentication throughout.
-  iconUrl: https://downloads.planton.dev/catalog/logos/kubernetes/kubernetescertmanager/logo.svg
+  iconUrl: https://downloads.planton.ai/catalog/logos/kubernetes/kubernetescertmanager/logo.svg
   webLinks:
     chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/kubernetes/production-cluster-baseline
     readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/kubernetes/production-cluster-baseline/README.md

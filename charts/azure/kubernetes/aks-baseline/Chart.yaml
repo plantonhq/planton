@@ -6,7 +6,7 @@ spec:
   selector:
     kind: platform
   description: A production AKS cluster that scales itself between the bounds you set and backs itself up on a schedule — private nodes behind one NAT gateway, keyless workload identity, TLS, DNS, and ingress already wired.
-  iconUrl: https://downloads.planton.dev/catalog/logos/azure/azureakscluster/logo.svg
+  iconUrl: https://downloads.planton.ai/catalog/logos/azure/azureakscluster/logo.svg
   webLinks:
     chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/azure/kubernetes/aks-baseline
     readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/azure/kubernetes/aks-baseline/README.md

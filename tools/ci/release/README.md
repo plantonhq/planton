@@ -58,10 +58,10 @@ When you run `make release`, here's what happens:
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │  GitHub Actions (.github/workflows/release.yaml)                            │
 │  ├── Create the GitHub Release with auto-generated notes                    │
-│  ├── Pulumi module binaries    -> Cloudflare R2 (downloads.planton.dev)     │
-│  ├── Terraform module zips     -> Cloudflare R2 (downloads.planton.dev)     │
-│  ├── Content distribution zips -> Cloudflare R2 (downloads.planton.dev)     │
-│  ├── Definitions               -> Cloudflare R2 (downloads.planton.dev)     │
+│  ├── Pulumi module binaries    -> Cloudflare R2 (downloads.planton.ai)      │
+│  ├── Terraform module zips     -> Cloudflare R2 (downloads.planton.ai)      │
+│  ├── Content distribution zips -> Cloudflare R2 (downloads.planton.ai)      │
+│  ├── Definitions               -> Cloudflare R2 (downloads.planton.ai)      │
 │  └── InfraChart catalog zip    -> attached to the GitHub Release            │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```

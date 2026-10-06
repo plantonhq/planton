@@ -16,7 +16,7 @@ spec:
     Optional refinements: a real hostname with TLS, storage class and
     size, and the operator toggle that lets a second platform join a
     cluster already running one.
-  iconUrl: https://downloads.planton.dev/catalog/logos/kubernetes/kubernetesplantonplatform/logo.svg
+  iconUrl: https://downloads.planton.ai/catalog/logos/kubernetes/kubernetesplantonplatform/logo.svg
   webLinks:
     chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/kubernetes/planton-on-kubernetes
     readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/kubernetes/planton-on-kubernetes/README.md

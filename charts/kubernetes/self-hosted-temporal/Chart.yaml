@@ -12,7 +12,7 @@ spec:
     requires, credentials flowing by reference through operator-maintained
     Secrets, the Web UI on, and your first Temporal namespace created
     declaratively.
-  iconUrl: https://downloads.planton.dev/catalog/logos/kubernetes/kubernetestemporal/logo.svg
+  iconUrl: https://downloads.planton.ai/catalog/logos/kubernetes/kubernetestemporal/logo.svg
   webLinks:
     chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/kubernetes/self-hosted-temporal
     readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/kubernetes/self-hosted-temporal/README.md

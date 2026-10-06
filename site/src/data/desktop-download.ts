@@ -92,7 +92,7 @@ export interface DesktopPlatform {
 export const DESKTOP_LANDING_PATH = '/desktop';
 export const DESKTOP_DOWNLOAD_PATH = '/desktop/download';
 
-export const DOWNLOADS_BASE = 'https://downloads.planton.app/desktop';
+export const DOWNLOADS_BASE = 'https://downloads.planton.ai/client-apps/planton/desktop';
 
 /** The version-free alias directory the release pipeline republishes on every stable release. */
 export const DOWNLOADS_LATEST = `${DOWNLOADS_BASE}/latest`;

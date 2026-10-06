@@ -897,7 +897,7 @@ planton
 │ 4. Resolve Module (first match wins)                        │
 │    - Explicit --module-dir (validated, fails loudly)        │
 │    - Current directory, when it contains a valid module     │
-│    - Released artifact from downloads.planton.dev (cached)  │
+│    - Released artifact from downloads.planton.ai (cached)   │
 │    - Staging clone of the git repo (fallback)               │
 └────────────────────────┬────────────────────────────────────┘
                          │
@@ -941,7 +941,7 @@ from those three facts.
 2. **The current directory** — probed as a convenience when no explicit
    choice was made; running the CLI from inside a module just works.
 3. **Released artifact download (fast path)** — terraform module zips and
-   pre-built pulumi binaries from `downloads.planton.dev`, keyed by release
+   pre-built pulumi binaries from `downloads.planton.ai`, keyed by release
    tag, kind, and the kind's declared version. Released CLIs use this
    path; dev builds skip it.
 4. **Staging clone (fallback)** — a git checkout of the modules repository

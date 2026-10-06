@@ -78,7 +78,7 @@ func GetModulePath(kindName, releaseVersion string) (string, error) {
 // Examples:
 //
 //	BuildDownloadURL("AwsEcsService", "v0.3.50")
-//	  -> https://downloads.planton.dev/releases/v0.3.50/modules/terraform/awsecsservice/module.zip
+//	  -> https://downloads.planton.ai/releases/v0.3.50/modules/terraform/awsecsservice/module.zip
 func BuildDownloadURL(kindName, releaseVersion string) (string, error) {
 	// Validate against the registry before composing: an unknown kind must
 	// fail plainly here, not as a 404 the fallback path silently absorbs.

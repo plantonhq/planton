@@ -2,13 +2,13 @@
 # Terraform Modules Auto-Release
 # =============================================================================
 # Zips a Terraform module, uploads it to Cloudflare R2
-# (downloads.planton.dev), and creates a GitHub release with download links.
+# (downloads.planton.ai), and creates a GitHub release with download links.
 #
 # Tag Format: v{semver}-terraform.{kind}.{YYYYMMDD}.{N}
 # Example: v0.3.5-terraform.awsecsservice.20260108.0
 #
-# Upload path: s3://downloads-dot-planton-dot-dev-bucket/releases/{tag}/modules/terraform/{kind}/module.zip
-# Public URL:  https://downloads.planton.dev/releases/{tag}/modules/terraform/{kind}/module.zip
+# Upload path: s3://planton-foundation-downloads/releases/{tag}/modules/terraform/{kind}/module.zip
+# Public URL:  https://downloads.planton.ai/releases/{tag}/modules/terraform/{kind}/module.zip
 #
 # Triggered by: auto-tag.yaml via workflow_dispatch (one call per kind)
 # =============================================================================
@@ -40,7 +40,7 @@ permissions:
   contents: write
 
 env:
-  R2_BUCKET: downloads-dot-planton-dot-dev-bucket
+  R2_BUCKET: planton-foundation-downloads
 
 jobs:
   release:
@@ -79,8 +79,9 @@ jobs:
           R2_KEY="releases/${TAG}/modules/terraform/${KIND}/module.zip"
           
           aws s3 cp "${ARTIFACT_NAME}" "s3://${R2_BUCKET}/${R2_KEY}" \
-            --endpoint-url "${AWS_ENDPOINT_URL}"
-          echo "✓ Uploaded: https://downloads.planton.dev/${R2_KEY}"
+            --endpoint-url "${AWS_ENDPOINT_URL}" \
+            --cache-control "public, max-age=31536000, immutable"
+          echo "✓ Uploaded: https://downloads.planton.ai/${R2_KEY}"
 
       - name: Create GitHub Release
         env:
@@ -90,7 +91,7 @@ jobs:
           KIND="${{ inputs.kind }}"
           PROVIDER="${{ inputs.provider }}"
           MODULE_PATH="${{ inputs.path }}"
-          DOWNLOAD_URL="https://downloads.planton.dev/releases/${TAG}/modules/terraform/${KIND}/module.zip"
+          DOWNLOAD_URL="https://downloads.planton.ai/releases/${TAG}/modules/terraform/${KIND}/module.zip"
 
           cat > release-notes.md << 'EOF'
           ## Terraform Module Auto-Release
@@ -189,7 +190,7 @@ jobs:
           TAG="${{ inputs.tag }}"
           KIND="${{ inputs.kind }}"
           PROVIDER="${{ inputs.provider }}"
-          DOWNLOAD_URL="https://downloads.planton.dev/releases/${TAG}/modules/terraform/${KIND}/module.zip"
+          DOWNLOAD_URL="https://downloads.planton.ai/releases/${TAG}/modules/terraform/${KIND}/module.zip"
           
           echo "## Terraform Module Auto-Release Complete" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY

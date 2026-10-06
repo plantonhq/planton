@@ -31,7 +31,7 @@ const (
 	ossRepoURL  = "https://github.com/plantonhq/planton"
 	ossRawURL   = "https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main"
 	bsrDocsURL  = "https://buf.build/planton/planton/docs/main"
-	logoBaseURL = "https://downloads.planton.dev/catalog/logos"
+	logoBaseURL = "https://downloads.planton.ai/catalog/logos"
 
 	// entriesPrefix keys entry documents inside the zip, beside conversions/
 	// and presets/.

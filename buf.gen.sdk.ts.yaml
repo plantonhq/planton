@@ -1,7 +1,7 @@
 # TypeScript stub SDK template -- release cargo for the platform repo.
 #
 # Built by `make build-stub-sdks` and shipped at
-# downloads.planton.dev/releases/{tag}/stubs/stubs-ts.zip. The platform
+# downloads.planton.ai/releases/{tag}/stubs/stubs-ts.zip. The platform
 # extracts this tree into product/apis/stubs/ts, where its own generated
 # stubs import these types by RELATIVE path -- the single-tree layout is
 # load-bearing, so output must stay byte-equivalent to what the platform's

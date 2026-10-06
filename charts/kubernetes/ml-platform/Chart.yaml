@@ -13,7 +13,7 @@ spec:
     APIs, and a CloudNativePG-managed PostgreSQL bootstrapped with both
     backing databases. Notebooks open pre-wired — the tracking server and
     the Ray client address are already in every user's environment.
-  iconUrl: https://downloads.planton.dev/catalog/logos/kubernetes/kubernetesmlflow/logo.svg
+  iconUrl: https://downloads.planton.ai/catalog/logos/kubernetes/kubernetesmlflow/logo.svg
   webLinks:
     chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/kubernetes/ml-platform
     readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/kubernetes/ml-platform/README.md

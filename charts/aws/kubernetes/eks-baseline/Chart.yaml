@@ -6,7 +6,7 @@ spec:
   selector:
     kind: platform
   description: A production EKS cluster that provisions its own machines, consolidates them away when idle, and backs itself up on a schedule — with TLS, DNS, and ingress already wired.
-  iconUrl: https://downloads.planton.dev/catalog/logos/aws/awsekscluster/logo.svg
+  iconUrl: https://downloads.planton.ai/catalog/logos/aws/awsekscluster/logo.svg
   webLinks:
     chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/aws/kubernetes/eks-baseline
     readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/aws/kubernetes/eks-baseline/README.md

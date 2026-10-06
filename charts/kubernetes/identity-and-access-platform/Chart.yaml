@@ -14,7 +14,7 @@ spec:
     operator-maintained Secret, the authorization API ships with its
     keys enabled on day one, and nothing is exposed until you compose
     exposure in front of it.
-  iconUrl: https://downloads.planton.dev/catalog/logos/kubernetes/kuberneteskeycloak/logo.svg
+  iconUrl: https://downloads.planton.ai/catalog/logos/kubernetes/kuberneteskeycloak/logo.svg
   webLinks:
     chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/kubernetes/identity-and-access-platform
     readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/kubernetes/identity-and-access-platform/README.md

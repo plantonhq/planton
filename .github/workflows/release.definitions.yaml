@@ -2,7 +2,7 @@
 # Definitions Release (Reusable Workflow)
 # =============================================================================
 # Packages the definition trees (skills/, agents/, automations/) into a
-# definitions release and uploads it to Cloudflare R2 (downloads.planton.dev):
+# definitions release and uploads it to Cloudflare R2 (downloads.planton.ai):
 # one deterministic zip per skill, each agent's instructions file, each
 # automation's definition file, and a definitions-manifest.json carrying the
 # release version, per-artifact SHA-256 checksums, and the compatibility
@@ -51,27 +51,28 @@
 # fix in its log: degraded, never silent -- the same posture as the
 # auto-heal workflow's AUTO_HEAL_PUSH_TOKEN.
 #
-# Upload path: s3://downloads-dot-planton-dot-dev-bucket/releases/{tag}/definitions/{file}
-# Public URL:  https://downloads.planton.dev/releases/{tag}/definitions/{file}
+# Upload path: s3://planton-foundation-downloads/releases/{tag}/definitions/{file}
+# Public URL:  https://downloads.planton.ai/releases/{tag}/definitions/{file}
 # Exploded:    .../releases/{tag}/definitions/exploded/{skill-slug}/{path}
 #              (tree described by .../definitions-browse.json at the same tag)
 #
 # Releases index (browse surfaces' release picker; appended only after every
 # upload succeeded, so -- unlike the GitHub releases list -- it can never name
 # a tag whose definitions content is incomplete):
-#   https://downloads.planton.dev/definitions/releases/index.json
+#   https://downloads.planton.ai/definitions/releases/index.json
 #
 # Channel pointer:
-#   s3://downloads-dot-planton-dot-dev-bucket/definitions/stable/version.txt
-#   https://downloads.planton.dev/definitions/stable/version.txt
+#   s3://planton-foundation-downloads/definitions/stable/version.txt
+#   https://downloads.planton.ai/definitions/stable/version.txt
 # Runtime consumers (the desktop daemon's definitions roll-forward) resolve
 # this pointer to discover the current definitions release, then fetch the
 # manifest at that tag and verify every artifact checksum. ROLLBACK is a
 # pointer rewrite -- point it back at a previous good tag and every install
 # re-adopts that version on its next seed:
 #   echo "v0.X.Y" | aws s3 cp - \
-#     s3://downloads-dot-planton-dot-dev-bucket/definitions/stable/version.txt \
-#     --endpoint-url "$CLOUDFLARE_R2_ENDPOINT" --content-type text/plain
+#     s3://planton-foundation-downloads/definitions/stable/version.txt \
+#     --endpoint-url "$CLOUDFLARE_R2_ENDPOINT" --content-type text/plain \
+#     --cache-control "no-cache"
 #
 # Release candidates (prerelease input): the package, every per-artifact
 # upload, the exploded tree and the manifest publish at the candidate's own
@@ -109,7 +110,7 @@ permissions:
   contents: read
 
 env:
-  R2_BUCKET: downloads-dot-planton-dot-dev-bucket
+  R2_BUCKET: planton-foundation-downloads
 
 jobs:
   package:
@@ -192,8 +193,9 @@ jobs:
         run: |
           R2_KEY="releases/${GITHUB_REF_NAME}/definitions/skill-${{ matrix.slug }}.zip"
           aws s3 cp "skill-${{ matrix.slug }}.zip" "s3://${R2_BUCKET}/${R2_KEY}" \
-            --endpoint-url "${AWS_ENDPOINT_URL}"
-          echo "uploaded: https://downloads.planton.dev/${R2_KEY}"
+            --endpoint-url "${AWS_ENDPOINT_URL}" \
+            --cache-control "public, max-age=31536000, immutable"
+          echo "uploaded: https://downloads.planton.ai/${R2_KEY}"
 
   agent:
     needs: package
@@ -217,8 +219,9 @@ jobs:
         run: |
           R2_KEY="releases/${GITHUB_REF_NAME}/definitions/agent-${{ matrix.slug }}-instructions.md"
           aws s3 cp "agent-${{ matrix.slug }}-instructions.md" "s3://${R2_BUCKET}/${R2_KEY}" \
-            --endpoint-url "${AWS_ENDPOINT_URL}"
-          echo "uploaded: https://downloads.planton.dev/${R2_KEY}"
+            --endpoint-url "${AWS_ENDPOINT_URL}" \
+            --cache-control "public, max-age=31536000, immutable"
+          echo "uploaded: https://downloads.planton.ai/${R2_KEY}"
 
   automation:
     needs: package
@@ -246,8 +249,9 @@ jobs:
         run: |
           R2_KEY="releases/${GITHUB_REF_NAME}/definitions/automation-${{ matrix.slug }}.yaml"
           aws s3 cp "automation-${{ matrix.slug }}.yaml" "s3://${R2_BUCKET}/${R2_KEY}" \
-            --endpoint-url "${AWS_ENDPOINT_URL}"
-          echo "uploaded: https://downloads.planton.dev/${R2_KEY}"
+            --endpoint-url "${AWS_ENDPOINT_URL}" \
+            --cache-control "public, max-age=31536000, immutable"
+          echo "uploaded: https://downloads.planton.ai/${R2_KEY}"
 
   exploded:
     needs: package
@@ -307,11 +311,13 @@ jobs:
           AWS_ENDPOINT_URL: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
         run: |
           aws s3 cp exploded "s3://${R2_BUCKET}/releases/${GITHUB_REF_NAME}/definitions/exploded" \
-            --recursive --only-show-errors --endpoint-url "${AWS_ENDPOINT_URL}"
+            --recursive --only-show-errors --endpoint-url "${AWS_ENDPOINT_URL}" \
+            --cache-control "public, max-age=31536000, immutable"
           aws s3 cp definitions-browse.json \
             "s3://${R2_BUCKET}/releases/${GITHUB_REF_NAME}/definitions/definitions-browse.json" \
-            --content-type application/json --endpoint-url "${AWS_ENDPOINT_URL}"
-          echo "uploaded: https://downloads.planton.dev/releases/${GITHUB_REF_NAME}/definitions/definitions-browse.json"
+            --content-type application/json --endpoint-url "${AWS_ENDPOINT_URL}" \
+            --cache-control "public, max-age=31536000, immutable"
+          echo "uploaded: https://downloads.planton.ai/releases/${GITHUB_REF_NAME}/definitions/definitions-browse.json"
 
   # Runs only after EVERY artifact upload succeeded: the manifest that names
   # the artifacts, then the channel pointer that names the release, then the
@@ -344,8 +350,9 @@ jobs:
         run: |
           R2_KEY="releases/${GITHUB_REF_NAME}/definitions/definitions-manifest.json"
           aws s3 cp "definitions-manifest.json" "s3://${R2_BUCKET}/${R2_KEY}" \
-            --endpoint-url "${AWS_ENDPOINT_URL}"
-          echo "uploaded: https://downloads.planton.dev/${R2_KEY}"
+            --endpoint-url "${AWS_ENDPOINT_URL}" \
+            --cache-control "public, max-age=31536000, immutable"
+          echo "uploaded: https://downloads.planton.ai/${R2_KEY}"
 
       - name: Move the stable channel pointer
         if: ${{ !inputs.prerelease }}
@@ -359,7 +366,7 @@ jobs:
             --endpoint-url "${AWS_ENDPOINT_URL}" \
             --content-type text/plain \
             --cache-control "no-cache"
-          echo "  stable channel -> ${TAG} (https://downloads.planton.dev/definitions/stable/version.txt)"
+          echo "  stable channel -> ${TAG} (https://downloads.planton.ai/definitions/stable/version.txt)"
 
       - name: Append the release to the definitions releases index
         if: ${{ !inputs.prerelease }}
@@ -395,7 +402,7 @@ jobs:
             --endpoint-url "${AWS_ENDPOINT_URL}" \
             --content-type application/json \
             --cache-control "no-cache"
-          echo "  releases index += ${TAG} (https://downloads.planton.dev/${INDEX_KEY})"
+          echo "  releases index += ${TAG} (https://downloads.planton.ai/${INDEX_KEY})"
 
   # The coding-agent lane. github.com/plantonhq/skills is a distribution
   # repository: its skills/ tree is release output (this job's writes and
@@ -478,7 +485,7 @@ jobs:
           git config user.email "release@planton.ai"
           git add -A
           git commit --allow-empty -m "release: ${TAG}" \
-            -m "Skill trees are the checksum-verified exploded archives of definitions release ${TAG} (https://downloads.planton.dev/releases/${TAG}/definitions/definitions-manifest.json)."
+            -m "Skill trees are the checksum-verified exploded archives of definitions release ${TAG} (https://downloads.planton.ai/releases/${TAG}/definitions/definitions-manifest.json)."
           git tag "$TAG"
           git push origin HEAD:main "refs/tags/${TAG}"
           echo "published: https://github.com/plantonhq/skills/tree/${TAG}"

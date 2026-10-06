@@ -94,7 +94,7 @@ is simply not reachable -- take the fallback below.
    pack as one zip:
 
    ```
-   https://downloads.planton.dev/releases/<version>/content/reference-pack.zip
+   https://downloads.planton.ai/releases/<version>/content/reference-pack.zip
    ```
 
    Entries carry repo-relative paths, so after extracting into an empty

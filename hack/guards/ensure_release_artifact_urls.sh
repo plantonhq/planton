@@ -27,7 +27,7 @@ set -euo pipefail
 repo_root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$repo_root_dir"
 
-base_url="https://downloads.planton.dev/releases"
+base_url="https://downloads.planton.ai/releases"
 
 tag="${1:-}"
 if [ -z "$tag" ]; then

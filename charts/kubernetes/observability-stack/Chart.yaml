@@ -6,7 +6,7 @@ spec:
   selector:
     kind: platform
   description: A complete, self-hosted observability platform on your own cluster — Prometheus metrics with curated alerts, Loki logs, Tempo traces with service graphs, Grafana wired to all three, and OpenTelemetry collection from every node and application, deployed in one run.
-  iconUrl: https://downloads.planton.dev/catalog/logos/kubernetes/kuberneteskubeprometheusstack/logo.svg
+  iconUrl: https://downloads.planton.ai/catalog/logos/kubernetes/kuberneteskubeprometheusstack/logo.svg
   webLinks:
     chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/kubernetes/observability-stack
     readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/kubernetes/observability-stack/README.md
