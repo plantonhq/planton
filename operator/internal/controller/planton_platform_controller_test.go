@@ -423,6 +423,61 @@ var _ = Describe("PlantonPlatform Controller", func() {
 		})
 	})
 
+	Context("When a vault-off platform's database is backed up or restored", func() {
+		// With the vault off the platform's secrets are sealed with its
+		// secrets key, so an archive is only worth having when that key
+		// outlives the platform: a Secret the adopter owns.
+		store := plantonaiv1.ObjectStoreSpec{
+			DestinationPath: "s3://acme-backups/planton",
+			S3:              &plantonaiv1.S3ObjectStoreSpec{Region: "us-east-1"},
+		}
+		vaultOff := func(name string, db *plantonaiv1.PostgreSQLSpec, cp *plantonaiv1.ControlPlaneSpec) *plantonaiv1.PlantonPlatform {
+			off := false
+			return &plantonaiv1.PlantonPlatform{
+				ObjectMeta: metav1.ObjectMeta{Name: name, Namespace: namespace},
+				Spec: plantonaiv1.PlantonPlatformSpec{
+					Version:      "v1.0.0",
+					Vault:        &plantonaiv1.OpenBAOSpec{Enabled: &off},
+					ControlPlane: cp,
+					Database:     &plantonaiv1.DatabaseSpec{PostgreSQL: db},
+				},
+			}
+		}
+
+		It("should accept a vault-off platform that declares nowhere for its secrets", func() {
+			resource := vaultOff("cel-vault-off-plain", nil, nil)
+			Expect(k8sClient.Create(ctx, resource)).To(Succeed(),
+				"the platform keeps its secrets in its own database under the operator's key")
+			Expect(k8sClient.Delete(ctx, resource)).To(Succeed())
+		})
+
+		It("should reject a backup whose secrets key would die with the platform", func() {
+			err := k8sClient.Create(ctx, vaultOff("cel-vault-off-backup",
+				&plantonaiv1.PostgreSQLSpec{Backup: &plantonaiv1.PostgreSQLBackupSpec{ObjectStore: store}}, nil))
+			Expect(err).To(HaveOccurred(), "an archive no key can open must be refused at apply time")
+			Expect(err.Error()).To(ContainSubstring("controlPlane.secretsKeySecretName"),
+				"the rejection must name the fix, got: %v", err)
+		})
+
+		It("should reject a restore with no kept secrets key", func() {
+			err := k8sClient.Create(ctx, vaultOff("cel-vault-off-restore",
+				&plantonaiv1.PostgreSQLSpec{RecoverFrom: &plantonaiv1.PostgreSQLRecoverFromSpec{
+					ObjectStore: store, ServerName: "planton-old",
+				}}, nil))
+			Expect(err).To(HaveOccurred(), "a restored database's secrets open only with the key that sealed them")
+			Expect(err.Error()).To(ContainSubstring("controlPlane.secretsKeySecretName"),
+				"the rejection must name the fix, got: %v", err)
+		})
+
+		It("should accept a backup once the adopter owns the secrets key", func() {
+			resource := vaultOff("cel-vault-off-kept",
+				&plantonaiv1.PostgreSQLSpec{Backup: &plantonaiv1.PostgreSQLBackupSpec{ObjectStore: store}},
+				&plantonaiv1.ControlPlaneSpec{SecretsKeySecretName: "acme-platform-key"})
+			Expect(k8sClient.Create(ctx, resource)).To(Succeed())
+			Expect(k8sClient.Delete(ctx, resource)).To(Succeed())
+		})
+	})
+
 	Context("When observability names where traces go", func() {
 		// The address rule runs in the real API server, so these pin what an
 		// adopter's helm --set or kubectl apply is told: a base address, never

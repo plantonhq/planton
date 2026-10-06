@@ -1050,9 +1050,6 @@ func TestControlPlaneDeployment_SecretBackendBinding(t *testing.T) {
 	if envMap["PLANTON_BOOTSTRAP_SECRET_BACKEND_AWS_SECRETS_MANAGER_REGION"] != "ap-south-1" {
 		t.Error("aws region must ride the seed env")
 	}
-	if envMap["PLANTON_BOOTSTRAP_SECRET_BACKEND_AWS_SECRETS_MANAGER_REGION"] == "" {
-		t.Error("kms key arn must ride the seed env")
-	}
 }
 
 func TestControlPlaneDeployment_NoSecretBackendBinding(t *testing.T) {
@@ -1060,7 +1057,51 @@ func TestControlPlaneDeployment_NoSecretBackendBinding(t *testing.T) {
 	envMap := envVarMap(deploy.Spec.Template.Spec.Containers[0].Env)
 
 	if _, ok := envMap["PLANTON_BOOTSTRAP_SECRET_BACKEND_TYPE"]; ok {
-		t.Error("secret-backend seed envs must be absent when nothing is seeded (presence is the activation gate)")
+		t.Error("nothing declared renders no seed env: the control plane seeds the default it can serve")
+	}
+}
+
+// With the vault off, the platform's secrets key reaches the control plane
+// by Secret reference -- never as a literal -- and the backend-credential
+// store follows the same key instead of the absent vault.
+func TestControlPlaneDeployment_SecretsKeyBinding(t *testing.T) {
+	cfg := testControlPlaneConfig()
+	cfg.SecretsKey = &SecretsKeyBinding{SecretName: "planton-secrets-key"}
+	deploy := ControlPlaneDeployment(cfg)
+	env := deploy.Spec.Template.Spec.Containers[0].Env
+
+	var kek *corev1.EnvVar
+	for i := range env {
+		if env[i].Name == "PLANTON_LOCAL_SECRETS_KEK" {
+			kek = &env[i]
+		}
+	}
+	if kek == nil || kek.Value != "" || kek.ValueFrom == nil || kek.ValueFrom.SecretKeyRef == nil {
+		t.Fatalf("PLANTON_LOCAL_SECRETS_KEK must be a Secret reference, got %+v", kek)
+	}
+	if ref := kek.ValueFrom.SecretKeyRef; ref.Name != "planton-secrets-key" || ref.Key != SecretsKeySecretKey {
+		t.Errorf("secrets key reference = %s/%s, want planton-secrets-key/%s", ref.Name, ref.Key, SecretsKeySecretKey)
+	}
+	envMap := envVarMap(env)
+	if envMap["PLANTON_CREDENTIALS_PROVIDER"] != "local" {
+		t.Errorf("PLANTON_CREDENTIALS_PROVIDER = %q, want local", envMap["PLANTON_CREDENTIALS_PROVIDER"])
+	}
+	if envMap["PLANTON_VAULT_ENABLED"] != "false" {
+		t.Error("the vault opt-out still says so out loud")
+	}
+}
+
+func TestControlPlaneDeployment_NoSecretsKeyWithTheVault(t *testing.T) {
+	cfg := testControlPlaneConfig()
+	vault := OpenBAOConnection("planton", "default")
+	cfg.Vault = &VaultBinding{APIAddr: vault.APIAddr, TokenSecretName: vault.TokenSecretName, TokenKey: vault.TokenKey}
+	deploy := ControlPlaneDeployment(cfg)
+	envMap := envVarMap(deploy.Spec.Template.Spec.Containers[0].Env)
+
+	for _, name := range []string{"PLANTON_LOCAL_SECRETS_KEK", "PLANTON_CREDENTIALS_PROVIDER"} {
+		if _, ok := envMap[name]; ok {
+			t.Errorf("%s must be absent while the vault keeps the secrets", name)
+		}
 	}
 }
 
@@ -1106,7 +1147,7 @@ func TestControlPlaneDeployment_NoLicenseBinding(t *testing.T) {
 }
 
 // The dedicated ServiceAccount is the workload-identity seam for the
-// platform's OWN cloud calls (ambient secret backends + KMS KEKs). It always
+// platform's OWN cloud calls (ambient secret backends). It always
 // exists -- annotation-free by default -- so granting an identity later is a
 // pure spec edit, and the pod always runs as it.
 func TestControlPlaneServiceAccount(t *testing.T) {

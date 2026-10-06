@@ -149,6 +149,10 @@ func fullControlPlaneConfig() ControlPlaneConfig {
 		TokenKey:        vault.TokenKey,
 		TokenAccessor:   "hmac-accessor-of-the-minted-token",
 	}
+	// The vault-off key arm too: not a shape the component produces beside a
+	// vault, but the renderer emits by presence and the contract lists every
+	// name.
+	cfg.SecretsKey = &SecretsKeyBinding{SecretName: "planton-secrets-key"}
 	cfg.SecretBackend = &SecretBackendBinding{Type: "aws-secrets-manager", AwsRegion: "ap-south-1"}
 	cfg.License = &LicenseBinding{SecretName: "acme-license", SecretKey: "license-key"}
 	// Every email arm and every way in at once: not a shape the component can

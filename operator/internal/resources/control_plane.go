@@ -167,10 +167,15 @@ type ControlPlaneConfig struct {
 	// degrade with plain language instead of dialing a dead address).
 	Vault *VaultBinding
 
-	// SecretBackend, when set, activates the control plane's default
-	// secret-backend boot seed (planton.bootstrap.secret-backend.*). Nil
-	// means no default backend is seeded and secret-dependent features
-	// funnel in the console until one is created.
+	// SecretsKey hands the platform's secrets key to the control plane. Set
+	// exactly when Vault is nil: with the vault off, the built-in local
+	// backend under this key is where the platform keeps its secrets.
+	SecretsKey *SecretsKeyBinding
+
+	// SecretBackend, when set, declares the bootstrap organization's default
+	// secret backend (planton.bootstrap.secret-backend.*). Nil means the
+	// control plane seeds the default it can serve: the platform vault when it
+	// runs, the built-in local backend under SecretsKey when it does not.
 	SecretBackend *SecretBackendBinding
 
 	// License, when set, delivers the license key (inline or by Secret
@@ -194,7 +199,7 @@ type ControlPlaneConfig struct {
 
 	// ServiceAccountAnnotations land on the control plane's dedicated
 	// ServiceAccount -- the workload-identity seam for the platform's own
-	// cloud calls (ambient secret backends + KMS KEKs).
+	// cloud calls (ambient secret backends).
 	ServiceAccountAnnotations map[string]string
 }
 
@@ -245,7 +250,7 @@ type LicenseBinding struct {
 	SecretKey  string
 }
 
-// SecretBackendBinding is the resolved default-secret-backend seed
+// SecretBackendBinding is the declared default-secret-backend seed
 // configuration (addressing only -- never credentials; the ambient arm is
 // what makes this honest to seed from configuration).
 type SecretBackendBinding struct {
@@ -253,9 +258,8 @@ type SecretBackendBinding struct {
 	// "platform" or "aws-secrets-manager".
 	Type string
 
-	// AwsRegion configures the aws-secrets-manager kind:
-	// the region secrets live in and the KMS key (ARN/id/alias) that
-	// envelope-encrypts them, both reached with the pod's own identity.
+	// AwsRegion configures the aws-secrets-manager kind: the region secrets
+	// live in, reached with the pod's own identity.
 	AwsRegion string
 }
 
@@ -1015,6 +1019,7 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 	envs = append(envs, githubFactsEnvVars()...)
 	envs = append(envs, consoleEnvVars(cfg.Console)...)
 	envs = append(envs, vaultEnvVars(cfg.Vault)...)
+	envs = append(envs, secretsKeyEnvVars(cfg.SecretsKey)...)
 	envs = append(envs, secretBackendEnvVars(cfg.SecretBackend)...)
 	envs = append(envs, licenseEnvVars(cfg.License)...)
 	envs = append(envs, emailEnvVars(cfg.Email)...)
@@ -1291,9 +1296,9 @@ func controlPlanePodAnnotations(cfg ControlPlaneConfig) map[string]string {
 	return map[string]string{ControlPlaneVaultTokenAccessorAnnotation: cfg.Vault.TokenAccessor}
 }
 
-// secretBackendEnvVars activates the control plane's default-secret-backend
-// boot seed (planton.bootstrap.secret-backend.* via Spring relaxed binding).
-// Addressing only -- the seeded kinds are credential-free by construction.
+// secretBackendEnvVars declares the bootstrap organization's default secret
+// backend (planton.bootstrap.secret-backend.* via Spring relaxed binding).
+// Addressing only -- the declarable kinds are credential-free by construction.
 func secretBackendEnvVars(binding *SecretBackendBinding) []corev1.EnvVar {
 	if binding == nil {
 		return nil

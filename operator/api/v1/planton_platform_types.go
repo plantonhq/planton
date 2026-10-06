@@ -292,6 +292,22 @@ type ControlPlaneSpec struct {
 	// +optional
 	ExternalConfigSecretName string `json:"externalConfigSecretName,omitempty"`
 
+	// secretsKeySecretName names a Secret the ADOPTER owns, in the platform's
+	// namespace, holding the platform's secrets key: the key-encryption-key
+	// that seals every secret the platform keeps in its own database when the
+	// bundled vault is off (spec.vault.enabled: false). The operator mints
+	// the key into it when it holds none, creates it WITHOUT an owner
+	// reference, and never deletes it, so deleting the PlantonPlatform leaves
+	// it standing -- deleting the namespace does not. It is the one object
+	// that opens a restored database's secrets: keep a copy outside the
+	// cluster, and restore it before the platform that reads that database.
+	// Required with the vault off once the database is backed up or restored.
+	// Empty means the operator keeps the key in a Secret it owns
+	// ({platform}-secrets-key), deleted with the platform. Unused while the
+	// vault runs.
+	// +optional
+	SecretsKeySecretName string `json:"secretsKeySecretName,omitempty"`
+
 	// iacModulesVersion overrides the release the platform downloads official
 	// IaC module artifacts from (both engines: the OpenTofu module zips and
 	// the Pulumi module binaries ride the same release tag). Unset -- the
@@ -311,7 +327,7 @@ type ControlPlaneSpec struct {
 	// serviceAccountAnnotations are applied to the control plane pod's
 	// dedicated Kubernetes ServiceAccount. This is the workload-identity seam
 	// for the control plane's OWN cloud calls -- ambient-authenticated secret
-	// backends and their KMS encryption keys (e.g.
+	// backends (e.g.
 	// eks.amazonaws.com/role-arn: <role> on EKS, the GKE/AKS equivalents
 	// elsewhere). The ServiceAccount always exists, so adding annotations
 	// later is a pure spec edit -- no pod surgery. Distinct from
@@ -516,6 +532,7 @@ type ObservabilitySpec struct {
 // +kubebuilder:validation:XValidation:rule="!has(self.bootstrap) || !has(self.bootstrap.secretBackend) || self.bootstrap.secretBackend.type != 'platform' || !has(self.vault) || !has(self.vault.enabled) || self.vault.enabled",message="bootstrap.secretBackend type 'platform' stores secrets in the bundled vault, which spec.vault.enabled: false has opted out of; re-enable the vault or use type awsSecretsManager"
 // +kubebuilder:validation:XValidation:rule="!has(self.remoteRunners) || !has(self.remoteRunners.enabled) || !self.remoteRunners.enabled || (has(self.ingress) && self.ingress.enabled)",message="remoteRunners.enabled admits runners outside the cluster through the front door, but with ingress disabled there is no front door a laptop could reach; set ingress.enabled: true with a gatewayRef, or leave remoteRunners off"
 // +kubebuilder:validation:XValidation:rule="!has(self.database) || !has(self.database.postgresql) || !has(self.database.postgresql.backup) || (has(self.vault) && has(self.vault.enabled) && !self.vault.enabled) || (has(self.vault) && (has(self.vault.autoUnseal) || (has(self.vault.initSecretName) && size(self.vault.initSecretName) > 0)))",message="a backup carries the vault's data, but under the built-in seal the vault's keys live in a Secret that is deleted with the platform; set vault.initSecretName to a Secret you own (and keep a copy outside the cluster), or declare vault.autoUnseal so a restored vault opens from your cloud key"
+// +kubebuilder:validation:XValidation:rule="!has(self.vault) || !has(self.vault.enabled) || self.vault.enabled || !has(self.database) || !has(self.database.postgresql) || (!has(self.database.postgresql.backup) && !has(self.database.postgresql.recoverFrom)) || (has(self.controlPlane) && has(self.controlPlane.secretsKeySecretName) && size(self.controlPlane.secretsKeySecretName) > 0)",message="with the vault off, the platform's secrets are sealed with its secrets key, which lives in a Secret deleted with the platform; to back up or restore the database, set controlPlane.secretsKeySecretName to a Secret you own (and keep a copy outside the cluster)"
 type PlantonPlatformSpec struct {
 	// version is the Planton platform release to deploy, as vMAJOR.MINOR.PATCH
 	// (a pre-release suffix is allowed). The control plane, console, and runner
@@ -631,13 +648,13 @@ type PlantonPlatformSpec struct {
 	RemoteRunners *RemoteRunnersSpec `json:"remoteRunners,omitempty"`
 
 	// vault configures the bundled secrets manager (OpenBAO, the open-source
-	// Vault fork). Deployed by default: it is integral the way the database
-	// is -- it backs the credential store for pasted connection secrets, the
-	// default envelope-encryption key, and the OIDC issuer's signing key
-	// (keyless connections). Every field is optional; a zero-config install
-	// gets an initialized, unsealed vault with its engines mounted and the
-	// platform secret backend seeded as the org default. Choosing a cloud
-	// secret backend instead is a layered choice, not a reason to opt out.
+	// Vault fork). Deployed by default: it stores the organization's default
+	// secrets (the platform secret backend), the credentials pasted into
+	// other backends, and the OIDC issuer's signing key (keyless
+	// connections). Every field is optional; a zero-config install gets an
+	// initialized, unsealed vault with its engines mounted and the platform
+	// secret backend seeded as the org default. Choosing a cloud secret
+	// backend instead is a layered choice, not a reason to opt out.
 	// The vault stores its data in the platform's own PostgreSQL, so
 	// spec.database.postgresql.backup archives it with the records; what
 	// opens the restored vault is declared here (autoUnseal, initSecretName).
@@ -1316,16 +1333,17 @@ type BootstrapSpec struct {
 
 	// secretBackend declares the organization's default secret backend,
 	// seeded create-once at boot (a choice made later in the console is never
-	// overwritten). Both supported kinds are credential-free by construction:
-	// "platform" stores secrets in the bundled vault (deployed by default;
-	// incompatible with spec.vault.enabled: false) and is seeded
-	// automatically when the vault runs and nothing is declared here;
-	// "awsSecretsManager" stores secrets in AWS Secrets Manager, reached with
-	// the control plane pod's own cloud identity (workload identity via
+	// overwritten). Both declarable kinds are credential-free by construction:
+	// "platform" stores secrets in the bundled vault (incompatible with
+	// spec.vault.enabled: false); "awsSecretsManager" stores secrets in AWS
+	// Secrets Manager, reached with the control plane pod's own cloud
+	// identity (workload identity via
 	// spec.controlPlane.serviceAccountAnnotations, instance profiles, or env
-	// credentials) -- no key is ever typed or stored. When neither applies,
-	// no default backend exists and the console guides secret-related
-	// features until one is created.
+	// credentials) -- no key is ever typed or stored. Unset, the organization
+	// gets the default the platform can serve: the bundled vault when it
+	// runs, otherwise the platform's own database under its secrets key.
+	// Every organization has one from its first moment: a state backend
+	// records its encryption key there.
 	// +optional
 	SecretBackend *BootstrapSecretBackendSpec `json:"secretBackend,omitempty"`
 }
@@ -1410,11 +1428,12 @@ type ComponentsSpec struct {
 // +kubebuilder:validation:XValidation:rule="!has(self.enabled) || self.enabled || (!has(self.autoUnseal) && (!has(self.initSecretName) || size(self.initSecretName) == 0) && (!has(self.serviceAccountAnnotations) || size(self.serviceAccountAnnotations) == 0))",message="vault.enabled: false opts out of the bundled secrets manager; remove autoUnseal, initSecretName, and serviceAccountAnnotations, or re-enable the vault"
 type OpenBAOSpec struct {
 	// enabled controls whether the bundled secrets manager is deployed.
-	// Default true: a Planton without a secrets store cannot hold pasted
-	// connection credentials or serve keyless connections, so opting OUT is
-	// the deliberate act (e.g. an install that runs exclusively on an
-	// ambient-authenticated cloud secret backend and accepts losing those
-	// capabilities).
+	// Default true. Opting OUT is the deliberate act: the platform then keeps
+	// its secrets in its own database, envelope-encrypted under a secrets key
+	// the operator mints into a Secret (spec.controlPlane.secretsKeySecretName
+	// names one you own), and keyless connections are not offered -- their
+	// signing key lives in the vault. Turning it on or off on a running
+	// platform strands the secrets stored on the side it leaves.
 	// +kubebuilder:default=true
 	// +optional
 	Enabled *bool `json:"enabled,omitempty"`

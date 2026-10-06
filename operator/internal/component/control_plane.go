@@ -131,6 +131,14 @@ func (cp *ControlPlane) Reconcile(ctx context.Context, c client.Client, _ *runti
 		}
 	}
 
+	// The Deployment references the secrets key by Secret name when the vault
+	// is off; mint it first, for the same reason as the CloudOps token.
+	if cfg.SecretsKey != nil {
+		if err := ensureSecretsKey(ctx, c, planton, ownerRef); err != nil {
+			return Result{}, fmt.Errorf("ensuring the platform's secrets key: %w", err)
+		}
+	}
+
 	// The dedicated ServiceAccount exists on every install (annotation-free by
 	// default) so granting the platform a cloud identity later is a pure spec
 	// edit -- the pod already runs as it.
@@ -229,9 +237,14 @@ func (cp *ControlPlane) buildConfig(planton *v1.PlantonPlatform, ownerRef *metav
 			TokenSecretName: conn.TokenSecretName,
 			TokenKey:        conn.TokenKey,
 		}
+	} else {
+		// With the vault off, the platform keeps its secrets in its own
+		// database under the secrets key (ensured in Reconcile before the
+		// Deployment references it).
+		cfg.SecretsKey = &resources.SecretsKeyBinding{SecretName: secretsKeySecretName(planton)}
 	}
 
-	cfg.SecretBackend = effectiveSecretBackend(planton)
+	cfg.SecretBackend = declaredSecretBackend(planton)
 	cfg.License = effectiveLicense(planton)
 	cfg.Email = effectiveEmail(planton)
 
@@ -384,29 +397,19 @@ func effectiveIacProvisioner(planton *v1.PlantonPlatform) string {
 	return "tofu"
 }
 
-// effectiveSecretBackend resolves the default-secret-backend seed: a declared
-// spec.bootstrap.secretBackend always wins; with nothing declared and the
-// vault running (the default), the platform kind is seeded automatically (the
-// vault exists to be the secret store -- running it and still having "create
-// a secret" fail would be a bewildering install). Vault explicitly opted out
-// and nothing declared ⇒ nil: no default backend, console funnels until one
-// is created.
-func effectiveSecretBackend(planton *v1.PlantonPlatform) *resources.SecretBackendBinding {
-	declared := (*v1.BootstrapSecretBackendSpec)(nil)
-	if planton.Spec.Bootstrap != nil {
-		declared = planton.Spec.Bootstrap.SecretBackend
-	}
-
-	if declared == nil {
-		if isVaultEnabled(planton) {
-			return &resources.SecretBackendBinding{Type: "platform"}
-		}
+// declaredSecretBackend passes on the bootstrap organization's declared
+// default secret backend, or nil. With nothing declared the control plane
+// seeds the default it can serve -- the platform vault when it runs, the
+// built-in local backend under the secrets key when it does not -- so that
+// rule lives in one place, beside the one every later organization follows.
+func declaredSecretBackend(planton *v1.PlantonPlatform) *resources.SecretBackendBinding {
+	if planton.Spec.Bootstrap == nil || planton.Spec.Bootstrap.SecretBackend == nil {
 		return nil
 	}
-
+	declared := planton.Spec.Bootstrap.SecretBackend
 	switch declared.Type {
 	case "awsSecretsManager":
-		// CRD CEL guarantees the block + both fields when the type is declared.
+		// CRD CEL guarantees the block + its region when the type is declared.
 		return &resources.SecretBackendBinding{
 			Type:      "aws-secrets-manager",
 			AwsRegion: declared.AwsSecretsManager.Region,
@@ -440,7 +443,7 @@ func effectiveLicense(planton *v1.PlantonPlatform) *resources.LicenseBinding {
 }
 
 // isVaultEnabled defaults to true: the bundled secrets manager is integral
-// (credential store, envelope-encryption KEK, OIDC signing key), so absence of
+// (secret storage, credential store, OIDC signing key), so absence of
 // spec.vault means it runs. Must agree with OpenBAO.IsEnabled (openbao.go) and
 // isOpenBAOEnabled (status package), or the control-plane wiring, the
 // reconciler, and the status slot disagree about the component's existence.

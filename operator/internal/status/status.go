@@ -472,7 +472,7 @@ func allComponentPhases(planton *v1.PlantonPlatform) []v1.ComponentPhase {
 }
 
 // isOpenBAOEnabled defaults to true: the bundled secrets manager is integral
-// (credential store, envelope-encryption KEK, OIDC signing key), so absence of
+// (secret storage, credential store, OIDC signing key), so absence of
 // spec.vault means deploy it. Must agree with the component package's answer
 // or the slot and the reconciler disagree about existence.
 func isOpenBAOEnabled(planton *v1.PlantonPlatform) bool {

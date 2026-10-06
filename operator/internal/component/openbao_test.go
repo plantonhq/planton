@@ -6,8 +6,8 @@ import (
 	v1 "github.com/plantonhq/planton/operator/api/v1"
 )
 
-// The bundled secrets manager is deployed by default: it backs the credential
-// store, the envelope-encryption KEK, and the OIDC signing key. Opting out is
+// The bundled secrets manager is deployed by default: it backs secret storage,
+// the credential store, and the OIDC signing key. Opting out is
 // the explicit act. The three predicates that answer "is the vault on?" must
 // agree, so all three are pinned here against the same arms.
 func TestOpenBAO_IsEnabledByDefault(t *testing.T) {
@@ -36,21 +36,20 @@ func TestOpenBAO_IsEnabledByDefault(t *testing.T) {
 	}
 }
 
-// With nothing declared, the default install seeds the platform secret
-// backend (the vault runs by default and exists to be the secret store); an
-// explicit vault opt-out with nothing declared seeds nothing (console
-// funnels); a declared backend always wins.
-func TestEffectiveSecretBackend_FollowsVaultDefault(t *testing.T) {
+// The operator passes on only a DECLARED default secret backend: with nothing
+// declared, the control plane seeds the default it can serve (the vault when
+// it runs, the local backend under the secrets key when it does not), so the
+// operator never re-derives that rule -- whichever way the vault is set.
+func TestDeclaredSecretBackend_PassesOnOnlyADeclaration(t *testing.T) {
 	p := ingressPlatform(false)
-	binding := effectiveSecretBackend(p)
-	if binding == nil || binding.Type != "platform" {
-		t.Fatalf("default install must seed the platform backend, got %+v", binding)
+	if binding := declaredSecretBackend(p); binding != nil {
+		t.Fatalf("a default install declares nothing, got %+v", binding)
 	}
 
 	off := false
 	p.Spec.Vault = &v1.OpenBAOSpec{Enabled: &off}
-	if binding := effectiveSecretBackend(p); binding != nil {
-		t.Errorf("vault opt-out with nothing declared must seed no backend, got %+v", binding)
+	if binding := declaredSecretBackend(p); binding != nil {
+		t.Errorf("a vault opt-out declares nothing either, got %+v", binding)
 	}
 
 	p.Spec.Bootstrap = &v1.BootstrapSpec{
@@ -61,8 +60,14 @@ func TestEffectiveSecretBackend_FollowsVaultDefault(t *testing.T) {
 			},
 		},
 	}
-	binding = effectiveSecretBackend(p)
-	if binding == nil || binding.Type != "aws-secrets-manager" {
-		t.Errorf("declared backend must win regardless of the vault toggle, got %+v", binding)
+	binding := declaredSecretBackend(p)
+	if binding == nil || binding.Type != "aws-secrets-manager" || binding.AwsRegion != "ap-south-1" {
+		t.Errorf("a declared backend passes on whatever the vault is set to, got %+v", binding)
+	}
+
+	p.Spec.Vault = nil
+	p.Spec.Bootstrap.SecretBackend = &v1.BootstrapSecretBackendSpec{Type: "platform"}
+	if binding := declaredSecretBackend(p); binding == nil || binding.Type != "platform" {
+		t.Errorf("a declared platform backend passes on, got %+v", binding)
 	}
 }
