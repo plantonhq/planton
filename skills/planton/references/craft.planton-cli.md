@@ -48,6 +48,13 @@ planton infra state-backend list -o json  # state backends, with each one's ENCR
                                           # for one, its key and phase; exit 3 = none)
 planton infra state-backend rekey <slug>  # change the key (--key-source ...), rotate
                                           # Planton's passphrase, or resume a change
+planton infra state-backend verify <slug> # sign in and write/read/delete as a deploy would;
+                                          # -f <manifest> verifies before create (exit 1 = unhealthy)
+planton infra state-backend create <slug> --provisioner terraform --type s3 \
+  --auth-mode connection --s3-connection <aws-connection> --s3-bucket <b> --s3-region <r> \
+  --s3-use-lockfile                       # a bucket reached through a (keyless) connection:
+                                          # nothing stored; --gcs-connection for Cloud Storage;
+                                          # share the connection with every env it serves
 planton catalog search --server           # the catalog MINUS what the org's catalog
                                           # policy disables (offline default shows all;
                                           # see catalog-availability.md)
