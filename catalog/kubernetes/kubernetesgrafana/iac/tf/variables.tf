@@ -135,7 +135,7 @@ variable "spec" {
     }))
     helm_values = optional(string, "")
     agent_reader = optional(object({
-      service_account_name = optional(string)
+      service_account_name = string
       token_generation     = optional(number)
       disabled             = optional(bool, false)
       image = optional(object({

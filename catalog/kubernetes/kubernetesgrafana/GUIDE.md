@@ -214,11 +214,10 @@ Coding agents read a hub best through Grafana's own MCP server,
 Declare `agent_reader` and the modules give them a read-only way in.
 
 ```yaml
-agent_reader: {}                 # the "agent-reader" Viewer, generation 1
-# agent_reader:
-#   service_account_name: agent-teammates
-#   token_generation: 2          # raised: the old token answers 401
-#   disabled: true               # every token of the account refused
+agent_reader:
+  service_account_name: agent-reader  # required: the account agents read as
+  # token_generation: 2               # raised: the old token answers 401
+  # disabled: true                    # every token of the account refused
 ```
 
 - **What the block keeps.** A Viewer service account and exactly one

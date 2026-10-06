@@ -18,4 +18,5 @@ spec:
   storage:
     size: 1Gi
   agent_reader:
+    service_account_name: agent-reader
     token_generation: 2

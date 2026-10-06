@@ -52,9 +52,7 @@ var vars = struct {
 	// Terraform module uses the same literals (agent_reader.tf, locals.tf).
 	AgentReaderSuffix       string
 	AgentReaderScriptSuffix string
-	// Mirrors of the proto defaults for the account name and the token
-	// generation.
-	DefaultAgentReaderServiceAccount  string
+	// Mirror of the proto default for the token generation.
 	DefaultAgentReaderTokenGeneration int32
 	// The token Secret's keys.
 	AgentReaderTokenKey      string
@@ -103,7 +101,6 @@ var vars = struct {
 
 	AgentReaderSuffix:                 "-agent-reader",
 	AgentReaderScriptSuffix:           "-agent-reader-script",
-	DefaultAgentReaderServiceAccount:  "agent-reader",
 	DefaultAgentReaderTokenGeneration: 1,
 	AgentReaderTokenKey:               "token",
 	AgentReaderGenerationKey:          "generation",

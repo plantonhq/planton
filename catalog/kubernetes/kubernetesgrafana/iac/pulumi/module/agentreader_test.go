@@ -43,8 +43,8 @@ func readerOf(t *testing.T, reader *kubernetesgrafanav1alpha1.KubernetesGrafanaA
 func int32Ptr(i int32) *int32    { return &i }
 func stringPtr(s string) *string { return &s }
 
-func TestAnEmptyAgentReaderResolvesToTheDefaults(t *testing.T) {
-	reader := readerOf(t, &kubernetesgrafanav1alpha1.KubernetesGrafanaAgentReader{})
+func TestANamedAgentReaderResolvesToTheDefaults(t *testing.T) {
+	reader := readerOf(t, &kubernetesgrafanav1alpha1.KubernetesGrafanaAgentReader{ServiceAccountName: "agent-reader"})
 	checks := map[string][2]string{
 		"name":             {reader.Name, "hub-agent-reader"},
 		"service account":  {reader.ServiceAccountName, "agent-reader"},
@@ -73,7 +73,7 @@ func TestTheJobReadsTheDeclaredAdminSecretsKeys(t *testing.T) {
 		AdminSecret: &kubernetesgrafanav1alpha1.KubernetesGrafanaAdminSecret{
 			Name: "grafana-admin", UserKey: stringPtr("user"), PasswordKey: stringPtr("pass"),
 		},
-		AgentReader: &kubernetesgrafanav1alpha1.KubernetesGrafanaAgentReader{},
+		AgentReader: &kubernetesgrafanav1alpha1.KubernetesGrafanaAgentReader{ServiceAccountName: "agent-reader"},
 	})
 	r := locals.AgentReader
 	if r.AdminSecretName != "grafana-admin" || r.AdminUserKey != "user" || r.AdminPasswordKey != "pass" {
@@ -91,7 +91,7 @@ func TestAnImageOverrideKeepsTheDefaultForWhatItLeavesEmpty(t *testing.T) {
 		"both":      {&kubernetesprovider.ContainerImage{Repo: "mirror.example.com/k8s", Tag: "2"}, "mirror.example.com/k8s:2"},
 	}
 	for name, c := range cases {
-		reader := readerOf(t, &kubernetesgrafanav1alpha1.KubernetesGrafanaAgentReader{Image: c.image})
+		reader := readerOf(t, &kubernetesgrafanav1alpha1.KubernetesGrafanaAgentReader{ServiceAccountName: "agent-reader", Image: c.image})
 		if reader.Image != c.want {
 			t.Errorf("%s: image = %q, want %q", name, reader.Image, c.want)
 		}
@@ -99,14 +99,14 @@ func TestAnImageOverrideKeepsTheDefaultForWhatItLeavesEmpty(t *testing.T) {
 }
 
 func TestTheJobNameMovesWithExactlyWhatTheJobReconciles(t *testing.T) {
-	base := readerOf(t, &kubernetesgrafanav1alpha1.KubernetesGrafanaAgentReader{}).JobName
-	if again := readerOf(t, &kubernetesgrafanav1alpha1.KubernetesGrafanaAgentReader{}).JobName; again != base {
+	base := readerOf(t, &kubernetesgrafanav1alpha1.KubernetesGrafanaAgentReader{ServiceAccountName: "agent-reader"}).JobName
+	if again := readerOf(t, &kubernetesgrafanav1alpha1.KubernetesGrafanaAgentReader{ServiceAccountName: "agent-reader"}).JobName; again != base {
 		t.Fatalf("an unchanged declaration renamed the Job: %s then %s", base, again)
 	}
 	moved := map[string]*kubernetesgrafanav1alpha1.KubernetesGrafanaAgentReader{
-		"account":    {ServiceAccountName: stringPtr("agent-teammates")},
-		"generation": {TokenGeneration: int32Ptr(2)},
-		"disabled":   {Disabled: true},
+		"account":    {ServiceAccountName: "agent-teammates"},
+		"generation": {ServiceAccountName: "agent-reader", TokenGeneration: int32Ptr(2)},
+		"disabled":   {ServiceAccountName: "agent-reader", Disabled: true},
 	}
 	for what, declared := range moved {
 		if readerOf(t, declared).JobName == base {
@@ -117,7 +117,7 @@ func TestTheJobNameMovesWithExactlyWhatTheJobReconciles(t *testing.T) {
 	// replaces the Job under its name (ReplaceOnChanges) without a new run
 	// identity.
 	image := &kubernetesprovider.ContainerImage{Repo: "mirror.example.com/alpine/k8s"}
-	if readerOf(t, &kubernetesgrafanav1alpha1.KubernetesGrafanaAgentReader{Image: image}).JobName != base {
+	if readerOf(t, &kubernetesgrafanav1alpha1.KubernetesGrafanaAgentReader{ServiceAccountName: "agent-reader", Image: image}).JobName != base {
 		t.Error("an image override renamed the Job")
 	}
 }
@@ -136,7 +136,7 @@ func TestTheJobNameHashesTheCanonicalStringBothEnginesBuild(t *testing.T) {
 func TestTheAgentReaderNeverTouchesTheHelmValues(t *testing.T) {
 	without := renderedValues(t, localsWithReader("hub", &kubernetesgrafanav1alpha1.KubernetesGrafanaSpec{}))
 	with := renderedValues(t, localsWithReader("hub", &kubernetesgrafanav1alpha1.KubernetesGrafanaSpec{
-		AgentReader: &kubernetesgrafanav1alpha1.KubernetesGrafanaAgentReader{TokenGeneration: int32Ptr(4)},
+		AgentReader: &kubernetesgrafanav1alpha1.KubernetesGrafanaAgentReader{ServiceAccountName: "agent-reader", TokenGeneration: int32Ptr(4)},
 	}))
 	if !reflect.DeepEqual(without, with) {
 		t.Error("declaring agent_reader changed the chart values, which would restart Grafana")
@@ -151,7 +151,7 @@ func TestNoAgentReaderRendersNothing(t *testing.T) {
 
 func TestTheEnvironmentCarriesTheScriptsWholeContract(t *testing.T) {
 	locals := localsWithReader("hub", &kubernetesgrafanav1alpha1.KubernetesGrafanaSpec{
-		AgentReader: &kubernetesgrafanav1alpha1.KubernetesGrafanaAgentReader{},
+		AgentReader: &kubernetesgrafanav1alpha1.KubernetesGrafanaAgentReader{ServiceAccountName: "agent-reader"},
 	})
 	provided := map[string]string{"GRAFANA_ADMIN_USER": "", "GRAFANA_ADMIN_PASSWORD": ""}
 	for _, kv := range agentReaderEnv(locals) {

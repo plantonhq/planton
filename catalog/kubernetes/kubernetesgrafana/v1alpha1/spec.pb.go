@@ -245,9 +245,11 @@ type KubernetesGrafanaSpec struct {
 	// A read-only way into this Grafana for agent teammates — coding
 	// agents (Claude Code, Cursor, any MCP client) reading dashboards,
 	// metrics, logs and traces through Grafana's MCP server. Declaring the
-	// block turns it on: the modules keep a Viewer service account and one
-	// current token for it in the `<name>-agent-reader` Secret (keys
-	// `token` and `generation`), exported as `agent_reader_token_secret`.
+	// block with the account's name turns it on (`agent_reader:
+	// {service_account_name: agent-reader}`): the modules keep that Viewer
+	// service account and one current token for it in the
+	// `<name>-agent-reader` Secret (keys `token` and `generation`),
+	// exported as `agent_reader_token_secret`.
 	// See `KubernetesGrafanaAgentReader` for replacing the token, refusing
 	// it, and turning the block off.
 	AgentReader   *KubernetesGrafanaAgentReader `protobuf:"bytes,20,opt,name=agent_reader,json=agentReader,proto3" json:"agent_reader,omitempty"`
@@ -1733,7 +1735,8 @@ func (x *KubernetesGrafanaScheduling) GetPriorityClassName() string {
 
 // *
 // Agent teammates' read-only way into Grafana: one Viewer service
-// account and one current token for it.
+// account and one current token for it. Declaring the block, with the
+// account's name, turns it on.
 //
 // HOW IT WORKS: Grafana cannot provision service accounts from files, so
 // the modules run a short in-cluster Job after the release is Ready. It
@@ -1775,13 +1778,16 @@ func (x *KubernetesGrafanaScheduling) GetPriorityClassName() string {
 type KubernetesGrafanaAgentReader struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
-	// The service account's name. Its login is `sa-<org id>-<name>`.
-	// Lowercase letters, digits and dashes, starting and ending with a
-	// letter or digit, at most 63 characters: Grafana lowercases a name and
-	// turns spaces into dashes to make the login, and this form makes the
-	// name and the login read the same. Empty = "agent-reader". Renaming it
+	// The service account's name, e.g. "agent-reader" — the identity agent
+	// teammates read as, in Grafana's own records and audit. Its login is
+	// `sa-<org id>-<name>`. Lowercase letters, digits and dashes, starting
+	// and ending with a letter or digit, at most 63 characters: Grafana
+	// lowercases a name and turns spaces into dashes to make the login, and
+	// this form makes the name and the login read the same. Required, so a
+	// declared reader always names its account: a block with nothing set
+	// reads as nothing to any tool that writes the spec back. Renaming it
 	// creates a second account; disable the first before renaming.
-	ServiceAccountName *string `protobuf:"bytes,1,opt,name=service_account_name,json=serviceAccountName,proto3,oneof" json:"service_account_name,omitempty"`
+	ServiceAccountName string `protobuf:"bytes,1,opt,name=service_account_name,json=serviceAccountName,proto3" json:"service_account_name,omitempty"`
 	// *
 	// The token's generation. Raise it to replace the token — after an
 	// offboarding, or any doubt about who has read it: the next apply mints
@@ -1840,8 +1846,8 @@ func (*KubernetesGrafanaAgentReader) Descriptor() ([]byte, []int) {
 }
 
 func (x *KubernetesGrafanaAgentReader) GetServiceAccountName() string {
-	if x != nil && x.ServiceAccountName != nil {
-		return *x.ServiceAccountName
+	if x != nil {
+		return x.ServiceAccountName
 	}
 	return ""
 }
@@ -2014,13 +2020,12 @@ const file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_rawDesc = ""
 	"\x13priority_class_name\x18\x03 \x01(\tR\x11priorityClassName\x1a?\n" +
 	"\x11NodeSelectorEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xd5\x02\n" +
-	"\x1cKubernetesGrafanaAgentReader\x12o\n" +
-	"\x14service_account_name\x18\x01 \x01(\tB8\xbaH%r#\x18?2\x1f^[a-z0-9]([a-z0-9-]*[a-z0-9])?$\x8a\xa6\x1d\fagent-readerH\x00R\x12serviceAccountName\x88\x01\x01\x12<\n" +
-	"\x10token_generation\x18\x02 \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x01R\x0ftokenGeneration\x88\x01\x01\x12\x1a\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xaa\x02\n" +
+	"\x1cKubernetesGrafanaAgentReader\x12]\n" +
+	"\x14service_account_name\x18\x01 \x01(\tB+\xbaH(\xc8\x01\x01r#\x18?2\x1f^[a-z0-9]([a-z0-9-]*[a-z0-9])?$R\x12serviceAccountName\x12<\n" +
+	"\x10token_generation\x18\x02 \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x00R\x0ftokenGeneration\x88\x01\x01\x12\x1a\n" +
 	"\bdisabled\x18\x03 \x01(\bR\bdisabled\x12<\n" +
-	"\x05image\x18\x04 \x01(\v2&.dev.planton.kubernetes.ContainerImageR\x05imageB\x17\n" +
-	"\x15_service_account_nameB\x13\n" +
+	"\x05image\x18\x04 \x01(\v2&.dev.planton.kubernetes.ContainerImageR\x05imageB\x13\n" +
 	"\x11_token_generation*n\n" +
 	"\x1fKubernetesGrafanaDatabaseEngine\x122\n" +
 	".kubernetes_grafana_database_engine_unspecified\x10\x00\x12\f\n" +

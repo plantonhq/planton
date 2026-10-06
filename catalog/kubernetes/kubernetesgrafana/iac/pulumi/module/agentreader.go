@@ -26,7 +26,8 @@ type agentReader struct {
 	// and RoleBinding, and the token Secret the Job writes and the
 	// ServiceAccount owns.
 	Name string
-	// The Grafana service account and the token's generation, defaulted.
+	// The Grafana service account (required by the spec) and the token's
+	// generation, defaulted.
 	ServiceAccountName string
 	TokenGeneration    int32
 	Disabled           bool
@@ -54,9 +55,6 @@ func buildAgentReader(spec *kubernetesgrafanav1alpha1.KubernetesGrafanaSpec, rel
 	}
 
 	serviceAccountName := declared.GetServiceAccountName()
-	if serviceAccountName == "" {
-		serviceAccountName = vars.DefaultAgentReaderServiceAccount
-	}
 	tokenGeneration := declared.GetTokenGeneration()
 	if tokenGeneration == 0 {
 		tokenGeneration = vars.DefaultAgentReaderTokenGeneration

@@ -117,7 +117,7 @@ in rendered Helm values; the Secret name lands in the outputs.
 - **`spec.service_monitor_enabled`**: scrape Grafana's own /metrics
   (requires the Prometheus Operator CRDs)
 - **`spec.agent_reader`**: agent teammates' read-only way in —
-  `service_account_name` (default `agent-reader`), `token_generation`
+  `service_account_name` (required, e.g. `agent-reader`), `token_generation`
   (raise to replace the token), `disabled` (refuse every token), and
   the Job's `image`
 - **`spec.image` / `spec.helm_values`**: the air-gap path and the

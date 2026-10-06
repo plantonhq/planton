@@ -231,14 +231,14 @@ var _ = ginkgo.Describe("KubernetesGrafana Validation Tests", func() {
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
-		ginkgo.It("an empty agent_reader block should be valid (the account name and generation default)", func() {
-			input.Spec.AgentReader = &KubernetesGrafanaAgentReader{}
+		ginkgo.It("an agent_reader naming its account should be valid (the generation defaults)", func() {
+			input.Spec.AgentReader = &KubernetesGrafanaAgentReader{ServiceAccountName: "agent-reader"}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
 		ginkgo.It("an agent_reader with a named account, a raised generation and an image override should be valid", func() {
 			input.Spec.AgentReader = &KubernetesGrafanaAgentReader{
-				ServiceAccountName: stringPtr("agent-teammates"),
+				ServiceAccountName: "agent-teammates",
 				TokenGeneration:    int32Ptr(3),
 				Image:              &kubernetes.ContainerImage{Repo: "mirror.example.com/alpine/k8s", Tag: "1.35.8"},
 			}
@@ -246,7 +246,7 @@ var _ = ginkgo.Describe("KubernetesGrafana Validation Tests", func() {
 		})
 
 		ginkgo.It("a disabled agent_reader should be valid", func() {
-			input.Spec.AgentReader = &KubernetesGrafanaAgentReader{Disabled: true}
+			input.Spec.AgentReader = &KubernetesGrafanaAgentReader{ServiceAccountName: "agent-reader", Disabled: true}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 	})
@@ -401,13 +401,13 @@ var _ = ginkgo.Describe("KubernetesGrafana Validation Tests", func() {
 		})
 
 		ginkgo.It("an agent_reader token generation of zero should fail", func() {
-			input.Spec.AgentReader = &KubernetesGrafanaAgentReader{TokenGeneration: int32Ptr(0)}
+			input.Spec.AgentReader = &KubernetesGrafanaAgentReader{ServiceAccountName: "agent-reader", TokenGeneration: int32Ptr(0)}
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 		})
 
 		ginkgo.It("an agent_reader account name Grafana would rewrite into a different login should fail", func() {
 			for _, name := range []string{"Agent Reader", "agent_reader", "-agent", "agent-", "agent.reader"} {
-				input.Spec.AgentReader = &KubernetesGrafanaAgentReader{ServiceAccountName: stringPtr(name)}
+				input.Spec.AgentReader = &KubernetesGrafanaAgentReader{ServiceAccountName: name}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil(), name)
 			}
 		})
@@ -417,8 +417,15 @@ var _ = ginkgo.Describe("KubernetesGrafana Validation Tests", func() {
 			for len(long) < 64 {
 				long += "a"
 			}
-			input.Spec.AgentReader = &KubernetesGrafanaAgentReader{ServiceAccountName: stringPtr(long)}
+			input.Spec.AgentReader = &KubernetesGrafanaAgentReader{ServiceAccountName: long}
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("an agent_reader that names no account should fail, so a declared reader is never an empty block", func() {
+			input.Spec.AgentReader = &KubernetesGrafanaAgentReader{}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).NotTo(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("service_account_name"))
 		})
 	})
 })

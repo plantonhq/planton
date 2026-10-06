@@ -122,7 +122,8 @@ func grafanaAdminSecretMap(spec map[string]interface{}) map[string]interface{} {
 // grafanaDatasourceNames lists the declared datasource names the verifier
 // must find provisioned.
 // grafanaAgentReaderOf reads spec.agent_reader (snake or camel case) with
-// the proto's defaults applied; nil when the block is not declared.
+// the proto's default generation applied; nil when the block is not
+// declared.
 func grafanaAgentReaderOf(spec map[string]interface{}) *grafanaAgentReader {
 	raw, declared := spec["agent_reader"]
 	if !declared {
@@ -138,10 +139,8 @@ func grafanaAgentReaderOf(spec map[string]interface{}) *grafanaAgentReader {
 		}
 		return block[camel]
 	}
-	reader := &grafanaAgentReader{ServiceAccountName: "agent-reader", TokenGeneration: 1}
-	if name, _ := field("service_account_name", "serviceAccountName").(string); name != "" {
-		reader.ServiceAccountName = name
-	}
+	reader := &grafanaAgentReader{TokenGeneration: 1}
+	reader.ServiceAccountName, _ = field("service_account_name", "serviceAccountName").(string)
 	switch generation := field("token_generation", "tokenGeneration").(type) {
 	case int:
 		reader.TokenGeneration = generation

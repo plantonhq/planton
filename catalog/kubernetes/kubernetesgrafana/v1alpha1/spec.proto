@@ -219,9 +219,11 @@ message KubernetesGrafanaSpec {
    * A read-only way into this Grafana for agent teammates — coding
    * agents (Claude Code, Cursor, any MCP client) reading dashboards,
    * metrics, logs and traces through Grafana's MCP server. Declaring the
-   * block turns it on: the modules keep a Viewer service account and one
-   * current token for it in the `<name>-agent-reader` Secret (keys
-   * `token` and `generation`), exported as `agent_reader_token_secret`.
+   * block with the account's name turns it on (`agent_reader:
+   * {service_account_name: agent-reader}`): the modules keep that Viewer
+   * service account and one current token for it in the
+   * `<name>-agent-reader` Secret (keys `token` and `generation`),
+   * exported as `agent_reader_token_secret`.
    * See `KubernetesGrafanaAgentReader` for replacing the token, refusing
    * it, and turning the block off.
    */
@@ -804,7 +806,8 @@ message KubernetesGrafanaScheduling {
 
 /**
  * Agent teammates' read-only way into Grafana: one Viewer service
- * account and one current token for it.
+ * account and one current token for it. Declaring the block, with the
+ * account's name, turns it on.
  *
  * HOW IT WORKS: Grafana cannot provision service accounts from files, so
  * the modules run a short in-cluster Job after the release is Ready. It
@@ -846,15 +849,18 @@ message KubernetesGrafanaScheduling {
  */
 message KubernetesGrafanaAgentReader {
   /**
-   * The service account's name. Its login is `sa-<org id>-<name>`.
-   * Lowercase letters, digits and dashes, starting and ending with a
-   * letter or digit, at most 63 characters: Grafana lowercases a name and
-   * turns spaces into dashes to make the login, and this form makes the
-   * name and the login read the same. Empty = "agent-reader". Renaming it
+   * The service account's name, e.g. "agent-reader" — the identity agent
+   * teammates read as, in Grafana's own records and audit. Its login is
+   * `sa-<org id>-<name>`. Lowercase letters, digits and dashes, starting
+   * and ending with a letter or digit, at most 63 characters: Grafana
+   * lowercases a name and turns spaces into dashes to make the login, and
+   * this form makes the name and the login read the same. Required, so a
+   * declared reader always names its account: a block with nothing set
+   * reads as nothing to any tool that writes the spec back. Renaming it
    * creates a second account; disable the first before renaming.
    */
-  optional string service_account_name = 1 [
-    (dev.planton.shared.options.default) = "agent-reader",
+  string service_account_name = 1 [
+    (buf.validate.field).required = true,
     (buf.validate.field).string.max_len = 63,
     (buf.validate.field).string.pattern = "^[a-z0-9]([a-z0-9-]*[a-z0-9])?$"
   ];

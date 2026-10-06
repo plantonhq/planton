@@ -441,8 +441,9 @@ locals {
   agent_reader_name        = "${local.release_name}-agent-reader"
   agent_reader_script_name = "${local.release_name}-agent-reader-script"
 
-  # The account and the generation, defaulted as the proto declares.
-  agent_reader_service_account  = try(coalesce(local.agent_reader.service_account_name), "agent-reader")
+  # The account (required by the spec) and the generation, defaulted as
+  # the proto declares.
+  agent_reader_service_account  = try(local.agent_reader.service_account_name, "")
   agent_reader_token_generation = try(coalesce(local.agent_reader.token_generation), 1)
   agent_reader_disabled         = try(local.agent_reader.disabled, false) == true
 

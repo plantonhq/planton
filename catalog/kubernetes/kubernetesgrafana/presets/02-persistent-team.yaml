@@ -54,4 +54,5 @@ spec:
   # (key token). The volume above is what keeps the account across pod
   # restarts. Raise token_generation to replace the token; set disabled
   # to refuse it at once.
-  agent_reader: {}
+  agent_reader:
+    service_account_name: agent-reader

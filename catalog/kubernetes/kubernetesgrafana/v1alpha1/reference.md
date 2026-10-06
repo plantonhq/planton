@@ -306,7 +306,7 @@ spec:
 | `spec.scheduling.priorityClassName` | `string` |  |  |  |
 | `spec.helmValues` | `string` |  |  |  |
 | `spec.agentReader` | `KubernetesGrafanaAgentReader` |  |  |  |
-| `spec.agentReader.serviceAccountName` | `string` |  | `agent-reader` |  |
+| `spec.agentReader.serviceAccountName` | `string` | yes |  |  |
 | `spec.agentReader.tokenGeneration` | `int32` |  | `1` |  |
 | `spec.agentReader.disabled` | `bool` |  |  |  |
 | `spec.agentReader.image` | `ContainerImage` |  |  |  |
@@ -1155,25 +1155,29 @@ belongs in the typed secret references.
 A read-only way into this Grafana for agent teammates — coding
 agents (Claude Code, Cursor, any MCP client) reading dashboards,
 metrics, logs and traces through Grafana's MCP server. Declaring the
-block turns it on: the modules keep a Viewer service account and one
-current token for it in the `<name>-agent-reader` Secret (keys
-`token` and `generation`), exported as `agent_reader_token_secret`.
+block with the account's name turns it on (`agent_reader:
+{service_account_name: agent-reader}`): the modules keep that Viewer
+service account and one current token for it in the
+`<name>-agent-reader` Secret (keys `token` and `generation`),
+exported as `agent_reader_token_secret`.
 See `KubernetesGrafanaAgentReader` for replacing the token, refusing
 it, and turning the block off.
 
 ### spec.agentReader.serviceAccountName
 
-`string` · optional (explicit presence)
+`string` · required
 
-The service account's name. Its login is `sa-<org id>-<name>`.
-Lowercase letters, digits and dashes, starting and ending with a
-letter or digit, at most 63 characters: Grafana lowercases a name and
-turns spaces into dashes to make the login, and this form makes the
-name and the login read the same. Empty = "agent-reader". Renaming it
+The service account's name, e.g. "agent-reader" — the identity agent
+teammates read as, in Grafana's own records and audit. Its login is
+`sa-<org id>-<name>`. Lowercase letters, digits and dashes, starting
+and ending with a letter or digit, at most 63 characters: Grafana
+lowercases a name and turns spaces into dashes to make the login, and
+this form makes the name and the login read the same. Required, so a
+declared reader always names its account: a block with nothing set
+reads as nothing to any tool that writes the spec back. Renaming it
 creates a second account; disable the first before renaming.
 
-- default: `agent-reader`
-- rule: {"string":{"maxLen":"63","pattern":"^[a-z0-9]([a-z0-9-]*[a-z0-9])?$"}}
+- rule: {"required":true,"string":{"maxLen":"63","pattern":"^[a-z0-9]([a-z0-9-]*[a-z0-9])?$"}}
 
 ### spec.agentReader.tokenGeneration
 

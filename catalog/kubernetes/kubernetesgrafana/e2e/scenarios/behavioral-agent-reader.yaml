@@ -1,6 +1,7 @@
-# THE agent-teammates proof, act one: declaring agent_reader with its
-# defaults. The module's Job completes, its Role grants exactly the token
-# Secret and its owner, and the `<name>-agent-reader` Secret holds a
+# THE agent-teammates proof, act one: declaring agent_reader with only
+# its required account name, the generation left to its default. The
+# module's Job completes, its Role grants exactly the token Secret and
+# its owner, and the `<name>-agent-reader` Secret holds a
 # generation 1 token, owned by the module's ServiceAccount, that signs in
 # as the `agent-reader` service account: a Viewer that may query
 # datasources, holds no write action and is refused a dashboard write,
@@ -20,4 +21,5 @@ spec:
   create_namespace: true
   storage:
     size: 1Gi
-  agent_reader: {}
+  agent_reader:
+    service_account_name: agent-reader
