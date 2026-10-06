@@ -65,6 +65,16 @@ in its own telemetry, which every operator-run platform publishes:
 
 Settings pages on the self-hosted console render the same facts as sentences: License (the entitlements and seats), Email (the declaration or the two setup hints when nothing is declared), Directory (the identity manifest's verdicts and the live checks, `self-hosted.identity-connecting.md`). When the person is looking at the console, read the page they are on before reading the cluster; the words match.
 
+## Features in early release
+
+A self-hosted Planton has no flag source, by design, so a feature Planton still ships in early release stays off there. Today that is the Planton Assistant, with every door to it. The control plane decides per organization which early-release features an organization sees, and fails closed: with no source, the answer is "none" for every organization. The console shows no trace of such a feature, and the server refuses every way it acts, in one sentence ("The Planton Assistant isn't available to this organization yet.").
+
+- **Nothing is misconfigured, and nothing is to be changed.** The instance health page's **Feature Flags** row (also `planton instance check`) reads "this deployment has no flag source (planton.feature-flags.endpoint is unset), so every unreleased feature stays off". That is the healthy reading for a self-hosted install, never a finding.
+- **Never point the control plane at a flag server** to "turn the Assistant on". The early-release state is Planton's to end. The feature reaches a self-hosted install with the release that makes it generally available, and an upgrade (`self-hosted.upgrading.md`) brings it.
+- **When an admin asks where the Assistant is,** say exactly that: it is in early release on Planton's hosted product, and it arrives on their install with the release that makes it generally available. Never promise a date.
+
+Flags for the person's OWN services are a different thing, built from the catalog: `cloud.kubernetes-feature-flags.md`.
+
 ## Changing the install
 
 Every change is an edit to the declaration -- `spec.version`, `spec.ingress`, `spec.email`, `spec.database.postgresql.backup`, `spec.vault`, `spec.github`, a component's `resources`, the `PlantonIdentityProvider` beside it -- applied with `kubectl apply` (or through the `planton` Helm chart's values, or the catalog kind, whichever installed it). The operator reconciles within a pass (about thirty seconds) and reports each component again. An apply is a mutation under the protocol in `cloud.exploration.md`: the exact command and its blast radius in one sentence, one clear yes, then the report of what happened.

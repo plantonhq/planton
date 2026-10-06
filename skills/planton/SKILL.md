@@ -1,6 +1,6 @@
 ---
 name: planton
-description: Planton's craft for cloud infrastructure, service delivery, and self-hosted Planton, for the Planton Assistant and coding agents (Cursor, Claude Code) in a repository. Infrastructure -- compose and troubleshoot Infra Charts (parameterized multi-resource architectures, Jinja templating, valueFrom wiring), apply catalog object manifests as dependency-ordered sets, modify deployed Infra Stacks. Service delivery -- register services, push-to-deploy pipelines, deploy/promote/rollback, serving domains, keyless CI on GitHub Actions, previews, local env vars. Self-hosted -- read and upgrade a PlantonPlatform run by the Planton operator, connect a company directory (Entra ID, Active Directory), map groups to roles, offboarding. Use when a user asks for or changes infrastructure, fixes a failed build or deploy, registers or deploys a service, sets up CI/CD, or administers their own Planton. Never mutate uninvited, never approve a deployment gate, never leave the workspace given. Not for authoring kind schemas.
+description: Planton's craft for cloud infrastructure, service delivery, and self-hosted Planton, for the Planton Assistant and coding agents (Cursor, Claude Code) in a repository. Infrastructure -- compose and troubleshoot Infra Charts (Jinja templating, valueFrom wiring), apply catalog object manifests as dependency-ordered sets, modify deployed Infra Stacks, feature flags for your own services. Service delivery -- register services, push-to-deploy pipelines, deploy/promote/rollback, serving domains, keyless CI on GitHub Actions, previews, local env vars. Self-hosted -- read and upgrade a PlantonPlatform run by the Planton operator, connect a company directory (Entra ID, Active Directory), map groups to roles, offboarding. Use when a user asks for or changes infrastructure, fixes a failed build or deploy, registers or deploys a service, sets up CI/CD, or administers their own Planton. Never mutate uninvited, never approve a deployment gate, never leave the workspace given. Not for authoring kind schemas.
 ---
 
 # Planton
@@ -439,6 +439,7 @@ Read the file whose "Read when" matches the moment; never answer from memory wha
 | `references/infra.worked-example.md` | The full shape of a small chart in one place; checking your layout against a known-good one |
 | `references/cloud.aws-architecture.md` | Choosing AWS service combinations; security and network defaults |
 | `references/cloud.kubernetes-architecture.md` | What runs on the cluster: the Istio/external-dns paved road; the shared-infra vs environment-chart split; why a Planton service's own workload and route sit on the service, never in a chart |
+| `references/cloud.kubernetes-feature-flags.md` | The person wants feature flags, a kill switch, a dark launch or a feature on for one customer in their own services: GO Feature Flag or flagd, the engine and its flag file as two resources (distinct names), wiring a service through OpenFeature, failing closed, keys, proving a flag both ways |
 | `references/cloud.kubernetes-observability.md` | The person wants monitoring, alerting or observability on a cluster: the order (stack per cluster, delivery, outside heartbeat, then the hub), who gets woken, composing typed alert delivery with `$secret/` credentials, and proving it with a fired alert and a stopped Alertmanager |
 | `references/cloud.exploration.md` | Running aws/kubectl/planton commands against real clouds; the read-only and mutation rules |
 
@@ -477,7 +478,7 @@ Read the file whose "Read when" matches the moment; never answer from memory wha
 
 | File | Read when |
 |---|---|
-| `references/self-hosted.reading-a-platform.md` | The Planton is self-hosted; reading the PlantonPlatform's phase, message, columns, and component sentences before any change; what never to touch |
+| `references/self-hosted.reading-a-platform.md` | The Planton is self-hosted; reading the PlantonPlatform's phase, message, columns, and component sentences before any change; what never to touch; why a feature in early release (the Assistant) is absent and the Feature Flags row reads "no flag source" |
 | `references/self-hosted.front-doors-and-the-cli.md` | Pointing the CLI at a self-hosted Planton; `whoami` fails right after login; choosing Gateway API vs Ingress; the desktop's device sign-in |
 | `references/self-hosted.upgrading.md` | Upgrading the operator or the platform; the CRD adoption preflight; the version floor; a preview-era install |
 | `references/self-hosted.first-admin-and-seats.md` | Getting into a fresh install; "seats are all in use"; where the license key goes; keeping the local admin |
