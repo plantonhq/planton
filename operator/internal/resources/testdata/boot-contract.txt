@@ -1,4 +1,4 @@
-minimumSupported: v0.0.140
+minimumSupported: v0.0.145
 
 [control-plane/control-plane]
 AUTH0_FGA_API_ENDPOINT

@@ -106,7 +106,16 @@ import (
 // and no longer the names those four settings carried before the catalog's
 // one-word-per-idea rename. An older control plane binds the earlier names
 // without a default, so under this operator it would never come up.
-const MinimumSupported = "v0.0.140"
+//
+// v0.0.145: the control plane picks every organization's default secret
+// backend itself -- the vault when it runs, the built-in local backend under
+// the secrets key otherwise -- so the operator renders
+// PLANTON_BOOTSTRAP_SECRET_BACKEND_TYPE only for a DECLARED backend, and with
+// the vault off hands over PLANTON_LOCAL_SECRETS_KEK and
+// PLANTON_CREDENTIALS_PROVIDER=local. An older control plane seeds no default
+// for an undeclared bootstrap organization, and its first state backend
+// stops the boot.
+const MinimumSupported = "v0.0.145"
 
 // releaseForm is the only shape spec.version may take: a full semantic
 // version with the "v" prefix, optionally with a pre-release suffix and build
