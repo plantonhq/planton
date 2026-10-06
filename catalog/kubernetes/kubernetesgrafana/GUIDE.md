@@ -184,7 +184,8 @@ the question "who can sign in" belongs in the proposal, not after it.
   explorer" role is assigned only in Grafana Enterprise. Staff who must
   investigate are Editors; keep dashboards in committed files and treat a
   saved hand-made one as drift (see "Dashboards as code"). Agents querying
-  through the API need no more than Viewer.
+  through the API need no more than Viewer (see "Agent teammates through
+  MCP").
 - **With `hosted_domain`, Google's sign-in screen fixes the domain.** The
   email box carries `@<domain>` and an outside account cannot be typed
   in, so a browser test of the outside-account refusal stops at Google;
@@ -205,6 +206,53 @@ the question "who can sign in" belongs in the proposal, not after it.
   everyone straight to the provider; the way back in when the provider is
   down is the admin account from `admin_secret_name` over a port-forward
   (the HTTP API with basic auth), or a re-apply with the form on.
+
+## Agent teammates through MCP
+
+Coding agents read a hub best through Grafana's own MCP server,
+`mcp-grafana`: the same dashboards, datasources and links a person sees.
+Give it a service account with the **Viewer** role, never more.
+
+- **Viewer is enough to query.** Open-source Grafana keeps the Explore
+  *page* for Editors, but the API an MCP server calls
+  (`/api/ds/query`, `/api/datasources/proxy/uid/<uid>/...`) checks only
+  "query this datasource", which Viewers hold on every datasource. Metrics,
+  log and trace queries, dashboard search and panel queries all work as a
+  Viewer, and every write is refused by Grafana itself.
+- **Run the server read-only as well.** `--disable-write` removes the
+  write tools (in the datasource category these include
+  `create_datasource` and `update_datasource`); `--enabled-tools
+  search,datasource,prometheus,loki,tempo,dashboard,navigation` keeps what
+  an investigation needs. Leave `alerting` off when the alerts live in
+  Alertmanager rather than Grafana: the hub holds them as the `ALERTS`
+  series, which a Prometheus query reads.
+- **Pin the datasource uids** (`datasources[].uid`). The server's tools
+  take a `datasourceUid`, and its Tempo tools reach Tempo through
+  Grafana's datasource proxy by that uid, so a stable uid is what an
+  agent's instructions can name.
+- **Minting the token is a declared Job, not a module step.** The kind has
+  no service-account field, and Grafana's service accounts cannot be
+  provisioned from files. Declare, beside the Grafana:
+  - a `KubernetesServiceAccount` and a namespaced `KubernetesRbac`: `get`,
+    `update` and `patch` on the token's Secret by name, plus an unscoped
+    `create` (Kubernetes never satisfies a create limited by name);
+  - a `KubernetesJob` (an image with curl, jq and kubectl) that reads the
+    admin through `container.app.env.secrets[].secretRef` on the Secret
+    `admin_secret_name` names (keys `admin-user` and `admin-password`), and
+    takes `GRAFANA_URL` as a `valueFrom` on this kind's `endpoint` output.
+    That reference orders the Job after Grafana.
+  - The script finds or creates the service account as Viewer, mints a
+    token only when the Secret's token is missing, refused or of an older
+    generation, writes the Secret, and only then revokes every other token
+    of the account. A generation value in the Job's environment makes
+    replacing the token a one-line, reviewed change: any change to a Job's
+    spec replaces and re-runs it on both engines.
+- **Hand the token to the server, never to a file.** Have the MCP
+  configuration start a small launcher that reads the Secret with the
+  person's own cluster credentials and starts `mcp-grafana` with
+  `GRAFANA_URL` and `GRAFANA_SERVICE_ACCOUNT_TOKEN` in its environment
+  only. Whoever can read the cluster can read Grafana, and offboarding is
+  the cluster's access plus one token replacement.
 
 ## Trace to logs, and back
 

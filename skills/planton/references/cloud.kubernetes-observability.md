@@ -207,6 +207,26 @@ Ask these before composing, in the person's words, not the chart's:
   traces before dashboards exist. People who investigate are Editors;
   tell the person the cost (an Editor can save a hand-made dashboard) and
   keep dashboards in committed files.
+- **Offer the agents' path when the user's team works with coding
+  agents.** Grafana's own MCP server (`mcp-grafana`) gives an agent the
+  dashboards, the three datasources and links a person can open. Its
+  identity is a **Viewer** service account: the Explore page is
+  Editor-only, but the query API the server calls is open to Viewers, and
+  Grafana refuses every write. Service accounts cannot be provisioned from
+  files and `KubernetesGrafana` has no field for them, so mint the token
+  with a declared Job beside the Grafana (the pattern's "Agent teammates
+  read the hub too": a ServiceAccount, a role writing one Secret, the admin
+  read by `secretRef` on `admin_secret_name`, `GRAFANA_URL` as a
+  `valueFrom` on `endpoint`). Run the server with `--disable-write` (in
+  the datasource category even `create_datasource` and
+  `update_datasource` exist without it) and only the categories an
+  investigation needs, and pin the datasource uids, because every tool
+  takes a `datasourceUid`. Hand the token to the server through a launcher
+  that reads the Secret with the person's own cluster credentials, so it
+  is never written to a laptop. In a repository's committed MCP
+  configuration, resolve the launcher from the repository root
+  (`git rev-parse --show-toplevel`): Claude Code starts a project's stdio
+  servers in the session's working directory, which may be a subfolder.
 - **Put the log collector in each cluster's agent, the stores in the
   hub,** and give the hub its own listener set on the cluster's Gateway
   (the pattern's "A hub beside a cluster's agent"), with external-dns's
@@ -576,6 +596,17 @@ Do these with the person, and report what arrived and when:
    and after Loki returns every number must come back from Loki (a
    duplicate is fine; the queue delivers at least once). Ask Loki for at
    most 5,000 lines per query, its default per-query limit.
+10. For the agents' path, with the agents' token: `/api/user` names the
+    service account, `/api/access-control/user/permissions` holds
+    `datasources:query` and no create, write, update or delete action
+    (`/api/user/orgs` answers a service account with an empty 304), one
+    query each
+    through `/api/datasources/proxy/uid/<uid>/...` answers for metrics,
+    logs and traces, and a `POST /api/dashboards/db` is refused 403. Ask
+    the running server for its tools (`tools/list` over stdio) and confirm
+    none writes. Then ask a fresh agent session one real question ("the
+    API's p95 over the last hour, with one slow trace"), and check its
+    number and trace against the stores yourself, not through Grafana.
 
 A rotated alerting secret is picked up on the next notification without a
 restart, so rotation needs no drill of its own; the hub's secrets roll the

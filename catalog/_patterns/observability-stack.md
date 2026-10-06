@@ -833,6 +833,70 @@ External one any Google account (in Testing, only listed test users).
 Grafana's own gate is `allowed_domains`, matched against the email; the
 kind refuses a Google sign-in that allows sign-up with none.
 
+### Agent teammates read the hub too
+
+The people who answer an alert increasingly hand the first read to a
+coding agent. Give it Grafana's own MCP server (`mcp-grafana`) with a
+**Viewer** service account: open-source Grafana keeps the Explore page for
+Editors, but the query API the server calls needs only "query this
+datasource", which Viewers hold. The agent then reads exactly what a
+person reads, and Grafana refuses every write it might try.
+
+Grafana's service accounts cannot be provisioned from files and the kind
+has no field for them, so mint the token the way a first boot is done: a
+declared Job beside the Grafana, with its own ServiceAccount and a role
+that can write one Secret.
+
+```yaml
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesJob
+metadata:
+  name: hub-agent-token
+spec:
+  namespace:
+    value: observability
+  pod:
+    serviceAccount:
+      valueFrom:
+        kind: KubernetesServiceAccount
+        name: hub-agent-token
+        fieldPath: status.outputs.service_account_name
+  container:
+    app:
+      image:
+        repo: alpine/k8s # curl, jq and kubectl; pin the tag to the cluster's minor
+        tag: "1.35.8"
+      command: ["/bin/sh", "-ec", "..."] # find or create the Viewer account, mint, write, revoke the rest
+      env:
+        variables:
+          - name: GRAFANA_URL # also what orders the Job after Grafana
+            valueFrom:
+              kind: KubernetesGrafana
+              name: hub
+              fieldPath: status.outputs.endpoint
+          - name: TOKEN_GENERATION
+            value: "1" # bump to replace the token: a changed spec re-runs the Job
+        secrets:
+          - name: GRAFANA_ADMIN_PASSWORD
+            secretRef:
+              name: hub # the Secret admin_secret_name names; keys admin-user, admin-password
+              key: admin-password
+  restartPolicy: OnFailure
+```
+
+- **The role** (`KubernetesRbac`, namespace scope) grants `get`, `update`
+  and `patch` on the token's Secret by name, and `create` on Secrets
+  unnamed: Kubernetes never satisfies a create rule limited by name.
+- **The script mints only when it must** (no token, a refused token, or an
+  older generation), writes the Secret, and only then revokes the
+  account's other tokens, so a failed write never leaves agents locked
+  out.
+- **The token reaches the agent's machine only in memory.** The
+  repository's MCP configuration starts a launcher that reads the Secret
+  with the person's own cluster credentials and runs `mcp-grafana
+  --disable-write` with the token in its environment. Whoever can read the
+  cluster can read Grafana; nobody else can.
+
 ## A hub beside a cluster's agent
 
 The hub usually lives on a cluster that already runs its own
