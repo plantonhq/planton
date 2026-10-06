@@ -15,12 +15,12 @@ With no stated preference, GO Feature Flag is the default recommendation: its fl
 
 ## Compose it: the engine and its flags are two resources
 
-Always two: the engine (deployed rarely) and a flag file (edited often). A flag flip edits only the flag file. The engine re-reads it on its poll, with no restart and no re-apply of the engine. Never put flags inline in the engine's manifest, and never in the same chart install as a service that changes on every push.
+Always two: the engine (deployed rarely) and a flag file (edited often). A flag flip edits only the flag file, with no restart and no re-apply of the engine: GO Feature Flag's relay re-reads it on its poll, and flagd sees it when the kubelet syncs the mounted ConfigMap, typically within a minute or two. Never put flags inline in the engine's manifest, and never in the same chart install as a service that changes on every push.
 
 - **Same namespace.** Put the flag file in the engine's namespace, or name its namespace in the engine's source.
 - **Give the GO Feature Flag relay and its flag file different names.** The relay's chart already creates a ConfigMap named after the relay, holding its own configuration, and the flag file renders its ConfigMap under the flag file's name. A relay and a flag file both called `flags` collide on install. Use names like `flags` (the relay) and `release-flags` (the file). flagd has no such collision.
 - **Install order.** Set `startWithRetrieverError: true` on the relay, so it starts and serves every flag at the caller's default until the file arrives. When the flag file sits in a namespace another resource of the same chart creates, name its ConfigMap in the relay's retriever literally rather than by `valueFrom`. A reference both ways is a dependency cycle no deploy can satisfy.
-- **The poll is the flip time.** The relay polls its retrievers every 60 seconds by default (`flagSource.pollingIntervalMs`). Say the flip time the person will see, and lower it when "within seconds" matters.
+- **Say the flip time the person will see.** GO Feature Flag's relay polls its retrievers every 60 seconds by default (`flagSource.pollingIntervalMs`); lower it when "within seconds" matters. flagd's flip time is the kubelet's ConfigMap sync.
 - **Write rules the engine keeps.** The flag file's schema enforces every rule the engine checks at load (one value type per flag, rules naming real variations, rollouts that ramp forward, real dates), except the query syntax. A query that does not parse makes the engine drop the whole flag, and every evaluation silently returns the caller's default. After every edit, evaluate the flag both ways (below).
 
 ## Wire a service to it
