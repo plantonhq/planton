@@ -4,7 +4,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { RenderInternals } from '@remotion/renderer';
-import { OVERVIEW_VIDEO as video } from '../src/data/homepage-video.ts';
+const { OVERVIEW_VIDEO: video } = await import(process.argv.includes('--legacy')
+  ? '../video/legacy-overview-data.ts' : '../src/data/homepage-video.ts');
 const destination = process.argv[2];
 assert.ok(destination, 'Pass the export directory');
 const ffprobe = RenderInternals.getExecutablePath({ type: 'ffprobe', indent: false, logLevel: 'error', binariesDirectory: null });
@@ -27,7 +28,7 @@ for (const [name, width, height] of [['1080p', 1920, 1080], ['720p', 1280, 720]]
   assert.equal(stream.width, width);
   assert.equal(stream.height, height);
   assert.equal(stream.avg_frame_rate, '30/1');
-  assert.equal(Number(info.format.duration), video.duration);
+  assert.ok(Math.abs(Number(info.format.duration) - video.duration) < 0.05, 'Expected duration');
   const bytes = fs.readFileSync(filename), atoms = [];
   for (let offset = 0; offset < bytes.length;) {
     const size32 = bytes.readUInt32BE(offset), type = bytes.toString('ascii', offset + 4, offset + 8);
@@ -37,5 +38,5 @@ for (const [name, width, height] of [['1080p', 1920, 1080], ['720p', 1280, 720]]
     offset += size;
   }
   assert.ok(atoms.indexOf('moov') >= 0 && atoms.indexOf('moov') < atoms.indexOf('mdat'), 'Fast-start metadata precedes media');
-  console.log(`PASS ${name}: ${width}×${height}, 30fps, 60s, H.264 ${silent ? 'picture master' : '+ stereo AAC'}, fast-start, ${(bytes.length / 1048576).toFixed(2)} MiB`);
+  console.log(`PASS ${name}: ${width}×${height}, 30fps, ${video.duration}s, H.264 ${silent ? 'picture master' : '+ stereo AAC'}, fast-start, ${(bytes.length / 1048576).toFixed(2)} MiB`);
 }

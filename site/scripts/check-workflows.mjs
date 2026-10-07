@@ -51,6 +51,9 @@ const providers = ['aws', 'gcp', 'azure', 'cloudflare', 'digitalocean'];
 const stories = [...providers, 'delivery', 'agents'];
 const select = async id => {
   if (providers.includes(id)) {
+    // Element screenshots can leave tabs beneath the sticky header on Linux.
+    // Scroll the real click target clear before selecting the next provider.
+    await expose('[role="tablist"]');
     await page.click(`[role="tab"]:nth-child(${providers.indexOf(id) + 1})`);
     // Reduced motion has no exit panel, so absence of [inert] alone can be
     // true before React commits the newly selected provider on slower runners.

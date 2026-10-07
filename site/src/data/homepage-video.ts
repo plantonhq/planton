@@ -4,13 +4,14 @@ import story from './homepage-video-story.json' with { type: 'json' };
  * Bump the version when publishing different bytes; CDN objects are immutable. */
 export const OVERVIEW_VIDEO = {
   id: 'homepage-overview',
-  version: '2026-09-25-v2',
-  title: 'From repository to running service.',
-  label: 'See Planton in 60 seconds.',
-  description: 'Your platform team sets the foundation. Developers ship within its controls. See where Planton fits.',
-  poster: '/_site/images/product/homepage-overview.webp',
-  base: 'https://assets.planton.ai/videos/homepage/2026-09-25-v2',
-  duration: 60,
+  version: '2026-10-08-v3',
+  title: 'Governance built in for coding agents.',
+  label: 'See Planton in 47 seconds.',
+  description: 'Proven infrastructure charts. Agents that work within your policies. Production approvals stay with your team.',
+  poster: '/_site/images/product/homepage-overview-2026-10-08-v3.webp',
+  captions: '/_site/videos/homepage-overview-2026-10-08-v3-en.vtt',
+  base: 'https://assets.planton.ai/videos/homepage/2026-10-08-v3',
+  duration: 47,
   fps: 30,
 } as const;
 
