@@ -11,13 +11,17 @@ poster/caption paths are in `src/data/homepage-video.ts`.
 # ELEVENLABS_API_KEY is read from the environment; --key-file is also supported.
 python3 scripts/create-overview-audio.py \
   --picture-file /path/to/planton-movie-1.mp4 --duration 44.5 \
+  --speed 0.82 --sentence-pause 0.35 \
   --output /path/to/planton-movie-1-narrated
 node scripts/check-overview-export.mjs /path/to/planton-movie-1-narrated
 OVERVIEW_VIDEO_FILE=/path/to/planton-movie-1-narrated/homepage-overview-720p.mp4 \
   node scripts/check-overview-video.mjs
 ```
 
-Eric is the selected ElevenLabs voice (`eleven_multilingual_v2`). Credentials
+Eric is the selected ElevenLabs voice (`eleven_multilingual_v2`), generated at
+0.82 speaking speed with 0.35-second pauses between sentences. Chapters may
+override `sentencePause`; the closing phrases use their natural pauses.
+The shorter script leaves room for unhurried delivery within each scene. Credentials
 and generated media stay outside Git. Requests are cached by voice, text, and
 settings. Overlong chapters stop generation for editorial correction; do not
 speed up or truncate speech. `narration-timing.json` records actual chapter

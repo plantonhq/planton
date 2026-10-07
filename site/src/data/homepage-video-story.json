@@ -6,7 +6,7 @@
     "voiceEnd": 5.4,
     "label": "Coding Agents",
     "title": "Code in minutes. Delivery still takes coordination.",
-    "transcript": "Coding agents write code in minutes. Shipping still takes tickets and coordination."
+    "transcript": "Code in minutes. Delivery still takes coordination."
   },
   {
     "start": 5.5,
@@ -15,7 +15,7 @@
     "voiceEnd": 10.4,
     "label": "The Tradeoffs",
     "title": "You shouldn’t have to pick.",
-    "transcript": "Wait in a queue. Hand over cloud keys. Or write everything yourself."
+    "transcript": "Tickets. Cloud keys. Handwritten Terraform."
   },
   {
     "start": 10.5,
@@ -29,7 +29,7 @@
   {
     "start": 14,
     "end": 23,
-    "voiceStart": 15,
+    "voiceStart": 16,
     "voiceEnd": 22.65,
     "label": "Infra Charts",
     "title": "Proven charts. A short form.",
@@ -42,7 +42,7 @@
     "voiceEnd": 28.4,
     "label": "Deployment",
     "title": "Real Terraform state, with history.",
-    "transcript": "Deploys in order, in your AWS account. Terraform state, with history."
+    "transcript": "Deployed in order. Real Terraform state, with history."
   },
   {
     "start": 28.5,
@@ -51,7 +51,7 @@
     "voiceEnd": 32.4,
     "label": "Across Clouds",
     "title": "One path for every stack.",
-    "transcript": "One path. Over eight hundred components, across clouds."
+    "transcript": "Eight hundred components. Across clouds."
   },
   {
     "start": 32.5,
@@ -69,6 +69,7 @@
     "voiceEnd": 44.25,
     "label": "Your Cloud",
     "title": "Your cloud. Your keys. Your state. Your bill.",
-    "transcript": "Your cloud. Your keys. Your state. Your bill."
+    "transcript": "Your cloud. Your keys. Your state. Your bill.",
+    "sentencePause": 0
   }
 ]

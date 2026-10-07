@@ -16,6 +16,7 @@ import sys
 import wave
 import urllib.request
 import urllib.error
+from xml.sax.saxutils import escape
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--output', required=True)
@@ -23,6 +24,8 @@ parser.add_argument('--key-file', help='Optional private key file; otherwise use
 parser.add_argument('--story', type=Path, help='Chapter JSON; defaults to the current homepage story')
 parser.add_argument('--duration', type=float, help='Exact picture duration; defaults to the final chapter end')
 parser.add_argument('--picture-file', type=Path, help='Imported silent 1080p H.264 MP4; produces both delivery sizes')
+parser.add_argument('--speed', type=float, default=1.0, help='ElevenLabs speaking speed (0.7 to 1.2); never time-stretch the output')
+parser.add_argument('--sentence-pause', type=float, default=0, help='Explicit pause between sentences in seconds (0 to 3)')
 parser.add_argument('--voice-id', default='cjVigY5qzO86Huf0OWal', help='Eric, the selected narration voice')
 parser.add_argument('--picture-dir', help='Optional directory containing the silent 1080p and 720p masters')
 args = parser.parse_args()
@@ -35,12 +38,16 @@ if not math.isfinite(duration_seconds) or duration_seconds <= 0:
     parser.error('Duration must be positive and finite')
 if args.picture_file and args.picture_dir:
     parser.error('Use only one of --picture-file and --picture-dir')
+if not 0.7 <= args.speed <= 1.2 or not 0 <= args.sentence_pause <= 3:
+    parser.error('Speed must be 0.7–1.2 and sentence pause 0–3 seconds')
 previous_end = 0
 for chapter in story:
     if not (previous_end <= chapter['voiceStart'] < chapter['voiceEnd'] <= duration_seconds):
         parser.error('Narration windows must be ordered, non-overlapping, and within the picture')
     previous_end = chapter['voiceEnd']
-chapters = [dict(start=c['voiceStart'], end=c['voiceEnd'], text=c['transcript']) for c in story]
+chapters = [dict(start=c['voiceStart'], end=c['voiceEnd'], text=c['transcript'], pause=c.get('sentencePause', args.sentence_pause)) for c in story]
+if any(not 0 <= c['pause'] <= 3 for c in chapters):
+    parser.error('Chapter sentence pauses must be 0–3 seconds')
 key = Path(args.key_file).expanduser().read_text().strip() if args.key_file else os.environ.get('ELEVENLABS_API_KEY', '').strip()
 if not key:
     parser.error('Set ELEVENLABS_API_KEY or supply --key-file')
@@ -81,11 +88,16 @@ for i, chapter in enumerate(chapters):
     script.write_text(chapter['text'])
     decoded = output / f'voice-{i+1}.wav'
     available = chapter['end'] - chapter['start']
+    speech_text = chapter['text']
+    if chapter['pause']:
+        speech_text = escape(speech_text).replace('. ', f'. <break time="{chapter["pause"]}s" /> ')
     request = {
-        'text': chapter['text'], 'model_id': 'eleven_multilingual_v2',
+        'text': speech_text, 'model_id': 'eleven_multilingual_v2',
         'voice_settings': {'stability': 0.5, 'similarity_boost': 0.75, 'style': 0.15, 'use_speaker_boost': True},
         'seed': 42,
     }
+    if args.speed != 1:
+        request['voice_settings']['speed'] = args.speed
     fingerprint = hashlib.sha256(json.dumps([args.voice_id, request], sort_keys=True).encode()).hexdigest()[:16]
     encoded = output / f'voice-{i+1}-{fingerprint}.mp3'
     if not encoded.exists():
