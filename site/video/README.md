@@ -1,52 +1,69 @@
-# Homepage overview film
+# Homepage overview films
 
-`HomepageOverview` is an offline Remotion composition, not a browser dependency.
-Chapter timing and transcript live in `src/data/homepage-video.ts`; geometry lives
-in `overview-layout.ts`. The film reuses the site's canonical icon registry,
-dark palette, and length-sampled connector animation. The real architecture
-export is an unretouched image with a bounded camera transform.
+## Current film: imported picture with Eric narration
+
+The current homepage uses the supplied 44.5-second silent, 1080p, 30 fps MP4.
+The picture stays unchanged. Narration windows and transcript are maintained in
+`src/data/homepage-video-story.json`; player metadata, duration, and versioned
+poster/caption paths are in `src/data/homepage-video.ts`.
 
 ```sh
-yarn export:overview --output=/tmp/planton-overview-review
-node scripts/check-overview-export.mjs /tmp/planton-overview-review --silent
+# ELEVENLABS_API_KEY is read from the environment; --key-file is also supported.
+python3 scripts/create-overview-audio.py \
+  --picture-file /path/to/planton-movie-1.mp4 --duration 44.5 \
+  --output /path/to/planton-movie-1-narrated
+node scripts/check-overview-export.mjs /path/to/planton-movie-1-narrated
+OVERVIEW_VIDEO_FILE=/path/to/planton-movie-1-narrated/homepage-overview-720p.mp4 \
+  node scripts/check-overview-video.mjs
 ```
 
-Use `--stills` for an early composition review. The exporter writes 1080p and
-720p H.264 files, representative frames, a contact sheet, and an optimized WebP
-poster. Review the entire film before release, including the approval wait and
-both camera transitions. Keep generated MP4s outside Git. Copy only the poster
-to `public/_site/images/product/homepage-overview.webp`.
+Eric is the selected ElevenLabs voice (`eleven_multilingual_v2`). Credentials
+and generated media stay outside Git. Requests are cached by voice, text, and
+settings. Overlong chapters stop generation for editorial correction; do not
+speed up or truncate speech. `narration-timing.json` records actual chapter
+lengths. Captions use actual narration start/end times.
 
-Publish videos with explicit object uploads to:
+The original ambient score ducks under speech and fades at the end. The mix is
+normalized to -16 LUFS with a -1.5 dBTP target. The 1080p picture stream is copied
+unchanged; the 720p delivery copy is scaled and encoded as H.264. Both receive
+stereo AAC audio and fast-start metadata.
+
+Copy `overview-narration.vtt` into the versioned caption path in the player
+metadata. Create a 1280x720 WebP poster from a representative frame and save it
+to the matching versioned poster path. Keep previous posters and captions for
+rollback. Review the entire film, narration, and pronunciation before release.
+
+## Publish and verify
+
+Upload the MP4s explicitly to:
 `s3://planton-assets/videos/homepage/<version>/homepage-overview-{1080p,720p}.mp4`.
-Use `Content-Type: video/mp4` and `Cache-Control: public, max-age=31536000, immutable`.
-Never use the deletion-managed `site/` mirror for video. Never overwrite a
-published version; bump `OVERVIEW_VIDEO.version` and its base URL for new bytes.
-Verify the public CDN returns 206 and Content-Range for a byte-range GET before
-releasing the player. The 720p file is the default website source; the 1080p
-master is offered as a direct link.
+Use `Content-Type: video/mp4` and
+`Cache-Control: public, max-age=31536000, immutable`.
+Never use the deletion-managed `site/` asset mirror. Never overwrite a published
+version: change both the version and base URL for different bytes. Verify CDN
+byte-range GETs return 206 with Content-Range before releasing the website.
 
-The player uses native controls and no preload/autoplay. The HTML transcript and
-direct MP4 links remain usable without JavaScript. Analytics count the first
-play and first completion once per page view, including replays in that view;
-only the public video ID and version are recorded.
+The native player uses the 720p copy, with a direct Full-HD link, no preload,
+and no autoplay. Its transcript and direct links work without JavaScript.
+Analytics record first play/completion once per page view, with ID and version.
+The `release.site` workflow builds and deploys the website to Cloudflare Workers.
+Confirm deployment success and live playback before reporting completion.
 
-## Narrated preview
+## Original 60-second Remotion composition
 
-Eric is the selected ElevenLabs voice. The narration script lives in
-`src/data/homepage-video-story.json`; the same text drives the HTML transcript,
-voice generation, and English captions. Its windows fit the scene boundaries.
+The original animation remains an offline export, independent of the current
+homepage. Its frozen story and metadata live in `video/legacy-overview-story.json`
+and `video/legacy-overview-data.ts`. Geometry remains in `overview-layout.ts`.
 
 ```sh
-python3 scripts/create-overview-audio.py --key-file /path/to/private-key \
-  --output /tmp/planton-eric-review --picture-dir /tmp/planton-overview-review
+yarn export:overview --output=/tmp/planton-legacy-overview
+node scripts/check-overview-export.mjs /tmp/planton-legacy-overview --legacy --silent
+python3 scripts/create-overview-audio.py \
+  --story video/legacy-overview-story.json --duration 60 \
+  --picture-dir /tmp/planton-legacy-overview --output /tmp/planton-legacy-narrated
+node scripts/check-overview-export.mjs /tmp/planton-legacy-narrated --legacy
 ```
 
-The key is read into memory and sent only to ElevenLabs. Generated chapters are
-cached by voice, script, and settings, avoiding duplicate charges on reruns.
-Overlong chapters stop the process for editorial correction rather than being
-sped up or truncated. The original ambient score ducks under speech. The final
-mix is loudness-normalized and added to both picture masters without re-encoding
-their video streams. Copy the generated WebVTT file to `public/_site/videos/homepage-overview-en.vtt`.
-Run `check-overview-export.mjs` without `--silent` on the narrated deliverables. Review narration
-and pronunciation before publishing a new immutable CDN version.
+Use `--stills` with the exporter for composition review. It produces 1080p and
+720p picture masters, representative frames, a contact sheet, and a WebP poster.
+These legacy exports do not change or publish the current homepage movie.

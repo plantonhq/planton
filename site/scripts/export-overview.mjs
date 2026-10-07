@@ -8,7 +8,7 @@ import { bundle } from '@remotion/bundler';
 import { renderMedia, renderStill, selectComposition } from '@remotion/renderer';
 import puppeteer from 'puppeteer';
 import sharp from 'sharp';
-import { OVERVIEW_VIDEO as video } from '../src/data/homepage-video.ts';
+import { OVERVIEW_VIDEO as video } from '../video/legacy-overview-data.ts';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const destination = path.resolve(process.argv.find(a => a.startsWith('--output='))?.slice(9) ?? path.join(os.tmpdir(), 'planton-overview-exports', video.version));

@@ -1,5 +1,5 @@
 import { AbsoluteFill, Img, interpolate, staticFile, useCurrentFrame } from 'remotion';
-import { OVERVIEW_CHAPTERS, OVERVIEW_VIDEO } from '../src/data/homepage-video';
+import { OVERVIEW_CHAPTERS, OVERVIEW_VIDEO } from './legacy-overview-data';
 import { WORKFLOW_ICONS } from '../src/data/workflow-icons';
 import { FlowArrowMarkers, FlowConnection } from '../src/components/marketing/workflows/FlowConnection';
 import { workflowDarkTokens as palette } from '../src/theme/workflows';
