@@ -112,9 +112,15 @@ planton service run my-service --tag v1.4.0
 service 'my-service' has no trigger branch to build by default, so name what to run: planton service run my-service --tag <tag> (or --branch <branch>)
 ```
 
+A branch mapped to an environment (`deploy.branchDeployments`) deploys there, exactly as its push would, unless `--deploy-env` names another. On a service with no trigger branch only a tag release walks the environments, so a run by commit must say where it deploys — `--branch` for the environment that branch is mapped to, or `--deploy-env` — and alone it is refused:
+
+```text
+service 'my-service' has no promotion walk, so a run by commit deploys only where you name: add --deploy-env <env>, or --branch <branch> to deploy where that branch is mapped (dev → dev, main → prod)
+```
+
 A branch, tag or commit the repository does not have is refused naming it and the repository.
 
-In the web console, the **Run** button on the service's **Runs** tab opens the same choice: the trigger branch's head by default, another branch, or — when the service's tag triggers are on — **Release a Tag**, picked from the repository's tags that the service's patterns accept, newest first (type to narrow, or name a tag the list doesn't show). For a service with no trigger branch there is no head to build by default, so the dialog opens on the tag (or, with tags off, the branch) and waits for one to be named.
+In the web console, the **Run** button on the service's **Runs** tab opens the same choice: the trigger branch's head by default, another branch (a mapped branch needs no environment chosen — the dialog says where it deploys), or — when the service's tag triggers are on — **Release a Tag**, picked from the repository's tags that the service's patterns accept, newest first (type to narrow, or name a tag the list doesn't show). For a service with no trigger branch there is no head to build by default, so the dialog opens on the tag (or, with tags off, the branch) and waits for one to be named.
 
 ## Controlling Pipeline Behavior
 
