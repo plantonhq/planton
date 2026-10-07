@@ -2,16 +2,23 @@
 
 ## Current film: imported picture with Eric narration
 
-The current homepage uses the supplied 44.5-second silent, 1080p, 30 fps MP4.
-The picture stays unchanged. Narration windows and transcript are maintained in
+The current homepage uses the supplied silent, 1080p, 30 fps MP4, with a
+47-second finish. Original scene timing runs through 44 seconds; the logo then
+holds until 46 seconds and fades to its warm background over the final second.
+The closing narration ends near 43.9 seconds, leaving a quiet three-second landing.
+Narration windows and transcript are maintained in
 `src/data/homepage-video-story.json`; player metadata, duration, and versioned
 poster/caption paths are in `src/data/homepage-video.ts`.
 
 ```sh
+# Prepare the longer ending with a full FFmpeg binary (trim, tpad, fade).
+python3 scripts/prepare-overview-ending.py \
+  --input /path/to/planton-movie-1.mp4 --output /path/to/picture-47s.mp4 \
+  --ffmpeg /path/to/ffmpeg --hold-at 44 --duration 47 --fade 1
 # ELEVENLABS_API_KEY is read from the environment; --key-file is also supported.
 python3 scripts/create-overview-audio.py \
-  --picture-file /path/to/planton-movie-1.mp4 --duration 44.5 \
-  --speed 0.82 --sentence-pause 0.35 \
+  --picture-file /path/to/picture-47s.mp4 --duration 47 \
+  --speed 0.82 --sentence-pause 0.35 --music-fade 3 \
   --output /path/to/planton-movie-1-narrated
 node scripts/check-overview-export.mjs /path/to/planton-movie-1-narrated
 OVERVIEW_VIDEO_FILE=/path/to/planton-movie-1-narrated/homepage-overview-720p.mp4 \
@@ -21,15 +28,18 @@ OVERVIEW_VIDEO_FILE=/path/to/planton-movie-1-narrated/homepage-overview-720p.mp4
 Eric is the selected ElevenLabs voice (`eleven_multilingual_v2`), generated at
 0.82 speaking speed with 0.35-second pauses between sentences. Chapters may
 override `sentencePause`; the closing phrases use their natural pauses.
-The shorter script leaves room for unhurried delivery within each scene. Credentials
+The shorter script leaves room for unhurried delivery within each scene.
+Credentials
 and generated media stay outside Git. Requests are cached by voice, text, and
 settings. Overlong chapters stop generation for editorial correction; do not
 speed up or truncate speech. `narration-timing.json` records actual chapter
 lengths. Captions use actual narration start/end times.
 
-The original ambient score ducks under speech and fades at the end. The mix is
-normalized to -16 LUFS with a -1.5 dBTP target. The 1080p picture stream is copied
-unchanged; the 720p delivery copy is scaled and encoded as H.264. Both receive
+The original ambient score smoothly ducks around actual speech, then fades
+over the final three seconds. The mix is normalized to -16 LUFS with a -1.5 dBTP target.
+Preparing the ending re-encodes the picture at CRF 16. Audio assembly copies
+that prepared 1080p picture stream unchanged; the 720p delivery copy is scaled and encoded as H.264.
+Both receive
 stereo AAC audio and fast-start metadata.
 
 Copy `overview-narration.vtt` into the versioned caption path in the player

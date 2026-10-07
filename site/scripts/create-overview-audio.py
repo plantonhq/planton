@@ -25,6 +25,7 @@ parser.add_argument('--story', type=Path, help='Chapter JSON; defaults to the cu
 parser.add_argument('--duration', type=float, help='Exact picture duration; defaults to the final chapter end')
 parser.add_argument('--picture-file', type=Path, help='Imported silent 1080p H.264 MP4; produces both delivery sizes')
 parser.add_argument('--speed', type=float, default=1.0, help='ElevenLabs speaking speed (0.7 to 1.2); never time-stretch the output')
+parser.add_argument('--music-fade', type=float, default=2.5, help='Final music fade duration in seconds')
 parser.add_argument('--sentence-pause', type=float, default=0, help='Explicit pause between sentences in seconds (0 to 3)')
 parser.add_argument('--voice-id', default='cjVigY5qzO86Huf0OWal', help='Eric, the selected narration voice')
 parser.add_argument('--picture-dir', help='Optional directory containing the silent 1080p and 720p masters')
@@ -36,6 +37,8 @@ story = json.loads((args.story or site / 'src/data/homepage-video-story.json').r
 duration_seconds = args.duration if args.duration is not None else max(c['end'] for c in story)
 if not math.isfinite(duration_seconds) or duration_seconds <= 0:
     parser.error('Duration must be positive and finite')
+if not math.isfinite(args.music_fade) or not 0 < args.music_fade <= duration_seconds:
+    parser.error('Music fade must be positive and no longer than the film')
 if args.picture_file and args.picture_dir:
     parser.error('Use only one of --picture-file and --picture-dir')
 if not 0.7 <= args.speed <= 1.2 or not 0 <= args.sentence_pause <= 3:
@@ -149,11 +152,12 @@ for n in range(length):
     note = chord[int(t//2) % 4] * 2
     bell = math.sin(2*math.pi*note*note_time) * math.exp(-note_time*2.9) * min(1,note_time/.02)
     duck = 1.0
-    for chapter in chapters:
-        if chapter['start']-.2 <= t <= chapter['end']+.25:
-            duck = 0.48
-            break
-    fade = min(1,t/2) * min(1,max(0,(duration_seconds-t)/2.5))
+    for chapter in measurements:
+        # Smooth attack/release around actual speech, including the final line.
+        envelope_voice = min(1, max(0, (t - chapter['start'] + .2) / .2),
+                             max(0, (chapter['end'] + .6 - t) / .6))
+        duck = min(duck, 1 - .52 * envelope_voice)
+    fade = min(1,t/2) * min(1,max(0,(duration_seconds-t)/args.music_fade))
     bed = (0.038*pad*envelope + 0.017*bell) * duck * fade
     pan = 0.12 * math.sin(2*math.pi*.07*t)
     for side in (1-pan,1+pan):
