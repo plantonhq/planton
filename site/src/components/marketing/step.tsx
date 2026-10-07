@@ -25,17 +25,17 @@ export const Step: FC<StepProps> = ({
 }) => (
   <Box className="flex-1 relative">
     {!isLast && (
-      <Box className="hidden lg:block absolute top-12 left-[calc(50%+40px)] w-[calc(100%-80px)] h-0.5 bg-white/10" />
+      <Box className="hidden lg:block absolute top-12 left-[calc(50%+40px)] w-[calc(100%-80px)] h-0.5 bg-raised" />
     )}
     
     <Box className="flex flex-col items-center text-center">
-      <Box className="w-14 h-14 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center mb-3 text-white">
+      <Box className="w-14 h-14 rounded-xl bg-raised border border-edge flex items-center justify-center mb-3 text-fg">
         {icon ?? <span className="text-lg font-semibold">{number}</span>}
       </Box>
 
       {icon ? <Badge className="mb-2">Step {number}</Badge> : null}
       
-      <Typography className="text-base font-semibold text-white mb-1.5">
+      <Typography className="text-base font-semibold text-fg mb-1.5">
         {title}
       </Typography>
       

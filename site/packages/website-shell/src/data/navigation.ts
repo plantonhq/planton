@@ -112,7 +112,7 @@ export const menuExplore: MenuItem[] = [
 export const menuSolutions: MenuItem[] = [
   { label: 'Platform Engineer', href: '/solutions/platform-engineer' },
   { label: 'Engineering Leader', href: '/solutions/engineering-leader' },
-  { label: 'IT Consultancy', href: '/solutions/it-consultancy' },
+  { label: 'IT Consulting Firms', href: '/solutions/it-consultancy' },
   { label: 'Startup Founder', href: '/solutions/startup-founder' },
   { label: 'Security and Governance Leader', href: '/solutions/security-and-governance-leader' },
 ];

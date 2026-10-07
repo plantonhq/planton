@@ -23,8 +23,8 @@ interface QuoteProps {
 }
 
 export const Quote: FC<QuoteProps> = ({ text, author, role, avatar, companyLogo, className = '' }) => (
-  <Box className={`border-l-4 border-white/30 pl-5 py-1.5 ${className}`}>
-    <Typography className="text-sm md:text-base text-white italic mb-3">
+  <Box className={`border-l-4 border-edge pl-5 py-1.5 ${className}`}>
+    <Typography className="text-sm md:text-base text-fg italic mb-3">
       &ldquo;{text}&rdquo;
     </Typography>
     <Box className="flex items-center gap-3">
@@ -37,12 +37,12 @@ export const Quote: FC<QuoteProps> = ({ text, author, role, avatar, companyLogo,
           <Image src={companyLogo} alt={role || ''} width={24} height={24} className="w-full h-full object-contain brightness-0 invert" />
         </Box>
       ) : (
-        <Box className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+        <Box className="w-10 h-10 rounded-full bg-raised flex items-center justify-center text-fg font-semibold text-sm flex-shrink-0">
           {initials(author)}
         </Box>
       )}
       <Box>
-        <Typography className="text-sm text-white font-medium">
+        <Typography className="text-sm text-fg font-medium">
           {author}
         </Typography>
         {role && (
@@ -88,12 +88,12 @@ export const TestimonialCard: FC<TestimonialCardProps> = ({
           <Image src={avatar} alt={name} width={32} height={32} className="w-full h-full object-cover" />
         </Box>
       ) : (
-        <Box className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white font-semibold text-xs flex-shrink-0">
+        <Box className="w-8 h-8 rounded-full bg-raised flex items-center justify-center text-fg font-semibold text-xs flex-shrink-0">
           {initials(name)}
         </Box>
       )}
       <Box>
-        <Typography className="text-white font-medium text-xs">
+        <Typography className="text-fg font-medium text-xs">
           {name}
         </Typography>
         <Typography className="text-fg-muted text-[11px]">

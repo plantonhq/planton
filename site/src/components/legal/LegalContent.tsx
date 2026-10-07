@@ -22,13 +22,13 @@ export function LegalContent({ content }: LegalContentProps) {
   return (
     <div className="min-h-screen py-12 md:py-20">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="prose prose-invert max-w-none md:prose-lg">
+        <div className="prose max-w-none md:prose-lg">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeRaw]}
             components={{
               p: ({ children }) => (
-                <p className="text-[#a0a0a0] mb-4 leading-relaxed">{children}</p>
+                <p className="text-[#454545] mb-4 leading-relaxed">{children}</p>
               ),
               h1: ({ children }) => (
                 <HeadingWithAnchor id={generateHeadingId(children)} level={1} className={HEADING_H1_CLASSES}>
@@ -51,14 +51,14 @@ export function LegalContent({ content }: LegalContentProps) {
                 </HeadingWithAnchor>
               ),
               ul: ({ children }) => (
-                <ul className="list-disc list-inside text-[#a0a0a0] mb-4 space-y-2">{children}</ul>
+                <ul className="list-disc list-inside text-[#454545] mb-4 space-y-2">{children}</ul>
               ),
               ol: ({ children }) => (
-                <ol className="list-decimal list-inside text-[#a0a0a0] mb-4 space-y-2">{children}</ol>
+                <ol className="list-decimal list-inside text-[#454545] mb-4 space-y-2">{children}</ol>
               ),
-              li: ({ children }) => <li className="text-[#a0a0a0]">{children}</li>,
+              li: ({ children }) => <li className="text-[#454545]">{children}</li>,
               blockquote: ({ children }) => (
-                <blockquote className="border-l-2 border-[#3a3a3a] pl-4 py-3 my-5 bg-[#111] rounded-r text-[#a0a0a0] italic">
+                <blockquote className="border-l-2 border-[#999996] pl-4 py-3 my-5 bg-[#eeeeeb] rounded-r text-[#454545] italic">
                   {children}
                 </blockquote>
               ),
@@ -84,23 +84,23 @@ export function LegalContent({ content }: LegalContentProps) {
               },
               table: ({ children }) => (
                 <div className="overflow-x-auto my-6 -mx-4 px-4 sm:mx-0 sm:px-0">
-                  <table className="min-w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg">
+                  <table className="min-w-full bg-[#eeeeeb] border border-[#c7c7c4] rounded-lg">
                     {children}
                   </table>
                 </div>
               ),
-              thead: ({ children }) => <thead className="bg-[#111]">{children}</thead>,
+              thead: ({ children }) => <thead className="bg-[#eeeeeb]">{children}</thead>,
               tbody: ({ children }) => <tbody>{children}</tbody>,
-              tr: ({ children }) => <tr className="border-b border-[#2a2a2a]">{children}</tr>,
+              tr: ({ children }) => <tr className="border-b border-[#c7c7c4]">{children}</tr>,
               th: ({ children }) => (
-                <th className="px-4 py-3 text-left text-white font-semibold text-sm">{children}</th>
+                <th className="px-4 py-3 text-left text-[#171717] font-semibold text-sm">{children}</th>
               ),
               td: ({ children }) => (
-                <td className="px-4 py-3 text-[#a0a0a0] text-sm">{children}</td>
+                <td className="px-4 py-3 text-[#454545] text-sm">{children}</td>
               ),
-              hr: () => <hr className="my-8 border-[#2a2a2a]" />,
-              strong: ({ children }) => <strong className="text-white font-semibold">{children}</strong>,
-              em: ({ children }) => <em className="text-[#a0a0a0]">{children}</em>,
+              hr: () => <hr className="my-8 border-[#c7c7c4]" />,
+              strong: ({ children }) => <strong className="text-[#171717] font-semibold">{children}</strong>,
+              em: ({ children }) => <em className="text-[#454545]">{children}</em>,
             }}
           >
             {content}

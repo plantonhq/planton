@@ -42,21 +42,6 @@
   margin-top: 5px;
   max-width: 320px;
 }
-.playback {
-  display: flex;
-  gap: 4px;
-  flex-shrink: 0;
-}
-.playback button {
-  min-height: 44px;
-  padding: 8px;
-  font-size: 13px;
-  border: 1px solid var(--ex-line);
-  border-radius: 7px;
-}
-.playback button:hover {
-  background: var(--ex-panel);
-}
 .hero button:focus-visible {
   outline-color: var(--ex-flow);
 }

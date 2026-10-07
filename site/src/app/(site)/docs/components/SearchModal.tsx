@@ -43,13 +43,13 @@ type PagefindResult = {
 
 const DEV_SEARCH_NOTICE = (
   <div className="p-2 text-left">
-    <p className="text-sm text-[#a0a0a0] mb-1">
+    <p className="text-sm text-[#454545] mb-1">
       Search isn&apos;t available in development because Pagefind indexes built
       HTML files instead of markdown source files.
     </p>
-    <p className="text-sm text-[#666]">
-      To test search, run <code className="text-white">yarn build</code> and then{' '}
-      <code className="text-white">make preview-site</code>.
+    <p className="text-sm text-[#616161]">
+      To test search, run <code className="text-[#171717]">yarn build</code> and then{' '}
+      <code className="text-[#171717]">make preview-site</code>.
     </p>
   </div>
 );
@@ -258,7 +258,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
     >
       {/* Search input */}
       <div
-        className="flex items-center gap-3 px-4 py-3 border-b border-white/10"
+        className="flex items-center gap-3 px-4 py-3 border-b border-[#c7c7c4]"
         onKeyDown={handleKeyDown}
       >
         <SearchIcon sx={{ fontSize: 20, color: '#666666', flexShrink: 0 }} />
@@ -275,8 +275,8 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
           className="
             flex-1
             bg-transparent
-            text-white text-base
-            placeholder:text-[#666]
+            text-[#171717] text-base
+            placeholder:text-[#616161]
             outline-none
             border-none
             p-0
@@ -288,8 +288,8 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
             hidden sm:inline-flex items-center
             px-1.5 py-0.5
             text-[11px] font-mono leading-none
-            text-[#666]
-            border border-[#2a2a2a] rounded
+            text-[#616161]
+            border border-[#c7c7c4] rounded
           "
         >
           ESC
@@ -312,7 +312,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
                   Failed to load search index
                 </p>
                 {typeof error === 'string' ? (
-                  <p className="text-[#666] text-sm">{error}</p>
+                  <p className="text-[#616161] text-sm">{error}</p>
                 ) : (
                   error
                 )}
@@ -322,12 +322,12 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
             /* Loading state */
             <div className="flex items-center justify-center gap-2 p-6">
               <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-              <span className="text-[#666] text-sm">Searching...</span>
+              <span className="text-[#616161] text-sm">Searching...</span>
             </div>
           ) : showEmpty ? (
             /* Empty state */
             <div className="p-6 text-center">
-              <p className="text-[#666] text-sm">
+              <p className="text-[#616161] text-sm">
                 No results found for &ldquo;{deferredQuery}&rdquo;
               </p>
             </div>
@@ -340,7 +340,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
                     key={`header-${result.url}`}
                     className="px-4 pt-3 pb-1.5"
                   >
-                    <span className="text-[#666] text-[11px] font-semibold uppercase tracking-wider">
+                    <span className="text-[#616161] text-[11px] font-semibold uppercase tracking-wider">
                       {result.meta.title}
                     </span>
                   </div>
@@ -363,20 +363,20 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
                         cursor-pointer
                         transition-colors duration-100
                         ${isActive
-                          ? 'bg-white/10 text-white'
-                          : 'bg-transparent hover:bg-white/5'
+                          ? 'bg-[#e3e3e0] text-[#171717]'
+                          : 'bg-transparent hover:bg-black/5'
                         }
                       `}
                     >
                       <span
                         className={`text-sm font-medium ${
-                          isActive ? 'text-white' : 'text-[#a0a0a0]'
+                          isActive ? 'text-[#171717]' : 'text-[#454545]'
                         }`}
                       >
                         {sub.title}
                       </span>
                       <span
-                        className="text-xs text-[#666] line-clamp-2 [&_mark]:bg-white/20 [&_mark]:text-white/70 [&_mark]:font-semibold [&_mark]:px-0.5 [&_mark]:rounded-sm"
+                        className="text-xs text-[#616161] line-clamp-2 [&_mark]:bg-white/20 [&_mark]:text-[#454545] [&_mark]:font-semibold [&_mark]:px-0.5 [&_mark]:rounded-sm"
                         dangerouslySetInnerHTML={{ __html: sub.excerpt }}
                       />
                     </button>
@@ -397,7 +397,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
 
       {/* Footer with keyboard hints */}
       {hasQuery && (
-        <div className="flex items-center gap-4 px-4 py-2 border-t border-[#2a2a2a] bg-[#0a0a0a]/50">
+        <div className="flex items-center gap-4 px-4 py-2 border-t border-[#c7c7c4] bg-[#f6f6f3]/50">
           <FooterHint label="to select" glyph="&#x21B5;" />
           <FooterHint label="to navigate" glyph="&#x2191;&#x2193;" />
           <FooterHint label="to close" glyph="esc" />
@@ -413,9 +413,9 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
 
 function FooterHint({ glyph, label }: { glyph: string; label: string }) {
   return (
-    <span className="flex items-center gap-1.5 text-[11px] text-[#666]">
+    <span className="flex items-center gap-1.5 text-[11px] text-[#616161]">
       <kbd
-        className="inline-flex items-center px-1 py-0.5 font-mono text-[10px] border border-[#2a2a2a] rounded leading-none"
+        className="inline-flex items-center px-1 py-0.5 font-mono text-[10px] border border-[#c7c7c4] rounded leading-none"
         dangerouslySetInnerHTML={{ __html: glyph }}
       />
       {label}

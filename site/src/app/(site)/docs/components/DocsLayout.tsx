@@ -50,11 +50,11 @@ export const DocsLayout: React.FC<DocsLayoutProps> = ({ children, author = [], c
     <div className="min-h-screen font-inter antialiased">
       {/* Docs header — desktop only, sticks below the main site header */}
       <div
-        className="hidden md:sticky md:block z-10 bg-[#0a0a0a] border-b border-[#2a2a2a]"
+        className="hidden md:sticky md:block z-10 bg-[#f6f6f3] border-b border-[#c7c7c4]"
         style={{ top: SITE_HEADER_HEIGHT }}
       >
         <Stack direction="row" className="items-center justify-between px-4 py-3">
-          <Typography variant="h6" className="text-[#b0b0b0] font-semibold text-lg">
+          <Typography variant="h6" className="text-[#171717] font-semibold text-lg">
             Planton Documentation
           </Typography>
           <SearchBar onOpenRef={searchOpenRef} />
@@ -67,7 +67,7 @@ export const DocsLayout: React.FC<DocsLayoutProps> = ({ children, author = [], c
           className="hidden md:block sticky flex-shrink-0 w-80"
           style={{ top: BELOW_BOTH_HEADERS, height: `calc(100vh - ${BELOW_BOTH_HEADERS})` }}
         >
-          <div className="h-full overflow-y-auto border-r border-[#2a2a2a]">
+          <div className="h-full overflow-y-auto border-r border-[#c7c7c4]">
             <DocsSidebar structure={structure} />
           </div>
         </div>
@@ -79,17 +79,17 @@ export const DocsLayout: React.FC<DocsLayoutProps> = ({ children, author = [], c
           onClose={handleSidebarToggle}
           className="md:hidden"
           PaperProps={{
-            className: 'w-80 bg-[#0a0a0a]',
+            className: 'w-80 bg-[#f6f6f3]',
           }}
         >
           <Stack
             direction="row"
-            className="items-center justify-between p-4 border-b border-[#2a2a2a]"
+            className="items-center justify-between p-4 border-b border-[#c7c7c4]"
           >
-            <Typography variant="h6" className="text-[#b0b0b0] font-semibold">
+            <Typography variant="h6" className="text-[#171717] font-semibold">
               Documentation
             </Typography>
-            <IconButton onClick={handleSidebarToggle} className="text-white">
+            <IconButton onClick={handleSidebarToggle} className="text-[#171717]">
               <CloseIcon />
             </IconButton>
           </Stack>
@@ -103,14 +103,14 @@ export const DocsLayout: React.FC<DocsLayoutProps> = ({ children, author = [], c
             <div className="md:hidden flex items-center gap-2 mb-4 -mx-1">
               <button
                 onClick={handleSidebarToggle}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg text-[#595959] hover:text-[#171717] hover:bg-black/5 transition-colors"
               >
                 <ListIcon fontSize="small" />
                 <span className="text-sm font-medium">Documentation menu</span>
               </button>
               <button
                 onClick={handleSearchOpen}
-                className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors ml-auto"
+                className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-[#595959] hover:text-[#171717] hover:bg-black/5 transition-colors ml-auto"
                 aria-label="Search documentation"
               >
                 <SearchIcon sx={{ fontSize: 18 }} />
@@ -126,7 +126,7 @@ export const DocsLayout: React.FC<DocsLayoutProps> = ({ children, author = [], c
           className="hidden xl:block sticky flex-shrink-0 w-80"
           style={{ top: BELOW_BOTH_HEADERS, height: `calc(100vh - ${BELOW_BOTH_HEADERS})` }}
         >
-          <div className="h-full overflow-y-auto border-l border-[#2a2a2a]">
+          <div className="h-full overflow-y-auto border-l border-[#c7c7c4]">
             <RightSidebar author={author} content={content} />
           </div>
         </div>

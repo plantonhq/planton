@@ -81,11 +81,11 @@ const NextArticle: React.FC<NextArticleProps> = ({ nextArticle }) => {
   return (
     <div className={NEXT_ARTICLE_CARD_CLASSES}>
       <div className="max-w-none">
-        <p className="text-base md:text-lg text-[#666] m-0 font-bold">Next article</p>
-        <h3 className="text-lg md:text-xl font-bold text-white m-0 my-2">{nextArticle.title}</h3>
+        <p className="text-base md:text-lg text-[#616161] m-0 font-bold">Next article</p>
+        <h3 className="text-lg md:text-xl font-bold text-[#171717] m-0 my-2">{nextArticle.title}</h3>
         {nextArticle.excerpt && (
           <div className="relative mb-4 min-h-24">
-            <div className="text-[#a0a0a0] leading-6 excerpt-text">{nextArticle.excerpt}</div>
+            <div className="text-[#454545] leading-6 excerpt-text">{nextArticle.excerpt}</div>
             <div className="excerpt-gradient" />
           </div>
         )}
@@ -134,7 +134,7 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
           {/* Title row with page actions */}
           {metadata.title && (
             <div className="flex items-start gap-2">
-              <h1 className="flex-1 text-2xl sm:text-3xl md:text-4xl font-bold text-[#b0b0b0] mb-3 md:mb-4">
+              <h1 className="flex-1 text-2xl sm:text-3xl md:text-4xl font-bold text-[#171717] mb-3 md:mb-4">
                 {metadata.title}
               </h1>
               {shouldShowActions && (
@@ -152,7 +152,7 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
 
           {/* Date and Author */}
           {(metadata.date || metadata.author) && (
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[#a0a0a0] text-sm md:text-base mb-4 md:mb-6">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[#454545] text-sm md:text-base mb-4 md:mb-6">
               {metadata.date && <time dateTime={metadata.date}>{formatDate(metadata.date)}</time>}
               {metadata.author && (
                 <>
@@ -209,7 +209,7 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
         </header>
 
         {/* Content — prose scales up from base on mobile to lg on desktop */}
-        <div className="prose max-w-none prose-invert md:prose-lg tracking-tight">
+        <div className="prose max-w-none md:prose-lg tracking-tight">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeRaw, rehypeHighlight]}
@@ -266,8 +266,8 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
                   {children}
                 </ol>
               ),
-              li: ({ children }) => <li className="text-[#a0a0a0]">{children}</li>,
-              strong: ({ children }) => <strong className="font-semibold text-[#b0b0b0]">{children}</strong>,
+              li: ({ children }) => <li className="text-[#454545]">{children}</li>,
+              strong: ({ children }) => <strong className="font-semibold text-[#171717]">{children}</strong>,
               blockquote: ({ children, node }) => {
                 // Detect callout type from the HAST tree. Blockquotes
                 // starting with **Tip:**, **Note:**, **Warning:** etc.

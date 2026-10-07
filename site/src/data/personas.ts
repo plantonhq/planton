@@ -160,8 +160,8 @@ export const PERSONAS: readonly Persona[] = [
   },
   {
     slug: 'it-consultancy',
-    name: 'IT Consultancy',
-    plural: 'IT Consultancies',
+    name: 'IT Consulting Firms',
+    plural: 'IT Consulting Firms',
     headline: 'Repeatable Client Environments, Handed Back as Manifests',
     who: 'You stand up environments for clients who mandate a cloud your team may not know, and you hand the work back when the engagement ends.',
     wall: 'Every client starts from zero, and the last client\u2019s Terraform does not fit this one.',

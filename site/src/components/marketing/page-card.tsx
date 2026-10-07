@@ -25,7 +25,7 @@ export const PageCard: FC<PageCardProps> = ({ path, linkLabel }) => {
       <Box className="flex flex-col gap-3 h-full text-left">
         <FeatureTitle className="text-balance">{page.title}</FeatureTitle>
         <BodyText className="flex-1">{page.description}</BodyText>
-        <Link href={path} className="text-sm text-fg-secondary hover:text-white underline underline-offset-4">
+        <Link href={path} className="text-sm text-fg-secondary hover:text-fg underline underline-offset-4">
           {`${linkLabel} \u2192`}
         </Link>
       </Box>

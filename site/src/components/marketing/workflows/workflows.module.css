@@ -35,11 +35,6 @@
 .legend{display:flex;flex-direction:column;gap:3px;margin-left:auto}
 .legend>span:first-child{display:flex;align-items:center;gap:8px}
 .legend i{width:6px;height:6px;border-radius:50%;background:var(--workflow-flow);flex-shrink:0}
-.controls{display:flex;align-items:center;gap:8px;flex:0 1 auto;max-width:100%;min-width:0}
-.controls button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 12px;font-size:13px;border:1px solid var(--hp-line);border-radius:6px;background:transparent;color:var(--hp-ink)}
-.controls button:last-child{border-color:transparent;color:var(--hp-secondary)}
-.controls button:hover{color:var(--hp-ink);border-color:var(--hp-secondary)}
-.static{font-size:12px;color:var(--hp-secondary)}
 .transcript{border-top:1px solid var(--hp-line);padding:0 28px;color:var(--hp-secondary);font-size:12px;line-height:1.8}
 .transcript summary{cursor:pointer;min-height:40px;padding-block:9px;color:var(--hp-ink)}
 .transcript ol{padding-left:20px;display:grid;grid-template-columns:1fr 1fr;column-gap:40px;row-gap:16px;margin-block:12px 24px}
@@ -50,7 +45,6 @@
   .figure[data-kind=sequence] .compact{display:block;max-width:380px;margin-inline:auto}
   .caption{flex-wrap:wrap;gap:12px 20px}
   .legend{margin-left:0}
-  .controls{margin-left:auto}
 }
 @container (max-width:700px){
   .top{padding:20px 20px 0}.top h3{font-size:24px}
@@ -59,7 +53,7 @@
   .scene{padding:20px 6px 12px}
   .readout{margin-inline:20px;gap:10px;flex-direction:column;min-height:180px}
   .caption{padding:8px 20px 16px}.phases{flex-basis:100%}
-  .legend{flex:1 1 100%}.controls{margin-left:0}
+  .legend{flex:1 1 100%}
   .transcript{padding-inline:20px}.transcript ol{grid-template-columns:1fr}
 }
 @media(max-width:760px){.section{padding-block:60px}.heading{grid-template-columns:1fr;gap:24px;margin-bottom:28px}}
@@ -91,7 +85,7 @@
 .figure[data-kind=architecture] .readout{min-height:84px}
 @keyframes panel-enter{from{opacity:.15}to{opacity:1}}
 @media(prefers-reduced-motion:reduce){.panelEnter{animation:none}}
-@media(max-width:760px){.providerTabs{width:100%;justify-content:flex-start}.providerTabs button{padding-inline:14px}.figure[data-kind=architecture] .setup{min-height:0}.controls{flex-wrap:wrap}}
+@media(max-width:760px){.providerTabs{width:100%;justify-content:flex-start}.providerTabs button{padding-inline:14px}.figure[data-kind=architecture] .setup{min-height:0}}
 
 .panelStack{position:relative}
 .panelExit{position:absolute;inset:0;pointer-events:none;animation:panel-exit 180ms ease-out forwards;z-index:1}

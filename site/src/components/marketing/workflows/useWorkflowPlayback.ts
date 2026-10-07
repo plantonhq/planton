@@ -13,15 +13,13 @@ const motionSnapshot = () => matchMedia('(prefers-reduced-motion: reduce)').matc
 const subscribeHydration = () => () => {};
 
 export interface PlaybackOptions {
-  playing?: boolean;
-  onPlayingChange?: (playing: boolean) => void;
   onComplete?: () => void;
   loop?: boolean;
   suspended?: boolean;
 }
 
-/** The sole clock owns completion, including the final hold. Visibility and controlled activity
- * suspend time; they never seek forward. Provider selection remounts this hook
+/** The sole clock owns completion, including the final hold. Visibility and explicit suspension
+ * stop the clock; they never seek forward. Provider selection remounts this hook
  * so clocks and completion bookkeeping cannot leak into another story. */
 export function useWorkflowPlayback(
   story: { id: string; version: number; phases: readonly unknown[] },
@@ -30,7 +28,6 @@ export function useWorkflowPlayback(
   const rootRef = useRef<HTMLElement>(null);
   const clock = useRef(0);
   const [seconds, setSeconds] = useState(0);
-  const [restart, setRestart] = useState(0);
   const ready = useSyncExternalStore(
     subscribeHydration,
     () => true,
@@ -38,21 +35,11 @@ export function useWorkflowPlayback(
   );
   const reduced = useSyncExternalStore(subscribeMotion, motionSnapshot, () => true);
   const [visible, setVisible] = useState(false);
-  const [localPlaying, setLocalPlaying] = useState(true);
-  const playing = options.playing ?? localPlaying;
   const callback = useRef(options.onComplete);
-  const onComplete = options.onComplete,
-    onPlayingChange = options.onPlayingChange;
+  const onComplete = options.onComplete;
   useEffect(() => {
     callback.current = onComplete;
   }, [onComplete]);
-  const setPlaying = useCallback(
-    (value: boolean) => {
-      setLocalPlaying(value);
-      onPlayingChange?.(value);
-    },
-    [onPlayingChange]
-  );
   const completed = useRef(false),
     notified = useRef(false),
     eligibleCycle = useRef(true),
@@ -96,7 +83,7 @@ export function useWorkflowPlayback(
   }, [story]);
 
   useEffect(() => {
-    if (!ready || reduced || !visible || !playing || options.suspended) return;
+    if (!ready || reduced || !visible || options.suspended) return;
     let frame: number;
     let previous = performance.now(),
       lastPaint = previous;
@@ -132,35 +119,22 @@ export function useWorkflowPlayback(
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [playing, ready, reduced, story, visible, options.suspended, options.loop, restart]);
+  }, [ready, reduced, story, visible, options.suspended, options.loop]);
 
   const seek = useCallback(
     (time: number) => {
       eligibleCycle.current = false;
       clock.current = Math.max(0, Math.min(time, duration(story)));
       setSeconds(clock.current);
-      setPlaying(false);
     },
-    [story, setPlaying]
+    [story]
   );
-  const replay = useCallback(() => {
-    eligibleCycle.current = true;
-    notified.current = false;
-    completed.current = false;
-    setRestart((value) => value + 1);
-    clock.current = 0;
-    setSeconds(0);
-    setPlaying(true);
-  }, [setPlaying]);
   return {
     rootRef,
     seconds: reduced ? duration(story) : seconds,
     ready,
     reduced,
-    playing,
     visible,
     seek,
-    replay,
-    toggle: () => setPlaying(!playing),
   };
 }

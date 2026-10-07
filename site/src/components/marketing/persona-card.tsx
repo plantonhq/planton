@@ -18,7 +18,7 @@ export const PersonaCard: FC<{ slug: PersonaSlug }> = ({ slug }) => {
       <Box className="flex flex-col gap-3 h-full">
         <FeatureTitle>{p.name}</FeatureTitle>
         <BodyText className="flex-1">{p.wall}</BodyText>
-        <Link href={personaPagePath(slug)} className="text-sm text-fg-secondary hover:text-white underline underline-offset-4">
+        <Link href={personaPagePath(slug)} className="text-sm text-fg-secondary hover:text-fg underline underline-offset-4">
           {'How Planton Fits Your Work \u2192'}
         </Link>
       </Box>

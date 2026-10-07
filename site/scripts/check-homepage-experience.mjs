@@ -167,34 +167,20 @@ try {
     'hover does not pause hero',
     await page.$eval('[data-hero-phase]', (e) => e.dataset.heroPhase === '2')
   );
-  await page.click('[data-hero-phase] button[aria-label^="Pause"]');
-  const paused = await page.$eval('[data-hero-time]', (e) => e.dataset.heroTime);
-  await advance(5000);
-  check(
-    'explicit pause freezes hero',
-    (await page.$eval('[data-hero-time]', (e) => e.dataset.heroTime)) === paused
-  );
-  await page.click('[data-hero-phase] button[aria-label^="Play"]');
+  check('hero has no play, pause, or replay buttons', await page.$$eval('[data-hero-phase] button', buttons => buttons.every(button => !/^(Play|Pause|Replay)(:|$)/.test(button.getAttribute('aria-label') ?? button.textContent ?? ''))));
   await advance(12000);
   check(
-    'hero finishes once',
-    await page.$eval('[data-hero-time]', (e) => Number(e.dataset.heroTime) === 20)
+    'hero loops continuously after the completed hold',
+    await page.$eval('[data-hero-time]', (e) => Number(e.dataset.heroTime) >= 0 && Number(e.dataset.heroTime) < 1)
   );
-  await advance(40000);
-  check(
-    'completed hero holds',
-    await page.$eval('[data-hero-time]', (e) => Number(e.dataset.heroTime) === 20)
-  );
-  await page.click('[data-hero-phase] button[aria-label^="Replay"]');
   await advance(4500);
   check(
-    'replay restarts a finished clock',
+    'hero continues into its next cycle',
     await page.$eval(
       '[data-hero-time]',
-      (e) => Number(e.dataset.heroTime) >= 4 && Number(e.dataset.heroTime) < 5
+      (e) => Number(e.dataset.heroTime) >= 4 && Number(e.dataset.heroTime) < 6
     )
   );
-  await page.$eval('[data-hero-phase] button[aria-label^="Pause"]', (e) => e.click());
   await page.screenshot({ path: path.join(output, 'hero-animated-1366.png') });
   await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
   // matchMedia change delivery is asynchronous; wait for the observable state

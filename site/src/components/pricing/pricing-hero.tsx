@@ -27,22 +27,22 @@ const trustChips = [
 
 export const PricingHero: FC = () => {
   return (
-    <Stack className="items-center gap-5 pt-14 pb-2 px-4 bg-[#0a0a0a] text-center">
+    <Stack className="items-center gap-5 pt-14 pb-2 px-4 bg-[#f6f6f3] text-center">
       <Badge>Pricing</Badge>
       <Typography
         variant="h1"
-        className="text-3xl md:text-4xl lg:text-5xl font-semibold text-white leading-tight tracking-tight max-w-[900px]"
+        className="text-3xl md:text-4xl lg:text-5xl font-semibold text-[#171717] leading-tight tracking-tight max-w-[900px]"
       >
         Plans for Every Stage of Your Journey
       </Typography>
-      <Typography className="text-sm md:text-base text-[#a0a0a0] max-w-[640px]">
+      <Typography className="text-sm md:text-base text-[#595959] max-w-[640px]">
         The same platform — on Planton.ai or your own infrastructure.
       </Typography>
       <Box className="flex flex-wrap justify-center gap-x-5 gap-y-2">
         {trustChips.map((chip) => (
           <Box key={chip} className="flex items-center gap-1.5">
             <CheckIcon />
-            <Typography className="text-xs text-[#b0b0b0]">{chip}</Typography>
+            <Typography className="text-xs text-[#454545]">{chip}</Typography>
           </Box>
         ))}
       </Box>

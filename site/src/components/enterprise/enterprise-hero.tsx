@@ -17,15 +17,15 @@ export const EnterpriseHero: FC = () => {
   const sizeLow = market.licenses[0].perYearCompact;
   const sizeHigh = market.licenses[market.licenses.length - 1].perYearCompact;
   return (
-    <Stack className="items-center gap-5 pt-14 pb-4 px-4 bg-[#0a0a0a] text-center">
+    <Stack className="items-center gap-5 pt-14 pb-4 px-4 bg-[#f6f6f3] text-center">
       <Badge>Enterprise</Badge>
       <Typography
         variant="h1"
-        className="text-3xl md:text-4xl lg:text-5xl font-semibold text-white leading-tight tracking-tight max-w-[900px]"
+        className="text-3xl md:text-4xl lg:text-5xl font-semibold text-[#171717] leading-tight tracking-tight max-w-[900px]"
       >
         Enterprise at Planton
       </Typography>
-      <Typography className="text-sm md:text-base text-[#a0a0a0] max-w-[720px]">
+      <Typography className="text-sm md:text-base text-[#454545] max-w-[720px]">
         {`At ${SELF_SERVE_SEAT_CEILING} seats or fewer, you don't need to talk to us at all — the self-serve license is ${sizeLow}–${sizeHigh} a year, card and email, running today. Enterprise adds the things procurement actually needs: your identity provider, air-gap, compliance reporting, and a real SLA — at a published price.`}
       </Typography>
       {/* Renders only for India-detected visitors (the sitewide gate) —

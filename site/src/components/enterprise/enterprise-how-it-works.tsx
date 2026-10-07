@@ -41,7 +41,7 @@ export const EnterpriseHowItWorks: FC = () => {
   ];
 
   return (
-    <Stack className="items-center px-4 md:px-8 py-10 gap-6 bg-[#0a0a0a]">
+    <Stack className="items-center px-4 md:px-8 py-10 gap-6 bg-[#f6f6f3]">
       <SectionTitle>How Buying Works</SectionTitle>
       <Grid2 container spacing={4} className="w-full max-w-5xl items-stretch">
         {steps.map((step, index) => (

@@ -26,22 +26,22 @@ export const EnterpriseBand: FC = () => {
   const anchor = market.enterprise[0].perYear;
 
   return (
-    <Box className="w-full px-4 md:px-8 py-6 bg-[#0a0a0a]">
-      <Box className="max-w-7xl mx-auto rounded-xl bg-[#151515] border border-[#2a2a2a] hover:border-[#3a3a3a] transition-all duration-300 p-5 md:p-6">
+    <Box className="w-full px-4 md:px-8 py-6 bg-[#f6f6f3]">
+      <Box className="max-w-7xl mx-auto rounded-xl bg-[#eeeeeb] border border-[#c7c7c4] hover:border-[#999996] transition-all duration-300 p-5 md:p-6">
         <Stack
           direction={{ xs: 'column', md: 'row' }}
           className="items-start md:items-center justify-between gap-4"
         >
           <Box className="flex items-start md:items-center gap-4">
-            <Box className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-white flex-shrink-0">
+            <Box className="w-10 h-10 rounded-lg bg-[#e3e3e0] flex items-center justify-center text-[#171717] flex-shrink-0">
               <ShieldIcon />
             </Box>
             <Box>
               <Box className="flex items-baseline gap-2 flex-wrap">
-                <Typography className="text-base font-semibold text-white">
+                <Typography className="text-base font-semibold text-[#171717]">
                   Enterprise
                 </Typography>
-                <Typography className="text-sm text-[#a0a0a0]">
+                <Typography className="text-sm text-[#595959]">
                   starts at {anchor}/year — published rate card
                 </Typography>
               </Box>

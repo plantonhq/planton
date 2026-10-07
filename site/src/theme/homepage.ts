@@ -1,5 +1,5 @@
 
-/** Light is opt-in at the route boundary; all existing dark consumers keep their defaults. */
+/** Shared light palette for the public website and standalone demo surface. */
 export const homepageLightTokens = {
   surface: { canvas: '#f6f6f3', panel: '#eeeeeb', raised: '#e3e3e0', card: '#eeeeeb', cardHover: '#e3e3e0' },
   text: { primary: '#171717', body: '#454545', secondary: '#595959', muted: '#616161', faint: '#616161' },

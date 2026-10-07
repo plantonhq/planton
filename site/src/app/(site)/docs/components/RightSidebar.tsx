@@ -17,7 +17,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({ author = [], content }) => 
       {author.length > 0 && (
         <>
           <AuthorSection author={author} />
-          <div className="border-b border-[#2a2a2a]" />
+          <div className="border-b border-[#c7c7c4]" />
         </>
       )}
       {/* Table of Contents */}

@@ -23,10 +23,10 @@ export default function TutorialListRow({ tutorial }: TutorialListRowProps) {
   };
 
   return (
-    <div className="flex items-start gap-4 p-4 hover:bg-white/5 transition-colors duration-200">
+    <div className="flex items-start gap-4 p-4 hover:bg-black/5 transition-colors duration-200">
       {/* Decorative Arrow Icon */}
       <div className="flex-shrink-0 mt-1">
-        <div className="text-[#a0a0a0]">
+        <div className="text-[#454545]">
           <svg 
             width="16" 
             height="16" 
@@ -44,18 +44,18 @@ export default function TutorialListRow({ tutorial }: TutorialListRowProps) {
         <div className="flex items-center gap-3 mb-1">
           <Link 
             href={`/tutorials/${tutorial.slug}`}
-            className="text-[#b0b0b0] font-semibold text-base hover:text-white transition-colors duration-200 line-clamp-1 flex-1"
+            className="text-[#171717] font-semibold text-base hover:text-[#171717] transition-colors duration-200 line-clamp-1 flex-1"
           >
             {tutorial.title}
           </Link>
-          <span className="text-[#a0a0a0] text-sm flex-shrink-0">
+          <span className="text-[#454545] text-sm flex-shrink-0">
             {formatTimeAgo(tutorial.date)}
           </span>
         </div>
 
         {/* Author Row */}
         <div className="flex items-center gap-2">
-          <span className="text-[#a0a0a0] text-sm">by</span>
+          <span className="text-[#454545] text-sm">by</span>
           <div className="flex items-center gap-2">
             {tutorial.author[0]?.profilePicture && (
               <Image
@@ -68,7 +68,7 @@ export default function TutorialListRow({ tutorial }: TutorialListRowProps) {
             )}
             <Link 
               href={`/tutorials?author=${tutorial.author[0]?.name || 'Planton Team'}`}
-              className="text-[#b0b0b0] hover:text-white font-medium text-sm transition-colors duration-200"
+              className="text-[#171717] hover:text-[#171717] font-medium text-sm transition-colors duration-200"
             >
               {tutorial.author[0]?.name || 'Planton Team'}
             </Link>

@@ -6,22 +6,25 @@ import { lightVariables } from '@/theme/homepage';
 import { lightWebsiteTheme } from '@/theme/light-website';
 import type { ReactNode } from 'react';
 
-/** Only the homepage opts into light chrome during the incremental rollout. */
+/** All public website pages share the homepage's light appearance. */
 export function MarketingShell({ children }: { children: ReactNode }) {
-  const light = usePathname() === '/';
+  const homepage = usePathname() === '/';
   return (
     <div
-      data-marketing-appearance={light ? 'light' : 'dark'}
-      style={
-        light ? { ...lightVariables, color: lightWebsiteTheme.palette.text.primary } : undefined
-      }
+      data-marketing-appearance="light"
+      style={{
+        ...lightVariables,
+        color: lightWebsiteTheme.palette.text.primary,
+        background: lightWebsiteTheme.palette.background.default,
+        minHeight: '100vh',
+      }}
     >
       <WebsiteShell
-        theme={light ? lightWebsiteTheme : undefined}
-        navigationVariant={light ? 'homepage' : 'default'}
-        onPrimaryAction={light ? () => trackDemo('demo_cta_click', 'navigation') : undefined}
+        theme={lightWebsiteTheme}
+        navigationVariant={homepage ? 'homepage' : 'default'}
+        onPrimaryAction={homepage ? () => trackDemo('demo_cta_click', 'navigation') : undefined}
         onSelfServiceAction={
-          light
+          homepage
             ? () =>
                 trackExperience('self_service_click', { location: 'navigation', door: 'hosted' })
             : undefined

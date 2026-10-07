@@ -13,10 +13,10 @@ import {
 /** The closing CTA: start free, or talk to a human if that helps. */
 export const PricingCta: FC = () => {
   return (
-    <Box className="w-full px-4 md:px-8 pb-16 bg-[#0a0a0a]">
+    <Box className="w-full px-4 md:px-8 pb-16 bg-[#f6f6f3]">
       <Box className="max-w-3xl mx-auto">
         <Card hover={false} className="!p-8 md:!p-10 text-center">
-          <Typography className="text-2xl md:text-3xl font-semibold text-white mb-3">
+          <Typography className="text-2xl md:text-3xl font-semibold text-[#171717] mb-3">
             Ready to Try Planton?
           </Typography>
           <BodyText className="!text-base mx-auto max-w-xl mb-7">

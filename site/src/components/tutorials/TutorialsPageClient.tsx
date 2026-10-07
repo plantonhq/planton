@@ -98,7 +98,7 @@ export default function TutorialsPageClient({ tutorials, categories }: Tutorials
       <div className="flex">
         {/* Left Sidebar - Sticky */}
         <div className="hidden md:block sticky top-16 h-screen w-80 flex-shrink-0">
-          <div className="h-full border-r border-[#2a2a2a] overflow-y-auto">
+          <div className="h-full border-r border-[#c7c7c4] overflow-y-auto">
             <TutorialsSidebar
               categories={categories}
               selectedCategory={selectedCategory}
@@ -115,17 +115,17 @@ export default function TutorialsPageClient({ tutorials, categories }: Tutorials
           onClose={handleSidebarToggle}
           className="md:hidden"
           PaperProps={{
-            className: 'w-80 bg-[#0a0a0a]',
+            className: 'w-80 bg-[#f6f6f3]',
           }}
         >
           <Stack
             direction="row"
-            className="items-center justify-between p-4 border-b border-[#2a2a2a]"
+            className="items-center justify-between p-4 border-b border-[#c7c7c4]"
           >
-            <Typography variant="h6" className="text-[#b0b0b0] font-semibold">
+            <Typography variant="h6" className="text-[#171717] font-semibold">
               Tutorials
             </Typography>
-            <IconButton onClick={handleSidebarToggle} className="text-white">
+            <IconButton onClick={handleSidebarToggle} className="text-[#171717]">
               <CloseIcon />
             </IconButton>
           </Stack>
@@ -143,14 +143,14 @@ export default function TutorialsPageClient({ tutorials, categories }: Tutorials
           <div className="px-12 py-8 max-w-4xl mx-auto">
             {/* Header with Title and Sorting */}
             <div className="flex items-center justify-between mb-8">
-              <h1 className="text-3xl font-bold text-[#b0b0b0]">Guides & tutorials</h1>
+              <h1 className="text-3xl font-bold text-[#171717]">Guides & tutorials</h1>
               <div className="flex items-center gap-2">
                 <Button
                   variant="outlined"
                   onClick={handleSortClick}
                   endIcon={<KeyboardArrowDownIcon />}
                   startIcon={<SortIcon />}
-                  className={`text-[#b0b0b0] border-[#3a3a3a] hover:border-white hover:text-white transition-all duration-200`}
+                  className={`text-[#171717] border-[#999996] hover:border-[#999996] hover:text-[#171717] transition-all duration-200`}
                   size="small"
                 >
                   Sort by {sortBy === 'date-desc' ? 'Newest' : sortBy === 'date-asc' ? 'Oldest' : sortBy === 'title-asc' ? 'A-Z' : 'Z-A'}
@@ -161,30 +161,30 @@ export default function TutorialsPageClient({ tutorials, categories }: Tutorials
                   onClose={handleSortClose}
                   className="mt-2"
                   PaperProps={{
-                    className: 'bg-[#111] border border-[#2a2a2a]',
+                    className: 'bg-[#eeeeeb] border border-[#c7c7c4]',
                   }}
                 >
                   <MenuItem 
                     onClick={() => handleSortChange('date-desc')}
-                    className={`text-white hover:bg-white/5 ${sortBy === 'date-desc' ? 'bg-white text-black' : ''}`}
+                    className={`text-[#171717] hover:bg-black/5 ${sortBy === 'date-desc' ? 'bg-white text-black' : ''}`}
                   >
                     Newest first
                   </MenuItem>
                   <MenuItem 
                     onClick={() => handleSortChange('date-asc')}
-                    className={`text-white hover:bg-white/5 ${sortBy === 'date-asc' ? 'bg-white text-black' : ''}`}
+                    className={`text-[#171717] hover:bg-black/5 ${sortBy === 'date-asc' ? 'bg-white text-black' : ''}`}
                   >
                     Oldest first
                   </MenuItem>
                   <MenuItem 
                     onClick={() => handleSortChange('title-asc')}
-                    className={`text-white hover:bg-white/5 ${sortBy === 'title-asc' ? 'bg-white text-black' : ''}`}
+                    className={`text-[#171717] hover:bg-black/5 ${sortBy === 'title-asc' ? 'bg-white text-black' : ''}`}
                   >
                     A-Z
                   </MenuItem>
                   <MenuItem 
                     onClick={() => handleSortChange('title-desc')}
-                    className={`text-white hover:bg-white/5 ${sortBy === 'title-desc' ? 'bg-white text-black' : ''}`}
+                    className={`text-[#171717] hover:bg-black/5 ${sortBy === 'title-desc' ? 'bg-white text-black' : ''}`}
                   >
                     Z-A
                   </MenuItem>
@@ -214,10 +214,10 @@ export default function TutorialsPageClient({ tutorials, categories }: Tutorials
             {/* No Results */}
             {filteredTutorials.length === 0 && (
               <div className="text-center py-12">
-                <h3 className="text-xl font-semibold text-[#b0b0b0] mb-2">
+                <h3 className="text-xl font-semibold text-[#171717] mb-2">
                   No tutorials found
                 </h3>
-                <p className="text-[#666]">
+                <p className="text-[#616161]">
                   Try adjusting your filters or browse all tutorials.
                 </p>
               </div>
