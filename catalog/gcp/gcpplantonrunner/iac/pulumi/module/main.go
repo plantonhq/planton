@@ -24,7 +24,7 @@ func Resources(ctx *pulumi.Context, iacInput *gcpplantonrunnerv1alpha1.GcpPlanto
 	// Build the GCP provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (service-account key,
 	// keyless web identity, or ambient chain).
-	provider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
+	provider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig, iacInput.Target.GetSpec().GetProjectId().GetValue())
 	if err != nil {
 		return errors.Wrap(err, "failed to create GCP provider")
 	}

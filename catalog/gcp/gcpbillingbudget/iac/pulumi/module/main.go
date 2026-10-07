@@ -10,7 +10,8 @@ import (
 func Resources(ctx *pulumi.Context, iacInput *gcpbillingbudgetv1alpha1.GcpBillingBudgetIacInput) error {
 	locals := initializeLocals(ctx, iacInput)
 
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
+	// No project of its own: a budget belongs to a billing account.
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig, "")
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

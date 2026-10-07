@@ -10,7 +10,8 @@ import (
 func Resources(ctx *pulumi.Context, iacInput *gcpiamdenypolicyv1alpha1.GcpIamDenyPolicyIacInput) error {
 	locals := initializeLocals(ctx, iacInput)
 
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
+	// No project of its own: the policy attaches to its parent by path; it has no project argument.
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig, "")
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

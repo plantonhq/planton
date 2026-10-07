@@ -7,7 +7,7 @@
 # Every argument is immutable (ForceNew): IAM grants have no update — any
 # change replaces the grant atomically, which is also how the API behaves.
 resource "google_project_iam_member" "this" {
-  project = local.project_id
+  project = local.project
   role    = var.spec.role
   member  = var.spec.member
 

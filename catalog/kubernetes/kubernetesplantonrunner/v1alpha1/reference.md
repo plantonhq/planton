@@ -197,10 +197,10 @@ enrollment and are refused by the module.
 `ContainerResources`
 
 CPU/memory for the runner container. When omitted, the chart's own
-defaults apply (requests 100m/256Mi, limits 1/1Gi) — comfortable for
-the runner's control loops plus typical IaC operations. Size limits
-up for large stacks or high operation concurrency; memory pressure
-shows up as failed IaC operations mid-apply.
+defaults apply (requests 100m/256Mi, limits 1/2Gi). The runner runs
+as many IaC operations at once as the memory limit holds -- about 1Gi
+each beside its own ~768Mi, so 2Gi runs one and 4Gi three -- and
+queues the rest; raise the memory limit to run more at once.
 
 ### spec.resources.limits
 

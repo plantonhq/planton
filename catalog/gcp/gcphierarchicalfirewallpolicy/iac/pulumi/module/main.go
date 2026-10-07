@@ -10,7 +10,8 @@ import (
 func Resources(ctx *pulumi.Context, iacInput *gcphierarchicalfirewallpolicyv1alpha1.GcpHierarchicalFirewallPolicyIacInput) error {
 	locals := initializeLocals(ctx, iacInput)
 
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
+	// No project of its own: the policy attaches to an organization or folder.
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig, "")
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

@@ -10,7 +10,8 @@ import (
 func Resources(ctx *pulumi.Context, iacInput *gcpcloudidentitygroupv1alpha1.GcpCloudIdentityGroupIacInput) error {
 	locals := initializeLocals(ctx, iacInput)
 
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
+	// No project of its own: a group belongs to a Cloud Identity customer.
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig, "")
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

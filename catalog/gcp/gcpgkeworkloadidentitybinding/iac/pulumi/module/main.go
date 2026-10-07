@@ -15,7 +15,8 @@ func Resources(ctx *pulumi.Context,
 	locals := initializeLocals(ctx, iacInput)
 
 	// Set up the GCP provider from the supplied credential spec.
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
+	// No project of its own: the grant names its service account by path; the pool project only shapes the member.
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig, "")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up google provider")
 	}

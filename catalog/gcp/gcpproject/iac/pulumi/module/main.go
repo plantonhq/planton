@@ -10,7 +10,8 @@ import (
 func Resources(ctx *pulumi.Context, iacInput *gcpprojectv1alpha1.GcpProjectIacInput) error {
 	locals := initializeLocals(ctx, iacInput)
 
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
+	// No project of its own: it creates the project itself.
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig, "")
 	if err != nil {
 		return errors.Wrap(err, "failed to setup gcp provider")
 	}

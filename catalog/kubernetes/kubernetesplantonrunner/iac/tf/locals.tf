@@ -76,7 +76,7 @@ locals {
 
   # ---- container sizing ----------------------------------------------------------
   # Rendered ONLY when customized: the chart's own defaults (requests
-  # 100m/256Mi, limits 1/1Gi) are the documented baseline, and an empty
+  # 100m/256Mi, limits 1/2Gi) are the documented baseline, and an empty
   # requests/limits map would REPLACE them with nothing.
   resources_block = try(var.spec.resources, null) == null ? null : {
     for k, v in {

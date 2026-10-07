@@ -15,9 +15,9 @@ locals {
   # The Secret Manager secret holding the runner token.
   token_secret_id = "${var.metadata.name}-token"
 
-  # "" resolves to the provider's default project — the ambient-project
+  # null resolves to the provider's default project — the ambient-project
   # contract every GCP kind honors.
-  project_id = try(var.spec.project_id, "")
+  project_id = try(var.spec.project_id, "") != "" ? var.spec.project_id : null
 
   # Resource-identity labels, matching the Pulumi module key-for-key
   # (the gcplabelkeys constants; lowercased kind — GCP label values must

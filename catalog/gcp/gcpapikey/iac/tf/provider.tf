@@ -20,6 +20,12 @@ terraform {
 # (API disabled there) and the read fails with 403 "requires a quota project" after the create
 # succeeded (live-verified 2026-09-18). Service-account and keyless credentials are unaffected.
 provider "google" {
+  # The project this component's spec names (null when it names none). An
+  # import records it, so a taken-over resource is never planned for
+  # replacement. Credentials are injected by the runtime; the connection
+  # never names a project.
+  project = local.project_id
+
   # The API Keys API attributes quota to the caller's project on
   # user-credential calls: without this override, a deploy under plain ADC
   # (`gcloud auth application-default login`) fails at create with 403

@@ -9,6 +9,11 @@ locals {
   scope_folder_id  = var.spec.scope != null ? var.spec.scope.folder_id : ""
   scope_org_id     = var.spec.scope != null ? var.spec.scope.organization_id : ""
 
+  # The project the spec names (bare ID), or null -- handed to the provider
+  # so an import records it. The google_client_config fallback stays out of
+  # it: a provider cannot depend on its own data source.
+  project_id = local.scope_project_id != "" ? trimprefix(local.scope_project_id, "projects/") : null
+
   is_folder  = local.scope_folder_id != ""
   is_org     = local.scope_org_id != ""
   is_project = !local.is_folder && !local.is_org

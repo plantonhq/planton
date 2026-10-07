@@ -54,6 +54,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"strings"
 
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/pulumi/pulumioutput"
@@ -63,12 +64,18 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Get builds a gcp.Provider from the given GcpProviderConfig. There is no region argument: the
-// GCP provider is not region-scoped -- each resource carries its own location. nameSuffixes
-// disambiguate the provider resource name when a module needs more than one provider.
-func Get(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig,
+// Get builds a gcp.Provider from the given GcpProviderConfig. project is the project the
+// component's own spec names (its resolved projectId value; "" when it names none, which keeps
+// Google's ambient default). The provider carries it so an import records it: Google's provider
+// fills a resource's project from the provider's default when the import ID carries none (a
+// bucket imported by its name), and without one the imported state holds an empty project that
+// the next preview replaces the resource over. The project never comes from the connection.
+// There is no region argument: the GCP provider is not region-scoped -- each resource carries
+// its own location. nameSuffixes disambiguate the provider resource name when a module needs
+// more than one provider.
+func Get(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig, project string,
 	nameSuffixes ...string) (*gcp.Provider, error) {
-	return get(ctx, gcpProviderConfig, false, "", nameSuffixes)
+	return get(ctx, gcpProviderConfig, project, false, "", nameSuffixes)
 }
 
 // GetWithUserProjectOverride builds the provider like Get, additionally arming
@@ -80,8 +87,8 @@ func Get(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig,
 // not set by default" (live-verified). Service-account and keyless credentials are unaffected
 // by the header, so arming it is safe across every credential mode.
 func GetWithUserProjectOverride(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig,
-	nameSuffixes ...string) (*gcp.Provider, error) {
-	return get(ctx, gcpProviderConfig, true, "", nameSuffixes)
+	project string, nameSuffixes ...string) (*gcp.Provider, error) {
+	return get(ctx, gcpProviderConfig, project, true, "", nameSuffixes)
 }
 
 // GetWithQuotaProject builds the provider like GetWithUserProjectOverride and additionally NAMES
@@ -95,16 +102,17 @@ func GetWithUserProjectOverride(ctx *pulumi.Context, gcpProviderConfig *gcpprovi
 // Kinds whose modules READ through a data source pass their resource's project here; an empty
 // quotaProject degrades to the override alone.
 func GetWithQuotaProject(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig,
-	quotaProject string, nameSuffixes ...string) (*gcp.Provider, error) {
-	return get(ctx, gcpProviderConfig, true, quotaProject, nameSuffixes)
+	project, quotaProject string, nameSuffixes ...string) (*gcp.Provider, error) {
+	return get(ctx, gcpProviderConfig, project, true, quotaProject, nameSuffixes)
 }
 
-func get(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig,
+func get(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig, project string,
 	userProjectOverride bool, quotaProject string, nameSuffixes []string) (*gcp.Provider, error) {
 	args, err := buildProviderInputs(gcpProviderConfig)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to build google provider args")
 	}
+	setProject(args, project)
 	if userProjectOverride {
 		args.UserProjectOverride = pulumi.Bool(true)
 	}
@@ -118,6 +126,14 @@ func get(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig,
 	}
 
 	return googleProvider, nil
+}
+
+// setProject hands the provider the component's project as Google names it: bare, so a spec that
+// spells it "projects/<id>" works too. An empty project leaves Google's ambient default in place.
+func setProject(args *gcp.ProviderArgs, project string) {
+	if bare := strings.TrimPrefix(project, "projects/"); bare != "" {
+		args.Project = pulumi.String(bare)
+	}
 }
 
 // buildProviderInputs is the pure, side-effect-free core of the builder: it maps a

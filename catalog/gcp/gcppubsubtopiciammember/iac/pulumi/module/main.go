@@ -8,7 +8,8 @@ import (
 )
 
 func Resources(ctx *pulumi.Context, iacInput *gcppubsubtopiciammemberv1alpha1.GcpPubSubTopicIamMemberIacInput) error {
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
+	// No project of its own: the grant names its topic by path.
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig, "")
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

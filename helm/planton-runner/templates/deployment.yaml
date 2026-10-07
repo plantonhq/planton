@@ -73,13 +73,15 @@ spec:
               value: {{ .Values.runner.logLevel | quote }}
             - name: EXECUTION_MODE
               value: {{ .Values.runner.executionMode | quote }}
+            {{- if .Values.iac.maxConcurrency }}
+            - name: IAC_MAX_CONCURRENCY
+              value: {{ .Values.iac.maxConcurrency | quote }}
+            {{- end }}
             {{- if .Values.temporal.address }}
             - name: TEMPORAL_SERVICE_ADDRESS
               value: {{ .Values.temporal.address | quote }}
             - name: TEMPORAL_NAMESPACE
               value: {{ .Values.temporal.namespace | quote }}
-            - name: TEMPORAL_MAX_CONCURRENCY
-              value: {{ .Values.temporal.maxConcurrency | quote }}
             {{- end }}
             # Build capability: rendered explicitly BOTH ways so the deployment
             # states its contract. The two flags flip together -- a build

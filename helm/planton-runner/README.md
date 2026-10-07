@@ -146,7 +146,6 @@ when `temporal.address` is set.
 |-----------|-------------|---------|
 | `temporal.address` | Temporal server address (host:port) override | `""` |
 | `temporal.namespace` | Temporal namespace override | `"default"` |
-| `temporal.maxConcurrency` | Maximum concurrent Temporal activities | `10` |
 
 ### Build capability
 
@@ -228,7 +227,8 @@ label-scoped cleanup, and follow task pod logs.
 | `resources.requests.cpu` | CPU request | `100m` |
 | `resources.requests.memory` | Memory request | `256Mi` |
 | `resources.limits.cpu` | CPU limit | `1` |
-| `resources.limits.memory` | Memory limit | `1Gi` |
+| `resources.limits.memory` | Memory limit; the runner runs as many IaC operations at once as it holds (about 1Gi each beside ~768Mi) | `2Gi` |
+| `iac.maxConcurrency` | IaC operations run at once; `0` sizes it to the memory limit | `0` |
 | `serviceAccount.create` | Create a Kubernetes ServiceAccount | `true` |
 | `serviceAccount.annotations` | ServiceAccount annotations (e.g., IRSA) | `{}` |
 | `nodeSelector` | Node selector for pod scheduling | `{}` |

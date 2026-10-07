@@ -69,7 +69,7 @@ catalog modules' own provider blocks must carry that judgment too.
 
 | Provider-block args | Matched | Mapped | Module-owned | Excluded | Open gaps | Accounted |
 |---|---|---|---|---|---|---|
-| 207 | 1 | 4 | 1 | 201 | 0 | ✅ |
+| 207 | 1 | 4 | 2 | 200 | 0 | ✅ |
 
 ## Depth: per-kind accounting
 

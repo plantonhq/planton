@@ -8,7 +8,8 @@ import (
 )
 
 func Resources(ctx *pulumi.Context, iacInput *gcpgcsbucketiammemberv1alpha1.GcpGcsBucketIamMemberIacInput) error {
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
+	// No project of its own: the grant names its bucket; it has no project argument.
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig, "")
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}
