@@ -6,7 +6,9 @@ locals {
   # Pinned OCI registry path and chart name (spec.chart_repository wins over
   # the path, mirroring the proto default); chart_version resolves to the
   # pinned default when unset — the version this catalog release was
-  # validated against (0.9.0: build.scheduling reaches the runner as
+  # validated against (0.10.0: the runner sizes its IaC slots to its
+  # memory limit, and the default limit is 2Gi, one operation's worth;
+  # 0.9.0: build.scheduling reaches the runner as
   # BUILD_NODE_SELECTOR and BUILD_TOLERATIONS, the nodes every build pod may
   # use; 0.8.0: the build Role grants watch on PipelineRuns
   # and TaskRuns, patch on PipelineRuns, and create/update/patch on
@@ -22,7 +24,7 @@ locals {
   default_chart_repository = "oci://ghcr.io/plantonhq/charts"
   chart_repository         = try(var.spec.chart_repository, "") != "" ? var.spec.chart_repository : local.default_chart_repository
   helm_chart_name          = "planton-runner"
-  default_chart_version    = "0.9.0"
+  default_chart_version    = "0.10.0"
   min_chart_version        = "0.4.0"
   chart_version            = try(var.spec.chart_version, "") != "" ? var.spec.chart_version : local.default_chart_version
 

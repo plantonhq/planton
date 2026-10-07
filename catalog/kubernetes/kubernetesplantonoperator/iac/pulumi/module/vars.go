@@ -39,7 +39,7 @@ var vars = struct {
 	// (cross-engine chart drift installs different software per engine).
 	DefaultChartRepository: "oci://ghcr.io/plantonhq/charts",
 	HelmChartName:          "planton-operator",
-	DefaultChartVersion:    "0.27.0",
+	DefaultChartVersion:    "0.28.0",
 	MinChartVersion:        "0.8.0",
 	ReleaseName:            "planton-operator",
 	HelmTimeoutSeconds:     600,
