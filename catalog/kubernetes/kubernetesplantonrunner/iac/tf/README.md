@@ -6,7 +6,7 @@ release. The resources, in dependency order: the installation namespace
 (created only when `create_namespace` is true, with the Planton
 governance labels), the `<name>-token` Secret holding the runner token,
 and the `helm_release` -- named `metadata.name`, pinned to
-`chart_version` (default 0.10.0). A lifecycle precondition refuses
+`chart_version` (default 0.11.0). A lifecycle precondition refuses
 versions below 0.4.0 with an explicit error: those charts predate token
 enrollment and silently ignore the enrollment values.
 

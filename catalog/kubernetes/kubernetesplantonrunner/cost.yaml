@@ -10,7 +10,7 @@ spec:
   cost_drivers:
     - field_path: resources
       sku_meter: cluster CPU and memory reservations
-      impact: The one always-on runner pod holds its CPU and memory reservation around the clock -- the chart pins replicas to 1 with a Recreate strategy, so this is the whole footprint. Unset, the chart's own defaults apply (requests 100m/256Mi, limits 1/1Gi); size limits up for large stacks or high operation concurrency, since IaC operations the runner executes run inside these limits.
+      impact: The one always-on runner pod holds its CPU and memory reservation around the clock -- the chart pins replicas to 1 with a Recreate strategy, so this is the whole footprint. Unset, the chart's own defaults apply (requests 100m/2Gi, limits 1/2Gi); IaC operations the runner executes run inside the memory limit, so a larger limit (requested alike) runs more of them at once.
   estimate_exclusions:
     - the price of the reserved CPU and memory is the target cluster's node economics, which this catalog cannot know
     - the cluster's own node, control-plane, and logging costs bill on the cluster's components, not here

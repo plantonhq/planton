@@ -141,10 +141,10 @@ message KubernetesPlantonRunnerSpec {
 
   /**
    * CPU/memory for the runner container. When omitted, the chart's own
-   * defaults apply (requests 100m/256Mi, limits 1/2Gi). The runner runs
-   * as many IaC operations at once as the memory limit holds -- about 1Gi
-   * each beside its own ~768Mi, so 2Gi runs one and 4Gi three -- and
-   * queues the rest; raise the memory limit to run more at once.
+   * defaults apply (requests 100m/2Gi, limits 1/2Gi). The runner starts an
+   * IaC operation only when it fits under the memory limit and queues the
+   * rest; raise the memory limit to run more at once, and keep the memory
+   * request equal to it, so the node reserves what the runner counts on.
    */
   dev.planton.kubernetes.ContainerResources resources = 9;
 

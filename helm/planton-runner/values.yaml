@@ -78,13 +78,12 @@ temporal:
   namespace: "default"
 
 # IaC operations. Each one runs OpenTofu or Pulumi and its provider plugins
-# inside this pod's memory limit (resources.limits.memory).
+# inside this pod's memory limit (resources.limits.memory), so the runner
+# starts one only when it fits there and the rest wait in the queue.
 iac:
-  # -- IaC operations run at once. 0 sizes it to the memory limit: about 1Gi
-  # per operation beside the runner's own ~768Mi, at most 10, so the default
-  # 2Gi runs one and 4Gi runs three; the rest wait in the queue. Raise the
-  # memory limit to run more; a number here past what the limit holds gets
-  # the pod OOM-killed with every operation in flight.
+  # -- The most IaC operations run at once; below it, memory decides. 0 is
+  # the runner's default, 10. Raise the memory limit (and its request) to
+  # run more at once.
   maxConcurrency: 0
 
 # Build capability -- this runner executes build pipelines on its own cluster:
@@ -131,11 +130,15 @@ build:
 resources:
   requests:
     cpu: 100m
-    memory: 256Mi
+    # Requested and limited alike: the runner admits IaC operations against
+    # its memory limit, so the node must reserve all of it, or a neighbour
+    # can take what the runner counted on.
+    memory: 2Gi
   limits:
     cpu: "1"
-    # One IaC operation (up to ~1Gi with its provider plugins) beside the
-    # runner's own ~768Mi; the runner sizes its IaC slots to this limit.
+    # The runner starts an IaC operation only when it fits here: its own
+    # memory plus 768Mi for every operation started in the last three
+    # minutes, within nine tenths of this limit. 2Gi starts two at once.
     memory: 2Gi
 
 serviceAccount:

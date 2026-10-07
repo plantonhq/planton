@@ -33,9 +33,9 @@ decision for making a cluster's private targets deployable.
 - **`createNamespace: true` with `planton-runner`** -- a dedicated
   namespace, created with the standard governance labels and deleted
   with the resource
-- **Chart defaults for sizing** -- requests 100m/256Mi, limits 1/2Gi;
-  the runner runs one IaC operation at a time in 2Gi and queues the rest,
-  and a larger memory limit in `resources` runs more at once
+- **Chart defaults for sizing** -- requests 100m/2Gi, limits 1/2Gi;
+  the runner starts an IaC operation when it fits in 2Gi and queues the
+  rest, and a larger memory limit in `resources` runs more at once
 
 ## Placeholders to Replace
 

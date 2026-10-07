@@ -225,10 +225,10 @@ label-scoped cleanup, and follow task pod logs.
 | Parameter | Description | Default |
 |-----------|-------------|---------|
 | `resources.requests.cpu` | CPU request | `100m` |
-| `resources.requests.memory` | Memory request | `256Mi` |
+| `resources.requests.memory` | Memory request; keep it equal to the limit, which the runner admits IaC operations against | `2Gi` |
 | `resources.limits.cpu` | CPU limit | `1` |
-| `resources.limits.memory` | Memory limit; the runner runs as many IaC operations at once as it holds (about 1Gi each beside ~768Mi) | `2Gi` |
-| `iac.maxConcurrency` | IaC operations run at once; `0` sizes it to the memory limit | `0` |
+| `resources.limits.memory` | Memory limit; the runner starts an IaC operation only when it fits under it, and queues the rest | `2Gi` |
+| `iac.maxConcurrency` | The most IaC operations run at once; below it, memory decides. `0`: the runner's default, 10 | `0` |
 | `serviceAccount.create` | Create a Kubernetes ServiceAccount | `true` |
 | `serviceAccount.annotations` | ServiceAccount annotations (e.g., IRSA) | `{}` |
 | `nodeSelector` | Node selector for pod scheduling | `{}` |

@@ -79,7 +79,7 @@ message KubernetesPlantonOperatorSpec {
    * at plan time: the `crds` dials would have nothing to act on.
    */
   optional string chart_version = 3 [
-    (dev.planton.shared.options.default) = "0.28.0",
+    (dev.planton.shared.options.default) = "0.29.0",
     (buf.validate.field).cel = {
       id: "chart_version_format"
       message: "chart version must be an exact semver like \"0.15.0\" — ranges are not reproducible"

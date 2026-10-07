@@ -6,7 +6,7 @@ release. The pieces, in dependency order: the installation namespace
 (created only when `create_namespace` is true, with the Planton
 governance labels), the `<name>-token` Secret holding the runner token,
 and the release itself -- named `metadata.name`, pinned to
-`chart_version` (default 0.10.0). Versions below 0.4.0 predate token
+`chart_version` (default 0.11.0). Versions below 0.4.0 predate token
 enrollment and silently ignore the enrollment values, so the module
 refuses them with an explicit error before touching the cluster.
 
