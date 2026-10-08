@@ -14,8 +14,8 @@ import {
 } from '@/components/marketing';
 import { useMarket } from '@/components/market';
 import { useHandoffEmail, withHandoffEmail } from '@/lib/console-handoff';
+import { SITE } from '@/data/site-pages';
 import {
-  BUY_LICENSE_URL,
   EVALUATION_DAYS,
   EVALUATION_URL,
   COMMUNITY_SEAT_LIMIT,
@@ -101,11 +101,6 @@ const PlanCard: FC<PlanCardData> = ({
         : 'border-[#c7c7c4] hover:border-[#999996]'
     }`}
   >
-    {highlighted && (
-      <span className="absolute -top-3 left-1/2 -translate-x-1/2 z-10 whitespace-nowrap px-3 py-0.5 bg-white text-black text-[11px] font-semibold tracking-wide rounded-full">
-        Most Popular
-      </span>
-    )}
     <Stack className="gap-3 flex-1">
       <Box className="flex items-center justify-between gap-2">
         <Typography className="text-base font-semibold text-[#171717]">{name}</Typography>
@@ -197,7 +192,7 @@ export const PlanGrid: FC = () => {
         'Pauses at its limit — never bills, never deletes',
       ],
       ai: AI_INCLUDED,
-      cta: { label: 'Start Free', href: 'https://planton.ai', primary: false, external: true },
+      cta: { label: 'Start Free', href: `${SITE.url}/login`, primary: false },
     },
     {
       name: 'Team',
@@ -212,7 +207,7 @@ export const PlanGrid: FC = () => {
         'Cancel anytime, no forms, no calls',
       ],
       ai: AI_INCLUDED,
-      cta: { label: 'Get Started', href: 'https://planton.ai', primary: true, external: true },
+      cta: { label: 'Get Started', href: `${SITE.url}/login`, primary: true },
       highlighted: true,
     },
   ];
@@ -234,7 +229,7 @@ export const PlanGrid: FC = () => {
         },
       ],
       ai: AI_COMING_SELF_HOSTED,
-      cta: { label: 'Run It Yourself', href: '/product/open-source', primary: false },
+      cta: { label: 'Talk to us', href: '/book-demo', primary: false },
     },
     {
       name: 'Licensed',
@@ -250,7 +245,7 @@ export const PlanGrid: FC = () => {
         'No sales call, no account required',
       ],
       ai: AI_COMING_SELF_HOSTED,
-      cta: { label: 'Buy a License', href: withHandoffEmail(BUY_LICENSE_URL, handoffEmail), primary: true },
+      cta: { label: 'Talk to us', href: '/book-demo', primary: true },
     },
   ];
 

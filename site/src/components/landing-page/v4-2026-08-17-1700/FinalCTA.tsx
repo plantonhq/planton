@@ -11,6 +11,7 @@ import {
   ArrowRightIcon,
 } from './shared';
 import { FREE_TIER_SEATS } from '@/data/pricing';
+import { SITE } from '@/data/site-pages';
 
 /**
  * The close. One promise, two doors, no new claims — everything above
@@ -30,7 +31,7 @@ export const FinalCTA: FC = () => (
         direction={{ xs: 'column', sm: 'row' }}
         className="gap-3 items-center justify-center"
       >
-        <Link href="/signup">
+        <Link href={`${SITE.url}/login`}>
           <PrimaryButton className="text-sm px-8 py-3">
             Start Free
             <ArrowRightIcon />

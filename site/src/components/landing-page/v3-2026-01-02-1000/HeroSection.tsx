@@ -13,6 +13,7 @@ import {
 import { PrimaryButton, ArrowRightIcon } from './shared';
 import { ReactNode } from 'react';
 import { FREE_TIER_SEATS } from '@/data/pricing';
+import { SITE } from '@/data/site-pages';
 
 const cloudProviders = [
   { src: '/_site/images/providers/aws.svg', alt: 'AWS' },
@@ -252,7 +253,7 @@ export const HeroSection: FC = () => {
 
           <Stack className="items-center gap-3 mt-2">
             <Stack direction={{ xs: 'column', sm: 'row' }} className="gap-3 items-center">
-              <Link href="/signup">
+              <Link href={`${SITE.url}/login`}>
                 <PrimaryButton className="text-sm px-8 py-3">
                   Start Free
                   <ArrowRightIcon />

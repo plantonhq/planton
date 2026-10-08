@@ -9,6 +9,7 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from '@/components/marketing';
+import { SITE } from '@/data/site-pages';
 
 /** The closing CTA: start free, or talk to a human if that helps. */
 export const PricingCta: FC = () => {
@@ -24,7 +25,7 @@ export const PricingCta: FC = () => {
             yourself free forever with the community edition.
           </BodyText>
           <Box className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="https://planton.ai" target="_blank">
+            <Link href={`${SITE.url}/login`} target="_blank">
               <PrimaryButton>Start Free</PrimaryButton>
             </Link>
             <Link href="/book-demo">

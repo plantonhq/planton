@@ -36,26 +36,7 @@
   outline: 3px solid #3975d9;
   outline-offset: 5px;
 }
-.meta {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px 24px;
-  align-items: center;
-  margin-top: 14px;
-  font-size: 14px;
-  color: var(--hp-secondary);
-}
-.meta a { display: inline-flex; gap: 12px; align-items: center; min-height: 44px; }
 .error { margin-top: 16px !important; font-size: 16px; line-height: 1.6; }
-.error a { text-decoration: underline; }
-.transcript { margin-top: 8px; font-size: 16px; }
-.transcript summary { width: fit-content; padding-block: 12px; cursor: pointer; }
-.transcript ol { list-style: none; margin: 20px 0 0; padding: 0; max-width: 850px; }
-.transcript li { display: flex; gap: 20px; margin-bottom: 24px; }
-.time { color: var(--hp-secondary); font-size: 14px; line-height: 26px; font-variant-numeric: tabular-nums; }
-.transcript h3 { font-weight: 500; font-size: 17px; line-height: 1.6; }
-.transcript p { color: var(--hp-secondary); font-size: 16px; line-height: 1.7; margin-top: 6px !important; }
 @media (max-width: 700px) {
   .heading { grid-template-columns: 1fr; gap: 16px; }
   .section { padding-block: 16px 40px; }

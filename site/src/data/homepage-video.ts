@@ -6,7 +6,7 @@ export const OVERVIEW_VIDEO = {
   id: 'homepage-overview',
   version: '2026-09-25-v2',
   title: 'From repository to running service.',
-  label: 'See Planton in 60 seconds.',
+  label: 'See Planton in action.',
   description: 'Your platform team sets the foundation. Developers ship within its controls. See where Planton fits.',
   poster: '/_site/images/product/homepage-overview.webp',
   base: 'https://assets.planton.ai/videos/homepage/2026-09-25-v2',

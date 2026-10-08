@@ -15,7 +15,6 @@
  * for the build-time generators without a bundler.
  */
 import { DESKTOP_DOWNLOAD_PATH } from './desktop-download.ts';
-import { EVALUATION_URL } from './pricing.ts';
 
 export type DoorId =
   | 'hosted'
@@ -38,12 +37,12 @@ export interface Door {
 }
 
 export const DOORS: Record<DoorId, Door> = {
-  hosted: { label: 'Start Free', href: '/signup' },
+  hosted: { label: 'Start Free', href: 'https://planton.ai/login' },
   desktop: { label: 'Download Planton Desktop', href: DESKTOP_DOWNLOAD_PATH },
   demo: { label: 'Book a Demo', href: '/book-demo' },
   pricing: { label: 'Pricing', href: '/pricing' },
   selfHostedDocs: { label: 'Read the Self-Hosting Docs', href: '/docs/self-hosting' },
-  evaluation: { label: 'Start an Evaluation', href: EVALUATION_URL },
+  evaluation: { label: 'Start an Evaluation', href: '/book-demo' },
   codingAgentsDocs: { label: 'Set Up Your Coding Agent', href: '/docs/coding-agents' },
   cliDocs: { label: 'Install the CLI', href: '/docs/cli' },
   /** The live catalog browser in the console; it answers without a sign-in. */
