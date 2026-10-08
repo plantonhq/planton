@@ -143,7 +143,7 @@ The Service deploys infrastructure and services into cloud accounts that you own
 Planton offers multiple security models for cloud provider access:
 
 - **Standard credentials** — you provide access keys or service account credentials stored as encrypted references in Planton's secrets manager.
-- **Cross-account roles** — you configure trust policies that allow Planton to assume a role in your account without long-lived credentials.
+- **Keyless (OIDC) connections** — you configure trust policies that allow Planton to assume a role in your account without long-lived credentials.
 - **Customer-hosted runner** — you deploy Planton's runner image within your own infrastructure. Infrastructure operations execute entirely within your cloud boundary; the Planton control plane receives only status information.
 
 You are responsible for selecting the security model appropriate for your compliance and security requirements.

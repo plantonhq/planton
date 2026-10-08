@@ -1,0 +1,30 @@
+# Napkin.ai Diagram Prompts: What Your Cloud Trusts
+# Target: public/docs/security/what-your-cloud-trusts.md
+# Generated images go to: _workspace/napkin/security/
+
+## Diagram 1: Three Pinned Values, Nothing Else
+
+Placement: After the "## The Three Pinned Values" heading, before the subject format block
+Alt text: A keyless trust in the customer's cloud admits a token only when the issuer, the audience, and the subject all match; Planton cloud accounts, shared secrets, and other connections are outside the trust
+Style: technical
+
+### Prompt:
+Create a diagram of a single lock in the center labeled "Your cloud's trust", with three keyholes arranged vertically on its face.
+
+Key elements:
+- Keyhole 1 labeled "Issuer: https://planton.ai"
+- Keyhole 2 labeled "Audience: sts.amazonaws.com / provider resource name / api://AzureADTokenExchange"
+- Keyhole 3 labeled "Subject: planton:v1:org:acme:conn:acme-aws-prod:provider:aws"
+- On the left, a token labeled "Token signed by Planton" with three teeth that match the three keyholes, connected to the lock by an arrow labeled "all three must match"
+- On the right, outside the lock, three grayed-out items each with a small "not trusted" mark: "Planton cloud account", "Shared secret / external ID", "Another connection's token"
+- Below the lock, a small element labeled "Signature checked against https://planton.ai/.well-known/jwks.json"
+
+Visual style:
+- Dark background (#1f2937) with light text
+- Blue accent color (#60a5fa) for the token and the issuer keyhole
+- Amber (#f59e0b) for the lock
+- Gray (#9ca3af) for the not-trusted items
+- Clean, minimal, professional
+- No decorative elements
+
+Context: This diagram explains, to a security reviewer, that a keyless connection's trust admits exactly one connection's token from one issuer, and nothing else.

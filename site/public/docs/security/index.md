@@ -25,13 +25,13 @@ When Planton needs to interact with your cloud provider — creating a VPC, depl
 
 This is not encryption at rest (though that exists too). It is architectural isolation. The credentials physically stay in your infrastructure. A breach of Planton's control plane does not expose your cloud credentials, because Planton does not have them.
 
-Three authentication modes give you control over the security posture of each connection:
+The authentication method of each connection sets its security posture:
 
 - **Inline credentials** — You provide credentials to Planton (encrypted at rest). Simplest to set up, suitable for development environments.
 - **Runner-delegated authentication** — The Runner uses its own cloud identity (IRSA, Workload Identity, Managed Identity). No credential material is stored anywhere. The strongest isolation.
-- **Cross-account trust** — The Runner uses AWS STS AssumeRole to access resources across AWS accounts. No long-lived credentials are exchanged.
+- **Keyless (OIDC)** — Your AWS account, Google Cloud project, or Azure subscription trusts Planton's identity issuer. For each operation, Planton signs a short-lived token for one connection, and your cloud exchanges it for short-lived credentials. No credential is stored in Planton, and no Planton cloud account is part of the trust. See [What Your Cloud Trusts](/docs/security/what-your-cloud-trusts).
 
-For full details, see [Runner Security Model](/docs/runner/security-model) and [Connections: Cloud Providers](/docs/connections/cloud-providers).
+For full details, see [Runner Security Model](/docs/runner/security-model), [Connections: Cloud Providers](/docs/connections/cloud-providers), and [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections).
 
 ## Encryption
 
@@ -118,6 +118,7 @@ The Runner's network model eliminates the need for inbound firewall rules, VPN t
 | Layer | Mechanism | Details |
 |-------|-----------|---------|
 | **Credentials** | Architectural isolation via Runner | [Runner Security Model](/docs/runner/security-model) |
+| **Keyless cloud trust** | Your cloud pins Planton's issuer, the audience, and one connection's subject; no stored credential | [What Your Cloud Trusts](/docs/security/what-your-cloud-trusts) |
 | **Secrets** | Provider-native storage in your own vault; read-audited; never stored in the platform's database | [Where Secrets Live](/docs/secrets/where-secrets-live) |
 | **Authentication** | OAuth + PKCE (interactive), API keys (automation), service accounts (machines) | [Authentication and Authorization](/docs/security/authentication-and-authorization) |
 | **Authorization** | OpenFGA relationship-based access control | [Authentication and Authorization](/docs/security/authentication-and-authorization) |
@@ -129,6 +130,7 @@ The Runner's network model eliminates the need for inbound firewall rules, VPN t
 ## Related Documentation
 
 - [Authentication and Authorization](/docs/security/authentication-and-authorization) — How users authenticate and how permissions are evaluated
+- [What Your Cloud Trusts](/docs/security/what-your-cloud-trusts) — The exact values a keyless cloud connection pins, and how to revoke it
 - [Audit Trails](/docs/security/audit-trails) — Immutable change tracking and version history
 - [Runner Security Model](/docs/runner/security-model) — Credential isolation, mTLS, and authentication modes
 - [Secrets](/docs/secrets) — Provider-native storage, live version history, and secret backends

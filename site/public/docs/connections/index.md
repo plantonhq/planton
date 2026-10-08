@@ -91,11 +91,11 @@ Instead of storing credentials in Planton, you deploy a [Runner](/docs/runner) i
 
 **Best for**: Production environments, compliance-sensitive workloads, organizations that require credentials to stay within their network.
 
-### Cross-Account Trust (AWS)
+### Keyless (OIDC)
 
-Specific to AWS. You create an IAM role in your AWS account that trusts Planton's Runner. The Runner assumes that role using AWS STS when it needs to act in your account. No long-lived access keys are exchanged.
+Your AWS account, Google Cloud project, or Azure subscription trusts Planton's identity issuer directly. For each operation, Planton signs a short-lived token for one connection, and your cloud exchanges it for short-lived credentials. You create the trust once in your own account, with a script the console fills in, and Planton stores no credential at all. See [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections).
 
-**Best for**: AWS organizations with strict credential policies, multi-account setups, cross-account deployments.
+**Best for**: Production cloud accounts, organizations that want no stored cloud credential and a trust they can read and revoke themselves.
 
 ### The Sign-In on This Machine
 
@@ -109,7 +109,7 @@ Some connections need no credential of their own because another connection alre
 
 **Best for**: Every registry a connection you already have can reach.
 
-Not every provider supports every mode. Cloud infrastructure providers (AWS, GCP, Azure) support inline, runner-delegated, and the sign-in on this machine; DigitalOcean and Cloudflare support inline and an exported API token. Cross-account trust is AWS-only. GitHub signs in as an App or as the sign-in on this machine. Container registries sign in through a connection you already trust or with stored keys. GitLab, state backends, and managed services use inline credentials.
+Not every provider supports every mode. Cloud infrastructure providers (AWS, GCP, Azure) support keyless (OIDC), inline, runner-delegated, a Vault broker, and the sign-in on this machine, and GCP and Azure also offer a browser sign-in with Google or Microsoft; DigitalOcean and Cloudflare support inline and an exported API token. GitHub signs in as an App or as the sign-in on this machine. Container registries sign in through a connection you already trust or with stored keys. GitLab, state backends, and managed services use inline credentials.
 
 ## Authorization and Defaults
 
@@ -158,9 +158,6 @@ Navigate to **Connections** in the sidebar to see the Mission Control layout. Cl
 The CLI provides commands for managing connection authorization and defaults:
 
 ```bash
-# Connect an AWS account via browser-based CloudFormation flow
-planton connect aws
-
 # List all connection authorizations
 planton connection authorization list
 
@@ -174,6 +171,7 @@ planton connection default resolve --provider aws --env production
 ## Related Documentation
 
 - [Cloud Providers](/docs/connections/cloud-providers) — Connect AWS, GCP, Azure, and other cloud accounts
+- [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections) — Connect AWS, GCP, and Azure with no stored credential
 - [Git Providers](/docs/connections/git-providers) — Connect GitHub and GitLab for source code access
 - [Container Registries](/docs/connections/container-registries) — Connect image and package registries
 - [State Backends](/docs/connections/state-backends) — Configure Pulumi, Terraform, and OpenTofu state storage

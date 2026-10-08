@@ -1,0 +1,30 @@
+# Napkin.ai Diagram Prompts: Keyless Cloud Connections
+# Target: public/docs/connections/keyless-cloud-connections.md
+# Generated images go to: _workspace/napkin/connections/
+
+## Diagram 1: Keyless Trust, No Stored Key
+
+Placement: After the "## Why Keyless" heading, before its bullet list
+Alt text: Planton signs a short-lived token for one connection; the customer's cloud account checks it against a trust the customer created and returns short-lived credentials, with no key stored in Planton
+Style: conceptual
+
+### Prompt:
+Create a left-to-right conceptual diagram with two large regions side by side.
+
+Key elements:
+- Left region labeled "Planton" containing one element labeled "Identity issuer: https://planton.ai" and, beneath it, a small element labeled "Published keys"
+- A token card moving from the left region to the right region, labeled "Token for one connection (15 minutes)"
+- Right region labeled "Your cloud account" containing an element labeled "Your trust: issuer + audience + subject" and, beside it, an element labeled "Role / service account / app registration"
+- An arrow from "Your trust" back to "Published keys" labeled "checks the signature"
+- An arrow from "Your trust" to "Role / service account / app registration" labeled "short-lived credentials"
+- Inside the left region, an empty dashed box labeled "No stored key" with a crossed-out key icon
+
+Visual style:
+- Dark background (#1f2937) with light text
+- Blue accent color (#60a5fa) for the Planton region and the token card
+- Amber (#f59e0b) for the trust element in the customer's account
+- Gray (#9ca3af) for secondary arrows
+- Clean, minimal, professional
+- No decorative elements, no cloud vendor logos
+
+Context: This diagram explains, to a platform or security engineer evaluating Planton, that a keyless connection keeps no key in Planton: the customer's own cloud decides, per connection, whether to accept Planton's short-lived token.

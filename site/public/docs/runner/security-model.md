@@ -106,7 +106,7 @@ If a runner's identity AND its admitting token are both compromised, revoke the 
 
 ## Authentication Modes
 
-When a request reaches the runner, it needs credentials to authenticate with the target cloud provider (AWS, GCP, Azure, or Kubernetes). Planton supports three authentication modes, configured per [connection](/docs/connections):
+When a request reaches the runner, it needs credentials to authenticate with the target cloud provider (AWS, GCP, Azure, or Kubernetes). Planton supports the following authentication modes, configured per [connection](/docs/connections):
 
 ### Inline Authentication
 
@@ -135,15 +135,23 @@ The runner uses its own cloud identity to authenticate — no credentials are pa
 
 **When to use:** Production environments where credential isolation is a requirement. This is the recommended mode for enterprise deployments.
 
-### Cross-Account Trust (AWS Only)
+### Keyless (OIDC)
 
-The runner uses AWS STS AssumeRole to access resources in a different AWS account. No long-lived credentials are stored — the runner uses its own IAM role to assume a role in the target account, receiving temporary credentials that expire automatically.
+The runner presents a short-lived token that Planton signs for one connection, and the cloud exchanges it for temporary credentials. No credential material is stored anywhere — not in Planton and not in the runner's environment.
 
-**How it works:** The connection specifies the target IAM role ARN. The runner uses its own identity (IRSA or ECS Task Role) to call `sts:AssumeRole`, receives temporary credentials, and uses those for the operation.
+**How it works:** For each operation, the runner obtains a token from Planton's identity issuer for the connection it is acting for. Planton derives every claim itself: the issuer, the audience the cloud expects, and a subject that names exactly that connection. The token is valid for 15 minutes. The runner presents it to the cloud — AWS STS (`sts:AssumeRoleWithWebIdentity` into your IAM role), Google Cloud Workload Identity Federation (impersonating your service account), or Microsoft Entra ID (signing in as your app registration through a federated identity credential). The cloud checks the signature against Planton's published keys and the three values against the trust you created, then returns temporary credentials for the operation.
 
-**Trade-off:** Requires cross-account IAM trust relationships. Most complex to set up, but eliminates long-lived credentials entirely while enabling multi-account access.
+**Trade-off:** You create the trust once in your cloud account, with a script the console fills in. After that there is nothing to rotate.
 
-**When to use:** Organizations with multiple AWS accounts that want a single runner to operate across accounts without storing credentials for each one.
+**When to use:** Production cloud accounts where no credential should be stored and the trust should live, readable and revocable, in your own account. See [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections) and [What Your Cloud Trusts](/docs/security/what-your-cloud-trusts).
+
+### Vault Broker
+
+Your HashiCorp Vault or OpenBao issues the cloud credentials at deploy time. The connection names a Vault connection and a secrets-engine role, and stores no cloud credential.
+
+**How it works:** The runner logs in to your Vault, reads short-lived credentials from its AWS, GCP, or Azure secrets engine, injects them for exactly one job, and revokes its Vault session when the work ends. The Vault login happens on the runner, inside the network that can reach a private Vault — never on Planton's control plane.
+
+**When to use:** Organizations whose security team issues cloud credentials through a broker.
 
 ## Organization-Scoped Identity
 

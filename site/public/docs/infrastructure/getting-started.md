@@ -23,7 +23,7 @@ This guide walks you through deploying your first piece of infrastructure with I
 
 Before Infrastructure can provision infrastructure, it needs credentials for your cloud provider. Navigate to **Connect** in the web console and add your provider credentials.
 
-Each provider has its own connection type — AWS connections use access keys or cross-account roles, GCP connections use service account keys, Azure connections use service principals, and Kubernetes connections use kubeconfig files.
+Each provider has its own connection type. AWS, GCP, and Azure connections can be keyless — your account trusts Planton's identity issuer, and no credential is stored (see [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections)) — or use access keys, service account keys, or service principals. Kubernetes connections use kubeconfig files.
 
 See the [Connections](/docs/connections) section for detailed setup instructions for each provider.
 

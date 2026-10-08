@@ -17,7 +17,7 @@ This guide walks through the first steps on Planton: creating an account, settin
 
 - A modern web browser
 - An AWS, GCP, or Azure account with permissions to create resources
-- Credentials for that account (access keys, service account key, or service principal)
+- Either permission to create a keyless trust in that account (see [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections)), or credentials for it (access keys, a service account key, or a service principal)
 
 ## Step 1: Create Your Account
 
@@ -99,9 +99,9 @@ Before deploying infrastructure, connect your cloud provider account. This gives
 1. Click **Connections** in the sidebar
 2. Find your cloud provider card (AWS, GCP, Azure, or others) under the **Infrastructure** section
 3. Click **Connect** on the provider card
-4. Fill in the credentials:
+4. Choose how Planton authenticates. For AWS, GCP, and Azure, the wizard lists **OIDC (Keyless)** first: your account trusts Planton's identity issuer, and Planton stores no credential. The wizard creates the connection, gives you a setup script with every value filled in, and verifies the trust once you have run it. See [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections) for each cloud's steps. To store a credential instead, choose the inline method and provide:
    - **AWS**: Access Key ID and Secret Access Key
-   - **GCP**: Upload a service account key JSON file
+   - **GCP**: A service account key
    - **Azure**: Subscription ID, Tenant ID, Client ID, and Client Secret
 5. **Authorize for your environment** — select which environments can use this connection. Check the box next to your `dev` environment.
 6. Click **Submit**

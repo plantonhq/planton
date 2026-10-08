@@ -13,169 +13,186 @@ tags:
 
 # Cloud Providers
 
-To deploy infrastructure through Planton, the platform needs permission to act in your cloud accounts. Cloud provider connections give Planton the credentials it needs to create, update, and manage resources — from VPCs and Kubernetes clusters to databases and DNS zones — while keeping those credentials encrypted and scoped to the environments you authorize.
+To deploy infrastructure through Planton, the platform needs permission to act in your cloud accounts. Cloud provider connections give Planton that permission — to create, update, and manage resources from VPCs and Kubernetes clusters to databases and DNS zones — scoped to the environments you authorize. Depending on the method you choose, a connection holds an encrypted credential, or holds no credential at all.
 
-## Choosing an Authentication Mode
+## Choosing an Authentication Method
 
-Every cloud provider connection starts with a choice: how should Planton authenticate?
+Every AWS, Google Cloud, and Azure connection starts with a choice: how should Planton authenticate? The connection wizard lists the methods your Planton instance offers; on planton.ai, **OIDC (Keyless)** is listed first.
+
+```mermaid
+flowchart TB
+  Start["New AWS, Google Cloud, or Azure connection"]
+  Q1{"Store no credential in Planton?"}
+  Q2{"Your security team issues cloud credentials from Vault or OpenBao?"}
+  Q3{"A runner in your network already has a cloud identity?"}
+  Keyless["OIDC (Keyless)"]
+  Broker["Vault Broker"]
+  Runner["Self-Hosted Runner"]
+  Inline["Inline credentials"]
+  Start --> Q1
+  Q1 -- yes --> Q2
+  Q1 -- no, quick evaluation --> Inline
+  Q2 -- yes --> Broker
+  Q2 -- no --> Q3
+  Q3 -- yes --> Runner
+  Q3 -- no --> Keyless
+```
+
+### OIDC (Keyless)
+
+Your account trusts Planton's identity issuer directly. For each operation, Planton signs a short-lived token for this one connection, and your cloud exchanges it for short-lived credentials: an IAM role on AWS, a service account through Workload Identity Federation on Google Cloud, or an app registration through a federated identity credential on Azure. Planton stores no access key, key file, or client secret, so there is nothing to leak or rotate.
+
+You set up the trust once, in your own account, with a script the console fills in for you. On planton.ai, the Google Cloud and Azure wizards can also set it up for you after a one-time sign-in. See [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections) for the setup on each cloud, and [What Your Cloud Trusts](/docs/security/what-your-cloud-trusts) for exactly what the trust admits.
+
+**When to use**: Production accounts, and any account where you want no stored credential and trust you can read and revoke in your own cloud.
 
 ### Inline Credentials
 
-Provide your access keys or service account credentials directly. Planton encrypts them at rest and injects them at deployment time. This is the fastest way to get started.
+Provide an access key, a service account key, or a service principal's client secret. The connection references them as encrypted secrets in your organization, and Planton supplies them to each deployment.
 
-**When to use**: Development environments, proof of concept, small teams where simplicity outweighs the operational overhead of managing a Runner.
+**When to use**: Quick evaluation, development accounts, or when you cannot create an identity provider or federated credential in the account.
 
-**Trade-off**: The credentials are stored (encrypted) in Planton's control plane. For organizations with strict policies about where credentials can reside, consider runner-delegated authentication instead.
+**Trade-off**: The credential is long-lived and stored (encrypted) in Planton. You rotate it yourself.
 
-### Runner-Delegated Authentication
+### Self-Hosted Runner
 
-Deploy a [Planton Runner](/docs/runner) in your own infrastructure and let it authenticate using the cloud environment's native identity system — AWS IRSA, GCP Workload Identity, or Azure Managed Identity. No credentials are stored in Planton's control plane. The Runner authenticates locally and executes deployments where the credentials already exist.
+Deploy a [Planton Runner](/docs/runner) in your own infrastructure and let it authenticate with the identity its environment already provides — the AWS SDK credential chain (IRSA, an instance profile, an ECS task role), GCP Application Default Credentials (Workload Identity), or the Azure credential chain (Managed Identity). No credential is stored in Planton; deployments for the connection run on that runner.
 
-**When to use**: Production environments, compliance-sensitive workloads, organizations that require credentials to never leave their network perimeter.
+**When to use**: Teams that already run a runner with a cloud identity and require credentials to stay inside their network.
 
-**Trade-off**: Requires deploying and maintaining a Runner. See the [Runner documentation](/docs/runner) for deployment options.
+**Trade-off**: You deploy and maintain the runner. See the [Runner documentation](/docs/runner) for deployment options.
 
-### Cross-Account Trust (AWS Only)
+### Vault Broker
 
-Create an IAM role in your AWS account that trusts Planton's Runner. When a deployment runs, the Runner assumes that role using AWS STS — no long-lived access keys are exchanged. This approach combines the convenience of not managing inline keys with the security of role-based access.
+Your HashiCorp Vault or OpenBao issues short-lived cloud credentials at deploy time through its AWS, GCP, or Azure secrets engine. The connection stores no cloud credential: it names a Vault connection in your organization and the secrets-engine role to read. The runner logs in to your Vault, reads credentials for one job, and revokes its Vault session when the job ends. Optionally pick the runner that can reach your Vault over the network.
 
-**When to use**: AWS organizations with multi-account strategies, teams that follow AWS best practices for cross-account access.
+**When to use**: Organizations whose security team issues cloud credentials through a broker.
 
-**Trade-off**: Requires initial IAM role setup (automated via CloudFormation Quick Create) and a Runner for execution.
+### Sign In with Google or Microsoft (GCP and Azure)
+
+Google Cloud and Azure connections also offer a browser sign-in. You authorize Planton with your Google or Microsoft account, and Planton stores the resulting refresh token (encrypted) and exchanges it for access tokens when a deployment runs. Unlike the keyless method, this stores a long-lived token tied to the account that signed in.
+
+**When to use**: A quick start or evaluation with the account you are already signed in to.
 
 ---
 
 ## AWS
 
-AWS is the most fully featured cloud provider integration. It supports all three authentication modes and includes an automated setup flow using AWS CloudFormation.
+AWS connections support OIDC (Keyless), Inline API Keys, Self-Hosted Runner, and Vault Broker.
 
 ### Connecting via the Web Console
 
 1. Navigate to **Connections** and click the **AWS** card under Infrastructure.
 2. **Name your connection** — choose a descriptive name like "AWS Production" or "aws-dev-sandbox". The slug is derived from the name ("AWS Production" becomes `aws-production`), because a slug is lowercase letters and digits joined by single hyphens, like my-app-2.
 3. **Choose your authentication method**:
-   - **Inline API Keys** — Enter your Access Key ID and Secret Access Key directly.
-   - **Cross-Account Trust** — Planton generates a CloudFormation Quick Create link. Click it to open the AWS Console, review the stack, and create the IAM role. The role ARN is captured automatically.
-   - **Self-Hosted Runner** — Select an existing Runner or create a new one. The Runner handles authentication using its environment credentials.
+   - **OIDC (Keyless)** — Enter your account ID and region, select the capabilities Planton may use, then create the connection and run the AWS CLI script the console gives you. The script registers Planton's identity issuer in your account and creates a role only this connection can assume. See [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections#aws).
+   - **Inline API Keys** — Select the secrets that hold your Access Key ID and Secret Access Key (and a session token, for temporary credentials).
+   - **Self-Hosted Runner** — Select an existing runner or create a new one, then identify the account and region. The runner authenticates with its own AWS identity.
+   - **Vault Broker** — Identify the account, then point the connection at the Vault connection and secrets-engine role that issue its credentials.
 4. **Create the connection**.
 
 <!-- SCREENSHOT: AWS connection wizard - auth method selection
-  Page: /resource/connect/aws-credential/create
-  Action: Show step 2 with three auth method cards visible
-  Focus: The three authentication method cards
-  Alt: AWS connection wizard showing Inline API Keys, Cross-Account Trust, and Self-Hosted Runner options
+  Page: /orgs/{org}/connections (AWS connect wizard, Connection Method step)
+  Action: Show the method step with the four method cards visible
+  Focus: The OIDC (Keyless), Inline API Keys, Self-Hosted Runner, and Vault Broker cards
+  Alt: AWS connection wizard showing OIDC (Keyless), Inline API Keys, Self-Hosted Runner, and Vault Broker options
 -->
-
-### Connecting via the CLI
-
-The CLI provides a browser-based CloudFormation flow for AWS:
-
-```bash
-# Interactive setup — opens browser for CloudFormation Quick Create
-planton connect aws
-
-# Specify details upfront
-planton connect aws --name my-aws-prod --account-id 123456789012
-
-# Select specific capabilities
-planton connect aws --capabilities eks,vpc_networking,s3_storage
-
-# Reconnect an existing credential with a new IAM role
-planton connect aws --reconnect my-aws-prod
-```
 
 ### AWS Capabilities
 
-When connecting via CloudFormation, you can scope the IAM role to specific capabilities. This follows the principle of least privilege — grant only the permissions Planton needs for the resource types you plan to deploy.
+A keyless AWS connection's role carries one IAM policy per capability you select. This follows the principle of least privilege — grant only the permissions Planton needs for the resource types you plan to deploy.
 
-Available capabilities: EKS, ECS, VPC networking, S3 storage, RDS databases, Lambda compute, Route 53 DNS, CloudWatch monitoring, ECR container registry, KMS encryption.
-
-By default, all capabilities are granted. You can narrow the scope during initial setup or when reconnecting.
+Available capabilities: Amazon EKS, Amazon ECS, AWS Lambda, Amazon S3, Amazon ECR, Amazon RDS, VPC Networking, Amazon Route 53, AWS KMS, Amazon CloudWatch. Select at least one.
 
 ### What You Need
 
 | Field | Description |
 |-------|-------------|
 | Account ID | Your 12-digit AWS account number |
-| Access Key ID | 20-character key starting with AKIA (for inline auth) |
-| Secret Access Key | 40-character secret (for inline auth) |
-| Region | Default deployment region (defaults to us-west-2) |
+| Region | The connection's primary region (required for OIDC (Keyless)) |
+| Access Key ID | A secret holding the 20-character key starting with AKIA (inline only) |
+| Secret Access Key | A secret holding the 40-character secret (inline only) |
 
-For cross-account trust, the CloudFormation stack handles IAM role creation automatically. For runner-delegated auth, you need a Runner deployed with appropriate IAM permissions.
+For OIDC (Keyless), the setup script creates the IAM role, so you supply no key. For runner-delegated auth, you need a runner deployed with appropriate IAM permissions.
 
 ---
 
 ## Google Cloud Platform
 
-GCP connections use a service account key to authenticate. Planton acts as the service account when creating and managing resources in your GCP project.
+GCP connections support Sign in with Google, OIDC (Keyless), Service Account Key, Self-Hosted Runner, and Vault Broker.
 
 ### Connecting via the Web Console
 
 1. Navigate to **Connections** and click the **GCP** card under Infrastructure.
-2. **Name your connection** and provide the service account key JSON file (base64-encoded).
+2. **Name your connection** and choose an authentication method:
+   - **OIDC (Keyless)** — Enter your project number, the workload identity pool and provider IDs (the console proposes them), and the service account Planton acts as, then create the connection and either click **Set it up for me** or run the `gcloud` script the console gives you. See [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections#google-cloud).
+   - **Service Account Key** — Reference a secret holding the service account's JSON key.
+   - **Sign in with Google**, **Self-Hosted Runner**, or **Vault Broker** — as described in [Choosing an Authentication Method](#choosing-an-authentication-method).
 3. **Create the connection**.
 
-<!-- SCREENSHOT: GCP connection form
-  Page: /resource/connect/gcp-credential/create
-  Action: Show the GCP connection form with name and service account key fields
-  Focus: The connection name and service account key upload fields
-  Alt: GCP connection form showing name input and service account key JSON upload
+<!-- SCREENSHOT: GCP connection wizard - auth method selection
+  Page: /orgs/{org}/connections (GCP connect wizard, Connection Method step)
+  Action: Show the method step with all method cards visible
+  Focus: The OIDC (Keyless), Sign in with Google, Service Account Key, Self-Hosted Runner, and Vault Broker cards
+  Alt: GCP connection wizard showing OIDC (Keyless), Sign in with Google, Service Account Key, Self-Hosted Runner, and Vault Broker options
 -->
 
 ### What You Need
 
-| Field | Description |
-|-------|-------------|
-| Service Account Key | A JSON key file for a GCP service account with appropriate IAM roles, base64-encoded |
+| Method | What you provide |
+|--------|-----------------|
+| OIDC (Keyless) | The project number, and a service account email (the setup script can create the service account) |
+| Service Account Key | A secret holding the service account's JSON key, raw or base64-encoded |
 
-### Preparing Your GCP Service Account
+### Preparing a Service Account Key
 
-In the Google Cloud Console:
+For the Service Account Key method, in the Google Cloud Console:
 
 1. Create a service account in the project where Planton will manage resources.
 2. Grant the service account the IAM roles needed for your resource types (e.g., Kubernetes Engine Admin for GKE clusters, Cloud SQL Admin for databases).
 3. Create a JSON key for the service account.
-4. Base64-encode the key file for use in Planton.
-
-GCP connections support both inline and runner-delegated authentication. For runner-delegated auth, deploy a Runner with GCP Workload Identity configured.
+4. Store the key's contents as a secret in your organization, raw or base64-encoded, and select that secret in the wizard.
 
 ---
 
 ## Microsoft Azure
 
-Azure connections use a service principal (app registration) to authenticate. Planton acts as the service principal when managing resources in your Azure subscription.
-
-<!-- SCREENSHOT: Azure connection form
-  Page: /resource/connect/azure-credential/create
-  Action: Show the Azure connection form with service principal credential fields
-  Focus: The tenant ID, client ID, client secret, and subscription ID fields
-  Alt: Azure connection form showing service principal credential fields for tenant, client, and subscription
--->
+Azure connections support Sign in with Microsoft, OIDC (Keyless), Service Principal, Self-Hosted Runner, and Vault Broker. Every method needs your tenant ID and subscription ID.
 
 ### Connecting via the Web Console
 
 1. Navigate to **Connections** and click the **Azure** card under Infrastructure.
-2. **Name your connection** and provide the service principal credentials.
+2. **Name your connection** and choose an authentication method:
+   - **OIDC (Keyless)** — Enter the tenant ID, subscription ID, and the app registration's client ID (no client secret), then create the connection and add the federated identity credential, by clicking **Add the credential for me** or by running the `az` command the console gives you. See [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections#azure).
+   - **Service Principal** — Enter the tenant ID and subscription ID, and select the secrets that hold the client ID and client secret.
+   - **Sign in with Microsoft**, **Self-Hosted Runner**, or **Vault Broker** — as described in [Choosing an Authentication Method](#choosing-an-authentication-method).
 3. **Create the connection**.
+
+<!-- SCREENSHOT: Azure connection wizard - auth method selection
+  Page: /orgs/{org}/connections (Azure connect wizard, Connection Method step)
+  Action: Show the method step with all method cards visible
+  Focus: The OIDC (Keyless), Sign in with Microsoft, Service Principal, Self-Hosted Runner, and Vault Broker cards
+  Alt: Azure connection wizard showing OIDC (Keyless), Sign in with Microsoft, Service Principal, Self-Hosted Runner, and Vault Broker options
+-->
 
 ### What You Need
 
 | Field | Description |
 |-------|-------------|
-| Tenant ID | Your Azure Active Directory tenant identifier |
-| Subscription ID | The Azure subscription where resources will be managed |
-| Client ID | The application (client) ID of your service principal |
-| Client Secret | The client secret for authentication |
+| Tenant ID | Your Microsoft Entra ID tenant identifier (every method) |
+| Subscription ID | The Azure subscription where resources will be managed (every method) |
+| Client ID | The application (client) ID of your app registration, stored as a secret (OIDC (Keyless) and Service Principal) |
+| Client Secret | The client secret value, stored as a secret (Service Principal only) |
 
-### Preparing Your Azure Service Principal
+### Preparing a Service Principal
 
-In the Azure Portal:
+For the Service Principal method, in the Azure Portal:
 
-1. Register an application in Azure Active Directory.
+1. Register an application in Microsoft Entra ID.
 2. Create a client secret for the application.
 3. Assign the application the Contributor role (or more restrictive custom roles) on the subscription or resource groups where Planton will manage resources.
 
-Azure connections support both inline and runner-delegated authentication. For runner-delegated auth, deploy a Runner with Azure Managed Identity configured.
+For OIDC (Keyless), skip the client secret: the console creates the app registration for you or gives you a script that does, and the trust is a federated identity credential.
 
 ---
 
@@ -247,12 +264,14 @@ Avoid generic names like `aws1` or `my-cloud` — they become confusing as the n
 
 ### Credential Rotation
 
-To rotate credentials, update the connection with new values. Planton uses the updated credentials for all future deployments. In-flight deployments continue with the credentials they started with. No downtime is required.
+Keyless connections need no rotation: Planton stores no credential for them, each token it signs is valid for 15 minutes, and your cloud trusts the issuer's published keys, which Planton rotates without any change on your side. Runner-delegated and Vault Broker connections store nothing to rotate either; the runner's environment or your Vault issues the credentials.
 
-For AWS cross-account trust connections, rotation means updating the IAM role — use the `--reconnect` flag in the CLI to set up a new role.
+To rotate inline credentials, update the secret the connection references, or point the connection at a new secret. Planton uses the new values for operations that start after the change.
 
 ## Related Documentation
 
+- [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections) — Set up OIDC (Keyless) trust in AWS, Google Cloud, and Azure
+- [What Your Cloud Trusts](/docs/security/what-your-cloud-trusts) — The exact values a keyless trust pins, and how to revoke it
 - [Connections Overview](/docs/connections) — Understanding the Connect system
 - [Environment Mappings](/docs/connections/environment-mappings) — Authorize connections for specific environments
 - [Default Connections](/docs/connections/default-connections) — Configure automatic credential selection
