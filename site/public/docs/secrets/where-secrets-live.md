@@ -78,9 +78,37 @@ $secret/@prod/auth0-client-outputs-checkout/client_secret
 
 Which outputs are secrets is declared in each kind's schema: the reference pages mark them `(sensitive)` in the Outputs table.
 
+## Signed In Through Your Connection
+
+To read or write a secret in your AWS Secrets Manager, Google Cloud Secret Manager, or Azure Key Vault, Planton has to sign in to that store. The recommended way is through one of your organization's cloud connections — an AWS connection for Secrets Manager, a Google Cloud connection for Secret Manager, an Azure connection for Key Vault:
+
+```bash
+planton secret backend create team-secrets --type aws \
+  --aws-region us-east-1 \
+  --aws-connection prod-aws
+```
+
+With a [keyless connection](/docs/connections/keyless-cloud-connections), **nothing about the backend is stored anywhere**. Every time the backend needs fresh credentials, Planton mints a short-lived token for that connection and your cloud exchanges it against the trust you wrote once in your own account:
+
+- **AWS** — the backend assumes the connection's role, in a session named `planton-secret-backend-<backend>`, so your CloudTrail shows exactly which backend read a secret.
+- **Google Cloud** — the token is exchanged at Google's token service and the connection's service account is impersonated.
+- **Azure** — the token is the client assertion of the connection's app registration.
+
+Each token lives minutes and is never written down. A stored-key connection works too: the backend reads the key from the connection's own secret, and the key exists only there. Connections that sign in on a runner, through a Vault broker, or as a person through the browser cannot serve a secret backend, because Planton's control plane reads and writes your secrets itself, on your organization's behalf.
+
+The connection's identity needs permission to manage secrets. Choose the **Secrets Manager** capability on an AWS connection or the **Secret Manager** capability on a Google Cloud connection; on Azure, give the app registration a role that manages secrets on the vault, such as Key Vault Secrets Officer.
+
+Three guarantees come with it:
+
+- **One hop, never two.** A connection's own secrets — a stored key, or an Azure app registration's client ID — must live in a backend that does not itself sign in through a connection. Planton refuses the link where you make it, and checks again at every read, so reaching a secret never needs a second sign-in.
+- **The connection cannot disappear under your secrets.** Its page lists the **Backends Signing In** through it (`planton connection get aws prod-aws`), and deleting it is refused while any does, naming each backend.
+- **Switching keeps every secret where it is.** A backend can move from a stored key to a connection in place; secret names depend only on the backend's type and prefix, and the stored key is deleted once the change is saved.
+
+Prove the sign-in end to end, before or after you create the backend, with `planton secret backend verify team-secrets` (or `-f` with a manifest). When your cloud refuses the keyless exchange, the verdict names the exact subject and issuer your trust must admit. On Planton's hosted service, a backend cannot sign in as Planton's own identity: choose a connection or a stored key. See [What Your Cloud Trusts](/docs/security/what-your-cloud-trusts) for the trust itself.
+
 ## What Planton's Own Database Holds
 
-Metadata only: the secret's name, scope, backend binding, remote identity, version authorship records, and the read-audit trail. **Never the value**, including for secrets a resource generates: its outputs, its deploy records and the saved inputs of every resource that reads it hold only the reference. A full copy of Planton's database yields no secret values for provider-backed secrets — they are in your store, under your IAM, and nowhere else.
+Metadata only: the secret's name, scope, backend binding, remote identity, version authorship records, and the read-audit trail. A backend that signs in through a keyless connection adds nothing to that list: no key, no token. **Never the value**, including for secrets a resource generates: its outputs, its deploy records and the saved inputs of every resource that reads it hold only the reference. A full copy of Planton's database yields no secret values for provider-backed secrets — they are in your store, under your IAM, and nowhere else.
 
 ## Related Documentation
 
