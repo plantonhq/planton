@@ -216,10 +216,12 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
             components={{
               p: ({ children, node }) => {
                 // A paragraph that is only a bare link to a video becomes the embed.
+                // A link wrapped around an image stays an image: an animated GIF
+                // linking to its MP4 plays inline, and an imported copy keeps it.
                 const content = contentChildren(node);
                 const only = content.length === 1 ? content[0] : undefined;
                 const href = isElement(only) && only.tagName === 'a' ? attribute(only, 'href') : undefined;
-                if (only && href) {
+                if (isElement(only) && href && elementChildren(only).length === 0) {
                   const linkText = textOf(only);
                   const shouldEmbed = !linkText || linkText.trim() === href.trim();
                   if (shouldEmbed && getEmbedInfoFromUrl(href)) {
