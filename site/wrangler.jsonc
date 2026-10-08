@@ -4,7 +4,8 @@
 // preview, a version of `planton-website-preview`, at its own hostname.
 //
 //   production:  .github/workflows/release.site.yaml  -> wrangler deploy
-//   previews:    .github/workflows/preview.site.yaml  -> wrangler versions upload --env preview --preview-alias review-<n>
+//   previews:    .github/workflows/publish.site-preview.yaml  -> wrangler versions upload --env preview --preview-alias review-<n>
+//                (the export built, with no key, by .github/workflows/preview.site.yaml)
 //
 // Both run the pinned wrangler in ./deploy, with a key scoped to its one Worker.
 {
