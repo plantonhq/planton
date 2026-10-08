@@ -110,7 +110,14 @@ spec:
         npm ci && npx eslint .
 ```
 
-Pin every image by digest (`crane digest <image:tag>`); secrets are `valueFrom.secretKeyRef` or mounts, never literals.
+Pin every image by digest (`crane digest <image:tag>`); secrets are never literals -- a build reads them as files from Planton's secret store (below).
+
+## Secrets and variables the pipeline reads
+
+- **A secret** (a SonarQube token, a registry or signing key): name it under `spec.build.tektonPipeline.secrets` as `{name: <file>, ref: $secret/<slug>}` (`/<key>` for a key of a key_value secret), declare a `secrets` workspace on the pipeline, bind it to the task, and read `$(workspaces.secrets.path)/<file>` -- e.g. `--token="$(cat $(workspaces.secrets.path)/sonar-token)"`. The runner reads it at build time, deletes it when the run ends, and masks its value in the build's logs. Never pass a secret as a param: a `$secret/` param is refused at save, because params are visible on the cluster's run object.
+- **Per environment**: `$secret/@<env>/<slug>` reaches only builds for that environment (a mapped branch's push, a run scoped to it, a pull request previewing it), so a branch-per-environment service names the same file once per environment and each branch reads its own environment's value; a build for several environments (the promotion walk, a tag) receives the organization's secrets only. A file name is organization-wide or per-environment, never both.
+- **A variable** (a server URL): set the param's value to `$var/<slug>` (or `$var/@<env>/<slug>`); the runner fills it in at dispatch.
+- Every reference is checked to exist when the service is saved; a missing one is refused with the command that creates it.
 
 ## Asked for → what you edit
 
@@ -123,7 +130,7 @@ Pin every image by digest (`crane digest <image:tag>`); secrets are `valueFrom.s
 
 ## Validate, always, before "ready"
 
-`planton service pipeline validate .planton/pipeline.yaml [--param <key>=<value>]... -o json` runs the dispatch compiler locally: discovers the tasks beside the file, resolves catalog refs, checks the contract, and returns `{valid, source, pin, compiler_version, compiled_bytes, tasks_resolved: [{name, source: repo|org|platform}], errors: [{code, subject, message}]}`; exit 1 on any error. The platform's contract stands in for the dispatch: the always-supplied params count as supplied (and a pipeline that forgets to declare one is refused with `undeclared_param`, exactly as the dispatch would), declared optional facts count as supplied, and `image-name` / the dockerfile params are treated as supplied when declared. Pass `--param` only for the pipeline's own params (every `tektonPipeline.params` key; `--param git-tag=v1.4.0` exercises a `when`); `--task <name>=<path>` stands in for an organization-published task. Relay errors in the developer's words and fix them yourself — every one below has a mechanical fix.
+`planton service pipeline validate .planton/pipeline.yaml [--param <key>=<value>]... -o json` runs the dispatch compiler locally: discovers the tasks beside the file, resolves catalog refs, checks the contract, and returns `{valid, source, pin, compiler_version, compiled_bytes, tasks_resolved: [{name, source: repo|org|platform}], errors: [{code, subject, message}]}`; exit 1 on any error. The platform's contract stands in for the dispatch: the always-supplied params count as supplied (and a pipeline that forgets to declare one is refused with `undeclared_param`, exactly as the dispatch would), declared optional facts count as supplied, and `image-name` / the dockerfile params are treated as supplied when declared. Pass `--param` only for the pipeline's own params (every `tektonPipeline.params` key; `--param git-tag=v1.4.0` exercises a `when`), and `--secret <file>` for each build secret that reaches the build you are checking (the twin's `build_secrets`); `--task <name>=<path>` stands in for an organization-published task. Relay errors in the developer's words and fix them yourself — every one below has a mechanical fix.
 
 On the platform-tools arm the twin is `validate_service_pipeline`, with three sources and exactly one per call: the **repository itself** (`org` + `service`, or `org` + `git_connection` + `owner_name` + `repo_name`, plus an optional `ref` — the platform reads the pipeline and the tasks beside it at HEAD or at the commit a run built, nothing pasted; the report's `pin` is the commit read), submitted `files` (a path-to-content map of the pipeline file — by default `.planton/pipeline.yaml` — plus every Task file beside it under its `tasks/` directory) with the pipeline's own `params`, or `track` to validate a platform track. Prefer the repository source for "does my pipeline compile?" and for re-checking exactly what a failed run compiled (`ref` = its `spec.git_commit.sha`); use `files` for a change that exists only in the conversation. It runs the same compiler with the same stand-in rule and answers with the same JSON; verdicts arrive in the report (`valid: false`, `errors`), never as a tool error. Pass `org` and task references the files do not answer are resolved from the organization's published `TektonTask` records automatically — the twin needs no `--task` stand-ins. A missing `pipeline_path` entry, more or fewer than one source, a repository source without `org`, or an oversized payload is a malformed call, not a verdict: fix the call. Reading the files themselves — to quote a task, or to see what the developer actually committed — is `references/service.reading-a-repository.md`.
 
@@ -138,9 +145,11 @@ On the platform-tools arm the twin is `validate_service_pipeline`, with three so
 - `resolver_ref_unsupported` (subject: the pipeline task) — replace `taskRef.resolver` with a plain `name` and add the Task beside the pipeline.
 - `undeclared_param` (subject: the param) — add it to `spec.params` (with a default if the pipeline ignores it); for a platform contract param the message says so -- every pipeline must declare all nine.
 - `missing_required_param` (subject: the param) — give it a `default`, or add it under `spec.build.tektonPipeline.params`.
-- `unbindable_workspace` (subject: the workspace) — only `source` is bound; mark the workspace `optional: true` or remove it.
+- `unbindable_workspace` (subject: the workspace) — only `source` (and `secrets`, when the service names build secrets) is bound; mark the workspace `optional: true` or remove it.
+- `secrets_workspace_without_secrets` (subject: `secrets`) — the pipeline requires `secrets` but the service names none; add them under `tektonPipeline.secrets` (validate with `--secret <file>`), or mark the workspace optional.
+- `build_secrets_never_mounted` (subject: `secrets`) — secrets reach this build but the pipeline declares no `secrets` workspace; declare it and read the files.
 - `dangling_result_reference` (subject: the reference) — fix `$(tasks.<task>.results.<result>)` to a task and result that exist.
-- `literal_secret_env` (subject: the task) — replace the value with `valueFrom.secretKeyRef` or a mount.
+- `literal_secret_env` (subject: the task) — name the value as a build secret and read it from `$(workspaces.secrets.path)/<file>`.
 - `repo_file_unreadable` (subject: the path) — the file is not at that path at the built commit; fix `yamlFile` or commit the file.
 
 Verdicts land on the run record as an explained failure. A rerun of a compile-failed run recompiles from the repository at the SAME commit, so the path is: fix the file, validate, push a new commit — the push starts the run.

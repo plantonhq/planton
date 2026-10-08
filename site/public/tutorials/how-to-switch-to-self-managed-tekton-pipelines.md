@@ -33,13 +33,13 @@ That works until you need a step the platform track does not have: SonarQube ana
 
 - [ ] A working Service deployed through Planton on a platform track (see the tutorial above)
 - [ ] A Dockerfile in your repository (the catalog's `buildkit-daemonless` task builds from it)
-- [ ] A [SonarCloud](https://sonarcloud.io) account with a project for your repository, and a Kubernetes Secret holding its token in your build cluster's pipelines namespace (coordinate with your platform administrator)
+- [ ] A [SonarCloud](https://sonarcloud.io) account with a project for your repository, and its token stored as a Planton secret: `planton secret set sonar-token --string` (the build reads it from there — nothing is placed in a cluster by hand)
 - [ ] The `planton` CLI installed and authenticated (`planton auth login`)
 - [ ] Basic familiarity with Tekton's Pipeline and Task concepts
 
 ## Step 1: Write the pipeline
 
-Create `.planton/pipeline.yaml` under your service's project root. It declares the platform's parameter contract, the one workspace the platform binds (`source`), and four tasks. Three come from Planton's catalog by plain name; one — the SonarQube scan — lives beside the pipeline in your repository.
+Create `.planton/pipeline.yaml` under your service's project root. It declares the platform's parameter contract, the `source` workspace (the cloned repository), the `secrets` workspace (the build secrets your Service names, one file each), and four tasks. Three come from Planton's catalog by plain name; one — the SonarQube scan — lives beside the pipeline in your repository.
 
 ```yaml
 apiVersion: tekton.dev/v1
@@ -86,6 +86,7 @@ spec:
       type: string
   workspaces:
     - name: source
+    - name: secrets
   tasks:
     - name: git-checkout
       taskRef:
@@ -116,6 +117,8 @@ spec:
       workspaces:
         - name: source
           workspace: source
+        - name: secrets
+          workspace: secrets
     - name: build-image
       runAfter: [sonar-analysis]
       taskRef:
@@ -182,34 +185,30 @@ spec:
       default: "."
   workspaces:
     - name: source
+    - name: secrets
   steps:
     - name: scan
       image: sonarsource/sonar-scanner-cli:11
       workingDir: $(workspaces.source.path)/$(params.project-root)
-      env:
-        - name: SONAR_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: sonar-token
-              key: token
       script: |
+        export SONAR_TOKEN="$(cat $(workspaces.secrets.path)/sonar-token)"
         sonar-scanner -Dsonar.projectKey=$(params.project-key) -Dsonar.host.url=https://sonarcloud.io
 ```
 
-Pin the image by digest before you rely on it (`crane digest sonarsource/sonar-scanner-cli:11`, then `image: sonarsource/sonar-scanner-cli:11@sha256:...`) so a moved tag can never change your build. The token is a runtime secret reference — the compiler refuses literal secret values in a definition.
+Pin the image by digest before you rely on it (`crane digest sonarsource/sonar-scanner-cli:11`, then `image: sonarsource/sonar-scanner-cli:11@sha256:...`) so a moved tag can never change your build. The token is a file the platform mounts at build time from your Planton secret — never a value in the definition, which the compiler refuses — and the platform masks it in the build's logs.
 
 ## Step 3: Validate before you push
 
 ```bash
 planton service pipeline validate .planton/pipeline.yaml \
-  --param sonar-project-key=acme_storefront -o json
+  --param sonar-project-key=acme_storefront --secret sonar-token -o json
 ```
 
 The same compiler that runs at dispatch runs here: it discovers `sonar-scan` beside the file, inlines `git-clone`, `buildkit-daemonless`, and `kustomize-build` from the catalog, and checks the parameter contract in both directions. Every problem comes back in one pass as a named verdict — `undeclared_param`, `unresolved_task_ref`, `unbindable_workspace` — each naming the field to fix. Exit code 0 means it compiles clean.
 
 ## Step 4: Switch the Service to your pipeline
 
-Replace the platform builder with `tektonPipeline` and supply your own parameter:
+Replace the platform builder with `tektonPipeline`, supply your own parameter, and name the build secret the pipeline reads:
 
 ```yaml
 spec:
@@ -217,11 +216,14 @@ spec:
     tektonPipeline:
       params:
         sonar-project-key: acme_storefront
+      secrets:
+        - name: sonar-token          # the file: $(workspaces.secrets.path)/sonar-token
+          ref: $secret/sonar-token   # an organization secret reaches every build
     registry: your-registry-connection
     imageRepositoryPath: acme/storefront
 ```
 
-The default file location is `.planton/pipeline.yaml`; set `tektonPipeline.yamlFile` to keep it elsewhere. Apply the manifest:
+The default file location is `.planton/pipeline.yaml`; set `tektonPipeline.yamlFile` to keep it elsewhere. Every secret reference is checked to exist when you apply. To give each environment its own token, name the file once per environment — `ref: $secret/@staging/sonar-token`, `ref: $secret/@prod/sonar-token` — and a build reads the one for the environment it deploys to. Apply the manifest:
 
 ```bash
 planton apply -f service.yaml

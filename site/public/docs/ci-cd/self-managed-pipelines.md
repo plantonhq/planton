@@ -136,7 +136,28 @@ spec:
 
 ## Workspaces
 
-The platform binds one pipeline-level workspace: `source`, the cloned repository. Declare it and pass it to your tasks. A pipeline that requires any other workspace is refused at compile time — declare it `optional: true` or drop it. Secrets are always runtime references (secret names, mounts), never values in a definition.
+The platform binds `source`, the cloned repository, for every build — declare it and pass it to your tasks — and `secrets`, the build secrets your Service names, one file each. A pipeline that requires any other workspace is refused at compile time — declare it `optional: true` or drop it.
+
+## Secrets and Variables
+
+A pipeline reads its configuration from Planton, never from values typed into the Service:
+
+- **Build secrets.** Name each secret under `build.tektonPipeline.secrets` — a file name and a `$secret/` reference — and read it at `$(workspaces.secrets.path)/<name>`. The platform reads it at build time with the build's own short-lived identity, deletes it when the run ends, and masks its value in the build's logs.
+- **Per environment.** `$secret/@<env>/<slug>` reaches only builds for that environment (a branch mapped to it, a run scoped to it, a pull request previewing it), so name a file once per environment and each branch reads its own value. A build that serves several environments — the promotion walk, a tag release — receives your organization's secrets only.
+- **Variables.** A param's value may be `$var/<slug>`; it is filled in when the build starts. A `$secret/` param is refused — params are visible on the run object, so secrets are files.
+- Every reference is checked to exist when you apply the Service, and each run records which build secrets it could read (names and references, never values).
+
+```yaml
+build:
+  tektonPipeline:
+    params:
+      sonar-host-url: $var/sonarqube-host-url
+    secrets:
+      - name: sonar-token
+        ref: $secret/@staging/sonar-token
+      - name: sonar-token
+        ref: $secret/@prod/sonar-token
+```
 
 ## Validate before you push
 
@@ -159,9 +180,11 @@ The same compiler that runs at dispatch runs locally: it discovers the tasks bes
 | `resolver_ref_unsupported` | A `taskRef` uses a remote resolver | Reference the task by name; inline it or add it beside the pipeline |
 | `undeclared_param` | The platform supplies a parameter the pipeline does not declare (or a `build.tektonPipeline.params` key is not declared) | Declare it under `spec.params` — every pipeline declares the nine always-supplied parameters |
 | `missing_required_param` | A declared parameter has no default and nothing supplies it | Give it a default, or set it under `build.tektonPipeline.params` |
-| `unbindable_workspace` | The pipeline requires a workspace the platform does not bind | Use `source`, or mark the workspace `optional: true` |
+| `unbindable_workspace` | The pipeline requires a workspace the platform does not bind | Use `source` (or `secrets`), or mark the workspace `optional: true` |
+| `secrets_workspace_without_secrets` | The pipeline requires `secrets`, but the Service names no build secrets | Name them under `build.tektonPipeline.secrets` (validate with `--secret <name>`), or mark the workspace optional |
+| `build_secrets_never_mounted` | Build secrets reach this build, but the pipeline declares no `secrets` workspace | Declare it and read `$(workspaces.secrets.path)/<name>` |
 | `dangling_result_reference` | `$(tasks.X.results.Y)` names a task or result that does not exist | Fix the task or result name |
-| `literal_secret_env` | An env var looks like a literal secret value | Use a secret reference or a mounted workspace |
+| `literal_secret_env` | An env var looks like a literal secret value | Name it as a build secret and read it from the `secrets` workspace |
 | `repo_file_unreadable` | The pipeline file could not be read at the built commit | Check `yamlFile` and that the file exists at that commit |
 
 ## What a run records
