@@ -5,8 +5,8 @@ excerpt: "A year ago I called feature flags overhead. Here is why we built them 
 author:
   - name: Swarup Donepudi
     title: Founder, Planton
-    bio: "Founder of Planton, The Self-Service Cloud Platform. Over ten years in DevOps and platform engineering."
-    profilePicture: https://avatars.githubusercontent.com/u/6811012?v=4
+    bio: "15+ years in DevOps and platform engineering. Building The Self-Service Cloud Platform."
+    profilePicture: /_site/images/team/swarup-donepudi-avatar.jpg
     linkedin: https://www.linkedin.com/in/swarupdonepudi
     github: https://github.com/swarupdonepudi
 featuredImage: https://assets.planton.ai/site/images/blog/feature-flags-opentelemetry-moment/2026-10-08-233000-feature-flags-the-swap-poster.png
