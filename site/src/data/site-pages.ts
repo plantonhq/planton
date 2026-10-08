@@ -305,4 +305,4 @@ export const INDEXED_PAGES: readonly SitePage[] = SITE_PAGES.filter((p) => p.ind
  * by URL and marked noindex by their own layouts. The coverage check skips
  * them; anything else exported and unregistered fails the build.
  */
-export const UNREGISTERED_PREFIXES: readonly string[] = ['/meets', '/invest', '/legal/investor-updates', '/enterprise'];
+export const UNREGISTERED_PREFIXES: readonly string[] = ['/meets', '/invest', '/legal/investor-updates'];
