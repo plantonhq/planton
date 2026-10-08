@@ -1,0 +1,330 @@
+# =============================================================================
+# Website Previews, the upload (review-<n>.planton.dev)
+# =============================================================================
+# preview.site.yaml builds each pull request's export with no key; this
+# workflow, which GitHub runs from main only, puts it up. A preview is a
+# version of the Worker `planton-website-preview` (site/wrangler.jsonc, env
+# `preview`) uploaded under the alias review-<n>; the router in front of
+# planton.ai (planton-platform's apex-router) puts review-<n>.<zone> in front
+# of that version. The zone is not planton.ai on purpose: a preview runs a
+# branch's code, and on a zone of its own it never shares a site, or a cookie,
+# with the console.
+#
+# Nothing of the pull request runs here. The jobs check out main's Worker
+# config and deploy scripts only, install only the pinned wrangler in
+# site/deploy, and treat the export as files to upload. Which pull request a
+# build belongs to comes from GitHub's record of it (preview-pull-request.sh),
+# never from the build, and the preview's noindex header is written here.
+#
+# Keys: the environment `website-preview` holds the one that reaches the
+# preview Worker alone. A pull request from a fork first passes the
+# environment `website-preview-fork`, which holds no key and waits for a
+# maintainer's approval, once per push: a contributor's page goes up at a
+# planton.dev address only after someone has looked at it.
+#
+# Merging or closing a pull request closes its preview (pull_request_target,
+# which runs from main and checks out nothing of the pull request). A weekly
+# sweep closes any preview whose close run failed.
+# =============================================================================
+
+name: publish.site-preview
+
+on:
+  workflow_run:
+    workflows: [preview.site]
+    types: [completed]
+  pull_request_target:
+    types: [closed]
+    paths:
+      - "site/**"
+      - ".github/workflows/preview.site.yaml"
+  schedule:
+    - cron: "17 3 * * 1" # Mondays 03:17 UTC: the sweep
+  workflow_dispatch:
+
+permissions: {}
+
+env:
+  PREVIEW_ZONE: planton.dev
+  PREVIEW_WORKER: planton-website-preview
+  WORKERS_SUBDOMAIN: planton
+  WRANGLER_SEND_METRICS: "false"
+
+concurrency:
+  # A newer build of the same branch replaces an older one, including one still waiting for approval.
+  group: >-
+    publish.site-preview-${{ github.event_name == 'workflow_run' &&
+    format('{0}-{1}', github.event.workflow_run.head_repository.full_name, github.event.workflow_run.head_branch) ||
+    github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  # Which open pull request this build is, and whether it comes from a fork.
+  resolve:
+    if: >-
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
+    outputs:
+      number: ${{ steps.find.outputs.number }}
+      fork: ${{ steps.find.outputs.fork }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: site/deploy
+          sparse-checkout-cone-mode: false
+
+      - name: Find the pull request
+        id: find
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_REPO: ${{ github.event.workflow_run.head_repository.full_name }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          number="$(bash site/deploy/preview-pull-request.sh "$HEAD_REPO" "$HEAD_BRANCH" "$SHA")"
+          if [[ -z "$number" ]]; then
+            echo "no open pull request has ${HEAD_REPO}@${SHA::12} at its head; a newer run owns its preview"
+          fi
+          fork=false
+          [[ "$HEAD_REPO" == "$GITHUB_REPOSITORY" ]] || fork=true
+          echo "number=${number}" >>"$GITHUB_OUTPUT"
+          echo "fork=${fork}" >>"$GITHUB_OUTPUT"
+
+      - name: Say the preview waits for approval
+        if: steps.find.outputs.number != '' && steps.find.outputs.fork == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ steps.find.outputs.number }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          body="<!-- website-preview -->
+          **Website preview:** built from ${SHA::12}; it goes up at https://review-${NUMBER}.${PREVIEW_ZONE} once a maintainer approves it.
+
+          A preview of a contributor's pull request is approved once per push."
+          bash site/deploy/sticky-comment.sh "${NUMBER}" "${body}"
+
+  # A fork's preview waits here for a maintainer; this environment holds no key.
+  approve:
+    needs: resolve
+    if: needs.resolve.outputs.number != '' && needs.resolve.outputs.fork == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    environment:
+      name: website-preview-fork
+    steps:
+      - name: Approved
+        env:
+          NUMBER: ${{ needs.resolve.outputs.number }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          echo "a maintainer approved the preview of pull request #${NUMBER} at ${SHA::12}"
+
+  deploy:
+    needs: [resolve, approve]
+    if: >-
+      !cancelled() && needs.resolve.result == 'success' && needs.resolve.outputs.number != '' &&
+      (needs.approve.result == 'success' || needs.approve.result == 'skipped')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: write
+    concurrency:
+      # Shared with the close: a close cancels an upload, and an upload waits for a close (then finds the pull request closed).
+      group: publish.site-preview-review-${{ needs.resolve.outputs.number }}
+      cancel-in-progress: false
+    environment:
+      name: website-preview
+      url: https://review-${{ needs.resolve.outputs.number }}.${{ env.PREVIEW_ZONE }}
+    steps:
+      # Only the Worker's config and the deploy tool's lockfile, from main: nothing of the pull request runs here.
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            site/wrangler.jsonc
+            site/deploy
+            site/.nvmrc
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: site/.nvmrc
+
+      # Before the export is on disk, so nothing of it is near the install.
+      - name: Install wrangler
+        working-directory: site/deploy
+        run: |
+          corepack enable
+          yarn install --immutable
+
+      # An approval can come long after the build: by then the branch may have moved on or the pull request closed.
+      - name: Check the pull request is still at this commit
+        id: current
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_REPO: ${{ github.event.workflow_run.head_repository.full_name }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+          NUMBER: ${{ needs.resolve.outputs.number }}
+        run: |
+          now="$(bash site/deploy/preview-pull-request.sh "$HEAD_REPO" "$HEAD_BRANCH" "$SHA")"
+          if [[ "$now" == "$NUMBER" ]]; then
+            echo "upload=true" >>"$GITHUB_OUTPUT"
+          else
+            echo "pull request #${NUMBER} is no longer open at ${SHA::12}; not uploading"
+            echo "upload=false" >>"$GITHUB_OUTPUT"
+          fi
+
+      - name: Download the export
+        if: steps.current.outputs.upload == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: site-preview
+          path: site/out
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+
+      # The one difference from production: no search engine indexes a preview. Written here, over any the build shipped.
+      - name: Mark the export as a preview
+        if: steps.current.outputs.upload == 'true'
+        run: |
+          printf '/*\n  X-Robots-Tag: noindex\n' > site/out/_headers
+
+      - name: Check wrangler reads the whole export
+        if: steps.current.outputs.upload == 'true'
+        working-directory: site/deploy
+        run: bash check-export-read.sh --env preview
+
+      - name: Upload the preview
+        if: steps.current.outputs.upload == 'true'
+        working-directory: site/deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          NUMBER: ${{ needs.resolve.outputs.number }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          yarn wrangler versions upload --config ../wrangler.jsonc --env preview \
+            --preview-alias "review-${NUMBER}" --message "pull request #${NUMBER} at ${SHA::12}"
+
+      - name: Say where the preview is
+        if: steps.current.outputs.upload == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ needs.resolve.outputs.number }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          url="https://review-${NUMBER}.${PREVIEW_ZONE}"
+          body="<!-- website-preview -->
+          **Website preview:** ${url}
+
+          Built from ${SHA::12}; every push updates it, and it closes when this pull request is merged or closed."
+          bash site/deploy/sticky-comment.sh "${NUMBER}" "${body}"
+
+  close:
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+    concurrency:
+      group: publish.site-preview-review-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+    environment:
+      name: website-preview
+    steps:
+      # pull_request_target checks out main: only the Worker's config and the deploy tool, never the pull request.
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            site/wrangler.jsonc
+            site/deploy
+            site/.nvmrc
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: site/.nvmrc
+
+      - name: Install wrangler
+        working-directory: site/deploy
+        run: |
+          corepack enable
+          yarn install --immutable
+
+      - name: Close the preview
+        working-directory: site/deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          NUMBER: ${{ github.event.pull_request.number }}
+        run: bash close-preview.sh "${NUMBER}"
+
+      - name: Say the preview closed
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          body="<!-- website-preview -->
+          **Website preview:** closed with this pull request."
+          # A closed pull request may already be locked; the preview is closed either way.
+          bash site/deploy/sticky-comment.sh "${NUMBER}" "${body}" ||
+            echo "::warning::pull request #${NUMBER} refused the comment (locked); its preview is closed"
+
+  sweep:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      pull-requests: read
+    environment:
+      name: website-preview
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            site/wrangler.jsonc
+            site/deploy
+            site/.nvmrc
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: site/.nvmrc
+
+      - name: Install wrangler
+        working-directory: site/deploy
+        run: |
+          corepack enable
+          yarn install --immutable
+
+      # Every pull request closed in the last 30 days whose preview still serves a build, not the closed page.
+      - name: Close every preview a failed close run left open
+        working-directory: site/deploy
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          since="$(date -u -d '30 days ago' +%Y-%m-%d)"
+          for number in $(gh pr list --repo "$GITHUB_REPOSITORY" --state closed --search "closed:>=${since}" --limit 500 --json number --jq '.[].number'); do
+            headers="$(curl -s -o /dev/null -D - "https://review-${number}-${PREVIEW_WORKER}.${WORKERS_SUBDOMAIN}.workers.dev/" || true)"
+            if grep -qi '^HTTP/[0-9.]* 200' <<<"$headers" && ! grep -qi '^x-planton-preview: closed' <<<"$headers"; then
+              echo "closing the preview of #${number}"
+              bash close-preview.sh "$number"
+            fi
+          done

@@ -21,7 +21,7 @@
 #
 # Path-filtered: only site/ changes (or this workflow) trigger a deploy, so
 # the catalog/CLI lanes never redeploy the website. Pull requests get their
-# own previews (preview.site.yaml).
+# own previews (preview.site.yaml builds, publish.site-preview.yaml uploads).
 # =============================================================================
 
 name: release.site

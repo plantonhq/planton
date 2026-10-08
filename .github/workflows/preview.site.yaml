@@ -1,59 +1,40 @@
 # =============================================================================
-# Website Previews (review-<n>.planton.dev)
+# Website Previews, the build (review-<n>.planton.dev)
 # =============================================================================
 # Every pull request that changes the website gets its own preview, the exact
 # build production would serve, at https://review-<pull request number>.<zone>.
 # A push updates it; merging or closing the pull request closes it.
 #
-# A preview is a version of the Worker `planton-website-preview`
-# (site/wrangler.jsonc, env `preview`) uploaded under the alias review-<n>;
-# the router in front of planton.ai (planton-platform's apex-router) puts
-# review-<n>.<zone> in front of that version. The zone is not planton.ai on
-# purpose: a preview runs a branch's code, and on a zone of its own it never
-# shares a site, or a cookie, with the console.
-#
-# Keys: the build job holds none (it runs the website's own dependencies).
-# The jobs that upload install only the pinned wrangler in site/deploy and
-# use the key in the GitHub environment `website-preview`, which reaches the
-# preview Worker alone. Pull requests from forks get no preview: GitHub never
-# hands a fork's run a key.
+# This half builds the export and holds no key, so it runs for every pull
+# request alike, forks included: a fork's run gets a read-only token and no
+# secrets, and a fork can rewrite this file in its own pull request. Nothing
+# here is trusted. publish.site-preview.yaml, which runs from main only, picks
+# up the export when this run succeeds, writes the preview's noindex header
+# itself and uploads it; for a fork it first waits for a maintainer's approval.
 #
 # Path-filtered like the website's release: only site/ changes (or this
-# workflow) make a preview. A weekly sweep closes any preview whose close run
-# failed.
+# workflow) make a preview.
 # =============================================================================
 
 name: preview.site
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, closed]
+    types: [opened, synchronize, reopened]
     paths:
       - "site/**"
       - ".github/workflows/preview.site.yaml"
-  schedule:
-    - cron: "17 3 * * 1" # Mondays 03:17 UTC: the sweep
-  workflow_dispatch:
 
 permissions:
   contents: read
 
-env:
-  PREVIEW_ZONE: planton.dev
-  PREVIEW_WORKER: planton-website-preview
-  WORKERS_SUBDOMAIN: planton
-  WRANGLER_SEND_METRICS: "false"
-
 concurrency:
-  # One run per pull request at a time; a newer push, or the close, cancels an older run.
-  group: preview.site-${{ github.event.pull_request.number || 'sweep' }}
+  # One build per pull request at a time; a newer push cancels an older build.
+  group: preview.site-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
   build:
-    if: >-
-      github.event_name == 'pull_request' && github.event.action != 'closed' &&
-      github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -70,11 +51,7 @@ jobs:
           corepack enable
           make -C site build
 
-      # The one difference from production: no search engine indexes a preview.
-      - name: Mark the build as a preview
-        run: |
-          printf '/*\n  X-Robots-Tag: noindex\n' > site/out/_headers
-
+      # publish.site-preview.yaml downloads this by name, from this run.
       - name: Upload the export
         uses: actions/upload-artifact@v4
         with:
@@ -82,160 +59,3 @@ jobs:
           path: site/out
           include-hidden-files: true
           retention-days: 3
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    permissions:
-      contents: read
-      pull-requests: write
-    environment:
-      name: website-preview
-      url: https://review-${{ github.event.pull_request.number }}.${{ env.PREVIEW_ZONE }}
-    steps:
-      # Only the Worker's config and the deploy tool's lockfile: nothing of the website runs here.
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            site/wrangler.jsonc
-            site/deploy
-            site/.nvmrc
-          sparse-checkout-cone-mode: false
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: site/.nvmrc
-
-      - name: Download the export
-        uses: actions/download-artifact@v4
-        with:
-          name: site-preview
-          path: site/out
-
-      - name: Install wrangler
-        working-directory: site/deploy
-        run: |
-          corepack enable
-          yarn install --immutable
-
-      - name: Check wrangler reads the whole export
-        working-directory: site/deploy
-        run: bash check-export-read.sh --env preview
-
-      - name: Upload the preview
-        working-directory: site/deploy
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          NUMBER: ${{ github.event.pull_request.number }}
-          SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          yarn wrangler versions upload --config ../wrangler.jsonc --env preview \
-            --preview-alias "review-${NUMBER}" --message "pull request #${NUMBER} at ${SHA::12}"
-
-      - name: Say where the preview is
-        env:
-          GH_TOKEN: ${{ github.token }}
-          NUMBER: ${{ github.event.pull_request.number }}
-          SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          url="https://review-${NUMBER}.${PREVIEW_ZONE}"
-          body="<!-- website-preview -->
-          **Website preview:** ${url}
-
-          Built from ${SHA::12}; every push updates it, and it closes when this pull request is merged or closed."
-          bash site/deploy/sticky-comment.sh "${NUMBER}" "${body}"
-
-  close:
-    if: >-
-      github.event_name == 'pull_request' && github.event.action == 'closed' &&
-      github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      contents: read
-      pull-requests: write
-    environment:
-      name: website-preview
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            site/wrangler.jsonc
-            site/deploy
-            site/.nvmrc
-          sparse-checkout-cone-mode: false
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: site/.nvmrc
-
-      - name: Install wrangler
-        working-directory: site/deploy
-        run: |
-          corepack enable
-          yarn install --immutable
-
-      - name: Close the preview
-        working-directory: site/deploy
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: bash close-preview.sh "${{ github.event.pull_request.number }}"
-
-      - name: Say the preview closed
-        env:
-          GH_TOKEN: ${{ github.token }}
-          NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          body="<!-- website-preview -->
-          **Website preview:** closed with this pull request."
-          # A closed pull request may already be locked; the preview is closed either way.
-          bash site/deploy/sticky-comment.sh "${NUMBER}" "${body}" ||
-            echo "::warning::pull request #${NUMBER} refused the comment (locked); its preview is closed"
-
-  sweep:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    environment:
-      name: website-preview
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            site/wrangler.jsonc
-            site/deploy
-            site/.nvmrc
-          sparse-checkout-cone-mode: false
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: site/.nvmrc
-
-      - name: Install wrangler
-        working-directory: site/deploy
-        run: |
-          corepack enable
-          yarn install --immutable
-
-      # Every pull request closed in the last 30 days whose preview still serves a build, not the closed page.
-      - name: Close every preview a failed close run left open
-        working-directory: site/deploy
-        env:
-          GH_TOKEN: ${{ github.token }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: |
-          since="$(date -u -d '30 days ago' +%Y-%m-%d)"
-          for number in $(gh pr list --repo "$GITHUB_REPOSITORY" --state closed --search "closed:>=${since}" --limit 500 --json number --jq '.[].number'); do
-            headers="$(curl -s -o /dev/null -D - "https://review-${number}-${PREVIEW_WORKER}.${WORKERS_SUBDOMAIN}.workers.dev/" || true)"
-            if grep -qi '^HTTP/[0-9.]* 200' <<<"$headers" && ! grep -qi '^x-planton-preview: closed' <<<"$headers"; then
-              echo "closing the preview of #${number}"
-              bash close-preview.sh "$number"
-            fi
-          done
