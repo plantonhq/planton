@@ -108,7 +108,9 @@ jobs:
           **Website preview:** built from ${SHA::12}; it goes up at https://review-${NUMBER}.${PREVIEW_ZONE} once a maintainer approves it.
 
           A preview of a contributor's pull request is approved once per push."
-          bash site/deploy/sticky-comment.sh "${NUMBER}" "${body}"
+          # A locked pull request refuses the comment; the preview still waits for its approval.
+          bash site/deploy/sticky-comment.sh "${NUMBER}" "${body}" ||
+            echo "::warning::pull request #${NUMBER} refused the comment (locked); its preview still waits for approval"
 
   # A fork's preview waits here for a maintainer; this environment holds no key.
   approve:
@@ -229,7 +231,9 @@ jobs:
           **Website preview:** ${url}
 
           Built from ${SHA::12}; every push updates it, and it closes when this pull request is merged or closed."
-          bash site/deploy/sticky-comment.sh "${NUMBER}" "${body}"
+          # A locked pull request refuses the comment; the preview is up either way.
+          bash site/deploy/sticky-comment.sh "${NUMBER}" "${body}" ||
+            echo "::warning::pull request #${NUMBER} refused the comment (locked); its preview is at ${url}"
 
   close:
     if: github.event_name == 'pull_request_target'
