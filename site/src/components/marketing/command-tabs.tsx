@@ -39,7 +39,7 @@ export const CommandTabs: FC<CommandTabsProps> = ({ tabs, copyLabel, className =
               aria-selected={active}
               onClick={() => setSelected(i)}
               className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
-                active ? 'border-white bg-raised text-white' : 'border-edge bg-transparent text-fg-secondary hover:border-edge-hover hover:text-white'
+                active ? 'border-white bg-raised text-fg' : 'border-edge bg-transparent text-fg-secondary hover:border-edge-hover hover:text-fg'
               }`}
             >
               {t.label}

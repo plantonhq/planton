@@ -98,14 +98,14 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ content }) => {
 
   return (
     <div className="flex-1 overflow-y-auto p-4">
-      <h3 className="text-lg font-semibold text-[#b0b0b0] mb-4">On this page</h3>
+      <h3 className="text-lg font-semibold text-[#171717] mb-4">On this page</h3>
       <nav className="space-y-2">
         {headings.map((heading) => (
           <a
             key={heading.id}
             href={`#${heading.id}`}
             onClick={(e) => handleNavigationClick(e, heading.id)}
-            className={`block text-sm text-[#a0a0a0] hover:text-white transition-colors cursor-pointer ${
+            className={`block text-sm text-[#454545] hover:text-[#171717] transition-colors cursor-pointer ${
               heading.level === 1
                 ? 'font-semibold'
                 : heading.level === 2

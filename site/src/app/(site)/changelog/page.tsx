@@ -13,8 +13,8 @@ export default function ChangelogPage() {
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
         <header className="mb-10">
-          <h1 className="text-4xl font-bold text-white mb-3">Changelog</h1>
-          <p className="text-lg text-[#a0a0a0]">
+          <h1 className="text-4xl font-bold text-[#171717] mb-3">Changelog</h1>
+          <p className="text-lg text-[#454545]">
             New features, improvements, and fixes across the Planton platform.
           </p>
         </header>

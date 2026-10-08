@@ -41,14 +41,14 @@ const CellContent: FC<{ cell: MatrixCell }> = ({ cell }) => {
       );
     case 'text':
       return (
-        <Typography className="text-xs text-[#c0c0c0] leading-snug">{cell.label}</Typography>
+        <Typography className="text-xs text-[#454545] leading-snug">{cell.label}</Typography>
       );
   }
 };
 
 export const ValueMatrix: FC = () => {
   return (
-    <Box className="w-full px-4 md:px-8 py-12 bg-[#0a0a0a]" id="compare">
+    <Box className="w-full px-4 md:px-8 py-12 bg-[#f6f6f3]" id="compare">
       <Box className="max-w-7xl mx-auto">
         <Stack className="items-center text-center mb-8">
           <SectionTitle>What Each Plan Includes</SectionTitle>
@@ -57,19 +57,19 @@ export const ValueMatrix: FC = () => {
             tiers add organizational scale and enterprise identity.
           </SectionSubtitle>
         </Stack>
-        <Box className="overflow-x-auto rounded-xl border border-[#2a2a2a] bg-[#151515]">
+        <Box className="overflow-x-auto rounded-xl border border-[#c7c7c4] bg-[#eeeeeb]">
           <table className="w-full border-collapse min-w-[880px]">
             <thead>
               <tr className="sticky top-0 z-10">
-                <th className="text-left p-4 sticky left-0 bg-[#151515] min-w-[240px]" />
+                <th className="text-left p-4 sticky left-0 bg-[#eeeeeb] min-w-[240px]" />
                 {VALUE_MATRIX_COLUMNS.map((column) => (
-                  <th key={column.id} className="p-3.5 text-center min-w-[124px] bg-[#151515]">
+                  <th key={column.id} className="p-3.5 text-center min-w-[124px] bg-[#eeeeeb]">
                     <Stack className="items-center gap-0.5">
-                      <Typography className="text-sm font-semibold text-white">
+                      <Typography className="text-sm font-semibold text-[#171717]">
                         {column.label}
                       </Typography>
                       {column.sublabel && (
-                        <Typography className="text-[11px] text-[#8a8a8a]">
+                        <Typography className="text-[11px] text-[#616161]">
                           {column.sublabel}
                         </Typography>
                       )}
@@ -84,9 +84,9 @@ export const ValueMatrix: FC = () => {
                   <tr>
                     <td
                       colSpan={VALUE_MATRIX_COLUMNS.length + 1}
-                      className="px-4 pt-5 pb-1.5 border-t border-[#2a2a2a]"
+                      className="px-4 pt-5 pb-1.5 border-t border-[#c7c7c4]"
                     >
-                      <Typography className="text-[11px] font-semibold uppercase tracking-wider text-[#8a8a8a]">
+                      <Typography className="text-[11px] font-semibold uppercase tracking-wider text-[#616161]">
                         {category.category}
                       </Typography>
                     </td>
@@ -94,17 +94,17 @@ export const ValueMatrix: FC = () => {
                   {category.rows.map((row) => (
                     <tr
                       key={row.feature}
-                      className="border-t border-[#1e1e1e] hover:bg-white/[0.02] transition-colors duration-150 group"
+                      className="border-t border-[#dededb] hover:bg-black/[0.03] transition-colors duration-150 group"
                     >
-                      <td className="px-4 py-2.5 sticky left-0 bg-[#151515] group-hover:bg-[#181818]">
+                      <td className="px-4 py-2.5 sticky left-0 bg-[#eeeeeb] group-hover:bg-[#e3e3e0]">
                         {row.description ? (
                           <Tooltip title={row.description} placement="top-start">
-                            <Typography className="text-sm text-[#e0e0e0] w-fit cursor-default border-b border-dotted border-[#4a4a4a]">
+                            <Typography className="text-sm text-[#171717] w-fit cursor-default border-b border-dotted border-[#4a4a4a]">
                               {row.feature}
                             </Typography>
                           </Tooltip>
                         ) : (
-                          <Typography className="text-sm text-[#e0e0e0]">{row.feature}</Typography>
+                          <Typography className="text-sm text-[#171717]">{row.feature}</Typography>
                         )}
                       </td>
                       {VALUE_MATRIX_COLUMNS.map((column) => (

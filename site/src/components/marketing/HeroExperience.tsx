@@ -1,7 +1,6 @@
 'use client';
 import { useId, type CSSProperties } from 'react';
 import { HERO as H } from '@/data/homepage-experience';
-import { WORKFLOW_COPY as C } from '@/data/workflow-explainers';
 import { workflowDarkTokens as p } from '@/theme/workflows';
 import { HeroScene } from './HeroScene';
 import { useWorkflowPlayback } from './workflows/useWorkflowPlayback';
@@ -15,12 +14,10 @@ export const experienceTheme = {
   '--ex-line': p.edge.default,
   '--ex-flow': p.semantic.flow,
 } as CSSProperties;
-/** Play once, then hold. Explicit controls own playback; pointer motion never does. */
+/** The hero workflow loops continuously while it is visible. */
 export function HeroExperience() {
   const id = useId().replaceAll(':', '');
-  const { rootRef, seconds, ready, reduced, playing, toggle, replay } = useWorkflowPlayback(H, {
-    loop: false,
-  });
+  const { rootRef, seconds } = useWorkflowPlayback(H);
   const phase = Math.min(3, Math.floor(seconds / 4)),
     finished = seconds >= 16;
   return (
@@ -43,21 +40,6 @@ export function HeroExperience() {
           <strong>{finished ? H.complete : H.phases[phase].title}</strong>
           <span>{finished ? H.illustration : H.phases[phase].text}</span>
         </div>
-        {ready && !reduced && (
-          <div className={styles.playback}>
-            <button
-              type="button"
-              onClick={toggle}
-              disabled={finished}
-              aria-label={`${playing ? C.pause : C.play}: ${H.title}`}
-            >
-              {playing ? C.pause : C.play}
-            </button>
-            <button type="button" onClick={replay} aria-label={`${C.replay}: ${H.title}`}>
-              {C.replay}
-            </button>
-          </div>
-        )}
       </figcaption>
     </figure>
   );

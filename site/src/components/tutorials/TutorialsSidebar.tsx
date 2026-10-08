@@ -54,8 +54,8 @@ export default function TutorialsSidebar({
 
   return (
     <Box className="h-full overflow-y-auto">
-      <Box className="p-4 border-b border-[#2a2a2a]">
-        <Typography variant="h6" className="text-[#b0b0b0] font-semibold">
+      <Box className="p-4 border-b border-[#c7c7c4]">
+        <Typography variant="h6" className="text-[#171717] font-semibold">
           Tutorials
         </Typography>
       </Box>
@@ -65,8 +65,8 @@ export default function TutorialsSidebar({
             onClick={() => handleCategoryClick('all')}
             className={`block w-full text-left px-3 py-2 rounded-md text-sm transition-colors duration-200 ${
               selectedCategory === 'all'
-                ? 'bg-white/10 text-white'
-                : 'text-[#a0a0a0] hover:text-white hover:bg-white/5'
+                ? 'bg-[#e3e3e0] text-[#171717]'
+                : 'text-[#454545] hover:text-[#171717] hover:bg-black/5'
             }`}
             aria-label="View all tutorials"
           >
@@ -84,8 +84,8 @@ export default function TutorialsSidebar({
               onClick={() => handleCategoryClick(category)}
               className={`block w-full text-left px-3 py-2 rounded-md text-sm transition-colors duration-200 ${
                 selectedCategory === category
-                  ? 'bg-white/10 text-white'
-                  : 'text-[#a0a0a0] hover:text-white hover:bg-white/5'
+                  ? 'bg-[#e3e3e0] text-[#171717]'
+                  : 'text-[#454545] hover:text-[#171717] hover:bg-black/5'
               }`}
               aria-label={`View ${category} tutorials`}
             >

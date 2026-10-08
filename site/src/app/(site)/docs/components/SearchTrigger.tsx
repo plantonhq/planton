@@ -27,12 +27,12 @@ export const SearchTrigger: React.FC<SearchTriggerProps> = ({ onClick }) => {
         flex items-center gap-2 w-64
         px-3 py-1.5
         rounded-md
-        border border-[#2a2a2a]
+        border border-[#c7c7c4]
         bg-transparent
-        text-[#666] text-sm
+        text-[#616161] text-sm
         cursor-pointer
         transition-colors duration-200
-        hover:border-[#3a3a3a] hover:text-[#a0a0a0]
+        hover:border-[#999996] hover:text-[#454545]
         focus-visible:outline-none focus-visible:border-white
       "
     >
@@ -44,8 +44,8 @@ export const SearchTrigger: React.FC<SearchTriggerProps> = ({ onClick }) => {
           items-center
           px-1.5 py-0.5
           text-[11px] font-mono leading-none
-          text-[#666]
-          border border-[#2a2a2a] rounded
+          text-[#616161]
+          border border-[#c7c7c4] rounded
         "
       >
         {isMac ? '\u2318K' : 'Ctrl K'}

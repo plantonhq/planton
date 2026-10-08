@@ -4,7 +4,6 @@ export type { WorkflowId, WorkflowStory, WorkflowNode, WorkflowEdge, ProviderId 
 
 export const WORKFLOW_COPY = {
   explore: 'Explore This Stack',
-  autoOn: 'Auto-Cycle On', autoOff: 'Auto-Cycle Off',
   providers: 'Choose a Cloud Architecture',
   resourceIntro: 'Explore the resources behind this illustrative architecture. Connections describe deployment prerequisites, not application traffic.',
   resourceFocus: 'Focus on a Resource', resourceAll: 'All Resources',
@@ -12,12 +11,10 @@ export const WORKFLOW_COPY = {
   resourceInventory: 'Read the Resource Inventory', resourceRegion: 'Architecture Dependencies',
   resourceHelp: 'Select a resource to see its direct prerequisites. Supporting configuration is described in the inventory.',
   illustration: 'Illustrative workflow · time compressed',
-  pause: 'Pause', play: 'Play', replay: 'Replay',
   explanation: 'Read the Workflow',
   selectPhase: 'Inspect step',
   waiting: 'Waiting', active: 'In Progress', complete: 'Complete',
   approvalWaiting: 'Awaiting Approval', approvalComplete: 'Approved by a Person',
-  static: 'Static View', playing: 'Playing', paused: 'Paused',
   resourceOutput: 'Dependency handoffs',
   agentFlow: 'Request + result',
   deliveryFlow: 'Delivery flow',

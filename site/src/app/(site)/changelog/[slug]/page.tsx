@@ -78,7 +78,7 @@ export default async function ChangelogEntryPage({ params }: PageProps) {
       <nav className="max-w-3xl mx-auto px-4 pt-6">
         <Link
           href="/changelog"
-          className="inline-flex items-center gap-1.5 text-sm text-[#a0a0a0] hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 text-sm text-[#595959] hover:text-[#171717] transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Changelog
@@ -87,7 +87,7 @@ export default async function ChangelogEntryPage({ params }: PageProps) {
 
       <article className="max-w-3xl mx-auto px-4 pt-8 pb-16">
         {/* Header */}
-        <header className="mb-8 pb-8 border-b border-[#2a2a2a]">
+        <header className="mb-8 pb-8 border-b border-[#c7c7c4]">
           {/* Category badge */}
           {category && (
             <div className="mb-4">
@@ -96,7 +96,7 @@ export default async function ChangelogEntryPage({ params }: PageProps) {
           )}
 
           {/* Date + author */}
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[#a0a0a0] mb-4">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[#595959] mb-4">
             {data.date && (
               <time dateTime={data.date}>{formatDate(data.date)}</time>
             )}
@@ -105,7 +105,7 @@ export default async function ChangelogEntryPage({ params }: PageProps) {
                 <span className="hidden sm:inline">·</span>
                 <div className="flex gap-2">
                   {authors.map((a, i) => (
-                    <span key={i} className="font-medium text-white">
+                    <span key={i} className="font-medium text-[#171717]">
                       {a.name}
                     </span>
                   ))}
@@ -116,7 +116,7 @@ export default async function ChangelogEntryPage({ params }: PageProps) {
 
           {/* Title + page actions */}
           <div className="flex items-start gap-2">
-            <h1 className="flex-1 text-3xl md:text-4xl font-bold text-white mb-4">
+            <h1 className="flex-1 text-3xl md:text-4xl font-bold text-[#171717] mb-4">
               {data.title}
             </h1>
             <PageActions
@@ -133,7 +133,7 @@ export default async function ChangelogEntryPage({ params }: PageProps) {
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="px-2 py-0.5 bg-white/5 text-white/40 border border-white/10 rounded text-xs"
+                  className="px-2 py-0.5 bg-[#e3e3e0] text-[#454545] border border-[#c7c7c4] rounded text-xs"
                 >
                   {tag}
                 </span>

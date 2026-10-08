@@ -12,7 +12,7 @@ Pure shared SVG scenes consume story and time. Browser playback and the export-o
 
 The icon registry embeds selected canonical public-repo SVG files. ResourceIcon frames them in quiet dark category tints, preserving glyph colors. No private-repo assets or runtime catalog requests are introduced. The five-provider selector is centered on desktop and scrollable on narrow screens.
 
-Only the selected provider advances. Completion drives selection after the final hold. Manual selection, phase inspection, disclosure, and keyboard focus disable cycling; Pause survives selection. Offscreen and hidden-page time suspend playback. Following preview feedback, hover does not pause: visitors use Pause/Play or phase inspection. Reduced motion completes diagrams statically; no JavaScript exposes all five architectures and both sequence transcripts. Outgoing panels are inert and cleaned up independently of interrupted CSS events.
+Only the selected provider advances. Completion drives selection after the final hold. Manual selection and phase inspection do not stop playback; phase inspection changes the current point in the continuous animation. Offscreen and hidden-page time suspend playback. Reduced motion completes diagrams statically; no JavaScript exposes all five architectures and both sequence transcripts. Outgoing panels are inert and cleaned up independently of interrupted CSS events.
 
 ## Source grounding
 
@@ -20,7 +20,7 @@ All displayed kinds exist in this checkout's catalog. Inventories distinguish ty
 
 ## Verification and delivery
 
-Run the site build with the private platform docs root configured. Timeline checks validate phases, gates, catalog identity, inventories, and route/card intersections. Browser checks cover seven diagrams, provider completion and wraparound, interruption, pause/replay, focus, hover, hidden/offscreen time, reduced motion, static fallback, and responsive screenshots. Homepage/booking tests mock outbound submissions.
+Run the site build with the private platform docs root configured. Timeline checks validate phases, gates, catalog identity, inventories, and route/card intersections. Browser checks cover seven diagrams, provider completion and wraparound, continuous playback through manual inspection, focus, hover, hidden/offscreen time, reduced motion, static fallback, and responsive screenshots. Homepage/booking tests mock outbound submissions.
 
 Desktop captures must show closed components below navigation at 1366×768, 1440×900, and 1920×1080. Mobile layouts retain readable type and natural scrolling. Inspect initial, transferring, and completed states and provider inventories. Export all seven 1080-square H.264 videos; generated media stays outside Git and R2.
 

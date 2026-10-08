@@ -7,6 +7,7 @@ import { FC, useEffect, useState } from 'react';
 import { PrimaryButton, ArrowRightIcon } from './shared';
 import { FREE_TIER_SEATS } from '@/data/pricing';
 import { POSITIONING } from '@/data/positioning';
+import { SITE } from '@/data/site-pages';
 
 /**
  * The hero states the umbrella positioning (never a hub analogy — that is
@@ -182,7 +183,7 @@ export const HeroSection: FC = () => {
 
           <Stack className="items-center gap-3 mt-2">
             <Stack direction={{ xs: 'column', sm: 'row' }} className="gap-3 items-center">
-              <Link href="/signup">
+              <Link href={`${SITE.url}/login`}>
                 <PrimaryButton className="text-sm px-8 py-3">
                   Start Free
                   <ArrowRightIcon />

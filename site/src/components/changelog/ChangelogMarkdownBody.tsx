@@ -30,7 +30,7 @@ const ChangelogMarkdownBody: React.FC<ChangelogMarkdownBodyProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`prose prose-invert max-w-none ${className}`}>
+    <div className={`prose max-w-none ${className}`}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeRaw, rehypeHighlight]}
@@ -51,17 +51,17 @@ const ChangelogMarkdownBody: React.FC<ChangelogMarkdownBodyProps> = ({
 
           // ---- Body text ----
           p: ({ children, ...props }) => (
-            <p className="text-[#a0a0a0] mb-4 leading-relaxed" {...props}>
+            <p className="text-[#454545] mb-4 leading-relaxed" {...props}>
               {children}
             </p>
           ),
           strong: ({ children, ...props }) => (
-            <strong className="font-bold text-white" {...props}>
+            <strong className="font-bold text-[#171717]" {...props}>
               {children}
             </strong>
           ),
           em: ({ children, ...props }) => (
-            <em className="italic text-[#d4d4d4]" {...props}>
+            <em className="italic text-[#454545]" {...props}>
               {children}
             </em>
           ),
@@ -70,7 +70,7 @@ const ChangelogMarkdownBody: React.FC<ChangelogMarkdownBodyProps> = ({
           a: ({ children, href, ...props }) => (
             <a
               href={href}
-              className="text-white hover:text-white/70 underline decoration-white/20"
+              className="text-[#171717] hover:text-[#454545] underline decoration-white/20"
               target={href?.startsWith('http') ? '_blank' : undefined}
               rel={
                 href?.startsWith('http')
@@ -86,7 +86,7 @@ const ChangelogMarkdownBody: React.FC<ChangelogMarkdownBodyProps> = ({
           // ---- Lists ----
           ul: ({ children, ...props }) => (
             <ul
-              className="list-disc pl-6 space-y-2 mb-4 text-[#a0a0a0]"
+              className="list-disc pl-6 space-y-2 mb-4 text-[#454545]"
               {...props}
             >
               {children}
@@ -94,14 +94,14 @@ const ChangelogMarkdownBody: React.FC<ChangelogMarkdownBodyProps> = ({
           ),
           ol: ({ children, ...props }) => (
             <ol
-              className="list-decimal pl-6 space-y-2 mb-4 text-[#a0a0a0]"
+              className="list-decimal pl-6 space-y-2 mb-4 text-[#454545]"
               {...props}
             >
               {children}
             </ol>
           ),
           li: ({ children, ...props }) => (
-            <li className="text-[#a0a0a0]" {...props}>
+            <li className="text-[#454545]" {...props}>
               {children}
             </li>
           ),
@@ -109,7 +109,7 @@ const ChangelogMarkdownBody: React.FC<ChangelogMarkdownBodyProps> = ({
           // ---- Blockquote ----
           blockquote: ({ children, ...props }) => (
             <blockquote
-              className="border-l-2 border-[#3a3a3a] pl-4 py-3 my-5 bg-[#111] rounded-r text-[#a0a0a0] italic"
+              className="border-l-2 border-[#999996] pl-4 py-3 my-5 bg-[#eeeeeb] rounded-r text-[#454545] italic"
               {...props}
             >
               {children}
@@ -119,7 +119,7 @@ const ChangelogMarkdownBody: React.FC<ChangelogMarkdownBodyProps> = ({
           // ---- Code ----
           code: ({ children, className: codeClassName, ...props }) => (
             <code
-              className={`bg-[#2a2a2a] text-white rounded text-sm break-words ${codeClassName || ''}`}
+              className={`bg-[#e3e3e0] text-[#171717] rounded text-sm break-words ${codeClassName || ''}`}
               {...props}
             >
               {children}
@@ -130,7 +130,7 @@ const ChangelogMarkdownBody: React.FC<ChangelogMarkdownBodyProps> = ({
             const mermaid = mermaidSource(node);
             if (mermaid !== undefined) return <MermaidDiagram chart={mermaid} />;
             return (
-              <pre className="bg-[#1a1a1a] p-4 rounded-lg overflow-x-auto my-4 border border-[#2a2a2a]">
+              <pre className="bg-[#eeeeeb] p-4 rounded-lg overflow-x-auto my-4 border border-[#c7c7c4]">
                 {children}
               </pre>
             );
@@ -138,9 +138,9 @@ const ChangelogMarkdownBody: React.FC<ChangelogMarkdownBodyProps> = ({
 
           // ---- Tables ----
           table: ({ children, ...props }) => (
-            <div className="overflow-x-auto my-4 border border-[#2a2a2a] rounded-lg">
+            <div className="overflow-x-auto my-4 border border-[#c7c7c4] rounded-lg">
               <table
-                className="min-w-full divide-y divide-[#2a2a2a]"
+                className="min-w-full divide-y divide-[#c7c7c4]"
                 {...props}
               >
                 {children}
@@ -148,13 +148,13 @@ const ChangelogMarkdownBody: React.FC<ChangelogMarkdownBodyProps> = ({
             </div>
           ),
           thead: ({ children, ...props }) => (
-            <thead className="bg-[#111]" {...props}>
+            <thead className="bg-[#eeeeeb]" {...props}>
               {children}
             </thead>
           ),
           th: ({ children, ...props }) => (
             <th
-              className="px-4 py-2 text-left text-sm font-semibold text-white"
+              className="px-4 py-2 text-left text-sm font-semibold text-[#171717]"
               {...props}
             >
               {children}
@@ -162,7 +162,7 @@ const ChangelogMarkdownBody: React.FC<ChangelogMarkdownBodyProps> = ({
           ),
           td: ({ children, ...props }) => (
             <td
-              className="px-4 py-2 border-t border-[#2a2a2a] text-[#a0a0a0]"
+              className="px-4 py-2 border-t border-[#c7c7c4] text-[#454545]"
               {...props}
             >
               {children}
@@ -178,12 +178,12 @@ const ChangelogMarkdownBody: React.FC<ChangelogMarkdownBodyProps> = ({
               <img
                 src={src}
                 alt={alt || ''}
-                className="rounded-lg my-4 max-w-full h-auto border border-[#2a2a2a]"
+                className="rounded-lg my-4 max-w-full h-auto border border-[#c7c7c4]"
                 {...props}
               />
             ) : null,
           hr: (props) => (
-            <hr className="my-8 border-[#2a2a2a]" {...props} />
+            <hr className="my-8 border-[#c7c7c4]" {...props} />
           ),
         }}
       >

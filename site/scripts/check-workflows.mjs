@@ -134,31 +134,25 @@ try {
   await waitFor(() => !document.querySelector('[inert]'));
   check('rapid selection leaves one active provider', await page.$eval('[data-architectures]', e => e.dataset.selected === 'digitalocean' && e.querySelectorAll('[data-workflow]').length === 1));
   await select('gcp');
-  check('manual selection disables cycle', await page.$eval('[data-architectures]', e => e.dataset.cycling === 'false'));
+  check('manual selection keeps cycle enabled', await page.$eval('[data-architectures]', e => e.dataset.cycling === 'true'));
   await expose('[data-architectures]');
   await advance(29000);
-  check('manual story completes and holds', await page.$eval('[data-workflow="gcp"]', e => e.dataset.phase === '5' && e.dataset.playing === 'false'));
-  await advance(60000);
-  check('manual story does not rotate', await page.$eval('[data-architectures]', e => e.dataset.selected === 'gcp'));
+  check('manual selection rejoins automatic rotation', await page.$eval('[data-architectures]', e => e.dataset.selected === 'azure'));
 
   for (const id of stories) {
     await select(id);
     const selector = `[data-workflow="${id}"]`;
     await expose(selector);
-    await page.click(`${selector} button[aria-label^="Replay:"]`);
+    check(`${id}: no playback buttons`, await page.$$eval(`${selector} button`, buttons => buttons.every(button => !/^(Play|Pause|Replay)(:|$)/.test(button.getAttribute('aria-label') ?? button.textContent ?? ''))));
+    await page.click(`${selector} button[aria-label^="Inspect step 1:"]`);
     await page.mouse.move(0, 0);
     await advance(8500);
-    check(`${id}: deterministic replay`, await page.$eval(selector, e => e.dataset.phase === '2'));
-    await page.click(`${selector} button[aria-label^="Pause:"]`);
-    await page.mouse.move(0, 0);
-    const paused = await page.$eval(selector, e => e.innerHTML);
-    await advance(15000);
-    check(`${id}: pause freezes frame`, paused === await page.$eval(selector, e => e.innerHTML));
+    check(`${id}: phase inspection keeps playback active`, await page.$eval(selector, e => e.dataset.phase === '2' && e.dataset.playing === 'true'));
     const heights = [];
     for (let phase = 0; phase < 6; phase++) {
       await page.focus(`${selector} button[aria-label^="Inspect step ${phase + 1}:"]`);
       await page.keyboard.press('Enter');
-      check(`${id}/${phase}: keyboard phase inspection`, await page.$eval(selector, (e, phase) => e.dataset.phase === String(phase) && e.dataset.playing === 'false', phase));
+      check(`${id}/${phase}: keyboard phase inspection keeps playback active`, await page.$eval(selector, (e, phase) => e.dataset.phase === String(phase) && e.dataset.playing === 'true', phase));
       heights.push(await page.$eval(selector, e => e.getBoundingClientRect().height));
       if (id === 'agents' && phase === 2) check('agent review blocks execution', await page.$eval(`${selector} [data-node="planton"]`, e => e.dataset.state === 'waiting'));
       if (id === 'delivery' && phase === 3) check('production waits for approval', await page.$eval(`${selector} [data-node="production"]`, e => e.dataset.state === 'waiting'));
@@ -197,7 +191,7 @@ try {
   check('hovering provider tabs does not interrupt playback', await page.$eval('[data-workflow="aws"]', e => e.dataset.phase === '3'));
   await page.mouse.move(0, 0);
   await page.focus('[role="tab"][aria-selected="true"]');
-  check('keyboard focus stops cycling', await page.$eval('[data-architectures]', e => e.dataset.cycling === 'false'));
+  check('keyboard focus does not stop cycling', await page.$eval('[data-architectures]', e => e.dataset.cycling === 'true'));
   await page.keyboard.press('ArrowRight');
   check('arrow key changes tab and focus', await page.evaluate(() => document.activeElement.textContent === 'GCP' && document.activeElement.getAttribute('aria-selected') === 'true'));
   await page.keyboard.press('End');
@@ -205,12 +199,8 @@ try {
   await page.keyboard.press('Home');
   check('Home selects AWS', await page.$eval('[data-architectures]', e => e.dataset.selected === 'aws'));
   await waitFor(() => !document.querySelector('[inert]'));
-  await page.click('[data-workflow="aws"] button[aria-label^="Pause:"]');
   await select('azure');
-  check('paused state survives tab selection', await page.$eval('[data-workflow="azure"]', e => e.dataset.playing === 'false'));
-  await page.click('[data-workflow="azure"] [data-auto-cycle]');
-  await page.mouse.move(0, 0);
-  check('explicit Auto-Cycle enables rotation', await page.$eval('[data-architectures]', e => e.dataset.cycling === 'true'));
+  check('tab selection keeps playback active', await page.$eval('[data-workflow="azure"]', e => e.dataset.playing === 'true'));
   await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
   await advance(60000);
   check('runtime reduced motion stops rotation', await page.$eval('[data-architectures]', e => e.dataset.cycling === 'false' && e.dataset.selected === 'azure'));

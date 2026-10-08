@@ -67,7 +67,7 @@ const SidebarItem: FC<SidebarItemProps> = ({
     return (
       <Box>
         <Box
-          className="flex items-center justify-between px-4 py-2 hover:bg-white/5"
+          className="flex items-center justify-between px-4 py-2 hover:bg-black/5"
           {...(isActive ? { 'data-active': 'true' } : {})}
         >
           <Box className="flex items-center flex-1">
@@ -77,7 +77,7 @@ const SidebarItem: FC<SidebarItemProps> = ({
                 onClick={handleNavigate}
                 className="flex-1"
               >
-                <Typography className={`text-sm font-medium ${isActive ? 'text-white' : `${SIDEBAR_ITEM_CLASSES} hover:text-white`}`}>
+                <Typography className={`text-sm font-medium ${isActive ? 'text-[#171717]' : `${SIDEBAR_ITEM_CLASSES} hover:text-[#171717]`}`}>
                   {item.sidebarTitle || item.title || formatName(item.name)}
                 </Typography>
               </Link>
@@ -126,11 +126,11 @@ const SidebarItem: FC<SidebarItemProps> = ({
         rel="noopener noreferrer"
         className="block"
       >
-        <Box className={`flex items-center px-4 py-2 hover:bg-white/5 cursor-pointer ${SIDEBAR_ITEM_CLASSES}`}>
+        <Box className={`flex items-center px-4 py-2 hover:bg-black/5 cursor-pointer ${SIDEBAR_ITEM_CLASSES}`}>
           <Typography className="text-sm flex-1">
             {item.sidebarTitle || item.title || formatName(item.name)}
           </Typography>
-          <ExternalLinkIcon className="text-gray-500" sx={{ fontSize: 14 }} />
+          <ExternalLinkIcon className="text-[#616161]" sx={{ fontSize: 14 }} />
           {renderBadge()}
         </Box>
       </a>
@@ -140,7 +140,7 @@ const SidebarItem: FC<SidebarItemProps> = ({
   return (
     <Link href={`/docs/${item.path}`} onClick={handleNavigate}>
       <Box
-        className={`flex items-center px-4 py-2 hover:bg-white/5 cursor-pointer ${isActive ? SIDEBAR_ACTIVE_CLASSES : SIDEBAR_ITEM_CLASSES}`}
+        className={`flex items-center px-4 py-2 hover:bg-black/5 cursor-pointer ${isActive ? SIDEBAR_ACTIVE_CLASSES : SIDEBAR_ITEM_CLASSES}`}
         {...(isActive ? { 'data-active': 'true' } : {})}
       >
         <Typography className="text-sm flex-1">

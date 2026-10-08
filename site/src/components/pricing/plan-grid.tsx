@@ -14,8 +14,8 @@ import {
 } from '@/components/marketing';
 import { useMarket } from '@/components/market';
 import { useHandoffEmail, withHandoffEmail } from '@/lib/console-handoff';
+import { SITE } from '@/data/site-pages';
 import {
-  BUY_LICENSE_URL,
   EVALUATION_DAYS,
   EVALUATION_URL,
   COMMUNITY_SEAT_LIMIT,
@@ -58,24 +58,24 @@ const GroupHeader: FC<{ icon: ReactNode; title: string; sublabel: string }> = ({
   sublabel,
 }) => (
   <Box className="flex items-center gap-2.5 px-1 pb-1">
-    <Box className="text-[#a0a0a0]">{icon}</Box>
-    <Typography className="text-xs font-semibold uppercase tracking-wider text-[#a0a0a0]">
+    <Box className="text-[#595959]">{icon}</Box>
+    <Typography className="text-xs font-semibold uppercase tracking-wider text-[#595959]">
       {title}
     </Typography>
-    <Typography className="text-xs text-[#666]">{sublabel}</Typography>
+    <Typography className="text-xs text-[#616161]">{sublabel}</Typography>
   </Box>
 );
 
 const AiLine: FC<{ ai: PlanCardData['ai'] }> = ({ ai }) => (
-  <Box className="flex items-start gap-2 border-t border-[#2a2a2a] pt-3 mt-1">
-    <Box className="text-[#a0a0a0] mt-0.5 [&_svg]:w-4 [&_svg]:h-4">
+  <Box className="flex items-start gap-2 border-t border-[#c7c7c4] pt-3 mt-1">
+    <Box className="text-[#595959] mt-0.5 [&_svg]:w-4 [&_svg]:h-4">
       <CpuIcon />
     </Box>
     <Box>
-      <Typography className="text-xs font-semibold text-white">
+      <Typography className="text-xs font-semibold text-[#171717]">
         {ai.title}
       </Typography>
-      <Typography className="text-xs text-[#8a8a8a]">
+      <Typography className="text-xs text-[#616161]">
         {ai.sub}
       </Typography>
     </Box>
@@ -95,20 +95,15 @@ const PlanCard: FC<PlanCardData> = ({
   highlighted,
 }) => (
   <Box
-    className={`relative flex flex-col h-full rounded-xl bg-[#151515] border p-5 transition-all duration-300 ${
+    className={`relative flex flex-col h-full rounded-xl bg-[#eeeeeb] border p-5 transition-all duration-300 ${
       highlighted
-        ? 'border-[#6a6a6a] hover:border-[#8a8a8a]'
-        : 'border-[#2a2a2a] hover:border-[#3a3a3a]'
+        ? 'border-[#999996] hover:border-[#777774]'
+        : 'border-[#c7c7c4] hover:border-[#999996]'
     }`}
   >
-    {highlighted && (
-      <span className="absolute -top-3 left-1/2 -translate-x-1/2 z-10 whitespace-nowrap px-3 py-0.5 bg-white text-black text-[11px] font-semibold tracking-wide rounded-full">
-        Most Popular
-      </span>
-    )}
     <Stack className="gap-3 flex-1">
       <Box className="flex items-center justify-between gap-2">
-        <Typography className="text-base font-semibold text-white">{name}</Typography>
+        <Typography className="text-base font-semibold text-[#171717]">{name}</Typography>
         {badge && (
           <Badge variant={badge.variant} className="!px-2 !py-0.5 !text-[11px]">
             {badge.label}
@@ -121,16 +116,16 @@ const PlanCard: FC<PlanCardData> = ({
           start at the same height on every card at every breakpoint. */}
       <Box className="min-h-[4.75rem]">
         <Box className="flex items-baseline gap-1">
-          <Typography className="text-3xl font-bold text-white">{priceMain}</Typography>
+          <Typography className="text-3xl font-bold text-[#171717]">{priceMain}</Typography>
           {priceUnit && (
-            <Typography className="text-xs text-[#a0a0a0]">{priceUnit}</Typography>
+            <Typography className="text-xs text-[#595959]">{priceUnit}</Typography>
           )}
         </Box>
-        <Typography className={`text-xs mt-0.5 ${priceSub ? 'text-[#8a8a8a]' : 'text-transparent select-none'}`}>
+        <Typography className={`text-xs mt-0.5 ${priceSub ? 'text-[#616161]' : 'text-transparent select-none'}`}>
           {priceSub ?? '·'}
         </Typography>
       </Box>
-      <Typography className="text-sm text-[#b0b0b0] min-h-[2.5rem]">{tagline}</Typography>
+      <Typography className="text-sm text-[#454545] min-h-[2.5rem]">{tagline}</Typography>
       <Stack className="gap-2 flex-1">
         {bullets.map((bullet) => {
           const text = typeof bullet === 'string' ? bullet : bullet.text;
@@ -139,11 +134,11 @@ const PlanCard: FC<PlanCardData> = ({
               <Box className="mt-1 flex-shrink-0">
                 <CheckIcon />
               </Box>
-              <Typography className="text-xs text-[#c0c0c0] leading-relaxed">
+              <Typography className="text-xs text-[#454545] leading-relaxed">
                 {typeof bullet === 'string' ? (
                   bullet
                 ) : (
-                  <Link href={bullet.href} className="underline underline-offset-2 hover:text-white">
+                  <Link href={bullet.href} className="underline underline-offset-2 hover:text-[#171717]">
                     {bullet.text}
                   </Link>
                 )}
@@ -197,7 +192,7 @@ export const PlanGrid: FC = () => {
         'Pauses at its limit — never bills, never deletes',
       ],
       ai: AI_INCLUDED,
-      cta: { label: 'Start Free', href: 'https://planton.ai', primary: false, external: true },
+      cta: { label: 'Start Free', href: `${SITE.url}/login`, primary: false },
     },
     {
       name: 'Team',
@@ -212,7 +207,7 @@ export const PlanGrid: FC = () => {
         'Cancel anytime, no forms, no calls',
       ],
       ai: AI_INCLUDED,
-      cta: { label: 'Get Started', href: 'https://planton.ai', primary: true, external: true },
+      cta: { label: 'Get Started', href: `${SITE.url}/login`, primary: true },
       highlighted: true,
     },
   ];
@@ -234,7 +229,7 @@ export const PlanGrid: FC = () => {
         },
       ],
       ai: AI_COMING_SELF_HOSTED,
-      cta: { label: 'Run It Yourself', href: '/product/open-source', primary: false },
+      cta: { label: 'Talk to us', href: '/book-demo', primary: false },
     },
     {
       name: 'Licensed',
@@ -250,12 +245,12 @@ export const PlanGrid: FC = () => {
         'No sales call, no account required',
       ],
       ai: AI_COMING_SELF_HOSTED,
-      cta: { label: 'Buy a License', href: withHandoffEmail(BUY_LICENSE_URL, handoffEmail), primary: true },
+      cta: { label: 'Talk to us', href: '/book-demo', primary: true },
     },
   ];
 
   return (
-    <Box className="w-full px-4 md:px-8 pt-8 pb-4 bg-[#0a0a0a]">
+    <Box className="w-full px-4 md:px-8 pt-8 pb-4 bg-[#f6f6f3]">
       <Box className="max-w-7xl mx-auto">
         {/* Two labeled groups with a subtle hairline between them: vertical
             when side by side at desktop, horizontal when stacked. */}

@@ -9,7 +9,7 @@ interface BlogPostCardProps {
 
 const BlogPostCard: React.FC<BlogPostCardProps> = ({ post }) => {
   return (
-    <article className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg overflow-hidden hover:border-[#3a3a3a] transition-all duration-300">
+    <article className="bg-[#eeeeeb] border border-[#c7c7c4] rounded-lg overflow-hidden hover:border-[#999996] transition-all duration-300">
       {post.featuredImage && (
         <div className="aspect-video overflow-hidden">
           {/* The post's own image, dimensions unknown at build time; images are unoptimized on this static export, so next/image would emit the same tag. */}
@@ -27,27 +27,27 @@ const BlogPostCard: React.FC<BlogPostCardProps> = ({ post }) => {
           {post.tags.map((tag, index) => (
             <span
               key={index}
-              className="px-2 py-1 bg-[#2a2a2a] text-[#a0a0a0] text-xs font-medium rounded-full border border-[#3a3a3a]"
+              className="px-2 py-1 bg-[#e3e3e0] text-[#454545] text-xs font-medium rounded-full border border-[#999996]"
             >
               {tag}
             </span>
           ))}
         </div>
         
-        <h2 className="text-xl font-bold text-white mb-2 line-clamp-2">
+        <h2 className="text-xl font-bold text-[#171717] mb-2 line-clamp-2">
           {post.title}
         </h2>
         
         {post.excerpt && (
-          <p className="text-[#a0a0a0] mb-4 line-clamp-3">
+          <p className="text-[#454545] mb-4 line-clamp-3">
             {post.excerpt}
           </p>
         )}
         
-        <div className="flex items-center justify-between text-sm text-[#a0a0a0] mb-4">
+        <div className="flex items-center justify-between text-sm text-[#454545] mb-4">
           <div className="flex items-center gap-2">
             {post.author.map((author, index) => (
-              <span key={index} className="font-medium text-white">
+              <span key={index} className="font-medium text-[#171717]">
                 {author.name}
               </span>
             ))}
@@ -59,7 +59,7 @@ const BlogPostCard: React.FC<BlogPostCardProps> = ({ post }) => {
         
         <Link
           href={`/blog/${post.slug}`}
-          className="inline-flex items-center text-white hover:text-[#a0a0a0] font-medium transition-colors"
+          className="inline-flex items-center text-[#171717] hover:text-[#454545] font-medium transition-colors"
         >
           Read more
           <svg

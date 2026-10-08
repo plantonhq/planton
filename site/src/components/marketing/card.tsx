@@ -41,7 +41,7 @@ export const FeatureCard: FC<Omit<CardProps, 'children'> & { icon?: ReactNode; t
 }) => (
   <Card className={`${className}`}>
     {icon && (
-      <Box className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-3 text-white">
+      <Box className="w-10 h-10 rounded-lg bg-raised flex items-center justify-center mb-3 text-fg">
         {icon}
       </Box>
     )}
@@ -63,7 +63,7 @@ export const MetricCard: FC<MetricCardProps> = ({
   className = '',
 }) => (
   <Card className={`text-center p-4 ${className}`}>
-    <Typography className="text-xl md:text-2xl font-bold text-white">
+    <Typography className="text-xl md:text-2xl font-bold text-fg">
       {value}
     </Typography>
     <Typography className="text-xs text-fg-secondary mt-1">

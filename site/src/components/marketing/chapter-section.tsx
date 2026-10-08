@@ -33,7 +33,7 @@ export interface ChapterSectionProps {
 const ReadMore: FC<{ readMore: ChapterSectionProps['readMore']; className?: string }> = ({ readMore, className }) =>
   readMore ? (
     <Box className={className}>
-      <Link href={readMore.href} className="text-sm text-fg-secondary hover:text-white underline underline-offset-4">
+      <Link href={readMore.href} className="text-sm text-fg-secondary hover:text-fg underline underline-offset-4">
         {`${readMore.label} \u2192`}
       </Link>
     </Box>

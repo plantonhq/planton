@@ -4,6 +4,7 @@ import { Box, Stack, Typography } from '@mui/material';
 import Link from 'next/link';
 import { FC } from 'react';
 import { Section, SectionTitle, PrimaryButton, SecondaryButton, ArrowRightIcon } from './shared';
+import { SITE } from '@/data/site-pages';
 
 const metrics = [
   { value: '450+', label: 'Infrastructure Deployments' },
@@ -35,7 +36,7 @@ export const FinalCTA: FC = () => {
           </Typography>
           
           <Stack direction={{ xs: 'column', sm: 'row' }} className="gap-4">
-            <Link href="https://planton.ai/signup" target="_blank">
+            <Link href={`${SITE.url}/login`} target="_blank">
               <PrimaryButton className="px-8 py-4 text-lg">
                 Start Free
                 <ArrowRightIcon />

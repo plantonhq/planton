@@ -27,7 +27,7 @@ interface IFaq {
 const EvaluationClaimLink: FC = () => {
   const handoffEmail = useHandoffEmail();
   return (
-    <Link className="text-white underline" href={withHandoffEmail(EVALUATION_URL, handoffEmail)}>
+    <Link className="text-[#171717] underline" href={withHandoffEmail(EVALUATION_URL, handoffEmail)}>
       Claim your evaluation key
     </Link>
   );
@@ -173,11 +173,11 @@ const faqs: IFaq[] = [
         </TypoB2Regular>
         <TypoB2Regular className="text-text-secondary">
           To stop a license auto-renewal, email{' '}
-          <Link className="text-white underline" href="mailto:support@planton.ai">
+          <Link className="text-[#171717] underline" href="mailto:support@planton.ai">
             support@planton.ai
           </Link>{' '}
           from your purchase email. The full details live in our{' '}
-          <Link className="text-white underline" href="/legal/refund-policy">
+          <Link className="text-[#171717] underline" href="/legal/refund-policy">
             refund policy
           </Link>
           .
@@ -195,9 +195,9 @@ export const Faqs: FC = () => {
   };
 
   return (
-    <Box className="bg-[#0a0a0a] relative">
+    <Box className="bg-[#f6f6f3] relative">
       <Stack className="w-full items-center py-12 z-50 px-4 md:px-8">
-        <Box className="w-full max-w-7xl px-6 md:px-10 py-10 rounded-xl bg-[#151515] border border-[#2a2a2a]">
+        <Box className="w-full max-w-7xl px-6 md:px-10 py-10 rounded-xl bg-[#eeeeeb] border border-[#c7c7c4]">
           <Stack className="gap-8">
             <TypoH2 className="text-center">Curious About Our Pricing?</TypoH2>
             <Stack className="gap-4">

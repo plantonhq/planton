@@ -6,6 +6,7 @@ import { chapter } from '@/data/story';
 import { POSITIONING } from '@/data/positioning';
 import { COMMUNITY_SEAT_LIMIT, FREE_TIER_SEATS } from '@/data/pricing';
 import { DESKTOP_LANDING_PATH } from '@/data/desktop-download';
+import { SITE } from '@/data/site-pages';
 /**
  * Chapter 8. Three shapes, one model; then keyless connections, open source,
  * and the exit path said concretely. Prices read from the pricing data. No
@@ -19,7 +20,7 @@ const SHAPES = [
     name: 'Hosted',
     badge: `Free for Up to ${FREE_TIER_SEATS} Seats`,
     text: 'Sign up at planton.ai and connect your cloud. Your account, your keys; Planton holds the record.',
-    href: '/signup',
+    href: `${SITE.url}/login`,
     cta: 'Start Free',
   },
   {

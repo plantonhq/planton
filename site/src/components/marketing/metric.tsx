@@ -13,7 +13,7 @@ interface MetricProps {
 
 export const Metric: FC<MetricProps> = ({ value, label, className = '' }) => (
   <Box className={`text-center ${className}`}>
-    <Typography className="text-2xl md:text-3xl font-bold text-white">
+    <Typography className="text-2xl md:text-3xl font-bold text-fg">
       {value}
     </Typography>
     <Typography className="text-xs md:text-sm text-fg-secondary mt-1">

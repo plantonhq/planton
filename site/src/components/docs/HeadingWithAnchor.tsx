@@ -89,7 +89,7 @@ export const HeadingWithAnchor: React.FC<HeadingWithAnchorProps> = ({
       onClick={handleAnchorClick}
       className={`absolute -left-6 top-1/2 -translate-y-1/2 transition-opacity duration-200 p-1 hidden md:inline-block ${
         copied ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-      } ${copied ? '' : 'text-gray-500 hover:text-white'}`}
+      } ${copied ? '' : 'text-[#616161] hover:text-[#171717]'}`}
       aria-label={`Link to ${typeof children === 'string' ? children : 'this section'}`}
     >
       {copied ? <CheckIcon /> : <LinkIcon />}

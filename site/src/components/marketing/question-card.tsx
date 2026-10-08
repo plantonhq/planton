@@ -27,7 +27,7 @@ export const QuestionCard: FC<QuestionCardProps> = ({ question, answer, readMore
         <FeatureTitle className="text-balance">{question}</FeatureTitle>
         <BodyText className="flex-1">{answer}</BodyText>
         {readMore && proven ? (
-          <Link href={readMore} className="text-sm text-fg-secondary hover:text-white underline underline-offset-4">
+          <Link href={readMore} className="text-sm text-fg-secondary hover:text-fg underline underline-offset-4">
             {`${proven.title} \u2192`}
           </Link>
         ) : null}

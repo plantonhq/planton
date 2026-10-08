@@ -28,7 +28,7 @@ export const PlatformCounts: FC<{ className?: string }> = ({ className = '' }) =
     </Box>
     <BodyText className="text-center text-xs text-fg-muted">
       Catalog figures counted from the open-source repository on {PLATFORM_COUNTS.countedOn} (
-      <Link href="https://github.com/plantonhq/planton" className="underline underline-offset-4 hover:text-white">github.com/plantonhq/planton</Link>
+      <Link href="https://github.com/plantonhq/planton" className="underline underline-offset-4 hover:text-fg">github.com/plantonhq/planton</Link>
       ); {PLATFORM_STATS.IN_PRODUCTION_SINCE} is the year the first customer went to production.
     </BodyText>
   </Box>

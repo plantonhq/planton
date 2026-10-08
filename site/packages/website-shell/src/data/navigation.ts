@@ -112,7 +112,7 @@ export const menuExplore: MenuItem[] = [
 export const menuSolutions: MenuItem[] = [
   { label: 'Platform Engineer', href: '/solutions/platform-engineer' },
   { label: 'Engineering Leader', href: '/solutions/engineering-leader' },
-  { label: 'IT Consultancy', href: '/solutions/it-consultancy' },
+  { label: 'IT Consulting Firms', href: '/solutions/it-consultancy' },
   { label: 'Startup Founder', href: '/solutions/startup-founder' },
   { label: 'Security and Governance Leader', href: '/solutions/security-and-governance-leader' },
 ];
@@ -133,8 +133,8 @@ export const menuResources: MenuItem[] = [
 // ---------------------------------------------------------------------------
 
 export const BOOK_DEMO: MenuItem = { label: 'Book a Demo', href: '/book-demo' };
-export const START_FREE: MenuItem = { label: 'Start Free', href: '/signup' };
-export const SIGN_IN: MenuItem = { label: 'Sign In', href: '/login' };
+export const START_FREE: MenuItem = { label: 'Start Free', href: 'https://planton.ai/login' };
+export const SIGN_IN: MenuItem = { label: 'Sign In', href: 'https://planton.ai/login' };
 export const DOWNLOAD_DESKTOP: MenuItem = {
   label: 'Download Planton Desktop',
   href: '/desktop/download',

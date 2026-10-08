@@ -4,6 +4,7 @@ import { ComponentProps, FC } from 'react';
 import { Button, ButtonProps, SvgIcon, SvgIconProps, Typography, TypographyProps } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import DiscordIcon from 'public/_site/images/discord.svg';
+import { SITE } from '@/data/site-pages';
 
 /** An icon that grows from 16px to 24px past the tablet breakpoint; used by the Discord button below. */
 const SvgIconSizeResponsive = styled(SvgIcon)<SvgIconProps>(({ theme }) => ({
@@ -75,7 +76,7 @@ export const PrimaryBtn: FC<ButtonProps & ComponentProps<'a'>> = ({ className, .
 export const GetStartedBtn: FC<ButtonProps & ComponentProps<'a'>> = ({ className, ...props }) => {
   return (
     <PrimaryBtn
-      href="/signup"
+      href={`${SITE.url}/login`}
       className={`hover:bg-gray-200 transition-colors ${className}`}
       {...props}
     />

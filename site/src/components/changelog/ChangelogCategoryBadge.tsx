@@ -12,27 +12,27 @@ const CATEGORY_CONFIG: Record<
 > = {
   feature: {
     label: 'Feature',
-    bg: 'bg-white/10',
-    text: 'text-white',
-    border: 'border-white/30',
+    bg: 'bg-[#e3e3e0]',
+    text: 'text-[#171717]',
+    border: 'border-[#c7c7c4]',
   },
   improvement: {
     label: 'Improvement',
-    bg: 'bg-white/5',
-    text: 'text-white/70',
-    border: 'border-white/20',
+    bg: 'bg-[#eeeeeb]',
+    text: 'text-[#454545]',
+    border: 'border-[#c7c7c4]',
   },
   fix: {
     label: 'Fix',
-    bg: 'bg-white/5',
-    text: 'text-white/60',
-    border: 'border-white/20',
+    bg: 'bg-[#eeeeeb]',
+    text: 'text-[#454545]',
+    border: 'border-[#c7c7c4]',
   },
   breaking: {
     label: 'Breaking',
-    bg: 'bg-white/5',
-    text: 'text-white/50',
-    border: 'border-white/20',
+    bg: 'bg-[#eeeeeb]',
+    text: 'text-[#595959]',
+    border: 'border-[#c7c7c4]',
   },
 };
 

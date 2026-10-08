@@ -24,7 +24,7 @@ export const PageArtifact: FC<{ artifact: Artifact; className?: string }> = ({ a
       <CommandBlock commands={artifact.commands} label={artifact.label} title={artifact.title} />
       <Typography className="text-sm text-fg-secondary">
         {artifact.caption}{' '}
-        <Link href={artifact.source.href} className="underline underline-offset-4 hover:text-white">
+        <Link href={artifact.source.href} className="underline underline-offset-4 hover:text-fg">
           {artifact.source.label}
         </Link>
         .

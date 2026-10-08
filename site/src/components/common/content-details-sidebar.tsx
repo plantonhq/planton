@@ -17,7 +17,7 @@ const MdxRightBar: React.FC<IMdxRightBar> = ({ author, content }) => {
     <div className="w-80 h-full flex flex-col">
       {/* Author Section */}
       <AuthorSection author={author} />
-      <div className="border-b border-[#2a2a2a]" />
+      <div className="border-b border-[#c7c7c4]" />
       {/* Table of Contents */}
       <TableOfContents content={content} />
     </div>

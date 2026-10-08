@@ -27,13 +27,13 @@ export const PageHero: FC<PageHeroProps> = ({ eyebrow, title, kicker, lede, forW
   <Section>
     <Stack className="max-w-3xl mx-auto text-center items-center gap-4 pt-8">
       {eyebrow?.href ? (
-        <Link href={eyebrow.href} className="text-xs font-medium tracking-wide text-fg-muted underline underline-offset-4 hover:text-white">
+        <Link href={eyebrow.href} className="text-xs font-medium tracking-wide text-fg-muted underline underline-offset-4 hover:text-[#171717]">
           {eyebrow.label}
         </Link>
       ) : eyebrow ? (
         <Typography className="text-xs font-medium tracking-wide text-fg-muted">{eyebrow.label}</Typography>
       ) : null}
-      <Typography variant="h1" className="text-3xl md:text-5xl font-semibold text-white leading-[1.15] tracking-tight text-balance">
+      <Typography variant="h1" className="text-3xl md:text-5xl font-semibold text-fg leading-[1.15] tracking-tight text-balance">
         {title}
       </Typography>
       {kicker ? <Typography className="text-sm md:text-base font-medium text-fg-secondary -mt-2">{kicker}</Typography> : null}

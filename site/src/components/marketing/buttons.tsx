@@ -36,11 +36,11 @@ export const SecondaryButton: FC<ButtonProps & ComponentProps<'a'>> = ({
     className={`
       bg-transparent
       border border-edge-hover
-      hover:border-white
-      text-white font-medium text-sm
+      hover:border-edge-hover
+      text-fg font-medium text-sm
       px-5 py-2.5 rounded-lg
       transition-all duration-300
-      hover:bg-white/5
+      hover:bg-raised
       ${className}
     `}
     {...props}

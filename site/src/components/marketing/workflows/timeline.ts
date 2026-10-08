@@ -6,7 +6,7 @@ export const FPS = 30;
 export const duration = (story: { phases: readonly unknown[] }) =>
   story.phases.length * PHASE_SECONDS + HOLD_SECONDS;
 
-/** Pure sampling is the seam between browser playback, paused inspection and video.
+/** Pure sampling is the seam between browser playback, phase inspection and video.
  * Never read wall time or randomness in a scene: every frame must be reproducible. */
 export function sample(story: WorkflowStory, seconds: number) {
   const time = Math.max(0, Math.min(seconds, duration(story)));
