@@ -30,7 +30,7 @@ how far that has progressed.
 | Provider schema (parity baseline) | `aws@6.58.0` |
 | Kinds in the catalog | 205 |
 | Distinct provider resources consumed | 524 |
-| Spec fields authored across all kinds | 7470 |
+| Spec fields authored across all kinds | 7471 |
 | Module pins on `aws` | `~> 6.58` × 205 |
 | Module pins on `time` | `~> 0.13` × 1 |
 
@@ -194,7 +194,7 @@ gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind 
 | AwsLaunchTemplate | 139 | 99 | 26 | 14 | 0 | ✅ | ✅ pulumi, terraform |
 | AwsLbListener | 76 | 13 | 59 | 4 | 0 | ✅ | ✅ pulumi, terraform |
 | AwsLbListenerRule | 61 | 3 | 55 | 3 | 0 | ✅ | ✅ pulumi, terraform |
-| AwsLbTargetGroup | 48 | 34 | 7 | 7 | 0 | ✅ | ✅ pulumi, terraform |
+| AwsLbTargetGroup | 48 | 34 | 8 | 6 | 0 | ✅ | ✅ pulumi, terraform |
 | AwsManagedPrefixList | 8 | 3 | 2 | 3 | 0 | ✅ | ✅ pulumi, terraform |
 | AwsManagedPrometheus | 45 | 12 | 21 | 12 | 0 | ✅ | ✅ pulumi, terraform |
 | AwsManagedPrometheusScraper | 17 | 5 | 10 | 2 | 0 | ✅ | ✅ pulumi, terraform |

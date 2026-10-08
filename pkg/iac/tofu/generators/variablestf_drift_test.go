@@ -220,6 +220,8 @@ var migratedKinds = []string{
 	"AwsFsxOntapVolume",
 	// S3 object set, migrated off its legacy hand-written contract.
 	"AwsS3ObjectSet",
+	// Load balancer target group, migrated off its hand-written contract.
+	"AwsLbTargetGroup",
 }
 
 // enrolledKinds returns every kind the guard owns: the individually enrolled

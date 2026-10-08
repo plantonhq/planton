@@ -44,8 +44,8 @@ const (
 // Gateway Load Balancer (GENEVE) target groups are deliberately not modeled --
 // there is no gateway load balancer kind to compose them with.
 //
-// The target group name comes from metadata.name. AWS limits the name to 32
-// characters; both IaC modules truncate longer names deterministically.
+// The AWS name is target_group_name when set, else metadata.name, which both
+// IaC modules truncate deterministically to AWS's 32-character limit.
 // Name, port, protocol, protocol_version, vpc_id, target_type, and
 // ip_address_type are create-only in AWS: changing any of them replaces the
 // target group (and the IaC engine re-creates dependent listener attachments).
@@ -55,6 +55,15 @@ type AwsLbTargetGroupSpec struct {
 	// Must match the region of the VPC and of any load balancer that forwards
 	// to this group. Example: "us-west-2", "eu-west-1".
 	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
+	// The explicit AWS-side target group name. Empty (the common case) means
+	// the group is named after `metadata.name`, truncated to 32 characters. Set
+	// it when the AWS name must differ from `metadata.name` -- for example a
+	// target group taken over from AWS under a generated name, which keeps that
+	// name while the component carries a readable one. AWS allows up to 32
+	// alphanumeric characters and hyphens, not beginning or ending with a
+	// hyphen. ForceNew: a name different from the deployed one replaces the
+	// target group.
+	TargetGroupName string `protobuf:"bytes,23,opt,name=target_group_name,json=targetGroupName,proto3" json:"target_group_name,omitempty"`
 	// The VPC the targets live in. Required for "instance", "ip", and "alb"
 	// target types; ignored for "lambda" (a Lambda function is not addressed
 	// through a VPC). Immutable: changing the VPC replaces the target group.
@@ -213,6 +222,13 @@ func (*AwsLbTargetGroupSpec) Descriptor() ([]byte, []int) {
 func (x *AwsLbTargetGroupSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
+	}
+	return ""
+}
+
+func (x *AwsLbTargetGroupSpec) GetTargetGroupName() string {
+	if x != nil {
+		return x.TargetGroupName
 	}
 	return ""
 }
@@ -930,9 +946,10 @@ var File_catalog_aws_awslbtargetgroup_v1alpha1_spec_proto protoreflect.FileDescr
 
 const file_catalog_aws_awslbtargetgroup_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/aws/awslbtargetgroup/v1alpha1/spec.proto\x12)dev.planton.aws.awslbtargetgroup.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xeb-\n" +
+	"0catalog/aws/awslbtargetgroup/v1alpha1/spec.proto\x12)dev.planton.aws.awslbtargetgroup.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xcd.\n" +
 	"\x14AwsLbTargetGroupSpec\x12\x1f\n" +
-	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12i\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12`\n" +
+	"\x11target_group_name\x18\x17 \x01(\tB4\xbaH1\xd8\x01\x01r,\x18 2(^[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?$R\x0ftargetGroupName\x12i\n" +
 	"\x06vpc_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\xf8\a\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12-\n" +
 	"\vtarget_type\x18\x03 \x01(\tB\f\x92\xa6\x1d\binstanceR\n" +
 	"targetType\x12\x12\n" +

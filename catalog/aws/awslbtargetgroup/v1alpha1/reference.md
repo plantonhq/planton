@@ -26,8 +26,8 @@ family-specific field.
 Gateway Load Balancer (GENEVE) target groups are deliberately not modeled --
 there is no gateway load balancer kind to compose them with.
 
-The target group name comes from metadata.name. AWS limits the name to 32
-characters; both IaC modules truncate longer names deterministically.
+The AWS name is target_group_name when set, else metadata.name, which both
+IaC modules truncate deterministically to AWS's 32-character limit.
 Name, port, protocol, protocol_version, vpc_id, target_type, and
 ip_address_type are create-only in AWS: changing any of them replaces the
 target group (and the IaC engine re-creates dependent listener attachments).
@@ -76,6 +76,7 @@ spec:
 | Path | Type | Required | Default | References |
 |---|---|---|---|---|
 | `spec.region` | `string` | yes |  |  |
+| `spec.targetGroupName` | `string` |  |  |  |
 | `spec.vpcId` | `string \| valueFrom` |  |  | AwsVpc (`status.outputs.vpc_id`) |
 | `spec.targetType` | `string` |  | `instance` |  |
 | `spec.port` | `int32` |  |  |  |
@@ -134,6 +135,21 @@ Must match the region of the VPC and of any load balancer that forwards
 to this group. Example: "us-west-2", "eu-west-1".
 
 - rule: {"string":{"minLen":"1"}}
+
+### spec.targetGroupName
+
+`string`
+
+The explicit AWS-side target group name. Empty (the common case) means
+the group is named after `metadata.name`, truncated to 32 characters. Set
+it when the AWS name must differ from `metadata.name` -- for example a
+target group taken over from AWS under a generated name, which keeps that
+name while the component carries a readable one. AWS allows up to 32
+alphanumeric characters and hyphens, not beginning or ending with a
+hyphen. ForceNew: a name different from the deployed one replaces the
+target group.
+
+- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"maxLen":"32","pattern":"^[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?$"}}
 
 ### spec.vpcId
 

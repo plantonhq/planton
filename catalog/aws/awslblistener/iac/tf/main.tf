@@ -63,8 +63,10 @@ resource "aws_lb_listener" "this" {
               weight = target_group.value.weight > 0 ? target_group.value.weight : null
             }
           }
+          # Stickiness is written only when enabled: AWS rejects a duration of
+          # 0, and a forward block without stickiness is stickiness off.
           dynamic "stickiness" {
-            for_each = forward.value.stickiness != null ? [forward.value.stickiness] : []
+            for_each = try(forward.value.stickiness.enabled, false) ? [forward.value.stickiness] : []
             content {
               enabled  = stickiness.value.enabled
               duration = stickiness.value.duration_seconds

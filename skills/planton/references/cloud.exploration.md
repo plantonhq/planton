@@ -48,7 +48,10 @@ Rules that keep exploration honest:
 
 - Read-only verbs only: `describe-*`, `list-*`, `get`, `logs`, `explain` —
   and on the platform-tools arm, only tools whose verb reads (`list_*`,
-  `get_*`, `search_*`, `find_*`, `check_*`, `build_*`). Anything that
+  `get_*`, `search_*`, `find_*`, `check_*`, `build_*`). A plan belongs
+  here too: `planton tofu|terraform plan`, `planton pulumi preview` and
+  `plan_infra_component` start a plan-only Infra Job that can never apply
+  (`craft.planton-cli.md`). Anything that
   creates, modifies, or deletes is a mutation (below) — that includes
   `kubectl apply/delete/scale/rollout`, `aws … create-/delete-/
   modify-/put-/terminate-*`, `gh issue create`, AND every mutating platform

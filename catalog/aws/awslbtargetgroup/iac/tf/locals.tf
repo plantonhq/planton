@@ -1,7 +1,8 @@
 locals {
-  # AWS limits target group names to 32 characters; truncate deterministically
-  # so the same manifest always yields the same name.
-  target_group_name = substr(var.metadata.name, 0, 32)
+  # The AWS name: spec.target_group_name when set, else metadata.name. AWS
+  # limits target group names to 32 characters; metadata.name is truncated
+  # deterministically so the same manifest always yields the same name.
+  target_group_name = var.spec.target_group_name != "" ? var.spec.target_group_name : substr(var.metadata.name, 0, 32)
 
   # A Lambda target group has no network identity: no port, no protocol, and
   # no VPC -- the load balancer invokes the function directly.

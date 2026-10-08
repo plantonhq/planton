@@ -78,7 +78,7 @@ definition -- lets you:
 ## Outputs
 
 - `target_group_arn`: ARN of the target group (what listeners, rules, ECS services, and ASGs reference)
-- `target_group_name`: friendly name of the group (metadata.name, truncated to AWS's 32-character limit when necessary)
+- `target_group_name`: the group's AWS name (`spec.targetGroupName` when set, else metadata.name truncated to AWS's 32-character limit)
 - `arn_suffix`: ARN suffix used as the TargetGroup dimension in CloudWatch metrics
 
 ---

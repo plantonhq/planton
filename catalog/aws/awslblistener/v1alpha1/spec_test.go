@@ -218,6 +218,15 @@ var _ = ginkgo.Describe("AwsLbListenerSpec Validation Tests", func() {
 				gomega.Expect(err).To(gomega.BeNil())
 			})
 
+			ginkgo.It("should not return a validation error for stickiness off without a duration", func() {
+				input := minimalValidListener()
+				input.Spec.DefaultActions[0].Forward.Stickiness = &AwsLbListenerActionForwardStickiness{
+					Enabled: false,
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).To(gomega.BeNil())
+			})
+
 			ginkgo.It("should not return a validation error for HTTP header handling on HTTPS", func() {
 				input := minimalValidListener()
 				input.Spec.Protocol = "HTTPS"

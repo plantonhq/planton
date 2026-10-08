@@ -5,7 +5,6 @@ import (
 
 	"github.com/pkg/errors"
 	awslbtargetgroupv1alpha1 "github.com/plantonhq/planton/catalog/aws/awslbtargetgroup/v1alpha1"
-	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/datatypes/stringmaps"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/datatypes/stringmaps/convertstringmaps"
 	"github.com/pulumi/pulumi-aws/sdk/v7/go/aws/lb"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
@@ -19,10 +18,6 @@ import (
 func targetGroup(ctx *pulumi.Context, locals *Locals, provider pulumi.ProviderResource) error {
 	spec := locals.AwsLbTargetGroup.Spec
 
-	// AWS limits target group names to 32 characters; truncate
-	// deterministically so the same manifest always yields the same name.
-	targetGroupName := truncateName(locals.AwsLbTargetGroup.Metadata.Name, 32)
-
 	isLambda := spec.TargetType == "lambda"
 
 	// The proto cannot enforce VPC requiredness per target type
@@ -35,9 +30,8 @@ func targetGroup(ctx *pulumi.Context, locals *Locals, provider pulumi.ProviderRe
 	}
 
 	args := &lb.TargetGroupArgs{
-		Name: pulumi.String(targetGroupName),
-		Tags: convertstringmaps.ConvertGoStringMapToPulumiStringMap(
-			stringmaps.AddEntry(locals.AwsTags, "Name", targetGroupName)),
+		Name: pulumi.String(locals.TargetGroupName),
+		Tags: convertstringmaps.ConvertGoStringMapToPulumiStringMap(locals.AwsTags),
 	}
 
 	// Port, protocol, and VPC apply to every target type except lambda -- a
@@ -116,7 +110,9 @@ func targetGroup(ctx *pulumi.Context, locals *Locals, provider pulumi.ProviderRe
 		}
 	}
 
-	createdTargetGroup, err := lb.NewTargetGroup(ctx, targetGroupName, args, pulumi.Provider(provider))
+	// The Pulumi resource names are fixed: the AWS name travels only through
+	// args.Name, so renaming the component never replaces the group.
+	createdTargetGroup, err := lb.NewTargetGroup(ctx, "target-group", args, pulumi.Provider(provider))
 	if err != nil {
 		return errors.Wrap(err, "failed to create target group")
 	}
@@ -138,7 +134,7 @@ func targetGroup(ctx *pulumi.Context, locals *Locals, provider pulumi.ProviderRe
 			attachmentArgs.QuicServerId = pulumi.StringPtr(target.QuicServerId)
 		}
 		if _, err := lb.NewTargetGroupAttachment(ctx,
-			fmt.Sprintf("%s-target-%d", targetGroupName, i),
+			fmt.Sprintf("target-%d", i),
 			attachmentArgs, pulumi.Provider(provider)); err != nil {
 			return errors.Wrapf(err, "failed to register target %d", i)
 		}

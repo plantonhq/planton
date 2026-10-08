@@ -152,7 +152,9 @@ func actionArgs(actions []*awslblistenerrulev1alpha1.AwsLbListenerRuleAction) (l
 				targetGroups = append(targetGroups, targetGroupArgs)
 			}
 			forwardArgs.TargetGroups = targetGroups
-			if forward.Stickiness != nil {
+			// Stickiness is written only when enabled: AWS rejects a duration
+			// of 0, and a forward block without stickiness is stickiness off.
+			if forward.Stickiness.GetEnabled() {
 				forwardArgs.Stickiness = &lb.ListenerRuleActionForwardStickinessArgs{
 					Enabled:  pulumi.BoolPtr(forward.Stickiness.Enabled),
 					Duration: pulumi.Int(int(forward.Stickiness.DurationSeconds)),

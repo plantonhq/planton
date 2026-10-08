@@ -22,12 +22,14 @@ resources:
         arg: stickiness.cookie_duration
       - spec: spec.target_health_state.unhealthy_draining_interval_seconds
         arg: target_health_state.unhealthy_draining_interval
+      # The AWS name; empty falls back to metadata.name (truncated
+      # deterministically to AWS's 32-char limit).
+      - spec: spec.target_group_name
+        arg: name
     exclusions:
       # Identity is the kind's own contract.
-      - arg: name
-        reason: derived from metadata.name (truncated deterministically to AWS's 32-char limit) -- never free-form user surface
       - arg: name_prefix
-        reason: alternative naming form; names always derive from metadata.name
+        reason: alternative naming form; the name is spec.target_group_name or metadata.name, never a generated suffix
       # Gateway Load Balancer surface.
       - arg: target_failover.on_deregistration
         reason: GENEVE/Gateway-Load-Balancer-only surface -- GWLB target groups are deliberately not modeled (no gateway load balancer kind to compose them with; recorded in the spec header)

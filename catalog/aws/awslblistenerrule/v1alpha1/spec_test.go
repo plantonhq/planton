@@ -138,6 +138,15 @@ var _ = ginkgo.Describe("AwsLbListenerRuleSpec Validation Tests", func() {
 				gomega.Expect(err).To(gomega.BeNil())
 			})
 
+			ginkgo.It("should not return a validation error for stickiness off without a duration", func() {
+				input := minimalValidRule()
+				input.Spec.Actions[0].Forward.Stickiness = &AwsLbListenerRuleActionForwardStickiness{
+					Enabled: false,
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).To(gomega.BeNil())
+			})
+
 			ginkgo.It("should not return a validation error for a redirect rule", func() {
 				input := minimalValidRule()
 				input.Spec.Actions = []*AwsLbListenerRuleAction{{

@@ -188,6 +188,39 @@ before sending it — fix the field it names (`validate` on a multi-document
 file names the document: "document 2 of 2 (name): …"); **Request Refused** is the server
 refusing a request as invalid, nothing changed — relay its reason.
 
+## What would a deploy change? A plan that can never apply
+
+```
+planton tofu plan <Kind> <name>              # an OpenTofu component; `terraform plan` likewise
+planton pulumi preview <Kind> <name>         # a Pulumi component
+planton tofu plan <Kind> <name> --destroy    # what a teardown would remove
+```
+
+Each starts a plan-only Infra Job: it refreshes the recorded state, plans,
+prints the diff, and ends. It has no apply step and never waits for
+approval, so nothing can make it change infrastructure: run it freely to
+check drift, verify a takeover, or show the person a change before they
+deploy. It exits 1 when the job fails (so does every command that follows
+its job: `apply`, `destroy`, `refresh`), so a burst of plans in a script can
+trust the exit code. The plan stays on the job: `planton get infra-job <ij_id>
+-o json` carries it under `status.iac_operations.update_preview.snapshot`
+(`destroy_preview` for a teardown) -- `summary` counts creates, updates,
+deletes and replacements, `resource_diffs` holds each resource's diff.
+Platform-tools twin: `plan_infra_component` (`destroy: true` for the
+teardown), then `get_infra_job` on the returned id.
+
+Not to be confused with `planton tofu apply --pause-for-approval`: that is a
+DEPLOY that plans, then waits for someone to approve before applying -- a
+mutation, and its approval is a person's decision, never yours.
+
+**A rename is not cosmetic.** `planton rename <Kind> <id> -n <name>` (and
+`rename_infra_component`) changes the name the component's IaC module is
+given at its next deploy, and most kinds name their cloud resource after it:
+the next deploy replaces the cloud resource unless the kind's spec has an
+explicit cloud-name field holding the current name. Read the kind's schema
+for such a field before proposing a rename of anything deployed, and plan
+after it.
+
 ## What changed, and who changed it
 
 ```

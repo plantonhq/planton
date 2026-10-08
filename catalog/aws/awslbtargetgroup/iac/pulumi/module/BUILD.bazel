@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "module",
@@ -12,7 +12,6 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//catalog/aws/awslbtargetgroup/v1alpha1",
-        "//pkg/iac/pulumi/pulumimodule/datatypes/stringmaps",
         "//pkg/iac/pulumi/pulumimodule/datatypes/stringmaps/convertstringmaps",
         "//pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/aws/pulumiawsprovider",
@@ -20,5 +19,16 @@ go_library(
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws/lb",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)
+
+go_test(
+    name = "module_test",
+    srcs = ["locals_test.go"],
+    embed = [":module"],
+    deps = [
+        "//catalog/aws/awslbtargetgroup/v1alpha1",
+        "//pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys",
+        "//shared",
     ],
 )

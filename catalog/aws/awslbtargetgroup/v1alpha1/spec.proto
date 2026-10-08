@@ -26,8 +26,8 @@ import "shared/options/options.proto";
 // Gateway Load Balancer (GENEVE) target groups are deliberately not modeled --
 // there is no gateway load balancer kind to compose them with.
 //
-// The target group name comes from metadata.name. AWS limits the name to 32
-// characters; both IaC modules truncate longer names deterministically.
+// The AWS name is target_group_name when set, else metadata.name, which both
+// IaC modules truncate deterministically to AWS's 32-character limit.
 // Name, port, protocol, protocol_version, vpc_id, target_type, and
 // ip_address_type are create-only in AWS: changing any of them replaces the
 // target group (and the IaC engine re-creates dependent listener attachments).
@@ -36,6 +36,22 @@ message AwsLbTargetGroupSpec {
   // Must match the region of the VPC and of any load balancer that forwards
   // to this group. Example: "us-west-2", "eu-west-1".
   string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // The explicit AWS-side target group name. Empty (the common case) means
+  // the group is named after `metadata.name`, truncated to 32 characters. Set
+  // it when the AWS name must differ from `metadata.name` -- for example a
+  // target group taken over from AWS under a generated name, which keeps that
+  // name while the component carries a readable one. AWS allows up to 32
+  // alphanumeric characters and hyphens, not beginning or ending with a
+  // hyphen. ForceNew: a name different from the deployed one replaces the
+  // target group.
+  string target_group_name = 23 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      max_len: 32
+      pattern: "^[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?$"
+    }
+  ];
 
   // The VPC the targets live in. Required for "instance", "ip", and "alb"
   // target types; ignored for "lambda" (a Lambda function is not addressed

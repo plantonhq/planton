@@ -184,6 +184,19 @@ var _ = ginkgo.Describe("AwsLbTargetGroupSpec Validation Tests", func() {
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).To(gomega.BeNil())
 			})
+			ginkgo.It("should not return a validation error for an AWS name different from metadata.name", func() {
+				input := minimalValidTargetGroup()
+				input.Spec.TargetGroupName = "tg-0a1b2c3"
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).To(gomega.BeNil())
+			})
+
+			ginkgo.It("should not return a validation error for a 32-character AWS name", func() {
+				input := minimalValidTargetGroup()
+				input.Spec.TargetGroupName = "abcdefghij-abcdefghij-abcdefghij"
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).To(gomega.BeNil())
+			})
 		})
 	})
 
@@ -200,6 +213,34 @@ var _ = ginkgo.Describe("AwsLbTargetGroupSpec Validation Tests", func() {
 			ginkgo.It("should return a validation error when region is empty", func() {
 				input := minimalValidTargetGroup()
 				input.Spec.Region = ""
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+
+			ginkgo.It("should return a validation error for an AWS name longer than 32 characters", func() {
+				input := minimalValidTargetGroup()
+				input.Spec.TargetGroupName = "abcdefghij-abcdefghij-abcdefghijk"
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+
+			ginkgo.It("should return a validation error for an AWS name with an underscore", func() {
+				input := minimalValidTargetGroup()
+				input.Spec.TargetGroupName = "api_backend"
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+
+			ginkgo.It("should return a validation error for an AWS name beginning with a hyphen", func() {
+				input := minimalValidTargetGroup()
+				input.Spec.TargetGroupName = "-api"
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+
+			ginkgo.It("should return a validation error for an AWS name ending with a hyphen", func() {
+				input := minimalValidTargetGroup()
+				input.Spec.TargetGroupName = "api-"
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})

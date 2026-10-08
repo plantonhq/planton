@@ -11,7 +11,10 @@ import (
 
 type Locals struct {
 	AwsLbTargetGroup *awslbtargetgroupv1alpha1.AwsLbTargetGroup
-	AwsTags          map[string]string
+	// TargetGroupName is the AWS name: spec.target_group_name when set, else
+	// metadata.name truncated to AWS's 32-character limit.
+	TargetGroupName string
+	AwsTags         map[string]string
 }
 
 func initializeLocals(_ *pulumi.Context, iacInput *awslbtargetgroupv1alpha1.AwsLbTargetGroupIacInput) *Locals {
@@ -19,8 +22,15 @@ func initializeLocals(_ *pulumi.Context, iacInput *awslbtargetgroupv1alpha1.AwsL
 	locals.AwsLbTargetGroup = iacInput.Target
 
 	metadata := iacInput.Target.Metadata
+	locals.TargetGroupName = iacInput.Target.Spec.TargetGroupName
+	if locals.TargetGroupName == "" {
+		// Truncate deterministically so the same manifest always yields the
+		// same name.
+		locals.TargetGroupName = truncateName(metadata.Name, 32)
+	}
+
 	locals.AwsTags = map[string]string{
-		awstagkeys.Name:         metadata.Name,
+		awstagkeys.Name:         locals.TargetGroupName,
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: metadata.Org,
 		awstagkeys.Environment:  metadata.Env,

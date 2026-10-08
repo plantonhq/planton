@@ -89,7 +89,7 @@ The InfraPipeline resolves the dependency graph, deploys the VPC first, then cre
 
 These are the most important decisions when configuring a target group. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**The identity is create-only** -- name, VPC, target type, address family, port, protocol, and protocol version are fixed at creation. Changing any replaces the group, and the IaC engine re-creates dependent listener attachments.
+**The identity is create-only** -- the AWS name (`targetGroupName` when set, else the component's name), VPC, target type, address family, port, protocol, and protocol version are fixed at creation. Changing any replaces the group, and the IaC engine re-creates dependent listener attachments.
 
 **The target type shapes everything** -- `instance` (EC2 fleets), `ip` (ECS awsvpc tasks, pod IPs, peered/on-premises addresses), `lambda` (the load balancer invokes the function — no port, protocol, or VPC), or `alb` (the NLB-in-front-of-ALB pattern combining static Layer-4 IPs with Layer-7 routing).
 
@@ -117,7 +117,7 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
 | `target_group_arn` | ARN of the target group | AwsLbListener forward actions, ECS service load-balancer bindings, auto-scaling group attachments |
-| `target_group_name` | The group's name (truncated to AWS's 32-character limit) | Console URLs and CLI queries |
+| `target_group_name` | The group's AWS name (`targetGroupName` when set, else the component name truncated to AWS's 32-character limit) | Console URLs and CLI queries |
 | `arn_suffix` | The ARN's final segment | The CloudWatch TargetGroup metric dimension |
 
 ## Common Patterns
