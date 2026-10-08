@@ -1836,9 +1836,10 @@ spec:
                   resources:
                     description: |-
                       resources sizes the runner's container. Defaults to requests of 100m
-                      CPU and 512Mi memory with a 2Gi memory limit (~780Mi resident live
-                      working its queues); the OpenTofu and Pulumi engines it forks count
-                      against the same limit, so the limit is the headroom for an engine run.
+                      CPU and 2Gi memory with a 2Gi memory limit; the OpenTofu and Pulumi
+                      engines it forks count against the same limit, and the runner starts an
+                      engine run only when one fits under it, so keep the memory request equal
+                      to the limit.
                       A quantity you set wins; one you leave unset keeps the default. A CPU
                       limit is allowed, and the operator sets none: a plan or apply is never
                       throttled. Changing it restarts the runner (its state volume admits

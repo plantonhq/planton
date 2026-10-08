@@ -40,7 +40,7 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 
 	// ---- container sizing --------------------------------------------------------
 	// Rendered ONLY when customized: the chart's own defaults (requests
-	// 100m/256Mi, limits 1/1Gi) are the documented baseline, and an empty
+	// 100m/2Gi, limits 1/2Gi) are the documented baseline, and an empty
 	// requests/limits map would REPLACE them with nothing.
 	if resources := spec.GetResources(); resources != nil {
 		resourcesBlock := map[string]interface{}{}

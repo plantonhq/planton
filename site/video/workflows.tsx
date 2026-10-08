@@ -6,7 +6,7 @@ import { WorkflowScene } from '../src/components/marketing/workflows/WorkflowSce
 import { duration, FPS, sample } from '../src/components/marketing/workflows/timeline';
 import { workflowDarkTokens } from '../src/theme/workflows';
 import { HomepageOverview } from './Overview';
-import { OVERVIEW_VIDEO } from '../src/data/homepage-video';
+import { OVERVIEW_VIDEO } from './legacy-overview-data';
 
 /** Export-only adapter. Frame time enters the same scene used on the website;
  * Remotion and its renderer are never imported by the Next application. */

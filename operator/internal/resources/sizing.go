@@ -126,13 +126,13 @@ var ComponentSizing = map[string]Sizing{
 		},
 	},
 
-	// The runner: ~780Mi resident live working its queues on a one-node
-	// install -- a Go binary that forks the OpenTofu and Pulumi engines,
-	// whose own memory counts against the pod. The limit is the headroom for
-	// an engine run.
+	// The runner: a Go binary that forks the OpenTofu and Pulumi engines,
+	// whose own memory counts against the pod. It starts an engine run only
+	// when one fits under its memory limit, so its memory is requested and
+	// limited alike: the node reserves all of what it admits against.
 	SizingRunner: {
 		Component: "runner",
-		Default:   houseSizing("100m", "512Mi", "2Gi"),
+		Default:   houseSizing("100m", "2Gi", "2Gi"),
 		Declared: func(s *v1.PlantonPlatformSpec) *v1.ComponentResources {
 			if s.Runner == nil {
 				return nil

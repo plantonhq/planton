@@ -76,8 +76,15 @@ temporal:
   address: ""
   # -- Temporal namespace override.
   namespace: "default"
-  # -- Maximum concurrent Temporal activities.
-  maxConcurrency: 10
+
+# IaC operations. Each one runs OpenTofu or Pulumi and its provider plugins
+# inside this pod's memory limit (resources.limits.memory), so the runner
+# starts one only when it fits there and the rest wait in the queue.
+iac:
+  # -- The most IaC operations run at once; below it, memory decides. 0 is
+  # the runner's default, 10. Raise the memory limit (and its request) to
+  # run more at once.
+  maxConcurrency: 0
 
 # Build capability -- this runner executes build pipelines on its own cluster:
 # it creates Tekton PipelineRuns, streams task pod logs to the control plane,
@@ -123,10 +130,16 @@ build:
 resources:
   requests:
     cpu: 100m
-    memory: 256Mi
+    # Requested and limited alike: the runner admits IaC operations against
+    # its memory limit, so the node must reserve all of it, or a neighbour
+    # can take what the runner counted on.
+    memory: 2Gi
   limits:
     cpu: "1"
-    memory: 1Gi
+    # The runner starts an IaC operation only when it fits here: its own
+    # memory plus 768Mi for every operation started in the last three
+    # minutes, within nine tenths of this limit. 2Gi starts two at once.
+    memory: 2Gi
 
 serviceAccount:
   # -- Create a Kubernetes ServiceAccount for the runner pod.

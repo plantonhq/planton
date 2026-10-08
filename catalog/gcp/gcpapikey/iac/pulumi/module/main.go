@@ -16,8 +16,8 @@ func Resources(ctx *pulumi.Context, iacInput *gcpapikeyv1alpha1.GcpApiKeyIacInpu
 	// fails with 403 "requires a quota project" -- the same behavior the
 	// Identity Toolkit API shows, and the same fix. The override attributes
 	// quota to the key's own project under every credential mode.
-	gcpProvider, err := pulumigoogleprovider.GetWithQuotaProject(ctx, iacInput.ProviderConfig,
-		iacInput.Target.GetSpec().GetProjectId().GetValue())
+	project := iacInput.Target.GetSpec().GetProjectId().GetValue()
+	gcpProvider, err := pulumigoogleprovider.GetWithQuotaProject(ctx, iacInput.ProviderConfig, project, project)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

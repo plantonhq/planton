@@ -8,7 +8,7 @@ When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true` (with the standard Planton governance labels) and deleted with the resource; otherwise the runner installs into an existing namespace
 - **Runner token Secret** -- the `<name>-token` Opaque Secret holding the runner token, created before the release; the chart reads it by name (its existingSecret form), so the token never rides rendered chart values
-- **Helm Release** -- the `planton-runner` chart, pinned to `chartVersion` (default 0.9.0), rendering:
+- **Helm Release** -- the `planton-runner` chart, pinned to `chartVersion` (default 0.11.0), rendering:
   - The runner Deployment at exactly 1 replica with a Recreate strategy -- two live pods under one runner name would revoke each other's keys
   - The ephemeral identity volume the runner persists its minted identity into -- container restarts reuse it; pod recreation re-joins with the token
   - The runner's health endpoints
@@ -54,7 +54,7 @@ spec:
 planton apply -f runner.yaml
 ```
 
-This minimal manifest installs chart version 0.9.0 tracking the latest runner release from the official image repository, at the chart's own default sizing (requests 100m/256Mi, limits 1/1Gi). The runner registers itself as `prod-cluster-runner` (`<env>-<metadata.name>`) the moment it joins, and `planton runner list` shows it. An Infra Job tracks the provisioning in real time.
+This minimal manifest installs chart version 0.11.0 tracking the latest runner release from the official image repository, at the chart's own default sizing (requests 100m/2Gi, limits 1/2Gi). The runner registers itself as `prod-cluster-runner` (`<env>-<metadata.name>`) the moment it joins, and `planton runner list` shows it. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -83,9 +83,9 @@ These are the most important decisions when configuring the runner. Explore the 
 
 **Control-plane endpoint** -- `controlPlaneEndpoint` (host:port) is only for self-hosted control planes; leave it unset for Planton's hosted endpoint. It is the one bootstrap coordinate the join cannot deliver -- everything else arrives in the join response, so the runner self-configures its execution mode on arrival and no mode knob exists.
 
-**Chart version** -- empty `chartVersion` installs the pinned default (0.9.0), the version this catalog release was validated against; it hands the runner `build.scheduling`, and its build Role grants what the build path uses (watch on PipelineRuns and TaskRuns, patch on PipelineRuns so a cancel stops the run's pods, and create/update/patch on ConfigMaps, without which every in-cluster build fails at provisioning), and since 0.5.0 the pod is probed over gRPC on the runner's port, the contract every execution mode serves, so a runner enrolled with a tunnel-less (self-hosted) instance stands Ready. Versions below 0.4.0 predate token enrollment and are refused loudly -- older charts would silently ignore the enrollment values and the runner would deploy with no way to join.
+**Chart version** -- empty `chartVersion` installs the pinned default (0.11.0), the version this catalog release was validated against; it hands the runner `build.scheduling`, and its build Role grants what the build path uses (watch on PipelineRuns and TaskRuns, patch on PipelineRuns so a cancel stops the run's pods, and create/update/patch on ConfigMaps, without which every in-cluster build fails at provisioning), and since 0.5.0 the pod is probed over gRPC on the runner's port, the contract every execution mode serves, so a runner enrolled with a tunnel-less (self-hosted) instance stands Ready. Versions below 0.4.0 predate token enrollment and are refused loudly -- older charts would silently ignore the enrollment values and the runner would deploy with no way to join.
 
-**Sizing** -- when `resources` is omitted, the chart's own defaults apply (requests 100m/256Mi, limits 1/1Gi), comfortable for the runner's control loops plus typical IaC operations. Memory pressure shows up as failed IaC operations mid-apply; size memory up before CPU.
+**Sizing** -- when `resources` is omitted, the chart's own defaults apply (requests 100m/2Gi, limits 1/2Gi). The runner starts an IaC operation only when it fits under its memory limit -- its own memory plus 768Mi for every operation started in the last three minutes, within nine tenths of the limit -- and queues the rest: 2Gi starts two at once, 4Gi four, and more as operations settle below their charge. To run more at once, raise the memory limit before CPU, with the memory request equal to it so the node reserves what the runner counts on.
 
 **Build worker** -- `build.enabled: true` registers the runner as a build worker executing container-image build pipelines through Tekton (Tekton Pipelines must be installed); `build.tektonNamespace` defaults to the runner's own namespace. `build.scheduling` (a node selector and tolerations) names the nodes every build pod may use; pointed at a dedicated, tainted build pool, a burst of builds queues on that pool and never starves the cluster's other workloads.
 

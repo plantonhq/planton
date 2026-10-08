@@ -219,3 +219,23 @@ func TestProviderResourceName(t *testing.T) {
 	assert.Equal(t, "google-replica", ProviderResourceName([]string{"replica"}))
 	assert.Equal(t, "google-dns-zone", ProviderResourceName([]string{"dns", "zone"}))
 }
+
+// The project the component names reaches the provider, so an import records it (a bucket
+// imported by its name otherwise lands in state with no project, and its preview replaces it).
+func TestSetProject_ComponentProject(t *testing.T) {
+	args := &gcp.ProviderArgs{}
+	setProject(args, "pure-lantern-360309")
+	assert.Equal(t, pulumi.String("pure-lantern-360309"), args.Project)
+}
+
+func TestSetProject_ResourceNameFormIsBare(t *testing.T) {
+	args := &gcp.ProviderArgs{}
+	setProject(args, "projects/pure-lantern-360309")
+	assert.Equal(t, pulumi.String("pure-lantern-360309"), args.Project)
+}
+
+func TestSetProject_EmptyKeepsAmbientDefault(t *testing.T) {
+	args := &gcp.ProviderArgs{}
+	setProject(args, "")
+	assert.Nil(t, args.Project)
+}

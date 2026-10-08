@@ -14,7 +14,10 @@ var vars = struct {
 	// DefaultChartVersion is the chart this catalog release was validated
 	// against — the version installed when spec.chart_version is unset.
 	// Bump it together with a re-validation of the values contract below
-	// (enrollment block, resources, build block). 0.9.0 hands the runner
+	// (enrollment block, resources, build block). 0.11.0 requests the
+	// runner's memory alike with its 2Gi limit, which the runner admits IaC
+	// operations against (iac.maxConcurrency is the most at once). 0.10.0
+	// raises the default memory limit to 2Gi. 0.9.0 hands the runner
 	// build.scheduling, the nodes every build pod may use, as
 	// BUILD_NODE_SELECTOR and BUILD_TOLERATIONS. 0.8.0 grants the build
 	// Role what the runner's build path uses: watch on PipelineRuns and
@@ -45,7 +48,7 @@ var vars = struct {
 }{
 	DefaultChartRepository: "oci://ghcr.io/plantonhq/charts",
 	HelmChartName:          "planton-runner",
-	DefaultChartVersion:    "0.9.0",
+	DefaultChartVersion:    "0.11.0",
 	MinChartVersion:        "0.4.0",
 	TokenSecretSuffix:      "-token",
 	TokenSecretKey:         "token",

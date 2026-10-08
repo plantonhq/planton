@@ -24,8 +24,8 @@ func Resources(ctx *pulumi.Context, iacInput *gcpfirebaseprojectv1alpha1.GcpFire
 	// to attach `provider = google-beta` to the beta-only resources
 	// explicitly; that asymmetry is provider packaging, not a behavioral
 	// divergence.
-	gcpProvider, err := pulumigoogleprovider.GetWithQuotaProject(ctx, iacInput.ProviderConfig,
-		iacInput.Target.GetSpec().GetProjectId().GetValue())
+	project := iacInput.Target.GetSpec().GetProjectId().GetValue()
+	gcpProvider, err := pulumigoogleprovider.GetWithQuotaProject(ctx, iacInput.ProviderConfig, project, project)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

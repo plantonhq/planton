@@ -188,12 +188,13 @@ A push to `staging` builds and deploys into `staging` only — it never walks th
 planton service run my-service --branch main                    # build the head of main
 planton service run my-service --branch main --commit a1b2c3d4  # build a specific commit
 planton service run my-service --branch main --deploy-env dev   # deploy into exactly one environment, no walk
+planton service run my-service --branch staging                 # a mapped branch deploys to its environment, as its push would
 planton service rerun <run-id>                                  # byte-identical: the same compiled pipeline, the same params
 planton service cancel <run-id>
 planton service runs my-service                                 # everything that ran, newest first
 ```
 
-A manual run goes through the same path as a push: the same compile, the same build, the same walk. A rerun replays the run's stamped pipeline definition without recompiling, so it is the right verb after a fix outside the code (a credential, a runner); after a code fix, push a new commit.
+A manual run goes through the same path as a push: the same compile, the same build, and the same destination. A trigger branch walks the promotion order, and a mapped branch deploys only to its environment; `--deploy-env` names one environment instead. A service with no trigger branch has no walk for a commit to ride, so `--commit` there needs `--branch` (deploying where that branch is mapped) or `--deploy-env`, and is refused without one. A rerun replays the run's stamped pipeline definition without recompiling, so it is the right verb after a fix outside the code (a credential, a runner); after a code fix, push a new commit.
 
 ## Common Patterns and Tips
 

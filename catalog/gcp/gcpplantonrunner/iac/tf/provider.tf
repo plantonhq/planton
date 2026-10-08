@@ -15,10 +15,9 @@ terraform {
 }
 
 provider "google" {
-  # Project and credentials are injected by the runtime as environment
-  # variables (GOOGLE_PROJECT + GOOGLE_CREDENTIALS or the ambient chain),
-  # resolved from the IaC input's provider_config. For keyless (oidc)
-  # connections the runtime performs the web-identity exchange and injects
-  # the impersonated account's access token (GOOGLE_OAUTH_ACCESS_TOKEN). Keep this block empty -- do not
-  # wire project or static keys here.
+  # The project this component's spec names (null when it names none). An
+  # import records it, so a taken-over resource is never planned for
+  # replacement. Credentials are injected by the runtime; the connection
+  # never names a project.
+  project = local.project_id
 }

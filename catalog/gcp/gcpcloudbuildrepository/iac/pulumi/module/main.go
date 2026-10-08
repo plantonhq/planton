@@ -10,7 +10,13 @@ import (
 func Resources(ctx *pulumi.Context, iacInput *gcpcloudbuildrepositoryv1alpha1.GcpCloudBuildRepositoryIacInput) error {
 	locals := initializeLocals(ctx, iacInput)
 
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
+	// The repository lives in its connection's project (see parseConnectionName).
+	project, _, err := parseConnectionName(iacInput.Target.GetSpec().GetParentConnection().GetValue())
+	if err != nil {
+		return errors.Wrap(err, "failed to read the connection's project")
+	}
+
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig, project)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

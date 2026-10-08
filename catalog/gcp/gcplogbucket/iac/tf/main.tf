@@ -6,7 +6,7 @@
 resource "google_project_service" "logging_api" {
   count = local.is_project_bucket ? 1 : 0
 
-  project = local.project_id
+  project = local.project
   service = "logging.googleapis.com"
 
   disable_dependent_services = true
@@ -34,7 +34,7 @@ resource "google_project_service" "logging_api" {
 resource "google_logging_project_bucket_config" "this" {
   count = local.is_project_bucket ? 1 : 0
 
-  project   = local.project_id
+  project   = local.project
   bucket_id = var.spec.bucket_id
   location  = local.location
 

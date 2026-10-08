@@ -13,11 +13,16 @@ locals {
   is_billing_bucket = var.spec.scope != null && var.spec.scope.billing_account != ""
   is_project_bucket = !local.is_folder_bucket && !local.is_org_bucket && !local.is_billing_bucket
 
+  # The project the spec names, or null -- handed to the provider so an
+  # import records it. The google_client_config fallback stays out of it:
+  # a provider cannot depend on its own data source.
+  project_id = local.is_project_bucket && var.spec.scope != null && var.spec.scope.project_id != "" ? var.spec.scope.project_id : null
+
   # The project bucket resource REQUIRES an explicit project. Honor the
   # spec contract for the empty case by reading the provider's resolved
   # default project from google_client_config (count-gated on that one
   # case so every plan that names its project runs credential-free).
-  project_id = (
+  project = (
     local.is_project_bucket
     ? (
       var.spec.scope != null && var.spec.scope.project_id != ""

@@ -4,6 +4,11 @@ locals {
   # identical to the Pulumi module's GetClientConfig fallback. The fleet
   # exports its project as the value every fleet child references, so it
   # must always be concrete.
+  # The project the spec names (bare ID), or null -- handed to the provider
+  # so an import records it. The google_client_config fallback stays out of
+  # it: a provider cannot depend on its own data source.
+  project_id = var.spec.project_id != "" ? trimprefix(var.spec.project_id, "projects/") : null
+
   needs_client_project = var.spec.project_id == ""
   project = (
     var.spec.project_id != "" ? trimprefix(var.spec.project_id, "projects/") :

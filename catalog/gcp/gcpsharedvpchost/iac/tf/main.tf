@@ -8,7 +8,7 @@
 # chart's teardown detaches first. deletion_policy is sent only when set so
 # the provider default (DELETE) stays the provider's.
 resource "google_compute_shared_vpc_host_project" "this" {
-  project = local.project_id
+  project = local.project
 
   deletion_policy = var.spec.deletion_policy != "" ? var.spec.deletion_policy : null
 }

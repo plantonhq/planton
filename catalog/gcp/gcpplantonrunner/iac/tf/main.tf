@@ -20,7 +20,7 @@
 # first deploy. disable_on_destroy stays false: tearing down one runner
 # must never disable the API for everything else in the project.
 resource "google_project_service" "run" {
-  project                    = local.project_id != "" ? local.project_id : null
+  project                    = local.project_id
   service                    = "run.googleapis.com"
   disable_dependent_services = true
   disable_on_destroy         = false
@@ -37,7 +37,7 @@ resource "google_project_service" "run" {
 resource "google_service_account" "runtime" {
   count = local.create_service_account ? 1 : 0
 
-  project      = local.project_id != "" ? local.project_id : null
+  project      = local.project_id
   account_id   = local.runner_name
   display_name = "Planton runner '${local.runner_name}'"
   description  = "Runtime identity for Planton runner '${local.runner_name}' -- grant it the roles keyless operations need"
@@ -66,7 +66,7 @@ resource "google_service_account" "runtime" {
 # instance start; regional placement decisions belong to the service, not
 # its bootstrap secret.
 resource "google_secret_manager_secret" "token" {
-  project   = local.project_id != "" ? local.project_id : null
+  project   = local.project_id
   secret_id = local.token_secret_id
   labels    = local.gcp_labels
 
@@ -96,7 +96,7 @@ resource "google_secret_manager_secret_iam_member" "token_accessor" {
 #
 # The Cloud Run v2 service that keeps exactly one runner running.
 resource "google_cloud_run_v2_service" "runner" {
-  project  = local.project_id != "" ? local.project_id : null
+  project  = local.project_id
   name     = local.runner_name
   location = var.spec.region
   labels   = local.gcp_labels

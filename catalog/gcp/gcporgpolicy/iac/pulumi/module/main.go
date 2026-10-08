@@ -13,7 +13,8 @@ func Resources(ctx *pulumi.Context, iacInput *gcporgpolicyv1alpha1.GcpOrgPolicyI
 		return err
 	}
 
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
+	// No project of its own: the policy attaches to its parent by path.
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig, "")
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}
