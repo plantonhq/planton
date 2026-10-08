@@ -107,19 +107,19 @@ And OpenFeature is what makes that decision safe. If GO Feature Flag ever stalls
 
 > **Tip:** Judge a small open-source project by your exit cost, not by its headcount. If a standard sits between you and the project, a single maintainer is a risk you can afford.
 
-## One More Lego Block
+## One More Building Block
 
 Here is a story from long before Planton. In 2017, at a startup I was building, the very first time we needed a SQL database, I chose a managed database on AWS. That database cost more than the rest of the system combined, around 80 dollars a month, and that too just for development. On Kubernetes, I could have run a Postgres container with a quarter of a CPU and maybe 100 MB of RAM, because that infrastructure is shareable.
 
 But I didn't, because running it on Kubernetes was a whole lot of operational complexity. A few years later, at the end of 2020, we did start running Postgres on Kubernetes. Even then, as an operations engineer, I didn't have a standard pattern, template or source for it. It's not as simple as a `brew install` on your Mac. Helm is supposed to do that, but it's not all that simple in most cases.
 
-That gap is exactly what [Planton's catalog](https://github.com/plantonhq/planton/tree/main/catalog) fills today. Every open-source system becomes a Lego block: a typed, validated catalog item that deploys the same way every time. And that's how we operate: as long as an open-source project delivers what we need, we put it into the catalog and use it, so the rest of our customers can also benefit from it.
+That gap is exactly what [Planton's catalog](https://github.com/plantonhq/planton/tree/main/catalog) fills today. Every open-source system becomes a building block: a typed, validated catalog item that deploys the same way every time. And that's how we operate: as long as an open-source project delivers what we need, we put it into the catalog and use it, so the rest of our customers can also benefit from it.
 
 Our own environments run on close to fifty of our own [Kubernetes catalog items](https://github.com/plantonhq/planton/tree/main/catalog/kubernetes): Postgres with [CloudNativePG](https://cloudnative-pg.io), Valkey, OpenBao for secrets, OpenFGA for authorization, Temporal for workflows, Tekton, Istio, cert-manager, external-dns, and Prometheus, Loki, Tempo, Grafana and OpenTelemetry to watch it all. Even self-hosted Planton is an item in the catalog, and our own management instance runs on it. In the same week as this work, we tore our environments down and recreated every one of them from the same files.
 
 To be fair, we don't run everything ourselves. We still use managed services where they clearly earn it, like hosted sign-in, object storage and, of course, the cloud itself. Open source on Kubernetes is our default, not a religion.
 
-So, as part of our commitment to dogfooding, we added the flag engines to the catalog first. Actually, four Lego blocks: [GO Feature Flag](https://github.com/plantonhq/planton/tree/main/catalog/kubernetes/kubernetesgofeatureflag) and [flagd](https://github.com/plantonhq/planton/tree/main/catalog/kubernetes/kubernetesflagd), and a separate flag file for each. There are nuances as to why we separated them:
+So, as part of our commitment to dogfooding, we added the flag engines to the catalog first. Actually, four building blocks: [GO Feature Flag](https://github.com/plantonhq/planton/tree/main/catalog/kubernetes/kubernetesgofeatureflag) and [flagd](https://github.com/plantonhq/planton/tree/main/catalog/kubernetes/kubernetesflagd), and a separate flag file for each. There are nuances as to why we separated them:
 
 - Flipping a switch never touches the server.
 - Permission to flip a switch can be given without permission to change the server.
@@ -131,7 +131,7 @@ Even though running GO Feature Flag seemed like an extra component in the stack,
 
 And our customers get both engines in the catalog. We give them the choice, and we take GO Feature Flag as our choice.
 
-[![Planton's own environments are built from open-source blocks deployed through its catalog, and the flag engine is one more block that snaps in](https://assets.planton.ai/site/images/blog/feature-flags-opentelemetry-moment/2026-10-08-233000-feature-flags-one-more-block.gif)](https://assets.planton.ai/site/images/blog/feature-flags-opentelemetry-moment/2026-10-08-233000-feature-flags-one-more-block.mp4)
+[![Planton's own environments are built from open-source blocks deployed through its catalog, and the flag engine is one more block that snaps in](https://assets.planton.ai/site/images/blog/feature-flags-opentelemetry-moment/2026-10-09-000500-feature-flags-one-more-block.gif)](https://assets.planton.ai/site/images/blog/feature-flags-opentelemetry-moment/2026-10-09-000500-feature-flags-one-more-block.mp4)
 
 > **Tip:** Keep the switches apart from the server that serves them. Deploy the flag file on its own, so flipping a flag never redeploys the engine, and the people who flip flags don't need the keys to the server.
 
@@ -201,4 +201,4 @@ Here is everything above, in one place:
 
 Once this is in place, every feature after it ships dark and rolls out one organization at a time. For us, the Assistant was only the first.
 
-Both flag engines, and their flag files, are in our open-source catalog, so you can run the same Lego blocks on your own infrastructure: [GO Feature Flag](https://github.com/plantonhq/planton/tree/main/catalog/kubernetes/kubernetesgofeatureflag) and [flagd](https://github.com/plantonhq/planton/tree/main/catalog/kubernetes/kubernetesflagd) in the Planton catalog.
+Both flag engines, and their flag files, are in our open-source catalog, so you can run the same building blocks on your own infrastructure: [GO Feature Flag](https://github.com/plantonhq/planton/tree/main/catalog/kubernetes/kubernetesgofeatureflag) and [flagd](https://github.com/plantonhq/planton/tree/main/catalog/kubernetes/kubernetesflagd) in the Planton catalog.
