@@ -21,8 +21,9 @@ export async function generateStaticParams() {
 }
 
 /**
- * Every post carries its own title and description from its frontmatter;
- * before this, all of them shared the site's default title.
+ * Every post carries its own title, description and share image from its
+ * frontmatter. The featured image is the picture a link card shows on
+ * LinkedIn, Medium, Slack and X, so a post shared anywhere is recognizable.
  */
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -30,11 +31,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!raw) return { title: 'Not Found' };
   const { data } = matter(raw);
   const description = data.excerpt || data.description;
+  const images = data.featuredImage ? [data.featuredImage] : undefined;
   return {
     title: `${data.title} | Planton Blog`,
     description,
     alternates: { canonical: `https://planton.ai/blog/${cleanSlug(slug)}` },
-    openGraph: { title: data.title, description, type: 'article', publishedTime: data.date },
+    openGraph: { title: data.title, description, type: 'article', publishedTime: data.date, images },
+    twitter: { card: images ? 'summary_large_image' : 'summary', title: data.title, description, images },
   };
 }
 
