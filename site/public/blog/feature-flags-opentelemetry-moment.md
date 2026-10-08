@@ -161,11 +161,9 @@ Most of these are not in any documentation. Each one cost us a debugging session
 
 **Hiding things leaves holes.** When you hide a button or a page, something has to stand in its place. I didn't want that to be left to whoever hides something, so anyone who puts a surface behind a flag must now declare what occupies its place. If they don't, the code does not compile.
 
-**A test that could never fail.** Our browser test checked that an organization without the flag sees no Assistant button, and it passed. But it looked for the wrong accessible name, so it would have passed even with the button there. Now it runs next to the opposite test, so the absence check can actually fail.
-
 [![Fail closed, hold the last answer, recover by itself](https://assets.planton.ai/site/images/blog/feature-flags-opentelemetry-moment/2026-10-08-233000-feature-flags-fail-closed.gif)](https://assets.planton.ai/site/images/blog/feature-flags-opentelemetry-moment/2026-10-08-233000-feature-flags-fail-closed.mp4)
 
-> **Tip:** Read your provider's source code, especially what happens on the first failure. And for every "it is hidden" test, write the matching "it is shown" test, because an absence check that can't fail looks exactly like one that passes.
+> **Tip:** Read your provider's source code, especially what happens on the first failure. And make sure "off" is never silent: a missing flag should be something your health check can name.
 
 ## Do the Checks Stay Forever?
 
@@ -198,7 +196,7 @@ Here is everything above, in one place:
 6. **Judge an open-source project by your exit cost,** not its headcount.
 7. **Deploy the flag file apart from the engine.**
 8. **Let the server decide, fail closed,** and keep flags in git.
-9. **Read your provider's source,** and make every "it's hidden" test able to fail.
+9. **Read your provider's source,** and make sure a silent "off" shows up in your health checks.
 10. **Give every flag an owner and an expiry,** and let CI enforce both.
 
 Once this is in place, every feature after it ships dark and rolls out one organization at a time. For us, the Assistant was only the first.
