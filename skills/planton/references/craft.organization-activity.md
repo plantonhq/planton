@@ -109,8 +109,9 @@ records, say unavailable rather than guessing which it was.
 
 ## Review the Actual Change
 
-- Follow the card's `spec.source` to its run or `version_id`. For saved
-  configuration, read the exact version and its recorded diff; a list of
+- Follow `spec.source` to a run. For saved configuration, use
+  `spec.resource_change.version_id`, not the resource's ID. Read that exact
+  version and its recorded diff; a list of
   versions alone omits the full states and diffs. `history <version-id>`
   reads that version; `diff <version-a> <version-b>` compares two saved
   versions. With MCP, use `list_resource_versions` to find version IDs,
