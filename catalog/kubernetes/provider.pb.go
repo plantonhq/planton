@@ -187,6 +187,11 @@ func (x *KubernetesProviderConfig) GetSelfManaged() *KubernetesProviderConfigSel
 }
 
 // KubernetesProviderConfigGcpGke contains the connection parameters for a Google Kubernetes Engine (GKE) cluster.
+//
+// A GKE API server accepts short-lived Google OAuth2 access tokens. The config carries the
+// cluster identity as plain values plus at most one credential that yields those tokens:
+// a service-account key (exchanged for a token whenever one is needed), or a pre-minted
+// access token. With neither, tokens come from the ambient Google credential chain.
 type KubernetesProviderConfigGcpGke struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The cluster API server endpoint URL.
@@ -199,15 +204,24 @@ type KubernetesProviderConfigGcpGke struct {
 	// This is the raw JSON downloaded from the GCP Console or generated via
 	// `gcloud iam service-accounts keys create`.
 	//
-	// Optional: when empty, tokens are minted from the ambient Google credential
-	// chain of the process -- GOOGLE_OAUTH_ACCESS_TOKEN when present (the token a
-	// Planton runner mints for a connection's named gcloud configuration), else
-	// Application Default Credentials (GOOGLE_APPLICATION_CREDENTIALS, Workload
-	// Identity, GCE metadata, or `gcloud auth application-default login`). Same
+	// Optional: when both this and access_token are empty, tokens are minted from the
+	// ambient Google credential chain of the process -- GOOGLE_OAUTH_ACCESS_TOKEN when
+	// present (the token a Planton runner mints for a connection's named gcloud
+	// configuration), else Application Default Credentials (GOOGLE_APPLICATION_CREDENTIALS,
+	// Workload Identity, GCE metadata, or `gcloud auth application-default login`). Same
 	// contract as the EKS static-key fields and the AKS client_secret.
 	ServiceAccountKey string `protobuf:"bytes,3,opt,name=service_account_key,json=serviceAccountKey,proto3" json:"service_account_key,omitempty"`
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
+	// A pre-minted, short-lived Google OAuth2 access token for the cluster, supplied inline.
+	// It travels exactly where the rendered kubeconfig's exec entry travels, as the
+	// service-account key does, and is worthless after its hour. It is the carrier for
+	// credentials obtained OUTSIDE this config -- e.g. a Planton runner that
+	// exchanges a keyless (OIDC web-identity) GCP connection for the impersonated service
+	// account's token before the engine starts. Google access tokens live about an hour
+	// and cannot be renewed, so a caller running longer than that re-mints and re-supplies
+	// it per operation (the same contract as GcpProviderConfig.access_token).
+	AccessToken   string `protobuf:"bytes,4,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *KubernetesProviderConfigGcpGke) Reset() {
@@ -257,6 +271,13 @@ func (x *KubernetesProviderConfigGcpGke) GetClusterCaData() string {
 func (x *KubernetesProviderConfigGcpGke) GetServiceAccountKey() string {
 	if x != nil {
 		return x.ServiceAccountKey
+	}
+	return ""
+}
+
+func (x *KubernetesProviderConfigGcpGke) GetAccessToken() string {
+	if x != nil {
+		return x.AccessToken
 	}
 	return ""
 }
@@ -385,10 +406,10 @@ func (x *KubernetesProviderConfigAwsEks) GetSessionToken() string {
 // Like EKS, an Entra-integrated AKS API server has no long-lived bearer credential:
 // it honors short-lived Entra access tokens issued for the AKS AAD server application
 // (a first-party Azure app whose ID is identical in every environment). This config
-// therefore carries the cluster identity as plain values plus the Entra
-// service-principal credential used to mint those tokens on demand. The caller (a
-// deploy engine or an in-process Kubernetes client) exchanges the credential for a
-// fresh token whenever one is needed; the token itself is never stored here.
+// therefore carries the cluster identity as plain values plus at most one credential:
+// the Entra service-principal secret, which the caller (a deploy engine or an
+// in-process Kubernetes client) exchanges for a fresh token whenever one is needed, or
+// a token a caller already minted elsewhere (access_token), used as is.
 //
 // Clusters WITHOUT Entra integration (local-accounts-only) have no token to mint --
 // connect those through the self_managed arm with the kubeconfig AKS hands out.
@@ -408,9 +429,19 @@ type KubernetesProviderConfigAzureAks struct {
 	// or a cluster role bound to its object ID).
 	ClientId string `protobuf:"bytes,4,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
 	// The service principal's client secret, used to mint AKS tokens. Optional: when
-	// empty, tokens are minted from the ambient Azure credential chain of the process
-	// (environment variables, managed identity, or Azure CLI login).
-	ClientSecret  string `protobuf:"bytes,5,opt,name=client_secret,json=clientSecret,proto3" json:"client_secret,omitempty"`
+	// both this and access_token are empty, tokens are minted from the ambient Azure
+	// credential chain of the process (environment variables, managed identity, or
+	// Azure CLI login).
+	ClientSecret string `protobuf:"bytes,5,opt,name=client_secret,json=clientSecret,proto3" json:"client_secret,omitempty"`
+	// A pre-minted, short-lived Entra access token for the AKS API server, supplied inline.
+	// It travels exactly where the rendered kubeconfig's exec entry travels, as the client
+	// secret does, and is worthless once it expires. It is the carrier for credentials
+	// obtained OUTSIDE this config -- e.g. a Planton runner that
+	// exchanges a keyless (OIDC web-identity) Azure connection for a token scoped to the
+	// AKS server application before the engine starts. Entra access tokens cannot be
+	// renewed, so a caller running longer than one token's life re-mints and re-supplies
+	// it per operation.
+	AccessToken   string `protobuf:"bytes,6,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -476,6 +507,13 @@ func (x *KubernetesProviderConfigAzureAks) GetClientId() string {
 func (x *KubernetesProviderConfigAzureAks) GetClientSecret() string {
 	if x != nil {
 		return x.ClientSecret
+	}
+	return ""
+}
+
+func (x *KubernetesProviderConfigAzureAks) GetAccessToken() string {
+	if x != nil {
+		return x.AccessToken
 	}
 	return ""
 }
@@ -588,11 +626,13 @@ const file_catalog_kubernetes_provider_proto_rawDesc = "" +
 	"\aaws_eks\x18\x03 \x01(\v26.dev.planton.kubernetes.KubernetesProviderConfigAwsEksR\x06awsEks\x12U\n" +
 	"\tazure_aks\x18\x04 \x01(\v28.dev.planton.kubernetes.KubernetesProviderConfigAzureAksR\bazureAks\x12n\n" +
 	"\x12digital_ocean_doks\x18\x05 \x01(\v2@.dev.planton.kubernetes.KubernetesProviderConfigDigitalOceanDoksR\x10digitalOceanDoks\x12^\n" +
-	"\fself_managed\x18\x06 \x01(\v2;.dev.planton.kubernetes.KubernetesProviderConfigSelfManagedR\vselfManaged\"\xb3\x01\n" +
+	"\fself_managed\x18\x06 \x01(\v2;.dev.planton.kubernetes.KubernetesProviderConfigSelfManagedR\vselfManaged\"\xf7\x02\n" +
 	"\x1eKubernetesProviderConfigGcpGke\x121\n" +
 	"\x10cluster_endpoint\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0fclusterEndpoint\x12.\n" +
 	"\x0fcluster_ca_data\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\rclusterCaData\x12.\n" +
-	"\x13service_account_key\x18\x03 \x01(\tR\x11serviceAccountKey\"\xb7\x06\n" +
+	"\x13service_account_key\x18\x03 \x01(\tR\x11serviceAccountKey\x12!\n" +
+	"\faccess_token\x18\x04 \x01(\tR\vaccessToken:\x9e\x01\xbaH\x9a\x01\x1a\x97\x01\n" +
+	"!kubernetes.gcp_gke.one_credential\x127set at most one of service_account_key and access_token\x1a9this.service_account_key == '' || this.access_token == ''\"\xb7\x06\n" +
 	"\x1eKubernetesProviderConfigAwsEks\x12)\n" +
 	"\fcluster_name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\vclusterName\x121\n" +
 	"\x10cluster_endpoint\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0fclusterEndpoint\x12.\n" +
@@ -603,14 +643,16 @@ const file_catalog_kubernetes_provider_proto_rawDesc = "" +
 	"'kubernetes.aws_eks.access_key_id.format\x12GMust start with 'AKIA' or 'ASIA' followed by 16 alphanumeric characters\x1a%this.matches('^.{4}[a-zA-Z0-9]{16}$')\xd8\x01\x01r\x03\x98\x01\x14R\vaccessKeyId\x12\xec\x01\n" +
 	"\x11secret_access_key\x18\x06 \x01(\tB\xbf\x01\xbaH\xbb\x01\xba\x01\xaf\x01\n" +
 	"$kubernetes.aws_eks.secret_access_key\x12bMust contain exactly 40 characters consisting of numbers, letters, slashes (/), and plus signs (+)\x1a#this.matches('^[0-9a-zA-Z/+]{40}$')\xd8\x01\x01r\x03\x98\x01(R\x0fsecretAccessKey\x12#\n" +
-	"\rsession_token\x18\a \x01(\tR\fsessionToken\"\xa9\x03\n" +
+	"\rsession_token\x18\a \x01(\tR\fsessionToken\"\xdc\x04\n" +
 	" KubernetesProviderConfigAzureAks\x121\n" +
 	"\x10cluster_endpoint\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0fclusterEndpoint\x12.\n" +
 	"\x0fcluster_ca_data\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\rclusterCaData\x12\x1b\n" +
 	"\ttenant_id\x18\x03 \x01(\tR\btenantId\x12\x1b\n" +
 	"\tclient_id\x18\x04 \x01(\tR\bclientId\x12#\n" +
-	"\rclient_secret\x18\x05 \x01(\tR\fclientSecret:\xc2\x01\xbaH\xbe\x01\x1a\xbb\x01\n" +
-	"-kubernetes.azure_aks.secret_requires_identity\x12>tenant_id and client_id are required when client_secret is set\x1aJthis.client_secret == '' || (this.tenant_id != '' && this.client_id != '')\"S\n" +
+	"\rclient_secret\x18\x05 \x01(\tR\fclientSecret\x12!\n" +
+	"\faccess_token\x18\x06 \x01(\tR\vaccessToken:\xd2\x02\xbaH\xce\x02\x1a\xbb\x01\n" +
+	"-kubernetes.azure_aks.secret_requires_identity\x12>tenant_id and client_id are required when client_secret is set\x1aJthis.client_secret == '' || (this.tenant_id != '' && this.client_id != '')\x1a\x8d\x01\n" +
+	"#kubernetes.azure_aks.one_credential\x121set at most one of client_secret and access_token\x1a3this.client_secret == '' || this.access_token == ''\"S\n" +
 	"(KubernetesProviderConfigDigitalOceanDoks\x12'\n" +
 	"\vkube_config\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\n" +
 	"kubeConfig\"N\n" +

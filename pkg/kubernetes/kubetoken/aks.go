@@ -4,6 +4,7 @@ package kubetoken
 
 import (
 	"context"
+	"time"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
@@ -22,9 +23,11 @@ const aksServerAppID = "6dae42f8-4368-4678-94ff-3960e28e3630"
 // holds on that application".
 const aksTokenScope = aksServerAppID + "/.default"
 
-// AksTokenOptions carries the Entra service-principal credential that requests the
-// token. When ClientSecret is empty the ambient Azure credential chain of the process
-// authenticates instead (environment variables, managed identity, Azure CLI login).
+// AksTokenOptions carries the credential behind the token: an AccessToken a caller
+// already minted (used as is), or the Entra service-principal credential that requests
+// one. When both AccessToken and ClientSecret are empty the ambient Azure credential
+// chain of the process authenticates instead (environment variables, managed
+// identity, Azure CLI login).
 type AksTokenOptions struct {
 	// TenantID is the Entra tenant the service principal lives in. Required whenever
 	// ClientSecret is set; in ambient mode it optionally steers the chain to a
@@ -37,6 +40,12 @@ type AksTokenOptions struct {
 	// ClientSecret authenticates the service principal. Empty selects ambient mode.
 	ClientSecret string
 
+	// AccessToken is an Entra access token for the AKS server application that the
+	// caller already minted -- a Planton runner exchanges a keyless Azure connection for
+	// one before the engine starts. It is returned as is; setting it together with
+	// ClientSecret is refused, since the two name different credentials.
+	AccessToken string
+
 	// Transport overrides the HTTP transport of the credential. Empty in production;
 	// tests point it at a local fake so token minting is verifiable fully offline
 	// (setting it also skips Entra instance discovery, which would otherwise need
@@ -46,8 +55,17 @@ type AksTokenOptions struct {
 
 // MintAksToken exchanges the service-principal credential (or the ambient chain) for
 // a short-lived Entra access token scoped to the AKS AAD server application. The
-// expiry comes from the token response, never assumed.
+// expiry comes from the token response, never assumed -- except for a supplied
+// AccessToken, which carries no expiry of its own (see suppliedTokenTTL).
 func MintAksToken(ctx context.Context, opts AksTokenOptions) (Token, error) {
+	if opts.AccessToken != "" {
+		if opts.ClientSecret != "" {
+			return Token{}, errors.New("both a client secret and an access token were supplied for the AKS " +
+				"token; exactly one credential may be given")
+		}
+		return Token{Value: opts.AccessToken, ExpiresAt: time.Now().Add(suppliedTokenTTL)}, nil
+	}
+
 	cred, err := newAksCredential(opts)
 	if err != nil {
 		return Token{}, err

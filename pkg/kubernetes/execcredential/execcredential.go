@@ -40,6 +40,7 @@ const (
 	AksTenantIdEnvVar     = "PLANTON_AKS_TENANT_ID"
 	AksClientIdEnvVar     = "PLANTON_AKS_CLIENT_ID"
 	AksClientSecretEnvVar = "PLANTON_AKS_CLIENT_SECRET"
+	AksAccessTokenEnvVar  = "PLANTON_AKS_ACCESS_TOKEN"
 )
 
 // Static AWS credentials ride the SDK's standard names so the ambient credential
@@ -51,6 +52,14 @@ const (
 	AwsSecretAccessKeyEnvVar = "AWS_SECRET_ACCESS_KEY"
 	AwsSessionTokenEnvVar    = "AWS_SESSION_TOKEN"
 )
+
+// A pre-minted GKE token rides Google's standard name for the same reason: the GKE
+// minter's ambient chain reads it first. Set on the kubeconfig's exec entry, it
+// overrides any value the engine process inherited (client-go appends the entry's env
+// after the parent's, and the last value wins) -- so the cluster identity can never be
+// confused with another Google identity in the engine's environment, such as the state
+// bucket's sign-in.
+const GoogleAccessTokenEnvVar = kubetoken.GoogleOAuthAccessTokenEnvVar
 
 // Provider values accepted in ProviderEnvVar (KubernetesProvider enum value names).
 const (

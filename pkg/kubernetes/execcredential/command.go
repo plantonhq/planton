@@ -49,16 +49,20 @@ func run(ctx context.Context, out io.Writer) error {
 			Region:      os.Getenv(EksRegionEnvVar),
 		})
 	case ProviderGcpGke:
+		// A pre-minted token (GoogleAccessTokenEnvVar) needs no option: with no key,
+		// the minter's ambient chain reads it before falling back to ADC.
 		token, err = kubetoken.MintGkeToken(ctx, kubetoken.GkeTokenOptions{
 			ServiceAccountKeyJSON: os.Getenv(GkeServiceAccountKeyEnvVar),
 		})
 	case ProviderAzureAks:
-		// An empty client secret selects the ambient Azure credential chain inside
-		// the minter (environment, managed identity, Azure CLI login).
+		// A pre-minted access token is used as is; with neither it nor a client
+		// secret, the minter falls back to the ambient Azure credential chain
+		// (environment, managed identity, Azure CLI login).
 		token, err = kubetoken.MintAksToken(ctx, kubetoken.AksTokenOptions{
 			TenantID:     os.Getenv(AksTenantIdEnvVar),
 			ClientID:     os.Getenv(AksClientIdEnvVar),
 			ClientSecret: os.Getenv(AksClientSecretEnvVar),
+			AccessToken:  os.Getenv(AksAccessTokenEnvVar),
 		})
 	case "":
 		return errors.Errorf("%s is not set; this command is invoked by deploy engines "+

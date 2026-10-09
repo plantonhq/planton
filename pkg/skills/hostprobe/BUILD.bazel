@@ -7,18 +7,19 @@ go_library(
         "activity_hosts.go",
         "hostprobe.go",
     ],
-    importpath = "github.com/plantonhq/planton/pkg/skills/hostprobe",
     embedsrcs = glob(["testdata/activity/*.json"]),
+    importpath = "github.com/plantonhq/planton/pkg/skills/hostprobe",
     visibility = ["//visibility:public"],
 )
 
 go_test(
     name = "hostprobe_test",
     srcs = [
-        "activity_test.go",
         "activity_hosts_test.go",
+        "activity_test.go",
         "hostprobe_test.go",
         "judge_test.go",
     ],
+    data = glob(["testdata/**"]),
     embed = [":hostprobe"],
 )

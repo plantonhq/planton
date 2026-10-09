@@ -130,3 +130,35 @@ func TestMintAksTokenWithCredential_UsesAksScope(t *testing.T) {
 	assert.Contains(t, cred.capturedScopes[0], aksServerAppID)
 	assert.Equal(t, "external-cred-token", token.Value)
 }
+
+// TestMintAksToken_SuppliedAccessToken: a token the caller already minted (a keyless
+// connection's, exchanged before the engine ran) is handed back as is, with no network
+// activity and a re-invoke cadence well inside its real lifetime.
+func TestMintAksToken_SuppliedAccessToken(t *testing.T) {
+	transport := &fakeEntraTransport{t: t}
+
+	before := time.Now()
+	token, err := MintAksToken(context.Background(), AksTokenOptions{
+		TenantID:    "11111111-2222-3333-4444-555555555555",
+		AccessToken: "eyJ0eXAi.supplied-token",
+		Transport:   transport,
+	})
+	require.NoError(t, err)
+
+	assert.Equal(t, "eyJ0eXAi.supplied-token", token.Value)
+	assert.WithinDuration(t, before.Add(suppliedTokenTTL), token.ExpiresAt, 30*time.Second)
+	assert.Nil(t, transport.capturedForm, "a supplied token must not trigger a token request")
+}
+
+// TestMintAksToken_RefusesTokenWithSecret: a supplied token and a client secret name
+// different credentials; the minter refuses to pick one.
+func TestMintAksToken_RefusesTokenWithSecret(t *testing.T) {
+	_, err := MintAksToken(context.Background(), AksTokenOptions{
+		TenantID:     "11111111-2222-3333-4444-555555555555",
+		ClientID:     "test-client-id",
+		ClientSecret: "test-client-secret",
+		AccessToken:  "eyJ0eXAi.supplied-token",
+	})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "exactly one credential")
+}

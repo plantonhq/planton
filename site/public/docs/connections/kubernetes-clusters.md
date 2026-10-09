@@ -27,23 +27,31 @@ Kubernetes cluster connections let you bring those existing clusters into Planto
 
 ## Supported Providers
 
-Kubernetes cluster connections support four managed Kubernetes providers. Each requires different credentials depending on how the provider handles authentication.
+Kubernetes cluster connections support four managed Kubernetes providers. GKE, EKS, and AKS clusters accept short-lived tokens from the cloud's own identity system, so their connections store no Kubernetes credential: they name the cluster and **borrow the credentials of a cloud connection** you already have (a GCP, AWS, or Azure connection). The cloud connection's own sign-in method decides how the tokens are obtained — a stored key, the runner's own identity, or keyless, where nothing is stored at all.
+
+When Planton creates a GKE, EKS, or AKS cluster through Infra Hub, it creates the cluster's connection for you, borrowing the same cloud connection that built the cluster. A cluster built keyless is therefore reached keyless too.
 
 ### Google Kubernetes Engine (GKE)
 
-The most complete implementation. GKE connections use a service account key to authenticate.
+A GKE connection authenticates in one of two ways:
+
+- **Borrow a GCP connection (recommended).** Name a GCP connection whose service account has access to the cluster. Every sign-in method of that connection works, including keyless.
+- **A dedicated service account key.** For a cluster whose team prefers a key of its own over a shared GCP connection.
+
+The console's form offers the dedicated key today; Planton writes the borrowing form for every GKE cluster it builds.
 
 | Field | Description |
 |-------|-------------|
 | Cluster Endpoint | The API server endpoint of your GKE cluster |
 | Cluster CA Data | Base64-encoded certificate authority data for TLS verification |
-| Service Account Key | Base64-encoded JSON key for a GCP service account with Kubernetes Engine access |
+| GCP Connection | The GCP connection whose credentials reach the cluster (the borrowing option) |
+| Service Account Key | The JSON key of a GCP service account with Kubernetes Engine access (the dedicated-key option) |
 
 To find these values:
 
 1. In the Google Cloud Console, navigate to your GKE cluster's details page.
 2. The **Endpoint** and **Cluster CA certificate** are on the cluster details page.
-3. Create a GCP service account with the `Kubernetes Engine Developer` or `Kubernetes Engine Admin` role and generate a JSON key.
+3. Grant the service account behind your GCP connection (or a dedicated one, for a key) the `Kubernetes Engine Developer` or `Kubernetes Engine Admin` role.
 
 ### DigitalOcean Kubernetes (DOKS)
 
@@ -60,11 +68,11 @@ To get your kubeconfig:
 
 ### Amazon EKS
 
-> **Note**: EKS cluster connection support is defined in the API but the credential configuration is not yet implemented. EKS clusters created by Planton through Infra Hub work automatically — this connection type is for externally managed EKS clusters. Check back for updates.
+An EKS connection names the cluster (name, endpoint, CA data, and region) and borrows an AWS connection whose IAM principal has access to the cluster. Every sign-in method of that AWS connection works, including keyless.
 
 ### Azure AKS
 
-> **Note**: AKS cluster connection support is defined in the API but the credential configuration is not yet implemented. AKS clusters created by Planton through Infra Hub work automatically — this connection type is for externally managed AKS clusters. Check back for updates.
+An AKS connection names an Entra-integrated cluster (endpoint and CA data) and borrows an Azure connection whose principal holds RBAC on the cluster. Every sign-in method of that Azure connection works, including keyless. A cluster without Entra integration has no tokens to borrow; connect it with its kubeconfig instead.
 
 ## Connecting via the Web Console
 

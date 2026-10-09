@@ -72,3 +72,40 @@ func TestRun_AzureAksRejectsIncompleteIdentity(t *testing.T) {
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "azure_aks")
 }
+
+// emittedToken runs the command and returns the bearer token it printed.
+func emittedToken(t *testing.T) string {
+	t.Helper()
+	var out bytes.Buffer
+	require.NoError(t, run(context.Background(), &out))
+	var doc struct {
+		Status struct {
+			Token string `json:"token"`
+		} `json:"status"`
+	}
+	require.NoError(t, json.Unmarshal(out.Bytes(), &doc))
+	return doc.Status.Token
+}
+
+// TestRun_GcpGkeSuppliedToken: the token a GKE kubeconfig's exec entry carries under
+// Google's standard name is the token the command hands the API server -- the
+// keyless delegate's whole path through the helper, fully offline.
+func TestRun_GcpGkeSuppliedToken(t *testing.T) {
+	t.Setenv(ProviderEnvVar, ProviderGcpGke)
+	t.Setenv(GkeServiceAccountKeyEnvVar, "")
+	t.Setenv(GoogleAccessTokenEnvVar, "ya29.keyless-test-token")
+
+	assert.Equal(t, "ya29.keyless-test-token", emittedToken(t))
+}
+
+// TestRun_AzureAksSuppliedToken: the AKS arm hands back the exec entry's pre-minted
+// token as is, fully offline.
+func TestRun_AzureAksSuppliedToken(t *testing.T) {
+	t.Setenv(ProviderEnvVar, ProviderAzureAks)
+	t.Setenv(AksTenantIdEnvVar, "11111111-2222-3333-4444-555555555555")
+	t.Setenv(AksClientIdEnvVar, "")
+	t.Setenv(AksClientSecretEnvVar, "")
+	t.Setenv(AksAccessTokenEnvVar, "eyJ0eXAi.keyless-test-token")
+
+	assert.Equal(t, "eyJ0eXAi.keyless-test-token", emittedToken(t))
+}

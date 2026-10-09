@@ -50,7 +50,20 @@ message KubernetesProviderConfig {
 }
 
 // KubernetesProviderConfigGcpGke contains the connection parameters for a Google Kubernetes Engine (GKE) cluster.
+//
+// A GKE API server accepts short-lived Google OAuth2 access tokens. The config carries the
+// cluster identity as plain values plus at most one credential that yields those tokens:
+// a service-account key (exchanged for a token whenever one is needed), or a pre-minted
+// access token. With neither, tokens come from the ambient Google credential chain.
 message KubernetesProviderConfigGcpGke {
+  // A key and a pre-minted token are two different identities' credentials; carrying both
+  // would leave the effective identity to precedence rules instead of the caller.
+  option (buf.validate.message).cel = {
+    id: "kubernetes.gcp_gke.one_credential"
+    message: "set at most one of service_account_key and access_token"
+    expression: "this.service_account_key == '' || this.access_token == ''"
+  };
+
   // The cluster API server endpoint URL.
   string cluster_endpoint = 1 [(buf.validate.field).required = true];
 
@@ -63,13 +76,23 @@ message KubernetesProviderConfigGcpGke {
   // This is the raw JSON downloaded from the GCP Console or generated via
   // `gcloud iam service-accounts keys create`.
   //
-  // Optional: when empty, tokens are minted from the ambient Google credential
-  // chain of the process -- GOOGLE_OAUTH_ACCESS_TOKEN when present (the token a
-  // Planton runner mints for a connection's named gcloud configuration), else
-  // Application Default Credentials (GOOGLE_APPLICATION_CREDENTIALS, Workload
-  // Identity, GCE metadata, or `gcloud auth application-default login`). Same
+  // Optional: when both this and access_token are empty, tokens are minted from the
+  // ambient Google credential chain of the process -- GOOGLE_OAUTH_ACCESS_TOKEN when
+  // present (the token a Planton runner mints for a connection's named gcloud
+  // configuration), else Application Default Credentials (GOOGLE_APPLICATION_CREDENTIALS,
+  // Workload Identity, GCE metadata, or `gcloud auth application-default login`). Same
   // contract as the EKS static-key fields and the AKS client_secret.
   string service_account_key = 3;
+
+  // A pre-minted, short-lived Google OAuth2 access token for the cluster, supplied inline.
+  // It travels exactly where the rendered kubeconfig's exec entry travels, as the
+  // service-account key does, and is worthless after its hour. It is the carrier for
+  // credentials obtained OUTSIDE this config -- e.g. a Planton runner that
+  // exchanges a keyless (OIDC web-identity) GCP connection for the impersonated service
+  // account's token before the engine starts. Google access tokens live about an hour
+  // and cannot be renewed, so a caller running longer than that re-mints and re-supplies
+  // it per operation (the same contract as GcpProviderConfig.access_token).
+  string access_token = 4;
 }
 
 // KubernetesProviderConfigAwsEks contains the connection parameters for an Amazon Elastic
@@ -141,10 +164,10 @@ message KubernetesProviderConfigAwsEks {
 // Like EKS, an Entra-integrated AKS API server has no long-lived bearer credential:
 // it honors short-lived Entra access tokens issued for the AKS AAD server application
 // (a first-party Azure app whose ID is identical in every environment). This config
-// therefore carries the cluster identity as plain values plus the Entra
-// service-principal credential used to mint those tokens on demand. The caller (a
-// deploy engine or an in-process Kubernetes client) exchanges the credential for a
-// fresh token whenever one is needed; the token itself is never stored here.
+// therefore carries the cluster identity as plain values plus at most one credential:
+// the Entra service-principal secret, which the caller (a deploy engine or an
+// in-process Kubernetes client) exchanges for a fresh token whenever one is needed, or
+// a token a caller already minted elsewhere (access_token), used as is.
 //
 // Clusters WITHOUT Entra integration (local-accounts-only) have no token to mint --
 // connect those through the self_managed arm with the kubeconfig AKS hands out.
@@ -154,6 +177,14 @@ message KubernetesProviderConfigAzureAks {
     id: "kubernetes.azure_aks.secret_requires_identity"
     message: "tenant_id and client_id are required when client_secret is set"
     expression: "this.client_secret == '' || (this.tenant_id != '' && this.client_id != '')"
+  };
+
+  // A client secret and a pre-minted token are two different credentials; carrying both
+  // would leave the effective identity to precedence rules instead of the caller.
+  option (buf.validate.message).cel = {
+    id: "kubernetes.azure_aks.one_credential"
+    message: "set at most one of client_secret and access_token"
+    expression: "this.client_secret == '' || this.access_token == ''"
   };
 
   // The cluster API server endpoint URL, from the AKS portal or
@@ -174,9 +205,20 @@ message KubernetesProviderConfigAzureAks {
   string client_id = 4;
 
   // The service principal's client secret, used to mint AKS tokens. Optional: when
-  // empty, tokens are minted from the ambient Azure credential chain of the process
-  // (environment variables, managed identity, or Azure CLI login).
+  // both this and access_token are empty, tokens are minted from the ambient Azure
+  // credential chain of the process (environment variables, managed identity, or
+  // Azure CLI login).
   string client_secret = 5;
+
+  // A pre-minted, short-lived Entra access token for the AKS API server, supplied inline.
+  // It travels exactly where the rendered kubeconfig's exec entry travels, as the client
+  // secret does, and is worthless once it expires. It is the carrier for credentials
+  // obtained OUTSIDE this config -- e.g. a Planton runner that
+  // exchanges a keyless (OIDC web-identity) Azure connection for a token scoped to the
+  // AKS server application before the engine starts. Entra access tokens cannot be
+  // renewed, so a caller running longer than one token's life re-mints and re-supplies
+  // it per operation.
+  string access_token = 6;
 }
 
 // KubernetesProviderConfigDigitalOceanDoks message represents the specification required to connect to a DigitalOcean Kubernetes Service (DOKS) cluster.

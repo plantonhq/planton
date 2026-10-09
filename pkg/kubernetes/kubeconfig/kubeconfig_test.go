@@ -163,6 +163,32 @@ func TestBuild_GcpGkeAmbientMode(t *testing.T) {
 	env := execEnvMap(t, parseKubeconfig(t, rendered))
 	assert.Equal(t, execcredential.ProviderGcpGke, env[execcredential.ProviderEnvVar])
 	assert.NotContains(t, env, execcredential.GkeServiceAccountKeyEnvVar)
+	assert.NotContains(t, env, execcredential.GoogleAccessTokenEnvVar)
+}
+
+// TestBuild_GcpGkeAccessToken: a pre-minted token (a keyless connection's, exchanged
+// before the engine ran) rides the exec entry under Google's standard name -- the
+// entry overrides any Google token the engine inherited -- and no key entry appears.
+func TestBuild_GcpGkeAccessToken(t *testing.T) {
+	rendered, err := Build(&kubernetesprovider.KubernetesProviderConfig{
+		Provider: kubernetesprovider.KubernetesProvider_gcp_gke,
+		GcpGke: &kubernetesprovider.KubernetesProviderConfigGcpGke{
+			ClusterEndpoint: "34.100.155.147",
+			ClusterCaData:   "dGVzdC1jYS1kYXRh",
+			AccessToken:     "ya29.keyless-test-token",
+		},
+	}, testCredentialCommand)
+	require.NoError(t, err)
+
+	doc := parseKubeconfig(t, rendered)
+	env := execEnvMap(t, doc)
+	assert.Equal(t, execcredential.ProviderGcpGke, env[execcredential.ProviderEnvVar])
+	assert.Equal(t, "ya29.keyless-test-token", env["GOOGLE_OAUTH_ACCESS_TOKEN"])
+	assert.NotContains(t, env, execcredential.GkeServiceAccountKeyEnvVar)
+	for _, arg := range doc.Users[0].User.Exec.Args {
+		assert.NotContains(t, arg, "ya29.keyless-test-token",
+			"credential material travels ONLY in exec env entries, never argv")
+	}
 }
 
 // TestBuild_DigitalOceanDoksPassthrough: DOKS hands out a complete long-lived
@@ -230,6 +256,7 @@ func TestBuild_AzureAksAmbientMode(t *testing.T) {
 	assert.NotContains(t, env, execcredential.AksTenantIdEnvVar)
 	assert.NotContains(t, env, execcredential.AksClientIdEnvVar)
 	assert.NotContains(t, env, execcredential.AksClientSecretEnvVar)
+	assert.NotContains(t, env, execcredential.AksAccessTokenEnvVar)
 }
 
 // TestBuild_AzureAksAmbientModeWithTenant: the tenant is an identity coordinate,
@@ -244,6 +271,24 @@ func TestBuild_AzureAksAmbientModeWithTenant(t *testing.T) {
 	require.NoError(t, err)
 
 	env := execEnvMap(t, parseKubeconfig(t, rendered))
+	assert.Equal(t, "11111111-2222-3333-4444-555555555555", env[execcredential.AksTenantIdEnvVar])
+	assert.NotContains(t, env, execcredential.AksClientIdEnvVar)
+	assert.NotContains(t, env, execcredential.AksClientSecretEnvVar)
+}
+
+// TestBuild_AzureAksAccessToken: a pre-minted Entra token rides its own exec entry
+// beside the tenant coordinate, and no service-principal entries appear.
+func TestBuild_AzureAksAccessToken(t *testing.T) {
+	config := aksConfig()
+	config.AzureAks.ClientId = ""
+	config.AzureAks.ClientSecret = ""
+	config.AzureAks.AccessToken = "eyJ0eXAi.keyless-test-token"
+
+	rendered, err := Build(config, testCredentialCommand)
+	require.NoError(t, err)
+
+	env := execEnvMap(t, parseKubeconfig(t, rendered))
+	assert.Equal(t, "eyJ0eXAi.keyless-test-token", env[execcredential.AksAccessTokenEnvVar])
 	assert.Equal(t, "11111111-2222-3333-4444-555555555555", env[execcredential.AksTenantIdEnvVar])
 	assert.NotContains(t, env, execcredential.AksClientIdEnvVar)
 	assert.NotContains(t, env, execcredential.AksClientSecretEnvVar)

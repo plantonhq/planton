@@ -15,20 +15,15 @@ import (
 // requests (the same scope gcloud requests for cluster access).
 const cloudPlatformScope = "https://www.googleapis.com/auth/cloud-platform"
 
-// googleOAuthAccessTokenEnvVar carries a pre-minted Google access token into the
-// process. It is the same variable the Terraform/OpenTofu google providers read, and
-// the one a Planton runner exports when a runner-mode GCP connection names a gcloud
-// configuration (the per-connection ambient-identity selector). Checked before ADC so
-// the job authenticates as the identity the connection records, not the machine
-// default.
-const googleOAuthAccessTokenEnvVar = "GOOGLE_OAUTH_ACCESS_TOKEN"
-
-// envTokenTTL is the expiry reported for a token taken from the environment, which
-// carries no expiry metadata of its own. The ExecCredential protocol requires an
-// expiration timestamp (a zero time would read as already expired), so report a
-// cadence well inside the token's real ~1h Google TTL; every re-invoke re-reads the
-// environment, so this value only sets how often client-go asks again.
-const envTokenTTL = 10 * time.Minute
+// GoogleOAuthAccessTokenEnvVar carries a pre-minted Google access token into the
+// process. It is the same variable the Terraform/OpenTofu google providers read. Two
+// callers set it: the kubeconfig builder, on the exec entry of a GKE config whose
+// access_token is set (a keyless connection's token, exchanged before the engine ran),
+// and a Planton runner that exports it when a runner-mode GCP connection names a
+// gcloud configuration (the per-connection ambient-identity selector). Checked before
+// ADC so the job authenticates as the identity the connection records, not the
+// machine default.
+const GoogleOAuthAccessTokenEnvVar = "GOOGLE_OAUTH_ACCESS_TOKEN"
 
 // GkeTokenOptions carries the Google service-account key that signs the token request.
 type GkeTokenOptions struct {
@@ -74,8 +69,8 @@ func MintGkeToken(ctx context.Context, opts GkeTokenOptions) (Token, error) {
 // mintGkeAmbientToken resolves the ambient Google credential chain: a pre-minted
 // GOOGLE_OAUTH_ACCESS_TOKEN first, then Application Default Credentials.
 func mintGkeAmbientToken(ctx context.Context) (Token, error) {
-	if envToken := os.Getenv(googleOAuthAccessTokenEnvVar); envToken != "" {
-		return Token{Value: envToken, ExpiresAt: time.Now().Add(envTokenTTL)}, nil
+	if envToken := os.Getenv(GoogleOAuthAccessTokenEnvVar); envToken != "" {
+		return Token{Value: envToken, ExpiresAt: time.Now().Add(suppliedTokenTTL)}, nil
 	}
 
 	creds, err := google.FindDefaultCredentials(ctx, cloudPlatformScope)

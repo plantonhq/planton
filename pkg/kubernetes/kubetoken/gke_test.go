@@ -68,7 +68,7 @@ func fakeTokenEndpoint(t *testing.T) *httptest.Server {
 // change which arm the minter selects.
 func shieldAmbientEnv(t *testing.T) {
 	t.Helper()
-	t.Setenv(googleOAuthAccessTokenEnvVar, "")
+	t.Setenv(GoogleOAuthAccessTokenEnvVar, "")
 	t.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "")
 }
 
@@ -102,14 +102,14 @@ func TestMintGkeToken_RejectsMalformedKey(t *testing.T) {
 // time as already expired.
 func TestMintGkeToken_AmbientEnvToken(t *testing.T) {
 	shieldAmbientEnv(t)
-	t.Setenv(googleOAuthAccessTokenEnvVar, "ya29.ambient-test-token")
+	t.Setenv(GoogleOAuthAccessTokenEnvVar, "ya29.ambient-test-token")
 
 	before := time.Now()
 	token, err := MintGkeToken(context.Background(), GkeTokenOptions{})
 	require.NoError(t, err)
 
 	assert.Equal(t, "ya29.ambient-test-token", token.Value)
-	assert.WithinDuration(t, before.Add(envTokenTTL), token.ExpiresAt, 30*time.Second)
+	assert.WithinDuration(t, before.Add(suppliedTokenTTL), token.ExpiresAt, 30*time.Second)
 }
 
 // TestMintGkeToken_AmbientAdcFallback: with no key and no env token, Application

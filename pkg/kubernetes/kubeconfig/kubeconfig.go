@@ -83,11 +83,17 @@ func buildGcpGke(c *kubernetesprovider.KubernetesProviderConfigGcpGke, credentia
 	env := []execEnvVar{
 		{Name: execcredential.ProviderEnvVar, Value: execcredential.ProviderGcpGke},
 	}
-	// The service-account key is omitted entirely in ambient mode so the helper's own
-	// environment is never poisoned with empty values (same discipline as the EKS/AKS
-	// arms); the minter then falls back to GOOGLE_OAUTH_ACCESS_TOKEN or ADC.
+	// Each credential rides its own env entry, omitted entirely when empty so the
+	// helper's own environment is never poisoned with empty values (same discipline as
+	// the EKS/AKS arms). A pre-minted token travels HERE, on the exec entry, never in
+	// the engine's environment: the entry overrides whatever Google token the engine
+	// inherited (see execcredential.GoogleAccessTokenEnvVar). With neither credential,
+	// the minter falls back to the ambient chain (GOOGLE_OAUTH_ACCESS_TOKEN, then ADC).
 	if c.ServiceAccountKey != "" {
 		env = append(env, execEnvVar{Name: execcredential.GkeServiceAccountKeyEnvVar, Value: c.ServiceAccountKey})
+	}
+	if c.AccessToken != "" {
+		env = append(env, execEnvVar{Name: execcredential.GoogleAccessTokenEnvVar, Value: c.AccessToken})
 	}
 
 	return renderExecKubeconfig(c.ClusterEndpoint, c.ClusterCaData, credentialCommand, env)
@@ -107,14 +113,17 @@ func buildAzureAks(c *kubernetesprovider.KubernetesProviderConfigAzureAks, crede
 	if c.TenantId != "" {
 		env = append(env, execEnvVar{Name: execcredential.AksTenantIdEnvVar, Value: c.TenantId})
 	}
-	// The service-principal credential rides dedicated env entries; omitted entirely
-	// in ambient-chain mode so the helper's own environment is never poisoned with
-	// empty values (same discipline as the EKS arm).
+	// The credential -- a service-principal secret or a pre-minted token -- rides
+	// dedicated env entries; omitted entirely in ambient-chain mode so the helper's own
+	// environment is never poisoned with empty values (same discipline as the EKS arm).
 	if c.ClientSecret != "" {
 		env = append(env,
 			execEnvVar{Name: execcredential.AksClientIdEnvVar, Value: c.ClientId},
 			execEnvVar{Name: execcredential.AksClientSecretEnvVar, Value: c.ClientSecret},
 		)
+	}
+	if c.AccessToken != "" {
+		env = append(env, execEnvVar{Name: execcredential.AksAccessTokenEnvVar, Value: c.AccessToken})
 	}
 
 	return renderExecKubeconfig(c.ClusterEndpoint, c.ClusterCaData, credentialCommand, env)
