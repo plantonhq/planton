@@ -25,7 +25,8 @@ effect of reviewing.
 Use the instance, organization, and account the person or standing context
 already names. With the CLI, read `planton instance show`, `planton context
 get`, and `planton whoami`; use `--instance`, `--org`, and `--account` on
-subsequent commands instead of changing saved defaults. Read the command map
+subsequent commands instead of changing saved defaults. For `--account`, use
+the signed-in email, not the actor's display handle. Read the command map
 in `references/craft.planton-cli.md` before issuing the activity commands.
 The desktop or browser shell does not identify the backend: either can
 connect to a hosted or self-hosted instance; desktop can also run locally.
