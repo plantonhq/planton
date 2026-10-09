@@ -215,8 +215,8 @@ mutation, and its approval is a person's decision, never yours.
 
 **A rename is not cosmetic.** `planton rename <Kind> <id> -n <name>` (and
 `rename_infra_component`) changes the name the component's IaC module is
-given at its next deploy, and most kinds name their cloud resource after it:
-the next deploy replaces the cloud resource unless the kind's spec has an
+given at its next deploy, and most kinds use it as the resource name in the provider:
+the next deploy replaces that resource unless the kind's spec has an
 explicit cloud-name field holding the current name. Read the kind's schema
 for such a field before proposing a rename of anything deployed, and plan
 after it.
