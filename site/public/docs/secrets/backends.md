@@ -19,7 +19,10 @@ Every secret in Planton is stored in a **secret backend** — the store that hol
 Every organization starts with a working default and zero setup:
 
 - **Hosted organizations** get a Planton-operated [OpenBAO](https://openbao.org/) vault. Values are stored as native KV entries with per-organization isolation.
-- **A local desktop instance** gets a built-in local store: values envelope-encrypted in the instance's own database, with the encryption key minted into the operating system's keychain — the one backend where Planton's database is the store, because there is nothing else on a laptop.
+- **A self-hosted install** gets its bundled OpenBAO vault the same way — or, when the install runs with its vault off (`spec.vault.enabled: false`), the built-in local store below, with its key in a Kubernetes Secret the Planton operator holds. An install can also declare its first organization's default instead: the platform vault, or AWS Secrets Manager reached with the cluster's workload identity.
+- **A local desktop instance** gets the built-in local store: values envelope-encrypted in the instance's own database, with the encryption key minted into the operating system's keychain.
+
+The built-in local store is the one backend where Planton's database is the store — offered only where the install holds its key, and so never on the hosted service.
 
 For teams getting started, the default is the right choice. Connect your own store when you want secrets in your own account.
 
@@ -35,7 +38,7 @@ For teams getting started, the default is the right choice. Connect your own sto
 
 ### How a Cloud Backend Signs In
 
-**Cloud Connection** (recommended) — the backend signs in through one of your organization's cloud connections (`--aws-connection`, `--gcp-connection`, `--azure-connection`). With a keyless connection nothing about the backend is stored; with a stored-key connection the key stays in the connection's own secret. A connection's own secrets must live in a backend that does not itself sign in through a connection, and a connection a backend signs in through cannot be deleted. See [Signed In Through Your Connection](/docs/secrets/where-secrets-live#signed-in-through-your-connection).
+**Cloud Connection** (recommended) — the backend signs in through one of your organization's cloud connections (`--aws-connection`, `--gcp-connection`, `--azure-connection`). With a keyless connection nothing about the backend is stored; with a stored-key connection the key stays in the connection's own secret. [Keyless connections](/docs/connections/keyless-cloud-connections) need your cloud to reach the install's token issuer over the public internet, so a desktop instance offers none (use a stored-key connection, or Ambient Identity below), and a self-hosted install offers them when its front door is public, over HTTPS, and its vault runs. A connection's own secrets must live in a backend that does not itself sign in through a connection, and a connection a backend signs in through cannot be deleted. See [Signed In Through Your Connection](/docs/secrets/where-secrets-live#signed-in-through-your-connection).
 
 **Inline Credentials** — provide static credentials for the store (an AWS access key pair, a GCP service account key, an Azure service principal). They are moved into the platform's internal credential store on save and masked in every response — they never sit in the backend record.
 

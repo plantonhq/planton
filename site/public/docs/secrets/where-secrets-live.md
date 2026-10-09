@@ -23,7 +23,7 @@ When a secret's backend is AWS Secrets Manager, GCP Secret Manager, Azure Key Va
 
 There is no Planton encryption wrapper around your values in your store — the provider's own encryption, IAM, and audit apply, because the value is a native citizen of the provider. Anything that can read your store can read the value with no Planton dependency, which is precisely the point: **the day you stop using Planton, every secret is already where you need it, in the format your tools expect.**
 
-The one deliberate exception: a single-machine local instance's built-in backend stores values envelope-encrypted in the instance's own database, with the encryption key held in the operating system's keychain — because there, Planton's database IS the store.
+The one deliberate exception: the built-in local backend stores values envelope-encrypted in Planton's own database — because there, Planton's database IS the store. The key that opens them is held outside the database: in the operating system's keychain on a desktop instance, in a Kubernetes Secret the Planton operator holds on a self-hosted install that runs without its vault.
 
 ## Readable, Collision-Proof Names
 
@@ -88,7 +88,7 @@ planton secret backend create team-secrets --type aws \
   --aws-connection prod-aws
 ```
 
-With a [keyless connection](/docs/connections/keyless-cloud-connections), **nothing about the backend is stored anywhere**. Every time the backend needs fresh credentials, Planton mints a short-lived token for that connection and your cloud exchanges it against the trust you wrote once in your own account:
+With a [keyless connection](/docs/connections/keyless-cloud-connections), **nothing about the backend is stored anywhere**. Keyless connections are offered wherever your cloud can reach the install's token issuer: on Planton's hosted service, and on a self-hosted install with a public HTTPS front door and its vault running — not on a desktop instance, whose issuer is a loopback address. Every time the backend needs fresh credentials, Planton mints a short-lived token for that connection and your cloud exchanges it against the trust you wrote once in your own account:
 
 - **AWS** — the backend assumes the connection's role, in a session named `planton-secret-backend-<backend>`, so your CloudTrail shows exactly which backend read a secret.
 - **Google Cloud** — the token is exchanged at Google's token service and the connection's service account is impersonated.
