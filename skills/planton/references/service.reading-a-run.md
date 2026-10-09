@@ -3,6 +3,10 @@ title: Reading a Run — Status, Stages, Gates, and the Honest Skips
 description: How to read one run's record and report it in the user's words — the two run shapes (build runs vs delivery runs), the status vocabulary (queued/running/completed × succeeded/failed/cancelled/skipped and awaiting approval), the build task narrative and its per-task errors, the build logs and how to relay them, the per-environment deploy DAG with the deployment-record join, gate state and who can resolve it, the deploy-stage skip explanations that must be relayed verbatim, the run feed that renders the repository's own CI runs (mirrored from the provider, spoken in the provider's verbatim words) beside Planton's in one chronology, the external CI job logs fetched from the provider on view (completed jobs only), and the external-run verbs (re-run all/failed/one-job with optional debug logging, cancel) that delegate to the provider and resolve on its acknowledgement. Read when someone asks what a run is doing, why it failed, why it did not deploy, whether the repo's own CI passed, what its CI job printed, how to re-run or stop the repo's CI, what is waiting on them, or when you are following a run and reporting progress.
 ---
 
+For current decisions the caller can make, or personal Read/Unread state,
+use `references/craft.organization-activity.md`. A failed run is not an
+approval, and an environment's approver roster is not an eligibility check.
+
 # Reading a Run — Status, Stages, Gates, and the Honest Skips
 
 A run (the ServicePipeline record) is one automation run on a service, and its record is written to be READ: real diagnoses in `status_reason` fields, per-task errors on the build graph, per-resource reasons on the deploy graph, and explained skips instead of silent absences. This file is how to read one and answer in the user's words — "your push is building", "staging is waiting on Priya's approval", "it built but didn't deploy, and here is why".

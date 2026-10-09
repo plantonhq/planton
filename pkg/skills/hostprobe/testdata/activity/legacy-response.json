@@ -1,0 +1,58 @@
+{
+  "name": "legacy-response",
+  "arm": "mcp",
+  "prompt": "How many failures in acme prod have I not inspected? I am priya on https://older.example.invalid. This server version is unknown. Do not change anything.",
+  "exchanges": [
+    {
+      "tool": "list_organization_activity",
+      "input": {
+        "org": "acme",
+        "environments": [
+          "prod"
+        ],
+        "failures_only": true,
+        "read_state": "unread"
+      },
+      "output": {
+        "entries": [
+          {
+            "metadata": {
+              "id": "oact_failure",
+              "org": "acme",
+              "env": "prod"
+            },
+            "spec": {
+              "source": {
+                "kind": "infra_job",
+                "id": "ij_failed"
+              },
+              "target": {
+                "kind": "infra_component",
+                "id": "ic_database",
+                "name": "prod database",
+                "catalog_kind": "AwsRdsInstance"
+              },
+              "occurred_at": "2026-10-01T08:00:00Z",
+              "actor": {
+                "username": "priya",
+                "id": "user_priya"
+              },
+              "run": {
+                "status": "run_failed",
+                "ended_at": "2026-10-01T08:00:00Z",
+                "error": "Provider quota exceeded"
+              },
+              "audience": "audience_target_readers",
+              "verb": "applied"
+            },
+            "status": {
+              "target_gone": false
+            },
+            "api_version": "audit.planton.ai/v1alpha1",
+            "kind": "OrganizationActivity"
+          }
+        ]
+      }
+    }
+  ]
+}

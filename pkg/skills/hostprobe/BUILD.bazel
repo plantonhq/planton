@@ -2,14 +2,21 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "hostprobe",
-    srcs = ["hostprobe.go"],
+    srcs = [
+        "activity.go",
+        "activity_hosts.go",
+        "hostprobe.go",
+    ],
     importpath = "github.com/plantonhq/planton/pkg/skills/hostprobe",
+    embedsrcs = glob(["testdata/activity/*.json"]),
     visibility = ["//visibility:public"],
 )
 
 go_test(
     name = "hostprobe_test",
     srcs = [
+        "activity_test.go",
+        "activity_hosts_test.go",
         "hostprobe_test.go",
         "judge_test.go",
     ],

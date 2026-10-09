@@ -31,9 +31,10 @@ import (
 //	                                   only that host ("cursor", "claude")
 //	PLANTON_SKILL_HOST_PROBE_KEEP=1    keep fixtures and transcripts on disk
 //
-// The fixture never carries a control-plane login, so a `planton apply` the
-// agent should not have run is refused by the CLI before it can mutate
-// anything -- the checks then record the attempt as the violation it is.
+// This authoring probe inherits the host's environment and home. Run it only
+// in an isolated environment without live platform credentials: a temporary
+// repository alone does not remove an existing CLI login. Activity probes
+// use RunActivityHost's restricted tools and closed fixture transport instead.
 func TestCodingAgentJourney(t *testing.T) {
 	if os.Getenv("PLANTON_SKILL_HOST_PROBE") != "1" {
 		t.Skip("set PLANTON_SKILL_HOST_PROBE=1 to run the live coding-agent probe (spends tokens; needs a signed-in agent CLI)")

@@ -145,10 +145,12 @@ seeds the pointed-at release into its engine, verifying each artifact's
 checksum, the compatibility floor, and content shape before adopting it.
 
 When content starts depending on a newer CLI or daemon capability, raise
-the matching floor in `compat.yaml` in the same pull request — a consumer
-whose binaries are older than the floor refuses the release and keeps
-serving the previous one, which is exactly the graceful degradation the
-floor exists to buy.
+the matching floor in `compat.yaml` in the same pull request. The desktop
+daemon checks its daemon floor and tries admissible cached content when a
+release is refused; a fresh install without admissible content defers
+seeding. The CLI floor declares the content's assumption, but filesystem
+skill installers and hosted publishing do not universally enforce it.
+Instructions must check their actual CLI/tool and server capabilities too.
 
 Each release also ships in a second, browsable shape for reading surfaces:
 every skill's files individually fetchable under
@@ -164,8 +166,9 @@ The third consumer is the coding-agent lane:
 distribution repository whose `skills/` tree the release lane rewrites from
 the verified exploded trees after the stable pointer has moved, one commit
 per release tagged with the release's tag. Coding agents install from it
-(`npx skills add plantonhq/skills`, Claude Code's marketplace), so they run
-exactly the bytes the stable channel points to. Nothing under its `skills/`
+(`npx skills add plantonhq/skills`, Claude Code's marketplace); fresh installs
+receive the published bytes. Existing filesystem copies need their own
+installer's update and do not change when the stable pointer moves. Nothing under its `skills/`
 is authored by hand — a guard workflow there refuses pull requests that
 try — which keeps this tree the only place skill content is written.
 

@@ -225,12 +225,17 @@ after it.
 
 ```
 planton activity --since 24h -o json            # the organization's feed, newest first
-planton activity --env prod --attention -o json # what failed or waits for approval in prod
+planton activity --env prod --failures --read-state unread -o json # failures not inspected
+planton activity decisions -o json            # current decisions; org-wide, omit --env
 planton activity --mine --since 7d -o json      # the person's own changes
 planton activity <Kind> <name> -o json          # one resource's activity
 planton activity --this-session -o json         # everything this agent session changed
-planton activity --agent claude-code --since 7d # what one coding agent changed (or --agent any)
+planton activity --agent codex --since 7d      # what one coding agent changed (or --agent any)
 planton history <Kind> <name>                   # one resource's field-by-field versions
+planton history <version-id> -o json           # the exact saved version and introduced diff
+planton diff <version-a> <version-b> -o json    # compare two saved versions
+planton activity mark-read <activity-id>       # MUTATION: mark its current failure inspected
+planton activity mark-unread <activity-id>     # MUTATION: mark its current failure uninspected
 ```
 
 `activity` is the answer to "what changed", "what broke" and "who touched
@@ -245,8 +250,11 @@ moment; `--area` takes `infrastructure`, `services_pipelines`,
 `connections_credentials`, `configuration_secrets` or
 `organization_members`. Each card's `spec.source` names the run behind it:
 read a failed service run's logs or an Infra Job from there, and a
-configuration change's diff with `history <version-id>`. Lead a summary with
-the `--attention` cards, then the rest by area, naming people and resources.
+configuration change's diff with `history <version-id>`. For briefing and
+review semantics, read `references/craft.organization-activity.md`: decisions,
+unread failures and changes use different scopes. Read-state writes require
+explicit intent; the CLI fetches a current observation, not an earlier
+reviewed snapshot. Listing never marks anything Read.
 
 When you run `planton` from inside a coding agent, every change you make is
 recorded as the person **and** you ("Priya Rao and Claude Code"), with your
@@ -254,11 +262,12 @@ session. Before you report work as done, run `planton activity
 --this-session -o json` and check that what you changed is exactly what you
 meant to change; name anything unexpected. `--session <id>` reads another
 session's changes (each card carries `spec.actor.agent.session_id`), and
-`--agent` takes `claude-code`, `cursor`, `assistant`, `other`, or `any`.
+`--agent` takes `claude`, `cursor`, `codex`, `planton-assistant`, `other`, or
+`any`; declared aliases such as `claude-code` also work.
 `--this-session` refuses in a terminal that runs inside no agent session.
-If `planton activity` is an unknown command, the CLI is older than this
-feature: tell the person to update it (`brew upgrade planton`) and stop,
-rather than piecing the answer together from other commands.
+Use the activity reference's capability checks when a command or server
+operation is unavailable; an installed skill does not update the CLI or
+backend. Authentication and partial-response failures are not empty history.
 
 ## Watching a running deploy (humans; agents prefer snapshots)
 

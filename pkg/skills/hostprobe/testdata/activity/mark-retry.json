@@ -1,0 +1,53 @@
+{
+  "name": "mark-retry",
+  "prompt": "I inspected the failure oact_failure in acme as priya. My observation from the activity response is {\"org\": \"acme\", \"reader_revision\": \"reader-one\", \"read\": true, \"observations\": [{\"activity_id\": \"oact_failure\", \"source_kind\": \"infra_job\", \"source_id\": \"ij_cleanup\", \"outcome_token\": \"outcome-one\", \"expected_version\": 7}]}. The same authenticated account and https://demo.example.invalid instance remain selected. Mark exactly that observed failure Read. If the response is lost, retry once with the same observation; do not act on a newer failure.",
+  "arm": "mcp",
+  "exchanges": [
+    {
+      "tool": "set_organization_activity_read_state",
+      "input": {
+        "org": "acme",
+        "reader_revision": "reader-one",
+        "read": true,
+        "observations": [
+          {
+            "activity_id": "oact_failure",
+            "source_kind": "infra_job",
+            "source_id": "ij_cleanup",
+            "outcome_token": "outcome-one",
+            "expected_version": 7
+          }
+        ]
+      },
+      "output": "Response lost after request was sent",
+      "error": true
+    },
+    {
+      "tool": "set_organization_activity_read_state",
+      "input": {
+        "org": "acme",
+        "reader_revision": "reader-one",
+        "read": true,
+        "observations": [
+          {
+            "activity_id": "oact_failure",
+            "source_kind": "infra_job",
+            "source_id": "ij_cleanup",
+            "outcome_token": "outcome-one",
+            "expected_version": 7
+          }
+        ]
+      },
+      "output": {
+        "results": [
+          {
+            "reference": {
+              "activity_id": "oact_failure"
+            },
+            "outcome": "applied"
+          }
+        ]
+      }
+    }
+  ]
+}

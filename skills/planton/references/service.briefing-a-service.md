@@ -26,6 +26,13 @@ Stop there for the first turn. Do not read logs, files, or the repository before
 
 ## The shape of a briefing
 
+Service health and personal inspection are different questions. A failed run
+can affect this service even after someone reads it, and a historical failure
+does not prove the service is currently unhealthy. For "what waits on me" or
+unread failures, follow `references/craft.organization-activity.md`: current
+decision eligibility comes from the source queues, and Read is personal
+inspection. Never label every failed run as waiting for the caller.
+
 - **One line of identity.** What the service is, from where, to where: "storefront is your web storefront from acme/storefront, deployed to dev, staging, and prod."
 - **What needs attention, FIRST — or one quiet line.** A failed run, a rollout that did not verify, a run waiting for approval, a configuration sync that failed, a paused switch, a preview that never deployed. Order by consequence to the person, name the fact and its time, and say what is and is not affected ("nothing new was deployed from it"). When nothing needs attention, say so in one sentence and move on — quiet is the signal; never invent concern.
 - **What runs where.** Per environment: the build (short commit and its message), how it got there (from a run, promoted, rolled back, deployed by hand), when, its verdict in plain words, and its address. Healthy environments get one line each.

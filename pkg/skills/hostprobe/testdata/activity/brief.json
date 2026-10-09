@@ -1,0 +1,166 @@
+{
+  "name": "brief",
+  "prompt": "Brief me on acme in prod: changes between 2026-10-08T12:00:00Z and 2026-10-09T12:00:00Z, current decisions, and unread failures. Show just the newest failure as an example and tell me the total. The connected instance is https://demo.example.invalid and I am priya. Do not change anything.",
+  "arm": "mcp",
+  "exchanges": [
+    {
+      "tool": "list_service_pipelines",
+      "input": {
+        "org": "acme",
+        "awaiting_my_approval": true
+      },
+      "output": {
+        "pending_decisions": [
+          {
+            "id": "environment/prod",
+            "source_kind": "service_pipeline",
+            "source_id": "svcpipe_checkout",
+            "environment": "prod",
+            "eligible": true,
+            "waiting_since": "2026-10-01T08:00:00Z"
+          },
+          {
+            "id": "node/prod/db",
+            "source_kind": "service_pipeline",
+            "source_id": "svcpipe_checkout",
+            "environment": "prod",
+            "node_id": "db",
+            "eligible": true
+          }
+        ]
+      }
+    },
+    {
+      "tool": "list_infra_pipelines",
+      "input": {
+        "org": "acme",
+        "awaiting_my_approval": true
+      },
+      "output": {
+        "pending_decisions": [
+          {
+            "id": "approval",
+            "source_kind": "infra_pipeline",
+            "source_id": "infpipe_stage",
+            "environment": "staging",
+            "eligible": true
+          }
+        ]
+      }
+    },
+    {
+      "tool": "list_infra_jobs",
+      "input": {
+        "org": "acme",
+        "awaiting_my_approval": true
+      },
+      "output": "Infrastructure job decision queue unavailable",
+      "error": true
+    },
+    {
+      "tool": "list_organization_activity",
+      "input": {
+        "org": "acme",
+        "environments": [
+          "prod"
+        ],
+        "failures_only": true,
+        "read_state": "unread"
+      },
+      "output": {
+        "entries": [
+          {
+            "metadata": {
+              "id": "oact_failure",
+              "org": "acme",
+              "env": "prod"
+            },
+            "spec": {
+              "source": {
+                "kind": "infra_job",
+                "id": "ij_failed"
+              },
+              "target": {
+                "kind": "infra_component",
+                "id": "ic_database",
+                "name": "prod database",
+                "catalog_kind": "AwsRdsInstance"
+              },
+              "occurred_at": "2026-10-01T08:00:00Z",
+              "actor": {
+                "username": "priya",
+                "id": "user_priya"
+              },
+              "run": {
+                "status": "run_failed",
+                "ended_at": "2026-10-01T08:00:00Z",
+                "error": "Provider quota exceeded"
+              },
+              "audience": "audience_target_readers",
+              "verb": "applied"
+            },
+            "status": {
+              "target_gone": false
+            },
+            "api_version": "audit.planton.ai/v1alpha1",
+            "kind": "OrganizationActivity"
+          }
+        ],
+        "read_states": {
+          "oact_failure": {
+            "failure": {
+              "source": {
+                "kind": "infra_job",
+                "id": "ij_failed"
+              },
+              "outcome_token": "outcome-one"
+            },
+            "version": "7"
+          }
+        },
+        "reader_revision": "reader-one",
+        "visibility_token": "visibility-prod",
+        "viewer_reach": {
+          "environments": [
+            "prod"
+          ]
+        },
+        "unread_failure_count": "42",
+        "next_page_token": "older"
+      }
+    },
+    {
+      "tool": "list_organization_activity",
+      "input": {
+        "org": "acme",
+        "environments": [
+          "prod"
+        ],
+        "since": "2026-10-08T12:00:00Z",
+        "until": "2026-10-09T12:00:00Z"
+      },
+      "output": {
+        "entries": [],
+        "viewer_reach": {
+          "environments": [
+            "prod"
+          ]
+        },
+        "reader_revision": "reader-one",
+        "visibility_token": "visibility-prod"
+      }
+    },
+    {
+      "tool": "get_infra_job",
+      "input": {
+        "id": "ij_failed"
+      },
+      "output": {
+        "metadata": {
+          "id": "ij_failed"
+        }
+      },
+      "optional": true
+    }
+  ]
+}
