@@ -1,0 +1,15 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "activityfixture_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/plantonhq/planton/pkg/skills/hostprobe/cmd/activityfixture",
+    visibility = ["//visibility:private"],
+    deps = ["//pkg/skills/hostprobe"],
+)
+
+go_binary(
+    name = "activityfixture",
+    embed = [":activityfixture_lib"],
+    visibility = ["//visibility:public"],
+)

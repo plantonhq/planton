@@ -1,12 +1,13 @@
 # Compatibility floor carried by every definitions release manifest.
 #
 # These are the minimum consumer versions the CURRENT skill/agent content
-# assumes. A consumer older than the floor must stay on its embedded
-# baseline rather than adopt this content (it may document commands or
-# capabilities the older install does not have). Raise a floor in the same
+# assumes. The desktop daemon enforces its floor and tries admissible cached
+# content when it cannot adopt a release. Hosted publishing and filesystem
+# skill installations do not enforce every consumer floor; the skill must
+# also check the commands and server capabilities it uses. Raise a floor in the same
 # pull request that makes content depend on a newer capability, and say
 # which capability in the commit message.
 #
 # v0.0.0 means "no floor": the content works with every released consumer.
-minimum_daemon_version: v0.0.154
-minimum_cli_version: v0.0.154
+minimum_daemon_version: v0.0.155
+minimum_cli_version: v0.0.155

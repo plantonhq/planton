@@ -1,0 +1,461 @@
+{
+  "name": "cli-snapshot",
+  "prompt": "I inspected the failure oact_failure in acme as priya. My observation from the activity response is {\"org\": \"acme\", \"reader_revision\": \"reader-one\", \"read\": true, \"observations\": [{\"activity_id\": \"oact_failure\", \"source_kind\": \"infra_job\", \"source_id\": \"ij_cleanup\", \"outcome_token\": \"outcome-one\", \"expected_version\": 7}]}. The same authenticated account and https://demo.example.invalid instance remain selected. Mark exactly the failure I inspected Read, not whatever might be current now. You have the CLI only.",
+  "arm": "cli",
+  "exchanges": [
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "version"
+        ]
+      },
+      "output": {
+        "stdout": "Current version: v0.0.155",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "activity",
+          "mark-read",
+          "--help"
+        ]
+      },
+      "output": {
+        "stdout": "Usage: planton activity mark-read <activity-id>...\nMark named cards current failure Read.",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "instance",
+          "show"
+        ]
+      },
+      "output": {
+        "stdout": "slug: demo\napi_endpoint: https://demo.example.invalid\ndeployment_kind: hosted",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "instance",
+          "show",
+          "-o",
+          "json"
+        ]
+      },
+      "output": {
+        "stdout": "slug: demo\napi_endpoint: https://demo.example.invalid\ndeployment_kind: hosted",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "instance",
+          "show",
+          "--account",
+          "priya@example.invalid"
+        ]
+      },
+      "output": {
+        "stdout": "slug: demo\napi_endpoint: https://demo.example.invalid\ndeployment_kind: hosted",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "instance",
+          "show",
+          "--account",
+          "priya@example.invalid",
+          "-o",
+          "json"
+        ]
+      },
+      "output": {
+        "stdout": "slug: demo\napi_endpoint: https://demo.example.invalid\ndeployment_kind: hosted",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "instance",
+          "show",
+          "--instance",
+          "demo"
+        ]
+      },
+      "output": {
+        "stdout": "slug: demo\napi_endpoint: https://demo.example.invalid\ndeployment_kind: hosted",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "instance",
+          "show",
+          "--instance",
+          "demo",
+          "-o",
+          "json"
+        ]
+      },
+      "output": {
+        "stdout": "slug: demo\napi_endpoint: https://demo.example.invalid\ndeployment_kind: hosted",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "instance",
+          "show",
+          "--instance",
+          "demo",
+          "--account",
+          "priya@example.invalid"
+        ]
+      },
+      "output": {
+        "stdout": "slug: demo\napi_endpoint: https://demo.example.invalid\ndeployment_kind: hosted",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "instance",
+          "show",
+          "--instance",
+          "demo",
+          "--account",
+          "priya@example.invalid",
+          "-o",
+          "json"
+        ]
+      },
+      "output": {
+        "stdout": "slug: demo\napi_endpoint: https://demo.example.invalid\ndeployment_kind: hosted",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "context",
+          "get"
+        ]
+      },
+      "output": {
+        "stdout": "org: acme\nenv: staging",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "context",
+          "get",
+          "-o",
+          "json"
+        ]
+      },
+      "output": {
+        "stdout": "org: acme\nenv: staging",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "context",
+          "get",
+          "--account",
+          "priya@example.invalid"
+        ]
+      },
+      "output": {
+        "stdout": "org: acme\nenv: staging",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "context",
+          "get",
+          "--account",
+          "priya@example.invalid",
+          "-o",
+          "json"
+        ]
+      },
+      "output": {
+        "stdout": "org: acme\nenv: staging",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "context",
+          "get",
+          "--instance",
+          "demo"
+        ]
+      },
+      "output": {
+        "stdout": "org: acme\nenv: staging",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "context",
+          "get",
+          "--instance",
+          "demo",
+          "-o",
+          "json"
+        ]
+      },
+      "output": {
+        "stdout": "org: acme\nenv: staging",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "context",
+          "get",
+          "--instance",
+          "demo",
+          "--account",
+          "priya@example.invalid"
+        ]
+      },
+      "output": {
+        "stdout": "org: acme\nenv: staging",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "context",
+          "get",
+          "--instance",
+          "demo",
+          "--account",
+          "priya@example.invalid",
+          "-o",
+          "json"
+        ]
+      },
+      "output": {
+        "stdout": "org: acme\nenv: staging",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "whoami"
+        ]
+      },
+      "output": {
+        "stdout": "{\"id\": \"user_priya\", \"username\": \"priya\", \"account\": \"priya@example.invalid\", \"email\": \"priya@example.invalid\"}",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "whoami",
+          "-o",
+          "json"
+        ]
+      },
+      "output": {
+        "stdout": "{\"id\": \"user_priya\", \"username\": \"priya\", \"account\": \"priya@example.invalid\", \"email\": \"priya@example.invalid\"}",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "whoami",
+          "--account",
+          "priya@example.invalid"
+        ]
+      },
+      "output": {
+        "stdout": "{\"id\": \"user_priya\", \"username\": \"priya\", \"account\": \"priya@example.invalid\", \"email\": \"priya@example.invalid\"}",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "whoami",
+          "--account",
+          "priya@example.invalid",
+          "-o",
+          "json"
+        ]
+      },
+      "output": {
+        "stdout": "{\"id\": \"user_priya\", \"username\": \"priya\", \"account\": \"priya@example.invalid\", \"email\": \"priya@example.invalid\"}",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "whoami",
+          "--instance",
+          "demo"
+        ]
+      },
+      "output": {
+        "stdout": "{\"id\": \"user_priya\", \"username\": \"priya\", \"account\": \"priya@example.invalid\", \"email\": \"priya@example.invalid\"}",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "whoami",
+          "--instance",
+          "demo",
+          "-o",
+          "json"
+        ]
+      },
+      "output": {
+        "stdout": "{\"id\": \"user_priya\", \"username\": \"priya\", \"account\": \"priya@example.invalid\", \"email\": \"priya@example.invalid\"}",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "whoami",
+          "--instance",
+          "demo",
+          "--account",
+          "priya@example.invalid"
+        ]
+      },
+      "output": {
+        "stdout": "{\"id\": \"user_priya\", \"username\": \"priya\", \"account\": \"priya@example.invalid\", \"email\": \"priya@example.invalid\"}",
+        "exit_code": 0
+      },
+      "optional": true
+    },
+    {
+      "tool": "run_command",
+      "input": {
+        "argv": [
+          "planton",
+          "whoami",
+          "--instance",
+          "demo",
+          "--account",
+          "priya@example.invalid",
+          "-o",
+          "json"
+        ]
+      },
+      "output": {
+        "stdout": "{\"id\": \"user_priya\", \"username\": \"priya\", \"account\": \"priya@example.invalid\", \"email\": \"priya@example.invalid\"}",
+        "exit_code": 0
+      },
+      "optional": true
+    }
+  ]
+}

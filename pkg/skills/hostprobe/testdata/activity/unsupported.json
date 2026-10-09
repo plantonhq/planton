@@ -1,0 +1,20 @@
+{
+  "name": "unsupported",
+  "arm": "mcp",
+  "prompt": "How many failures in acme prod have I not inspected? I am priya on https://older.example.invalid. Do not change anything.",
+  "exchanges": [
+    {
+      "tool": "list_organization_activity",
+      "input": {
+        "org": "acme",
+        "environments": [
+          "prod"
+        ],
+        "failures_only": true,
+        "read_state": "unread"
+      },
+      "output": "UNIMPLEMENTED: this instance does not support the organization activity operation",
+      "error": true
+    }
+  ]
+}
