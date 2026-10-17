@@ -104,10 +104,13 @@ func TestExplainForbiddenCRDsOnceAcrossThreeResources(t *testing.T) {
 			t.Errorf("observation lacks %q: %s", want, f.Observed)
 		}
 	}
-	if !strings.Contains(f.Meaning, "outside the Helm release") {
+	if !strings.Contains(f.Meaning, "as kept resources apart from the release or manifest it installs") {
 		t.Errorf("the CRD meaning must say why the module needs the right: %s", f.Meaning)
 	}
-	for _, want := range []string{"iac/permissions.yaml", "spec.crds.install", "helm template --include-crds"} {
+	if strings.Contains(f.Meaning, "Helm") {
+		t.Errorf("the runner explains this text for chart and manifest kinds alike, so the meaning names no source: %s", f.Meaning)
+	}
+	for _, want := range []string{"iac/permissions.yaml", "spec.crds.install", "helm template --include-crds", "the kind's README names where its CRDs come from"} {
 		if !strings.Contains(f.NextStep, want) {
 			t.Errorf("next step lacks %q: %s", want, f.NextStep)
 		}
@@ -190,6 +193,19 @@ func TestExplainFieldNotInDefinitionGenericOwner(t *testing.T) {
 	requireParts(t, f)
 	if !strings.Contains(f.NextStep, "upgrade the resource that installs the Widget definition") {
 		t.Errorf("a kind with no known owner gets the generic next step: %s", f.NextStep)
+	}
+}
+
+func TestExplainFieldNotInDefinitionModulePinnedOwner(t *testing.T) {
+	raw := `failed to create typed patch object (agents/workbench; agents.x-k8s.io/v1beta1, Kind=Sandbox): .spec.podTemplate.spec.hostnameOverride: field not declared in schema`
+	failures := Explain(raw)
+	if len(failures) != 1 {
+		t.Fatalf("expected one explanation, got %d", len(failures))
+	}
+	f := failures[0]
+	requireParts(t, f)
+	if !strings.Contains(f.NextStep, "redeploy KubernetesAgentSandboxController from the current catalog release") {
+		t.Errorf("a definition whose owner pins the release names a redeploy, not a version field: %s", f.NextStep)
 	}
 }
 

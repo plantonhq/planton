@@ -1,0 +1,179 @@
+# Full-surface development manifest: every typed field set, so the offline
+# plan proofs cover arms the live lanes leave out. Values differ from the
+# defaults wherever a default exists, so every setting is visible in the
+# rendered objects.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxController
+metadata:
+  name: agent-sandbox-hack
+spec:
+  namespace:
+    value: agent-sandbox-system
+  createNamespace: true
+  crds:
+    install: true
+    keepOnUninstall: false
+  clusterDomain: cluster.local
+  imageRegistry: mirror.example.com/k8s
+  imagePullSecrets:
+    - mirror-pull
+  extensions:
+    allowedLabelDomains:
+      - sandbox.users.io
+      - example.com
+    claim:
+      concurrentWorkers: 80
+      warmCandidateGracePeriod: 500ms
+      eventsDisabled: true
+      observabilityAnnotationsDisabled: true
+    warmPool:
+      concurrentWorkers: 4
+      maxBatchSize: 100
+      replenishDelay: 2s
+      maxRefillRate: 20
+      readinessGracePeriod: 3m
+      unschedulableRecheckInterval: 30s
+      evictionEnabled: false
+    template:
+      concurrentWorkers: 2
+  controller:
+    image:
+      repo: mirror.example.com/k8s/agent-sandbox/agent-sandbox-controller
+      tag: v1.0.7
+    replicas: 2
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+    nodeSelector:
+      kubernetes.io/os: linux
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: agents
+        effect: NoSchedule
+    leaderElection:
+      namespace: agent-sandbox-system
+    metrics:
+      port: 8443
+      restClientMetricsEnabled: false
+      tls:
+        certificateSecret:
+          value: controller-metrics-tls
+        minVersion: tls13
+    healthProbePort: 8082
+    sandbox:
+      concurrentWorkers: 200
+      eventsDisabled: true
+      writeBehindWindow: 250ms
+    cacheLabelSelectors: true
+    kubeApi:
+      qps: 80
+      burst: 120
+      connections: 2
+      separateWatchConnection: true
+    tracing:
+      otlpEndpoint: http://otel-collector.observability:4317
+      insecure: true
+      headers:
+        secret:
+          value: otel-headers
+        key: headers
+    profiling:
+      cpuEnabled: true
+      debugEnabled: true
+      blockProfileRate: 500000
+      mutexProfileFraction: 20
+    logging:
+      development: true
+      encoder: json
+      level: debug
+      stacktraceLevel: panic
+      timeEncoding: rfc3339
+  router:
+    image:
+      repo: mirror.example.com/k8s/agent-sandbox/sandbox-router-go
+      tag: v1.0.7
+    replicas: 3
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+      limits:
+        cpu: "2"
+        memory: 1Gi
+    nodeSelector:
+      kubernetes.io/os: linux
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: agents
+        effect: NoSchedule
+    minAvailable: 2
+    authorization:
+      scopedToken:
+        v1Secret:
+          secret:
+            value: router-scoped-v1
+          key: secret
+        verificationKeys:
+          secret:
+            value: router-scoped-keys
+          key: keys.json
+        v1AcceptUntil: "2027-01-01T00:00:00Z"
+      cookie:
+        name: sandbox-session
+        queryParam: token
+        sameSite: strict
+        allowedOrigins:
+          - https://app.example.com
+        trustForwardedProto: true
+    tls:
+      certificateSecret:
+        value: sandbox-router-tls
+      port: 9443
+      httpEnabled: true
+      mtlsMode: optional
+      clientCa:
+        secret:
+          value: router-client-ca
+        key: ca.crt
+      minVersion: tls12
+      cipherSuites:
+        - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    proxy:
+      timeout: 2m
+      responseHeaderTimeout: 45s
+      shutdownTimeout: 1m
+      maxRequestBodyBytes: 10485760
+      allowLoopbackPodIp: true
+      pathRoutingPrefix: /sandboxes
+      upstreamMaxRetries: 5
+      upstreamRetryInitialDelay: 100ms
+      upstreamRetryMaxDelay: 2s
+    cache:
+      namespace: agents
+    telemetry:
+      otlpEndpoint: http://otel-collector.observability:4317
+      insecure: true
+      tracesEnabled: true
+      metricsEnabled: false
+      headers:
+        secret:
+          value: otel-headers
+        key: headers
+    accessLogEnabled: false
+    ports:
+      http: 8090
+      metrics: 9091
+      healthProbe: 8083
+    networkPolicy:
+      clientNamespaceLabels:
+        kubernetes.io/metadata.name: agents
+      metricsNamespace: observability
+      sandboxPorts:
+        - 8888
+        - 3000

@@ -1,0 +1,30 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandbox
+metadata:
+  name: <sandbox-name>
+spec:
+  namespace:
+    value: <namespace>
+  podTemplate:
+    spec:
+      runtimeClassName: gvisor
+      nodeSelector:
+        sandbox.gke.io/runtime: gvisor
+      tolerations:
+        - key: sandbox.gke.io/runtime
+          operator: Equal
+          value: gvisor
+          effect: NoSchedule
+      automountServiceAccountToken: false
+      containers:
+        - name: workload
+          image: <workload-image>
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              memory: 2Gi
+  # Replace with the moment the sandbox should end (RFC 3339, UTC or offset).
+  shutdownTime: "2026-12-31T18:00:00Z"
+  shutdownPolicy: Retain

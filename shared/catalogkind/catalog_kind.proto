@@ -92,14 +92,17 @@ message CatalogKindMeta {
   repeated CatalogKind prerequisites = 7;
 
   //set ONLY for kinds whose spec is a direct projection of a single Kubernetes
-  //custom resource -- i.e. the Terraform module is a thin `kubernetes_manifest`
+  //custom resource -- i.e. the Terraform module is a thin `kubectl_manifest`
   //passthrough rather than hand-written provider logic. its presence flips the
   //proto->tfvars converter to emit the manifest-shaped (camelCase, pruned) spec
   //and drives deterministic thin-module generation (see `planton tofu
   //generate-module`). absent for provider-abstraction kinds (aws/gcp/etc.),
   //which keep idiomatic snake_case typed variables. the api_version/kind here
   //are the UPSTREAM CRD's group-version-kind, distinct from the Planton
-  //groupVersion returned by catalogkindreflect.GroupVersion.
+  //groupVersion returned by catalogkindreflect.GroupVersion. a kind whose
+  //custom resource definition is pinned under
+  //pkg/kubernetes/manifestprojection/testdata/schemas/ is held to it field for
+  //field, both ways and type for type, by that package's mirror test.
   KubernetesManifestProjection kubernetes_manifest_projection = 8;
 
   //schema versions of this kind announced as deprecated. a deprecated version
@@ -6206,7 +6209,7 @@ enum CatalogKind {
 
   // 4000–4999: Kubernetes resources, organized in family sub-bands
   // (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts
-  // analytics & ML; 4190–4199 reserved for growth)
+  // analytics & ML; 4180–4199 hosts agent sandbox runtimes)
   // 4000–4029: Kubernetes building blocks (core API primitives)
   KubernetesNamespace = 4000 [(kind_meta) = {
     provider: kubernetes
@@ -6684,6 +6687,16 @@ enum CatalogKind {
     id_prefix: "k8svel"
     service_group: kubernetes_operators_controllers
   }];
+  KubernetesGkeComputeClass = 4068 [(kind_meta) = {
+    provider: kubernetes
+    version: "v1alpha1"
+    id_prefix: "k8sgkecc"
+    kubernetes_manifest_projection: {
+      api_version: "cloud.google.com/v1"
+      kind: "ComputeClass"
+    }
+    service_group: kubernetes_operators_controllers
+  }];
   // 4070–4079: Kubernetes observability
   KubernetesKubePrometheusStack = 4070 [(kind_meta) = {
     provider: kubernetes
@@ -7144,6 +7157,24 @@ enum CatalogKind {
     ]
     service_group: kubernetes_open_source_software
   }];
+  // Langfuse's four required stores each FK-default onto a catalog kind:
+  // KubernetesPostgres (users, projects, prompts, API keys - host and
+  // password Secret), KubernetesClickHouse (traces and scores - host,
+  // cluster name and auth Secret), KubernetesValkey (the ingestion queues
+  // - host, ACL user and password Secret), and KubernetesSeaweedFs (the
+  // S3-compatible event store - endpoint and credentials Secret).
+  KubernetesLangfuse = 4140 [(kind_meta) = {
+    provider: kubernetes
+    version: "v1alpha1"
+    id_prefix: "k8slfuse"
+    prerequisites: [
+      KubernetesPostgres,
+      KubernetesClickHouse,
+      KubernetesValkey,
+      KubernetesSeaweedFs
+    ]
+    service_group: kubernetes_open_source_software
+  }];
   // 4150–4169: Kubernetes GitOps and CI/CD
   KubernetesArgocd = 4150 [(kind_meta) = {
     provider: kubernetes
@@ -7202,7 +7233,7 @@ enum CatalogKind {
     id_prefix: "k8sjkn"
     service_group: kubernetes_open_source_software
   }];
-  // 4170–4189: Kubernetes app platforms
+  // 4170–4179: Kubernetes app platforms
   // KubernetesPostgres is a prerequisite because the recommended (and
   // E2E-proven) database composition backs Temporal's default and
   // visibility stores with a CloudNativePG cluster.
@@ -7272,6 +7303,71 @@ enum CatalogKind {
     version: "v1alpha1"
     id_prefix: "k8sflgdf"
     service_group: kubernetes_open_source_software
+  }];
+  // 4180–4199: agent sandbox runtimes (4180–4189 Kubernetes SIG Apps'
+  // agent-sandbox; 4190–4199 Agent Substrate)
+  KubernetesAgentSandboxController = 4180 [(kind_meta) = {
+    provider: kubernetes
+    version: "v1alpha1"
+    id_prefix: "k8sasbc"
+    service_group: kubernetes_operators_controllers
+  }];
+  // KubernetesAgentSandboxController is a prerequisite because it installs the
+  // agents.x-k8s.io definition the Sandbox is an instance of, and the
+  // controller that runs its pod.
+  KubernetesAgentSandbox = 4181 [(kind_meta) = {
+    provider: kubernetes
+    version: "v1alpha1"
+    id_prefix: "k8sasbx"
+    prerequisites: [KubernetesAgentSandboxController]
+    kubernetes_manifest_projection: {
+      api_version: "agents.x-k8s.io/v1beta1"
+      kind: "Sandbox"
+    }
+    service_group: kubernetes_operators_controllers
+  }];
+  // KubernetesAgentSandboxController is a prerequisite because it installs the
+  // extensions.agents.x-k8s.io definition the SandboxTemplate is an instance
+  // of, and the extension controllers that turn it into network policy and
+  // warm pool members.
+  KubernetesAgentSandboxTemplate = 4182 [(kind_meta) = {
+    provider: kubernetes
+    version: "v1alpha1"
+    id_prefix: "k8sasbt"
+    prerequisites: [KubernetesAgentSandboxController]
+    kubernetes_manifest_projection: {
+      api_version: "extensions.agents.x-k8s.io/v1beta1"
+      kind: "SandboxTemplate"
+    }
+    service_group: kubernetes_operators_controllers
+  }];
+  // KubernetesAgentSandboxController is a prerequisite because it installs the
+  // extensions.agents.x-k8s.io definition the SandboxWarmPool is an instance
+  // of, and the controller that keeps the pool's members ready.
+  KubernetesAgentSandboxWarmPool = 4183 [(kind_meta) = {
+    provider: kubernetes
+    version: "v1alpha1"
+    id_prefix: "k8sasbwp"
+    prerequisites: [KubernetesAgentSandboxController]
+    kubernetes_manifest_projection: {
+      api_version: "extensions.agents.x-k8s.io/v1beta1"
+      kind: "SandboxWarmPool"
+    }
+    service_group: kubernetes_operators_controllers
+  }];
+  // KubernetesAgentSandboxController is a prerequisite because it installs the
+  // extensions.agents.x-k8s.io definition the SandboxClaim is an instance of,
+  // and the controller that binds it to a warm pool member.
+  KubernetesAgentSandboxClaim = 4184 [(kind_meta) = {
+    provider: kubernetes
+    version: "v1alpha1"
+    id_prefix: "k8sasbcl"
+    prerequisites: [KubernetesAgentSandboxController]
+    kubernetes_manifest_projection: {
+      api_version: "extensions.agents.x-k8s.io/v1beta1"
+      kind: "SandboxClaim"
+    }
+    service_group: kubernetes_operators_controllers
   }];
 
   // 5000–5999: DigitalOcean resources

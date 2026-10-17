@@ -2238,7 +2238,7 @@ const (
 	CatalogKind_GcpDeployCustomTargetType CatalogKind = 3262
 	// 4000–4999: Kubernetes resources, organized in family sub-bands
 	// (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts
-	// analytics & ML; 4190–4199 reserved for growth)
+	// analytics & ML; 4180–4199 hosts agent sandbox runtimes)
 	// 4000–4029: Kubernetes building blocks (core API primitives)
 	CatalogKind_KubernetesNamespace      CatalogKind = 4000
 	CatalogKind_KubernetesDeployment     CatalogKind = 4001
@@ -2316,6 +2316,7 @@ const (
 	CatalogKind_KubernetesKarpenterEc2NodeClass CatalogKind = 4065
 	CatalogKind_KubernetesClusterAutoscaler     CatalogKind = 4066
 	CatalogKind_KubernetesVelero                CatalogKind = 4067
+	CatalogKind_KubernetesGkeComputeClass       CatalogKind = 4068
 	// 4070–4079: Kubernetes observability
 	CatalogKind_KubernetesKubePrometheusStack CatalogKind = 4070
 	CatalogKind_KubernetesGrafana             CatalogKind = 4071
@@ -2448,6 +2449,13 @@ const (
 	// arm FK-defaults onto a KubernetesValkey's service and password
 	// Secret.
 	CatalogKind_KubernetesSuperset CatalogKind = 4139
+	// Langfuse's four required stores each FK-default onto a catalog kind:
+	// KubernetesPostgres (users, projects, prompts, API keys - host and
+	// password Secret), KubernetesClickHouse (traces and scores - host,
+	// cluster name and auth Secret), KubernetesValkey (the ingestion queues
+	// - host, ACL user and password Secret), and KubernetesSeaweedFs (the
+	// S3-compatible event store - endpoint and credentials Secret).
+	CatalogKind_KubernetesLangfuse CatalogKind = 4140
 	// 4150–4169: Kubernetes GitOps and CI/CD
 	CatalogKind_KubernetesArgocd         CatalogKind = 4150
 	CatalogKind_KubernetesArgoWorkflows  CatalogKind = 4151
@@ -2464,7 +2472,7 @@ const (
 	CatalogKind_KubernetesGhaRunnerScaleSet CatalogKind = 4155
 	CatalogKind_KubernetesHarbor            CatalogKind = 4156
 	CatalogKind_KubernetesJenkins           CatalogKind = 4157
-	// 4170–4189: Kubernetes app platforms
+	// 4170–4179: Kubernetes app platforms
 	// KubernetesPostgres is a prerequisite because the recommended (and
 	// E2E-proven) database composition backs Temporal's default and
 	// visibility stores with a CloudNativePG cluster.
@@ -2481,6 +2489,26 @@ const (
 	CatalogKind_KubernetesFlagd                 CatalogKind = 4177
 	CatalogKind_KubernetesGoFeatureFlagFlagFile CatalogKind = 4178
 	CatalogKind_KubernetesFlagdFlagFile         CatalogKind = 4179
+	// 4180–4199: agent sandbox runtimes (4180–4189 Kubernetes SIG Apps'
+	// agent-sandbox; 4190–4199 Agent Substrate)
+	CatalogKind_KubernetesAgentSandboxController CatalogKind = 4180
+	// KubernetesAgentSandboxController is a prerequisite because it installs the
+	// agents.x-k8s.io definition the Sandbox is an instance of, and the
+	// controller that runs its pod.
+	CatalogKind_KubernetesAgentSandbox CatalogKind = 4181
+	// KubernetesAgentSandboxController is a prerequisite because it installs the
+	// extensions.agents.x-k8s.io definition the SandboxTemplate is an instance
+	// of, and the extension controllers that turn it into network policy and
+	// warm pool members.
+	CatalogKind_KubernetesAgentSandboxTemplate CatalogKind = 4182
+	// KubernetesAgentSandboxController is a prerequisite because it installs the
+	// extensions.agents.x-k8s.io definition the SandboxWarmPool is an instance
+	// of, and the controller that keeps the pool's members ready.
+	CatalogKind_KubernetesAgentSandboxWarmPool CatalogKind = 4183
+	// KubernetesAgentSandboxController is a prerequisite because it installs the
+	// extensions.agents.x-k8s.io definition the SandboxClaim is an instance of,
+	// and the controller that binds it to a warm pool member.
+	CatalogKind_KubernetesAgentSandboxClaim CatalogKind = 4184
 	// 5000–5999: DigitalOcean resources
 	CatalogKind_DigitalOceanApp               CatalogKind = 5000
 	CatalogKind_DigitalOceanBucket            CatalogKind = 5001
@@ -3472,6 +3500,7 @@ var (
 		4065:  "KubernetesKarpenterEc2NodeClass",
 		4066:  "KubernetesClusterAutoscaler",
 		4067:  "KubernetesVelero",
+		4068:  "KubernetesGkeComputeClass",
 		4070:  "KubernetesKubePrometheusStack",
 		4071:  "KubernetesGrafana",
 		4072:  "KubernetesSignoz",
@@ -3526,6 +3555,7 @@ var (
 		4137:  "KubernetesMlflow",
 		4138:  "KubernetesTrino",
 		4139:  "KubernetesSuperset",
+		4140:  "KubernetesLangfuse",
 		4150:  "KubernetesArgocd",
 		4151:  "KubernetesArgoWorkflows",
 		4152:  "KubernetesTektonOperator",
@@ -3544,6 +3574,11 @@ var (
 		4177:  "KubernetesFlagd",
 		4178:  "KubernetesGoFeatureFlagFlagFile",
 		4179:  "KubernetesFlagdFlagFile",
+		4180:  "KubernetesAgentSandboxController",
+		4181:  "KubernetesAgentSandbox",
+		4182:  "KubernetesAgentSandboxTemplate",
+		4183:  "KubernetesAgentSandboxWarmPool",
+		4184:  "KubernetesAgentSandboxClaim",
 		5000:  "DigitalOceanApp",
 		5001:  "DigitalOceanBucket",
 		5002:  "DigitalOceanContainerRegistry",
@@ -4317,6 +4352,7 @@ var (
 		"KubernetesKarpenterEc2NodeClass":                4065,
 		"KubernetesClusterAutoscaler":                    4066,
 		"KubernetesVelero":                               4067,
+		"KubernetesGkeComputeClass":                      4068,
 		"KubernetesKubePrometheusStack":                  4070,
 		"KubernetesGrafana":                              4071,
 		"KubernetesSignoz":                               4072,
@@ -4371,6 +4407,7 @@ var (
 		"KubernetesMlflow":                               4137,
 		"KubernetesTrino":                                4138,
 		"KubernetesSuperset":                             4139,
+		"KubernetesLangfuse":                             4140,
 		"KubernetesArgocd":                               4150,
 		"KubernetesArgoWorkflows":                        4151,
 		"KubernetesTektonOperator":                       4152,
@@ -4389,6 +4426,11 @@ var (
 		"KubernetesFlagd":                                4177,
 		"KubernetesGoFeatureFlagFlagFile":                4178,
 		"KubernetesFlagdFlagFile":                        4179,
+		"KubernetesAgentSandboxController":               4180,
+		"KubernetesAgentSandbox":                         4181,
+		"KubernetesAgentSandboxTemplate":                 4182,
+		"KubernetesAgentSandboxWarmPool":                 4183,
+		"KubernetesAgentSandboxClaim":                    4184,
 		"DigitalOceanApp":                                5000,
 		"DigitalOceanBucket":                             5001,
 		"DigitalOceanContainerRegistry":                  5002,
@@ -4627,14 +4669,17 @@ type CatalogKindMeta struct {
 	// because it creates postgresql.cnpg.io/v1 Cluster resources.
 	Prerequisites []CatalogKind `protobuf:"varint,7,rep,packed,name=prerequisites,proto3,enum=dev.planton.shared.catalogkind.CatalogKind" json:"prerequisites,omitempty"`
 	// set ONLY for kinds whose spec is a direct projection of a single Kubernetes
-	// custom resource -- i.e. the Terraform module is a thin `kubernetes_manifest`
+	// custom resource -- i.e. the Terraform module is a thin `kubectl_manifest`
 	// passthrough rather than hand-written provider logic. its presence flips the
 	// proto->tfvars converter to emit the manifest-shaped (camelCase, pruned) spec
 	// and drives deterministic thin-module generation (see `planton tofu
 	// generate-module`). absent for provider-abstraction kinds (aws/gcp/etc.),
 	// which keep idiomatic snake_case typed variables. the api_version/kind here
 	// are the UPSTREAM CRD's group-version-kind, distinct from the Planton
-	// groupVersion returned by catalogkindreflect.GroupVersion.
+	// groupVersion returned by catalogkindreflect.GroupVersion. a kind whose
+	// custom resource definition is pinned under
+	// pkg/kubernetes/manifestprojection/testdata/schemas/ is held to it field for
+	// field, both ways and type for type, by that package's mirror test.
 	KubernetesManifestProjection *KubernetesManifestProjection `protobuf:"bytes,8,opt,name=kubernetes_manifest_projection,json=kubernetesManifestProjection,proto3" json:"kubernetes_manifest_projection,omitempty"`
 	// schema versions of this kind announced as deprecated. a deprecated version
 	// keeps working exactly as before -- documents authored at it are accepted
@@ -4969,7 +5014,7 @@ const file_shared_catalogkind_catalog_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*Օ\x03\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\x99\x9b\x03\n" +
 	"\vCatalogKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12`\n" +
 	"\x16TestCatalogKindGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tckgJ,\n" +
@@ -5681,7 +5726,9 @@ const file_shared_catalogkind_catalog_kind_proto_rawDesc = "" +
 	"k8skarpenc:\x02\xdf\x1fB$\n" +
 	"\x14karpenter.k8s.aws/v1\x12\fEC2NodeClassP\x91\x03\x12=\n" +
 	"\x1bKubernetesClusterAutoscaler\x10\xe2\x1f\x1a\x1b\xa2\xf7\x04\x17\b\x13\x12\bv1alpha1\"\x06k8scasP\x91\x03\x122\n" +
-	"\x10KubernetesVelero\x10\xe3\x1f\x1a\x1b\xa2\xf7\x04\x17\b\x13\x12\bv1alpha1\"\x06k8svelP\x91\x03\x12?\n" +
+	"\x10KubernetesVelero\x10\xe3\x1f\x1a\x1b\xa2\xf7\x04\x17\b\x13\x12\bv1alpha1\"\x06k8svelP\x91\x03\x12b\n" +
+	"\x19KubernetesGkeComputeClass\x10\xe4\x1f\x1aB\xa2\xf7\x04>\b\x13\x12\bv1alpha1\"\bk8sgkeccB#\n" +
+	"\x13cloud.google.com/v1\x12\fComputeClassP\x91\x03\x12?\n" +
 	"\x1dKubernetesKubePrometheusStack\x10\xe6\x1f\x1a\x1b\xa2\xf7\x04\x17\b\x13\x12\bv1alpha1\"\x06k8skpsP\x91\x03\x123\n" +
 	"\x11KubernetesGrafana\x10\xe7\x1f\x1a\x1b\xa2\xf7\x04\x17\b\x13\x12\bv1alpha1\"\x06k8sgfnP\x92\x03\x126\n" +
 	"\x10KubernetesSignoz\x10\xe8\x1f\x1a\x1f\xa2\xf7\x04\x1b\b\x13\x12\bv1alpha1\"\x06k8ssgz:\x02\x97 P\x92\x03\x121\n" +
@@ -5740,7 +5787,8 @@ const file_shared_catalogkind_catalog_kind_proto_rawDesc = "" +
 	"\x14KubernetesJupyterHub\x10\xa8 \x1a \xa2\xf7\x04\x1c\b\x13\x12\bv1alpha1\"\ak8sjhub:\x02\x85 P\x92\x03\x12:\n" +
 	"\x10KubernetesMlflow\x10\xa9 \x1a#\xa2\xf7\x04\x1f\b\x13\x12\bv1alpha1\"\bk8smlflw:\x04\x85 \x9b P\x92\x03\x127\n" +
 	"\x0fKubernetesTrino\x10\xaa \x1a!\xa2\xf7\x04\x1d\b\x13\x12\bv1alpha1\"\bk8strino:\x02\x85 P\x92\x03\x12<\n" +
-	"\x12KubernetesSuperset\x10\xab \x1a#\xa2\xf7\x04\x1f\b\x13\x12\bv1alpha1\"\bk8ssprst:\x04\x85 \x86 P\x92\x03\x123\n" +
+	"\x12KubernetesSuperset\x10\xab \x1a#\xa2\xf7\x04\x1f\b\x13\x12\bv1alpha1\"\bk8ssprst:\x04\x85 \x86 P\x92\x03\x12@\n" +
+	"\x12KubernetesLangfuse\x10\xac \x1a'\xa2\xf7\x04#\b\x13\x12\bv1alpha1\"\bk8slfuse:\b\x85 \x97 \x86 \x9b P\x92\x03\x123\n" +
 	"\x10KubernetesArgocd\x10\xb6 \x1a\x1c\xa2\xf7\x04\x18\b\x13\x12\bv1alpha1\"\ak8sargoP\x91\x03\x12<\n" +
 	"\x17KubernetesArgoWorkflows\x10\xb7 \x1a\x1e\xa2\xf7\x04\x1a\b\x13\x12\bv1alpha1\"\tk8sargowfP\x91\x03\x12=\n" +
 	"\x18KubernetesTektonOperator\x10\xb8 \x1a\x1e\xa2\xf7\x04\x1a\b\x13\x12\bv1alpha1\"\tk8stktnopP\x91\x03\x127\n" +
@@ -5758,7 +5806,16 @@ const file_shared_catalogkind_catalog_kind_proto_rawDesc = "" +
 	"\x17KubernetesGoFeatureFlag\x10\xd0 \x1a\x1c\xa2\xf7\x04\x18\b\x13\x12\bv1alpha1\"\ak8sgoffP\x92\x03\x123\n" +
 	"\x0fKubernetesFlagd\x10\xd1 \x1a\x1d\xa2\xf7\x04\x19\b\x13\x12\bv1alpha1\"\bk8sflagdP\x92\x03\x12C\n" +
 	"\x1fKubernetesGoFeatureFlagFlagFile\x10\xd2 \x1a\x1d\xa2\xf7\x04\x19\b\x13\x12\bv1alpha1\"\bk8sgofffP\x92\x03\x12;\n" +
-	"\x17KubernetesFlagdFlagFile\x10\xd3 \x1a\x1d\xa2\xf7\x04\x19\b\x13\x12\bv1alpha1\"\bk8sflgdfP\x92\x03\x120\n" +
+	"\x17KubernetesFlagdFlagFile\x10\xd3 \x1a\x1d\xa2\xf7\x04\x19\b\x13\x12\bv1alpha1\"\bk8sflgdfP\x92\x03\x12C\n" +
+	" KubernetesAgentSandboxController\x10\xd4 \x1a\x1c\xa2\xf7\x04\x18\b\x13\x12\bv1alpha1\"\ak8sasbcP\x91\x03\x12a\n" +
+	"\x16KubernetesAgentSandbox\x10\xd5 \x1aD\xa2\xf7\x04@\b\x13\x12\bv1alpha1\"\ak8sasbx:\x02\xd4 B\"\n" +
+	"\x17agents.x-k8s.io/v1beta1\x12\aSandboxP\x91\x03\x12|\n" +
+	"\x1eKubernetesAgentSandboxTemplate\x10\xd6 \x1aW\xa2\xf7\x04S\b\x13\x12\bv1alpha1\"\ak8sasbt:\x02\xd4 B5\n" +
+	"\"extensions.agents.x-k8s.io/v1beta1\x12\x0fSandboxTemplateP\x91\x03\x12}\n" +
+	"\x1eKubernetesAgentSandboxWarmPool\x10\xd7 \x1aX\xa2\xf7\x04T\b\x13\x12\bv1alpha1\"\bk8sasbwp:\x02\xd4 B5\n" +
+	"\"extensions.agents.x-k8s.io/v1beta1\x12\x0fSandboxWarmPoolP\x91\x03\x12w\n" +
+	"\x1bKubernetesAgentSandboxClaim\x10\xd8 \x1aU\xa2\xf7\x04Q\b\x13\x12\bv1alpha1\"\bk8sasbcl:\x02\xd4 B2\n" +
+	"\"extensions.agents.x-k8s.io/v1beta1\x12\fSandboxClaimP\x91\x03\x120\n" +
 	"\x0fDigitalOceanApp\x10\x88'\x1a\x1a\xa2\xf7\x04\x16\b\x11\x12\bv1alpha1\"\x05doappP\xf6\x03\x123\n" +
 	"\x12DigitalOceanBucket\x10\x89'\x1a\x1a\xa2\xf7\x04\x16\b\x11\x12\bv1alpha1\"\x05dobktP\xf8\x03\x12=\n" +
 	"\x1dDigitalOceanContainerRegistry\x10\x8a'\x1a\x19\xa2\xf7\x04\x15\b\x11\x12\bv1alpha1\"\x04docrP\xfa\x03\x12=\n" +

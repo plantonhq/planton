@@ -1,0 +1,72 @@
+# THE KEYLESS STORAGE PROOF on GKE: Langfuse's events, media and exports in
+# Google Cloud Storage through Langfuse's native GCS driver, with no key
+# anywhere. The ServiceAccount the chart creates (`e2e-lf-gke`) carries the
+# GKE Workload Identity annotation for the batch's Langfuse identity, and
+# credentials_json stays empty, so the driver resolves Application Default
+# Credentials from the metadata server. The batch
+# (aa_e2e/realcluster/gcp-gke, manifests/06-langfuse-gcs.yaml) creates the
+# identity, its binding on exactly this ServiceAccount and the bucket.
+#
+# The verifier's ingestion round trip IS the proof: the web server writes
+# each event to the bucket before queueing it, and the worker reads it back
+# before loading it into ClickHouse, so a trace read back by ID proves both
+# workloads authenticated to GCS as the bound identity.
+#
+# Co-located with the registry-default store fixtures (e2e-langfuse), like
+# every Langfuse scenario.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesLangfuse
+metadata:
+  name: e2e-lf-gke
+  annotations:
+    planton.dev/e2e-cluster-profile: "gcp-gke"
+spec:
+  namespace:
+    value: e2e-langfuse
+  postgres:
+    host:
+      valueFrom:
+        name: e2e-lf-pg
+    username: langfuse
+    passwordSecret:
+      secretName:
+        valueFrom:
+          name: e2e-lf-pg
+  clickhouse:
+    host:
+      valueFrom:
+        name: e2e-lf-ch
+    username: langfuse
+    passwordSecret:
+      secretName:
+        valueFrom:
+          name: e2e-lf-ch
+    cluster:
+      name:
+        valueFrom:
+          name: e2e-lf-ch
+  redis:
+    standalone:
+      host:
+        valueFrom:
+          name: e2e-lf-vlk
+    username:
+      valueFrom:
+        name: e2e-lf-vlk
+    passwordSecret:
+      secretName:
+        valueFrom:
+          name: e2e-lf-vlk
+      secretKey:
+        valueFrom:
+          name: e2e-lf-vlk
+  blobStorage:
+    target:
+      gcs:
+        bucket:
+          value: ${E2E_ENV:PLANTON_E2E_GKE_LANGFUSE_BUCKET}
+  serviceAccount:
+    workloadIdentity:
+      gke:
+        serviceAccountEmail:
+          value: ${E2E_ENV:PLANTON_E2E_GKE_LANGFUSE_GSA}

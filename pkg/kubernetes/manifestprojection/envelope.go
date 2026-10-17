@@ -10,9 +10,11 @@ import (
 
 // Envelope names the JSON keys of the spec fields that describe the object
 // rather than its spec. An empty key means the kind has no such field: a
-// cluster-scoped kind has no namespace, and most kinds carry no labels or
-// annotations of their own.
+// cluster-scoped kind has no namespace, most kinds carry no labels or
+// annotations of their own, and a kind without a name field names its object
+// after metadata.name.
 type Envelope struct {
+	NameKey        string
 	NamespaceKey   string
 	LabelsKey      string
 	AnnotationsKey string
@@ -21,13 +23,25 @@ type Envelope struct {
 // Namespaced reports whether the custom resource is namespaced.
 func (e Envelope) Namespaced() bool { return e.NamespaceKey != "" }
 
+// Keys lists the envelope's keys in metadata order: name, namespace, labels,
+// annotations.
+func (e Envelope) Keys() []string {
+	var keys []string
+	for _, k := range []string{e.NameKey, e.NamespaceKey, e.LabelsKey, e.AnnotationsKey} {
+		if k != "" {
+			keys = append(keys, k)
+		}
+	}
+	return keys
+}
+
 // Holds reports whether key is one of the envelope's keys, and so never part
 // of the custom resource's spec.
 func (e Envelope) Holds(key string) bool {
 	if key == "" {
 		return false
 	}
-	return key == e.NamespaceKey || key == e.LabelsKey || key == e.AnnotationsKey
+	return key == e.NameKey || key == e.NamespaceKey || key == e.LabelsKey || key == e.AnnotationsKey
 }
 
 // EnvelopeOf reads a projection kind's envelope from its spec descriptor.
@@ -41,6 +55,8 @@ func EnvelopeOf(spec protoreflect.MessageDescriptor) Envelope {
 			continue
 		}
 		switch ObjectMetadataOf(fd) {
+		case options.KubernetesObjectMetadataField_object_name:
+			e.NameKey = fd.JSONName()
 		case options.KubernetesObjectMetadataField_object_labels:
 			e.LabelsKey = fd.JSONName()
 		case options.KubernetesObjectMetadataField_object_annotations:

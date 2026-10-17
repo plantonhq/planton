@@ -1,0 +1,21 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: CatalogKindCostProfile
+metadata:
+  name: kubernetesagentsandboxwarmpool
+spec:
+  billing_model: cluster_capacity
+  cost_drivers:
+    - field_path: replicas
+      sku_meter: cluster CPU and memory reservations
+      impact: Every member is a running sandbox reserving its template's pod resources (plus its runtime class's overhead) while it waits to be claimed -- the pool's size times the template's reservation is the standing cost of instant sandboxes.
+    - field_path: sandbox_template_ref
+      sku_meter: cluster CPU and memory reservations, persistent volume storage
+      impact: The referenced template decides each member's reservation and the storage its volume claim templates hold.
+  estimate_exclusions:
+    - no capacity derivation is published for this kind -- each member's reservation is declared on the referenced template, a different resource the derivation grammar cannot read
+    - claimed sandboxes leave the pool and cost their claim's share; the pool immediately replaces each with a new member
+    - the price of reserved CPU, memory and storage is the target cluster's node and storage economics, which this catalog cannot know
+  notes: "A warm pool is the largest cost a deployment of agent-sandbox carries: idle sandboxes held ready. Size it for the claims that arrive between refills, not for peak; scale it with an autoscaler on its scale endpoint (leave replicas unset), or to zero outside working hours."

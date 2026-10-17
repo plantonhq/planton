@@ -1,0 +1,3 @@
+name: kubernetes-agent-sandbox-controller
+runtime: go
+description: agent-sandbox from upstream's own release (the Sandbox controller, optional template, warm-pool and claim extensions, and the optional router), with every setting typed and the resource definitions kept and ownership-checked

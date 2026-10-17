@@ -1,0 +1,23 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: CatalogKindCostProfile
+metadata:
+  name: kubernetesagentsandboxclaim
+spec:
+  billing_model: cluster_capacity
+  cost_drivers:
+    - field_path: warm_pool_ref
+      sku_meter: cluster CPU and memory reservations
+      impact: The claimed sandbox runs its pool's template, reserving that pod's resources for as long as the claim holds it; the pool starts a replacement member at the same time.
+    - field_path: volume_claim_templates
+      sku_meter: persistent volume storage
+      impact: Volumes the claim adds are billed for as long as the claim's sandbox exists, on top of the template's own.
+    - field_path: lifecycle
+      sku_meter: cluster CPU and memory reservations
+      impact: An expiry (shutdown_time) or a time to live after finishing (ttl_seconds_after_finished) ends the sandbox and its reservation; without either, the claim holds it until deleted.
+  estimate_exclusions:
+    - no capacity derivation is published for this kind -- the claimed sandbox's reservation is declared on the pool's template, a different resource the derivation grammar cannot read
+    - the price of reserved CPU, memory and storage is the target cluster's node and storage economics, which this catalog cannot know
+  notes: "A claim's cost is its sandbox's: the template's reservation while the claim exists, plus any volumes the claim adds. Give declared claims an expiry when they exist for a bounded purpose."

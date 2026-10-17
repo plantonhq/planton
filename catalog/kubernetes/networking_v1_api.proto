@@ -1,0 +1,165 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes;
+
+import "buf/validate/validate.proto";
+import "catalog/kubernetes/core_v1_api.proto";
+import "shared/options/options.proto";
+
+// Kubernetes networking/v1 API types, faithful to upstream, for the Planton
+// kinds that mirror a custom resource embedding NetworkPolicy rules: the
+// ingress and egress rules, their peers, IP blocks and ports. Translated from
+// k8s.io/api v0.37.1 (Kubernetes 1.37), field for field, as agent-sandbox
+// v1.0.7's SandboxTemplate serves them (its pinned definition under
+// pkg/kubernetes/manifestprojection/testdata/schemas holds every key here to
+// the served schema). The label selectors are apimachinery's, from
+// `core_v1_api.proto`.
+//
+// This is not the curated `KubernetesNetworkPolicy` kind's model, which
+// renames keys and abstracts for a standalone policy. Every message here is
+// named for its upstream type, prefixed `KubernetesNetworkingV1Api*`, and its
+// JSON is upstream's. The conventions are `core_v1_api.proto`'s: closed sets
+// as strings with closed rules, ports that take a number or a name marked
+// `kubernetes_int_or_string`, and the API server's own combination rules (an
+// IP block stands alone; an end port needs a numeric port) as validation
+// rules here.
+
+// KubernetesNetworkingV1ApiNetworkPolicyIngressRule describes a particular set
+// of traffic that is allowed to the pods matched by a NetworkPolicySpec's
+// podSelector. The traffic must match both ports and from.
+//
+// Faithful to upstream networking/v1 NetworkPolicyIngressRule.
+message KubernetesNetworkingV1ApiNetworkPolicyIngressRule {
+  // ports is a list of ports which should be made accessible on the pods
+  // selected for this rule. Each item in this list is combined using a logical
+  // OR. If this field is empty or missing, this rule matches all ports (traffic
+  // not restricted by port). If this field is present and contains at least one
+  // item, then this rule allows traffic only if the traffic matches at least
+  // one port in the list.
+  repeated KubernetesNetworkingV1ApiNetworkPolicyPort ports = 1;
+
+  // from is a list of sources which should be able to access the pods selected
+  // for this rule. Items in this list are combined using a logical OR
+  // operation. If this field is empty or missing, this rule matches all sources
+  // (traffic not restricted by source). If this field is present and contains
+  // at least one item, this rule allows traffic only if the traffic matches at
+  // least one item in the from list.
+  repeated KubernetesNetworkingV1ApiNetworkPolicyPeer from = 2;
+}
+
+// KubernetesNetworkingV1ApiNetworkPolicyPort describes a port to allow traffic
+// on.
+//
+// Faithful to upstream networking/v1 NetworkPolicyPort.
+message KubernetesNetworkingV1ApiNetworkPolicyPort {
+  option (buf.validate.message).cel = {
+    id: "network_policy_port.end_port_range"
+    message: "endPort needs a numeric port, and must be at least that port"
+    expression: "!has(this.end_port) || (has(this.port) && this.port.matches('^[0-9]+$') && this.end_port >= int(this.port))"
+  };
+
+  // protocol represents the protocol (TCP, UDP, or SCTP) which traffic must
+  // match. If not specified, this field defaults to TCP.
+  optional string protocol = 1 [(buf.validate.field).string = {
+    in: [
+      "TCP",
+      "UDP",
+      "SCTP"
+    ]
+  }];
+
+  // port represents the port on the given protocol. This can either be a
+  // numerical or named port on a pod. If this field is not provided, this
+  // matches all port names and numbers. If present, only traffic on the
+  // specified protocol AND port will be matched.
+  optional string port = 2 [
+    (dev.planton.shared.options.kubernetes_int_or_string) = true,
+    (buf.validate.field).cel = {
+      id: "network_policy_port.port"
+      message: "port is a port number from 1 to 65535, or a port name (up to 15 lowercase letters, digits and hyphens, with at least one letter)"
+      expression: "this.matches('^[0-9]+$') ? (size(this) <= 5 && int(this) >= 1 && int(this) <= 65535) : (size(this) <= 15 && this.matches('^[a-z0-9]([-a-z0-9]*[a-z0-9])?$') && this.matches('[a-z]'))"
+    }
+  ];
+
+  // endPort indicates that the range of ports from port to endPort if set,
+  // inclusive, should be allowed by the policy. This field cannot be defined if
+  // the port field is not defined or if the port field is defined as a named
+  // (string) port. The endPort must be equal or greater than port.
+  optional int32 end_port = 3;
+}
+
+// KubernetesNetworkingV1ApiNetworkPolicyPeer describes a peer to allow traffic
+// to/from. Only certain combinations of fields are allowed.
+//
+// Faithful to upstream networking/v1 NetworkPolicyPeer.
+message KubernetesNetworkingV1ApiNetworkPolicyPeer {
+  option (buf.validate.message).cel = {
+    id: "network_policy_peer.ip_block_alone"
+    message: "An ipBlock peer stands alone: it cannot be combined with podSelector or namespaceSelector"
+    expression: "!has(this.ip_block) || (!has(this.pod_selector) && !has(this.namespace_selector))"
+  };
+
+  // podSelector is a label selector which selects pods. This field follows
+  // standard label selector semantics; if present but empty, it selects all
+  // pods.
+  //
+  // If namespaceSelector is also set, then the NetworkPolicyPeer as a whole
+  // selects the pods matching podSelector in the Namespaces selected by
+  // NamespaceSelector. Otherwise it selects the pods matching podSelector in
+  // the policy's own namespace.
+  KubernetesCoreV1ApiLabelSelector pod_selector = 1;
+
+  // namespaceSelector selects namespaces using cluster-scoped labels. This
+  // field follows standard label selector semantics; if present but empty, it
+  // selects all namespaces.
+  //
+  // If podSelector is also set, then the NetworkPolicyPeer as a whole selects
+  // the pods matching podSelector in the namespaces selected by
+  // namespaceSelector. Otherwise it selects all pods in the namespaces selected
+  // by namespaceSelector.
+  KubernetesCoreV1ApiLabelSelector namespace_selector = 2;
+
+  // ipBlock defines policy on a particular IPBlock. If this field is set then
+  // neither of the other fields can be.
+  KubernetesNetworkingV1ApiIPBlock ip_block = 3;
+}
+
+// KubernetesNetworkingV1ApiIPBlock describes a particular CIDR (Ex.
+// "192.168.1.0/24","2001:db8::/64") that is allowed to the pods matched by a
+// NetworkPolicySpec's podSelector. The except entry describes CIDRs that should
+// not be included within this rule.
+//
+// Faithful to upstream networking/v1 IPBlock.
+message KubernetesNetworkingV1ApiIPBlock {
+  // cidr is a string representing the IPBlock Valid examples are
+  // "192.168.1.0/24" or "2001:db8::/64"
+  string cidr = 1 [(buf.validate.field).string.min_len = 1];
+
+  // except is a slice of CIDRs that should not be included within an IPBlock
+  // Valid examples are "192.168.1.0/24" or "2001:db8::/64" Except values will
+  // be rejected if they are outside the cidr range.
+  repeated string except = 2;
+}
+
+// KubernetesNetworkingV1ApiNetworkPolicyEgressRule describes a particular set
+// of traffic that is allowed out of pods matched by a NetworkPolicySpec's
+// podSelector. The traffic must match both ports and to. This type is
+// beta-level in 1.8.
+//
+// Faithful to upstream networking/v1 NetworkPolicyEgressRule.
+message KubernetesNetworkingV1ApiNetworkPolicyEgressRule {
+  // ports is a list of destination ports for outgoing traffic. Each item in
+  // this list is combined using a logical OR. If this field is empty or
+  // missing, this rule matches all ports (traffic not restricted by port). If
+  // this field is present and contains at least one item, then this rule allows
+  // traffic only if the traffic matches at least one port in the list.
+  repeated KubernetesNetworkingV1ApiNetworkPolicyPort ports = 1;
+
+  // to is a list of destinations for outgoing traffic of pods selected for this
+  // rule. Items in this list are combined using a logical OR operation. If this
+  // field is empty or missing, this rule matches all destinations (traffic not
+  // restricted by destination). If this field is present and contains at least
+  // one item, this rule allows traffic only if the traffic matches at least one
+  // item in the to list.
+  repeated KubernetesNetworkingV1ApiNetworkPolicyPeer to = 2;
+}

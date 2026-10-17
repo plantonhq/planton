@@ -27,7 +27,7 @@ This module deploys production-grade ClickHouse clusters on Kubernetes using the
   - Flexible coordination options (auto-managed Keeper, external Keeper, or ZooKeeper)
 
 - **Security Best Practices**  
-  Automatically generates secure random passwords stored in Kubernetes Secrets. Credentials never appear in manifests or version control.
+  Generates a password for every user declared without one and stores all user passwords in a Kubernetes Secret (one key per user name). Credentials never appear in the custom resource or in version control.
 
 - **Ingress Integration**  
   Optional LoadBalancer service with external DNS annotations for external access. Specify a custom hostname for your ClickHouse cluster (e.g., `clickhouse.example.com`).
@@ -88,7 +88,7 @@ The operator installs into the namespace named in its `spec.namespace`. By defau
    This flexibility allows you to either let the component manage the namespace lifecycle or deploy into a shared/externally-managed namespace.
 
 4. **Secret Management**  
-   Generates a cryptographically secure random password and stores it in a Kubernetes Secret for ClickHouse authentication.
+   Writes every user's password into the `<name>-clickhouse-auth` Secret (one key per user name): the declared password, or one generated with `random.RandomPassword` (keyed by user name, 32 letters and digits) when the spec omits it.
 
 5. **ClickHouseInstallation CRD Generation**  
    Builds a ClickHouseInstallation custom resource with:

@@ -1,0 +1,51 @@
+{% if values.hostname != "" %}
+# Exposure: the hostname routed to the Langfuse web Service. The backend is a
+# reference to the Langfuse resource's `service` output, so the Ingress
+# deploys after Langfuse and can never name a Service that does not exist.
+# The Ingress lives in the stack's namespace because an Ingress can only
+# route to Services in its own namespace.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesIngress
+metadata:
+  name: "{{ values.env }}-langfuse-ingress"
+{% if values.connection != "" %}
+  annotations:
+    planton.dev/connection: "{{ values.connection }}"
+{% endif %}
+spec:
+  namespace:
+    valueFrom:
+      name: "{{ values.env }}-langfuse-ns"
+  name: langfuse
+  annotations:
+    # SDKs send traces in batches; ingress-nginx's 1 MiB default body limit
+    # would refuse large ones with a 413 before they reach Langfuse.
+    nginx.ingress.kubernetes.io/proxy-body-size: 50m
+{% if values.cluster_issuer != "" %}
+    # cert-manager issues the certificate into the TLS Secret below.
+    cert-manager.io/cluster-issuer: "{{ values.cluster_issuer }}"
+{% endif %}
+{% if values.ingress_class != "" %}
+  ingressClassName: "{{ values.ingress_class }}"
+{% endif %}
+  rules:
+    - host: "{{ values.hostname }}"
+      paths:
+        - path: /
+          pathType: prefix
+          backend:
+            serviceName:
+              valueFrom:
+                kind: KubernetesLangfuse
+                name: "{{ values.env }}-langfuse"
+                fieldPath: status.outputs.service
+            # The web server's port (the kind's default web.service.port).
+            portNumber: 3000
+{% if values.cluster_issuer != "" %}
+  tls:
+    - hosts:
+        - "{{ values.hostname }}"
+      secretName:
+        value: "{{ values.env }}-langfuse-tls"
+{% endif %}
+{% endif %}

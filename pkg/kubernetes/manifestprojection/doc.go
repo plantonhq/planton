@@ -9,9 +9,11 @@
 //
 //   - the namespace: the field whose foreign key defaults to
 //     KubernetesNamespace, routed to metadata.namespace;
-//   - the object's own labels and annotations: top-level string maps marked
+//   - the object's own name, labels and annotations: a top-level string and
+//     top-level string maps marked
 //     (dev.planton.shared.options.kubernetes_object_metadata), routed to
-//     metadata.labels and metadata.annotations.
+//     metadata.name, metadata.labels and metadata.annotations. Without a
+//     name field the object is named after the manifest's metadata.name.
 //
 // Everything else is the custom resource's spec, projected by
 // pkg/iac/specprojection with the custom resource's own JSON keys. Planton's

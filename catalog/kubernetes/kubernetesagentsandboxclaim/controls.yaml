@@ -1,0 +1,77 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/catalogkindcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: CatalogKindControlProfile
+metadata:
+  name: kubernetesagentsandboxclaim
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: configurable
+      field_path: volume_claim_templates
+      evidence:
+        type: spec_default
+        reference: "Volumes the claim adds are provisioned by their storage class (`volume_claim_templates[].spec.storage_class_name`); encryption at rest is that provisioner's property."
+      notes: "The claimed sandbox's other volumes come from the template."
+    - control_id: enc-at-rest-cmk
+      status: configurable
+      field_path: volume_claim_templates
+      evidence:
+        type: spec_default
+        reference: "A storage class whose provisioner encrypts with a customer-managed key keys the volumes the claim adds."
+      notes: "The key is the storage class's choice."
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: "The claim opens no connection; traffic to its sandbox follows the template and the controller's router."
+    - control_id: no-public-access
+      status: not_applicable
+      notes: "A claim is a request the controller acts on, not a network endpoint; its sandbox's exposure is the template's."
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: "The sandbox's network fence is its template's NetworkPolicy."
+    - control_id: edge-protection
+      status: not_applicable
+      notes: "There is no endpoint to protect at the edge."
+    - control_id: rbac
+      status: not_applicable
+      notes: "Who may create claims, and so obtain sandboxes, is the cluster's Kubernetes RBAC on sandboxclaims in the namespace."
+    - control_id: workload-identity
+      status: not_applicable
+      notes: "The sandbox's identity is its template's ServiceAccount; a claim cannot change it."
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: "The claim performs no authentication."
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: "The claim has no users."
+    - control_id: audit-logging
+      status: not_applicable
+      notes: "Changes to the claim are recorded by the cluster's API server audit log; the controller records binding events and, unless disabled, observability annotations on the claim."
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: module_default
+        reference: "The controller reports the claim's binding in its Ready condition (with reasons such as EnvVarsInjectionRejected or SandboxNotReady) and exports claim startup latency (agent_sandbox_claim_startup_latency_ms) on its metrics endpoint."
+      notes: "Alert on claims that stay Ready=False."
+    - control_id: backup-recovery
+      status: configurable
+      field_path: volume_claim_templates
+      evidence:
+        type: spec_default
+        reference: "The claimed sandbox's state lives in its volumes (the template's and `volume_claim_templates`); a snapshot-capable storage class or a backup tool selecting the claims' labels protects it."
+      notes: "The claim object recovers by re-applying the manifest; a re-created claim gets a new sandbox."
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: "Retention belongs to the backup tool or snapshot schedule protecting the volumes."
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: "A claim holds one sandbox, a singleton by design; its availability is a pod's, rescheduled by the controller if its node fails."
+    - control_id: deletion-protection
+      status: not_applicable
+      notes: "The object carries no deletion protection of its own; Kubernetes objects are protected through RBAC and admission policy on the cluster. Deleting the claim deletes its sandbox and the sandbox's volumes."
+    - control_id: managed-patching
+      status: not_applicable
+      notes: "The sandbox runs its template's image; patching is the template's."

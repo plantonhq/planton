@@ -431,6 +431,11 @@ Fields on other kinds that can point at this resource:
 | Kind | Field | Reads |
 |---|---|---|
 | GcpDataprocCluster | `spec.virtualClusterConfig.kubernetesClusterConfig.kubernetesNamespace` | `spec.name` |
+| KubernetesAgentSandbox | `spec.namespace` | `spec.name` |
+| KubernetesAgentSandboxClaim | `spec.namespace` | `spec.name` |
+| KubernetesAgentSandboxController | `spec.namespace` | `spec.name` |
+| KubernetesAgentSandboxTemplate | `spec.namespace` | `spec.name` |
+| KubernetesAgentSandboxWarmPool | `spec.namespace` | `spec.name` |
 | KubernetesAirflow | `spec.namespace` | `spec.name` |
 | KubernetesAltinityOperator | `spec.namespace` | `spec.name` |
 | KubernetesArgoWorkflows | `spec.namespace` | `spec.name` |
@@ -492,6 +497,7 @@ Fields on other kinds that can point at this resource:
 | KubernetesKubePrometheusStack | `spec.namespace` | `spec.name` |
 | KubernetesKubeRayOperator | `spec.namespace` | `spec.name` |
 | KubernetesKyverno | `spec.namespace` | `spec.name` |
+| KubernetesLangfuse | `spec.namespace` | `spec.name` |
 | KubernetesListenerSet | `spec.namespace` | `spec.name` |
 | KubernetesLocust | `spec.namespace` | `spec.name` |
 | KubernetesLoki | `spec.namespace` | `spec.name` |

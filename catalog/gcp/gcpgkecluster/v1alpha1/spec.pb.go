@@ -3086,10 +3086,16 @@ type GcpGkeClusterAutoscaling struct {
 	// Defaults applied to every node pool NAP creates (identity, disks,
 	// image, shielding, auto-repair/upgrade).
 	AutoProvisioningDefaults *GcpGkeClusterAutoProvisioningDefaults `protobuf:"bytes,5,opt,name=auto_provisioning_defaults,json=autoProvisioningDefaults,proto3" json:"auto_provisioning_defaults,omitempty"`
-	// Default compute classes: NAP provisions through the cluster's default
-	// ComputeClass definitions instead of the legacy per-resource limits
-	// path — the newer Autopilot-style provisioning model on Standard
-	// clusters.
+	// Turns on the cluster's default compute class: every pod that selects no
+	// ComputeClass of its own runs under the class named `default` (declared
+	// with a KubernetesGkeComputeClass whose `name` is `default`), and GKE's
+	// own default class applies until one exists. Pair it with a `default`
+	// class that lists several machine families, and the cluster keeps getting
+	// nodes when Google runs out of capacity for one of them. A namespace can
+	// override the cluster default with the `cloud.google.com/default-compute-class`
+	// label. Node pool auto-creation from a class needs neither `enabled` nor
+	// resource limits on GKE 1.33.3-gke.1136000 or later; on older versions
+	// the class's auto-created pools require node auto-provisioning.
 	DefaultComputeClassEnabled *bool `protobuf:"varint,6,opt,name=default_compute_class_enabled,json=defaultComputeClassEnabled,proto3,oneof" json:"default_compute_class_enabled,omitempty"`
 	unknownFields              protoimpl.UnknownFields
 	sizeCache                  protoimpl.SizeCache

@@ -1,0 +1,25 @@
+# THE FULL SURFACE: the object's own labels and annotations, two replicas, the
+# template by reference, and the Recreate update strategy. The verifier
+# proves every field reads back and the pool fills to two ready members.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxWarmPool
+metadata:
+  name: e2e-asbx-wp-full
+  annotations:
+    planton.dev/e2e-prerequisites: "catalog/kubernetes/kubernetesagentsandboxwarmpool/e2e/fixture-template.yaml"
+spec:
+  namespace:
+    value: default
+  labels:
+    team: agents
+  annotations:
+    example.com/owner: platform
+  replicas: 2
+  sandboxTemplateRef:
+    name:
+      valueFrom:
+        kind: KubernetesAgentSandboxTemplate
+        name: e2e-asbx-wp-tpl
+        fieldPath: status.outputs.sandbox_template_name
+  updateStrategy:
+    type: Recreate

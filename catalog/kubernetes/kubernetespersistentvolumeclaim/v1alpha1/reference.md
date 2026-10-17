@@ -326,6 +326,15 @@ Fields that can point at another resource's outputs:
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
 | `spec.storageClassName` | KubernetesStorageClass | `status.outputs.storage_class_name` |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| KubernetesAgentSandbox | `spec.podTemplate.spec.volumes[].persistentVolumeClaim.claimName` | `status.outputs.pvc_name` |
+| KubernetesAgentSandboxTemplate | `spec.podTemplate.spec.volumes[].persistentVolumeClaim.claimName` | `status.outputs.pvc_name` |
+
 ## See Also
 
 - [Overview](../README.md)

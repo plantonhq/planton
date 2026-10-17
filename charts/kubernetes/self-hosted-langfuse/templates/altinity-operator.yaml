@@ -1,0 +1,23 @@
+{% if values.install_altinity_operator | bool %}
+# The Altinity ClickHouse operator: it reconciles clickhouse.yaml into a
+# ClickHouse installation and its ClickHouse Keeper ensemble. Also a
+# one-per-cluster singleton, toggled by install_altinity_operator.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAltinityOperator
+metadata:
+  name: "{{ values.env }}-altinity-operator"
+{% if values.connection != "" %}
+  annotations:
+    planton.dev/connection: "{{ values.connection }}"
+{% endif %}
+spec:
+  namespace:
+    value: clickhouse-operator-system
+  createNamespace: true
+  # The upstream chart watches only the operator's own namespace by default,
+  # which would leave the installation in the stack's namespace
+  # unreconciled. As the cluster's ClickHouse operator it watches all of
+  # them.
+  watchNamespaces:
+    - ".*"
+{% endif %}

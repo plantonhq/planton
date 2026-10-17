@@ -755,6 +755,8 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| KubernetesAgentSandboxController | `spec.controller.metrics.tls.certificateSecret` | `status.outputs.secret_name` |
+| KubernetesAgentSandboxController | `spec.router.tls.certificateSecret` | `status.outputs.secret_name` |
 | KubernetesClusterIssuer | `spec.config.ca.caSecretName` | `status.outputs.secret_name` |
 | KubernetesGatekeeper | `spec.externalCert.secretName` | `spec.secret_name` |
 | KubernetesHarbor | `spec.expose.tls.certSecretName` | `status.outputs.secret_name` |
@@ -763,6 +765,8 @@ Fields on other kinds that can point at this resource:
 | KubernetesKafka | `spec.listeners[].configuration.brokerCertChainAndKey.secretName` | `status.outputs.secret_name` |
 | KubernetesKarapace | `spec.serverTls.secretName` | `status.outputs.secret_name` |
 | KubernetesKeycloak | `spec.http.tlsSecretName` | `status.outputs.secret_name` |
+| KubernetesLangfuse | `spec.redis.tls.clientCertificate.secretName` | `status.outputs.secret_name` |
+| KubernetesLangfuse | `spec.redis.tls.clientKey.secretName` | `status.outputs.secret_name` |
 | KubernetesNats | `spec.tls.secretName` | `status.outputs.secret_name` |
 | KubernetesNeo4j | `spec.ssl.bolt.secret` | `status.outputs.secret_name` |
 | KubernetesNeo4j | `spec.ssl.https.secret` | `status.outputs.secret_name` |

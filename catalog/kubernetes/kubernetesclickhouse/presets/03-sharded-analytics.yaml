@@ -35,9 +35,9 @@ spec:
   auto_inter_node_secret: true
   pdb_max_unavailable: 1
   users:
+    # No password declared: the module generates it into the auth Secret
+    # (key `etl`).
     - name: etl
-      password:
-        value: change-me-etl-password
       # ON CLUSTER DDL (how schema reaches every shard) requires the
       # CLUSTER grant on top of the database-scoped rights — without it
       # ClickHouse rejects distributed statements with ACCESS_DENIED.

@@ -1,0 +1,30 @@
+# Dependency-install profile for the agent-sandbox controller.
+#
+# The E2E harness deploys this manifest (via the registry prerequisite graph:
+# KubernetesAgentSandbox, KubernetesAgentSandboxTemplate,
+# KubernetesAgentSandboxWarmPool and KubernetesAgentSandboxClaim declare
+# `prerequisites: [KubernetesAgentSandboxController]`) before applying any
+# sandbox resource scenario.
+#
+#   - extensions on: templates, warm pools and claims need their controllers.
+#   - crds.keepOnUninstall: false: the definitions leave with the install, so
+#     the controller's own lanes (one keeps definitions, one plants a foreign
+#     one) find the cluster as they expect.
+#   - warmCandidateGracePeriod: 120s: a claim binds a warm member only if one
+#     exists when the claim is reconciled, waiting while members lack a pod
+#     IP (2 seconds upstream). A lane's pool fixture is applied moments
+#     before its claim, so a longer wait makes "binds warm" deterministic
+#     instead of a race the cold path sometimes wins.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxController
+metadata:
+  name: e2e-asbx-prereq
+spec:
+  namespace:
+    value: agent-sandbox-system
+  createNamespace: true
+  crds:
+    keepOnUninstall: false
+  extensions:
+    claim:
+      warmCandidateGracePeriod: 120s

@@ -6,6 +6,11 @@ kinds:
   - KubernetesCloudNativePgOperator
   - KubernetesClickHouse
   - KubernetesAltinityOperator
+  - KubernetesAgentSandbox
+  - KubernetesAgentSandboxTemplate
+  - KubernetesAgentSandboxWarmPool
+  - KubernetesAgentSandboxClaim
+  - KubernetesAgentSandboxController
 ---
 
 # Operator Prerequisite: the Controller a Custom-Resource Kind Needs

@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kuberneteslangfuse.v1alpha1;
+
+import "catalog/kubernetes/kubernetes.proto";
+
+/**
+ * **KubernetesLangfuseOutputs** - the handles a deployed Langfuse exports.
+ * Point the Langfuse SDKs of in-cluster services at `endpoint` with the
+ * seeded project key pair; point OpenTelemetry exporters at
+ * `otel_endpoint`; give people `external_url`.
+ */
+message KubernetesLangfuseOutputs {
+  /**
+   * Namespace Langfuse runs in.
+   */
+  string namespace = 1;
+
+  /**
+   * The web Service name (`<metadata.name>-web`), the backend a
+   * KubernetesHttpRoute or KubernetesIngress exposes.
+   */
+  string service = 2;
+
+  /**
+   * In-cluster base URL of the web server (e.g.
+   * "http://langfuse-web.langfuse.svc.cluster.local:3000") - the
+   * `LANGFUSE_BASE_URL` (or `LANGFUSE_HOST`) an in-cluster service's SDK
+   * uses. Browsers and sign-in use `external_url` instead.
+   */
+  string endpoint = 3;
+
+  /**
+   * The public URL Langfuse was configured with (`spec.external_url`) -
+   * what people open, and the base of every link Langfuse writes into
+   * emails and notifications.
+   */
+  string external_url = 4;
+
+  /**
+   * In-cluster OTLP/HTTP traces endpoint (`<endpoint>/api/public/otel`).
+   * OpenTelemetry exporters authenticate with HTTP Basic auth built from
+   * the project key pair (public key as user, secret key as password).
+   */
+  string otel_endpoint = 5;
+
+  /**
+   * Copy-paste command for reaching the web UI from a workstation.
+   */
+  string port_forward_command = 6;
+
+  /**
+   * The module-owned Secret holding every secret value this resource
+   * manages: the salt, encryption key and NextAuth secret, the seeded
+   * credentials, and every sensitive setting the spec declares. Back up
+   * its `salt` and `encryption-key` keys: they are bound to the Postgres
+   * data, and recreating Langfuse against that data needs them declared
+   * again.
+   */
+  string instance_secret_name = 7;
+
+  /**
+   * ID of the organization seeded at first start. Empty when seeding is
+   * disabled.
+   */
+  string organization_id = 8;
+
+  /**
+   * ID of the project seeded at first start. Empty when seeding is
+   * disabled.
+   */
+  string project_id = 9;
+
+  /**
+   * Public key of the seeded project key pair (`pk-lf-...`). Not secret:
+   * it identifies the project; the secret key authenticates.
+   */
+  string project_public_key = 10;
+
+  /**
+   * Where the seeded project secret key (`sk-lf-...`) lives - a key of
+   * the instance Secret. Services read it through a secretKeyRef.
+   */
+  dev.planton.kubernetes.KubernetesSecretKey project_secret_key_secret = 11;
+
+  /**
+   * Email of the seeded admin user. Empty when no admin is seeded.
+   */
+  string admin_email = 12;
+
+  /**
+   * Where the seeded admin user's password lives - a key of the instance
+   * Secret. Empty when no admin is seeded.
+   */
+  dev.planton.kubernetes.KubernetesSecretKey admin_password_secret = 13;
+}

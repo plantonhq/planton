@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesagentsandboxcontroller.v1alpha1;
+
+import "catalog/kubernetes/kubernetesagentsandboxcontroller/v1alpha1/api.proto";
+import "catalog/kubernetes/provider.proto";
+
+// KubernetesAgentSandboxControllerIacInput defines the inputs required for the agent-sandbox controller IaC modules.
+message KubernetesAgentSandboxControllerIacInput {
+  // the catalog object to deploy
+  KubernetesAgentSandboxController target = 1;
+  // provider-config for Kubernetes
+  dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

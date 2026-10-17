@@ -1,0 +1,17 @@
+apiVersion: qa.planton.dev/v1
+kind: CatalogKindE2EProfile
+metadata:
+  name: kubernetesagentsandboxtemplate
+spec:
+  tier: 3
+  # The registry prerequisite installs KubernetesAgentSandboxController from
+  # its prerequisite profile (extensions on, definitions not kept) before each
+  # template. A template runs nothing, so every lane proves what the
+  # controller does with it: minimal gets the secure-default NetworkPolicy
+  # (ingress only from the router), full-surface (namespace by reference)
+  # gets a policy carrying exactly its declared rules, and behavioral-unmanaged
+  # gets none. Every field each lane sets reads back from the live object.
+  # The warm pool and claim lanes run sandboxes from templates.
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 20

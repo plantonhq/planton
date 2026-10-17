@@ -1,7 +1,9 @@
 # The dev shape: one shard, one replica, PVC-backed, no coordination
 # (single-replica topologies need none — the module deploys no
-# Keeper). The verifier proves a live SQL round-trip (CREATE TABLE /
-# INSERT / SELECT) over the HTTP interface as the declared user.
+# Keeper). The user is declared WITHOUT a password, so the cheapest
+# scenario proves the module generates one: the verifier reads it from
+# the auth Secret and drives a live SQL round-trip (CREATE TABLE /
+# INSERT / SELECT) over the HTTP interface as that user.
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesClickHouse
 metadata:
@@ -21,5 +23,3 @@ spec:
       memory: 1Gi
   users:
     - name: verifier
-      password:
-        value: e2e-verifier-pass

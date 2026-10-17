@@ -95,10 +95,11 @@ uncomment away.
 
 ## Versioning and publishing
 
-Every release in this repository is a git tag named by the artifact's
-directory and its version, and a `make release-*` front door computes the
-next version and pushes the tag; CI derives every artifact's version from the
-tag and changes nothing in git.
+Every release in this repository is a git tag named by what it releases and
+its version, and a `make release-*` front door pushes the tag; CI derives
+every artifact's version from the tag and changes nothing in git. Every line
+is listed in [`tools/ci/release/README.md`](../tools/ci/release/README.md);
+these are the ones that touch the charts:
 
 | Tag | Releases | Front door |
 |---|---|---|

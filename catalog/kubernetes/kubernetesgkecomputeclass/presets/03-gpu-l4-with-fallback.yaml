@@ -1,0 +1,30 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGkeComputeClass
+metadata:
+  name: inference-l4
+spec:
+  # Inference pods opt in with cloud.google.com/compute-class: inference-l4
+  name: inference-l4
+  description: GPU inference. One NVIDIA L4 per node, Spot first, then on demand, in the zones that carry L4s.
+  priorities:
+    - machineType: g2-standard-8 # one L4 built in
+      spot: true
+      location:
+        zones: # zones of the cluster's region that carry L4s
+          - '<l4-zone-1>'
+          - '<l4-zone-2>'
+    - machineType: g2-standard-8
+      location:
+        zones:
+          - '<l4-zone-1>'
+          - '<l4-zone-2>'
+  # No GPU, no point: never fall back to a CPU-only machine.
+  whenUnsatisfiable: DoNotScaleUp
+  nodePoolAutoCreation:
+    enabled: true
+  priorityDefaults:
+    nodeSystemConfig:
+      kubeletConfig:
+        cpuManagerPolicy: static # exclusive cores for the model server
+  autoscalingPolicy:
+    gpuConsolidationThreshold: 100 # remove a GPU node that is not fully used

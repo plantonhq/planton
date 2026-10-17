@@ -162,6 +162,9 @@ Fields on other kinds that can point at this resource:
 | AzureStorageLocalUser | `spec.permissionScopes[].resourceName` | `status.outputs.container_name` |
 | AzureStorageObjectReplication | `spec.rules[].sourceContainerName` | `status.outputs.container_name` |
 | AzureStorageObjectReplication | `spec.rules[].destinationContainerName` | `status.outputs.container_name` |
+| KubernetesLangfuse | `spec.blobStorage.target.azureBlob.container` | `status.outputs.container_name` |
+| KubernetesLangfuse | `spec.blobStorage.mediaUpload.target.azureBlob.container` | `status.outputs.container_name` |
+| KubernetesLangfuse | `spec.blobStorage.batchExport.target.azureBlob.container` | `status.outputs.container_name` |
 
 ## See Also
 

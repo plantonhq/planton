@@ -1,0 +1,70 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesLangfuse
+metadata:
+  name: my-langfuse
+spec:
+  # The stores live in this namespace too: every store password reaches
+  # the pods through a secretKeyRef, which cannot cross namespaces. The
+  # stores deploy first and create it.
+  namespace:
+    value: langfuse
+  # Each reference names only the resource; the kind and field path come
+  # from the field's composition default (KubernetesPostgres here, with
+  # the `langfuse` database owned by the `langfuse` user at bootstrap).
+  postgres:
+    host:
+      value_from:
+        name: langfuse-pg
+    username: langfuse
+    password_secret:
+      secret_name:
+        value_from:
+          name: langfuse-pg
+  # A single ClickHouse server without Keeper: cluster mode off. Declare
+  # the `langfuse` user on the KubernetesClickHouse with networks and no
+  # password -- its module generates one into the auth Secret, where this
+  # reference looks for it.
+  clickhouse:
+    host:
+      value_from:
+        name: langfuse-ch
+    username: langfuse
+    password_secret:
+      secret_name:
+        value_from:
+          name: langfuse-ch
+    cluster:
+      enabled: false
+  # A KubernetesValkey running with maxmemory-policy noeviction: the
+  # ingestion queues live here.
+  redis:
+    standalone:
+      host:
+        value_from:
+          name: langfuse-valkey
+    username:
+      value_from:
+        name: langfuse-valkey
+    password_secret:
+      secret_name:
+        value_from:
+          name: langfuse-valkey
+      secret_key:
+        value_from:
+          name: langfuse-valkey
+  # A KubernetesSeaweedFs that declares the `langfuse` bucket.
+  blob_storage:
+    target:
+      s3_compatible:
+        endpoint:
+          value_from:
+            name: langfuse-s3
+        bucket: langfuse
+        credentials_secret:
+          secret_name:
+            value_from:
+              name: langfuse-s3
+  # Everything else is the kind's defaults: one web replica and one worker
+  # at evaluation sizing, the salt, encryption key and session secret
+  # generated, and a seeded organization and project with a generated key
+  # pair. Open the UI with the port_forward_command output.

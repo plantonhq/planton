@@ -32,6 +32,8 @@ const (
 	KubernetesObjectMetadataField_object_labels KubernetesObjectMetadataField = 1
 	// metadata.annotations
 	KubernetesObjectMetadataField_object_annotations KubernetesObjectMetadataField = 2
+	// metadata.name
+	KubernetesObjectMetadataField_object_name KubernetesObjectMetadataField = 3
 )
 
 // Enum value maps for KubernetesObjectMetadataField.
@@ -40,11 +42,13 @@ var (
 		0: "kubernetes_object_metadata_field_unspecified",
 		1: "object_labels",
 		2: "object_annotations",
+		3: "object_name",
 	}
 	KubernetesObjectMetadataField_value = map[string]int32{
 		"kubernetes_object_metadata_field_unspecified": 0,
 		"object_labels":      1,
 		"object_annotations": 2,
+		"object_name":        3,
 	}
 )
 
@@ -382,26 +386,32 @@ var (
 	//
 	// optional string secret_home = 60010;
 	E_SecretHome = &file_shared_options_options_proto_extTypes[9]
-	// Marks a top-level map<string, string> field of a Kubernetes manifest
-	// projection kind's spec (a kind whose registry entry carries
-	// kubernetes_manifest_projection) as the custom resource's OWN metadata: its
-	// labels or its annotations. Such a field describes the object, not its
-	// spec, so every engine routes it to metadata.labels or
-	// metadata.annotations and never into the custom resource's spec -- the
-	// same way the namespace reference is routed to metadata.namespace.
+	// Marks a top-level field of a Kubernetes manifest projection kind's spec (a
+	// kind whose registry entry carries kubernetes_manifest_projection) as part
+	// of the custom resource's OWN metadata: its name (a singular string), its
+	// labels or its annotations (map<string, string>). Such a field describes
+	// the object, not its spec, so every engine routes it to metadata.name,
+	// metadata.labels or metadata.annotations and never into the custom
+	// resource's spec -- the same way the namespace reference is routed to
+	// metadata.namespace.
 	//
-	// It exists because for some custom resources the object's labels are
+	// It exists because for some custom resources the object's metadata is
 	// configuration: prometheus-operator selects ServiceMonitors, PodMonitors
 	// and PrometheusRules by their labels, so a kind that could not set them
-	// could not be picked up by a Prometheus with a selector.
+	// could not be picked up by a Prometheus with a selector; and a GKE
+	// ComputeClass named `default` is the cluster's default class, while pods
+	// select every other class by its name, so the object's name is the value
+	// workloads reference rather than the Planton resource's name. A kind
+	// without an object_name field names its object after metadata.name.
 	//
 	// Planton's identity labels (planton.ai/resource, resource-name,
 	// resource-kind, resource-id, organization, environment) are stamped on top
 	// and always win, so a manifest can never relabel an object as another
 	// resource. The routing is implemented once, in
 	// pkg/kubernetes/manifestprojection, which both the generated Terraform
-	// module and the Pulumi module read; a catalog test proves the marker sits
-	// only on top-level string maps of projection kinds' specs.
+	// module and the Pulumi module read; a catalog test proves each value sits
+	// only on its field shape (a top-level string map, or a top-level singular
+	// string for object_name) of a projection kind's spec.
 	//
 	// optional dev.planton.shared.options.KubernetesObjectMetadataField kubernetes_object_metadata = 60011;
 	E_KubernetesObjectMetadata = &file_shared_options_options_proto_extTypes[10]
@@ -456,11 +466,12 @@ const file_shared_options_options_proto_rawDesc = "" +
 	"\x1cshared/options/options.proto\x12\x1adev.planton.shared.options\x1a google/protobuf/descriptor.proto\"6\n" +
 	"\fKeyValuePair\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value*|\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value*\x8d\x01\n" +
 	"\x1dKubernetesObjectMetadataField\x120\n" +
 	",kubernetes_object_metadata_field_unspecified\x10\x00\x12\x11\n" +
 	"\robject_labels\x10\x01\x12\x16\n" +
-	"\x12object_annotations\x10\x02:9\n" +
+	"\x12object_annotations\x10\x02\x12\x0f\n" +
+	"\vobject_name\x10\x03:9\n" +
 	"\adefault\x12\x1d.google.protobuf.FieldOptions\x18\xe1\xd4\x03 \x01(\tR\adefault:P\n" +
 	"\x13recommended_default\x12\x1d.google.protobuf.FieldOptions\x18\xe2\xd4\x03 \x01(\tR\x12recommendedDefault:\x81\x01\n" +
 	"\x17recommended_default_map\x12\x1d.google.protobuf.FieldOptions\x18\xe3\xd4\x03 \x03(\v2(.dev.planton.shared.options.KeyValuePairR\x15recommendedDefaultMap:=\n" +

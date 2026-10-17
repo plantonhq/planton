@@ -1,0 +1,27 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: CatalogKindCostProfile
+metadata:
+  name: kuberneteslangfuse
+spec:
+  billing_model: cluster_capacity
+  cost_drivers:
+    - field_path: web
+      sku_meter: cluster CPU and memory reservations
+      impact: Each web replica reserves its requests (250m CPU and 1 GiB by default; Langfuse recommends the full 2 CPU and 4 GiB in production). The web server is stateless and scales freely; an autoscaler under web.autoscaling hands the replica count to the cluster.
+    - field_path: worker
+      sku_meter: cluster CPU and memory reservations
+      impact: Each worker replica reserves its requests (250m CPU and 1 GiB by default, 2 CPU and 4 GiB recommended in production). Workers drain the ingestion queues into ClickHouse, so their count tracks trace volume; worker.autoscaling hands it to the cluster.
+    - field_path: blob_storage
+      sku_meter: object storage capacity and requests
+      impact: Every ingested event is written to object storage before the worker reads it, and media and batch exports land there too. On a cloud bucket this is a storage and request bill of its own; an events/ lifecycle rule (about 30 days) caps the largest share.
+  estimate_exclusions:
+    - the price of reserved CPU and memory is the target cluster's node economics, which this catalog cannot know
+    - autoscalers change replica counts at runtime between their declared bounds
+    - object storage volume and request counts follow trace volume, media uploads and export use, which no manifest can predict
+    - Postgres, ClickHouse and the Redis-protocol store are separate components whose capacity rides their own footprints
+    - data transfer between Langfuse and managed stores or cloud buckets outside the cluster
+    - the helm_values overlay merges last and can override any modeled value
+  notes: "This component creates no cloud SKU of its own: its cost is the share of the cluster it reserves, realized on the cluster's bill, plus whatever object storage target it writes to. An honest manifest-time statement is the capacity footprint: web replicas x requests + worker replicas x requests. Langfuse itself provisions no volumes; all durable state lives in the four composed stores."

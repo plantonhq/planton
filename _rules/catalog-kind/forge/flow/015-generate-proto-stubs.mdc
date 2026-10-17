@@ -12,7 +12,7 @@ You are the Planton Code Partner working inside the developer's local workspace 
 
 SCOPE
 - Run `make protos` from project root
-- Generate Go/Java/TypeScript stubs from proto files
+- Generate Go and Java stubs from proto files (Go stubs are committed beside the protos; Java stubs are a compile gate for reserved-keyword conflicts and are never committed)
 - Validate proto files compile correctly
 - Ensure imports and dependencies are resolved
 - Do not modify proto files
@@ -39,31 +39,13 @@ SEQUENTIAL STEPS
 
 2) Execute Command:
    - Run: `make protos` from project root
-   - This command generates stubs for Go, Java, and TypeScript from proto files
-   - May take 30-60 seconds to complete
-   - TRANSIENT FAILURE MODE — `Failure: deadline_exceeded: context deadline
-     exceeded` from the `buf generate` step: the stub generation uses REMOTE
-     buf.build plugins, and each plugin's generation RPC carries its own
-     ~2-minute server-side deadline that a slow network or a loaded buf.build
-     can exceed. This is NOT caused by your proto changes. Retry `buf generate`
-     (from the REPO ROOT, with the same flags the Makefile uses) until it succeeds —
-     flakes typically clear within a retry or two — then finish the remaining
-     pipeline steps the Makefile would have run (copy the generated Go stubs
-     into place, regenerate the Java stub BUILD file, build the Java stub
-     gate, run gazelle). Batch proto edits so the whole spec change set rides
-     one regeneration rather than paying this per edit.
-   - PATH-SCOPED ESCAPE — when full-repo retries KEEP exceeding the deadline
-     (the repo is large enough that the whole-catalog generation can
-     persistently outrun the remote plugins' server-side budget), scope the
-     generation to just the changed protos:
-     `buf generate --path catalog/<provider>/<kind>/v1alpha1/spec.proto`
-     (repeat `--path` per changed file, from the repo root). This completes in
-     seconds, uses the SAME pinned remote plugins (output is byte-identical
-     for those files), and you then copy only those generated stubs into
-     place (`generated/stubs/go/github.com/plantonhq/planton/<path>` →
-     `<path>`) and remove `generated/stubs/go`. Remember the copied stubs
-     bake into CLI binaries: rebuild `make build-go` before validating
-     manifests against the new fields.
+   - This command lints and formats the protos, then generates Go and Java stubs with the plugins pinned in the Makefile's proto-toolchain section and run locally from `.tools/` (provisioned by `make proto-tools`), copies the Go stubs into place beside their protos, and builds the Java stub gate
+   - A full-tree run regenerates every catalog proto and can take many minutes (the Makefile allows buf up to 20)
+   - PATH-SCOPED GENERATION — a change to one kind only needs that kind's stubs. Generate them from the repo root with the same flags the Makefile uses, scoped to the changed directories:
+     `buf generate --disable-symlinks --path catalog/<provider>/<kind>/v1alpha1`
+     (repeat `--path` per changed directory, e.g. `shared/catalogkind` after a registry change). It completes in seconds with the same pinned plugins (output is byte-identical for those files). Then copy the Go stubs into place and remove the staging directory:
+     `cp -R generated/stubs/go/github.com/plantonhq/planton/. . && rm -rf generated/stubs/go`
+     Remember the copied stubs bake into CLI binaries: rebuild the CLI before validating manifests against the new fields.
 
 3) Parse Output:
    - Check exit code (0 = success, non-zero = failure)

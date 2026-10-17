@@ -1,0 +1,12 @@
+# The namespace's OWNER for the lanes where another resource owns
+# agent-sandbox-system: full-surface (the router certificate is issued into
+# it before the controller starts) and namespace-owned-elsewhere (a
+# controller asked to create the namespace must refuse it). A
+# KubernetesNamespace is the shape the kind's docs recommend, and its
+# teardown removes the namespace with the fixture chain.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesNamespace
+metadata:
+  name: e2e-asbx-namespace
+spec:
+  name: agent-sandbox-system

@@ -1,0 +1,34 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxTemplate
+metadata:
+  name: <template-name>
+spec:
+  namespace:
+    value: <namespace>
+  podTemplate:
+    metadata:
+      labels:
+        app: agent-sandbox
+        # The label your Cilium or mesh policy selects the sandboxes by.
+        example.com/fence: agent-sandbox
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: sandbox
+          image: <sandbox-image>
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              memory: 1Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+  networkPolicyManagement: Unmanaged

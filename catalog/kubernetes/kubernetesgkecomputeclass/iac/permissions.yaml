@@ -1,0 +1,27 @@
+# Least-privilege permissions the IaC runner's Kubernetes principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/catalogkindpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: CatalogKindPermissions
+metadata:
+  name: kubernetesgkecomputeclass
+spec:
+  kubernetes:
+    rules:
+      - api_groups:
+          - cloud.google.com
+        resources:
+          - computeclasses
+        verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: true
+        provenance: derived
+        notes: "The modules render exactly ONE object: the cluster-scoped cloud.google.com/v1 ComputeClass named after spec.name (kubectl_manifest in Terraform, server-side applied with no wait; manifestcr.Apply in Pulumi). GKE serves the ComputeClass CRD on every cluster, so no controller install precedes it. The nodes and node pools a class leads to are created by GKE's cluster autoscaler under the cluster's own service agent, never by the runner."

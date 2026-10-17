@@ -1,0 +1,23 @@
+# The smallest install: the core controller exactly as upstream publishes
+# it, the namespace created and owned by this resource. The verifier asserts
+# the controller Available, the Sandbox definition Established and stamped
+# with release v1.0.7, the namespace carrying this kind's mark, and a probe
+# Sandbox Ready -- the controller serving, not just running.
+#
+# THE KEEP-AND-READOPT PROOF: crds.keepOnUninstall defaults true, so the
+# first destroy must leave the Sandbox definition on the cluster AND the
+# probe Sandbox with its pod (removing the controller never deletes a
+# sandbox), and the reinstall the annotation requests must re-adopt the
+# definition rather than fail on its existence. This is the only lane that
+# keeps definitions behind; it is core only, so it leaves only
+# sandboxes.agents.x-k8s.io.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxController
+metadata:
+  name: e2e-asbx-min
+  annotations:
+    planton.dev/e2e-reinstall: "true"
+spec:
+  namespace:
+    value: agent-sandbox-system
+  createNamespace: true

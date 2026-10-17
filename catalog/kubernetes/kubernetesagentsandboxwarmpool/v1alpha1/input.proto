@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesagentsandboxwarmpool.v1alpha1;
+
+import "catalog/kubernetes/kubernetesagentsandboxwarmpool/v1alpha1/api.proto";
+import "catalog/kubernetes/provider.proto";
+
+// KubernetesAgentSandboxWarmPoolIacInput provides the inputs for creating the
+// SandboxWarmPool on a Kubernetes cluster.
+message KubernetesAgentSandboxWarmPoolIacInput {
+  // the catalog object to deploy
+  KubernetesAgentSandboxWarmPool target = 1;
+  // provider-config
+  dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

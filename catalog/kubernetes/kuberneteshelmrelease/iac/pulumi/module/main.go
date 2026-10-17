@@ -73,12 +73,13 @@ func Resources(ctx *pulumi.Context, iacInput *kuberneteshelmreleasev1alpha1.Kube
 	crds := spec.GetCrds()
 	createdCrds, err := keptcrds.Apply(ctx, keptcrds.Args{
 		Source: helmcrds.Source{
-			Repository: spec.GetRepo(),
-			Chart:      spec.GetChart(),
-			Version:    spec.GetVersion(),
-			Username:   spec.GetRepositoryUsername(),
-			Password:   spec.GetRepositoryPassword(),
-			Values:     []string{string(releaseValuesDocument)},
+			Repository:   spec.GetRepo(),
+			Chart:        spec.GetChart(),
+			Version:      spec.GetVersion(),
+			VersionField: "spec.version",
+			Username:     spec.GetRepositoryUsername(),
+			Password:     spec.GetRepositoryPassword(),
+			Values:       []string{string(releaseValuesDocument)},
 		},
 		// The chart is the user's: it may carry no CRDs at all, and CRDs it
 		// templates are Helm's unless the spec accepts that.

@@ -1,0 +1,18 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxController
+metadata:
+  name: agent-sandbox
+spec:
+  namespace:
+    value: agent-sandbox-system
+  createNamespace: true
+  # Templates, warm pools and claims: what upstream's Python and Go SDKs
+  # create a sandbox through (a SandboxClaim bound to a warm pool member).
+  extensions: {}
+  router:
+    # The SDKs reach a sandbox through sandbox-router-svc. Every request is
+    # let through here, so the router's NetworkPolicy (on by default) and the
+    # cluster's network are the fence; choose tokenReview or scopedToken for
+    # anything reachable by untrusted callers.
+    authorization:
+      allowAll: {}

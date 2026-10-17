@@ -1,0 +1,16 @@
+apiVersion: qa.planton.dev/v1
+kind: CatalogKindE2EProfile
+metadata:
+  name: kubernetesagentsandboxwarmpool
+spec:
+  tier: 3
+  # The registry prerequisite installs KubernetesAgentSandboxController from
+  # its prerequisite profile (extensions on, definitions not kept); each lane
+  # adds a KubernetesAgentSandboxTemplate fixture its pool references through
+  # valueFrom. Every lane reads its fields back from the live object and
+  # proves the pool fills to its size with ready members: minimal relies on
+  # the cluster's default of one and checks the scale endpoint an autoscaler
+  # drives; full-surface asks for two with the Recreate strategy.
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 20

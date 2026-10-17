@@ -883,6 +883,10 @@ Fields on other kinds that can point at this resource:
 | KubernetesAirflow | `spec.broker.valkey.passwordSecret.secretName` | `status.outputs.password_secret.name` |
 | KubernetesArgocd | `spec.redis.external.host` | `status.outputs.service` |
 | KubernetesHarbor | `spec.cache.external.addr` | `status.outputs.kube_endpoint` |
+| KubernetesLangfuse | `spec.redis.standalone.host` | `status.outputs.service` |
+| KubernetesLangfuse | `spec.redis.username` | `status.outputs.username` |
+| KubernetesLangfuse | `spec.redis.passwordSecret.secretName` | `status.outputs.password_secret.name` |
+| KubernetesLangfuse | `spec.redis.passwordSecret.secretKey` | `status.outputs.password_secret.key` |
 | KubernetesRayCluster | `spec.gcsFaultTolerance.redisAddress` | `status.outputs.kube_endpoint` |
 | KubernetesRayCluster | `spec.gcsFaultTolerance.redisPasswordSecret.name` | `status.outputs.password_secret.name` |
 | KubernetesSuperset | `spec.cache.host` | `status.outputs.service` |

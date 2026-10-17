@@ -1,0 +1,491 @@
+# =============================================================================
+# Agent Substrate Release: upstream's images and install set, published by Planton
+# =============================================================================
+# Agent Substrate (github.com/agent-substrate/substrate) publishes no container
+# images and no pre-built install. Planton publishes both, for the one version
+# tools/ci/release/agent-substrate.yaml declares, built from the exact upstream
+# tag with upstream's own publisher (`ate-setup publish release-images`):
+#
+#   Images:  ghcr.io/plantonhq/planton/agent-substrate/<component>:vX.Y.Z
+#            mirrored by digest to us-central1-docker.pkg.dev/plantonhq/planton/agent-substrate/<component>
+#   Install: https://downloads.planton.ai/releases/agent-substrate/vX.Y.Z/
+#            manifests/...  upstream's manifests/ tree, images pinned by digest
+#            crds.yaml      the CRD bundle the kept-CRD mechanism fetches
+#            images.json    the version, the upstream commit, every pinned image
+#            LICENSE, third-party-licenses.tar.gz, SHA256SUMS (uploaded last)
+#
+# The version is upstream's, never bumped here. tools/ci/release/compose_agent_substrate_release.py
+# says why the install is upstream's whole tree rather than one file.
+#
+# Triggers:
+#   - push of a tag agent-substrate/vX.Y.Z   (front door: make release-agent-substrate)
+#   - pull_request touching this lane, its composer, its test or the declared
+#     version -> rehearse the declared version: build both architectures,
+#     compose and check the install set, publish nothing
+#   - workflow_dispatch: re-run a version, or rehearse with dry_run=true
+#
+# The trust boundary. The build job runs a third party's code (its Go
+# programs, its ko build, its Dockerfile), so it holds no credential at all:
+# no registry login, no secrets, no repository token, and checkouts that leave
+# no token on disk. Planton's package token could otherwise overwrite every
+# image this repository publishes, the operator's included. The build pushes to
+# a registry that lives and dies inside its job and hands each image on as an
+# OCI layout; only jobs running Planton's own code compose (from a fresh
+# checkout of the same upstream commit), push to ghcr.io, mirror and upload.
+# That is why this lane differs from release.operator.yaml, which builds
+# Planton's own code and pushes in one job. It also makes the build identical
+# in a rehearsal and a release.
+#
+# Immutability. A version is sealed once its SHA256SUMS is on
+# downloads.planton.ai: a later run builds nothing and only verifies what is
+# published. Before the seal, a re-run is safe: images go to ghcr.io only from
+# the composed set, and verify_agent_substrate_release.sh fails any file a
+# previous run left behind with other bytes.
+#
+# GHCR visibility. New packages are born private and GitHub offers no API that
+# reliably makes them public, so the ghcr job tries, then proves every image
+# pulls without credentials. When one does not, it stops before the mirror and
+# the upload and prints each package's settings link; after the one-time flip
+# to Public, "Re-run failed jobs" resumes from there without rebuilding.
+#
+# ubuntu-latest, not a larger runner: this is a public repository, so standard
+# hosted runners are free while larger runners bill from the first minute
+# (founder direction 2026-09-17). The arm64 half of the Envoy image's Rust
+# build runs under QEMU; slower is fine, paid is not.
+# =============================================================================
+
+name: release.agent-substrate
+
+on:
+  push:
+    tags:
+      - 'agent-substrate/v*'
+  pull_request:
+    paths:
+      - '.github/workflows/release.agent-substrate.yaml'
+      - 'tools/ci/release/agent-substrate.yaml'
+      - 'tools/ci/release/compose_agent_substrate_release.py'
+      - 'tools/ci/release/compose_agent_substrate_release_test.py'
+      - 'tools/ci/release/verify_agent_substrate_release.sh'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Agent Substrate version (vX.Y.Z); empty means the version tools/ci/release/agent-substrate.yaml declares'
+        required: false
+        type: string
+      dry_run:
+        description: 'Rehearse: build and compose, publish nothing'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-agent-substrate-${{ github.ref }}
+  # A newer push to a pull request supersedes its rehearsal; a publish always
+  # runs to the end.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  UPSTREAM: agent-substrate/substrate
+  REPOSITORY: ghcr.io/plantonhq/planton/agent-substrate
+  # The same images' path under ghcr.io/plantonhq, as release.mirror-images.yaml takes it.
+  MIRROR_PATH: planton/agent-substrate
+  R2_BUCKET: planton-foundation-downloads
+  CRANE_VERSION: v0.22.1
+  # The release's own checksums.txt entry for the Linux x86_64 tarball.
+  CRANE_SHA256: 0ab7a1d6932a213aed964ce97666c3077fe691c8606413674a8b3e0b9ec4cda0
+
+jobs:
+  # Which version, whether this run publishes, and whether that version is
+  # already sealed. Runs Planton's code only.
+  resolve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      commit: ${{ steps.version.outputs.commit }}
+      publish: ${{ steps.version.outputs.publish }}
+      sealed: ${{ steps.seal.outputs.sealed }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Resolve version and mode
+        id: version
+        env:
+          EVENT: ${{ github.event_name }}
+          INPUT_VERSION: ${{ inputs.version }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          declared="$(sed -n 's/^version: *//p' tools/ci/release/agent-substrate.yaml)"
+          case "${EVENT}" in
+            push)         version="${GITHUB_REF_NAME#agent-substrate/}"; publish=true ;;
+            pull_request) version="${declared}"; publish=false ;;
+            *)            version="${INPUT_VERSION:-${declared}}"
+                          if [ "${DRY_RUN}" = "true" ]; then publish=false; else publish=true; fi ;;
+          esac
+          case "${version}" in
+            v[0-9]*.[0-9]*.[0-9]*) ;;
+            *) echo "::error::the version must look like vX.Y.Z (got '${version}')"; exit 1 ;;
+          esac
+          # The mirror's Google trust admits only a tag or main, so a publish
+          # from any other ref would push to ghcr.io and then stop at the mirror.
+          if [ "${publish}" = "true" ] && [ "${GITHUB_REF}" != "refs/heads/main" ] && [ "${GITHUB_REF#refs/tags/}" = "${GITHUB_REF}" ]; then
+            echo "::error::a publish runs from a tag or main, not ${GITHUB_REF}; dispatch from main, or set dry_run to rehearse this ref"
+            exit 1
+          fi
+          # The commit is fixed here, once: the build and the composition read
+          # the same upstream bytes even if the tag moved mid-run. An annotated
+          # tag's peeled entry (^{}) is the commit it names.
+          refs="$(git ls-remote --tags "https://github.com/${UPSTREAM}" "refs/tags/${version}" "refs/tags/${version}^{}")"
+          commit="$(printf '%s\n' "${refs}" | awk '/\^\{\}$/ {print $1}')"
+          [ -n "${commit}" ] || commit="$(printf '%s\n' "${refs}" | awk 'NF {print $1; exit}')"
+          if [ -z "${commit}" ]; then
+            echo "::error::${UPSTREAM} has no tag ${version}. Planton publishes only upstream's own releases; check the version against https://github.com/${UPSTREAM}/tags"
+            exit 1
+          fi
+          {
+            echo "version=${version}"
+            echo "declared=${declared}"
+            echo "commit=${commit}"
+            echo "publish=${publish}"
+          } >> "$GITHUB_OUTPUT"
+          echo "Agent Substrate ${version} at ${commit}; publish=${publish}; declared=${declared}"
+
+      - name: Is the version already sealed?
+        id: seal
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          DECLARED: ${{ steps.version.outputs.declared }}
+          PUBLISH: ${{ steps.version.outputs.publish }}
+          AWS_ACCESS_KEY_ID: ${{ steps.version.outputs.publish == 'true' && secrets.CLOUDFLARE_R2_ACCESS_KEY_ID || '' }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.version.outputs.publish == 'true' && secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY || '' }}
+          AWS_ENDPOINT_URL: ${{ steps.version.outputs.publish == 'true' && secrets.CLOUDFLARE_R2_ENDPOINT || '' }}
+        run: |
+          if [ "${PUBLISH}" != "true" ]; then
+            echo "sealed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # The S3 API, not downloads.planton.ai: a CDN answer can be a cached
+          # miss, and this decides whether the run builds at all.
+          if aws s3api head-object --bucket "${R2_BUCKET}" \
+              --key "releases/agent-substrate/${VERSION}/SHA256SUMS" > /dev/null 2>&1; then
+            echo "sealed=true" >> "$GITHUB_OUTPUT"
+            echo "Agent Substrate ${VERSION} is published and sealed; this run verifies it and builds nothing."
+            exit 0
+          fi
+          if [ "${VERSION}" != "${DECLARED}" ]; then
+            echo "::error::Observed: a publish of Agent Substrate ${VERSION}, which is not published yet, while tools/ci/release/agent-substrate.yaml declares ${DECLARED}."
+            echo "::error::Means: only the declared version has been rehearsed by the pull request that declared it, so ${VERSION} would publish unproven."
+            echo "::error::Next: declare ${VERSION} in tools/ci/release/agent-substrate.yaml through a pull request whose rehearsal passes, then run make release-agent-substrate. Delete the stray tag with: git push origin :refs/tags/agent-substrate/${VERSION}"
+            exit 1
+          fi
+          echo "sealed=false" >> "$GITHUB_OUTPUT"
+
+      - name: Install crane
+        if: steps.seal.outputs.sealed == 'true'
+        run: |
+          curl -sSfL -o /tmp/crane.tar.gz \
+            "https://github.com/google/go-containerregistry/releases/download/${CRANE_VERSION}/go-containerregistry_Linux_x86_64.tar.gz"
+          echo "${CRANE_SHA256}  /tmp/crane.tar.gz" | sha256sum -c -
+          sudo tar -xzf /tmp/crane.tar.gz -C /usr/local/bin crane
+
+      - name: Verify the sealed version
+        if: steps.seal.outputs.sealed == 'true'
+        run: bash tools/ci/release/verify_agent_substrate_release.sh "${{ steps.version.outputs.version }}"
+
+  # Upstream's code, run with nothing to steal: no permissions, no secrets, no
+  # login, no token left by either checkout. Its publisher pushes to a registry
+  # inside this job, and each image leaves as an OCI layout.
+  build:
+    needs: resolve
+    if: needs.resolve.outputs.sealed != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    permissions: {}
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+    env:
+      VERSION: ${{ needs.resolve.outputs.version }}
+      LOCAL_REPOSITORY: localhost:5000/agent-substrate
+    steps:
+      - name: Check out upstream at the release commit
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.UPSTREAM }}
+          ref: ${{ needs.resolve.outputs.commit }}
+          path: upstream
+          persist-credentials: false
+
+      - name: Set up Go (upstream's go.mod)
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: upstream/go.mod
+          cache: false
+
+      # QEMU runs the arm64 stages of the Envoy image's Dockerfile; ko
+      # cross-compiles the Go images without it.
+      - uses: docker/setup-qemu-action@v3
+
+      # Host networking and plain HTTP let buildx push to this job's registry,
+      # exactly as upstream's own CI wires its local registry.
+      - uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: network=host
+          buildkitd-config-inline: |
+            [registry."localhost:5000"]
+              http = true
+
+      - name: Install crane
+        run: |
+          curl -sSfL -o /tmp/crane.tar.gz \
+            "https://github.com/google/go-containerregistry/releases/download/${CRANE_VERSION}/go-containerregistry_Linux_x86_64.tar.gz"
+          echo "${CRANE_SHA256}  /tmp/crane.tar.gz" | sha256sum -c -
+          sudo tar -xzf /tmp/crane.tar.gz -C /usr/local/bin crane
+
+      - name: Build and push every image with upstream's publisher
+        working-directory: upstream
+        run: |
+          # ate-setup loads a kubeconfig at startup for every command, even one
+          # that touches no cluster (steps.NewEnv). This one names no real
+          # cluster, and publishing never dials it.
+          kubeconfig="${RUNNER_TEMP}/placeholder-kubeconfig"
+          printf '%s\n' \
+            'apiVersion: v1' 'kind: Config' \
+            'clusters: [{name: none, cluster: {server: "https://127.0.0.1:1"}}]' \
+            'contexts: [{name: none, context: {cluster: none, user: none}}]' \
+            'users: [{name: none, user: {}}]' \
+            'current-context: none' > "${kubeconfig}"
+          df -h / | tail -1
+          KUBECONFIG="${kubeconfig}" NO_DEV_ENV=1 VERSION="${VERSION}" \
+            go run ./cmd/ate-setup publish release-images --ko-docker-repo "${LOCAL_REPOSITORY}" \
+            | tee "${RUNNER_TEMP}/publisher-output.txt"
+          df -h / | tail -1
+
+      - name: Export each published image as an OCI layout
+        run: |
+          # The publisher prints every reference it pushed after this line.
+          names="$(awk 'found && NF {print} /^Release images for /{found=1}' "${RUNNER_TEMP}/publisher-output.txt" \
+            | sed -e "s|^${LOCAL_REPOSITORY}/||" -e 's|[:@].*$||' | sort -u)"
+          if [ -z "${names}" ]; then
+            echo "::error::upstream's publisher printed no image references; read the step above"
+            exit 1
+          fi
+          mkdir -p "${RUNNER_TEMP}/layouts"
+          for name in ${names}; do
+            crane pull --format=oci "${LOCAL_REPOSITORY}/${name}:${VERSION}" "${RUNNER_TEMP}/layouts/${name}"
+            echo "exported ${name} $(jq -r '.manifests[0].digest' "${RUNNER_TEMP}/layouts/${name}/index.json")"
+          done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: agent-substrate-images
+          path: ${{ runner.temp }}/layouts
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0 # image layers are compressed already
+
+  # Planton's code from here on. Verify the layouts, compose the install set
+  # from a fresh checkout of the same commit, and prove it still builds.
+  stage:
+    needs: [resolve, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      VERSION: ${{ needs.resolve.outputs.version }}
+      KUSTOMIZE_VERSION: v5.8.1 # the release built from sigs.k8s.io/kustomize/api v0.21.1, which upstream's installer embeds at v0.5.0
+      # The release's own checksums.txt entry for the linux_amd64 tarball.
+      KUSTOMIZE_SHA256: 029a7f0f4e1932c52a0476cf02a0fd855c0bb85694b82c338fc648dcb53a819d
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Check out upstream at the release commit
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.UPSTREAM }}
+          ref: ${{ needs.resolve.outputs.commit }}
+          path: upstream
+          persist-credentials: false
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: agent-substrate-images
+          path: ${{ runner.temp }}/layouts
+
+      - name: Install kustomize
+        run: |
+          curl -sSfL -o /tmp/kustomize.tar.gz \
+            "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
+          echo "${KUSTOMIZE_SHA256}  /tmp/kustomize.tar.gz" | sha256sum -c -
+          sudo tar -xzf /tmp/kustomize.tar.gz -C /usr/local/bin kustomize
+
+      - name: The composer's own tests
+        working-directory: tools/ci/release
+        run: python3 -m unittest compose_agent_substrate_release_test.py
+
+      - name: Compose and check the install set
+        run: |
+          python3 tools/ci/release/compose_agent_substrate_release.py \
+            --source upstream \
+            --layouts "${RUNNER_TEMP}/layouts" \
+            --repository "${REPOSITORY}" \
+            --version "${VERSION}" \
+            --commit "${{ needs.resolve.outputs.commit }}" \
+            --out "${RUNNER_TEMP}/release" \
+            --kustomize /usr/local/bin/kustomize
+          {
+            echo "### Agent Substrate ${VERSION}"
+            echo
+            echo '```'
+            jq -r '.images | to_entries[] | "\(.key)  \(.value)"' "${RUNNER_TEMP}/release/images.json"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: agent-substrate-release
+          path: ${{ runner.temp }}/release
+          if-no-files-found: error
+          retention-days: 1
+
+  # Push the layouts to ghcr.io byte for byte, then prove an adopter can pull
+  # every image with no credentials.
+  ghcr:
+    needs: [resolve, stage]
+    if: needs.resolve.outputs.publish == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      mirror_refs: ${{ steps.push.outputs.mirror_refs }}
+    env:
+      VERSION: ${{ needs.resolve.outputs.version }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: agent-substrate-images
+          path: ${{ runner.temp }}/layouts
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: agent-substrate-release
+          path: ${{ runner.temp }}/release
+
+      - name: Install crane
+        run: |
+          curl -sSfL -o /tmp/crane.tar.gz \
+            "https://github.com/google/go-containerregistry/releases/download/${CRANE_VERSION}/go-containerregistry_Linux_x86_64.tar.gz"
+          echo "${CRANE_SHA256}  /tmp/crane.tar.gz" | sha256sum -c -
+          sudo tar -xzf /tmp/crane.tar.gz -C /usr/local/bin crane
+
+      - name: Push each image and prove its digest
+        id: push
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          printf '%s' "${TOKEN}" | crane auth login ghcr.io -u "${{ github.actor }}" --password-stdin
+          mirror_refs=""
+          failed=0
+          while read -r name ref; do
+            pinned="${ref##*@}"
+            # No --index: that flag wraps the layout in a new index, which
+            # changes the digest every pinned reference names.
+            crane push "${RUNNER_TEMP}/layouts/${name}" "${REPOSITORY}/${name}:${VERSION}"
+            pushed="$(crane digest "${REPOSITORY}/${name}:${VERSION}")"
+            if [ "${pushed}" != "${pinned}" ]; then
+              echo "::error::${REPOSITORY}/${name}:${VERSION} is ${pushed}, but the install set pins ${pinned}"
+              failed=1
+            fi
+            mirror_refs="${mirror_refs:+${mirror_refs} }${MIRROR_PATH}/${name}:${VERSION}"
+          done < <(jq -r '.images | to_entries[] | "\(.key) \(.value)"' "${RUNNER_TEMP}/release/images.json")
+          [ "${failed}" -eq 0 ] || exit 1
+          echo "mirror_refs=${mirror_refs}" >> "$GITHUB_OUTPUT"
+
+      - name: Every image pulls without credentials
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ORG: ${{ github.repository_owner }}
+        run: |
+          export DOCKER_CONFIG="${RUNNER_TEMP}/anonymous"
+          mkdir -p "${DOCKER_CONFIG}" && echo '{}' > "${DOCKER_CONFIG}/config.json"
+          private=""
+          while read -r name ref; do
+            package="${MIRROR_PATH}/${name}"
+            encoded="${package//\//%2F}"
+            # Best effort, as in release.helm.yaml: changing visibility needs
+            # package-admin rights the workflow token may not have.
+            gh api --method PATCH "orgs/${ORG}/packages/container/${encoded}" -f visibility=public > /dev/null 2>&1 || true
+            if ! crane manifest "${ref}" > /dev/null 2>&1; then
+              private="${private}  https://github.com/orgs/${ORG}/packages/container/${encoded}/settings"$'\n'
+            fi
+          done < <(jq -r '.images | to_entries[] | "\(.key) \(.value)"' "${RUNNER_TEMP}/release/images.json")
+          if [ -n "${private}" ]; then
+            echo "::error::Observed: these packages do not pull without credentials:"
+            printf '%s' "${private}"
+            echo "::error::Means: ghcr.io created them private, so an adopter's cluster could not pull Agent Substrate; nothing has been mirrored or published yet."
+            echo "::error::Next: an organization owner opens each link, chooses Change visibility, then Public; then Re-run failed jobs on this run (nothing is rebuilt)."
+            exit 1
+          fi
+          echo "Every Agent Substrate ${VERSION} image pulls anonymously from ${REPOSITORY}."
+
+  # The images, copied to the Google Artifact Registry mirror by digest.
+  mirror:
+    needs: [resolve, ghcr]
+    uses: ./.github/workflows/release.mirror-images.yaml
+    permissions:
+      contents: read
+      id-token: write # the keyless exchange with Google
+    with:
+      refs: ${{ needs.ghcr.outputs.mirror_refs }}
+
+  # The install set, uploaded only once every image it names is on both
+  # registries. SHA256SUMS goes last: its presence is the seal.
+  publish:
+    needs: [resolve, mirror]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      VERSION: ${{ needs.resolve.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: agent-substrate-release
+          path: ${{ runner.temp }}/release
+
+      - name: Upload the install set
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+          AWS_ENDPOINT_URL: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
+        run: |
+          prefix="releases/agent-substrate/${VERSION}"
+          cd "${RUNNER_TEMP}/release"
+          find . -type f ! -name SHA256SUMS | sed 's|^\./||' | sort | while read -r path; do
+            bash "${GITHUB_WORKSPACE}/tools/ci/release/publish_once.sh" "${path}" "${prefix}/${path}"
+          done
+          bash "${GITHUB_WORKSPACE}/tools/ci/release/publish_once.sh" SHA256SUMS "${prefix}/SHA256SUMS"
+
+      - name: Install crane
+        run: |
+          curl -sSfL -o /tmp/crane.tar.gz \
+            "https://github.com/google/go-containerregistry/releases/download/${CRANE_VERSION}/go-containerregistry_Linux_x86_64.tar.gz"
+          echo "${CRANE_SHA256}  /tmp/crane.tar.gz" | sha256sum -c -
+          sudo tar -xzf /tmp/crane.tar.gz -C /usr/local/bin crane
+
+      - name: Verify what an adopter downloads and pulls
+        run: bash tools/ci/release/verify_agent_substrate_release.sh "${VERSION}" "${RUNNER_TEMP}/release"

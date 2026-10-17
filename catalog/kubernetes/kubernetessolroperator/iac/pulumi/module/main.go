@@ -72,11 +72,12 @@ func Resources(ctx *pulumi.Context, iacInput *kubernetessolroperatorv1alpha1.Kub
 	crds := iacInput.Target.Spec.GetCrds()
 	createdCrds, err := keptcrds.Apply(ctx, keptcrds.Args{
 		Source: helmcrds.Source{
-			Repository:  vars.HelmChartRepo,
-			Chart:       vars.HelmChartName,
-			Version:     locals.ChartVersion,
-			Values:      []string{string(releaseValuesDocument)},
-			CRDOverride: vars.CrdRenderOverride,
+			Repository:   vars.HelmChartRepo,
+			Chart:        vars.HelmChartName,
+			Version:      locals.ChartVersion,
+			VersionField: "spec.chart_version",
+			Values:       []string{string(releaseValuesDocument)},
+			CRDOverride:  vars.CrdRenderOverride,
 		},
 		// A typed kind knows its chart carries CRDs and pins the switch, so a
 		// render that yields none is a failure and nothing is left to Helm.

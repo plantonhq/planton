@@ -1,0 +1,40 @@
+# The Valkey store behind Langfuse's ingestion queues and caches. Two
+# settings carry the whole design:
+# - maxMemoryPolicy noeviction: queued ingestion jobs are durable work, and
+#   an evicting store drops them silently when memory fills. With
+#   noeviction a full store refuses new writes loudly instead.
+# - appendOnly with a persistent volume: a restart replays the queue from
+#   disk rather than starting empty and losing whatever was waiting.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesValkey
+metadata:
+  name: "{{ values.env }}-langfuse-valkey"
+{% if values.connection != "" %}
+  annotations:
+    planton.dev/connection: "{{ values.connection }}"
+{% endif %}
+spec:
+  namespace:
+    valueFrom:
+      name: "{{ values.env }}-langfuse-ns"
+  createNamespace: false
+  config:
+    maxMemory: 1gb
+    maxMemoryPolicy: noeviction
+    appendOnly: true
+{% if values.high_availability | bool %}
+  # A primary with two replicas. Langfuse connects to the primary Service.
+  replication:
+    replicas: 2
+    persistence:
+      size: 5Gi
+{% else %}
+  persistence:
+    size: 5Gi
+{% endif %}
+  auth:
+    users:
+      # Declared without a password: the module generates it into the
+      # `<name>-auth` Secret under the user's name (`default`), and
+      # langfuse.yaml reads the user name and that Secret key by reference.
+      - name: default

@@ -132,6 +132,8 @@ pg_gsa="planton-e2e-gke-pg-backup@${GCP_PROJECT_ID}.iam.gserviceaccount.com"
 openbao_backup_gsa="planton-e2e-gke-openbao-backup@${GCP_PROJECT_ID}.iam.gserviceaccount.com"
 openbao_unseal_gsa="planton-e2e-gke-openbao-unseal@${GCP_PROJECT_ID}.iam.gserviceaccount.com"
 bucket="planton-e2e-gke-backups-${GCP_PROJECT_ID}"
+langfuse_gsa="planton-e2e-gke-langfuse@${GCP_PROJECT_ID}.iam.gserviceaccount.com"
+langfuse_bucket="planton-e2e-gke-langfuse-${GCP_PROJECT_ID}"
 # The seal's key ring and key are named by the manifest (the ring fixed and
 # permanent, the key by this bootstrap's id); the OpenBao seal wants the
 # BARE names, in the ring's location — which is the bucket's region.
@@ -184,6 +186,8 @@ export PLANTON_E2E_GKE_OPENBAO_BACKUP_GSA="${openbao_backup_gsa}"
 export PLANTON_E2E_GKE_OPENBAO_UNSEAL_GSA="${openbao_unseal_gsa}"
 export PLANTON_E2E_GKE_OPENBAO_KEY_RING="${openbao_key_ring}"
 export PLANTON_E2E_GKE_OPENBAO_CRYPTO_KEY="${openbao_crypto_key}"
+export PLANTON_E2E_GKE_LANGFUSE_GSA="${langfuse_gsa}"
+export PLANTON_E2E_GKE_LANGFUSE_BUCKET="${langfuse_bucket}"
 EOF
 chmod 600 "${state_dir}/env.sh"
 

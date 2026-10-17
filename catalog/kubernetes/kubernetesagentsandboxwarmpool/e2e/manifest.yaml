@@ -1,0 +1,20 @@
+# The full surface of a KubernetesAgentSandboxWarmPool, offline: every key of
+# the SandboxWarmPool spec. The served-schema test renders it and holds it to
+# the pinned definition. The live lanes run e2e/scenarios/.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxWarmPool
+metadata:
+  name: coding-agent-pool
+spec:
+  namespace:
+    value: agents
+  labels:
+    team: agents
+  annotations:
+    example.com/owner: platform
+  replicas: 5
+  sandboxTemplateRef:
+    name:
+      value: coding-agent
+  updateStrategy:
+    type: OnReplenish

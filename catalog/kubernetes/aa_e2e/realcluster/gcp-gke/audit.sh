@@ -15,16 +15,18 @@ CLOUDFLARE_ACCOUNT_ID="${CLOUDFLARE_ACCOUNT_ID:-${PLANTON_E2E_GKE_R2_ACCOUNT_ID:
 rc=0
 
 echo "==> service accounts"
-for sa in planton-e2e-gke-pg-backup planton-e2e-gke-mongo-backup planton-e2e-gke-openbao-backup planton-e2e-gke-openbao-unseal; do
+for sa in planton-e2e-gke-pg-backup planton-e2e-gke-mongo-backup planton-e2e-gke-openbao-backup planton-e2e-gke-openbao-unseal planton-e2e-gke-langfuse; do
   if gcloud iam service-accounts describe "${sa}@${GCP_PROJECT_ID}.iam.gserviceaccount.com" --project "${GCP_PROJECT_ID}" >/dev/null 2>&1; then
     echo "  SURVIVOR: service account ${sa}"; rc=1
   fi
 done
 
-echo "==> bucket"
-if gcloud storage buckets describe "gs://planton-e2e-gke-backups-${GCP_PROJECT_ID}" >/dev/null 2>&1; then
-  echo "  SURVIVOR: bucket planton-e2e-gke-backups-${GCP_PROJECT_ID}"; rc=1
-fi
+echo "==> buckets"
+for bucket in "planton-e2e-gke-backups-${GCP_PROJECT_ID}" "planton-e2e-gke-langfuse-${GCP_PROJECT_ID}"; do
+  if gcloud storage buckets describe "gs://${bucket}" >/dev/null 2>&1; then
+    echo "  SURVIVOR: bucket ${bucket}"; rc=1
+  fi
+done
 
 # Workload Identity bindings live ON the service accounts (IAM policy of the
 # GSA); a surviving binding implies a surviving account, caught above.
@@ -67,6 +69,24 @@ fi
 echo "==> R2 writer token"
 if curl -s -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" "${cf_api}/tokens?per_page=50" | python3 -c 'import json,sys; sys.exit(0 if any(t.get("name")=="planton-e2e-gke-backups-writer" for t in json.load(sys.stdin).get("result") or []) else 1)' 2>/dev/null; then
   echo "  SURVIVOR: account API token planton-e2e-gke-backups-writer"; rc=1
+fi
+
+# The ComputeClass lanes make GKE create nodes (and auto-created node pools)
+# for the classes they declare; the behavioral verifier waits for the node to
+# be reclaimed, but a lane killed mid-proof leaves billed capacity behind. A
+# node still labelled with an E2E class name is a survivor; GKE deletes the
+# emptied auto-created pool once its last node is gone.
+echo "==> compute-class nodes"
+kubeconfig="${PLANTON_E2E_KUBECONFIG:-}"
+if [ -n "${kubeconfig}" ]; then
+  class_nodes="$(kubectl --kubeconfig "${kubeconfig}" get nodes -o jsonpath='{range .items[*]}{.metadata.name}{" "}{.metadata.labels.cloud\.google\.com/compute-class}{"\n"}{end}' 2>/dev/null | awk '$2 ~ /^e2e-gke-computeclass/')"
+  if [ -n "${class_nodes}" ]; then
+    echo "  SURVIVOR: nodes of an E2E compute class (delete the class's pods, or the class, and GKE reclaims them):"
+    echo "${class_nodes}" | sed 's/^/    /'
+    rc=1
+  fi
+else
+  echo "  (PLANTON_E2E_KUBECONFIG unset: source env.sh to audit compute-class nodes)"
 fi
 
 if [ "${rc}" -eq 0 ]; then echo "==> audit clean: zero batch residue in ${GCP_PROJECT_ID} and Cloudflare account ${CLOUDFLARE_ACCOUNT_ID}"; else echo "==> audit FAILED"; fi

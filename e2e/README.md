@@ -650,6 +650,21 @@ teardown script exists; it uses a chart no other lane keeps CRDs for on the
 shared cluster (metacontroller), because a kept CRD would be re-adopted,
 not refused. The denied lane runs as a different identity, below.
 
+A kind that pins its release and installs under upstream's fixed names
+(the agent-sandbox controller) has no chart-version lanes, and every lane
+writes the same definition names, so exactly ONE lane may keep
+definitions behind: `minimal`, core only, which keeps the one definition
+the core install carries. Every lane that installs more turns keep off,
+which leaves the remaining names free for the owned-elsewhere lane to
+plant. Such kinds add three failure classes, asserted in three parts by
+their own verifier: `workload-owned-elsewhere` (a Deployment under a fixed
+name exists without the kind's `planton.ai/kind` label; the verifier
+checks it gained none), `namespace-missing` (`create_namespace` is off and
+the namespace's owner has not created it), and `namespace-owned-elsewhere`
+(`create_namespace` is on and someone else created the namespace). Their
+fixtures are a `KubernetesManifest` planting the other installation's
+Deployment and a `KubernetesNamespace` owning the namespace.
+
 Before the verifier sees a deploy error, the runner passes the engine's
 output through `pkg/failure.Explain` (the same step the CLI takes): a
 module refuses in place wherever HCL can see the fact, and a failure that
@@ -788,6 +803,8 @@ Status values:
 - **deferred** -- known failure with documented reason, skipped in CI
 - **skip** -- intentionally excluded (needs cloud credentials, etc.)
 - **stub** -- module is a stub with no real deployment logic
+- **real_cluster** -- every lane needs an externally provided real cluster (the kind cannot run on a local kind cluster at all, e.g. its custom resource definition is served only by a managed cloud cluster); skipped with its `deferred_reason` unless `PLANTON_E2E_KUBECONFIG` names one, and runs in the real-cluster batches (`catalog/kubernetes/aa_e2e/realcluster/`)
+- **pending_proof** -- fully authored and offline-validated, live lanes not yet run; skipped everywhere until a proving session runs them and flips the profile (`validated_provisioners` stays empty meanwhile)
 
 The status is enforced at two layers: CI matrices are built from `planton
 e2e discover` filters, and the provider test runners load the kind's
@@ -4131,6 +4148,35 @@ manifest at runtime to extract the resource name, namespace, and kind, then
 builds the appropriate verification dynamically. This means adding a new test
 scenario is as simple as dropping a YAML file into the kind's
 `e2e/scenarios/` folder -- no Go code changes needed.
+
+### Projection kinds: every field reads back
+
+A projection kind (its spec mirrors one custom resource) is only proven when
+every field its scenario sets is on the live object, because an API server
+silently prunes a key its definition does not serve.
+`proveProjectionReadback` (`catalog/kubernetes/aa_e2e/verify/projectionreadback.go`)
+renders the scenario through the projection both engines apply and requires
+the rendered spec to be CONTAINED in the live spec, value for value, with the
+declared labels and annotations on the object. Containment rather than
+equality: the server writes its definition's defaults into the stored object
+(a custom resource embedding a pod carries many, inside list items), and an
+exact comparison would need a hand-kept copy of upstream's defaults. Kinds
+whose stored spec carries only a short, fixed default list (the
+ServiceMonitor and PodMonitor) compare exactly, defaults applied. Every
+projection lane runs the read-back first, then its behavioral proof.
+
+The same rendering is checked offline for every kind with a pinned
+definition: `TestProjection_RenderedExamplesValidateAgainstServedSchema`
+(`pkg/kubernetes/manifestprojection`) runs each scenario and `e2e/manifest.yaml`
+through the API server's own pruning and validation code, so a lane never
+discovers a pruned key or a value in the wrong form for the first time.
+
+A family of resources whose operator is a catalog kind ships the operator's
+`e2e/prerequisite.yaml` tuned for them. The agent-sandbox controller's turns
+the extensions on (templates, warm pools and claims need them), keeps no
+definitions (the controller's own lanes need the names free), and raises the
+warm-candidate wait so a claim applied moments after its pool fixture binds a
+ready member deterministically instead of racing the cold path.
 
 ## Adding a New Test Scenario
 

@@ -1,0 +1,27 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: CatalogKindCostProfile
+metadata:
+  name: kubernetesagentsandboxcontroller
+spec:
+  billing_model: cluster_capacity
+  cost_drivers:
+    - field_path: controller.resources
+      sku_meter: cluster CPU and memory reservations
+      impact: The reservation for each controller pod. Empty means upstream's manifest, which sets none -- the controller schedules unbounded and the cluster reserves nothing for it.
+    - field_path: controller.replicas
+      sku_meter: cluster CPU and memory reservations
+      impact: Each replica reserves controller.resources again; extra replicas are leader-elected standbys.
+    - field_path: router.resources
+      sku_meter: cluster CPU and memory reservations
+      impact: The reservation for each router pod. Empty means upstream's -- requests of 250m CPU and 256Mi memory, limits of 2 CPU and 1Gi.
+    - field_path: router.replicas
+      sku_meter: cluster CPU and memory reservations
+      impact: Each router replica reserves router.resources again (two by default).
+  estimate_exclusions:
+    - no capacity derivation is published for this kind -- the controller's reservation is empty unless set, and the router's depends on whether a router is declared at all
+    - the sandboxes this controller runs (their pods, volumes and warm pools) are the real capacity story -- they ride the Sandbox, SandboxTemplate and SandboxWarmPool declarations and the claims applications make, never this component's footprint
+    - the price of reserved CPU and memory is the target cluster's node economics, which this catalog cannot know
+  notes: "This component creates no cloud SKU of its own -- its cost is the share of the cluster its controller and router pods reserve, realized on the cluster's bill. A warm pool's idle sandboxes are the largest cost a deployment of agent-sandbox carries, and they are declared, sized and priced on the warm pool, not here."

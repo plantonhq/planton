@@ -129,6 +129,19 @@ var kubernetesTier3Kinds = []string{
 	// TaskManagers; the behavioral lane chains a consumer-scoped
 	// SeaweedFS fixture for checkpoint/HA storage.
 	"kubernetesflinkdeployment",
+	// Langfuse composes four store kinds (registry prerequisites:
+	// Postgres, ClickHouse, Valkey, SeaweedFS - their operators chain
+	// transitively) into the lane's shared namespace; every lane ingests
+	// a trace through all four.
+	"kuberneteslangfuse",
+	// The agent-sandbox resources KubernetesAgentSandboxController (their
+	// registry prerequisite, from its prerequisite profile) reconciles into
+	// sandboxes: a Sandbox's pod and claims, a template's network policy, a
+	// warm pool's members, a claim bound to one of them.
+	"kubernetesagentsandbox",
+	"kubernetesagentsandboxtemplate",
+	"kubernetesagentsandboxwarmpool",
+	"kubernetesagentsandboxclaim",
 }
 
 // Kubernetes Tier 4 kinds: operators, addons, and cluster-level
@@ -144,6 +157,7 @@ var kubernetesTier4Kinds = []string{
 	"kubernetesoteloperator",
 	"kuberneteskuberayoperator",
 	"kubernetesflinkoperator",
+	"kubernetesagentsandboxcontroller",
 }
 
 // Kubernetes Tier 2 kinds: Helm-based, self-contained chart installs.
@@ -299,6 +313,10 @@ func TestKubernetesKarpenterEc2NodeClass_Pulumi(t *testing.T) {
 	runAllScenariosForKind(t, "kuberneteskarpenterec2nodeclass", "pulumi")
 }
 
+func TestKubernetesGkeComputeClass_Pulumi(t *testing.T) {
+	runAllScenariosForKind(t, "kubernetesgkecomputeclass", "pulumi")
+}
+
 // ─── Tier 1 Terraform ───────────────────────────────────────────────────────
 
 func TestKubernetesNamespace_Terraform(t *testing.T) {
@@ -424,6 +442,10 @@ func TestKubernetesKarpenterNodePool_Terraform(t *testing.T) {
 
 func TestKubernetesKarpenterEc2NodeClass_Terraform(t *testing.T) {
 	runAllScenariosForKind(t, "kuberneteskarpenterec2nodeclass", "terraform")
+}
+
+func TestKubernetesGkeComputeClass_Terraform(t *testing.T) {
+	runAllScenariosForKind(t, "kubernetesgkecomputeclass", "terraform")
 }
 
 // ─── Tier 2 Pulumi (Helm-based) ─────────────────────────────────────────────
@@ -723,6 +745,9 @@ func TestKubernetesTrino_Pulumi(t *testing.T) {
 func TestKubernetesSuperset_Pulumi(t *testing.T) {
 	runAllScenariosForKind(t, "kubernetessuperset", "pulumi")
 }
+func TestKubernetesLangfuse_Pulumi(t *testing.T) {
+	runAllScenariosForKind(t, "kuberneteslangfuse", "pulumi")
+}
 func TestKubernetesGhaRunnerScaleSet_Pulumi(t *testing.T) {
 	runAllScenariosForKind(t, "kubernetesgharunnerscaleset", "pulumi")
 }
@@ -731,6 +756,18 @@ func TestKubernetesPlantonRunner_Pulumi(t *testing.T) {
 }
 func TestKubernetesPlantonPlatform_Pulumi(t *testing.T) {
 	runAllScenariosForKind(t, "kubernetesplantonplatform", "pulumi")
+}
+func TestKubernetesAgentSandbox_Pulumi(t *testing.T) {
+	runAllScenariosForKind(t, "kubernetesagentsandbox", "pulumi")
+}
+func TestKubernetesAgentSandboxTemplate_Pulumi(t *testing.T) {
+	runAllScenariosForKind(t, "kubernetesagentsandboxtemplate", "pulumi")
+}
+func TestKubernetesAgentSandboxWarmPool_Pulumi(t *testing.T) {
+	runAllScenariosForKind(t, "kubernetesagentsandboxwarmpool", "pulumi")
+}
+func TestKubernetesAgentSandboxClaim_Pulumi(t *testing.T) {
+	runAllScenariosForKind(t, "kubernetesagentsandboxclaim", "pulumi")
 }
 
 // ─── Tier 3 Terraform (operator-dependent) ──────────────────────────────────
@@ -801,6 +838,9 @@ func TestKubernetesTrino_Terraform(t *testing.T) {
 func TestKubernetesSuperset_Terraform(t *testing.T) {
 	runAllScenariosForKind(t, "kubernetessuperset", "terraform")
 }
+func TestKubernetesLangfuse_Terraform(t *testing.T) {
+	runAllScenariosForKind(t, "kuberneteslangfuse", "terraform")
+}
 func TestKubernetesGhaRunnerScaleSet_Terraform(t *testing.T) {
 	runAllScenariosForKind(t, "kubernetesgharunnerscaleset", "terraform")
 }
@@ -809,6 +849,18 @@ func TestKubernetesPlantonRunner_Terraform(t *testing.T) {
 }
 func TestKubernetesPlantonPlatform_Terraform(t *testing.T) {
 	runAllScenariosForKind(t, "kubernetesplantonplatform", "terraform")
+}
+func TestKubernetesAgentSandbox_Terraform(t *testing.T) {
+	runAllScenariosForKind(t, "kubernetesagentsandbox", "terraform")
+}
+func TestKubernetesAgentSandboxTemplate_Terraform(t *testing.T) {
+	runAllScenariosForKind(t, "kubernetesagentsandboxtemplate", "terraform")
+}
+func TestKubernetesAgentSandboxWarmPool_Terraform(t *testing.T) {
+	runAllScenariosForKind(t, "kubernetesagentsandboxwarmpool", "terraform")
+}
+func TestKubernetesAgentSandboxClaim_Terraform(t *testing.T) {
+	runAllScenariosForKind(t, "kubernetesagentsandboxclaim", "terraform")
 }
 
 // ─── Tier 4 Pulumi (operators, addons) ──────────────────────────────────────
@@ -848,6 +900,9 @@ func TestKubernetesOtelCollector_Pulumi(t *testing.T) {
 }
 func TestKubernetesTektonOperator_Pulumi(t *testing.T) {
 	runAllScenariosForKind(t, "kubernetestektonoperator", "pulumi")
+}
+func TestKubernetesAgentSandboxController_Pulumi(t *testing.T) {
+	runAllScenariosForKind(t, "kubernetesagentsandboxcontroller", "pulumi")
 }
 func TestKubernetesPlantonOperator_Pulumi(t *testing.T) {
 	runAllScenariosForKind(t, "kubernetesplantonoperator", "pulumi")
@@ -896,6 +951,9 @@ func TestKubernetesOtelCollector_Terraform(t *testing.T) {
 }
 func TestKubernetesTektonOperator_Terraform(t *testing.T) {
 	runAllScenariosForKind(t, "kubernetestektonoperator", "terraform")
+}
+func TestKubernetesAgentSandboxController_Terraform(t *testing.T) {
+	runAllScenariosForKind(t, "kubernetesagentsandboxcontroller", "terraform")
 }
 func TestKubernetesPlantonOperator_Terraform(t *testing.T) {
 	runAllScenariosForKind(t, "kubernetesplantonoperator", "terraform")

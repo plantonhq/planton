@@ -1,0 +1,20 @@
+# THE DEFINITION-OWNED-ELSEWHERE REFUSAL: the SandboxClaim definition already
+# exists, applied by someone else (the fixture), as GKE's Agent Sandbox
+# add-on would leave it. The deploy must be refused before anything is
+# written, naming the definition and its owner, and the remedies; the
+# verifier asserts the three parts and that the definition gained no stamp.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxController
+metadata:
+  name: e2e-asbx-crd-owned
+  annotations:
+    planton.dev/e2e-prerequisites: "catalog/kubernetes/kubernetesagentsandboxcontroller/e2e/fixture-foreign-crd.yaml"
+    planton.dev/e2e-expect-deploy-failure: crd-owned-elsewhere
+    planton.dev/e2e-expect-crds: sandboxclaims.extensions.agents.x-k8s.io
+spec:
+  namespace:
+    value: agent-sandbox-system
+  createNamespace: true
+  crds:
+    keepOnUninstall: false
+  extensions: {}

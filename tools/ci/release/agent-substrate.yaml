@@ -1,0 +1,10 @@
+# The Agent Substrate release Planton publishes images and an install set for
+# (.github/workflows/release.agent-substrate.yaml; tools/ci/release/README.md).
+#
+# Upstream (github.com/agent-substrate/substrate) publishes no images, so this
+# is the one version the lane builds: a pull request that touches the lane
+# rehearses it end to end, `make release-agent-substrate` tags it, and the lane
+# refuses to publish any version that is neither this one nor already
+# published. Adopting a new upstream release moves this line, in the pull
+# request whose rehearsal proves the new version builds and composes.
+version: v0.5.0

@@ -1,0 +1,14 @@
+# The default pool the warm-bind and refusal lanes claim from: one member,
+# built from fixture-template.yaml. The claim scenarios reference it through
+# valueFrom, so the lane proves the pool reference resolves on both engines.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxWarmPool
+metadata:
+  name: e2e-asbx-cl-pool
+spec:
+  namespace:
+    value: default
+  replicas: 1
+  sandboxTemplateRef:
+    name:
+      value: e2e-asbx-cl-tpl

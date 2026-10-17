@@ -1,0 +1,19 @@
+# Minimal ComputeClass on the gcp-gke real-cluster profile: a two-family
+# fallback list with node pool auto-creation. Object-grade: GKE accepts the
+# class and reports Health=True; node creation is the behavioral scenario's
+# assertion.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGkeComputeClass
+metadata:
+  name: e2e-gke-computeclass-minimal
+  annotations:
+    planton.dev/e2e-cluster-profile: "gcp-gke"
+spec:
+  name: e2e-gke-computeclass-minimal
+  priorities:
+    - machineFamily: n2d
+      minCores: 2
+    - machineFamily: e2
+      minCores: 2
+  nodePoolAutoCreation:
+    enabled: true

@@ -1,0 +1,23 @@
+apiVersion: qa.planton.dev/v1
+kind: CatalogKindE2EProfile
+metadata:
+  name: kuberneteslangfuse
+spec:
+  tier: 3
+  # Composes four catalog stores through registry prerequisites
+  # (CloudNativePG -> Postgres, Altinity -> ClickHouse with a managed
+  # Keeper, Valkey, SeaweedFS), all in the lane's shared namespace - nothing
+  # store-related installs in the release itself. The verifier proves the
+  # product on every lane: an anonymous public-API read refused, then a
+  # span pushed over OTLP with the seeded key pair and read back by ID
+  # through web, blob storage, the queue, the worker and ClickHouse; the
+  # full-surface lane adds a score through the ingestion API; the
+  # behavioral lanes prove state
+  # across a chart upgrade and across a reinstall over surviving stores.
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
+  # Each scenario stands up its whole store chain, then Langfuse's first
+  # start runs every Postgres and ClickHouse migration.
+  timeout_minutes: 45

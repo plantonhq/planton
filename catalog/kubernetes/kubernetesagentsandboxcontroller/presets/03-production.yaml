@@ -1,0 +1,31 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxController
+metadata:
+  name: agent-sandbox
+spec:
+  namespace:
+    value: agent-sandbox-system
+  createNamespace: true
+  extensions: {}
+  controller:
+    # A leader-elected hot standby (leader election is on by default), and
+    # a reservation the cluster's quotas can count.
+    replicas: 2
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+  router:
+    replicas: 3
+    minAvailable: 2
+    # Every request carries a Kubernetes bearer token, checked through the
+    # TokenReview API; a request without one is refused.
+    authorization:
+      tokenReview:
+        requireToken: true
+    networkPolicy:
+      clientNamespaceLabels:
+        kubernetes.io/metadata.name: agents

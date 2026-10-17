@@ -1,0 +1,68 @@
+# Least-privilege permissions for the official kuberneteslangfuse modules
+# (iac/tf and iac/pulumi -- behaviorally equivalent). Derived from the
+# resources the modules create directly plus everything the pinned Langfuse
+# chart (2.1.5) renders inside the Helm release. Schema:
+# catalog/catalogkindpermissions/v1.
+apiVersion: catalog.planton.dev/v1
+kind: CatalogKindPermissions
+metadata:
+  name: kuberneteslangfuse
+spec:
+  kubernetes:
+    rules:
+      - api_groups: [""]
+        resources: ["namespaces"]
+        verbs: ["get", "create", "update", "patch", "delete"]
+        cluster_scoped: true
+        provenance: derived
+        notes: kubernetes_namespace_v1.langfuse -- rendered only when spec.create_namespace is true; otherwise the module only needs get on the existing namespace.
+      - api_groups: [""]
+        resources: ["secrets"]
+        verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+        provenance: derived
+        notes: kubernetes_secret_v1.instance (<name>-secrets, every declared and generated secret) and the chart's <name>-app Secret, which the chart template reads back with Helm's lookup on every render. Helm also stores each release revision as a Secret in the namespace. Referenced store and TLS Secrets are wired as secretKeyRef and volume sources and never read by the module.
+      - api_groups: [""]
+        resources: ["services", "serviceaccounts"]
+        verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+        provenance: derived
+        notes: Chart-rendered inside helm_release.langfuse -- the <name>-web Service (the service output, type from spec.web.service.type) and the <name> ServiceAccount (skipped when spec.service_account.existing_name names one).
+      - api_groups: [""]
+        resources: ["pods", "pods/log", "events"]
+        verbs: ["get", "list", "watch"]
+        provenance: derived
+        notes: Read-only -- the Helm provider's wait and atomic rollout (helm_release.langfuse sets wait, atomic and cleanup_on_fail) tracks pod readiness and surfaces failure events; the modules never create bare pods.
+      - api_groups: ["apps"]
+        resources: ["deployments"]
+        verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+        provenance: derived
+        notes: The chart's two workloads -- the <name>-web and <name>-worker Deployments.
+      - api_groups: ["autoscaling"]
+        resources: ["horizontalpodautoscalers"]
+        verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+        provenance: derived
+        notes: Rendered only when spec.web.autoscaling.hpa or spec.worker.autoscaling.hpa is set -- one HPA per workload.
+      - api_groups: ["keda.sh"]
+        resources: ["scaledobjects"]
+        verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+        provenance: derived
+        notes: Rendered only when spec.web.autoscaling.keda or spec.worker.autoscaling.keda is set -- one ScaledObject per workload; the KEDA CRDs must already be installed.
+      - api_groups: ["autoscaling.k8s.io"]
+        resources: ["verticalpodautoscalers"]
+        verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+        provenance: derived
+        notes: Rendered only when spec.web.autoscaling.vpa or spec.worker.autoscaling.vpa is set and the cluster serves autoscaling.k8s.io/v1 -- the chart checks the API's presence before rendering.
+      - api_groups: ["policy"]
+        resources: ["poddisruptionbudgets"]
+        verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+        provenance: derived
+        notes: Rendered only when spec.web.pdb or spec.worker.pdb is set -- one PodDisruptionBudget per workload. The helm_values overlay can widen the chart's object surface beyond this profile (extraManifests, for example); overlay users own the extra permissions.
+      - api_groups:
+          - ""
+        resources:
+          - namespaces
+        verbs:
+          - list
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the Namespace in namespace.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.

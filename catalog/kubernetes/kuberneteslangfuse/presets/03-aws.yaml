@@ -1,0 +1,106 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesLangfuse
+metadata:
+  name: my-langfuse
+spec:
+  namespace:
+    value: langfuse
+  external_url: https://langfuse.replaceme.example.com
+  postgres:
+    host:
+      value_from:
+        name: langfuse-pg
+    username: langfuse
+    password_secret:
+      secret_name:
+        value_from:
+          name: langfuse-pg
+  clickhouse:
+    host:
+      value_from:
+        name: langfuse-ch
+    username: langfuse
+    password_secret:
+      secret_name:
+        value_from:
+          name: langfuse-ch
+    cluster:
+      name:
+        value_from:
+          name: langfuse-ch
+  redis:
+    standalone:
+      host:
+        value_from:
+          name: langfuse-valkey
+    username:
+      value_from:
+        name: langfuse-valkey
+    password_secret:
+      secret_name:
+        value_from:
+          name: langfuse-valkey
+      secret_key:
+        value_from:
+          name: langfuse-valkey
+  # Events, media and exports in one S3 bucket (an AwsS3Bucket resource),
+  # with no static key: Langfuse uses the pod's IAM role below. Browsers
+  # reach media and exports through presigned S3 URLs directly.
+  blob_storage:
+    target:
+      s3:
+        bucket:
+          value_from:
+            name: langfuse-bucket
+        region:
+          value_from:
+            name: langfuse-bucket
+    event_upload:
+      sse:
+        algorithm: aes256
+    media_upload:
+      sse:
+        algorithm: aes256
+    batch_export:
+      sse:
+        algorithm: aes256
+  # EKS IRSA: the ServiceAccount federates with an AwsIamRole whose trust
+  # policy names this cluster's OIDC provider and
+  # system:serviceaccount:langfuse:my-langfuse, and whose policy allows
+  # List, Get, Put and Delete on the bucket.
+  service_account:
+    workload_identity:
+      eks:
+        role_arn:
+          value_from:
+            name: langfuse-irsa
+  secrets:
+    salt: $secret/replace-with-langfuse-salt
+    encryption_key: $secret/replace-with-langfuse-encryption-key
+  init:
+    admin:
+      email: admin@replaceme.example.com
+  auth:
+    disable_sign_up: true
+  web:
+    replicas: 2
+    resources:
+      requests:
+        cpu: "2"
+        memory: 4Gi
+      limits:
+        cpu: "4"
+        memory: 4Gi
+    pdb:
+      min_available: "1"
+  worker:
+    replicas: 2
+    resources:
+      requests:
+        cpu: "2"
+        memory: 4Gi
+      limits:
+        cpu: "4"
+        memory: 4Gi
+    pdb:
+      min_available: "1"

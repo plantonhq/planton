@@ -1,0 +1,56 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandbox
+metadata:
+  name: <agent-name>
+spec:
+  namespace:
+    value: <namespace>
+  podTemplate:
+    metadata:
+      labels:
+        app: agent-workbench
+    spec:
+      # gVisor on GKE Sandbox nodes; use your cluster's Kata class elsewhere.
+      runtimeClassName: gvisor
+      nodeSelector:
+        sandbox.gke.io/runtime: gvisor
+      tolerations:
+        - key: sandbox.gke.io/runtime
+          operator: Equal
+          value: gvisor
+          effect: NoSchedule
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: agent
+          image: <agent-image>
+          ports:
+            - name: http
+              containerPort: 8888
+          resources:
+            requests:
+              cpu: "1"
+              memory: 2Gi
+            limits:
+              memory: 4Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: workspace
+              mountPath: /workspace
+  volumeClaimTemplates:
+    - metadata:
+        name: workspace
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 20Gi
+  service: true

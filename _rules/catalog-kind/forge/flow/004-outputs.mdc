@@ -81,6 +81,11 @@ NOTES
   same holds for volatile metrics (utilization, timestamps) and for member/child ids that
   churn by design (autoscaled droplets): consumers address such fleets through tags or
   selectors, not through an output that is wrong an hour later.
+- An address output (an endpoint, a port-forward command, an OTLP URL) names the port the
+  SERVICE exposes, not the port the container listens on. Where the spec lets the two
+  differ (a chart's `service.externalPort | default service.port`), derive the output
+  from the same expression the chart renders, on both engines; a consumer dialing the
+  container port through the Service is refused.
 - Export the ids of IMPLICIT sub-resources that other kinds target, constructed from
   the parent's id when the provider offers no readback -- ARM/cloud APIs often hang
   capabilities off a sub-resource nothing materializes explicitly (e.g. a storage

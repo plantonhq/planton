@@ -1,0 +1,94 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesLangfuse
+metadata:
+  name: my-langfuse
+spec:
+  namespace:
+    value: langfuse
+  external_url: https://langfuse.replaceme.example.com
+  postgres:
+    host:
+      value_from:
+        name: langfuse-pg
+    username: langfuse
+    password_secret:
+      secret_name:
+        value_from:
+          name: langfuse-pg
+  clickhouse:
+    host:
+      value_from:
+        name: langfuse-ch
+    username: langfuse
+    password_secret:
+      secret_name:
+        value_from:
+          name: langfuse-ch
+    cluster:
+      name:
+        value_from:
+          name: langfuse-ch
+  redis:
+    standalone:
+      host:
+        value_from:
+          name: langfuse-valkey
+    username:
+      value_from:
+        name: langfuse-valkey
+    password_secret:
+      secret_name:
+        value_from:
+          name: langfuse-valkey
+      secret_key:
+        value_from:
+          name: langfuse-valkey
+  # Events, media and exports in one Cloud Storage bucket (a GcpGcsBucket
+  # resource) through Langfuse's native GCS driver, with no key file:
+  # Langfuse uses application default credentials from the pod's identity.
+  blob_storage:
+    target:
+      gcs:
+        bucket:
+          value_from:
+            name: langfuse-bucket
+  # GKE Workload Identity: the ServiceAccount impersonates a
+  # GcpServiceAccount that holds roles/storage.objectAdmin on the bucket
+  # and grants roles/iam.workloadIdentityUser to
+  # serviceAccount:<project>.svc.id.goog[langfuse/my-langfuse].
+  service_account:
+    workload_identity:
+      gke:
+        service_account_email:
+          value_from:
+            name: langfuse
+  secrets:
+    salt: $secret/replace-with-langfuse-salt
+    encryption_key: $secret/replace-with-langfuse-encryption-key
+  init:
+    admin:
+      email: admin@replaceme.example.com
+  auth:
+    disable_sign_up: true
+  web:
+    replicas: 2
+    resources:
+      requests:
+        cpu: "2"
+        memory: 4Gi
+      limits:
+        cpu: "4"
+        memory: 4Gi
+    pdb:
+      min_available: "1"
+  worker:
+    replicas: 2
+    resources:
+      requests:
+        cpu: "2"
+        memory: 4Gi
+      limits:
+        cpu: "4"
+        memory: 4Gi
+    pdb:
+      min_available: "1"

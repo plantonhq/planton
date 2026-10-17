@@ -1794,6 +1794,12 @@ Fields on other kinds that can point at this resource:
 | AwsSsmAssociation | `spec.outputLocation.s3BucketName` | `status.outputs.bucket_id` |
 | AwsSsmMaintenanceWindow | `spec.tasks[].invocation.runCommand.outputS3Bucket` | `status.outputs.bucket_id` |
 | AwsWafWebAcl | `spec.logging.destinationArn` | `status.outputs.bucket_arn` |
+| KubernetesLangfuse | `spec.blobStorage.target.s3.bucket` | `status.outputs.bucket_id` |
+| KubernetesLangfuse | `spec.blobStorage.target.s3.region` | `status.outputs.region` |
+| KubernetesLangfuse | `spec.blobStorage.mediaUpload.target.s3.bucket` | `status.outputs.bucket_id` |
+| KubernetesLangfuse | `spec.blobStorage.mediaUpload.target.s3.region` | `status.outputs.region` |
+| KubernetesLangfuse | `spec.blobStorage.batchExport.target.s3.bucket` | `status.outputs.bucket_id` |
+| KubernetesLangfuse | `spec.blobStorage.batchExport.target.s3.region` | `status.outputs.region` |
 
 ## See Also
 

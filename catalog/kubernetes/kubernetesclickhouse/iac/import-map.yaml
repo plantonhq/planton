@@ -7,7 +7,9 @@ spec:
   # different GVKs — the ClickHouseInstallation and the conditional managed
   # ClickHouseKeeperInstallation — so the composed-ID placeholders
   # {api_version}/{kind}/{name} are declared PER Terraform logical resource
-  # via tofu_resource_name scoping. The auth Secret and the optional anchor
+  # via tofu_resource_name scoping. The auth Secret, one random_password
+  # companion per user declared without a password (imported by VALUE —
+  # the random provider keeps no cloud state), and the optional anchor
   # namespace ride their own rows. Every name is deterministic (derived
   # from metadata.name), so the whole family imports blind. Everything the
   # operator creates from the CRs (StatefulSets, Services, ConfigMaps, the
@@ -79,6 +81,23 @@ spec:
       where_to_find: >-
         Same namespace as the cluster — every object the module renders is
         namespaced with it.
+    # ── the per-user password companions ─────────────────────────────────
+    # random_password.user is for_each keyed by USER NAME over the users the
+    # spec declares without a password; each instance's import ID is that
+    # user's password VALUE, read from the auth Secret under the user-name
+    # key — the address key names the key, so one row serves every
+    # generated user. A user whose password the spec declares has no
+    # companion.
+    - name: password_value
+      tofu_resource_name: user
+      derivations:
+        - from_cluster_secret_key:
+            name_suffix: "-clickhouse-auth"
+            key_from_address_key: true
+      where_to_find: >-
+        SECRET MATERIAL — handle accordingly. kubectl get secret
+        <resource-name>-clickhouse-auth -n <namespace>
+        -o jsonpath='{.data.<user-name>}' | base64 -d
     # ── the optional anchor namespace ────────────────────────────────────
     - name: namespace_name
       derivations:

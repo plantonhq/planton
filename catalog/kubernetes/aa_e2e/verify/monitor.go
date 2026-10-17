@@ -86,30 +86,8 @@ func (v *MonitorVerifier) proveProjection(ctx context.Context, kubeconfig string
 		return errors.Errorf("PROJECTION: the live spec differs from the manifest's projection\nlive:      %s\nprojected: %s", liveSpec, wantJSON)
 	}
 
-	liveLabels, err := liveStringMap(ctx, kubeconfig, v.Resource, v.Name, v.Namespace, "{.metadata.labels}")
-	if err != nil {
+	if err := proveObjectMetadata(ctx, kubeconfig, v.Resource, v.Name, v.Namespace, want); err != nil {
 		return err
-	}
-	for k, val := range want.Labels {
-		// The id, organization and environment labels carry values the
-		// harness assigns at deploy time; the rest are fixed by the manifest.
-		if k == manifestprojection.LabelResourceID || k == manifestprojection.LabelOrganization || k == manifestprojection.LabelEnvironment {
-			continue
-		}
-		if liveLabels[k] != val {
-			return errors.Errorf("PROJECTION: label %s = %q on the live object, want %q", k, liveLabels[k], val)
-		}
-	}
-	if len(want.Annotations) > 0 {
-		liveAnnotations, err := liveStringMap(ctx, kubeconfig, v.Resource, v.Name, v.Namespace, "{.metadata.annotations}")
-		if err != nil {
-			return err
-		}
-		for k, val := range want.Annotations {
-			if liveAnnotations[k] != val {
-				return errors.Errorf("PROJECTION: annotation %s = %q on the live object, want %q", k, liveAnnotations[k], val)
-			}
-		}
 	}
 	fmt.Printf("  [verify] PROJECTION: the live object is exactly the manifest's projection, labels and annotations included\n")
 	return nil

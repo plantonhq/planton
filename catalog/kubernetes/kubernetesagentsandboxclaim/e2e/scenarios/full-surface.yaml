@@ -1,0 +1,47 @@
+# THE FULL SURFACE: the object's own labels and annotations, a far-future
+# lifecycle, a pod label in the controller's allowed domain, an environment
+# variable and a replacement workspace template, against a pool whose
+# template allows both. Either forces a cold start, so the verifier proves
+# every field reads back, the claim becomes Ready on a sandbox started for it
+# (named after the claim, launched cold), the pod carries the label and the
+# variable, and the claim's own workspace exists.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxClaim
+metadata:
+  name: e2e-asbx-cl-full
+  annotations:
+    planton.dev/e2e-prerequisites: "catalog/kubernetes/kubernetesagentsandboxclaim/e2e/fixture-template-open.yaml, catalog/kubernetes/kubernetesagentsandboxclaim/e2e/fixture-pool-open.yaml"
+spec:
+  namespace:
+    value: default
+  labels:
+    team: agents
+  annotations:
+    example.com/owner: platform
+  warmPoolRef:
+    name:
+      valueFrom:
+        kind: KubernetesAgentSandboxWarmPool
+        name: e2e-asbx-cl-pool-open
+        fieldPath: status.outputs.sandbox_warm_pool_name
+  lifecycle:
+    shutdownTime: "2099-01-01T00:00:00Z"
+    ttlSecondsAfterFinished: 600
+    shutdownPolicy: Retain
+  additionalPodMetadata:
+    labels:
+      sandbox.users.io/task: e2e-full
+    annotations:
+      example.com/requested-by: e2e
+  env:
+    - name: SANDBOX_TASK
+      value: full-surface
+      containerName: app
+  volumeClaimTemplates:
+    - metadata:
+        name: workspace
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 2Gi

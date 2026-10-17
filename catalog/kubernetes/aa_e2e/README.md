@@ -53,6 +53,7 @@ metadata:
 |---------|---------|---------|
 | (absent) | the default shared cluster | everything else |
 | `cilium-cni` | `<base>-cilium`, single-node, `disableDefaultCNI: true` | Cilium-as-primary-CNI lanes; NetworkPolicy behavioral enforcement |
+| `pod-certificates` | `<base>-podcert`, single-node, node image pinned to `kindest/node:v1.37.0` (needs kind v0.33 or newer), feature gates `ClusterTrustBundle`, `ClusterTrustBundleProjection`, `PodCertificateRequest`, runtime config `certificates.k8s.io/v1beta1`, parallel image pulls | Software that mints workload identities through the pod-certificate APIs: every Agent Substrate lane (its pod-certificate controller signs every component's mTLS) |
 | `aws-eks` | REAL cluster (no local constructor) — batch-provisioned EKS via `realcluster/aws-eks/` | Cloud-LB provisioning, IRSA identity hops, snapshot-capable CSI storage, real node autoscaling |
 | `gcp-gke` | REAL cluster (no local constructor) — an existing GKE cluster with Workload Identity; the GCP side (identities, bindings, bucket) and the Cloudflare R2 side (bucket, scoped API token) created from the catalog via `realcluster/gcp-gke/` | Keyless GCS backups and restores through Workload Identity, R2 backups and restores through the databases' `r2` arms, multi-node HA under real anti-affinity, lanes beside resident operators |
 
@@ -214,6 +215,8 @@ When extending E2E testing to a new provider (e.g., AWS):
 ## Test Manifests
 
 Test manifests live colocated with their kinds at
-`{kind}/v1alpha1/e2e/*.yaml`, not in this directory. The test framework
+`{kind}/e2e/scenarios/*.yaml` (the kind root, beside `iac/`), not in this
+directory; fixtures a kind's scenarios depend on live in
+`{kind}/e2e/prerequisites/`. The test framework
 discovers them automatically via `e2e/framework/discovery/`. Adding a new
 test scenario means dropping a YAML file -- zero Go code changes.

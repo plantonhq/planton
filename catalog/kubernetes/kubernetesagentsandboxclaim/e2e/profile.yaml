@@ -1,0 +1,19 @@
+apiVersion: qa.planton.dev/v1
+kind: CatalogKindE2EProfile
+metadata:
+  name: kubernetesagentsandboxclaim
+spec:
+  tier: 3
+  # The registry prerequisite installs KubernetesAgentSandboxController from
+  # its prerequisite profile (extensions on, definitions not kept, a 120s
+  # warm-candidate wait so a claim applied moments after its pool binds warm
+  # deterministically); each lane adds a template and a pool fixture, the
+  # pool referenced through valueFrom. Every lane reads its fields back from
+  # the live object. minimal proves a claim binds a ready pool member (warm,
+  # named after the pool); full-surface proves the claim's variable, pod label
+  # and own workspace reach a sandbox started cold for it; behavioral-policy-
+  # refusal proves a template that disallows variables gets the claim refused
+  # with EnvVarsInjectionRejected.
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 20

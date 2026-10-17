@@ -1,0 +1,19 @@
+# THE WARM-BIND PROMISE: a claim that asks for nothing extra gets a ready
+# member of its pool. The verifier proves every field reads back, the claim
+# becomes Ready, and its sandbox is a pool member (named after the pool) that
+# launched warm -- not a fresh sandbox started for the claim.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxClaim
+metadata:
+  name: e2e-asbx-cl-min
+  annotations:
+    planton.dev/e2e-prerequisites: "catalog/kubernetes/kubernetesagentsandboxclaim/e2e/fixture-template.yaml, catalog/kubernetes/kubernetesagentsandboxclaim/e2e/fixture-pool.yaml"
+spec:
+  namespace:
+    value: default
+  warmPoolRef:
+    name:
+      valueFrom:
+        kind: KubernetesAgentSandboxWarmPool
+        name: e2e-asbx-cl-pool
+        fieldPath: status.outputs.sandbox_warm_pool_name

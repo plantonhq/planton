@@ -1,0 +1,40 @@
+# Consumer-scoped ClickHouse fixture for the KubernetesLangfuse lanes -
+# the composed trace store:
+# - JOINS the PostgreSQL fixture's namespace (e2e-langfuse).
+# - 25.12: Langfuse v4's minimum ClickHouse line.
+# - ONE REPLICA WITH A MANAGED KEEPER: Langfuse's default cluster mode
+#   runs its DDL `ON CLUSTER` with replicated engines, which needs Keeper
+#   coordination even on a single replica.
+# - THE `langfuse` USER IS DECLARED WITHOUT A PASSWORD: the module
+#   generates it into the `e2e-lf-ch-clickhouse-auth` Secret (key
+#   `langfuse`), where Langfuse reads it - the composed path proves the
+#   generated credential end to end. No grants = ClickHouse's
+#   unrestricted default, which covers Langfuse's migrations and its
+#   `ON CLUSTER` statements. Networks are declared because a user without
+#   them is fenced to ClickHouse's own pods.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesClickHouse
+metadata:
+  name: e2e-lf-ch
+spec:
+  namespace:
+    value: e2e-langfuse
+  version: "25.12.5"
+  diskSize: 5Gi
+  resources:
+    requests:
+      cpu: 250m
+      memory: 1Gi
+    limits:
+      cpu: "2"
+      memory: 3Gi
+  coordination:
+    type: managed_keeper
+    keeper:
+      replicas: 1
+      diskSize: 2Gi
+  users:
+    - name: langfuse
+      networks:
+        - 0.0.0.0/0
+        - "::/0"

@@ -1,0 +1,22 @@
+# What upstream's Python and Go SDKs need: the extensions (templates, warm
+# pools, claims) and an open router. The verifier proves a claim binds a
+# warm pool member and a request reaches a sandbox through the router by
+# name, the way the SDKs reach one.
+#
+# THE CLEANUP PROOF: crds.keepOnUninstall: false, so the destroy must take
+# all four definitions with it, which also keeps the extension definitions
+# off the shared cluster for the owned-elsewhere lane.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxController
+metadata:
+  name: e2e-asbx-sdk
+spec:
+  namespace:
+    value: agent-sandbox-system
+  createNamespace: true
+  crds:
+    keepOnUninstall: false
+  extensions: {}
+  router:
+    authorization:
+      allowAll: {}

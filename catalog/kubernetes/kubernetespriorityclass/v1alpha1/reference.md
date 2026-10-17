@@ -140,6 +140,15 @@ Reference an output from another manifest as `valueFrom: {kind: KubernetesPriori
 | `status.outputs.priority_class_name` | `string` | The name of the PriorityClass object as created in the cluster — the value pods put in `priority_class_name`. |
 | `status.outputs.value` | `int32` | The priority integer pods of this class receive. |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| KubernetesAgentSandbox | `spec.podTemplate.spec.priorityClassName` | `status.outputs.priority_class_name` |
+| KubernetesAgentSandboxTemplate | `spec.podTemplate.spec.priorityClassName` | `status.outputs.priority_class_name` |
+
 ## See Also
 
 - [Overview](../README.md)

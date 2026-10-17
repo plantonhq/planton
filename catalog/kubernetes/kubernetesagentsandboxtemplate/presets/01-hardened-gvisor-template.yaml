@@ -1,0 +1,53 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxTemplate
+metadata:
+  name: <template-name>
+spec:
+  namespace:
+    value: <namespace>
+  podTemplate:
+    metadata:
+      labels:
+        app: agent-sandbox
+    spec:
+      runtimeClassName: gvisor
+      nodeSelector:
+        sandbox.gke.io/runtime: gvisor
+      tolerations:
+        - key: sandbox.gke.io/runtime
+          operator: Equal
+          value: gvisor
+          effect: NoSchedule
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: sandbox
+          image: <sandbox-image>
+          ports:
+            - name: http
+              containerPort: 8888
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              memory: 1Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir:
+            sizeLimit: 1Gi
+  # No network_policy: the controller's secure default applies -- ingress only
+  # from the router, egress to the public internet only.

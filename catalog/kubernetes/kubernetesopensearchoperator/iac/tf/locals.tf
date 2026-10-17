@@ -66,22 +66,33 @@ locals {
 
     # A typed kind knows its chart carries CRDs and pins the switch: a render
     # that yields none is a failure, and nothing is ever left to Helm.
-    expect_crds        = true
-    allow_helm_managed = false
+    expect_crds = true
 
-    # The chart's CRD switch, turned on for the render only. The release
-    # pins it off (see helm_release_values).
-    render_override = yamlencode({ installCRDs = true })
+    version       = local.chart_version
+    version_field = "spec.chart_version"
 
-    # No CRD template gates on a served API version.
-    api_versions = []
+    chart = {
+      repository   = local.helm_chart_repo
+      name         = local.helm_chart_name
+      release_name = local.release_name
+      namespace    = local.namespace
+      values       = local.helm_release_values
 
-    # Public repository, no set-style overrides, no upstream bundle.
-    bundle_url          = ""
-    repository_username = ""
-    repository_password = ""
-    set                 = []
-    set_sensitive       = []
+      # The chart's CRD switch, turned on for the render only. The release
+      # pins it off (see helm_release_values).
+      render_override = yamlencode({ installCRDs = true })
+
+      # No CRD template gates on a served API version.
+      api_versions       = []
+      allow_helm_managed = false
+
+      # Public repository, no set-style overrides.
+      repository_username = ""
+      repository_password = ""
+      set                 = []
+      set_sensitive       = []
+    }
+    bundle = null
   }
 
   # ---- deployment name (twin of the Pulumi module's deploymentName) ---------

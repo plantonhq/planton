@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesagentsandboxcontroller.v1alpha1;
+
+/**
+ * Outputs exported after installing agent-sandbox.
+ */
+message KubernetesAgentSandboxControllerOutputs {
+  /**
+   * Namespace the controller and router run in: always
+   * `agent-sandbox-system`. Grant a product's ServiceAccount its rights on
+   * sandboxes and claims in its own namespaces; this one holds only the
+   * controller and the router.
+   */
+  string namespace = 1;
+
+  /**
+   * Name of the Service in front of the controller's metrics endpoint
+   * (`agent-sandbox-controller`), the target of a ServiceMonitor.
+   */
+  string metrics_service_name = 2;
+
+  /**
+   * Port of the controller's metrics Service.
+   */
+  int32 metrics_port = 3;
+
+  /**
+   * Name of the router's Service (`sandbox-router-svc`, the name upstream's
+   * SDKs assume). Empty when no router is installed.
+   */
+  string router_service_name = 4;
+
+  /**
+   * The URL a product or SDK dials to reach a sandbox through the router,
+   * for example "http://sandbox-router-svc.agent-sandbox-system.svc.cluster.local:8080",
+   * or the HTTPS listener's when the router serves TLS only. Empty when no
+   * router is installed.
+   */
+  string router_endpoint = 5;
+}

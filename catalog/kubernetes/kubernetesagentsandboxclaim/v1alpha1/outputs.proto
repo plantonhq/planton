@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesagentsandboxclaim.v1alpha1;
+
+// KubernetesAgentSandboxClaimOutputs captures observable outputs after the
+// SandboxClaim is created on the target cluster. The claimed sandbox's name is
+// chosen by the controller when it binds (a warm member's `<pool>-<random>`
+// name, or the claim's own for a cold start) and is reported in the claim's
+// status (`sandbox.name`), which a caller reads before reaching the sandbox
+// through the router.
+message KubernetesAgentSandboxClaimOutputs {
+  // Name of the created SandboxClaim (equals metadata.name).
+  string sandbox_claim_name = 1;
+
+  // Namespace the SandboxClaim was created in (the resolved spec.namespace);
+  // its sandbox lives here.
+  string namespace = 2;
+}

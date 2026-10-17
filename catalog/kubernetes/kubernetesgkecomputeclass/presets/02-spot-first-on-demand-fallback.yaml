@@ -1,0 +1,33 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGkeComputeClass
+metadata:
+  name: spot-first
+spec:
+  # Workloads opt in with the node selector
+  # cloud.google.com/compute-class: spot-first
+  name: spot-first
+  description: Interruption-tolerant workloads. Spot across three families first, the same shapes on demand when Spot runs out.
+  priorities:
+    # Spot first, across several families: Spot capacity runs out per
+    # family too, so breadth is what keeps the discount available.
+    - machineFamily: n2d
+      minCores: 4
+      spot: true
+    - machineFamily: c3d
+      minCores: 4
+      spot: true
+    - machineFamily: e2
+      minCores: 4
+      spot: true
+    # On demand only when no Spot capacity is left.
+    - machineFamily: n2d
+      minCores: 4
+    - machineFamily: e2
+      minCores: 4
+  whenUnsatisfiable: DoNotScaleUp # every listed rule failed: wait rather than run on an unlisted machine
+  nodePoolAutoCreation:
+    enabled: true
+  activeMigration:
+    optimizeRulePriority: true # return to Spot once it is available again
+  autoscalingPolicy:
+    consolidationDelayMinutes: 5 # release idle nodes quickly; Spot work is bursty

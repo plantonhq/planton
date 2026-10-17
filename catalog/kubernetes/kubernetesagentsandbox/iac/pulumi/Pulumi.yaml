@@ -1,0 +1,4 @@
+name: kubernetes-agent-sandbox
+runtime:
+  name: go
+description: Pulumi module that provisions an agent-sandbox Sandbox from a KubernetesAgentSandbox manifest.

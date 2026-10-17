@@ -1,0 +1,15 @@
+# THE NAMESPACE-OWNED-ELSEWHERE REFUSAL: a KubernetesNamespace owns
+# agent-sandbox-system (the fixture), and this resource is asked to create
+# it. Taking it over would make a later destroy delete what others put
+# there, so the deploy must be refused at plan with the remedy.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxController
+metadata:
+  name: e2e-asbx-ns-owned
+  annotations:
+    planton.dev/e2e-prerequisites: "catalog/kubernetes/kubernetesagentsandboxcontroller/e2e/fixture-namespace.yaml"
+    planton.dev/e2e-expect-deploy-failure: namespace-owned-elsewhere
+spec:
+  namespace:
+    value: agent-sandbox-system
+  createNamespace: true

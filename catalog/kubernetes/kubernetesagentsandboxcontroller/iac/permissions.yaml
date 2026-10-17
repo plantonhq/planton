@@ -1,0 +1,205 @@
+# Least-privilege permissions the IaC runner's Kubernetes principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources plus the
+# pinned v1.0.7 release asset's and router files' document census, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/catalogkindpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: CatalogKindPermissions
+metadata:
+  name: kubernetesagentsandboxcontroller
+spec:
+  kubernetes:
+    rules:
+      - api_groups:
+          - ""
+        resources:
+          - namespaces
+        verbs:
+          - get
+          - list
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: true
+        provenance: derived
+        notes: Upstream's FIXED agent-sandbox-system namespace. get and list are the plan-time namespace check on both engines (workloadowner on Pulumi, data.kubernetes_resources.namespace on OpenTofu) -- missing while another component owns it, or created by someone else while this resource would create it. create, update, patch and delete cover kubectl_manifest.namespace and the Pulumi namespace group, used only with create_namespace -- applied first and deleted last, its delete waiting until the namespace is gone so a re-install never races it.
+      - api_groups:
+          - apiextensions.k8s.io
+        resources:
+          - customresourcedefinitions
+        verbs:
+          - get
+          - list
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: true
+        provenance: derived
+        notes: The kept resource definitions (helm_crds.tf, keptcrds.Apply) -- Sandbox, and with extensions SandboxTemplate, SandboxWarmPool and SandboxClaim, derived from the pinned release asset. Read by name first (the ownership and never-downgrade checks), then server-side applied; delete is exercised only when crds.keep_on_uninstall is false.
+      - api_groups:
+          - apps
+        resources:
+          - deployments
+        verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: The controller and router Deployments in agent-sandbox-system, with the typed settings applied. list is the plan-time workload ownership read (a Deployment another installation created is refused), and watch is the awaited rollout.
+      - api_groups:
+          - ""
+        resources:
+          - serviceaccounts
+          - services
+          - configmaps
+        verbs:
+          - get
+          - list
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: Upstream's ServiceAccounts (controller and router), Services (the controller's metrics Service and sandbox-router-svc), and the module's agent-sandbox-config ConfigMap (the allowed label domains, applied only with extensions and domains).
+      - api_groups:
+          - rbac.authorization.k8s.io
+        resources:
+          - clusterroles
+          - clusterrolebindings
+        verbs:
+          - get
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: true
+        provenance: derived
+        notes: Upstream's ClusterRoles and bindings, applied verbatim -- the controller's (and with extensions its extensions role), the router's pod-read role with the pod-IP cache, and the router's system:auth-delegator binding with token_review authorization.
+      - api_groups:
+          - rbac.authorization.k8s.io
+        resources:
+          - clusterroles
+        verbs:
+          - escalate
+          - bind
+        cluster_scoped: true
+        provenance: derived
+        notes: Kubernetes refuses to let an identity create a role granting more than it holds, or bind one it does not hold, unless it has escalate and bind. The controller's roles grant pods, services, PVCs, events, leases, NetworkPolicies and the agent-sandbox resources cluster-wide, and token_review binds system:auth-delegator; a runner that holds all of those itself needs neither verb.
+      - api_groups:
+          - networking.k8s.io
+        resources:
+          - networkpolicies
+        verbs:
+          - get
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: The router's NetworkPolicy (upstream's file with the client namespaces, metrics namespace and sandbox ports applied), installed unless router.network_policy.enabled is false.
+      - api_groups:
+          - policy
+        resources:
+          - poddisruptionbudgets
+        verbs:
+          - get
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: The router's PodDisruptionBudget, installed unless router.min_available is 0.
+      - api_groups:
+          - apiextensions.k8s.io
+        resources:
+          - customresourcedefinitions
+        verbs:
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying a definition applied by keptcrds.Apply (when crds.keep_on_uninstall is false) waits on an informer of its own kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the destroy hangs with no error instead of failing.
+      - api_groups:
+          - ""
+        resources:
+          - namespaces
+        verbs:
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu never needs. Destroying the Namespace applied by the yaml ConfigGroup in main.go (with create_namespace) waits on an informer of its own kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96.
+      - api_groups:
+          - rbac.authorization.k8s.io
+        resources:
+          - clusterroles
+          - clusterrolebindings
+        verbs:
+          - list
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu never needs. Destroying a ClusterRole or ClusterRoleBinding applied by the yaml ConfigGroup in main.go waits on an informer of its own kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96.
+      - api_groups:
+          - ""
+        resources:
+          - configmaps
+          - serviceaccounts
+          - services
+        verbs:
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu never needs. Destroying a ConfigMap, ServiceAccount or Service applied by the yaml ConfigGroup in main.go waits on an informer of its own kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96.
+      - api_groups:
+          - ""
+        resources:
+          - pods
+          - events
+          - endpoints
+          - persistentvolumeclaims
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it awaits the Deployments' rollout (deployment.go:164-212, pods and PVCs; await.go:352 and watchers.go:213-215, events) and the Services' endpoints (service.go:147-148), and OpenTofu never needs. The awaits subscribe before they start their clocks, so a forbidden list hangs the deploy with no error.
+      - api_groups:
+          - apps
+        resources:
+          - replicasets
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it awaits the Deployments' rollout (deployment.go:174-175) and OpenTofu never needs.
+      - api_groups:
+          - networking.k8s.io
+        resources:
+          - networkpolicies
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu never needs. Destroying the router's NetworkPolicy applied by the yaml ConfigGroup in main.go waits on an informer of its own kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96.
+      - api_groups:
+          - policy
+        resources:
+          - poddisruptionbudgets
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu never needs. Destroying the router's PodDisruptionBudget applied by the yaml ConfigGroup in main.go waits on an informer of its own kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96.

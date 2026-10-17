@@ -1,0 +1,47 @@
+# The PostgreSQL cluster behind Langfuse: users, organizations, projects,
+# prompts, API keys and settings. Never traces, which is why it stays small.
+# CloudNativePG reconciles it into a primary (plus streaming replicas with
+# automated failover under high_availability). Langfuse connects through the
+# operator-maintained -rw Service, which re-points to the new primary after
+# a failover, with the credential the operator keeps in the `<name>-app`
+# Secret. Both handles flow into langfuse.yaml BY REFERENCE.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPostgres
+metadata:
+  name: "{{ values.env }}-langfuse-pg"
+{% if values.connection != "" %}
+  annotations:
+    planton.dev/connection: "{{ values.connection }}"
+{% endif %}
+{% if values.install_cnpg_operator | bool %}
+  relationships:
+    # The database is a CloudNativePG custom resource, so the operator (and
+    # its CRDs) must exist first. No spec field consumes an operator output,
+    # so the edge is declared explicitly; without the operator toggle the
+    # edge goes with it, because the resident operator is already running.
+    - kind: KubernetesCloudNativePgOperator
+      name: "{{ values.env }}-cnpg-operator"
+      type: depends_on
+{% endif %}
+spec:
+  namespace:
+    valueFrom:
+      name: "{{ values.env }}-langfuse-ns"
+  createNamespace: false
+  # Three instances survive a node loss with failover capacity to spare;
+  # one is a single point of failure for evaluation only.
+{% if values.high_availability | bool %}
+  instances: 3
+{% else %}
+  instances: 1
+{% endif %}
+  storage:
+    size: "{{ values.postgres_disk_size }}"
+  bootstrap:
+    initdb:
+      # Langfuse runs its schema migrations at every start as the user it
+      # connects with, so that user owns the database. The owner is named
+      # explicitly because langfuse.yaml declares the same value as its
+      # Postgres username: both sides render from one literal.
+      database: langfuse
+      owner: langfuse

@@ -912,6 +912,7 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| KubernetesLangfuse | `spec.observability.otlpEndpoint` | `status.outputs.otlp_http_endpoint` |
 | KubernetesPlantonPlatform | `spec.observability.otlpHttpEndpoint` | `status.outputs.otlp_http_endpoint` |
 
 ## See Also

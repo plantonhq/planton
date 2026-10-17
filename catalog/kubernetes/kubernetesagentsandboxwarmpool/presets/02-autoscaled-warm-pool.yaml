@@ -1,0 +1,12 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxWarmPool
+metadata:
+  name: <pool-name>
+spec:
+  namespace:
+    value: <namespace>
+  # No replicas: the cluster starts the pool at one and an autoscaler owns the
+  # size from then on through the pool's scale endpoint.
+  sandboxTemplateRef:
+    name:
+      value: <template-name>

@@ -275,8 +275,10 @@ func TestDeriveBundle(t *testing.T) {
 	defer server.Close()
 
 	src := Source{
-		Version:   "0.9.1",
-		BundleURL: server.URL + "/solr-operator/v{{version}}/crds/all.yaml",
+		Version:      "0.9.1",
+		VersionField: "spec.chart_version",
+		BundleURL:    server.URL + "/solr-operator/v{{version}}/crds/all.yaml",
+		BundleName:   "solr-operator",
 	}
 	derived, err := Derive(context.Background(), src, Policy{ExpectCRDs: true}, "solr", "ns")
 	if err != nil {
@@ -291,15 +293,55 @@ func TestDeriveBundle(t *testing.T) {
 	if labels["upstream"] != "kept" {
 		t.Fatal("stamping dropped an upstream label")
 	}
-	host := strings.TrimPrefix(server.URL, "http://")
-	if labels[LabelSource] != host {
-		t.Fatalf("bundle source label should be the host, got %v", labels[LabelSource])
+	if labels[LabelSource] != "solr-operator" {
+		t.Fatalf("bundle source label should be the bundle's own name, got %v", labels[LabelSource])
 	}
 
-	// 404 at a version that was never published.
-	missing := Source{Version: "0.9.0", BundleURL: src.BundleURL}
+	// 404 at a version a user chose: the setting is the remedy.
+	missing := src
+	missing.Version = "0.9.0"
 	_, err = Derive(context.Background(), missing, Policy{ExpectCRDs: true}, "solr", "ns")
-	assertFailure(t, err, "answered HTTP 404", "no bundle is published at this version", "0.9.0")
+	assertFailure(t, err, "answered HTTP 404", "no bundle is published at this version", "set spec.chart_version to a published version")
+
+	// 404 at a version the module pins: no setting can fix it, so the text
+	// names the pinned release and never sends the reader to a field.
+	pinned := missing
+	pinned.VersionField = ""
+	_, err = Derive(context.Background(), pinned, Policy{ExpectCRDs: true}, "solr", "ns")
+	assertFailure(t, err, "answered HTTP 404", "solr-operator release 0.9.0, the release this module pins", "correct the module's bundle URL template or its pin")
+	if strings.Contains(err.Error(), "spec.") {
+		t.Fatalf("a module-pinned source must not name a spec field: %s", err)
+	}
+}
+
+// Two upstreams that publish from one host are two owners. A label derived
+// from the download host would read them as one, and the foreign-owner
+// refusal would never fire between their kinds.
+func TestBundlesFromOneHostAreDistinctOwners(t *testing.T) {
+	sandbox := Source{Version: "v1.0.7", BundleURL: "https://github.com/kubernetes-sigs/agent-sandbox/releases/download/{{version}}/sandbox.yaml", BundleName: "agent-sandbox"}
+	other := Source{Version: "v2.0.0", BundleURL: "https://github.com/example/other/releases/download/{{version}}/crds.yaml", BundleName: "other"}
+	stampedByOther := ExistingFromObject("sandboxes.agents.x-k8s.io",
+		map[string]string{LabelSource: labelSourceValue(other)},
+		map[string]string{AnnotationSourceVersion: "v2.0.0"}, nil)
+	assertFailure(t, CheckOwnership([]ExistingCRD{stampedByOther}, sandbox), "derived from other by another Planton module", "", "")
+}
+
+// A module author's mistakes in assembling a source are refused before any
+// fetch or render, so no half-stamped CRD can ever reach a cluster.
+func TestDeriveRefusesAMalformedSource(t *testing.T) {
+	cases := map[string]Source{
+		"bundle without a name":        {Version: "v1.0.0", BundleURL: "https://example.invalid/{{version}}/crds.yaml"},
+		"bundle name not a label":      {Version: "v1.0.0", BundleURL: "https://example.invalid/{{version}}/crds.yaml", BundleName: "kubernetes-sigs/agent-sandbox"},
+		"both a chart and a bundle":    {Version: "v1.0.0", BundleURL: "https://example.invalid/{{version}}/crds.yaml", BundleName: "x", Chart: "x"},
+		"neither a chart nor a bundle": {Version: "1.0.0"},
+	}
+	for name, src := range cases {
+		t.Run(name, func(t *testing.T) {
+			if _, err := Derive(context.Background(), src, Policy{ExpectCRDs: true}, "r", "ns"); err == nil {
+				t.Fatal("a malformed source must be refused")
+			}
+		})
+	}
 }
 
 func TestClassifyLocateErrors(t *testing.T) {
@@ -342,21 +384,49 @@ func TestCheckNoDowngrade(t *testing.T) {
 		{Name: "a.example", Version: "0.120.0"},
 		{Name: "b.example", Version: ""}, // unstamped: never a downgrade
 	}
-	if err := CheckNoDowngrade(existing, "0.120.0"); err != nil {
+	chart := func(version string) Source {
+		return Source{Repository: "https://charts.example.com", Chart: "demo", Version: version, VersionField: "spec.chart_version"}
+	}
+	if err := CheckNoDowngrade(existing, chart("0.120.0")); err != nil {
 		t.Fatalf("same version must pass: %v", err)
 	}
-	if err := CheckNoDowngrade(existing, "0.120.3"); err != nil {
+	if err := CheckNoDowngrade(existing, chart("0.120.3")); err != nil {
 		t.Fatalf("upgrade must pass: %v", err)
 	}
-	err := CheckNoDowngrade(existing, "0.119.0")
-	assertFailure(t, err, "derived from chart version 0.120.0", "strip fields", "0.120.0 or higher")
+	err := CheckNoDowngrade(existing, chart("0.119.0"))
+	assertFailure(t, err, "derived from chart version 0.120.0; the manifest asks for chart version 0.119.0", "strip fields", "set spec.chart_version to 0.120.0 or higher")
 	if !strings.Contains(err.Error(), "kubectl delete crd a.example") {
 		t.Fatalf("remedy must name the exact CRD: %s", err)
 	}
-	if err := CheckNoDowngrade(nil, "0.1.0"); err != nil {
+	if err := CheckNoDowngrade(nil, chart("0.1.0")); err != nil {
 		t.Fatalf("first install has nothing to compare: %v", err)
 	}
-	assertFailure(t, CheckNoDowngrade(existing, "latest"), "not a semantic version", "", "0.120.0")
+	assertFailure(t, CheckNoDowngrade(existing, chart("latest")), "the requested chart version \"latest\" is not a semantic version", "", "0.120.0")
+
+	// A generic kind whose version field is named differently is sent to
+	// that field, never to a field it does not have.
+	generic := chart("0.119.0")
+	generic.VersionField = "spec.version"
+	assertFailure(t, CheckNoDowngrade(existing, generic), "", "", "set spec.version to 0.120.0 or higher")
+
+	// A module-pinned upstream release, written as its tag: the leading "v"
+	// orders like any version, and the remedy is a Planton release.
+	release := []ExistingCRD{{Name: "sandboxes.agents.x-k8s.io", Version: "v1.0.8"}}
+	pinned := func(version string) Source {
+		return Source{Version: version, BundleURL: "https://example.invalid/{{version}}/sandbox.yaml", BundleName: "agent-sandbox"}
+	}
+	if err := CheckNoDowngrade(release, pinned("v1.0.8")); err != nil {
+		t.Fatalf("same release must pass: %v", err)
+	}
+	err = CheckNoDowngrade(release, pinned("v1.0.7"))
+	assertFailure(t, err,
+		"derived from agent-sandbox release v1.0.8; this module pins agent-sandbox release v1.0.7",
+		"strip fields",
+		"deploy with a Planton release whose module pins agent-sandbox release v1.0.8 or higher (this module pins v1.0.7)")
+	if strings.Contains(err.Error(), "spec.") || strings.Contains(err.Error(), "chart") {
+		t.Fatalf("a module-pinned release must not be spoken of as a chart or a setting: %s", err)
+	}
+	assertFailure(t, CheckNoDowngrade(release, pinned("main")), "the requested agent-sandbox release \"main\" is not a semantic version", "", "correct the module's pin")
 }
 
 func TestCheckOwnership(t *testing.T) {
@@ -388,7 +458,7 @@ func TestCheckOwnership(t *testing.T) {
 	// Another Planton module derived the same CRD name from a different chart.
 	otherSource := ExistingFromObject("a.example", map[string]string{LabelSource: "other-chart"},
 		map[string]string{AnnotationSourceVersion: "9.0.0"}, nil)
-	assertFailure(t, CheckOwnership([]ExistingCRD{otherSource}, src), "derived from chart other-chart by another Planton module", "", "")
+	assertFailure(t, CheckOwnership([]ExistingCRD{otherSource}, src), "derived from other-chart by another Planton module", "", "")
 
 	// Applied by hand: the field managers are the only mark.
 	byHand := ExistingFromObject("a.example", nil, nil, []string{"kubectl-client-side-apply", "kube-apiserver"})
@@ -400,11 +470,27 @@ func TestCheckOwnership(t *testing.T) {
 
 	// No marks at all: say so rather than invent an owner.
 	assertFailure(t, CheckOwnership([]ExistingCRD{{Name: "a.example"}}, src), "it carries no ownership marks", "", "")
+
+	// A bundle kind installs the upstream's own workloads, so leaving the
+	// definitions with their owner is right only when no other installation
+	// of that upstream runs; the remedy says so and speaks of the release.
+	bundle := Source{Version: "v1.0.7", BundleURL: "https://example.invalid/{{version}}/sandbox.yaml", BundleName: "agent-sandbox"}
+	err = CheckOwnership([]ExistingCRD{byHand}, bundle)
+	assertFailure(t, err, "was not applied by this module", "newer or older than agent-sandbox release v1.0.7",
+		"set spec.crds.install to false only when another tool manages these definitions and no other installation of agent-sandbox runs on this cluster")
+	for _, want := range []string{"hand them to this module once you know they match agent-sandbox release v1.0.7", "planton.ai/crd-source=agent-sandbox"} {
+		if !strings.Contains(err.Error(), want) {
+			t.Errorf("remedy lacks %q: %s", want, err)
+		}
+	}
+	if strings.Contains(err.Error(), "chart version") {
+		t.Fatalf("a bundle refusal must not speak of a chart version: %s", err)
+	}
 }
 
 func TestCRDApplyDeniedFailure(t *testing.T) {
 	err := CRDApplyDeniedFailure("system:serviceaccount:ci:deployer", "patch", "SelfSubjectAccessReview answered denied")
-	assertFailure(t, err, "system:serviceaccount:ci:deployer) may not patch customresourcedefinitions.apiextensions.k8s.io at the cluster scope", "outside the Helm release", "iac/permissions.yaml")
+	assertFailure(t, err, "system:serviceaccount:ci:deployer) may not patch customresourcedefinitions.apiextensions.k8s.io at the cluster scope", "as kept resources apart from the release or manifest it installs", "iac/permissions.yaml")
 }
 
 func TestFailureRendersThreeStableLines(t *testing.T) {

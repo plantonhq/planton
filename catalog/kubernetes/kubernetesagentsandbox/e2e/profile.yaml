@@ -1,0 +1,17 @@
+apiVersion: qa.planton.dev/v1
+kind: CatalogKindE2EProfile
+metadata:
+  name: kubernetesagentsandbox
+spec:
+  tier: 3
+  # The registry prerequisite installs KubernetesAgentSandboxController from
+  # its prerequisite profile (extensions on, definitions not kept) before each
+  # sandbox. Every lane reads every field it sets back from the live object.
+  # minimal proves the sandbox becomes Ready; full-surface runs a hardened pod
+  # with probes, hooks, a workspace claim and the headless Service in a
+  # namespace resolved by reference; behavioral-suspend proves the promise
+  # behind operatingMode: suspending deletes the pod and keeps the same claim,
+  # and resuming brings the sandbox's files back.
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 25

@@ -1,0 +1,171 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesagentsandboxtemplate.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/kubernetes/agent_sandbox_api.proto";
+import "catalog/kubernetes/networking_v1_api.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// KubernetesAgentSandboxTemplateSpec defines an agent-sandbox SandboxTemplate:
+// the hardened blueprint of a sandbox -- the pod, its volumes, its network
+// fence, and what a claim may change -- from which warm pools keep sandboxes
+// ready and claims hand them out. A template runs nothing by itself; the
+// agent-sandbox controller (KubernetesAgentSandboxController, extensions on)
+// gives it a shared NetworkPolicy, and every sandbox a pool or a claim creates
+// from it runs its pod.
+//
+// 100% fidelity with the upstream SandboxTemplate custom resource
+// (extensions.agents.x-k8s.io/v1beta1), pinned to agent-sandbox v1.0.7 -- the
+// release KubernetesAgentSandboxController installs -- and held to its served
+// definition by the mirror test. The upstream spec follows the Planton envelope
+// directly: the blueprint a Sandbox shares (the pod template, the volume claim
+// templates, `service`), the network policy and how it is managed, and the two
+// policies that govern claims.
+//
+// A template is the node a platform team owns and hardens once: the runtime
+// class that isolates every sandbox, the security context, the egress fence,
+// the resources. Products then claim from a KubernetesAgentSandboxWarmPool
+// that references it, and a change here rolls out to the pool's members.
+//
+// When a sandbox comes from a template and the pod template leaves
+// `automountServiceAccountToken` unset, the controller sets it to false.
+message KubernetesAgentSandboxTemplateSpec {
+  // Kubernetes namespace the SandboxTemplate is created in. Warm pools and
+  // claims reference a template in their own namespace, so the template, its
+  // pools, its claims and their sandboxes share it. Typically a reference to
+  // a KubernetesNamespace resource's `spec.name`.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // Labels on the SandboxTemplate object itself (its metadata.labels), merged
+  // under Planton's identity labels (a key in both keeps the identity value).
+  // The sandboxes' pod labels are `pod_template.metadata.labels`.
+  map<string, string> labels = 2 [
+    (dev.planton.shared.options.kubernetes_object_metadata) = object_labels,
+    (buf.validate.field).map = {
+      keys: {
+        string: {
+          min_len: 1
+          max_len: 317
+          pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?[A-Za-z0-9]([-A-Za-z0-9_.]{0,61}[A-Za-z0-9])?$"
+        }
+      }
+      values: {
+        string: {
+          max_len: 63
+          pattern: "^([A-Za-z0-9]([-A-Za-z0-9_.]{0,61}[A-Za-z0-9])?)?$"
+        }
+      }
+    }
+  ];
+
+  // Annotations on the SandboxTemplate object itself (its
+  // metadata.annotations).
+  map<string, string> annotations = 3 [(dev.planton.shared.options.kubernetes_object_metadata) = object_annotations];
+
+  // The pod every sandbox from this template runs: Kubernetes' full pod
+  // specification, and the labels and annotations the pod carries. A warm
+  // pool rolls its members to a changed template according to its update
+  // strategy.
+  dev.planton.kubernetes.KubernetesAgentSandboxApiPodTemplate pod_template = 4 [(buf.validate.field).required = true];
+
+  // Volumes every sandbox from this template owns: one PersistentVolumeClaim
+  // per template, named `<template name>-<sandbox name>`, mounted by the
+  // template's name and kept for the sandbox's life (suspended included).
+  // Whether a claim may add or replace them is `volume_claim_templates_policy`.
+  repeated dev.planton.kubernetes.KubernetesAgentSandboxApiPersistentVolumeClaimTemplate volume_claim_templates = 5 [(buf.validate.field).cel = {
+    id: "volume_claim_templates.unique_names"
+    message: "Each volume claim template needs a unique name: the pod mounts each claim by its template's name"
+    expression: "this.map(t, t.metadata.name).unique()"
+  }];
+
+  // Whether each sandbox from this template gets a headless Service named
+  // after it (the stable DNS name `<sandbox>.<namespace>.svc`). True creates
+  // it, false removes it, and unset keeps a Service that already exists
+  // without creating one. A sandbox name longer than 63 characters cannot
+  // have one; such a sandbox reports Ready=False.
+  optional bool service = 6;
+
+  // The NetworkPolicy every sandbox from this template gets, when
+  // `network_policy_management` is "Managed" (the default). The controller
+  // keeps one shared policy per template, named
+  // `<template name>-network-policy`, selecting the template's sandboxes; a
+  // change here updates it for every existing and future sandbox.
+  //
+  // Unset, the controller applies its secure default: ingress only from the
+  // controller's router (pods labelled `app: sandbox-router` in
+  // `agent-sandbox-system`), and egress to the public internet only (private
+  // ranges, link-local and the metadata server blocked -- which also blocks
+  // cluster DNS, so a sandbox resolves nothing in-cluster). Set, it replaces
+  // that default with exactly these rules; an empty block denies everything
+  // both ways.
+  //
+  // The policy is default-deny for ingress: a sidecar that listens on its own
+  // port (a mesh proxy, a monitoring agent) needs an ingress rule, or its
+  // health checks fail.
+  KubernetesAgentSandboxTemplateNetworkPolicy network_policy = 7;
+
+  // Whether the controller manages the template's NetworkPolicy: "Managed"
+  // keeps the shared policy (custom or the secure default), and "Unmanaged"
+  // creates none and ignores `network_policy`, leaving the fence to another
+  // system (Cilium policies, a mesh). Unset, the cluster writes "Managed".
+  optional string network_policy_management = 8 [(buf.validate.field).string = {
+    in: [
+      "Managed",
+      "Unmanaged"
+    ]
+  }];
+
+  // Whether a claim may set environment variables on its sandbox (the
+  // claim's `env`): "Disallowed" refuses a claim that sets any, "Allowed"
+  // lets it add names the template does not define, and "Overrides" also
+  // lets it change the template's values. A claim that sets any variable
+  // always starts a fresh, cold sandbox: variables are baked into a pod
+  // before it starts, so a warm member cannot take them. Unset, the cluster
+  // writes "Disallowed".
+  optional string env_vars_injection_policy = 9 [(buf.validate.field).string = {
+    in: [
+      "Disallowed",
+      "Allowed",
+      "Overrides"
+    ]
+  }];
+
+  // Whether a claim may bring volume claim templates of its own (the claim's
+  // `volume_claim_templates`): "Disallowed" refuses a claim that sets any,
+  // "Allowed" lets it add new ones, and "Overrides" also lets it replace the
+  // template's own by name. Like environment variables, a claim that sets
+  // any starts a cold sandbox. Unset, the cluster writes "Disallowed".
+  optional string volume_claim_templates_policy = 10 [(buf.validate.field).string = {
+    in: [
+      "Disallowed",
+      "Allowed",
+      "Overrides"
+    ]
+  }];
+}
+
+// KubernetesAgentSandboxTemplateNetworkPolicy is the network fence of a
+// template's sandboxes: the ingress and egress rules of the shared
+// NetworkPolicy. Faithful to upstream NetworkPolicySpec (agent-sandbox's
+// restricted subset): there is no pod selector and no policy types, because
+// the controller selects the template's sandboxes and always enforces both
+// directions.
+message KubernetesAgentSandboxTemplateNetworkPolicy {
+  // Who may reach the sandboxes. Traffic is admitted when it matches at least
+  // one rule; with no rules, nothing is admitted. To keep the router's access
+  // (the way callers and the SDKs reach a sandbox), admit pods labelled
+  // `app: sandbox-router` in namespaces labelled
+  // `kubernetes.io/metadata.name: agent-sandbox-system`.
+  repeated dev.planton.kubernetes.KubernetesNetworkingV1ApiNetworkPolicyIngressRule ingress = 1;
+
+  // Where the sandboxes may connect. Traffic is let out when it matches at
+  // least one rule; with no rules, nothing leaves. Remember cluster DNS (UDP
+  // and TCP 53 to kube-system) when the sandboxes resolve names.
+  repeated dev.planton.kubernetes.KubernetesNetworkingV1ApiNetworkPolicyEgressRule egress = 2;
+}

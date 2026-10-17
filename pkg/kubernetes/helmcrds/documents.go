@@ -142,17 +142,9 @@ func stamp(crd CRD, src Source) (CRD, error) {
 	return CRD{Name: crd.Name, YAML: string(out)}, nil
 }
 
-// labelSourceValue is the chart name for the render branch and the bundle
-// host for the bundle branch, kept inside the label-value character set.
+// labelSourceValue is what LabelSource carries: the source's own name, never
+// anything derived from where it is downloaded (one host serves many
+// unrelated projects, and two of them must never read as one owner).
 func labelSourceValue(src Source) string {
-	if !src.IsBundle() {
-		return src.Chart
-	}
-	host := src.BundleURL
-	host = strings.TrimPrefix(host, "https://")
-	host = strings.TrimPrefix(host, "http://")
-	if i := strings.Index(host, "/"); i >= 0 {
-		host = host[:i]
-	}
-	return host
+	return src.Name()
 }

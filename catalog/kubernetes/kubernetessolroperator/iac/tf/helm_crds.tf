@@ -7,16 +7,18 @@
 # Helm installs a chart's crds/ directory once and never upgrades or removes
 # it, and templated CRDs are release-owned and die with the release. Charts
 # that neither own their CRD lifecycle nor publish a separate CRD chart land
-# on the DERIVE branch: this file renders the pinned chart (or fetches the
-# pinned upstream bundle), keeps only the CustomResourceDefinition documents
-# the module owns, stamps each with its source, and applies each one as a
-# module-owned resource ahead of the release. The release (main.tf) installs
-# with skip_crds = true and, for typed kinds, the chart's own CRD switch
-# pinned off, so Helm never touches the module's CRDs. Chart bumps re-apply
-# the CRDs at the new pin; destroy keeps them (apply_only) unless the spec
-# says otherwise; reinstall re-adopts them (server-side apply); a schema
-# downgrade, and a CRD someone else owns, are refused before anything is
-# touched.
+# on the DERIVE branch, and so do upstreams that publish no chart at all,
+# only a manifest. This file renders the pinned chart (the chart branch) or
+# fetches the pinned upstream manifest (the bundle branch), keeps only the
+# CustomResourceDefinition documents the module owns, stamps each with its
+# source, and applies each one as a module-owned resource ahead of the
+# workloads that serve them. A chart's release (main.tf) installs with
+# skip_crds = true and, for typed kinds, the chart's own CRD switch pinned
+# off, so Helm never touches the module's CRDs; a bundle kind applies the
+# manifest's other documents itself. Version bumps re-apply the CRDs at the
+# new pin; destroy keeps them (apply_only) unless the spec says otherwise;
+# reinstall re-adopts them (server-side apply); a schema downgrade, and a CRD
+# someone else owns, are refused at plan time, before anything is touched.
 #
 # THE OWNERSHIP RULE (which rendered CRDs the module applies)
 # Helm has two CRD surfaces: the crds/ directory (install-once; skip_crds
@@ -31,31 +33,50 @@
 # custom resource built on them, so the plan refuses them unless the spec
 # accepts Helm-managed CRDs. Only the generic Helm kind meets that case.
 #
-# THE LOCALS CONTRACT (defined by the module's locals.tf):
-#   helm_chart_repo, helm_chart_name, chart_version   chart identity (shared with the release)
-#   release_name, namespace                           the identity the render runs under
-#   helm_release_values         list(string)  the release's OWN values documents in helm -f order.
-#                                             The release resource consumes the same list, so the
-#                                             render can never see different values than the install.
-#   helm_crds_args              object        the twin of the Pulumi module's keptcrds.Args, every key present:
-#     install              bool          spec.crds.install (false = bring-your-own CRDs; nothing derived)
-#     keep_on_uninstall    bool          spec.crds.keep_on_uninstall
-#     expect_crds          bool          a render that yields no module-owned CRD is a failure (typed
-#                                        kinds); false for a kind whose chart may carry none
-#     allow_helm_managed   bool          accept CRDs the chart templates without the keep mark
-#                                        (the generic kind's spec.crds.allow_helm_managed; typed kinds false)
+# THE LOCALS CONTRACT (defined by the module's locals.tf): one local,
+# helm_crds_args, the twin of the Pulumi module's keptcrds.Args. Every key is
+# present; exactly one of chart and bundle is an object, the other null.
+#   install              bool          spec.crds.install (false = bring-your-own CRDs; nothing derived)
+#   keep_on_uninstall    bool          spec.crds.keep_on_uninstall
+#   expect_crds          bool          a derivation that yields no module-owned CRD is a failure (typed
+#                                      kinds); false for a kind whose chart may carry none
+#   version              string        the version the CRDs derive at: the chart version, or the upstream
+#                                      release a bundle is fetched at (a leading "v" reads as in a tag)
+#   version_field        string        the spec field a user sets to choose version (for example
+#                                      "spec.chart_version"), named by every refusal it fixes; "" when
+#                                      the module pins the version itself
+#   chart                object        the CHART branch; null for a bundle:
+#     repository, name     string        chart identity (shared with the release)
+#     release_name         string        the identity the render runs under
+#     namespace            string
+#     values               list(string)  the release's OWN values documents in helm -f order. The release
+#                                        resource consumes the same list, so the render can never see
+#                                        different values than the install.
 #     render_override      string        one YAML document merged LAST: the chart's CRD switch turned on
 #                                        (for example "crds:\n  create: true\n"); "" when the module
 #                                        supplies none (see THE OWNERSHIP RULE)
 #     api_versions         list(string)  API versions the chart gates templates on (.Capabilities.APIVersions);
 #                                        omitting one the chart checks silently reshapes or drops a CRD
-#     bundle_url           string        "" for charts that render their CRDs; for charts that ship none,
-#                                        the upstream bundle URL with "{{version}}" where the chart version
-#                                        goes (use the URL form that survives the next upstream release)
+#     allow_helm_managed   bool          accept CRDs the chart templates without the keep mark
+#                                        (the generic kind's spec.crds.allow_helm_managed; typed kinds false)
 #     repository_username  string        credentials for a private repository or registry, exactly as the
 #     repository_password  string        release uses them; "" for public charts
 #     set                  list(object)  the release's set-style overrides ({ name, value, type }), so the
 #     set_sensitive        list(object)  render sees them too; [] when the kind has none
+#   bundle               object        the BUNDLE branch; null for a chart:
+#     name                 string        the upstream project's own name (for example "agent-sandbox"),
+#                                        the ownership label; never derived from the download host,
+#                                        which unrelated projects share
+#     url                  string        the manifest that carries the CRDs, with "{{version}}" where the
+#                                        version goes (use the URL form that survives the next upstream
+#                                        release); every non-CRD document in it is ignored here
+#
+# THE NULL BRANCH IS NEVER READ DIRECTLY: validate and plan evaluate a data
+# source's arguments even at count zero, and older Terraform releases (1.5,
+# within the modules' floor) evaluate both operands of &&. The block reads
+# each branch through one normalized local (helm_crds_chart,
+# helm_crds_bundle) built with a conditional, which evaluates only the branch
+# it takes on every release.
 #
 # WHY THE RENDER USES THE RELEASE'S FULL VALUES
 # Templated CRDs depend on other values: the release's fullname, whether
@@ -76,8 +97,9 @@
 # refused with that owner named (Helm's release annotations, another
 # module's stamp, the field managers, or the honest absence of any mark) and
 # the two ways forward: leave the definitions with their owner through
-# crds.install = false, or hand them over explicitly with two kubectl
-# commands once they are known to match the pinned version.
+# crds.install = false (on the bundle branch, only when no other installation
+# of that upstream runs beside this one), or hand them over explicitly with
+# two kubectl commands once they are known to match the pinned version.
 #
 # WHAT THIS FILE CANNOT EXPLAIN, AND WHO DOES
 # A precondition or postcondition speaks about a data source's RESULT. When
@@ -91,32 +113,67 @@
 # itself as far as HCL allows.
 #
 # PROVIDERS
-# helm (the render), http (the index read and the bundle fetch; declared even
-# when unused, because init resolves every data source in the file),
-# kubernetes (the cluster version the render runs against, and the by-name
-# read behind the ownership and never-downgrade checks), kubectl (the apply).
-# All four are pinned in the module's provider.tf.
+# helm (the render), http (the index read and the bundle fetch), kubernetes
+# (the cluster version the render runs against, and the by-name read behind
+# the ownership and never-downgrade checks), kubectl (the apply). All four are
+# pinned in the module's provider.tf on both branches: init resolves every
+# data source in the file, so a bundle module still declares helm, whose
+# data sources it never reads.
 #
 # NO depends_on ON THE DATA SOURCES, EVER: a data source that depends on a
 # resource is deferred to apply time, and for_each keys unknown at plan time
 # fail the plan.
 
 locals {
-  helm_crds_render = local.helm_crds_args.install && local.helm_crds_args.bundle_url == ""
-  helm_crds_fetch  = local.helm_crds_args.install && local.helm_crds_args.bundle_url != ""
+  helm_crds_is_bundle = local.helm_crds_args.bundle != null
+  helm_crds_render    = local.helm_crds_args.install ? local.helm_crds_args.chart != null : false
+  helm_crds_fetch     = local.helm_crds_args.install ? local.helm_crds_is_bundle : false
+  helm_crds_version   = local.helm_crds_args.version
 
-  # The source stamp: chart coordinates for the render branch, the URL
-  # template for the bundle branch. The label carries only what a label
-  # value may hold (the chart name, or the bundle host).
-  helm_crds_source_description = local.helm_crds_args.bundle_url != "" ? local.helm_crds_args.bundle_url : "${trimsuffix(local.helm_chart_repo, "/")}/${local.helm_chart_name}"
-  helm_crds_source_label       = local.helm_crds_args.bundle_url != "" ? regex("^https?://([^/]+)", local.helm_crds_args.bundle_url)[0] : local.helm_chart_name
+  # Every expression below reads the two branches through these, never
+  # through helm_crds_args: validate and plan evaluate a data source's
+  # arguments even when its count will be zero, so a direct read of the null
+  # branch fails a module whose branches are constants. The empty shape is
+  # the contract's own: a branch whose keys differ from it (a misspelled or
+  # missing key) fails the plan as an inconsistent conditional type instead
+  # of reading as empty.
+  helm_crds_chart = local.helm_crds_args.chart != null ? local.helm_crds_args.chart : {
+    repository          = ""
+    name                = ""
+    release_name        = ""
+    namespace           = ""
+    values              = []
+    render_override     = ""
+    api_versions        = []
+    allow_helm_managed  = false
+    repository_username = ""
+    repository_password = ""
+    set                 = []
+    set_sensitive       = []
+  }
+  helm_crds_bundle = local.helm_crds_is_bundle ? local.helm_crds_args.bundle : {
+    name = ""
+    url  = ""
+  }
+
+  # The source stamp: chart coordinates for the chart branch, the URL
+  # template for the bundle branch. The label carries the source's own name
+  # (the chart's, or the upstream project's), which a label value can hold.
+  helm_crds_source_description = local.helm_crds_is_bundle ? local.helm_crds_bundle.url : "${trimsuffix(local.helm_crds_chart.repository, "/")}/${local.helm_crds_chart.name}"
+  helm_crds_source_label       = local.helm_crds_is_bundle ? local.helm_crds_bundle.name : local.helm_crds_chart.name
+
+  # How every text names a version of this source, in the Pulumi twin's
+  # words: "chart version 0.120.0", or "agent-sandbox release v1.0.7". A
+  # module that pins its version is never sent to a setting it lacks.
+  helm_crds_version_noun   = local.helm_crds_is_bundle ? "${local.helm_crds_bundle.name} release" : "chart version"
+  helm_crds_version_pinned = local.helm_crds_args.version_field == ""
 
   # Versions order as three numeric components folded into one number
-  # (HCL orders numbers, not strings; the chart repository index publishes
-  # semver, and no component reaches 10000). A version this pattern cannot
-  # read is refused rather than guessed at.
-  helm_crds_semver_pattern     = "^([0-9]+)\\.([0-9]+)\\.([0-9]+)"
-  helm_crds_requested_sortable = can(regex(local.helm_crds_semver_pattern, local.chart_version)) ? tonumber(regex(local.helm_crds_semver_pattern, local.chart_version)[0]) * 100000000 + tonumber(regex(local.helm_crds_semver_pattern, local.chart_version)[1]) * 10000 + tonumber(regex(local.helm_crds_semver_pattern, local.chart_version)[2]) : null
+  # (HCL orders numbers, not strings; versions are semver, an upstream tag's
+  # leading "v" included, and no component reaches 10000). A version this
+  # pattern cannot read is refused rather than guessed at.
+  helm_crds_semver_pattern     = "^v?([0-9]+)\\.([0-9]+)\\.([0-9]+)"
+  helm_crds_requested_sortable = can(regex(local.helm_crds_semver_pattern, local.helm_crds_version)) ? tonumber(regex(local.helm_crds_semver_pattern, local.helm_crds_version)[0]) * 100000000 + tonumber(regex(local.helm_crds_semver_pattern, local.helm_crds_version)[1]) * 10000 + tonumber(regex(local.helm_crds_semver_pattern, local.helm_crds_version)[2]) : null
 }
 
 # The repository index, read so a version that was never published is
@@ -126,15 +183,15 @@ locals {
 # here (the credential would ride a request header); in both cases the
 # provider's text is the only one.
 data "http" "helm_crds_index" {
-  count = local.helm_crds_render && startswith(local.helm_chart_repo, "http") && local.helm_crds_args.repository_username == "" ? 1 : 0
+  count = local.helm_crds_render ? (startswith(local.helm_crds_chart.repository, "http") && local.helm_crds_chart.repository_username == "" ? 1 : 0) : 0
 
-  url                = "${trimsuffix(local.helm_chart_repo, "/")}/index.yaml"
+  url                = "${trimsuffix(local.helm_crds_chart.repository, "/")}/index.yaml"
   request_timeout_ms = 60000
 
   lifecycle {
     postcondition {
-      condition     = self.status_code != 200 || contains(try([for e in yamldecode(self.response_body).entries[local.helm_chart_name] : e.version], []), local.chart_version)
-      error_message = "observed: chart ${local.helm_chart_name} ${local.chart_version} is not in the index of ${local.helm_chart_repo}\nmeaning: the pinned chart_version has not been published to that repository, or the version string is misspelled\nnext step: set spec.chart_version to a version listed at ${trimsuffix(local.helm_chart_repo, "/")}/index.yaml, then re-run"
+      condition     = self.status_code != 200 || contains(try([for e in yamldecode(self.response_body).entries[local.helm_crds_chart.name] : e.version], []), local.helm_crds_version)
+      error_message = "observed: chart ${local.helm_crds_chart.name} ${local.helm_crds_version} is not in the index of ${local.helm_crds_chart.repository}\nmeaning: the pinned chart_version has not been published to that repository, or the version string is misspelled\nnext step: set spec.chart_version to a version listed at ${trimsuffix(local.helm_crds_chart.repository, "/")}/index.yaml, then re-run"
     }
   }
 }
@@ -155,48 +212,50 @@ data "kubernetes_server_version" "helm_crds_cluster" {
 data "helm_template" "helm_crds" {
   count = local.helm_crds_render ? 1 : 0
 
-  name                = local.release_name
-  namespace           = local.namespace
-  repository          = local.helm_chart_repo
-  repository_username = local.helm_crds_args.repository_username != "" ? local.helm_crds_args.repository_username : null
-  repository_password = local.helm_crds_args.repository_password != "" ? local.helm_crds_args.repository_password : null
-  chart               = local.helm_chart_name
-  version             = local.chart_version
+  name                = local.helm_crds_chart.release_name
+  namespace           = local.helm_crds_chart.namespace
+  repository          = local.helm_crds_chart.repository
+  repository_username = local.helm_crds_chart.repository_username != "" ? local.helm_crds_chart.repository_username : null
+  repository_password = local.helm_crds_chart.repository_password != "" ? local.helm_crds_chart.repository_password : null
+  chart               = local.helm_crds_chart.name
+  version             = local.helm_crds_version
   include_crds        = true
   kube_version        = data.kubernetes_server_version.helm_crds_cluster[0].version
-  api_versions        = local.helm_crds_args.api_versions
-  values              = concat(local.helm_release_values, local.helm_crds_args.render_override != "" ? [local.helm_crds_args.render_override] : [])
-  set                 = local.helm_crds_args.set
-  set_sensitive       = local.helm_crds_args.set_sensitive
+  api_versions        = local.helm_crds_chart.api_versions
+  values              = concat(local.helm_crds_chart.values, local.helm_crds_chart.render_override != "" ? [local.helm_crds_chart.render_override] : [])
+  set                 = local.helm_crds_chart.set
+  set_sensitive       = local.helm_crds_chart.set_sensitive
 
   lifecycle {
     # Templated CRDs without Helm's keep mark, in a render the module does
     # not own (no override): Helm would delete them with the release and
     # every custom resource with them. Refused unless the spec accepts it.
     postcondition {
-      condition     = local.helm_crds_args.render_override != "" || local.helm_crds_args.allow_helm_managed || length([for d in split("\n---", "\n${join("\n---\n", values(self.manifests))}") : d if try(yamldecode(d).kind, "") == "CustomResourceDefinition" && try(yamldecode(d).metadata.annotations["helm.sh/resource-policy"], "") != "keep" && !contains([for c in split("\n---", "\n${join("\n---\n", self.crds)}") : try(yamldecode(c).metadata.name, "")], yamldecode(d).metadata.name)]) == 0
-      error_message = "observed: chart ${local.helm_chart_name} ${local.chart_version} templates ${length([for d in split("\n---", "\n${join("\n---\n", values(self.manifests))}") : d if try(yamldecode(d).kind, "") == "CustomResourceDefinition" && try(yamldecode(d).metadata.annotations["helm.sh/resource-policy"], "") != "keep" && !contains([for c in split("\n---", "\n${join("\n---\n", self.crds)}") : try(yamldecode(c).metadata.name, "")], yamldecode(d).metadata.name)])} CustomResourceDefinition(s) as release resources without the helm.sh/resource-policy: keep annotation (${join(", ", [for d in split("\n---", "\n${join("\n---\n", values(self.manifests))}") : yamldecode(d).metadata.name if try(yamldecode(d).kind, "") == "CustomResourceDefinition" && try(yamldecode(d).metadata.annotations["helm.sh/resource-policy"], "") != "keep" && !contains([for c in split("\n---", "\n${join("\n---\n", self.crds)}") : try(yamldecode(c).metadata.name, "")], yamldecode(d).metadata.name)])})\nmeaning: Helm owns these CRDs: it installs and upgrades them with the release and deletes them when the release is uninstalled, along with every custom resource built on them; keep_on_uninstall cannot reach resources Helm owns\nnext step: use the catalog's typed kind for this chart if one exists; otherwise turn on the chart's own keep switch in its values (cert-manager-style crds.keep: true) so the chart protects them itself; or set spec.crds.allow_helm_managed to true to accept that these CRDs live and die with the release"
+      condition     = local.helm_crds_chart.render_override != "" || local.helm_crds_chart.allow_helm_managed || length([for d in split("\n---", "\n${join("\n---\n", values(self.manifests))}") : d if try(yamldecode(d).kind, "") == "CustomResourceDefinition" && try(yamldecode(d).metadata.annotations["helm.sh/resource-policy"], "") != "keep" && !contains([for c in split("\n---", "\n${join("\n---\n", self.crds)}") : try(yamldecode(c).metadata.name, "")], yamldecode(d).metadata.name)]) == 0
+      error_message = "observed: chart ${local.helm_crds_chart.name} ${local.helm_crds_version} templates ${length([for d in split("\n---", "\n${join("\n---\n", values(self.manifests))}") : d if try(yamldecode(d).kind, "") == "CustomResourceDefinition" && try(yamldecode(d).metadata.annotations["helm.sh/resource-policy"], "") != "keep" && !contains([for c in split("\n---", "\n${join("\n---\n", self.crds)}") : try(yamldecode(c).metadata.name, "")], yamldecode(d).metadata.name)])} CustomResourceDefinition(s) as release resources without the helm.sh/resource-policy: keep annotation (${join(", ", [for d in split("\n---", "\n${join("\n---\n", values(self.manifests))}") : yamldecode(d).metadata.name if try(yamldecode(d).kind, "") == "CustomResourceDefinition" && try(yamldecode(d).metadata.annotations["helm.sh/resource-policy"], "") != "keep" && !contains([for c in split("\n---", "\n${join("\n---\n", self.crds)}") : try(yamldecode(c).metadata.name, "")], yamldecode(d).metadata.name)])})\nmeaning: Helm owns these CRDs: it installs and upgrades them with the release and deletes them when the release is uninstalled, along with every custom resource built on them; keep_on_uninstall cannot reach resources Helm owns\nnext step: use the catalog's typed kind for this chart if one exists; otherwise turn on the chart's own keep switch in its values (cert-manager-style crds.keep: true) so the chart protects them itself; or set spec.crds.allow_helm_managed to true to accept that these CRDs live and die with the release"
     }
     # A typed kind's render that yields no module-owned CRD means the
     # chart's switch was renamed or the chart stopped shipping CRDs.
     postcondition {
-      condition     = !local.helm_crds_args.expect_crds || length([for d in split("\n---", "\n${join("\n---\n", local.helm_crds_args.render_override != "" ? concat(values(self.manifests), self.crds) : self.crds)}") : d if try(yamldecode(d).kind, "") == "CustomResourceDefinition"]) > 0
-      error_message = "observed: rendering chart ${local.helm_chart_name} ${local.chart_version} with its CRD switch on (${trimspace(local.helm_crds_args.render_override)}) produced no CustomResourceDefinition documents\nmeaning: the chart's CRD switch is not the value the module sets at this version (upstream renamed it), or the chart stopped shipping CRDs\nnext step: read the chart's values at this version (helm show values ${local.helm_chart_name} --repo ${local.helm_chart_repo} --version ${local.chart_version}) and update the module's CRD override to the switch the chart uses"
+      condition     = !local.helm_crds_args.expect_crds || length([for d in split("\n---", "\n${join("\n---\n", local.helm_crds_chart.render_override != "" ? concat(values(self.manifests), self.crds) : self.crds)}") : d if try(yamldecode(d).kind, "") == "CustomResourceDefinition"]) > 0
+      error_message = "observed: rendering chart ${local.helm_crds_chart.name} ${local.helm_crds_version} with its CRD switch on (${trimspace(local.helm_crds_chart.render_override)}) produced no CustomResourceDefinition documents\nmeaning: the chart's CRD switch is not the value the module sets at this version (upstream renamed it), or the chart stopped shipping CRDs\nnext step: read the chart's values at this version (helm show values ${local.helm_crds_chart.name} --repo ${local.helm_crds_chart.repository} --version ${local.helm_crds_version}) and update the module's CRD override to the switch the chart uses"
     }
   }
 }
 
-# The bundle branch: charts that ship no CRDs publish them beside the chart.
+# The bundle branch: the manifest upstream publishes its CRDs in (a CRD
+# bundle beside a chart that ships none, or the install manifest of an
+# upstream that publishes no chart).
 data "http" "helm_crds_bundle" {
   count = local.helm_crds_fetch ? 1 : 0
 
-  url                = replace(local.helm_crds_args.bundle_url, "{{version}}", local.chart_version)
+  url                = replace(local.helm_crds_bundle.url, "{{version}}", local.helm_crds_version)
   request_timeout_ms = 60000
 
   lifecycle {
     postcondition {
       condition     = self.status_code == 200
-      error_message = "observed: the CRD bundle URL ${self.url} answered HTTP ${self.status_code}\nmeaning: ${self.status_code == 404 ? "no bundle is published at this version, or upstream changed the URL pattern" : "the upstream host is refusing or failing the request"}\nnext step: ${self.status_code == 404 ? "confirm version ${local.chart_version} exists at the upstream download page; set spec.chart_version to a published version, or correct the module's bundle URL template" : "retry once the host answers 200 (curl -I ${self.url}); if it persists, the upstream download location has changed"}"
+      error_message = "observed: the CRD bundle URL ${self.url} answered HTTP ${self.status_code}\nmeaning: ${self.status_code != 404 ? "the upstream host is refusing or failing the request" : local.helm_crds_version_pinned ? "upstream does not serve ${local.helm_crds_version_noun} ${local.helm_crds_version}, the release this module pins, at that URL: the release was withdrawn, or upstream changed its download layout" : "no bundle is published at this version, or upstream changed the URL pattern"}\nnext step: ${self.status_code != 404 ? "retry once the host answers 200 (curl -I ${self.url}); if it persists, the upstream download location has changed" : local.helm_crds_version_pinned ? "confirm what upstream publishes for ${local.helm_crds_version_noun} ${local.helm_crds_version} (curl -I ${self.url}), then correct the module's bundle URL template or its pin" : "confirm version ${local.helm_crds_version} exists at the upstream download page; set ${local.helm_crds_args.version_field} to a published version, or correct the module's bundle URL template"}"
     }
     postcondition {
       condition     = self.status_code != 200 || length([for d in split("\n---", "\n${self.response_body}") : d if try(yamldecode(d).kind, "") == "CustomResourceDefinition"]) > 0
@@ -219,7 +278,7 @@ data "kubernetes_resources" "helm_crds_existing" {
   lifecycle {
     postcondition {
       condition     = local.helm_crds_requested_sortable != null
-      error_message = "observed: the requested chart version \"${local.chart_version}\" is not a semantic version\nmeaning: the never-downgrade check cannot order versions it cannot parse, so it refuses rather than guess\nnext step: use the exact version string the chart repository index publishes (for example 0.120.0)"
+      error_message = "observed: the requested ${local.helm_crds_version_noun} \"${local.helm_crds_version}\" is not a semantic version\nmeaning: the never-downgrade check cannot order versions it cannot parse, so it refuses rather than guess\nnext step: ${!local.helm_crds_is_bundle ? "use the exact version string the chart repository index publishes (for example 0.120.0)" : local.helm_crds_version_pinned ? "the module's pinned release must be upstream's tag exactly as published (for example v1.0.7); correct the module's pin" : "set ${local.helm_crds_args.version_field} to the release tag exactly as upstream publishes it (for example v1.0.7)"}"
     }
   }
 }
@@ -243,7 +302,7 @@ locals {
       helm_release = try(o.metadata.annotations["meta.helm.sh/release-name"], "")
       owner = (
         try(o.metadata.annotations["meta.helm.sh/release-name"], "") != "" ? "owned by Helm release ${try(o.metadata.annotations["meta.helm.sh/release-name"], "")} in namespace ${try(o.metadata.annotations["meta.helm.sh/release-namespace"], "")}" :
-        try(o.metadata.labels["planton.ai/crd-source"], "") != "" ? "derived from chart ${try(o.metadata.labels["planton.ai/crd-source"], "")} by another Planton module" :
+        try(o.metadata.labels["planton.ai/crd-source"], "") != "" ? "derived from ${try(o.metadata.labels["planton.ai/crd-source"], "")} by another Planton module" :
         length(try(o.metadata.managedFields, [])) > 0 ? "last written by field manager(s) ${join(", ", [for m in try(o.metadata.managedFields, []) : m.manager])}" :
         "it carries no ownership marks"
       )
@@ -251,8 +310,7 @@ locals {
     if try(o.metadata.labels["planton.ai/crd-source"], "") != local.helm_crds_source_label
   }
 
-  # CRD name -> the chart version stamped on it, for the CRDs this source
-  # owns. The never-downgrade refusal is the second precondition on that
+  # CRD name -> the version stamped on it, for the CRDs this source owns. The never-downgrade refusal is the second precondition on that
   # CRD's own apply, so it names the CRD and the two versions.
   helm_crds_existing_versions = {
     for name, o in local.helm_crds_existing : name => try(o.metadata.annotations["planton.ai/crd-source-version"], "")
@@ -268,7 +326,7 @@ locals {
   # both of Helm's surfaces; without one, the crds/ directory only; for a
   # bundle, everything fetched. Split on separator LINES (a bare "---"
   # substring split corrupts CRDs whose descriptions embed ---).
-  helm_crds_stream    = local.helm_crds_render ? join("\n---\n", local.helm_crds_args.render_override != "" ? concat(values(data.helm_template.helm_crds[0].manifests), data.helm_template.helm_crds[0].crds) : data.helm_template.helm_crds[0].crds) : (local.helm_crds_fetch ? data.http.helm_crds_bundle[0].response_body : "")
+  helm_crds_stream    = local.helm_crds_render ? join("\n---\n", local.helm_crds_chart.render_override != "" ? concat(values(data.helm_template.helm_crds[0].manifests), data.helm_template.helm_crds[0].crds) : data.helm_template.helm_crds[0].crds) : (local.helm_crds_fetch ? data.http.helm_crds_bundle[0].response_body : "")
   helm_crds_documents = [for d in split("\n---", "\n${local.helm_crds_stream}") : d if trimspace(d) != "" && can(yamldecode(d))]
 
   # Keyed by each CRD's OWN metadata.name (never a positional index) so state
@@ -297,7 +355,7 @@ locals {
           try(object.metadata.annotations, null) == null ? {} : object.metadata.annotations,
           {
             "planton.ai/crd-source-chart"   = local.helm_crds_source_description
-            "planton.ai/crd-source-version" = local.chart_version
+            "planton.ai/crd-source-version" = local.helm_crds_version
           }
         )
         labels = merge(
@@ -327,11 +385,11 @@ resource "kubectl_manifest" "helm_crds" {
   lifecycle {
     precondition {
       condition     = !contains(keys(local.helm_crds_foreign), each.key)
-      error_message = "observed: CRD ${each.key} already exists on the cluster and was not applied by this module (${try(local.helm_crds_foreign[each.key].owner, "it carries no ownership marks")})\nmeaning: two owners would write one schema, and the module cannot tell whether the existing definition is newer or older than chart version ${local.chart_version}, so it stops before changing it\nnext step: set spec.crds.install to false to leave the definitions with their current owner (the release still installs and uses them); ${try(local.helm_crds_foreign[each.key].helm_release, "") != "" ? "or, to move ownership here, first uninstall Helm release ${try(local.helm_crds_foreign[each.key].helm_release, "")} (or mark the CRD helm.sh/resource-policy: keep in that release) so Helm will not delete it later, then " : "or "}hand them to this module once you know they match chart version ${local.chart_version}: kubectl label crd ${each.key} planton.ai/crd-source=${local.helm_crds_source_label} and kubectl annotate crd ${each.key} planton.ai/crd-source-chart=${local.helm_crds_source_description} planton.ai/crd-source-version=${local.chart_version}, then re-run"
+      error_message = "observed: CRD ${each.key} already exists on the cluster and was not applied by this module (${try(local.helm_crds_foreign[each.key].owner, "it carries no ownership marks")})\nmeaning: two owners would write one schema, and the module cannot tell whether the existing definition is newer or older than ${local.helm_crds_version_noun} ${local.helm_crds_version}, so it stops before changing it\nnext step: ${local.helm_crds_is_bundle ? "set spec.crds.install to false only when another tool manages these definitions and no other installation of ${local.helm_crds_source_label} runs on this cluster (this kind still installs ${local.helm_crds_source_label} itself)" : "set spec.crds.install to false to leave the definitions with their current owner (the release still installs and uses them)"}; ${try(local.helm_crds_foreign[each.key].helm_release, "") != "" ? "or, to move ownership here, first uninstall Helm release ${try(local.helm_crds_foreign[each.key].helm_release, "")} (or mark the CRD helm.sh/resource-policy: keep in that release) so Helm will not delete it later, then " : "or "}hand them to this module once you know they match ${local.helm_crds_version_noun} ${local.helm_crds_version}: kubectl label crd ${each.key} planton.ai/crd-source=${local.helm_crds_source_label} and kubectl annotate crd ${each.key} planton.ai/crd-source-chart=${local.helm_crds_source_description} planton.ai/crd-source-version=${local.helm_crds_version}, then re-run"
     }
     precondition {
       condition     = !contains(keys(local.helm_crds_downgraded), each.key)
-      error_message = "observed: the cluster carries CRD ${each.key} derived from chart version ${try(local.helm_crds_downgraded[each.key], "?")}; the manifest asks for chart version ${local.chart_version}\nmeaning: applying an older CRD schema over a newer one can strip fields from existing custom resources the next time anything writes them\nnext step: set spec.chart_version to ${try(local.helm_crds_downgraded[each.key], "the cluster's version")} or higher; if you accept the loss and want the older schema, delete the CRD first (kubectl delete crd ${each.key}) and re-run"
+      error_message = "observed: the cluster carries CRD ${each.key} derived from ${local.helm_crds_version_noun} ${try(local.helm_crds_downgraded[each.key], "?")}; ${local.helm_crds_version_pinned ? "this module pins" : "the manifest asks for"} ${local.helm_crds_version_noun} ${local.helm_crds_version}\nmeaning: applying an older CRD schema over a newer one can strip fields from existing custom resources the next time anything writes them\nnext step: ${local.helm_crds_version_pinned ? "deploy with a Planton release whose module pins ${local.helm_crds_version_noun} ${try(local.helm_crds_downgraded[each.key], "the cluster's version")} or higher (this module pins ${local.helm_crds_version})" : "set ${local.helm_crds_args.version_field} to ${try(local.helm_crds_downgraded[each.key], "the cluster's version")} or higher"}; if you accept the loss and want the older schema, delete the CRD first (kubectl delete crd ${each.key}) and re-run"
     }
   }
 }

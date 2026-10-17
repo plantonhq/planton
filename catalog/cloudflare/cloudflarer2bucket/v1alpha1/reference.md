@@ -644,6 +644,12 @@ Fields on other kinds that can point at this resource:
 | CloudflarePagesProject | `spec.deploymentConfigs.production.r2Buckets[].bucketName` | `status.outputs.bucket_name` |
 | CloudflareWorker | `spec.r2Bundle.bucket` | `status.outputs.bucket_name` |
 | CloudflareWorker | `spec.r2Buckets[].bucketName` | `status.outputs.bucket_name` |
+| KubernetesLangfuse | `spec.blobStorage.target.r2.endpoint` | `status.outputs.s3_endpoint` |
+| KubernetesLangfuse | `spec.blobStorage.target.r2.bucket` | `status.outputs.bucket_name` |
+| KubernetesLangfuse | `spec.blobStorage.mediaUpload.target.r2.endpoint` | `status.outputs.s3_endpoint` |
+| KubernetesLangfuse | `spec.blobStorage.mediaUpload.target.r2.bucket` | `status.outputs.bucket_name` |
+| KubernetesLangfuse | `spec.blobStorage.batchExport.target.r2.endpoint` | `status.outputs.s3_endpoint` |
+| KubernetesLangfuse | `spec.blobStorage.batchExport.target.r2.bucket` | `status.outputs.bucket_name` |
 | KubernetesLoki | `spec.storage.r2.accountId` | `status.outputs.account_id` |
 | KubernetesLoki | `spec.storage.r2.jurisdiction` | `status.outputs.jurisdiction` |
 | KubernetesLoki | `spec.storage.r2.bucket` | `status.outputs.bucket_name` |

@@ -394,6 +394,8 @@ Fields on other kinds that can point at this resource:
 | GcpWorkloadIdentityPoolProvider | `spec.projectId` | `status.outputs.project_id` |
 | KubernetesClusterSecretStore | `spec.config.gcpSecretManager.projectId` | `status.outputs.project_id` |
 | KubernetesExternalDns | `spec.googleCloudDns.project` | `status.outputs.project_id` |
+| KubernetesGkeComputeClass | `spec.priorities[].reservations.specific[].project` | `status.outputs.project_id` |
+| KubernetesGkeComputeClass | `spec.priorities[].storage.secondaryBootDisks[].project` | `status.outputs.project_id` |
 | KubernetesOpenBao | `spec.autoUnseal.gcpKms.project` | `status.outputs.project_id` |
 | KubernetesPlantonPlatform | `spec.vault.autoUnseal.gcpKms.project` | `status.outputs.project_id` |
 | KubernetesSecretStore | `spec.config.gcpSecretManager.projectId` | `status.outputs.project_id` |

@@ -1,0 +1,24 @@
+# The stack's shared home. One resource OWNS the namespace and every tenant
+# JOINS it (createNamespace stays false on the stores and on Langfuse):
+# five resources claiming the same namespace would collide with
+# AlreadyExists at deploy time, and modeling the namespace as its own
+# first-class resource gives each tenant a structural created-before-used
+# edge, because each references this resource's name.
+#
+# Co-location is the load-bearing design decision of this chart: Langfuse
+# reads the Postgres, ClickHouse, Valkey and SeaweedFS credentials through
+# secretKeyRefs, and a secretKeyRef can only read Secrets in the workload's
+# own namespace. Each store writes its credential Secret beside itself;
+# Langfuse must live where those Secrets live.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesNamespace
+metadata:
+  name: "{{ values.env }}-langfuse-ns"
+{% if values.connection != "" %}
+  annotations:
+    # Explicit cluster selection: this connection overrides the environment's
+    # default Kubernetes connection for this resource.
+    planton.dev/connection: "{{ values.connection }}"
+{% endif %}
+spec:
+  name: "{{ values.namespace }}"

@@ -1,0 +1,3651 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kuberneteslangfuse.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/kubernetes/kubernetes.proto";
+import "catalog/kubernetes/options.proto";
+import "catalog/kubernetes/volume_mount.proto";
+import "catalog/kubernetes/workload_container.proto";
+import "catalog/kubernetes/workload_identity.proto";
+import "catalog/kubernetes/workload_pod.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+/**
+ * **KubernetesLangfuseSpec** installs Langfuse - the open-source LLM
+ * engineering platform for tracing, prompt management, evaluations and
+ * datasets - from the official `langfuse` chart
+ * (https://langfuse.github.io/langfuse-k8s, chart 2.1.x = Langfuse v4).
+ * One release runs two workloads from one configuration: the WEB server
+ * (UI, public API, OTLP ingestion endpoint) and the WORKER (queue
+ * consumers that load events into ClickHouse, run evaluations, exports and
+ * retention).
+ *
+ * FOUR STORES, ALL COMPOSED BY REFERENCE (the chart's bundled copies never
+ * ship from this kind):
+ *   - POSTGRES holds users, projects, prompts, API keys and settings. A
+ *     KubernetesPostgres composes naturally; any PostgreSQL 15+ (RDS,
+ *     Cloud SQL, Azure) works by literal host.
+ *   - CLICKHOUSE holds traces, observations and scores. A
+ *     KubernetesClickHouse (25.12 or newer) composes naturally, as do
+ *     ClickHouse Cloud and BYOC by literal host.
+ *   - REDIS (or Valkey) carries the ingestion queues and caches, and MUST
+ *     run with `maxmemory-policy noeviction`: under eviction queued jobs
+ *     are silently lost. A KubernetesValkey composes naturally.
+ *   - BLOB STORAGE receives every ingested event before the worker reads
+ *     it, plus media attachments and batch exports. S3-compatible stores
+ *     (a KubernetesSeaweedFs, Cloudflare R2), AWS S3, Google Cloud Storage
+ *     and Azure Blob Storage each have a native arm.
+ *
+ * A Kubernetes Secret reference cannot cross namespaces: every Secret this
+ * spec references by name (store passwords, TLS material, extra
+ * environment) must live in Langfuse's own namespace. Compose the stores
+ * into the same namespace, or copy their Secrets.
+ *
+ * SECRETS: every sensitive value the spec carries is written by the module
+ * into its own Secret (the `instance_secret_name` output) and reaches
+ * Langfuse through a secretKeyRef; none is ever rendered into chart values.
+ * The salt, encryption key and NextAuth secret are generated once when not
+ * declared - and they are bound to the Postgres data, not to this resource:
+ * see `secrets`.
+ *
+ * NOT MODELED, BY DESIGN (verified at chart 2.1.5 / Langfuse 4.56.0):
+ * - the chart's bundled `postgresql`, `redis`, `clickhouse` and `s3`
+ *   stores: superseded by the first-class kinds above, which own their own
+ *   backups, sizing and lifecycle;
+ * - the chart's `ingress` block: compose a KubernetesHttpRoute or
+ *   KubernetesIngress against the `service` output;
+ * - `allowV1Upgrade`: a guard for upgrading chart 1.x installs;
+ * - `NEXT_PUBLIC_BASE_PATH`: a build-time setting that needs a custom
+ *   image (serve Langfuse at the root of its own host instead);
+ * - OCI native object storage: its auth modes read a mounted config file
+ *   or instance metadata the chart has no seam for; OCI Object Storage
+ *   works through `s3_compatible` with customer secret keys;
+ * - the chart's generic sidecar, init-container, lifecycle-hook and
+ *   `extraManifests` slots: generic pod plumbing with no Langfuse meaning,
+ *   reachable through `helm_values`;
+ * - Langfuse Cloud internals (billing, Stripe, CRM, Sentry, PostHog,
+ *   gateway and metering variables) and undocumented tuning variables:
+ *   `extra_env` carries any of them verbatim.
+ */
+message KubernetesLangfuseSpec {
+  /**
+   * Namespace to install into. Accepts a literal namespace name or a
+   * reference to a KubernetesNamespace resource. Every Secret the spec
+   * references by name must live in this namespace.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  /**
+   * When true, the namespace is created (with the standard Planton
+   * governance labels) before installing and deleted with the resource.
+   * When false, the namespace must already exist.
+   */
+  bool create_namespace = 2;
+
+  /**
+   * Helm chart version to install (e.g. "2.1.5" = Langfuse 4.56.0; each
+   * chart release pins one Langfuse version as its appVersion). Versions
+   * must exist in the SERVED index at https://langfuse.github.io/langfuse-k8s.
+   * Chart 2.x needs Kubernetes 1.28 or newer.
+   */
+  optional string chart_version = 3 [(dev.planton.shared.options.default) = "2.1.5"];
+
+  /**
+   * The public URL people open Langfuse at (`NEXTAUTH_URL`), e.g.
+   * "https://langfuse.example.com": the base of sign-in redirects and of
+   * every link Langfuse writes into emails, Slack messages and integration
+   * settings. Scheme, host and optional port only - Langfuse serves from
+   * the root of its host. The default suits a port-forward
+   * (`port_forward_command` output); set the URL your KubernetesHttpRoute
+   * or KubernetesIngress serves before enabling single sign-on.
+   */
+  optional string external_url = 4 [
+    (dev.planton.shared.options.default) = "http://localhost:3000",
+    (buf.validate.field).cel = {
+      id: "spec.external_url"
+      message: "external_url must be scheme://host[:port] with no path or trailing slash, such as https://langfuse.example.com (Langfuse serves from the root of its host)."
+      expression: "this.matches('^https?://[^/\\\\s]+$')"
+    }
+  ];
+
+  /**
+   * The Postgres database: users, organizations, projects, prompts, API
+   * keys and settings.
+   */
+  KubernetesLangfusePostgres postgres = 5 [(buf.validate.field).required = true];
+
+  /**
+   * The ClickHouse database: traces, observations, scores and sessions.
+   */
+  KubernetesLangfuseClickHouse clickhouse = 6 [(buf.validate.field).required = true];
+
+  /**
+   * The Redis or Valkey store behind the ingestion queues and caches.
+   */
+  KubernetesLangfuseRedis redis = 7 [(buf.validate.field).required = true];
+
+  /**
+   * Object storage for ingested events, media attachments and batch
+   * exports.
+   */
+  KubernetesLangfuseBlobStorage blob_storage = 8 [(buf.validate.field).required = true];
+
+  /**
+   * The instance's own secrets: the API-key salt, the encryption key and
+   * the session secret. Generated when not declared.
+   */
+  KubernetesLangfuseInstanceSecrets secrets = 9;
+
+  /**
+   * The organization, project, project key pair and admin user Langfuse
+   * creates at first start (headless initialization). Seeded by default.
+   */
+  KubernetesLangfuseInit init = 10;
+
+  /**
+   * Sign-in: email and password, sign-up, sessions, the access new users
+   * receive, and single sign-on providers.
+   */
+  KubernetesLangfuseAuth auth = 11;
+
+  /**
+   * Transactional email (invitations, password resets, notifications).
+   * Unset = Langfuse sends no email.
+   */
+  KubernetesLangfuseSmtp smtp = 12;
+
+  /**
+   * Product switches: telemetry, experimental features, organization
+   * creation, content security policy.
+   */
+  KubernetesLangfuseFeatures features = 13;
+
+  /**
+   * API-key and prompt caching in Redis.
+   */
+  KubernetesLangfuseCaching caching = 14;
+
+  /**
+   * Queue sharding and worker concurrency for high ingestion volume.
+   */
+  KubernetesLangfuseIngestion ingestion = 15;
+
+  /**
+   * Langfuse AI: the instance-wide model behind the Assistant and Ask AI.
+   */
+  KubernetesLangfuseAiFeatures ai_features = 16;
+
+  /**
+   * Evaluation runtime: how LLM-as-a-judge evaluators receive media, and
+   * where code evaluators execute.
+   */
+  KubernetesLangfuseEvaluation evaluation = 17;
+
+  /**
+   * The Slack app that lets projects send notifications to Slack.
+   */
+  KubernetesLangfuseSlack slack = 18;
+
+  /**
+   * Enterprise Edition features: license key, Instance Management API, UI
+   * customization and ingestion masking.
+   */
+  KubernetesLangfuseEnterprise enterprise = 19;
+
+  /**
+   * Langfuse's own logs and OpenTelemetry traces.
+   */
+  KubernetesLangfuseObservability observability = 20;
+
+  /**
+   * Outbound networking: proxies, private certificate authorities and the
+   * host allowlists for user-configured endpoints.
+   */
+  KubernetesLangfuseNetwork network = 21;
+
+  /**
+   * The web server: UI, public API and ingestion endpoints.
+   */
+  KubernetesLangfuseWeb web = 22;
+
+  /**
+   * The worker: queue consumers, evaluations, exports and retention.
+   */
+  KubernetesLangfuseWorker worker = 23;
+
+  /**
+   * The ServiceAccount both workloads run as, and its cloud identity.
+   */
+  KubernetesLangfuseServiceAccount service_account = 24;
+
+  /**
+   * Pod-level security context for both workloads.
+   */
+  dev.planton.kubernetes.WorkloadPodSecurityContext pod_security_context = 25;
+
+  /**
+   * Container-level security context for both workloads.
+   */
+  dev.planton.kubernetes.WorkloadContainerSecurityContext container_security_context = 26;
+
+  /**
+   * DNS settings for both workloads' pods.
+   */
+  dev.planton.kubernetes.WorkloadPodDnsConfig dns_config = 27;
+
+  /**
+   * Extra volumes mounted into both workloads - a file a variable in
+   * `extra_env` points at, for example.
+   */
+  repeated dev.planton.kubernetes.VolumeMount extra_volumes = 28;
+
+  /**
+   * Extra plain environment variables for both workloads: any Langfuse
+   * variable this spec does not type, set verbatim (e.g.
+   * LANGFUSE_INGESTION_QUEUE_DELAY_MS). A variable the spec types is set
+   * through its field; naming it here too conflicts with the chart's own
+   * validation. Secret values belong in `extra_env_from_secret`.
+   */
+  map<string, string> extra_env = 29 [(dev.planton.shared.options.secret_home) = "extra_env_from_secret"];
+
+  /**
+   * Extra environment variables for both workloads read from existing
+   * Secrets in Langfuse's namespace, keyed by variable name.
+   */
+  map<string, dev.planton.kubernetes.KubernetesSecretKey> extra_env_from_secret = 30;
+
+  /**
+   * Advanced escape hatch: raw Helm values merged LAST (Helm `-f`
+   * semantics) over everything this spec renders - later keys win. Use it
+   * for chart keys this spec does not type (sidecars, init containers,
+   * lifecycle hooks, `extraManifests`). The module re-pins
+   * `fullnameOverride` and keeps the bundled stores off after the merge.
+   * Never put secret material here: it lands in the Helm release in plain
+   * text. YAML document as a string.
+   */
+  string helm_values = 31;
+
+  option (buf.validate.message).cel = {
+    id: "spec.extra_env.unique_names"
+    expression: "!this.extra_env.exists(k, k in this.extra_env_from_secret)"
+    message: "A variable may be declared in extra_env or extra_env_from_secret, not both."
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.auth.sso_requires_external_url"
+    message: "Single sign-on needs external_url, the public address people open Langfuse at: the identity provider sends people back to <external_url>/api/auth/callback/<provider>, and with the localhost default no browser outside a port-forward can complete sign-in. Set external_url to the URL your route or ingress serves (e.g. https://langfuse.example.com)."
+    expression: "!has(this.auth) || !has(this.auth.sso) || !(has(this.auth.sso.google) || has(this.auth.sso.github) || has(this.auth.sso.github_enterprise) || has(this.auth.sso.gitlab) || has(this.auth.sso.azure_ad) || has(this.auth.sso.okta) || has(this.auth.sso.authentik) || has(this.auth.sso.onelogin) || has(this.auth.sso.auth0) || has(this.auth.sso.cognito) || has(this.auth.sso.keycloak) || has(this.auth.sso.jumpcloud) || has(this.auth.sso.custom) || has(this.auth.sso.workos) || has(this.auth.sso.wordpress)) || (has(this.external_url) && !this.external_url.matches('^https?://(localhost|127\\\\.0\\\\.0\\\\.1)(:[0-9]+)?$'))"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.blob_storage.one_family"
+    message: "Langfuse selects Google Cloud Storage or Azure Blob Storage for every upload type at once: when any blob storage target is gcs (or azure_blob), the event, media and batch-export targets must all be gcs (or all azure_blob). S3, R2 and S3-compatible targets mix freely."
+    expression: "!has(this.blob_storage) || !has(this.blob_storage.target) || ((!(has(this.blob_storage.target.gcs) || ((has(this.blob_storage.media_upload) && has(this.blob_storage.media_upload.target)) && has(this.blob_storage.media_upload.target.gcs)) || ((has(this.blob_storage.batch_export) && has(this.blob_storage.batch_export.target)) && has(this.blob_storage.batch_export.target.gcs))) || (has(this.blob_storage.target.gcs) && (!(has(this.blob_storage.media_upload) && has(this.blob_storage.media_upload.target)) || has(this.blob_storage.media_upload.target.gcs)) && (!(has(this.blob_storage.batch_export) && has(this.blob_storage.batch_export.target)) || has(this.blob_storage.batch_export.target.gcs)))) && (!(has(this.blob_storage.target.azure_blob) || ((has(this.blob_storage.media_upload) && has(this.blob_storage.media_upload.target)) && has(this.blob_storage.media_upload.target.azure_blob)) || ((has(this.blob_storage.batch_export) && has(this.blob_storage.batch_export.target)) && has(this.blob_storage.batch_export.target.azure_blob))) || (has(this.blob_storage.target.azure_blob) && (!(has(this.blob_storage.media_upload) && has(this.blob_storage.media_upload.target)) || has(this.blob_storage.media_upload.target.azure_blob)) && (!(has(this.blob_storage.batch_export) && has(this.blob_storage.batch_export.target)) || has(this.blob_storage.batch_export.target.azure_blob)))))"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.ai_features.assistant_requires_model"
+    message: "The Assistant needs the instance-wide Langfuse AI model: set ai_features.provider and ai_features.model, or turn the Assistant off."
+    expression: "!has(this.ai_features) || !has(this.ai_features.assistant) || !this.ai_features.assistant.enabled || (this.ai_features.provider != 0 && this.ai_features.model != '')"
+  };
+}
+
+/**
+ * The Postgres connection. Langfuse runs its schema migrations against
+ * this database at every start, so the user must own the database (or
+ * hold full DDL rights on its `public` schema). The server must run in
+ * UTC.
+ */
+message KubernetesLangfusePostgres {
+  /**
+   * Postgres host. Defaults compose a KubernetesPostgres resource's
+   * read-write Service (always the current primary); any reachable
+   * PostgreSQL 15+ host works as a literal (RDS, Aurora, Cloud SQL,
+   * Azure Database for PostgreSQL).
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef host = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesPostgres,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.rw_service"
+  ];
+
+  /**
+   * Postgres port.
+   */
+  optional int32 port = 2 [
+    (dev.planton.shared.options.default) = "5432",
+    (buf.validate.field).int32.gt = 0,
+    (buf.validate.field).int32.lte = 65535
+  ];
+
+  /**
+   * Database name. Create it before Langfuse starts (a KubernetesPostgres
+   * bootstrap `database` with this user as owner does).
+   */
+  optional string database = 3 [(dev.planton.shared.options.default) = "langfuse"];
+
+  /**
+   * The user Langfuse connects as (a KubernetesPostgres bootstrap owner,
+   * for example).
+   */
+  string username = 4 [(buf.validate.field).required = true];
+
+  /**
+   * The Secret holding that user's password, in Langfuse's namespace.
+   * Defaults compose a KubernetesPostgres resource's application
+   * credential Secret, which the operator keeps current across failovers.
+   */
+  KubernetesLangfusePostgresPasswordSecret password_secret = 5 [(buf.validate.field).required = true];
+
+  /**
+   * Extra connection parameters appended to the connection URL (e.g.
+   * "sslmode=require&connection_limit=20").
+   */
+  string args = 6;
+
+  /**
+   * A separate connection URL for schema migrations (`DIRECT_URL`), when
+   * the main connection goes through a pooler such as PgBouncer or uses a
+   * user without DDL rights. Contains the credentials, so it is written to
+   * the instance Secret. Give this user long statement timeouts: large
+   * migrations take a while.
+   */
+  string direct_url = 7 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * Connection URL of a shadow database (`SHADOW_DATABASE_URL`), needed
+   * only when the user lacks CREATE DATABASE (common on managed
+   * services) and migrations must diff against a scratch database.
+   * Contains the credentials, so it is written to the instance Secret.
+   */
+  string shadow_database_url = 8 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * Run Postgres migrations automatically when the web server starts.
+   * Turn off only when migrations run out of band; Langfuse refuses to
+   * serve a schema it does not expect.
+   */
+  optional bool auto_migrate = 9 [(dev.planton.shared.options.default) = "true"];
+}
+
+/**
+ * The Secret holding the Postgres password.
+ */
+message KubernetesLangfusePostgresPasswordSecret {
+  /**
+   * Name of the Secret. Defaults compose a KubernetesPostgres resource's
+   * application credential Secret (`<name>-app`).
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret_name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesPostgres,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.password_secret.name"
+  ];
+
+  /**
+   * Key within the Secret.
+   */
+  optional string secret_key = 2 [
+    (dev.planton.shared.options.default) = "password",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Key NAME within an existing Secret (a reference), not secret material"
+  ];
+}
+
+/**
+ * The ClickHouse connection. Langfuse runs its ClickHouse migrations at
+ * every web start: the user needs DDL and DML on the database, and - in
+ * cluster mode - `GRANT CLUSTER ON *.*` for `ON CLUSTER` statements. A
+ * user with no grants at all receives ClickHouse's unrestricted default,
+ * which covers both. ClickHouse 25.12 or newer, in UTC.
+ */
+message KubernetesLangfuseClickHouse {
+  /**
+   * ClickHouse host. Defaults compose a KubernetesClickHouse resource's
+   * client Service; ClickHouse Cloud or any reachable server works as a
+   * literal host name (no scheme - `secure` selects TLS).
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef host = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesClickHouse,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.service_name",
+    (buf.validate.field).cel = {
+      id: "spec.clickhouse.host.no_scheme"
+      message: "clickhouse.host is a bare host name; set secure: true for TLS instead of an https:// prefix."
+      expression: "!has(this.value) || !this.value.contains('://')"
+    }
+  ];
+
+  /**
+   * HTTP interface port (queries). 8443 is the usual TLS port.
+   */
+  optional int32 http_port = 2 [
+    (dev.planton.shared.options.default) = "8123",
+    (buf.validate.field).int32.gt = 0,
+    (buf.validate.field).int32.lte = 65535
+  ];
+
+  /**
+   * Native protocol port (migrations). 9440 is the usual TLS port.
+   */
+  optional int32 native_port = 3 [
+    (dev.planton.shared.options.default) = "9000",
+    (buf.validate.field).int32.gt = 0,
+    (buf.validate.field).int32.lte = 65535
+  ];
+
+  /**
+   * Connect over TLS on both interfaces (https for queries, TLS for
+   * migrations) - ClickHouse Cloud requires it. Set the TLS ports too.
+   */
+  bool secure = 4;
+
+  /**
+   * Database name.
+   */
+  optional string database = 5 [(dev.planton.shared.options.default) = "default"];
+
+  /**
+   * The user Langfuse connects as (a KubernetesClickHouse user, for
+   * example). On a KubernetesClickHouse, declare that user's `networks`
+   * (e.g. "0.0.0.0/0" and "::/0"): a user declared without networks is
+   * fenced to ClickHouse's own pods and Langfuse is refused with what
+   * looks like a wrong-password error.
+   */
+  string username = 6 [(buf.validate.field).required = true];
+
+  /**
+   * The Secret holding that user's password, in Langfuse's namespace.
+   */
+  KubernetesLangfuseClickHousePasswordSecret password_secret = 7 [(buf.validate.field).required = true];
+
+  /**
+   * Cluster mode: whether Langfuse runs its DDL `ON CLUSTER` with
+   * replicated table engines.
+   */
+  KubernetesLangfuseClickHouseCluster cluster = 8;
+
+  /**
+   * A read-only endpoint for UI and public-API reads
+   * (`CLICKHOUSE_READ_ONLY_URL`, e.g. "https://reader.example.com:8443"):
+   * a separate compute group on ClickHouse Cloud or BYOC. Reuses the user,
+   * password and database. No benefit on a single server.
+   */
+  string read_only_url = 9 [(buf.validate.field).cel = {
+    id: "spec.clickhouse.read_only_url"
+    message: "read_only_url must be an http(s) URL with host and port, such as https://reader.example.com:8443."
+    expression: "this == '' || this.matches('^https?://[^/\\\\s]+$')"
+  }];
+
+  /**
+   * Run ClickHouse migrations automatically when the web server starts.
+   */
+  optional bool auto_migrate = 10 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * How Langfuse issues deletes (`CLICKHOUSE_LIGHTWEIGHT_DELETE_MODE`).
+   * Unspecified = Langfuse's default, ALTER TABLE ... DELETE mutations.
+   * The lightweight modes need ClickHouse 25.7+ and cut background merge
+   * work on deletion-heavy workloads (retention, project deletes).
+   */
+  DeleteMode delete_mode = 11;
+
+  /**
+   * Route tracing-table updates through native UPDATE statements instead
+   * of ALTER TABLE ... UPDATE mutations (`CLICKHOUSE_USE_LIGHTWEIGHT_UPDATE`,
+   * ClickHouse 25.7+).
+   */
+  bool use_lightweight_update = 12;
+
+  /**
+   * Client-side timeout for delete operations in milliseconds
+   * (`LANGFUSE_CLICKHOUSE_DELETION_TIMEOUT_MS`). Empty = Langfuse's
+   * default (600000, ten minutes). Raise it when retention jobs or
+   * project deletes time out.
+   */
+  optional int32 deletion_timeout_ms = 13 [(buf.validate.field).int32.gt = 0];
+
+  /**
+   * How ClickHouse deletes are issued.
+   */
+  enum DeleteMode {
+    // Langfuse's default: ALTER TABLE ... DELETE mutations.
+    unspecified = 0;
+    // ALTER TABLE ... DELETE mutations, stated explicitly.
+    alter_update = 1;
+    // Lightweight deletes where ClickHouse supports them.
+    lightweight_update = 2;
+    // Lightweight deletes everywhere, even where ClickHouse would fall back.
+    lightweight_update_force = 3;
+  }
+}
+
+/**
+ * The Secret holding the ClickHouse password.
+ */
+message KubernetesLangfuseClickHousePasswordSecret {
+  /**
+   * Name of the Secret. Defaults compose a KubernetesClickHouse
+   * resource's auth Secret (`<name>-clickhouse-auth`, one key per user).
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret_name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesClickHouse,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.auth_secret_name"
+  ];
+
+  /**
+   * Key within the Secret. Empty = `clickhouse.username`, the key a
+   * KubernetesClickHouse auth Secret stores each user's password under.
+   */
+  string secret_key = 2 [(dev.planton.shared.options.sensitive_exempt_reason) = "Key NAME within an existing Secret (a reference), not secret material"];
+}
+
+/**
+ * ClickHouse cluster mode.
+ */
+message KubernetesLangfuseClickHouseCluster {
+  /**
+   * Run DDL `ON CLUSTER` with replicated table engines
+   * (`CLICKHOUSE_CLUSTER_ENABLED`). Needs ClickHouse Keeper (or ZooKeeper)
+   * coordination - a KubernetesClickHouse with replicas, or with a
+   * managed Keeper. Turn off for a single server without coordination:
+   * cluster-mode migrations fail there. Decide before first start;
+   * switching later needs a data migration.
+   */
+  optional bool enabled = 1 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * The cluster's name (`CLICKHOUSE_CLUSTER_NAME`). Defaults compose a
+   * KubernetesClickHouse resource's logical cluster name; empty =
+   * "default". Langfuse renders its migrations for any name.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef name = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesClickHouse,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.cluster_name"
+  ];
+}
+
+/**
+ * The Redis or Valkey connection. Exactly one topology.
+ */
+message KubernetesLangfuseRedis {
+  oneof topology {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * One primary (with or without replicas behind it) - a
+     * KubernetesValkey, ElastiCache without cluster mode, Memorystore.
+     */
+    KubernetesLangfuseRedisStandalone standalone = 1;
+
+    /**
+     * Redis Cluster - ElastiCache with cluster mode, Azure Managed Redis
+     * with the OSS clustering policy.
+     */
+    KubernetesLangfuseRedisCluster cluster = 2;
+
+    /**
+     * Redis Sentinel - a primary discovered through Sentinel nodes.
+     */
+    KubernetesLangfuseRedisSentinel sentinel = 3;
+  }
+
+  /**
+   * ACL username, when the store uses named users. Defaults compose a
+   * KubernetesValkey resource's ACL user. Empty = password-only AUTH.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef username = 4 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesValkey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.username"
+  ];
+
+  /**
+   * The Secret holding the password, in Langfuse's namespace. Unset = an
+   * auth-less store.
+   */
+  KubernetesLangfuseRedisPasswordSecret password_secret = 5;
+
+  /**
+   * TLS to Redis (and, for Sentinel, optionally to the Sentinels).
+   */
+  KubernetesLangfuseRedisTls tls = 6;
+
+  /**
+   * Prefix for every key Langfuse writes (`REDIS_KEY_PREFIX`), to share
+   * one store between several Langfuse instances. Changing it on a live
+   * instance orphans every queued job.
+   */
+  string key_prefix = 7;
+
+  /**
+   * Socket timeout in milliseconds for every Redis connection
+   * (`REDIS_SOCKET_TIMEOUT_MS`). Empty = Langfuse's default (30000). 0
+   * disables it; a positive value must be at least 10000, because queue
+   * workers block on the socket between jobs.
+   */
+  optional int32 socket_timeout_ms = 8 [(buf.validate.field).cel = {
+    id: "spec.redis.socket_timeout_ms"
+    message: "socket_timeout_ms must be 0 (disabled) or at least 10000: queue workers block on the socket for seconds between jobs."
+    expression: "this == 0 || this >= 10000"
+  }];
+
+  option (buf.validate.message).cel = {
+    id: "spec.redis.sentinel_tls_requires_tls"
+    message: "Sentinel TLS applies on top of Redis TLS: set redis.tls.enabled, or turn sentinel.tls_enabled off."
+    expression: "!has(this.sentinel) || !this.sentinel.tls_enabled || (has(this.tls) && this.tls.enabled)"
+  };
+}
+
+/**
+ * A standalone Redis or Valkey primary.
+ */
+message KubernetesLangfuseRedisStandalone {
+  /**
+   * Host. Defaults compose a KubernetesValkey resource's primary Service;
+   * any reachable Redis-protocol host works as a literal.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef host = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesValkey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.service"
+  ];
+
+  /**
+   * Port.
+   */
+  optional int32 port = 2 [
+    (dev.planton.shared.options.default) = "6379",
+    (buf.validate.field).int32.gt = 0,
+    (buf.validate.field).int32.lte = 65535
+  ];
+
+  /**
+   * Logical database number.
+   */
+  int32 database = 3 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 15
+  }];
+}
+
+/**
+ * A Redis Cluster.
+ */
+message KubernetesLangfuseRedisCluster {
+  /**
+   * Seed nodes as "host:port" (e.g. "redis-0.redis:6379"); the client
+   * discovers the rest of the cluster from them.
+   */
+  repeated string nodes = 1 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.items.string.pattern = "^[^:\\s]+:[0-9]{1,5}$"
+  ];
+
+  /**
+   * Timeout in milliseconds for refreshing the cluster's slot map
+   * (`REDIS_CLUSTER_SLOTS_REFRESH_TIMEOUT`). Empty = Langfuse's default
+   * (5000). Raise it on timeouts during topology changes.
+   */
+  optional int32 slots_refresh_timeout_ms = 2 [(buf.validate.field).int32.gt = 0];
+}
+
+/**
+ * Redis Sentinel.
+ */
+message KubernetesLangfuseRedisSentinel {
+  /**
+   * Name of the monitored primary, exactly as the Sentinels know it.
+   */
+  string master_name = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Sentinel nodes as "host:port" (e.g. "sentinel-0.sentinel:26379").
+   */
+  repeated string nodes = 2 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.items.string.pattern = "^[^:\\s]+:[0-9]{1,5}$"
+  ];
+
+  /**
+   * Username the Sentinels require, when they authenticate.
+   */
+  string username = 3;
+
+  /**
+   * The Secret holding the Sentinels' password, in Langfuse's namespace.
+   * Unset = auth-less Sentinels.
+   */
+  dev.planton.kubernetes.KubernetesSecretKey password_secret = 4;
+
+  /**
+   * Also use TLS to the Sentinels, not just to the primary and replicas.
+   * Requires `tls.enabled`.
+   */
+  bool tls_enabled = 5;
+}
+
+/**
+ * The Secret holding the Redis password.
+ */
+message KubernetesLangfuseRedisPasswordSecret {
+  /**
+   * Name of the Secret. Defaults compose a KubernetesValkey resource's
+   * auth Secret.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret_name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesValkey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.password_secret.name"
+  ];
+
+  /**
+   * Key within the Secret. Defaults compose a KubernetesValkey resource's
+   * password key (its auth Secret stores each user's password under the
+   * user's name).
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret_key = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesValkey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.password_secret.key",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Key NAME within an existing Secret (a reference), not secret material"
+  ];
+}
+
+/**
+ * TLS to Redis. Certificate files are mounted from Secrets in Langfuse's
+ * namespace; a cert-manager Certificate's Secret carries all three keys.
+ */
+message KubernetesLangfuseRedisTls {
+  /**
+   * Connect over TLS (`rediss://`).
+   */
+  bool enabled = 1;
+
+  /**
+   * The CA that signed the server certificate, when it is not a public
+   * CA. Mounted into both workloads.
+   */
+  KubernetesLangfuseCertificateFile ca = 2;
+
+  /**
+   * Client certificate for mutual TLS. Empty key = "tls.crt".
+   */
+  KubernetesLangfuseSecretFile client_certificate = 3;
+
+  /**
+   * Client private key for mutual TLS. Empty key = "tls.key".
+   */
+  KubernetesLangfuseSecretFile client_key = 4;
+
+  /**
+   * Passphrase of an encrypted client private key.
+   */
+  string client_key_passphrase = 5 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * Server name for SNI and certificate verification, when it differs
+   * from the host (`REDIS_TLS_SERVERNAME`).
+   */
+  string server_name = 6;
+
+  /**
+   * Reject a server certificate that does not chain to a trusted CA
+   * (`REDIS_TLS_REJECT_UNAUTHORIZED`). Empty = Node.js's default, true.
+   * Turning it off accepts any certificate - never in production.
+   */
+  optional bool reject_unauthorized = 7;
+
+  /**
+   * Check that the server certificate names the host
+   * (`REDIS_TLS_CHECK_SERVER_IDENTITY`). Empty = Node.js's default, true.
+   * Some managed services present certificates for another name.
+   */
+  optional bool check_server_identity = 8;
+
+  /**
+   * Allowed TLS cipher suites, OpenSSL format (`REDIS_TLS_CIPHERS`).
+   */
+  string ciphers = 9;
+
+  /**
+   * TLS protocol method, e.g. "TLSv1_2_method" (`REDIS_TLS_SECURE_PROTOCOL`).
+   */
+  string secure_protocol = 10;
+
+  /**
+   * Prefer the client's cipher order (`REDIS_TLS_HONOR_CIPHER_ORDER`).
+   */
+  optional bool honor_cipher_order = 11;
+
+  option (buf.validate.message).cel = {
+    id: "spec.redis.tls.mutual_pair"
+    message: "Mutual TLS needs both client_certificate and client_key, or neither."
+    expression: "has(this.client_certificate) == has(this.client_key)"
+  };
+}
+
+/**
+ * A file mounted from a key of a Secret in Langfuse's namespace.
+ */
+message KubernetesLangfuseSecretFile {
+  /**
+   * Name of the Secret. A KubernetesCertificate's Secret composes
+   * naturally.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret_name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesCertificate,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.secret_name"
+  ];
+
+  /**
+   * Key within the Secret. Empty = the conventional key for the file
+   * (named on the field that holds this message).
+   */
+  string key = 2;
+}
+
+/**
+ * A PEM certificate bundle mounted from a Secret or a ConfigMap in
+ * Langfuse's namespace (trust-manager bundles are ConfigMaps).
+ */
+message KubernetesLangfuseCertificateFile {
+  oneof source {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * Name of a Secret holding the bundle.
+     */
+    string secret_name = 1;
+
+    /**
+     * Name of a ConfigMap holding the bundle.
+     */
+    string config_map_name = 2;
+  }
+
+  /**
+   * Key holding the PEM bundle.
+   */
+  optional string key = 3 [(dev.planton.shared.options.default) = "ca.crt"];
+}
+
+/**
+ * Object storage. Every ingested event is written here before the worker
+ * loads it into ClickHouse, so the event target is required and must be
+ * reachable from both workloads. Media attachments and batch exports use
+ * the same target unless they declare their own.
+ */
+message KubernetesLangfuseBlobStorage {
+  /**
+   * Where events are stored - and media and exports, unless they declare
+   * a target of their own.
+   */
+  KubernetesLangfuseBlobTarget target = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Event upload settings.
+   */
+  KubernetesLangfuseEventUpload event_upload = 2;
+
+  /**
+   * Media attachments (images, audio, documents traced with LLM calls).
+   */
+  KubernetesLangfuseMediaUpload media_upload = 3;
+
+  /**
+   * Batch exports (CSV and JSON downloads of traces, observations and
+   * scores).
+   */
+  KubernetesLangfuseBatchExport batch_export = 4;
+
+  /**
+   * Maximum concurrent reads from object storage
+   * (`LANGFUSE_S3_CONCURRENT_READS`). Raise it on "socket usage at
+   * capacity" warnings.
+   */
+  optional int32 concurrent_reads = 5 [
+    (dev.planton.shared.options.default) = "50",
+    (buf.validate.field).int32.gt = 0
+  ];
+
+  /**
+   * Maximum concurrent writes to object storage
+   * (`LANGFUSE_S3_CONCURRENT_WRITES`).
+   */
+  optional int32 concurrent_writes = 6 [
+    (dev.planton.shared.options.default) = "50",
+    (buf.validate.field).int32.gt = 0
+  ];
+
+  /**
+   * Checksum algorithm for S3 DeleteObjects requests
+   * (`LANGFUSE_S3_DELETE_OBJECTS_CHECKSUM_ALGORITHM`). Unspecified = the
+   * SDK's default (CRC32). Some S3-compatible stores reject the default
+   * and need MD5.
+   */
+  ChecksumAlgorithm delete_objects_checksum_algorithm = 7;
+
+  /**
+   * Checksum algorithms for S3 DeleteObjects requests.
+   */
+  enum ChecksumAlgorithm {
+    // The SDK's default (CRC32).
+    unspecified = 0;
+    // MD5 - the legacy Content-MD5 header.
+    md5 = 1;
+    // CRC32.
+    crc32 = 2;
+    // CRC32C.
+    crc32c = 3;
+    // CRC64NVME.
+    crc64nvme = 4;
+    // SHA-1.
+    sha1 = 5;
+    // SHA-256.
+    sha256 = 6;
+  }
+}
+
+/**
+ * One object storage target. Exactly one backend.
+ */
+message KubernetesLangfuseBlobTarget {
+  oneof backend {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * Any S3-compatible store: a KubernetesSeaweedFs, MinIO, OCI Object
+     * Storage, Backblaze B2.
+     */
+    KubernetesLangfuseS3CompatibleTarget s3_compatible = 1;
+
+    /**
+     * AWS S3.
+     */
+    KubernetesLangfuseS3Target s3 = 2;
+
+    /**
+     * Cloudflare R2.
+     */
+    KubernetesLangfuseR2Target r2 = 3;
+
+    /**
+     * Google Cloud Storage, through Langfuse's native GCS driver (more
+     * reliable than GCS's S3 interoperability mode, which mishandles
+     * deletes).
+     */
+    KubernetesLangfuseGcsTarget gcs = 4;
+
+    /**
+     * Azure Blob Storage, through Langfuse's native Azure driver.
+     */
+    KubernetesLangfuseAzureBlobTarget azure_blob = 5;
+  }
+}
+
+/**
+ * An S3-compatible store.
+ */
+message KubernetesLangfuseS3CompatibleTarget {
+  /**
+   * The S3 API endpoint (e.g.
+   * "http://seaweedfs-s3.storage.svc.cluster.local:8333"). Defaults
+   * compose a KubernetesSeaweedFs resource's S3 endpoint.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef endpoint = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesSeaweedFs,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.s3_endpoint"
+  ];
+
+  /**
+   * Bucket name. It must exist before Langfuse starts (a
+   * KubernetesSeaweedFs creates the buckets its spec declares).
+   */
+  string bucket = 2 [(buf.validate.field).required = true];
+
+  /**
+   * Region the store expects in request signatures.
+   */
+  optional string region = 3 [(dev.planton.shared.options.default) = "auto"];
+
+  /**
+   * Address buckets by path (`endpoint/bucket/key`) rather than by
+   * virtual host - required by SeaweedFS and MinIO.
+   */
+  optional bool force_path_style = 4 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * Credentials. Exactly one source.
+   */
+  oneof credentials {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * An existing Secret in Langfuse's namespace holding the key pair.
+     * Defaults compose a KubernetesSeaweedFs resource's S3 credentials
+     * Secret.
+     */
+    KubernetesLangfuseS3CredentialsSecret credentials_secret = 5;
+
+    /**
+     * The key pair itself, written to the instance Secret.
+     */
+    KubernetesLangfuseS3AccessKey access_key = 6;
+  }
+}
+
+/**
+ * An existing Secret holding an S3 key pair.
+ */
+message KubernetesLangfuseS3CredentialsSecret {
+  /**
+   * Name of the Secret.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret_name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesSeaweedFs,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.s3_credentials_secret_name"
+  ];
+
+  /**
+   * Key holding the access key id.
+   */
+  optional string access_key_id_key = 2 [(dev.planton.shared.options.default) = "admin_access_key_id"];
+
+  /**
+   * Key holding the secret access key.
+   */
+  optional string secret_access_key_key = 3 [
+    (dev.planton.shared.options.default) = "admin_secret_access_key",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Key NAME within an existing Secret (a reference), not secret material"
+  ];
+}
+
+/**
+ * An S3 key pair. It needs List, Get, Put and Delete on the bucket
+ * (delete for data retention).
+ */
+message KubernetesLangfuseS3AccessKey {
+  /**
+   * Access key id.
+   */
+  string access_key_id = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Secret access key.
+   */
+  string secret_access_key = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+}
+
+/**
+ * An AWS S3 bucket.
+ */
+message KubernetesLangfuseS3Target {
+  /**
+   * Bucket name. Defaults compose an AwsS3Bucket resource.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef bucket = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsS3Bucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_id"
+  ];
+
+  /**
+   * The bucket's region. Defaults compose an AwsS3Bucket resource's
+   * region.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef region = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsS3Bucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.region"
+  ];
+
+  /**
+   * Endpoint override - a FIPS or VPC interface endpoint. Empty = the
+   * regional S3 endpoint.
+   */
+  string endpoint = 3;
+
+  /**
+   * A static key pair. Empty = the AWS credential chain: an IAM role
+   * through `service_account.workload_identity` (EKS IRSA) - the
+   * recommended keyless posture - or the node's instance profile.
+   */
+  KubernetesLangfuseS3AccessKey access_key = 4;
+}
+
+/**
+ * A Cloudflare R2 bucket.
+ */
+message KubernetesLangfuseR2Target {
+  /**
+   * The bucket's S3 API endpoint (it encodes the account and the
+   * jurisdiction). Defaults compose a CloudflareR2Bucket resource's
+   * endpoint.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef endpoint = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareR2Bucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.s3_endpoint"
+  ];
+
+  /**
+   * Bucket name. Defaults compose a CloudflareR2Bucket resource.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef bucket = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareR2Bucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_name"
+  ];
+
+  /**
+   * The key pair of an R2 API token scoped to the bucket (Object Read and
+   * Write).
+   */
+  KubernetesLangfuseR2Credentials credentials = 3 [(buf.validate.field).required = true];
+}
+
+/**
+ * The key pair of an R2 API token.
+ */
+message KubernetesLangfuseR2Credentials {
+  /**
+   * The S3 access key id: the API token's id. By reference to a
+   * CloudflareAccountApiToken's `r2_access_key_id` output, or a `$secret/`
+   * reference for a token minted in the dashboard.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef access_key_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareAccountApiToken,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.r2_access_key_id"
+  ];
+
+  /**
+   * The S3 secret access key: the SHA-256 of the API token's value.
+   * Reference-only.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret_access_key = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareAccountApiToken,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.r2_secret_access_key"
+  ];
+}
+
+/**
+ * A Google Cloud Storage bucket.
+ */
+message KubernetesLangfuseGcsTarget {
+  /**
+   * Bucket name. Defaults compose a GcpGcsBucket resource.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef bucket = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGcsBucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_name"
+  ];
+
+  /**
+   * A service account JSON key. Empty = application default credentials:
+   * a Google service account through `service_account.workload_identity`
+   * (GKE Workload Identity) - the recommended keyless posture. Every GCS
+   * target of one Langfuse shares one credential.
+   */
+  string credentials_json = 2 [(dev.planton.shared.options.sensitive) = true];
+}
+
+/**
+ * An Azure Blob Storage container. Langfuse authenticates with the
+ * storage account's shared key only (no managed identity).
+ */
+message KubernetesLangfuseAzureBlobTarget {
+  /**
+   * Storage account name. Defaults compose an AzureStorageAccount
+   * resource.
+   *
+   * containment_exempt: Langfuse reads and writes the account - access,
+   * never placement.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef storage_account = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureStorageAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.storage_account_name"
+  ];
+
+  /**
+   * Container name. Defaults compose an AzureStorageContainer resource.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef container = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureStorageContainer,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.container_name"
+  ];
+
+  /**
+   * The storage account's access key.
+   */
+  string account_key = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+
+  /**
+   * Blob endpoint. Defaults compose an AzureStorageAccount resource's
+   * primary blob endpoint; empty = https://<storage_account>.blob.core.windows.net.
+   *
+   * containment_exempt: an address Langfuse calls - access, never
+   * placement.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef endpoint = 4 [
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureStorageAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.primary_blob_endpoint"
+  ];
+}
+
+/**
+ * Server-side encryption for objects Langfuse writes to S3.
+ */
+message KubernetesLangfuseServerSideEncryption {
+  /**
+   * Encryption algorithm.
+   */
+  Algorithm algorithm = 1 [(buf.validate.field).enum = {
+    defined_only: true
+    not_in: [0]
+  }];
+
+  /**
+   * KMS key for `aws_kms`. Defaults compose an AwsKmsKey resource's ARN;
+   * empty = the bucket's default AWS-managed key.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_id = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
+
+  option (buf.validate.message).cel = {
+    id: "spec.blob_storage.sse.kms_key_requires_kms"
+    message: "kms_key_id applies only to the aws_kms algorithm."
+    expression: "!has(this.kms_key_id) || this.algorithm == 2"
+  };
+
+  /**
+   * Server-side encryption algorithms.
+   */
+  enum Algorithm {
+    // Unset.
+    unspecified = 0;
+    // S3-managed keys (AES256).
+    aes256 = 1;
+    // AWS KMS keys (aws:kms).
+    aws_kms = 2;
+  }
+}
+
+/**
+ * Event upload settings.
+ */
+message KubernetesLangfuseEventUpload {
+  /**
+   * Key prefix for events (must end with "/"). A separate prefix lets a
+   * lifecycle rule expire event files (about 30 days is safe once they
+   * are in ClickHouse) without touching media.
+   */
+  optional string prefix = 1 [
+    (dev.planton.shared.options.default) = "events/",
+    (buf.validate.field).cel = {
+      id: "spec.blob_storage.event_upload.prefix"
+      message: "A blob storage prefix must be empty or end with \"/\", such as events/."
+      expression: "this == '' || this.endsWith('/')"
+    }
+  ];
+
+  /**
+   * Server-side encryption (S3 targets).
+   */
+  KubernetesLangfuseServerSideEncryption sse = 2;
+}
+
+/**
+ * Media attachment settings. Browsers and SDKs upload and download media
+ * through presigned URLs, so the media endpoint must be reachable from
+ * them - not only from inside the cluster.
+ */
+message KubernetesLangfuseMediaUpload {
+  /**
+   * A target of its own (a publicly reachable bucket, for example). Unset
+   * = the blob storage target.
+   */
+  KubernetesLangfuseBlobTarget target = 1;
+
+  /**
+   * Key prefix for media (must end with "/"). Put no expiry lifecycle rule
+   * on it: traces keep pointing at their media.
+   */
+  optional string prefix = 2 [
+    (dev.planton.shared.options.default) = "media/",
+    (buf.validate.field).cel = {
+      id: "spec.blob_storage.media_upload.prefix"
+      message: "A blob storage prefix must be empty or end with \"/\", such as media/."
+      expression: "this == '' || this.endsWith('/')"
+    }
+  ];
+
+  /**
+   * The endpoint browsers and SDKs reach the store at, when the target's
+   * endpoint is cluster-internal (e.g. "https://s3.langfuse.example.com"
+   * for an in-cluster SeaweedFS behind a route). Langfuse signs URLs for
+   * this endpoint and reads media itself through the target's endpoint.
+   * Empty = the target's endpoint serves both.
+   */
+  string public_endpoint = 3 [(buf.validate.field).cel = {
+    id: "spec.blob_storage.media_upload.public_endpoint"
+    message: "public_endpoint must be an http(s) URL, such as https://s3.langfuse.example.com."
+    expression: "this == '' || this.matches('^https?://[^\\\\s]+$')"
+  }];
+
+  /**
+   * Largest file accepted, in bytes (`LANGFUSE_S3_MEDIA_MAX_CONTENT_LENGTH`).
+   */
+  optional int64 max_content_length_bytes = 4 [
+    (dev.planton.shared.options.default) = "1000000000",
+    (buf.validate.field).int64.gt = 0
+  ];
+
+  /**
+   * Lifetime of presigned download URLs in seconds.
+   */
+  optional int32 download_url_expiry_seconds = 5 [
+    (dev.planton.shared.options.default) = "3600",
+    (buf.validate.field).int32.gt = 0
+  ];
+
+  /**
+   * Server-side encryption (S3 targets).
+   */
+  KubernetesLangfuseServerSideEncryption sse = 6;
+}
+
+/**
+ * Batch export settings. People download exports through presigned URLs,
+ * so the export endpoint must be reachable from their browsers.
+ */
+message KubernetesLangfuseBatchExport {
+  /**
+   * Offer batch exports.
+   */
+  optional bool enabled = 1 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * A target of its own. Unset = the blob storage target.
+   */
+  KubernetesLangfuseBlobTarget target = 2;
+
+  /**
+   * Key prefix for exports (must end with "/"). Exports are disposable:
+   * an expiry lifecycle rule here is safe.
+   */
+  optional string prefix = 3 [
+    (dev.planton.shared.options.default) = "exports/",
+    (buf.validate.field).cel = {
+      id: "spec.blob_storage.batch_export.prefix"
+      message: "A blob storage prefix must be empty or end with \"/\", such as exports/."
+      expression: "this == '' || this.endsWith('/')"
+    }
+  ];
+
+  /**
+   * The endpoint download links point at, when the target's endpoint is
+   * cluster-internal (`LANGFUSE_S3_BATCH_EXPORT_EXTERNAL_ENDPOINT`). Empty
+   * = the target's endpoint.
+   */
+  string public_endpoint = 4 [(buf.validate.field).cel = {
+    id: "spec.blob_storage.batch_export.public_endpoint"
+    message: "public_endpoint must be an http(s) URL, such as https://s3.langfuse.example.com."
+    expression: "this == '' || this.matches('^https?://[^\\\\s]+$')"
+  }];
+
+  /**
+   * Rows streamed per page while exporting (`BATCH_EXPORT_PAGE_SIZE`).
+   * Empty = Langfuse's default (500). Lower it if exports exhaust worker
+   * memory.
+   */
+  optional int32 page_size = 5 [(buf.validate.field).int32.gt = 0];
+
+  /**
+   * Most rows one export may contain (`BATCH_EXPORT_ROW_LIMIT`). Empty =
+   * Langfuse's default (1500000).
+   */
+  optional int32 row_limit = 6 [(buf.validate.field).int32.gt = 0];
+
+  /**
+   * Hours a download link stays valid
+   * (`BATCH_EXPORT_DOWNLOAD_LINK_EXPIRATION_HOURS`). Empty = Langfuse's
+   * default (24).
+   */
+  optional int32 download_link_expiration_hours = 7 [(buf.validate.field).int32.gt = 0];
+
+  /**
+   * Server-side encryption (S3 targets).
+   */
+  KubernetesLangfuseServerSideEncryption sse = 8;
+}
+
+/**
+ * The instance's own secrets. Each is generated once when not declared
+ * and kept in the instance Secret across applies.
+ *
+ * KNOW THIS: the salt and the encryption key are bound to the Postgres
+ * data, not to this resource. Langfuse hashes API keys with the salt and
+ * encrypts stored LLM credentials with the key, and both results live in
+ * Postgres. Deleting and recreating this resource against a surviving
+ * database generates NEW values unless they are declared - and every
+ * existing API key and stored credential stops working, unrecoverably.
+ * For durable installs, declare both as managed secrets from the start,
+ * or read the generated values from the instance Secret and declare them
+ * before any recreate.
+ */
+message KubernetesLangfuseInstanceSecrets {
+  /**
+   * Salt for hashing API keys (`SALT`), at least 256 bits of entropy
+   * (`openssl rand -base64 32`). Empty = generated.
+   */
+  string salt = 1 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * Key for encrypting stored credentials (`ENCRYPTION_KEY`): exactly 64
+   * hex characters, 256 bits (`openssl rand -hex 32`). Langfuse refuses to
+   * start on any other shape. Empty = generated.
+   */
+  string encryption_key = 2 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * Secret for signing session cookies (`NEXTAUTH_SECRET`). Empty =
+   * generated. Changing it signs everyone out, nothing more.
+   */
+  string nextauth_secret = 3 [(dev.planton.shared.options.sensitive) = true];
+}
+
+/**
+ * Headless initialization: what Langfuse creates at first start. Langfuse
+ * creates each object only if it does not exist yet - changing a name or a
+ * password here later changes nothing in Langfuse; a changed key pair adds
+ * a new key without revoking the old one.
+ */
+message KubernetesLangfuseInit {
+  /**
+   * Seed the organization and project at first start. Turn off to start
+   * with an empty instance where the first sign-up creates everything.
+   */
+  optional bool enabled = 1 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * The seeded organization.
+   */
+  KubernetesLangfuseInitOrganization organization = 2;
+
+  /**
+   * The seeded project and its API key pair.
+   */
+  KubernetesLangfuseInitProject project = 3;
+
+  /**
+   * The seeded admin user, owner of the organization. Unset = no user is
+   * seeded (sign up, or sign in with single sign-on, instead).
+   */
+  KubernetesLangfuseInitAdmin admin = 4;
+}
+
+/**
+ * The seeded organization.
+ */
+message KubernetesLangfuseInitOrganization {
+  /**
+   * Organization ID. Empty = metadata.name. Fixed at first start.
+   */
+  string id = 1 [(buf.validate.field).cel = {
+    id: "spec.init.organization.id"
+    message: "Organization IDs use letters, digits, hyphens and underscores, up to 64 characters."
+    expression: "this == '' || this.matches('^[A-Za-z0-9_-]{1,64}$')"
+  }];
+
+  /**
+   * Organization display name.
+   */
+  optional string name = 2 [(dev.planton.shared.options.default) = "Default Organization"];
+}
+
+/**
+ * The seeded project.
+ */
+message KubernetesLangfuseInitProject {
+  /**
+   * Project ID. Empty = "<metadata.name>-project". Fixed at first start.
+   */
+  string id = 1 [(buf.validate.field).cel = {
+    id: "spec.init.project.id"
+    message: "Project IDs use letters, digits, hyphens and underscores, up to 64 characters."
+    expression: "this == '' || this.matches('^[A-Za-z0-9_-]{1,64}$')"
+  }];
+
+  /**
+   * Project display name.
+   */
+  optional string name = 2 [(dev.planton.shared.options.default) = "Default Project"];
+
+  /**
+   * Data retention in days (3 or more). Applied only with an Enterprise
+   * Edition license that includes data retention; otherwise data is kept
+   * indefinitely. Empty = keep indefinitely.
+   */
+  optional int32 retention_days = 3 [(buf.validate.field).int32.gte = 3];
+
+  /**
+   * Public key of the project's API key pair ("pk-lf-..."). Empty =
+   * generated ("pk-lf-" + 32 random letters and digits).
+   */
+  string public_key = 4 [(buf.validate.field).cel = {
+    id: "spec.init.project.public_key"
+    message: "public_key must start with pk-lf-."
+    expression: "this == '' || this.startsWith('pk-lf-')"
+  }];
+
+  /**
+   * Secret key of the project's API key pair. It must start with
+   * "sk-lf-", the prefix Langfuse's SDKs expect. Empty = generated
+   * ("sk-lf-" + 32 random letters and digits).
+   */
+  string secret_key = 5 [(dev.planton.shared.options.sensitive) = true];
+
+  option (buf.validate.message).cel = {
+    id: "spec.init.project.key_pair"
+    message: "Declare both public_key and secret_key, or neither (both are then generated)."
+    expression: "(this.public_key == '') == (this.secret_key == '')"
+  };
+}
+
+/**
+ * The seeded admin user.
+ */
+message KubernetesLangfuseInitAdmin {
+  /**
+   * Email address, the sign-in name.
+   */
+  string email = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.email = true
+  ];
+
+  /**
+   * Display name.
+   */
+  optional string name = 2 [(dev.planton.shared.options.default) = "Admin"];
+
+  /**
+   * Password. Empty = generated (32 letters and digits) and readable from
+   * the `admin_password_secret` output.
+   */
+  string password = 3 [(dev.planton.shared.options.sensitive) = true];
+}
+
+/**
+ * Sign-in settings.
+ */
+message KubernetesLangfuseAuth {
+  /**
+   * Disable email and password sign-in (`AUTH_DISABLE_USERNAME_PASSWORD`)
+   * - single sign-on only. Keep at least one SSO provider configured.
+   */
+  bool disable_password_sign_in = 1;
+
+  /**
+   * Disable sign-up for new users, invited ones included
+   * (`AUTH_DISABLE_SIGNUP`). Recommended for any exposed instance once
+   * the admin exists.
+   */
+  bool disable_sign_up = 2;
+
+  /**
+   * Require new email-and-password users to verify their address
+   * (`AUTH_EMAIL_VERIFICATION_REQUIRED`). Needs `smtp`.
+   */
+  bool email_verification_required = 3;
+
+  /**
+   * Session lifetime in minutes (`AUTH_SESSION_MAX_AGE`). Empty =
+   * Langfuse's default (20160, fourteen days). Must exceed 5: sessions
+   * refresh every five minutes.
+   */
+  optional int32 session_max_age_minutes = 4 [(buf.validate.field).int32.gt = 5];
+
+  /**
+   * Email domains that may only sign in through single sign-on
+   * (`AUTH_DOMAINS_WITH_SSO_ENFORCEMENT`), e.g. "example.com".
+   */
+  repeated string sso_enforced_domains = 5;
+
+  /**
+   * Account fields to ignore from the identity provider when creating an
+   * account (`AUTH_IGNORE_ACCOUNT_FIELDS`) - a fix for providers that
+   * return fields Langfuse cannot store.
+   */
+  repeated string ignore_account_fields = 6;
+
+  /**
+   * Proxy for requests to identity providers (`AUTH_HTTPS_PROXY`).
+   */
+  string https_proxy = 7;
+
+  /**
+   * Proxy for plain-HTTP requests to identity providers (`AUTH_HTTP_PROXY`).
+   */
+  string http_proxy = 8;
+
+  /**
+   * Organization and project memberships every new user receives.
+   */
+  KubernetesLangfuseNewUserAccess new_user_access = 9;
+
+  /**
+   * Single sign-on providers. Each one configured becomes a sign-in
+   * button; its redirect URI is `<external_url>/api/auth/callback/<id>`.
+   */
+  KubernetesLangfuseSsoProviders sso = 10;
+
+  /**
+   * Requests to identity providers time out after this many milliseconds
+   * (`AUTH_SSO_TIMEOUT`). Empty = the auth library's default.
+   */
+  optional int32 sso_timeout_ms = 11 [(buf.validate.field).int32.gt = 0];
+}
+
+/**
+ * Memberships granted to every new user (automated access provisioning).
+ */
+message KubernetesLangfuseNewUserAccess {
+  /**
+   * Organization every new user joins (`LANGFUSE_DEFAULT_ORG_ID`) - the
+   * seeded organization's ID, for example.
+   */
+  string organization_id = 1;
+
+  /**
+   * Their role there (`LANGFUSE_DEFAULT_ORG_ROLE`). Unspecified =
+   * Langfuse's default, VIEWER.
+   */
+  Role organization_role = 2;
+
+  /**
+   * Projects every new user joins (`LANGFUSE_DEFAULT_PROJECT_ID`).
+   */
+  repeated string project_ids = 3;
+
+  /**
+   * Their role there (`LANGFUSE_DEFAULT_PROJECT_ROLE`). Unspecified =
+   * Langfuse's default, VIEWER. NONE is not a project role.
+   */
+  Role project_role = 4 [(buf.validate.field).enum = {
+    defined_only: true
+    not_in: [5]
+  }];
+
+  /**
+   * Langfuse roles.
+   */
+  enum Role {
+    // Langfuse's default for the context.
+    unspecified = 0;
+    // Full control, including billing and deletion.
+    OWNER = 1;
+    // Manages members and settings.
+    ADMIN = 2;
+    // Works with the data.
+    MEMBER = 3;
+    // Read-only.
+    VIEWER = 4;
+    // Organization membership without access to any project.
+    NONE = 5;
+  }
+}
+
+/**
+ * Single sign-on providers.
+ */
+message KubernetesLangfuseSsoProviders {
+  /**
+   * Google.
+   */
+  KubernetesLangfuseGoogleSso google = 1;
+
+  /**
+   * GitHub.
+   */
+  KubernetesLangfuseGitHubSso github = 2;
+
+  /**
+   * GitHub Enterprise Server.
+   */
+  KubernetesLangfuseGitHubEnterpriseSso github_enterprise = 3;
+
+  /**
+   * GitLab (gitlab.com or self-managed).
+   */
+  KubernetesLangfuseGitLabSso gitlab = 4;
+
+  /**
+   * Microsoft Entra ID (Azure AD).
+   */
+  KubernetesLangfuseAzureAdSso azure_ad = 5;
+
+  /**
+   * Okta.
+   */
+  KubernetesLangfuseIssuerSso okta = 6;
+
+  /**
+   * Authentik.
+   */
+  KubernetesLangfuseAuthentikSso authentik = 7;
+
+  /**
+   * OneLogin.
+   */
+  KubernetesLangfuseIssuerSso onelogin = 8;
+
+  /**
+   * Auth0.
+   */
+  KubernetesLangfuseIssuerSso auth0 = 9;
+
+  /**
+   * Amazon Cognito.
+   */
+  KubernetesLangfuseIssuerSso cognito = 10;
+
+  /**
+   * Keycloak.
+   */
+  KubernetesLangfuseKeycloakSso keycloak = 11;
+
+  /**
+   * JumpCloud.
+   */
+  KubernetesLangfuseJumpCloudSso jumpcloud = 12;
+
+  /**
+   * Any OpenID Connect provider.
+   */
+  KubernetesLangfuseCustomSso custom = 13;
+
+  /**
+   * WorkOS.
+   */
+  KubernetesLangfuseWorkOsSso workos = 14;
+
+  /**
+   * WordPress.com.
+   */
+  KubernetesLangfuseOAuthClient wordpress = 15;
+}
+
+/**
+ * An OAuth client registered with an identity provider - the part every
+ * provider shares.
+ */
+message KubernetesLangfuseOAuthClient {
+  /**
+   * Client ID.
+   */
+  string client_id = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Client secret.
+   */
+  string client_secret = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+
+  /**
+   * Merge a sign-in with an existing account of the same email address
+   * (`ALLOW_ACCOUNT_LINKING`) - how an instance moves from email and
+   * password to SSO. Safe only when the provider verifies emails.
+   */
+  bool allow_account_linking = 3;
+
+  /**
+   * Token endpoint authentication method (`CLIENT_AUTH_METHOD`).
+   * Unspecified = client_secret_basic. Use `none` for PKCE.
+   */
+  ClientAuthMethod client_auth_method = 4;
+
+  /**
+   * Authentication checks (`CHECKS`), e.g. pkce and state for Okta.
+   * Empty = the provider's defaults.
+   */
+  repeated Check checks = 5 [(buf.validate.field).repeated = {
+    unique: true
+    items: {
+      enum: {
+        defined_only: true
+        not_in: [0]
+      }
+    }
+  }];
+
+  /**
+   * Algorithm the provider signs ID tokens with
+   * (`ID_TOKEN_SIGNED_RESPONSE_ALG`). Unspecified = RS256.
+   */
+  IdTokenAlgorithm id_token_signed_response_alg = 6;
+
+  /**
+   * OAuth token endpoint authentication methods.
+   */
+  enum ClientAuthMethod {
+    // client_secret_basic.
+    client_auth_method_unspecified = 0;
+    // HTTP Basic auth with the client secret.
+    client_secret_basic = 1;
+    // Client secret in the request body.
+    client_secret_post = 2;
+    // A JWT signed with the client secret.
+    client_secret_jwt = 3;
+    // A JWT signed with a private key.
+    private_key_jwt = 4;
+    // Mutual TLS with a CA-issued certificate.
+    tls_client_auth = 5;
+    // Mutual TLS with a self-signed certificate.
+    self_signed_tls_client_auth = 6;
+    // No client authentication (PKCE).
+    none = 7;
+  }
+
+  /**
+   * OAuth authentication checks.
+   */
+  enum Check {
+    // Unset.
+    check_unspecified = 0;
+    // Nonce check.
+    nonce = 1;
+    // No checks.
+    no_checks = 2;
+    // PKCE.
+    pkce = 3;
+    // State parameter.
+    state = 4;
+  }
+
+  /**
+   * ID token signing algorithms.
+   */
+  enum IdTokenAlgorithm {
+    // RS256.
+    id_token_algorithm_unspecified = 0;
+    // RSASSA-PKCS1-v1_5 with SHA-256.
+    RS256 = 1;
+    // RSASSA-PKCS1-v1_5 with SHA-384.
+    RS384 = 2;
+    // RSASSA-PKCS1-v1_5 with SHA-512.
+    RS512 = 3;
+    // ECDSA P-256 with SHA-256.
+    ES256 = 4;
+    // ECDSA P-384 with SHA-384.
+    ES384 = 5;
+    // ECDSA P-521 with SHA-512.
+    ES512 = 6;
+    // RSASSA-PSS with SHA-256.
+    PS256 = 7;
+    // RSASSA-PSS with SHA-384.
+    PS384 = 8;
+    // RSASSA-PSS with SHA-512.
+    PS512 = 9;
+    // HMAC with SHA-256.
+    HS256 = 10;
+    // HMAC with SHA-384.
+    HS384 = 11;
+    // HMAC with SHA-512.
+    HS512 = 12;
+  }
+}
+
+/**
+ * Google sign-in.
+ */
+message KubernetesLangfuseGoogleSso {
+  /**
+   * The OAuth client.
+   */
+  KubernetesLangfuseOAuthClient client = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Google Workspace domains allowed to sign in (`AUTH_GOOGLE_ALLOWED_DOMAINS`).
+   * Empty = any Google account.
+   */
+  repeated string allowed_domains = 2;
+}
+
+/**
+ * GitHub sign-in. GitHub ignores the ID token algorithm.
+ */
+message KubernetesLangfuseGitHubSso {
+  /**
+   * The OAuth app.
+   */
+  KubernetesLangfuseOAuthClient client = 1 [(buf.validate.field).required = true];
+
+  option (buf.validate.message).cel = {
+    id: "spec.auth.sso.github.no_id_token_alg"
+    message: "GitHub issues no ID token: leave id_token_signed_response_alg unset."
+    expression: "!has(this.client) || this.client.id_token_signed_response_alg == 0"
+  };
+}
+
+/**
+ * GitHub Enterprise Server sign-in.
+ */
+message KubernetesLangfuseGitHubEnterpriseSso {
+  /**
+   * The OAuth app.
+   */
+  KubernetesLangfuseOAuthClient client = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Base URL of the server (`AUTH_GITHUB_ENTERPRISE_BASE_URL`), e.g.
+   * "https://github.example.com".
+   */
+  string base_url = 2 [(buf.validate.field).string.uri = true];
+
+  option (buf.validate.message).cel = {
+    id: "spec.auth.sso.github_enterprise.no_id_token_alg"
+    message: "GitHub Enterprise issues no ID token: leave id_token_signed_response_alg unset."
+    expression: "!has(this.client) || this.client.id_token_signed_response_alg == 0"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.auth.sso.github_enterprise.base_url"
+    message: "GitHub Enterprise needs base_url, the server's address (e.g. https://github.example.com)."
+    expression: "this.base_url != ''"
+  };
+}
+
+/**
+ * GitLab sign-in.
+ */
+message KubernetesLangfuseGitLabSso {
+  /**
+   * The OAuth application.
+   */
+  KubernetesLangfuseOAuthClient client = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Base URL of a self-managed GitLab (`AUTH_GITLAB_URL`). Empty =
+   * https://gitlab.com.
+   */
+  string url = 2;
+
+  /**
+   * OIDC issuer, when it differs from `url` (`AUTH_GITLAB_ISSUER`).
+   */
+  string issuer = 3;
+}
+
+/**
+ * Microsoft Entra ID sign-in.
+ */
+message KubernetesLangfuseAzureAdSso {
+  /**
+   * The app registration.
+   */
+  KubernetesLangfuseOAuthClient client = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Directory (tenant) ID (`AUTH_AZURE_AD_TENANT_ID`).
+   */
+  string tenant_id = 2 [(buf.validate.field).required = true];
+}
+
+/**
+ * Sign-in through an OpenID Connect issuer (Okta, OneLogin, Auth0,
+ * Cognito).
+ */
+message KubernetesLangfuseIssuerSso {
+  /**
+   * The OAuth client.
+   */
+  KubernetesLangfuseOAuthClient client = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Issuer URL, e.g. "https://example.okta.com" or, for Cognito,
+   * "https://cognito-idp.<region>.amazonaws.com/<user-pool-id>".
+   */
+  string issuer = 2 [(buf.validate.field).required = true];
+}
+
+/**
+ * Authentik sign-in.
+ */
+message KubernetesLangfuseAuthentikSso {
+  /**
+   * The OAuth provider.
+   */
+  KubernetesLangfuseOAuthClient client = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Issuer, "https://<domain>/application/o/<slug>" (no trailing path
+   * beyond the slug).
+   */
+  string issuer = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^https://.+/application/o/[^/]+/?$"
+  ];
+
+  /**
+   * Authorization URL, when it differs from the issuer's
+   * (`AUTH_AUTHENTIK_AUTHORIZATION_URL`).
+   */
+  string authorization_url = 3;
+}
+
+/**
+ * Keycloak sign-in.
+ */
+message KubernetesLangfuseKeycloakSso {
+  /**
+   * The client.
+   */
+  KubernetesLangfuseOAuthClient client = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Realm issuer, e.g. "https://keycloak.example.com/realms/langfuse".
+   */
+  string issuer = 2 [(buf.validate.field).required = true];
+
+  /**
+   * Button label (`AUTH_KEYCLOAK_NAME`). Empty = "Keycloak".
+   */
+  string name = 3;
+
+  /**
+   * OAuth scopes (`AUTH_KEYCLOAK_SCOPE`). Empty = "openid email profile".
+   */
+  string scope = 4;
+
+  /**
+   * Read the user from the ID token (`AUTH_KEYCLOAK_ID_TOKEN`). Empty =
+   * true; false fetches the userinfo endpoint instead.
+   */
+  optional bool use_id_token = 5;
+}
+
+/**
+ * JumpCloud sign-in.
+ */
+message KubernetesLangfuseJumpCloudSso {
+  /**
+   * The SSO application.
+   */
+  KubernetesLangfuseOAuthClient client = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Issuer URL.
+   */
+  string issuer = 2 [(buf.validate.field).required = true];
+
+  /**
+   * OAuth scopes (`AUTH_JUMPCLOUD_SCOPE`).
+   */
+  string scope = 3;
+}
+
+/**
+ * Sign-in through any OpenID Connect provider.
+ */
+message KubernetesLangfuseCustomSso {
+  /**
+   * The OAuth client.
+   */
+  KubernetesLangfuseOAuthClient client = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Issuer URL (its /.well-known/openid-configuration is discovered).
+   */
+  string issuer = 2 [(buf.validate.field).required = true];
+
+  /**
+   * Button label (`AUTH_CUSTOM_NAME`), e.g. "Company SSO".
+   */
+  string name = 3 [(buf.validate.field).required = true];
+
+  /**
+   * OAuth scopes (`AUTH_CUSTOM_SCOPE`). Empty = "openid email profile".
+   */
+  string scope = 4;
+
+  /**
+   * Read the user from the ID token (`AUTH_CUSTOM_ID_TOKEN`). Empty =
+   * true.
+   */
+  optional bool use_id_token = 5;
+
+  /**
+   * Also fetch the userinfo endpoint (`AUTH_CUSTOM_FETCH_USERINFO`).
+   */
+  bool fetch_userinfo = 6;
+
+  /**
+   * Claim names, when the provider's differ from the standard ones.
+   */
+  KubernetesLangfuseSsoClaims claims = 7;
+}
+
+/**
+ * Claim names a custom provider uses.
+ */
+message KubernetesLangfuseSsoClaims {
+  /**
+   * Email claim (`LANGFUSE_CUSTOM_SSO_EMAIL_CLAIM`). Empty = "email".
+   */
+  string email = 1;
+
+  /**
+   * Name claim (`LANGFUSE_CUSTOM_SSO_NAME_CLAIM`). Empty = "name".
+   */
+  string name = 2;
+
+  /**
+   * Subject claim (`LANGFUSE_CUSTOM_SSO_SUB_CLAIM`). Empty = "sub".
+   */
+  string subject = 3;
+
+  /**
+   * Picture claim (`LANGFUSE_CUSTOM_SSO_IMAGE_CLAIM`). Empty = "picture".
+   */
+  string image = 4;
+}
+
+/**
+ * WorkOS sign-in. WorkOS takes only the client and account linking.
+ */
+message KubernetesLangfuseWorkOsSso {
+  /**
+   * The WorkOS client.
+   */
+  KubernetesLangfuseOAuthClient client = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Route sign-in to this organization's connection
+   * (`AUTH_WORKOS_ORGANIZATION_ID`).
+   */
+  string organization_id = 2;
+
+  /**
+   * Route sign-in to this connection (`AUTH_WORKOS_CONNECTION_ID`).
+   */
+  string connection_id = 3;
+
+  option (buf.validate.message).cel = {
+    id: "spec.auth.sso.workos.client_options"
+    message: "WorkOS takes only client_id, client_secret and allow_account_linking; leave client_auth_method, checks and id_token_signed_response_alg unset."
+    expression: "!has(this.client) || (this.client.client_auth_method == 0 && size(this.client.checks) == 0 && this.client.id_token_signed_response_alg == 0)"
+  };
+}
+
+/**
+ * Transactional email.
+ */
+message KubernetesLangfuseSmtp {
+  /**
+   * Connection URL (`SMTP_CONNECTION_URL`):
+   * "smtp://user:password@host:587", "smtps://user:password@host:465",
+   * or "ses://<region>" to send through Amazon SES with the AWS credential
+   * chain (an IAM role through workload identity).
+   */
+  string connection_url = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+
+  /**
+   * Sender address (`EMAIL_FROM_ADDRESS`).
+   */
+  string from_address = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.email = true
+  ];
+}
+
+/**
+ * Product switches.
+ */
+message KubernetesLangfuseFeatures {
+  /**
+   * Send anonymous usage statistics to Langfuse (`TELEMETRY_ENABLED`) -
+   * counts, never trace content.
+   */
+  optional bool telemetry_enabled = 1 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * Turn on features still in development
+   * (`LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES`).
+   */
+  bool experimental_features_enabled = 2;
+
+  /**
+   * Emails allowed to create organizations
+   * (`LANGFUSE_ALLOWED_ORGANIZATION_CREATORS`, Enterprise Edition). Empty
+   * = every user may.
+   */
+  repeated string allowed_organization_creators = 3 [(buf.validate.field).repeated.items.string.email = true];
+
+  /**
+   * Restrict the Content-Security-Policy to HTTPS connections
+   * (`LANGFUSE_CSP_ENFORCE_HTTPS`). Turn on once `external_url` is https.
+   */
+  bool csp_enforce_https = 4;
+
+  /**
+   * Inputs and outputs longer than this many characters render as plain
+   * text instead of markdown (`LANGFUSE_MARKDOWN_RENDER_CHARACTER_LIMIT`).
+   * Empty = Langfuse's default (150000).
+   */
+  optional int32 markdown_render_character_limit = 5 [(buf.validate.field).int32.gt = 0];
+}
+
+/**
+ * Redis-backed caches. Only hashed or encrypted keys are ever cached.
+ */
+message KubernetesLangfuseCaching {
+  /**
+   * Cache API key lookups (`LANGFUSE_CACHE_API_KEY_ENABLED`).
+   */
+  optional bool api_key_cache_enabled = 1 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * API key cache lifetime in seconds (`LANGFUSE_CACHE_API_KEY_TTL_SECONDS`)
+   * - also the longest a revoked key keeps working. Empty = Langfuse's
+   * default (60).
+   */
+  optional int32 api_key_cache_ttl_seconds = 2 [(buf.validate.field).int32.gt = 0];
+
+  /**
+   * Cache prompts (`LANGFUSE_CACHE_PROMPT_ENABLED`).
+   */
+  optional bool prompt_cache_enabled = 3 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * Prompt cache lifetime in seconds (`LANGFUSE_CACHE_PROMPT_TTL_SECONDS`).
+   * Empty = Langfuse's default (3600).
+   */
+  optional int32 prompt_cache_ttl_seconds = 4 [(buf.validate.field).int32.gt = 0];
+}
+
+/**
+ * Ingestion scaling. Queue shards spread queue load across a Redis
+ * Cluster's nodes; worker concurrency counts per shard.
+ */
+message KubernetesLangfuseIngestion {
+  /**
+   * Shards of the ingestion queue (`LANGFUSE_INGESTION_QUEUE_SHARD_COUNT`),
+   * about 2-3 per Redis Cluster shard. Never reduce it on a live instance:
+   * jobs on removed shards are stranded. Empty = 1.
+   */
+  optional int32 queue_shard_count = 1 [(buf.validate.field).int32.gte = 1];
+
+  /**
+   * Ingestion jobs each worker processes concurrently, per shard
+   * (`LANGFUSE_INGESTION_QUEUE_PROCESSING_CONCURRENCY`). Empty = Langfuse's
+   * default (20). With ten shards, 2 keeps the same total.
+   */
+  optional int32 queue_processing_concurrency = 2 [(buf.validate.field).int32.gte = 1];
+
+  /**
+   * Shards of the trace-upsert queue (`LANGFUSE_TRACE_UPSERT_QUEUE_SHARD_COUNT`).
+   * Never reduce it on a live instance. Empty = 1.
+   */
+  optional int32 trace_upsert_queue_shard_count = 3 [(buf.validate.field).int32.gte = 1];
+
+  /**
+   * Trace-upsert jobs each worker processes concurrently, per shard
+   * (`LANGFUSE_TRACE_UPSERT_WORKER_CONCURRENCY`). Empty = Langfuse's
+   * default (25).
+   */
+  optional int32 trace_upsert_worker_concurrency = 4 [(buf.validate.field).int32.gte = 1];
+
+  /**
+   * Skip the ClickHouse read before each ingestion write for projects
+   * created on or after this date, "YYYY-MM-DD"
+   * (`LANGFUSE_SKIP_INGESTION_CLICKHOUSE_READ_MIN_PROJECT_CREATE_DATE`).
+   * Safe for any instance whose full event history is in blob storage -
+   * a fresh instance: set a date before the first project.
+   */
+  string skip_clickhouse_read_min_project_create_date = 5 [(buf.validate.field).cel = {
+    id: "spec.ingestion.skip_clickhouse_read_min_project_create_date"
+    message: "skip_clickhouse_read_min_project_create_date must be a date, YYYY-MM-DD."
+    expression: "this == '' || this.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')"
+  }];
+}
+
+/**
+ * Langfuse AI: one instance-wide model powering the Assistant and Ask AI.
+ */
+message KubernetesLangfuseAiFeatures {
+  /**
+   * Model provider (`LANGFUSE_AI_PROVIDER`). Unspecified = Langfuse AI
+   * unconfigured.
+   */
+  Provider provider = 1;
+
+  /**
+   * Model ID for the provider (`LANGFUSE_AI_MODEL`), e.g. a Bedrock geo
+   * inference profile such as "eu.anthropic.claude-opus-5", or
+   * "claude-opus-5" on Vertex.
+   */
+  string model = 2;
+
+  /**
+   * A smaller model for conversation titles and Ask AI
+   * (`LANGFUSE_AI_SMALL_MODEL`). Empty = `model`.
+   */
+  string small_model = 3;
+
+  /**
+   * API key (`LANGFUSE_AI_API_KEY`) - required for anthropic and openai,
+   * refused for bedrock and vertex (they use the cloud's credential
+   * chain: an IAM role or Google service account through workload
+   * identity).
+   */
+  string api_key = 4 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * API base URL including "/v1" (`LANGFUSE_AI_BASE_URL`), for a gateway
+   * or an OpenAI-compatible endpoint.
+   */
+  string base_url = 5;
+
+  /**
+   * Extra request headers (`LANGFUSE_AI_EXTRA_HEADERS`), anthropic and
+   * openai only.
+   */
+  map<string, string> extra_headers = 6;
+
+  /**
+   * Call the OpenAI Responses API instead of Chat Completions
+   * (`LANGFUSE_AI_USE_RESPONSES_API`), openai only.
+   */
+  bool use_responses_api = 7;
+
+  /**
+   * Bedrock region (`LANGFUSE_AI_AWS_BEDROCK_REGION`). Empty = the
+   * workload's region.
+   */
+  string bedrock_region = 8;
+
+  /**
+   * Vertex location (`LANGFUSE_AI_VERTEX_LOCATION`). Empty = "global".
+   */
+  string vertex_location = 9;
+
+  /**
+   * Project on this instance that receives traces of Assistant and Ask AI
+   * runs (`LANGFUSE_AI_FEATURES_PROJECT_ID`). Empty = nothing is traced.
+   */
+  string trace_project_id = 10;
+
+  /**
+   * The Assistant, the in-app agent.
+   */
+  KubernetesLangfuseAssistant assistant = 11;
+
+  option (buf.validate.message).cel = {
+    id: "spec.ai_features.model_with_provider"
+    message: "Set ai_features.provider and ai_features.model together: a model without a provider is ignored, and a provider without a model leaves Langfuse AI unconfigured."
+    expression: "(this.provider == 0) == (this.model == '')"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.ai_features.api_key_by_provider"
+    message: "anthropic and openai need api_key; bedrock and vertex authenticate through the cloud's credential chain and refuse one."
+    expression: "this.provider == 0 || ((this.provider == 2 || this.provider == 3) == (this.api_key != ''))"
+  };
+
+  /**
+   * Langfuse AI model providers.
+   */
+  enum Provider {
+    // Langfuse AI unconfigured.
+    unspecified = 0;
+    // Amazon Bedrock.
+    bedrock = 1;
+    // The Anthropic Messages API.
+    anthropic = 2;
+    // An OpenAI-compatible endpoint.
+    openai = 3;
+    // Google Vertex AI.
+    vertex = 4;
+  }
+}
+
+/**
+ * The Assistant.
+ */
+message KubernetesLangfuseAssistant {
+  /**
+   * Show the Assistant (`LANGFUSE_IN_APP_AGENT_ENABLED`, on web and
+   * worker; the worker then consumes the run queue).
+   */
+  bool enabled = 1;
+
+  /**
+   * Concurrent Assistant runs per worker
+   * (`LANGFUSE_IN_APP_AGENT_RUN_QUEUE_PROCESSING_CONCURRENCY`). Empty =
+   * Langfuse's default (5).
+   */
+  optional int32 run_concurrency = 2 [(buf.validate.field).int32.gte = 1];
+
+  /**
+   * Concurrent runs admitted per user
+   * (`LANGFUSE_IN_APP_AGENT_MAX_ACTIVE_RUNS_PER_USER`). Empty = 5.
+   */
+  optional int32 max_active_runs_per_user = 3 [(buf.validate.field).int32.gte = 1];
+
+  /**
+   * Concurrent runs admitted per organization
+   * (`LANGFUSE_IN_APP_AGENT_MAX_ACTIVE_RUNS_PER_ORG`). Empty = 20.
+   */
+  optional int32 max_active_runs_per_org = 4 [(buf.validate.field).int32.gte = 1];
+
+  /**
+   * Point the worker's MCP calls at the in-cluster web Service
+   * (`LANGFUSE_MCP_BASE_URL`, and the Service host added to the web's
+   * `LANGFUSE_MCP_ALLOWED_HOSTS`) instead of `external_url` - for an
+   * external URL the worker cannot reach.
+   */
+  bool use_internal_web_url = 5;
+
+  /**
+   * The AWS Lambda MicroVM sandbox the Assistant runs code in. Unset =
+   * Langfuse tools only, no code execution.
+   */
+  KubernetesLangfuseLambdaMicrovmSandbox sandbox = 6;
+}
+
+/**
+ * The AWS Lambda MicroVM sandbox. The image, role and egress connector
+ * are created outside this resource.
+ */
+message KubernetesLangfuseLambdaMicrovmSandbox {
+  /**
+   * MicroVM image ARN.
+   */
+  string image_identifier = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Execution role ARN. Defaults compose an AwsIamRole resource.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef execution_role_arn = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsIamRole,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
+  ];
+
+  /**
+   * AWS region of the MicroVM.
+   */
+  string region = 3 [(buf.validate.field).required = true];
+
+  /**
+   * Egress network connector ARN - a VPC connector whose security group
+   * denies egress. Without it AWS attaches INTERNET_EGRESS and sandboxed
+   * code reaches the public internet.
+   */
+  string egress_network_connector_arn = 4 [(buf.validate.field).required = true];
+}
+
+/**
+ * Evaluation runtime.
+ */
+message KubernetesLangfuseEvaluation {
+  /**
+   * How LLM-as-a-judge evaluators send media to the model
+   * (`LANGFUSE_EVALUATOR_MEDIA_TRANSPORT`). Unspecified = inline.
+   */
+  MediaTransport media_transport = 1;
+
+  /**
+   * Largest inline attachment in bytes
+   * (`LANGFUSE_EVALUATOR_MEDIA_INLINE_MAX_BYTES`). Empty = Langfuse's
+   * default (20000000); evaluations with larger attachments fail.
+   */
+  optional int32 media_inline_max_bytes = 2 [(buf.validate.field).int32.gt = 0];
+
+  /**
+   * Code evaluators: where evaluator code runs. Unset = code evaluators
+   * are unavailable.
+   */
+  KubernetesLangfuseCodeEvaluators code_evaluators = 3;
+
+  /**
+   * How LLM-as-a-judge evaluators send media.
+   */
+  enum MediaTransport {
+    // inline.
+    unspecified = 0;
+    // The worker downloads the attachment and sends its bytes.
+    inline = 1;
+    // The model provider downloads a signed URL (it must reach the store).
+    url = 2;
+    // Media references stay text.
+    disabled = 3;
+  }
+}
+
+/**
+ * Code evaluator execution. The worker's code-evaluation queue consumer
+ * is turned on with it.
+ */
+message KubernetesLangfuseCodeEvaluators {
+  oneof dispatcher {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * AWS Lambda functions - the production dispatcher.
+     */
+    KubernetesLangfuseLambdaCodeEvaluators aws_lambda = 1;
+
+    /**
+     * Inside the worker process (`insecure-local`): only when every
+     * evaluator's code is fully trusted.
+     */
+    KubernetesLangfuseLocalCodeEvaluators insecure_local = 2;
+  }
+
+  /**
+   * Shards of the code-evaluation queue
+   * (`LANGFUSE_CODE_EVAL_EXECUTION_QUEUE_SHARD_COUNT`). Empty = 1.
+   */
+  optional int32 queue_shard_count = 3 [(buf.validate.field).int32.gte = 1];
+
+  /**
+   * Code evaluations each worker runs concurrently
+   * (`LANGFUSE_CODE_EVAL_EXECUTION_WORKER_CONCURRENCY`). Empty = 5.
+   */
+  optional int32 concurrency = 4 [(buf.validate.field).int32.gte = 1];
+}
+
+/**
+ * Code evaluators on AWS Lambda.
+ */
+message KubernetesLangfuseLambdaCodeEvaluators {
+  /**
+   * Function for TypeScript and JavaScript evaluators. Empty =
+   * "code-based-eval-executor-node".
+   */
+  string node_function_name = 1;
+
+  /**
+   * Function for Python evaluators. Empty =
+   * "code-based-eval-executor-python".
+   */
+  string python_function_name = 2;
+
+  /**
+   * Custom Lambda endpoint (`LANGFUSE_CODE_EVAL_AWS_LAMBDA_ENDPOINT`).
+   */
+  string endpoint = 3;
+}
+
+/**
+ * Code evaluators inside the worker.
+ */
+message KubernetesLangfuseLocalCodeEvaluators {
+  /**
+   * Per-evaluation timeout in milliseconds
+   * (`LANGFUSE_CODE_EVAL_LOCAL_TIMEOUT_MS`). Empty = 2000.
+   */
+  optional int32 timeout_ms = 1 [(buf.validate.field).int32.gt = 0];
+}
+
+/**
+ * The Slack app projects connect to for notifications.
+ */
+message KubernetesLangfuseSlack {
+  /**
+   * Slack app client ID.
+   */
+  string client_id = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Slack app client secret.
+   */
+  string client_secret = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+
+  /**
+   * Secret signing the OAuth state parameter. Empty = generated.
+   */
+  string state_secret = 3 [(dev.planton.shared.options.sensitive) = true];
+}
+
+/**
+ * Enterprise Edition features. Each needs a license key.
+ */
+message KubernetesLangfuseEnterprise {
+  /**
+   * License key (`LANGFUSE_EE_LICENSE_KEY`).
+   */
+  string license_key = 1 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * Key for the Instance Management API (`ADMIN_API_KEY`), which manages
+   * organizations and their API keys - what the Langfuse Terraform
+   * provider uses. Empty = the API is off.
+   */
+  string admin_api_key = 2 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * UI customization.
+   */
+  KubernetesLangfuseUiCustomization ui = 3;
+
+  /**
+   * Ingestion masking: a callback that redacts events before they are
+   * stored.
+   */
+  KubernetesLangfuseIngestionMasking ingestion_masking = 4;
+}
+
+/**
+ * UI customization.
+ */
+message KubernetesLangfuseUiCustomization {
+  /**
+   * Documentation link (`LANGFUSE_UI_DOCUMENTATION_HREF`).
+   */
+  string documentation_href = 1;
+
+  /**
+   * Support link (`LANGFUSE_UI_SUPPORT_HREF`).
+   */
+  string support_href = 2;
+
+  /**
+   * Feature request and bug report link (`LANGFUSE_UI_FEEDBACK_HREF`).
+   */
+  string feedback_href = 3;
+
+  /**
+   * Host shown in project settings for API requests
+   * (`LANGFUSE_UI_API_HOST`), when API traffic uses another host than
+   * the UI.
+   */
+  string api_host = 4;
+
+  /**
+   * Logo for light mode (`LANGFUSE_UI_LOGO_LIGHT_MODE_HREF`).
+   */
+  string logo_light_mode_href = 5;
+
+  /**
+   * Logo for dark mode (`LANGFUSE_UI_LOGO_DARK_MODE_HREF`).
+   */
+  string logo_dark_mode_href = 6;
+
+  /**
+   * Default model adapter in the playground and evals
+   * (`LANGFUSE_UI_DEFAULT_MODEL_ADAPTER`).
+   */
+  ModelAdapter default_model_adapter = 7;
+
+  /**
+   * Default OpenAI base URL (`LANGFUSE_UI_DEFAULT_BASE_URL_OPENAI`).
+   */
+  string default_base_url_openai = 8;
+
+  /**
+   * Default Anthropic base URL (`LANGFUSE_UI_DEFAULT_BASE_URL_ANTHROPIC`).
+   */
+  string default_base_url_anthropic = 9;
+
+  /**
+   * Default Azure OpenAI base URL (`LANGFUSE_UI_DEFAULT_BASE_URL_AZURE`).
+   */
+  string default_base_url_azure = 10;
+
+  /**
+   * Show only these product modules (`LANGFUSE_UI_VISIBLE_PRODUCT_MODULES`),
+   * e.g. "tracing", "evaluation", "prompt-management". Wins over
+   * `hidden_product_modules`.
+   */
+  repeated string visible_product_modules = 11;
+
+  /**
+   * Hide these product modules (`LANGFUSE_UI_HIDDEN_PRODUCT_MODULES`), e.g.
+   * "playground", "datasets".
+   */
+  repeated string hidden_product_modules = 12;
+
+  /**
+   * Links in the instance switcher (`LANGFUSE_UI_INSTANCE_LINKS`).
+   */
+  repeated KubernetesLangfuseInstanceLink instance_links = 13;
+
+  /**
+   * Playground model adapters.
+   */
+  enum ModelAdapter {
+    // Langfuse's default.
+    unspecified = 0;
+    // OpenAI.
+    OpenAI = 1;
+    // Anthropic.
+    Anthropic = 2;
+    // Azure OpenAI.
+    Azure = 3;
+  }
+}
+
+/**
+ * A link in the instance switcher.
+ */
+message KubernetesLangfuseInstanceLink {
+  /**
+   * Label, unique among the links.
+   */
+  string name = 1 [(buf.validate.field).required = true];
+
+  /**
+   * URL of the other instance.
+   */
+  string url = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uri = true
+  ];
+}
+
+/**
+ * Ingestion masking.
+ */
+message KubernetesLangfuseIngestionMasking {
+  /**
+   * URL of the masking callback (`LANGFUSE_INGESTION_MASKING_CALLBACK_URL`).
+   */
+  string callback_url = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uri = true
+  ];
+
+  /**
+   * Callback timeout in milliseconds. Empty = 500.
+   */
+  optional int32 timeout_ms = 2 [(buf.validate.field).int32.gt = 0];
+
+  /**
+   * Drop events when the callback fails (fail closed) instead of storing
+   * them unmasked (fail open, the default).
+   */
+  bool fail_closed = 3;
+
+  /**
+   * Retries of a failed callback. Empty = 1.
+   */
+  optional int32 max_retries = 4 [(buf.validate.field).int32.gte = 0];
+
+  /**
+   * Headers of the ingestion request forwarded to the callback.
+   */
+  repeated string propagated_headers = 5;
+}
+
+/**
+ * Langfuse's own logs and traces.
+ */
+message KubernetesLangfuseObservability {
+  /**
+   * Log level.
+   */
+  LogLevel log_level = 1;
+
+  /**
+   * Log format: text, or json for log pipelines.
+   */
+  LogFormat log_format = 2;
+
+  /**
+   * Request headers carried into log context through OpenTelemetry
+   * baggage (`LANGFUSE_LOG_PROPAGATED_HEADERS`), e.g. "x-request-id".
+   */
+  repeated string log_propagated_headers = 3;
+
+  /**
+   * OTLP endpoint Langfuse sends its own traces to
+   * (`OTEL_EXPORTER_OTLP_ENDPOINT`). Defaults compose a
+   * KubernetesOtelCollector's OTLP/HTTP endpoint. Empty = no export.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef otlp_endpoint = 4 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesOtelCollector,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.otlp_http_endpoint"
+  ];
+
+  /**
+   * Fraction of requests traced, above 0 and at most 1
+   * (`OTEL_TRACE_SAMPLING_RATIO`). Empty = 1.
+   */
+  optional double trace_sampling_ratio = 5 [(buf.validate.field).double = {
+    gt: 0
+    lte: 1
+  }];
+
+  /**
+   * Log levels.
+   */
+  enum LogLevel {
+    // info.
+    log_level_unspecified = 0;
+    // trace.
+    trace = 1;
+    // debug.
+    debug = 2;
+    // info.
+    info = 3;
+    // warn.
+    warn = 4;
+    // error.
+    error = 5;
+    // fatal.
+    fatal = 6;
+  }
+
+  /**
+   * Log formats.
+   */
+  enum LogFormat {
+    // text.
+    log_format_unspecified = 0;
+    // Human-readable lines.
+    text = 1;
+    // One JSON object per line.
+    json = 2;
+  }
+}
+
+/**
+ * Outbound networking.
+ */
+message KubernetesLangfuseNetwork {
+  /**
+   * Proxy for outbound HTTPS requests (`HTTPS_PROXY`).
+   */
+  string https_proxy = 1;
+
+  /**
+   * Hosts reached directly, bypassing the proxy (`NO_PROXY`), e.g.
+   * ".svc.cluster.local".
+   */
+  repeated string no_proxy = 2;
+
+  /**
+   * Extra certificate authorities Langfuse trusts for outbound TLS
+   * (`NODE_EXTRA_CA_CERTS`): private CAs of ClickHouse, SMTP, identity
+   * providers or LLM endpoints.
+   */
+  KubernetesLangfuseCertificateFile trusted_ca = 3;
+
+  /**
+   * Allowlists for endpoints users configure inside Langfuse. By default
+   * Langfuse refuses private and internal addresses for them; an entry
+   * here admits one.
+   */
+  KubernetesLangfuseOutboundAllowlists allowlists = 4;
+}
+
+/**
+ * Outbound allowlists, one per kind of user-configured endpoint.
+ */
+message KubernetesLangfuseOutboundAllowlists {
+  /**
+   * Webhook targets (`LANGFUSE_WEBHOOK_WHITELISTED_*`).
+   */
+  KubernetesLangfuseAllowlist webhooks = 1;
+
+  /**
+   * LLM connection base URLs (`LANGFUSE_LLM_CONNECTION_WHITELISTED_*`).
+   */
+  KubernetesLangfuseAllowlist llm_connections = 2;
+
+  /**
+   * Blob storage export endpoints (`LANGFUSE_BLOB_STORAGE_ENDPOINT_WHITELISTED_*`).
+   */
+  KubernetesLangfuseAllowlist blob_storage_endpoints = 3;
+
+  /**
+   * External media storage endpoints
+   * (`LANGFUSE_EXTERNAL_MEDIA_STORAGE_ENDPOINT_WHITELISTED_*`).
+   */
+  KubernetesLangfuseAllowlist external_media_storage_endpoints = 4;
+
+  /**
+   * SSO discovery URLs (`LANGFUSE_SSO_DISCOVERY_WHITELISTED_*`).
+   */
+  KubernetesLangfuseAllowlist sso_discovery = 5;
+}
+
+/**
+ * One allowlist.
+ */
+message KubernetesLangfuseAllowlist {
+  /**
+   * Host names admitted.
+   */
+  repeated string hosts = 1;
+
+  /**
+   * IP addresses admitted.
+   */
+  repeated string ips = 2 [(buf.validate.field).cel = {
+    id: "spec.network.allowlist.ips"
+    message: "Each allowlisted IP must be an IPv4 or IPv6 address."
+    expression: "this.all(v, v.isIp())"
+  }];
+
+  /**
+   * CIDR ranges admitted.
+   */
+  repeated string ip_segments = 3 [(buf.validate.field).cel = {
+    id: "spec.network.allowlist.ip_segments"
+    message: "Each allowlisted segment must be a CIDR range, such as 10.0.0.0/8."
+    expression: "this.all(v, v.isIpPrefix(true))"
+  }];
+}
+
+/**
+ * The web server.
+ */
+message KubernetesLangfuseWeb {
+  /**
+   * Web image.
+   */
+  KubernetesLangfuseImage image = 1;
+
+  /**
+   * Replicas. Two or more for availability. Ignored while an autoscaler
+   * owns the count.
+   */
+  optional int32 replicas = 2 [
+    (dev.planton.shared.options.default) = "1",
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  /**
+   * CPU and memory. Langfuse recommends 2 CPU and 4 GiB per web pod for
+   * production; the defaults suit evaluation.
+   */
+  dev.planton.kubernetes.ContainerResources resources = 3 [(dev.planton.kubernetes.default_container_resources) = {
+    limits: {
+      cpu: "2000m"
+      memory: "4Gi"
+    }
+    requests: {
+      cpu: "250m"
+      memory: "1Gi"
+    }
+  }];
+
+  /**
+   * Autoscaling. One mechanism at most.
+   */
+  KubernetesLangfuseAutoscaling autoscaling = 4;
+
+  /**
+   * PodDisruptionBudget.
+   */
+  KubernetesLangfusePdb pdb = 5;
+
+  /**
+   * Liveness probe on `/api/public/health`.
+   */
+  KubernetesLangfuseProbe liveness_probe = 6;
+
+  /**
+   * Readiness probe on `/api/public/ready`.
+   */
+  KubernetesLangfuseProbe readiness_probe = 7;
+
+  /**
+   * The web Service.
+   */
+  KubernetesLangfuseWebService service = 8;
+
+  /**
+   * Pod placement.
+   */
+  KubernetesLangfuseScheduling scheduling = 9;
+
+  /**
+   * Workload metadata and rollout.
+   */
+  KubernetesLangfuseWorkloadShape workload = 10;
+
+  /**
+   * Extra plain environment variables for the web server only.
+   */
+  map<string, string> extra_env = 11 [(dev.planton.shared.options.secret_home) = "extra_env_from_secret"];
+
+  /**
+   * Extra environment variables for the web server read from existing
+   * Secrets, keyed by variable name.
+   */
+  map<string, dev.planton.kubernetes.KubernetesSecretKey> extra_env_from_secret = 12;
+
+  option (buf.validate.message).cel = {
+    id: "spec.web.extra_env.unique_names"
+    expression: "!this.extra_env.exists(k, k in this.extra_env_from_secret)"
+    message: "A variable may be declared in extra_env or extra_env_from_secret, not both."
+  };
+}
+
+/**
+ * The worker.
+ */
+message KubernetesLangfuseWorker {
+  /**
+   * Worker image.
+   */
+  KubernetesLangfuseImage image = 1;
+
+  /**
+   * Replicas. Scale on CPU: a worker above 50% of 2 CPU is saturated.
+   * Ignored while an autoscaler owns the count.
+   */
+  optional int32 replicas = 2 [
+    (dev.planton.shared.options.default) = "1",
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  /**
+   * CPU and memory. Langfuse recommends 2 CPU and 4 GiB per worker for
+   * production; the defaults suit evaluation.
+   */
+  dev.planton.kubernetes.ContainerResources resources = 3 [(dev.planton.kubernetes.default_container_resources) = {
+    limits: {
+      cpu: "2000m"
+      memory: "4Gi"
+    }
+    requests: {
+      cpu: "250m"
+      memory: "1Gi"
+    }
+  }];
+
+  /**
+   * Autoscaling. One mechanism at most.
+   */
+  KubernetesLangfuseAutoscaling autoscaling = 4;
+
+  /**
+   * PodDisruptionBudget.
+   */
+  KubernetesLangfusePdb pdb = 5;
+
+  /**
+   * Liveness probe on `/api/health`.
+   */
+  KubernetesLangfuseProbe liveness_probe = 6;
+
+  /**
+   * Fail the liveness probe when the worker has consumed no job on any
+   * queue for longer than `queue_consumption_stuck_threshold_minutes`, so
+   * a wedged worker restarts itself. Scheduled jobs keep a healthy worker
+   * busy at least hourly.
+   */
+  bool fail_liveness_if_queue_consumption_stuck = 7;
+
+  /**
+   * Minutes without consumption before the probe above fails
+   * (`LANGFUSE_QUEUE_CONSUMPTION_STUCK_THRESHOLD_MINUTES`). Empty =
+   * Langfuse's default (60).
+   */
+  optional int32 queue_consumption_stuck_threshold_minutes = 8 [(buf.validate.field).int32.gte = 1];
+
+  /**
+   * Pod placement.
+   */
+  KubernetesLangfuseScheduling scheduling = 9;
+
+  /**
+   * Workload metadata and rollout.
+   */
+  KubernetesLangfuseWorkloadShape workload = 10;
+
+  /**
+   * Extra plain environment variables for the worker only (queue consumer
+   * switches such as QUEUE_CONSUMER_BATCH_EXPORT_QUEUE_IS_ENABLED, for
+   * example).
+   */
+  map<string, string> extra_env = 11 [(dev.planton.shared.options.secret_home) = "extra_env_from_secret"];
+
+  /**
+   * Extra environment variables for the worker read from existing
+   * Secrets, keyed by variable name.
+   */
+  map<string, dev.planton.kubernetes.KubernetesSecretKey> extra_env_from_secret = 12;
+
+  option (buf.validate.message).cel = {
+    id: "spec.worker.extra_env.unique_names"
+    expression: "!this.extra_env.exists(k, k in this.extra_env_from_secret)"
+    message: "A variable may be declared in extra_env or extra_env_from_secret, not both."
+  };
+}
+
+/**
+ * A container image.
+ */
+message KubernetesLangfuseImage {
+  /**
+   * Image repository. Empty = the chart's
+   * (docker.langfuse.com/langfuse/langfuse for web,
+   * docker.langfuse.com/langfuse/langfuse-worker for the worker).
+   */
+  string repository = 1;
+
+  /**
+   * Image tag. Empty = the chart's appVersion for `chart_version`. Keep
+   * web and worker on the same version.
+   */
+  string tag = 2;
+
+  /**
+   * Pull policy: Always, IfNotPresent or Never. Empty = the chart's
+   * default, Always.
+   */
+  string pull_policy = 3 [(buf.validate.field).cel = {
+    id: "spec.image.pull_policy"
+    message: "Image pull policy must be one of: Always, IfNotPresent, Never."
+    expression: "this == '' || this in [\"Always\", \"IfNotPresent\", \"Never\"]"
+  }];
+
+  /**
+   * Names of existing image pull Secrets in Langfuse's namespace (for a
+   * private mirror).
+   */
+  repeated string pull_secret_names = 4 [(dev.planton.shared.options.sensitive_exempt_reason) = "NAMES of existing image pull Secrets (references), not secret material"];
+}
+
+/**
+ * Autoscaling. Horizontal (HPA or KEDA) and vertical (VPA); KEDA rules
+ * out the other two.
+ */
+message KubernetesLangfuseAutoscaling {
+  /**
+   * HorizontalPodAutoscaler on CPU.
+   */
+  KubernetesLangfuseHpa hpa = 1;
+
+  /**
+   * KEDA ScaledObject (needs KEDA on the cluster - a KubernetesKeda).
+   */
+  KubernetesLangfuseKeda keda = 2;
+
+  /**
+   * VerticalPodAutoscaler. The chart renders it only on a cluster that
+   * serves the autoscaling.k8s.io/v1 API (the VPA CRDs); elsewhere it is
+   * skipped silently.
+   */
+  KubernetesLangfuseVpa vpa = 3;
+
+  option (buf.validate.message).cel = {
+    id: "spec.autoscaling.keda_exclusive"
+    message: "KEDA owns the replica count and the resources it scales on: enable KEDA alone, or HPA and VPA without KEDA."
+    expression: "!has(this.keda) || (!has(this.hpa) && !has(this.vpa))"
+  };
+}
+
+/**
+ * HorizontalPodAutoscaler.
+ */
+message KubernetesLangfuseHpa {
+  /**
+   * Minimum replicas.
+   */
+  optional int32 min_replicas = 1 [
+    (dev.planton.shared.options.default) = "1",
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  /**
+   * Maximum replicas.
+   */
+  optional int32 max_replicas = 2 [
+    (dev.planton.shared.options.default) = "2",
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  /**
+   * Target average CPU utilization percent.
+   */
+  optional int32 target_cpu_utilization_percent = 3 [
+    (dev.planton.shared.options.default) = "50",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 100
+    }
+  ];
+
+  /**
+   * Target average memory utilization percent. Empty = memory does not
+   * drive scaling.
+   */
+  optional int32 target_memory_utilization_percent = 4 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 100
+  }];
+
+  /**
+   * Annotations on the HorizontalPodAutoscaler.
+   */
+  map<string, string> annotations = 5;
+
+  option (buf.validate.message).cel = {
+    id: "spec.autoscaling.hpa.replica_bounds"
+    expression: "(has(this.min_replicas) ? this.min_replicas : 1) <= (has(this.max_replicas) ? this.max_replicas : 2)"
+    message: "The autoscaler's minimum replica count cannot exceed its maximum."
+  };
+}
+
+/**
+ * KEDA ScaledObject.
+ */
+message KubernetesLangfuseKeda {
+  /**
+   * Minimum replicas.
+   */
+  optional int32 min_replicas = 1 [
+    (dev.planton.shared.options.default) = "1",
+    (buf.validate.field).int32.gte = 0
+  ];
+
+  /**
+   * Maximum replicas.
+   */
+  optional int32 max_replicas = 2 [
+    (dev.planton.shared.options.default) = "2",
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  /**
+   * Seconds between metric checks.
+   */
+  optional int32 polling_interval_seconds = 3 [
+    (dev.planton.shared.options.default) = "30",
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  /**
+   * Resource the trigger scales on.
+   */
+  Trigger trigger = 4;
+
+  /**
+   * How `target_value` reads: a utilization percent or an absolute
+   * average value.
+   */
+  MetricType metric_type = 5;
+
+  /**
+   * Target value, e.g. "50" (percent) or "1500m" (average CPU).
+   */
+  optional string target_value = 6 [(dev.planton.shared.options.default) = "50"];
+
+  /**
+   * Container whose metrics count. Empty = every container in the pod.
+   */
+  string container_name = 7;
+
+  option (buf.validate.message).cel = {
+    id: "spec.autoscaling.keda.replica_bounds"
+    expression: "(has(this.min_replicas) ? this.min_replicas : 1) <= (has(this.max_replicas) ? this.max_replicas : 2)"
+    message: "The autoscaler's minimum replica count cannot exceed its maximum."
+  };
+
+  /**
+   * KEDA trigger resources.
+   */
+  enum Trigger {
+    // cpu.
+    trigger_unspecified = 0;
+    // CPU.
+    cpu = 1;
+    // Memory.
+    memory = 2;
+  }
+
+  /**
+   * KEDA metric types.
+   */
+  enum MetricType {
+    // Utilization.
+    metric_type_unspecified = 0;
+    // A percent of the requested resource.
+    Utilization = 1;
+    // An absolute average per pod.
+    AverageValue = 2;
+  }
+}
+
+/**
+ * VerticalPodAutoscaler.
+ */
+message KubernetesLangfuseVpa {
+  /**
+   * Resources the VPA controls, e.g. "cpu", "memory". Empty = both.
+   */
+  repeated string controlled_resources = 1;
+
+  /**
+   * Upper bounds for recommendations.
+   */
+  dev.planton.kubernetes.CpuMemory max_allowed = 2;
+
+  /**
+   * Lower bounds for recommendations.
+   */
+  dev.planton.kubernetes.CpuMemory min_allowed = 3;
+
+  /**
+   * How recommendations are applied: Off, Initial, Recreate or Auto.
+   */
+  optional string update_mode = 4 [
+    (dev.planton.shared.options.default) = "Auto",
+    (buf.validate.field).cel = {
+      id: "spec.autoscaling.vpa.update_mode"
+      message: "VPA update_mode must be one of: Off, Initial, Recreate, Auto."
+      expression: "this in [\"Off\", \"Initial\", \"Recreate\", \"Auto\"]"
+    }
+  ];
+}
+
+/**
+ * PodDisruptionBudget. The chart creates one per workload by default
+ * (one pod may be unavailable).
+ */
+message KubernetesLangfusePdb {
+  /**
+   * Create the PodDisruptionBudget.
+   */
+  optional bool enabled = 1 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * Minimum pods available during a voluntary disruption: an integer or a
+   * percentage.
+   */
+  string min_available = 2 [(buf.validate.field).cel = {
+    id: "spec.pdb.min_available"
+    message: "min_available must be a non-negative integer or a percentage up to 100%, such as 50%."
+    expression: "this == '' || this.matches('^([0-9]+|100%|[0-9]{1,2}%)$')"
+  }];
+
+  /**
+   * Maximum pods unavailable during a voluntary disruption. Empty with
+   * min_available also empty = 1.
+   */
+  string max_unavailable = 3 [(buf.validate.field).cel = {
+    id: "spec.pdb.max_unavailable"
+    message: "max_unavailable must be a non-negative integer or a percentage up to 100%, such as 25%."
+    expression: "this == '' || this.matches('^([0-9]+|100%|[0-9]{1,2}%)$')"
+  }];
+
+  option (buf.validate.message).cel = {
+    id: "spec.pdb.one_bound"
+    expression: "this.min_available == '' || this.max_unavailable == ''"
+    message: "A PodDisruptionBudget takes either min_available or max_unavailable, not both."
+  };
+}
+
+/**
+ * An HTTP probe on the chart's health path. Empty fields keep the
+ * chart's defaults.
+ */
+message KubernetesLangfuseProbe {
+  /**
+   * Seconds after start before the first probe. Empty = 20 (the chart
+   * reads 0 as unset).
+   */
+  optional int32 initial_delay_seconds = 1 [(buf.validate.field).int32.gte = 1];
+
+  /**
+   * Seconds between probes. Empty = 10.
+   */
+  optional int32 period_seconds = 2 [(buf.validate.field).int32.gte = 1];
+
+  /**
+   * Seconds before a probe times out. Empty = 5.
+   */
+  optional int32 timeout_seconds = 3 [(buf.validate.field).int32.gte = 1];
+
+  /**
+   * Consecutive failures before the probe fails. Empty = 3.
+   */
+  optional int32 failure_threshold = 4 [(buf.validate.field).int32.gte = 1];
+
+  /**
+   * Consecutive successes before the probe passes. Empty = 1.
+   */
+  optional int32 success_threshold = 5 [(buf.validate.field).int32.gte = 1];
+}
+
+/**
+ * The web Service.
+ */
+message KubernetesLangfuseWebService {
+  /**
+   * Service type: ClusterIP, NodePort or LoadBalancer. Keep ClusterIP and
+   * compose a route or ingress for external access.
+   */
+  optional string type = 1 [
+    (dev.planton.shared.options.default) = "ClusterIP",
+    (buf.validate.field).cel = {
+      id: "spec.web.service.type"
+      message: "Service type must be one of: ClusterIP, NodePort, LoadBalancer."
+      expression: "this in [\"ClusterIP\", \"NodePort\", \"LoadBalancer\"]"
+    }
+  ];
+
+  /**
+   * Port the web server listens on, and the Service's target port.
+   */
+  optional int32 port = 2 [
+    (dev.planton.shared.options.default) = "3000",
+    (buf.validate.field).int32.gt = 0,
+    (buf.validate.field).int32.lte = 65535
+  ];
+
+  /**
+   * Port the Service exposes, when it differs from `port`.
+   */
+  optional int32 external_port = 3 [
+    (buf.validate.field).int32.gt = 0,
+    (buf.validate.field).int32.lte = 65535
+  ];
+
+  /**
+   * Node port, for type NodePort.
+   */
+  optional int32 node_port = 4 [(buf.validate.field).int32 = {
+    gte: 30000
+    lte: 32767
+  }];
+
+  /**
+   * Annotations on the Service (internal load balancer recipes, for
+   * example).
+   */
+  map<string, string> annotations = 5;
+
+  /**
+   * Extra labels on the Service.
+   */
+  map<string, string> labels = 6;
+}
+
+/**
+ * Pod placement.
+ */
+message KubernetesLangfuseScheduling {
+  /**
+   * Schedule onto nodes carrying these labels.
+   */
+  map<string, string> node_selector = 1;
+
+  /**
+   * Tolerations for tainted nodes.
+   */
+  repeated dev.planton.kubernetes.WorkloadToleration tolerations = 2;
+
+  /**
+   * Node affinity: hard requirements and weighted preferences.
+   */
+  dev.planton.kubernetes.WorkloadNodeAffinity node_affinity = 3;
+
+  /**
+   * Pod affinity toward pods already running elsewhere.
+   */
+  dev.planton.kubernetes.WorkloadPodAffinity pod_affinity = 4;
+
+  /**
+   * Pod anti-affinity - spread replicas across nodes or zones.
+   */
+  dev.planton.kubernetes.WorkloadPodAffinity pod_anti_affinity = 5;
+
+  /**
+   * Topology spread constraints.
+   */
+  repeated dev.planton.kubernetes.WorkloadTopologySpreadConstraint topology_spread_constraints = 6;
+
+  /**
+   * PriorityClass for the pods.
+   */
+  string priority_class_name = 7;
+}
+
+/**
+ * Workload metadata and rollout.
+ */
+message KubernetesLangfuseWorkloadShape {
+  /**
+   * Annotations on the pods.
+   */
+  map<string, string> pod_annotations = 1;
+
+  /**
+   * Labels on the pods.
+   */
+  map<string, string> pod_labels = 2;
+
+  /**
+   * Annotations on the Deployment.
+   */
+  map<string, string> deployment_annotations = 3;
+
+  /**
+   * Extra labels on the Deployment.
+   */
+  map<string, string> deployment_labels = 4;
+
+  /**
+   * Rollout strategy.
+   */
+  KubernetesLangfuseRolloutStrategy strategy = 5;
+
+  /**
+   * Old ReplicaSets kept for rollback. Empty = 10.
+   */
+  optional int32 revision_history_limit = 6 [(buf.validate.field).int32.gte = 0];
+
+  /**
+   * Extra /etc/hosts entries.
+   */
+  repeated dev.planton.kubernetes.WorkloadHostAlias host_aliases = 7;
+}
+
+/**
+ * Deployment rollout strategy.
+ */
+message KubernetesLangfuseRolloutStrategy {
+  /**
+   * Strategy type: RollingUpdate or Recreate. Empty = RollingUpdate.
+   */
+  string type = 1 [(buf.validate.field).cel = {
+    id: "spec.workload.strategy.type"
+    message: "Rollout strategy type must be RollingUpdate or Recreate."
+    expression: "this == '' || this in [\"RollingUpdate\", \"Recreate\"]"
+  }];
+
+  /**
+   * Extra pods during a rolling update: an integer or a percentage.
+   */
+  string max_surge = 2;
+
+  /**
+   * Pods unavailable during a rolling update: an integer or a percentage.
+   */
+  string max_unavailable = 3;
+
+  option (buf.validate.message).cel = {
+    id: "spec.workload.strategy.recreate_bounds"
+    message: "max_surge and max_unavailable apply only to RollingUpdate."
+    expression: "this.type != 'Recreate' || (this.max_surge == '' && this.max_unavailable == '')"
+  };
+}
+
+/**
+ * The ServiceAccount both workloads run as.
+ */
+message KubernetesLangfuseServiceAccount {
+  /**
+   * Run as an existing ServiceAccount instead of the one the chart
+   * creates (`<metadata.name>`). Its annotations are then yours to
+   * manage; `annotations` and `workload_identity` are refused.
+   */
+  string existing_name = 1;
+
+  /**
+   * Annotations on the ServiceAccount the chart creates.
+   */
+  map<string, string> annotations = 2;
+
+  /**
+   * The cloud identity the ServiceAccount federates with - keyless access
+   * to S3, GCS, Bedrock, Vertex and SES. Rendered as the ServiceAccount
+   * annotation each cloud expects. On AKS, also label the pods
+   * `azure.workload.identity/use: "true"` through `workload.pod_labels`.
+   */
+  dev.planton.kubernetes.KubernetesWorkloadIdentity workload_identity = 3;
+
+  /**
+   * Mount the ServiceAccount token into the pods. Workload identity on
+   * EKS and GKE needs it.
+   */
+  optional bool automount_token = 4 [(dev.planton.shared.options.default) = "true"];
+
+  option (buf.validate.message).cel = {
+    id: "spec.service_account.existing_owns_annotations"
+    message: "An existing ServiceAccount carries its own annotations: leave annotations and workload_identity unset when existing_name is set."
+    expression: "this.existing_name == '' || (size(this.annotations) == 0 && !has(this.workload_identity))"
+  };
+}

@@ -1,0 +1,93 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesLangfuse
+metadata:
+  name: my-langfuse
+spec:
+  namespace:
+    value: langfuse
+  external_url: https://langfuse.replaceme.example.com
+  postgres:
+    host:
+      value_from:
+        name: langfuse-pg
+    username: langfuse
+    password_secret:
+      secret_name:
+        value_from:
+          name: langfuse-pg
+  clickhouse:
+    host:
+      value_from:
+        name: langfuse-ch
+    username: langfuse
+    password_secret:
+      secret_name:
+        value_from:
+          name: langfuse-ch
+    cluster:
+      name:
+        value_from:
+          name: langfuse-ch
+  redis:
+    standalone:
+      host:
+        value_from:
+          name: langfuse-valkey
+    username:
+      value_from:
+        name: langfuse-valkey
+    password_secret:
+      secret_name:
+        value_from:
+          name: langfuse-valkey
+      secret_key:
+        value_from:
+          name: langfuse-valkey
+  # Events, media and exports in one Blob Storage container through
+  # Langfuse's native Azure driver. Langfuse authenticates with the storage
+  # account's shared key only -- it has no managed-identity path for blob
+  # storage -- so the key is a managed secret written to the instance
+  # Secret, never to Helm values.
+  blob_storage:
+    target:
+      azure_blob:
+        storage_account:
+          value_from:
+            name: langfusestorage
+        container:
+          value_from:
+            name: langfuse
+        account_key: $secret/replace-with-azure-storage-account-key
+        endpoint:
+          value_from:
+            name: langfusestorage
+  secrets:
+    salt: $secret/replace-with-langfuse-salt
+    encryption_key: $secret/replace-with-langfuse-encryption-key
+  init:
+    admin:
+      email: admin@replaceme.example.com
+  auth:
+    disable_sign_up: true
+  web:
+    replicas: 2
+    resources:
+      requests:
+        cpu: "2"
+        memory: 4Gi
+      limits:
+        cpu: "4"
+        memory: 4Gi
+    pdb:
+      min_available: "1"
+  worker:
+    replicas: 2
+    resources:
+      requests:
+        cpu: "2"
+        memory: 4Gi
+      limits:
+        cpu: "4"
+        memory: 4Gi
+    pdb:
+      min_available: "1"

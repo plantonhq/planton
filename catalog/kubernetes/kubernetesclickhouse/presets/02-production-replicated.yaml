@@ -48,15 +48,13 @@ spec:
   # "GRANT CLUSTER ON *.*" (ON CLUSTER statements are rejected with
   # ACCESS_DENIED otherwise). A user declared with NO grants gets
   # ClickHouse's unrestricted default access — always declare grants.
+  # Neither user declares a password: the module generates each one into
+  # the auth Secret, keyed by user name.
   users:
     - name: analyst
-      password:
-        value: change-me-analyst-password
       profile: readonly
       quota: default
     - name: ingest
-      password:
-        value: change-me-ingest-password
       grants:
         - GRANT SELECT, INSERT ON analytics.*
   profiles:

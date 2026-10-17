@@ -522,6 +522,9 @@ Fields on other kinds that can point at this resource:
 | AwsSqsQueue | `spec.kmsKeyId` | `status.outputs.key_arn` |
 | AwsSsmParameter | `spec.keyId` | `status.outputs.key_arn` |
 | AwsStepFunction | `spec.encryption.kmsKeyId` | `status.outputs.key_arn` |
+| KubernetesLangfuse | `spec.blobStorage.eventUpload.sse.kmsKeyId` | `status.outputs.key_arn` |
+| KubernetesLangfuse | `spec.blobStorage.mediaUpload.sse.kmsKeyId` | `status.outputs.key_arn` |
+| KubernetesLangfuse | `spec.blobStorage.batchExport.sse.kmsKeyId` | `status.outputs.key_arn` |
 
 ## See Also
 

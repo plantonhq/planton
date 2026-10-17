@@ -167,8 +167,13 @@ SENSITIVE FIELD OPTIONS (SEPARATE FROM VALIDATION)
   `(dev.planton.shared.foreignkey.v1.default_kind) = ...`. They compose -- annotate
   `sensitive` on the field as usual; the reference branch is unaffected (downstream the
   field offers a managed-secret reference OR a cross-resource reference, never plaintext).
-- `sensitive` and `default`/validations are complementary: a field may carry a default,
-  a buf.validate rule, AND `sensitive` together.
+- `sensitive` and `default`/presence rules are complementary: a field may carry a default,
+  `required`, length bounds, AND `sensitive` together. It NEVER carries a value-content
+  rule -- a pattern, a CEL expression over the value, `email`/`uri`/`uuid`, a prefix
+  check. On Planton a sensitive field holds a `$secret/...` reference, never the value,
+  so a content rule refuses every legitimate manifest. Teach the shape in the field
+  comment instead ("exactly 64 hex characters (`openssl rand -hex 32`)"), and let the
+  software reject a malformed value when it reads it.
 - Authority for the option semantics: the `sensitive` / `sensitive_exempt_reason` field
   comments in `shared/options/options.proto`.
 
@@ -176,7 +181,8 @@ VERIFY SENSITIVE COVERAGE (RUN THE GATE)
 - After annotating, run the developer gate: `planton secret-coverage --check`. It fails on:
   - a NEW gap (a field that looks sensitive by name but is neither annotated nor exempted),
   - a STALE baseline entry,
-  - a self-contradictory annotation, or
+  - a self-contradictory annotation,
+  - a value-content validation rule on a `sensitive` field (see above), or
   - a POINTLESS exemption (`sensitive_exempt_reason` on a field whose name does not trip
     the heuristic at all -- e.g. an `*_id` suffix reads as an identifier even when the
     name contains "secret", as in `key_vault_secret_id`).

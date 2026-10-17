@@ -119,6 +119,11 @@ spec:
       oauthScopes:
         - https://www.googleapis.com/auth/cloud-platform
       diskSizeGb: {{ values.system_node_disk_size_gb }}
+{% if values.default_compute_class_enabled | bool %}
+    # Makes the class named `default` (cluster/compute-class.yaml) apply to
+    # every pod that selects no class.
+    defaultComputeClassEnabled: true
+{% endif %}
   # Engine-side delete guard (the field default, spelled out because it is
   # a day-2 decision): destroying this cluster requires first setting this
   # to false — the README's day-2 section covers the teardown order.

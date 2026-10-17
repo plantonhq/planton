@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <desc>Planton-drawn glyph: a compute class -- three machine choices in order, with the arrow that falls back from one to the next</desc>
+  <path d="M4.5 4.5 V17.5" stroke="#326ce5" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+  <path d="M2.2 15.2 L4.5 18.2 L6.8 15.2" stroke="#326ce5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <rect x="9" y="3" width="12.5" height="4.6" rx="1" fill="#326ce5"/>
+  <circle cx="19.3" cy="5.3" r="0.9" fill="#ffffff"/>
+  <rect x="9" y="9.7" width="12.5" height="4.6" rx="1" fill="#326ce5" fill-opacity="0.72"/>
+  <circle cx="19.3" cy="12.0" r="0.9" fill="#ffffff"/>
+  <rect x="9" y="16.4" width="12.5" height="4.6" rx="1" fill="#326ce5" fill-opacity="0.45"/>
+  <circle cx="19.3" cy="18.7" r="0.9" fill="#ffffff"/>
+</svg>

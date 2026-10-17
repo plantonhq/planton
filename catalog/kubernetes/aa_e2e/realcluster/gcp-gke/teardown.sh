@@ -52,6 +52,7 @@ destroy_node() {
 destroy_node cloudflareaccountapitoken planton-e2e-gke-backups-writer
 destroy_node cloudflarer2bucket planton-e2e-gke-backups-r2
 destroy_node gcpgcsbucket planton-e2e-gke-backups
+destroy_node gcpgcsbucket planton-e2e-gke-langfuse
 destroy_node gcpkmskeyiammember planton-e2e-gke-openbao-unseal-viewer
 destroy_node gcpkmskeyiammember planton-e2e-gke-openbao-unseal
 destroy_node gcpkmskey planton-e2e-gke-openbao-unseal
@@ -62,10 +63,12 @@ destroy_node gcpgkeworkloadidentitybinding planton-e2e-gke-openbao-tgt-backup-wi
 destroy_node gcpgkeworkloadidentitybinding planton-e2e-gke-openbao-src-backup-wi
 destroy_node gcpgkeworkloadidentitybinding planton-e2e-gke-pg-dr-wi
 destroy_node gcpgkeworkloadidentitybinding planton-e2e-gke-pg-src-wi
+destroy_node gcpgkeworkloadidentitybinding planton-e2e-gke-langfuse-wi
 destroy_node gcpserviceaccount planton-e2e-gke-openbao-unseal
 destroy_node gcpserviceaccount planton-e2e-gke-openbao-backup
 destroy_node gcpserviceaccount planton-e2e-gke-mongo-backup
 destroy_node gcpserviceaccount planton-e2e-gke-pg-backup
+destroy_node gcpserviceaccount planton-e2e-gke-langfuse
 
 rm -f "${state_dir}/env.sh" "${state_dir}/kubeconfig"
 echo "==> teardown finished; run audit.sh"

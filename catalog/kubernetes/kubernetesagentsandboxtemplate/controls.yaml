@@ -1,0 +1,96 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/catalogkindcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: CatalogKindControlProfile
+metadata:
+  name: kubernetesagentsandboxtemplate
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: configurable
+      field_path: volume_claim_templates
+      evidence:
+        type: spec_default
+        reference: Every claim a sandbox from this template owns is provisioned by its storage class (`volume_claim_templates[].spec.storage_class_name`); encryption at rest is that provisioner's property, as on every major cloud's default disk class.
+      notes: The template object itself is persisted in the cluster's etcd, whose encryption at rest belongs to the cluster component.
+    - control_id: enc-at-rest-cmk
+      status: configurable
+      field_path: volume_claim_templates
+      evidence:
+        type: spec_default
+        reference: A storage class whose provisioner encrypts with a customer-managed key keys every claim the template's sandboxes own.
+      notes: The key is the storage class's choice; reference a class configured with one.
+    - control_id: enc-in-transit
+      status: configurable
+      field_path: pod_template
+      evidence:
+        type: spec_default
+        reference: Traffic to a sandbox reaches its own process over the ports it serves; TLS is the sandbox image's choice, and the controller's router terminates TLS for callers (KubernetesAgentSandboxController router.tls).
+      notes: The template opens no connection itself.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: module_default
+        reference: Sandboxes from the template get at most a headless ClusterIP Service (`service`), never a LoadBalancer or an Ingress, and the default NetworkPolicy admits ingress only from the controller's router.
+      notes: Expose a sandbox to the internet only through the router behind a gateway you declare.
+    - control_id: restricted-ingress
+      status: enforced_by_default
+      evidence:
+        type: spec_default
+        reference: With network_policy_management unset ("Managed") and network_policy unset, the controller fences every sandbox from the template with a NetworkPolicy admitting ingress only from the router and egress only to the public internet (private ranges and the metadata server blocked). Declaring network_policy replaces the default with exactly its rules; "Unmanaged" hands the fence to another system.
+      notes: NetworkPolicy takes effect only on a cluster whose network enforces it.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: Sandboxes are not an internet edge (see no-public-access).
+    - control_id: rbac
+      status: configurable
+      field_path: pod_template
+      evidence:
+        type: spec_default
+        reference: The controller sets automountServiceAccountToken to false on every sandbox from a template that leaves it unset, so a sandbox holds no Kubernetes credentials unless the template asks; `pod_template.spec.service_account_name` names the identity when it does.
+      notes: Who may create claims and sandboxes from the template is the cluster's Kubernetes RBAC.
+    - control_id: workload-identity
+      status: configurable
+      field_path: pod_template
+      evidence:
+        type: spec_default
+        reference: A ServiceAccount bound to a cloud identity (a KubernetesServiceAccount with workload identity), named in `pod_template.spec.service_account_name`, gives every sandbox short-lived cloud credentials with no key in the pod.
+      notes: Leave it unset for sandboxes that need no cloud access.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: The template performs no authentication; callers authenticate to the controller's router.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The template has no users.
+    - control_id: audit-logging
+      status: not_applicable
+      notes: Changes to the template are recorded by the cluster's API server audit log, a property of the cluster component.
+    - control_id: monitoring-integration
+      status: configurable
+      field_path: pod_template
+      evidence:
+        type: spec_default
+        reference: The pod labels and annotations (`pod_template.metadata`) are what a KubernetesPodMonitor or a scrape annotation selects across every sandbox from the template; the controller's metrics (claim startup latency, warm pool size) come from KubernetesAgentSandboxController.
+      notes: An ingress rule must admit the scraper when the sandboxes are fenced.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The template holds no state; it recovers by re-applying the manifest. Each sandbox's state lives in its own claims.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: There is nothing to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: The template has no replicas; availability of claimable sandboxes is the warm pool's replica count and the cluster's node spread.
+    - control_id: deletion-protection
+      status: not_applicable
+      notes: The object carries no deletion protection of its own; Kubernetes objects are protected through RBAC and admission policy on the cluster. Deleting the template removes its NetworkPolicy; pools that reference it stop refilling.
+    - control_id: managed-patching
+      status: configurable
+      field_path: pod_template
+      evidence:
+        type: spec_default
+        reference: Every sandbox runs the image the template's containers name; patching is a new tag in `pod_template.spec.containers[].image`, which a warm pool rolls out to its members by its update strategy.
+      notes: The controller is patched through KubernetesAgentSandboxController.

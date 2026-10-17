@@ -40,6 +40,13 @@ var (
 	// serially within a process, but the guard keeps the invariant explicit.
 	ciliumHarnessMu sync.Mutex
 
+	// podCertificatesHarness is the lazily-created harness for scenarios
+	// annotated with the pod-certificates cluster profile (a dedicated
+	// persistent kind cluster serving the pod-certificate APIs), guarded by
+	// podCertificatesHarnessMu like the cilium one.
+	podCertificatesHarness   *kubernetese2e.Harness
+	podCertificatesHarnessMu sync.Mutex
+
 	// repoRoot is the absolute path to the planton repository root.
 	repoRoot string
 
@@ -110,6 +117,17 @@ func harnessForScenario(manifestPath string) (h *kubernetese2e.Harness, skipReas
 			ciliumHarness = h
 		}
 		return ciliumHarness, "", nil
+	case kubernetese2e.ClusterProfilePodCertificates:
+		podCertificatesHarnessMu.Lock()
+		defer podCertificatesHarnessMu.Unlock()
+		if podCertificatesHarness == nil {
+			h := kubernetese2e.NewPodCertificatesHarness(testHarness.ClusterName())
+			if err := h.Setup(context.Background()); err != nil {
+				return nil, "", fmt.Errorf("setting up %s cluster profile: %w", profile, err)
+			}
+			podCertificatesHarness = h
+		}
+		return podCertificatesHarness, "", nil
 	case kubernetese2e.ClusterProfileAwsEks, kubernetese2e.ClusterProfileGcpGke:
 		return nil, fmt.Sprintf(
 			"scenario requires the %q real-cluster profile, which no local cluster can provide — runs in batched real-cluster lanes (%s + %s=%s)",
@@ -174,7 +192,12 @@ func TestMain(m *testing.M) {
 	// Run tests
 	code := m.Run()
 
-	// Teardown kind cluster(s) — the profile cluster first (created last).
+	// Teardown kind cluster(s) — the profile clusters first (created last).
+	if podCertificatesHarness != nil {
+		if err := podCertificatesHarness.Teardown(ctx); err != nil {
+			fmt.Fprintf(os.Stderr, "warning: failed to tear down pod-certificates profile cluster: %v\n", err)
+		}
+	}
 	if ciliumHarness != nil {
 		if err := ciliumHarness.Teardown(ctx); err != nil {
 			fmt.Fprintf(os.Stderr, "warning: failed to tear down cilium profile cluster: %v\n", err)

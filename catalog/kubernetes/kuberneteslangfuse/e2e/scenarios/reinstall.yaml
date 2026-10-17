@@ -1,0 +1,89 @@
+# THE REINSTALL PROOF: the salt and encryption key belong to the
+# Postgres data, not to the release. This scenario declares both (and the
+# project key pair), installs, ingests a deterministic state trace, is
+# destroyed while the composed stores survive, and is installed again
+# (the e2e-reinstall annotation). The second verify must still read the
+# first install's trace and ingest a new one with the SAME key pair -
+# Langfuse validates that key against a hash made with the salt, so a
+# regenerated salt would refuse it. This is the recreate path the spec's
+# `secrets` comment tells every durable install to follow.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesLangfuse
+metadata:
+  name: e2e-lf-reinstall
+  annotations:
+    planton.dev/e2e-reinstall: "true"
+spec:
+  namespace:
+    value: e2e-langfuse
+  postgres:
+    host:
+      valueFrom:
+        name: e2e-lf-pg
+    username: langfuse
+    passwordSecret:
+      secretName:
+        valueFrom:
+          name: e2e-lf-pg
+  clickhouse:
+    host:
+      valueFrom:
+        name: e2e-lf-ch
+    username: langfuse
+    passwordSecret:
+      secretName:
+        valueFrom:
+          name: e2e-lf-ch
+    cluster:
+      name:
+        valueFrom:
+          name: e2e-lf-ch
+  redis:
+    standalone:
+      host:
+        valueFrom:
+          name: e2e-lf-vlk
+    username:
+      valueFrom:
+        name: e2e-lf-vlk
+    passwordSecret:
+      secretName:
+        valueFrom:
+          name: e2e-lf-vlk
+      secretKey:
+        valueFrom:
+          name: e2e-lf-vlk
+  blobStorage:
+    target:
+      s3Compatible:
+        endpoint:
+          valueFrom:
+            name: e2e-lf-s3
+        bucket: langfuse
+        credentialsSecret:
+          secretName:
+            valueFrom:
+              name: e2e-lf-s3
+  secrets:
+    salt: e2e-reinstall-salt-0123456789abcdefghijklmnopqrs
+    encryptionKey: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+  init:
+    project:
+      publicKey: pk-lf-e2e-reinstall-public
+      secretKey: sk-lf-e2e-reinstall-secret
+  web:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: "2"
+        memory: 2Gi
+  worker:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: "2"
+        memory: 2Gi

@@ -1,0 +1,26 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxClaim
+metadata:
+  name: <task-name>
+spec:
+  namespace:
+    value: <namespace>
+  warmPoolRef:
+    name:
+      value: <pool-name>
+  lifecycle:
+    # Replace with the moment the task's sandbox should end (RFC 3339).
+    shutdownTime: "2026-12-31T18:00:00Z"
+    ttlSecondsAfterFinished: 3600
+    shutdownPolicy: Retain
+  env:
+    - name: TASK_ID
+      value: <task-name>
+  volumeClaimTemplates:
+    - metadata:
+        name: workspace
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 50Gi

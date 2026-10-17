@@ -925,6 +925,12 @@ Fields on other kinds that can point at this resource:
 | KubernetesFlinkDeployment | `spec.state.s3.accessKeySecret.name` | `status.outputs.s3_credentials_secret_name` |
 | KubernetesFlinkDeployment | `spec.state.s3.secretKeySecret.name` | `status.outputs.s3_credentials_secret_name` |
 | KubernetesHarbor | `spec.storage.s3.endpoint` | `status.outputs.s3_endpoint` |
+| KubernetesLangfuse | `spec.blobStorage.target.s3Compatible.endpoint` | `status.outputs.s3_endpoint` |
+| KubernetesLangfuse | `spec.blobStorage.target.s3Compatible.credentialsSecret.secretName` | `status.outputs.s3_credentials_secret_name` |
+| KubernetesLangfuse | `spec.blobStorage.mediaUpload.target.s3Compatible.endpoint` | `status.outputs.s3_endpoint` |
+| KubernetesLangfuse | `spec.blobStorage.mediaUpload.target.s3Compatible.credentialsSecret.secretName` | `status.outputs.s3_credentials_secret_name` |
+| KubernetesLangfuse | `spec.blobStorage.batchExport.target.s3Compatible.endpoint` | `status.outputs.s3_endpoint` |
+| KubernetesLangfuse | `spec.blobStorage.batchExport.target.s3Compatible.credentialsSecret.secretName` | `status.outputs.s3_credentials_secret_name` |
 | KubernetesMlflow | `spec.artifactStore.s3Compatible.endpoint` | `status.outputs.s3_endpoint` |
 | KubernetesMlflow | `spec.artifactStore.s3Compatible.credentialsSecret.secretName` | `status.outputs.s3_credentials_secret_name` |
 | KubernetesOpenBao | `spec.backup.objectStore.s3.endpointUrl` | `status.outputs.s3_endpoint` |

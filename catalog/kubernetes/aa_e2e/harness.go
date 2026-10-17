@@ -93,6 +93,15 @@ const (
 	// scenarios on it skip locally with the reason and run when the external
 	// lane declares the profile. Batch runbook: realcluster/gcp-gke/.
 	ClusterProfileGcpGke = "gcp-gke"
+
+	// ClusterProfilePodCertificates is a kind cluster whose API server serves
+	// the pod-certificate APIs: PodCertificateRequest, ClusterTrustBundle and
+	// the projected-volume sources that read them. Software that mints its own
+	// workload identities through them (Agent Substrate's pod-certificate
+	// controller, and every Substrate component's mTLS on top) cannot start
+	// anywhere else. The default cluster runs an older Kubernetes with the
+	// features off, so these scenarios get their own cluster.
+	ClusterProfilePodCertificates = "pod-certificates"
 )
 
 // RealClusterProfiles lists the profiles no harness-owned cluster can
@@ -127,6 +136,45 @@ func NewCiliumCniHarness(baseClusterName string) *Harness {
 		clusterName:    baseClusterName + "-cilium",
 		kindConfigYAML: ciliumKindConfigYAML,
 		skipNodeWait:   true,
+	}
+}
+
+// podCertificatesKindConfigYAML is the kind cluster configuration for the
+// pod-certificates profile, the configuration Agent Substrate's own local
+// clusters use (hack/create-kind-cluster.sh at its pinned release):
+//   - the three feature gates and the certificates.k8s.io/v1beta1 API, which
+//     Kubernetes still ships off by default;
+//   - parallel image pulls, because a Substrate install pulls about a dozen
+//     images onto the one node, and kubelet's serial default queues them
+//     long enough for the last workload to miss its rollout deadline;
+//   - a node image pinned by digest to the release those gates were proven
+//     on (kind v0.33's default), which needs kind v0.33 or newer.
+const podCertificatesKindConfigYAML = `kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+    image: kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5
+featureGates:
+  ClusterTrustBundle: true
+  ClusterTrustBundleProjection: true
+  PodCertificateRequest: true
+runtimeConfig:
+  "certificates.k8s.io/v1beta1": "true"
+kubeadmConfigPatches:
+  - |
+    kind: KubeletConfiguration
+    serializeImagePulls: false
+    maxParallelImagePulls: 4
+`
+
+// NewPodCertificatesHarness builds the harness for the pod-certificates
+// profile: a dedicated persistent kind cluster (default name
+// "<base>-podcert"). kind's default CNI stays, and it enforces
+// NetworkPolicy, which Substrate's default-deny ingress relies on.
+func NewPodCertificatesHarness(baseClusterName string) *Harness {
+	return &Harness{
+		clusterName:    baseClusterName + "-podcert",
+		kindConfigYAML: podCertificatesKindConfigYAML,
 	}
 }
 

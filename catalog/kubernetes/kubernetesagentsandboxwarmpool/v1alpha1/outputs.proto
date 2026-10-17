@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesagentsandboxwarmpool.v1alpha1;
+
+// KubernetesAgentSandboxWarmPoolOutputs captures observable outputs after the
+// SandboxWarmPool is created on the target cluster. A pool's name and namespace
+// are what a product claims from: agent-sandbox's SDKs take exactly these
+// (`create_sandbox(warmpool=..., namespace=...)`), and a claim's
+// `warm_pool_ref.name` references the name.
+message KubernetesAgentSandboxWarmPoolOutputs {
+  // Name of the created SandboxWarmPool (equals metadata.name).
+  string sandbox_warm_pool_name = 1;
+
+  // Namespace the SandboxWarmPool was created in (the resolved
+  // spec.namespace); claims against the pool live here.
+  string namespace = 2;
+}

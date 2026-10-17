@@ -119,9 +119,9 @@ Forge will interview you to gather:
 - Credential requirements
 - Best practices and gotchas
 
-## The 20-Rule Workflow
+## The 21-Rule Workflow
 
-Forge orchestrates 20 rules in 9 phases. (E2E execution is handled separately via
+Forge orchestrates 21 rules in 10 phases. (E2E execution is handled separately via
 catalog kind E2E profiles, not the forge pipeline.)
 
 ### Phase 1: Proto API Definitions

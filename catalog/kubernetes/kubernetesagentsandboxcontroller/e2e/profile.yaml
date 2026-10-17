@@ -1,0 +1,27 @@
+apiVersion: qa.planton.dev/v1
+kind: CatalogKindE2EProfile
+metadata:
+  name: kubernetesagentsandboxcontroller
+spec:
+  tier: 4
+  # agent-sandbox v1.0.7 from upstream's own release manifest and the
+  # router's deployment files at the same tag, the resource definitions
+  # kept and ownership-checked. Every lane proves what the user is promised,
+  # not only what runs: a Sandbox becomes Ready, a claim binds a warm pool
+  # member, a request reaches a sandbox through the router by name (with
+  # TokenReview refusing a tokenless caller). The scenarios cover keep and
+  # re-adopt with the sandbox outliving the controller (minimal), cleanup
+  # (sdk-ready), a KubernetesNamespace owning the namespace with a
+  # cert-manager certificate in it for router TLS (full-surface), extensions
+  # turned off taking their definitions with them (upgrade), and the
+  # refusals: definitions, a controller, or a namespace someone else owns,
+  # and a namespace its owner has not created.
+  #
+  # One cluster serves every lane, and every definition name is fixed by
+  # upstream, so exactly one lane keeps definitions behind: minimal, core
+  # only, which leaves sandboxes.agents.x-k8s.io. Every lane with extensions
+  # turns keepOnUninstall off, so the extension definitions are never left
+  # behind and the owned-elsewhere lane can plant one.
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 30

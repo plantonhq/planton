@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesagentsandboxclaim.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/kubernetes/kubernetesagentsandboxclaim/v1alpha1/outputs.proto";
+import "catalog/kubernetes/kubernetesagentsandboxclaim/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// KubernetesAgentSandboxClaim is an agent-sandbox SandboxClaim: a request for
+// one sandbox from a warm pool, bound to a ready member when one exists, or
+// to a fresh sandbox from the pool's template.
+message KubernetesAgentSandboxClaim {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1alpha1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'KubernetesAgentSandboxClaim'];
+
+  // metadata
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  KubernetesAgentSandboxClaimSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  KubernetesAgentSandboxClaimStatus status = 5;
+}
+
+// KubernetesAgentSandboxClaimStatus holds the deployment status and outputs.
+message KubernetesAgentSandboxClaimStatus {
+  // outputs
+  KubernetesAgentSandboxClaimOutputs outputs = 1;
+}

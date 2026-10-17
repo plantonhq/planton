@@ -95,6 +95,13 @@ var _ = ginkgo.Describe("KubernetesClickHouseSpec validations", func() {
 			}
 			gomega.Expect(protovalidate.Validate(spec)).To(gomega.BeNil())
 		})
+
+		ginkgo.It("accepts a user without a password (the module generates it)", func() {
+			spec.Users = []*KubernetesClickHouseUser{
+				{Name: "ingest", Networks: []string{"0.0.0.0/0", "::/0"}},
+			}
+			gomega.Expect(protovalidate.Validate(spec)).To(gomega.BeNil())
+		})
 	})
 
 	ginkgo.Describe("When invalid input is passed", func() {
@@ -155,11 +162,6 @@ var _ = ginkgo.Describe("KubernetesClickHouseSpec validations", func() {
 					},
 				},
 			}
-			gomega.Expect(protovalidate.Validate(spec)).ToNot(gomega.BeNil())
-		})
-
-		ginkgo.It("rejects a user without a password", func() {
-			spec.Users = []*KubernetesClickHouseUser{{Name: "analyst"}}
 			gomega.Expect(protovalidate.Validate(spec)).ToNot(gomega.BeNil())
 		})
 

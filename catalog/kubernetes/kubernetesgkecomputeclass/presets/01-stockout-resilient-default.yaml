@@ -1,0 +1,28 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGkeComputeClass
+metadata:
+  name: cluster-default-compute-class
+spec:
+  # `default` makes this the cluster's default class: every pod that selects
+  # no class runs under it once the GcpGkeCluster turns on
+  # clusterAutoscaling.defaultComputeClassEnabled.
+  name: default
+  description: Cluster default. Four general-purpose families of the same size, so nodes keep coming when one family runs out in the region.
+  priorities:
+    # Same size on every rule (8 vCPUs), so a fallback node fits exactly the
+    # pods the first choice would have run.
+    - machineFamily: n2d
+      minCores: 8
+    - machineFamily: c3d
+      minCores: 8
+    - machineFamily: n2
+      minCores: 8
+    - machineFamily: t2d
+      minCores: 8
+  # When all four are out, still create a node (GKE's default E2 series) so
+  # installs and controllers keep scheduling through the stockout.
+  whenUnsatisfiable: ScaleUpAnyway
+  nodePoolAutoCreation:
+    enabled: true # without it the class only uses node pools that already exist
+  activeMigration:
+    optimizeRulePriority: true # move pods back to n2d once its capacity returns

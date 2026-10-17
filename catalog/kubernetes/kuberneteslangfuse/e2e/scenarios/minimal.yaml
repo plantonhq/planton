@@ -1,0 +1,86 @@
+# The kind's defaults against the four composed stores (registry
+# prerequisites: CloudNativePG -> Postgres, Altinity -> ClickHouse,
+# Valkey, SeaweedFS), wired through one reference per field - kind and
+# field path come from each field's composition default. Co-located with
+# the fixtures (createNamespace false): every store password reaches the
+# pods through a secretKeyRef, which cannot cross namespaces. Everything
+# else is generated: the salt, encryption key and NextAuth secret, and the
+# seeded organization, project and project key pair.
+#
+# The verifier proves the PRODUCT on every lane: health and readiness,
+# the auth gate (an anonymous public-API read refused), then a span pushed
+# over OTLP with the generated key pair and read back by ID - a round trip
+# through the web server, blob storage, the Valkey queue, the worker and
+# ClickHouse.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesLangfuse
+metadata:
+  name: e2e-lf-min
+spec:
+  namespace:
+    value: e2e-langfuse
+  postgres:
+    host:
+      valueFrom:
+        name: e2e-lf-pg
+    username: langfuse
+    passwordSecret:
+      secretName:
+        valueFrom:
+          name: e2e-lf-pg
+  clickhouse:
+    host:
+      valueFrom:
+        name: e2e-lf-ch
+    username: langfuse
+    passwordSecret:
+      secretName:
+        valueFrom:
+          name: e2e-lf-ch
+    cluster:
+      name:
+        valueFrom:
+          name: e2e-lf-ch
+  redis:
+    standalone:
+      host:
+        valueFrom:
+          name: e2e-lf-vlk
+    username:
+      valueFrom:
+        name: e2e-lf-vlk
+    passwordSecret:
+      secretName:
+        valueFrom:
+          name: e2e-lf-vlk
+      secretKey:
+        valueFrom:
+          name: e2e-lf-vlk
+  blobStorage:
+    target:
+      s3Compatible:
+        endpoint:
+          valueFrom:
+            name: e2e-lf-s3
+        bucket: langfuse
+        credentialsSecret:
+          secretName:
+            valueFrom:
+              name: e2e-lf-s3
+  # Sized for a shared kind node; production wants 2 CPU and 4 GiB each.
+  web:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: "2"
+        memory: 2Gi
+  worker:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: "2"
+        memory: 2Gi

@@ -1,0 +1,12 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxController
+metadata:
+  name: agent-sandbox
+spec:
+  # The core controller exactly as upstream publishes it: the Sandbox
+  # resource and its controller, the Sandbox definition kept on destroy.
+  # Enough for a product that creates and suspends Sandboxes itself through
+  # the Kubernetes API. This resource creates and owns the namespace.
+  namespace:
+    value: agent-sandbox-system
+  createNamespace: true

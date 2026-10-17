@@ -73,6 +73,10 @@ Set `autoProvisioningDefaults` as deliberately as a real pool (dedicated
 SA, CMEK, shielded posture, upgrade rollout): NAP-created pools inherit
 those defaults, and they are YOUR pools the moment finance asks.
 
+## A stockout is a machine type running out, not a quota
+
+A busy region runs out of one machine type for hours at a time. Node creation then fails with `ZONE_RESOURCE_POOL_EXHAUSTED` (or `GCE_STOCKOUT`) in every zone of the region, quota untouched, and anything that waits for nodes -- an install that schedules pods, a rollout, an autoscaler scale-up -- times out. A pool pinned to one machine type has no way around it. The answer is a compute class: turn on `clusterAutoscaling.defaultComputeClassEnabled` and declare a [KubernetesGkeComputeClass](../../kubernetes/kubernetesgkecomputeclass/GUIDE.md) named `default` that lists several machine families in order. GKE then creates nodes from the next family when the first has none. The [GKE capacity fallback pattern](../../_patterns/gke-capacity-fallback.md) composes the pieces.
+
 ## Secrets: two add-ons, two delivery models
 
 `enableSecretManagerCsi` + `secretManagerRotation` mounts secrets as

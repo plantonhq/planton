@@ -1,0 +1,13 @@
+# THE MISSING-NAMESPACE REFUSAL: another resource is declared the namespace's
+# owner (createNamespace off), and nobody has created it. The deploy must be
+# refused at plan, saying to deploy the KubernetesNamespace first or let this
+# resource create it.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxController
+metadata:
+  name: e2e-asbx-ns-missing
+  annotations:
+    planton.dev/e2e-expect-deploy-failure: namespace-missing
+spec:
+  namespace:
+    value: agent-sandbox-system

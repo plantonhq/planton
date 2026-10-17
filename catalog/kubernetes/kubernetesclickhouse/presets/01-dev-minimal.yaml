@@ -20,10 +20,9 @@ spec:
   # One shard, one replica (the defaults): no Keeper is deployed, no
   # replication — a lost volume loses the data. The built-in `default`
   # user stays operator-managed and pod-network-restricted; every real
-  # client gets a named user.
+  # client gets a named user. No password is declared, so the module
+  # generates one into the auth Secret (key `dev`).
   users:
     - name: dev
-      password:
-        value: change-me-dev-password
       grants:
         - GRANT SELECT, INSERT, CREATE, DROP ON *.*

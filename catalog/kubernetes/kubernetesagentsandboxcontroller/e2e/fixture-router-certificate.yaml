@@ -1,0 +1,21 @@
+# The router's TLS certificate for the full-surface lane, issued by the
+# self-signed ClusterIssuer fixture into agent-sandbox-system, which the
+# namespace fixture owns. The controller under test reads its Secret through
+# a reference, so the lane proves the composition the catalog page
+# describes: namespace, then certificate, then controller.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesCertificate
+metadata:
+  name: e2e-asbx-router-cert
+spec:
+  namespace:
+    value: agent-sandbox-system
+  secretName: sandbox-router-tls
+  issuerRef:
+    clusterIssuer:
+      name:
+        valueFrom:
+          name: e2e-clusterissuer-fixture
+  dnsNames:
+    - sandbox-router-svc.agent-sandbox-system.svc
+    - sandbox-router-svc.agent-sandbox-system.svc.cluster.local

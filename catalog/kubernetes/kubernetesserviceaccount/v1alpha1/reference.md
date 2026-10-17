@@ -228,6 +228,8 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| KubernetesAgentSandbox | `spec.podTemplate.spec.serviceAccountName` | `status.outputs.service_account_name` |
+| KubernetesAgentSandboxTemplate | `spec.podTemplate.spec.serviceAccountName` | `status.outputs.service_account_name` |
 | KubernetesClusterIssuer | `spec.config.acme.solvers[].dns01.route53.serviceAccount.serviceAccountName` | `status.outputs.service_account_name` |
 | KubernetesClusterIssuer | `spec.config.vault.kubernetesAuth.serviceAccountName` | `status.outputs.service_account_name` |
 | KubernetesClusterSecretStore | `spec.config.aws.serviceAccountName` | `status.outputs.service_account_name` |

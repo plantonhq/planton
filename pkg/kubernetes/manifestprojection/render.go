@@ -59,6 +59,13 @@ func Render(m Manifest) (*Object, error) {
 		Kind:       proj.GetKind(),
 		Name:       m.GetMetadata().GetName(),
 	}
+	if envelope.NameKey != "" {
+		name, _ := spec[envelope.NameKey].(string)
+		if name == "" {
+			return nil, errors.Errorf("%s spec.%s names the object and is empty", m.GetKind(), envelope.NameKey)
+		}
+		obj.Name = name
+	}
 	if envelope.Namespaced() {
 		ns, _ := spec[envelope.NamespaceKey].(string)
 		obj.Namespace = ns

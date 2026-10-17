@@ -3,6 +3,8 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "verify",
     srcs = [
+        "agentsandbox.go",
+        "agentsandboxresources.go",
         "airflow.go",
         "altinityoperatorinstall.go",
         "argocd.go",
@@ -13,6 +15,7 @@ go_library(
         "clickhouseinstallation.go",
         "cloudnativepg.go",
         "clusterautoscaler.go",
+        "computeclass.go",
         "config_group.go",
         "crd_install.go",
         "ednsroute53.go",
@@ -50,6 +53,7 @@ go_library(
         "kubeprometheusstack_rules.go",
         "kuberayoperator.go",
         "kyverno.go",
+        "langfuse.go",
         "lbaddress.go",
         "locust.go",
         "loki.go",
@@ -77,6 +81,7 @@ go_library(
         "plantonplatform.go",
         "plantonrunner.go",
         "preemption.go",
+        "projectionreadback.go",
         "prometheusrule.go",
         "pvcdatasource.go",
         "qdrant.go",
@@ -139,9 +144,12 @@ go_library(
 go_test(
     name = "verify_test",
     srcs = [
+        "agentsandbox_test.go",
+        "agentsandboxresources_test.go",
         "kubeprometheusstack_rules_test.go",
         "openbao_test.go",
         "plantonplatform_test.go",
+        "projectionreadback_test.go",
     ],
     embed = [":verify"],
     deps = ["@in_gopkg_yaml_v3//:yaml_v3"],

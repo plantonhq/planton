@@ -1,0 +1,149 @@
+# THE FULL SURFACE THAT RUNS ON KIND: the namespace through valueFrom, the
+# object's own labels and annotations, the pod's metadata, an init container,
+# a hardened container (non-root, no privilege escalation, every capability
+# dropped, the runtime's seccomp profile) with resources, environment from a
+# literal and from the downward API, probes of three kinds and a preStop hook,
+# an emptyDir with a size limit, tolerations, a preferred node affinity, a
+# topology spread constraint, DNS settings, a workspace claim, the headless
+# Service, and a far-future expiry. The verifier reads every field back from
+# the live object, waits for Ready, and checks the claim and the Service the
+# controller created. Fields kind cannot run (a sandboxing runtime class,
+# feature-gated fields) are covered offline by e2e/manifest.yaml.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandbox
+metadata:
+  name: e2e-asbx-sbx-full
+  annotations:
+    planton.dev/e2e-prerequisites: "catalog/kubernetes/kubernetesagentsandbox/e2e/fixture-namespace.yaml"
+spec:
+  namespace:
+    valueFrom:
+      kind: KubernetesNamespace
+      name: e2e-asbx-sbx-ns
+      fieldPath: spec.name
+  labels:
+    team: agents
+  annotations:
+    example.com/owner: platform
+  podTemplate:
+    metadata:
+      labels:
+        app: e2e-sandbox
+      annotations:
+        example.com/purpose: full-surface
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      terminationGracePeriodSeconds: 20
+      dnsPolicy: ClusterFirst
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "2"
+      nodeSelector:
+        kubernetes.io/os: linux
+      tolerations:
+        - key: example.com/sandbox
+          operator: Exists
+          effect: NoSchedule
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 10
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/arch
+                    operator: In
+                    values: ["amd64", "arm64"]
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: e2e-sandbox
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+        - name: prepare
+          image: registry.k8s.io/e2e-test-images/agnhost:2.53
+          command: ["sh", "-c", "echo ready > /scratch/state"]
+          volumeMounts:
+            - name: scratch
+              mountPath: /scratch
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+      containers:
+        - name: app
+          image: registry.k8s.io/e2e-test-images/agnhost:2.53
+          imagePullPolicy: IfNotPresent
+          args: ["netexec", "--http-port=8888", "--udp-port=-1"]
+          env:
+            - name: SANDBOX_ROLE
+              value: full-surface
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          ports:
+            - name: http
+              containerPort: 8888
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+          readinessProbe:
+            httpGet:
+              path: /hostname
+              port: http
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: "8888"
+            initialDelaySeconds: 5
+          startupProbe:
+            exec:
+              command: ["cat", "/scratch/state"]
+            failureThreshold: 30
+            periodSeconds: 2
+          lifecycle:
+            preStop:
+              sleep:
+                seconds: 1
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: scratch
+              mountPath: /scratch
+            - name: workspace
+              mountPath: /workspace
+      volumes:
+        - name: scratch
+          emptyDir:
+            sizeLimit: 64Mi
+  volumeClaimTemplates:
+    - metadata:
+        name: workspace
+        labels:
+          example.com/data: workspace
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+  service: true
+  shutdownTime: "2099-01-01T00:00:00Z"
+  shutdownPolicy: Retain
+  operatingMode: Running

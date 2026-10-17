@@ -1,0 +1,73 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesLangfuse
+metadata:
+  name: langfuse
+spec:
+  namespace:
+    value: langfuse
+  externalUrl: https://langfuse.example.com
+  postgres:
+    host:
+      valueFrom:
+        name: langfuse-db
+    username: langfuse
+    passwordSecret:
+      secretName:
+        valueFrom:
+          name: langfuse-db
+  clickhouse:
+    host:
+      valueFrom:
+        name: langfuse-clickhouse
+    username: langfuse
+    passwordSecret:
+      secretName:
+        valueFrom:
+          name: langfuse-clickhouse
+    cluster:
+      name:
+        valueFrom:
+          name: langfuse-clickhouse
+  redis:
+    standalone:
+      host:
+        valueFrom:
+          name: langfuse-cache
+    username:
+      valueFrom:
+        name: langfuse-cache
+    passwordSecret:
+      secretName:
+        valueFrom:
+          name: langfuse-cache
+      secretKey:
+        valueFrom:
+          name: langfuse-cache
+  blobStorage:
+    target:
+      s3Compatible:
+        endpoint:
+          valueFrom:
+            name: langfuse-storage
+        bucket: langfuse
+        credentialsSecret:
+          secretName:
+            valueFrom:
+              name: langfuse-storage
+    mediaUpload:
+      publicEndpoint: https://s3.langfuse.example.com
+    batchExport:
+      publicEndpoint: https://s3.langfuse.example.com
+  init:
+    organization:
+      name: Acme
+    project:
+      name: Production
+    admin:
+      email: admin@example.com
+  auth:
+    disableSignUp: true
+  web:
+    replicas: 2
+  worker:
+    replicas: 2

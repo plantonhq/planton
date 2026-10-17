@@ -1,0 +1,22 @@
+# The second act of upgrade.yaml: the extensions turned off (their settings
+# kept) and an open router added. Not a scenario of its own (the second-act
+# annotation keeps discovery from running it as a lane).
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxController
+metadata:
+  name: e2e-asbx-upgrade
+  annotations:
+    planton.dev/e2e-second-act: upgrade.yaml
+spec:
+  namespace:
+    value: agent-sandbox-system
+  createNamespace: true
+  crds:
+    keepOnUninstall: false
+  extensions:
+    enabled: false
+    allowedLabelDomains:
+      - example.com
+  router:
+    authorization:
+      allowAll: {}

@@ -1,0 +1,17 @@
+apiVersion: qa.planton.dev/v1
+kind: CatalogKindE2EProfile
+metadata:
+  name: kubernetesgkecomputeclass
+spec:
+  tier: 1
+  status: real_cluster
+  validated_provisioners:
+    - pulumi
+    - tofu
+  timeout_minutes: 45
+  deferred_reason: >-
+    GKE serves the cloud.google.com ComputeClass definition only on GKE
+    clusters, so a local kind cluster can never accept the object. Both
+    engines run on the gcp-gke real-cluster profile; the behavioral scenario
+    creates a real node (one small E2 VM for a few minutes) and proves the
+    class falls back past a rule GKE cannot satisfy.

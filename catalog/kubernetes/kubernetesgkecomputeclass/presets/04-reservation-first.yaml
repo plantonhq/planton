@@ -1,0 +1,28 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGkeComputeClass
+metadata:
+  name: reserved-first
+spec:
+  # Workloads opt in with cloud.google.com/compute-class: reserved-first
+  name: reserved-first
+  description: Committed capacity first. The named reservation, then any matching reservation, then on demand.
+  priorities:
+    # The reservation you bought, by name. Specific affinity never falls back
+    # on its own; the next rules are the fallback.
+    - machineType: n2d-standard-16 # must match the reservation's machine type
+      reservations:
+        affinity: Specific
+        specific:
+          - name: '<reservation-name>' # Compute Engine reservation name
+            zones:
+              - '<reservation-zone>' # the zone the reservation holds capacity in
+    # Any other matching reservation the project shares, else on demand.
+    - machineType: n2d-standard-16
+      reservations:
+        affinity: AnyBestEffort
+    # A second family on demand, for a stockout of the first.
+    - machineFamily: c3d
+      minCores: 16
+  whenUnsatisfiable: DoNotScaleUp
+  nodePoolAutoCreation:
+    enabled: true

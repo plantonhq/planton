@@ -231,8 +231,10 @@ PROACTIVE DEFAULT IDENTIFICATION (MANDATORY STEP)
   validation language or a generated SDK's language (`for`): name the proto
   field for its meaning (`for_duration`) and pin `json_name = "for"`, so the
   manifest key stays the upstream one while CEL can name the field. Integer
-  fields follow the upstream format and are never `int64`, which protojson
-  writes as a string.
+  fields follow the upstream format: `int32` for `format: int32`, `int64` for
+  `format: int64`. Protojson writes 64-bit integers as strings; the projection
+  turns them back into JSON numbers for the object (up to 53 bits, the range a
+  JSON number holds exactly), so the API server sees an integer.
 - **CRD-projection kinds: the object's own labels and annotations are a marked
   envelope, not spec.** When the custom resource's metadata is configuration
   (prometheus-operator selects ServiceMonitors, PodMonitors and PrometheusRules
@@ -256,7 +258,10 @@ PROACTIVE DEFAULT IDENTIFICATION (MANDATORY STEP)
     matches nothing and fails silently. Bound both forms with a CEL rule (a
     number in range, or a port name: lowercase alphanumerics and hyphens, at
     most 15, with a letter). Never model it as a proto `oneof`: protojson
-    writes the arm's key, not the upstream one.
+    writes the arm's key, not the upstream one. A quantity ("500m", "2Gi")
+    is int-or-string too, but the API server reads it from a string in every
+    case: model it as a plain, unmarked string held to Kubernetes' quantity
+    pattern, singular or as map values (resource limits).
   - A map whose upstream values are lists (`params`, `proxyConnectHeader`) is
     `map<string, Wrapper>` where Wrapper holds one repeated field named
     `values` (the catalog's wrapper convention), marked

@@ -1,0 +1,39 @@
+# THE OTHER OWNER for the crds-owned-elsewhere lane: a SandboxClaim
+# definition someone put on the cluster by hand, standing in for GKE's
+# Agent Sandbox add-on or a kubectl apply of upstream's release. It carries
+# none of the module's stamps, so the lane's deploy must find it, refuse,
+# and name its owner. The extension definition is the one planted because
+# no lane keeps extension definitions behind on the shared cluster (only
+# the core-only minimal lane keeps its Sandbox definition). The schema is a
+# stub on purpose: the refusal is about ownership, and the module stops
+# before it would compare anything else. The fixture's teardown deletes it.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesManifest
+metadata:
+  name: e2e-asbx-foreign-crd
+spec:
+  namespace:
+    value: e2e-asbx-foreign-crd-ns
+  create_namespace: true
+  skip_await: true
+  manifest_yaml: |
+    apiVersion: apiextensions.k8s.io/v1
+    kind: CustomResourceDefinition
+    metadata:
+      name: sandboxclaims.extensions.agents.x-k8s.io
+    spec:
+      group: extensions.agents.x-k8s.io
+      scope: Namespaced
+      names:
+        kind: SandboxClaim
+        listKind: SandboxClaimList
+        plural: sandboxclaims
+        singular: sandboxclaim
+      versions:
+        - name: v1beta1
+          served: true
+          storage: true
+          schema:
+            openAPIV3Schema:
+              type: object
+              x-kubernetes-preserve-unknown-fields: true

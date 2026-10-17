@@ -1,0 +1,1566 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesagentsandboxcontroller.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/kubernetes/kubernetes.proto";
+import "catalog/kubernetes/workload_pod.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+/**
+ * **KubernetesAgentSandboxControllerSpec** installs agent-sandbox, the
+ * Kubernetes SIG Apps controller that runs isolated, stateful, singleton
+ * workloads for AI agents: a `Sandbox` is one pod with a stable identity,
+ * optional persistent volumes and an optional headless Service, which the
+ * controller creates, suspends (pod deleted, volumes kept) and expires.
+ * With extensions on, it also serves `SandboxTemplate` (a reusable,
+ * network-policed blueprint), `SandboxWarmPool` (pre-started sandboxes kept
+ * ready) and `SandboxClaim` (an application's request for a sandbox, bound
+ * to a warm member when one is ready). The optional router is the HTTP
+ * entry point upstream's SDKs use to reach a sandbox by name, and the only
+ * access path when sandboxes run under gVisor or Kata, where port-forward
+ * does not work.
+ *
+ * DISTRIBUTION AND VERSION: the modules install agent-sandbox v1.0.7 from
+ * upstream's own release manifest (`sandbox.yaml`, or
+ * `sandbox-with-extensions.yaml` when extensions are on) and the router from
+ * upstream's deployment files at the same tag, and apply the typed settings
+ * below onto upstream's own arguments. The spec deliberately has NO version
+ * field: the catalog's agent sandbox kinds (KubernetesAgentSandbox and its
+ * template, warm pool and claim) mirror these resource definitions field
+ * for field, and an independently chosen version would let the definitions
+ * drift from the typed resources built on them. Each upstream release is a
+ * deliberate catalog update.
+ *
+ * NAMESPACE IS FIXED: everything installs into `agent-sandbox-system`, and
+ * exactly one install per cluster is the upstream contract. The namespace is
+ * baked into upstream's manifests, and the default network policy every
+ * SandboxTemplate gets admits traffic only from a router in this namespace,
+ * which is why the router is part of this kind rather than its own. Who
+ * owns the namespace is still a choice (`namespace`, `create_namespace`):
+ * the Secrets this kind reads (router TLS, token keys, pull secrets) must be
+ * in it before the controller starts.
+ *
+ * RESOURCE DEFINITIONS ARE KEPT: the four definitions are applied as kept,
+ * ownership-checked resources (`crds`), so destroying the controller never
+ * deletes a sandbox, its pod or its volume. The kind refuses to install over
+ * definitions or a controller it did not create.
+ *
+ * GKE: GKE's managed Agent Sandbox add-on (`GcpGkeCluster` addon
+ * `agent_sandbox_enabled`) installs the same controller and definitions in
+ * the same namespace. Run the add-on or this kind on a cluster, never both;
+ * this kind refuses to install over the add-on's definitions.
+ *
+ * Built for 100% parity with every setting upstream's controller and router
+ * offer; the guide accounts for each one.
+ */
+message KubernetesAgentSandboxControllerSpec {
+  /**
+   * The namespace everything installs into. It is always
+   * "agent-sandbox-system": upstream's manifests, RBAC and the default
+   * sandbox network policy name it. Reference a KubernetesNamespace of that
+   * name to let it own the namespace (its quotas and policies apply, and
+   * the Secrets this kind reads can be placed there first), or set the
+   * literal value with create_namespace.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name",
+    (buf.validate.field).cel = {
+      id: "namespace_fixed"
+      message: "namespace must be \"agent-sandbox-system\": upstream's manifests, RBAC and the default sandbox network policy name it, so agent-sandbox runs nowhere else"
+      expression: "!has(this.value) || this.value == 'agent-sandbox-system'"
+    }
+  ];
+
+  /**
+   * Create the namespace (with the standard Planton governance labels)
+   * and delete it with this resource, which deletes everything in it. Leave
+   * it false when a KubernetesNamespace owns the namespace; then the
+   * namespace must exist before the deploy.
+   */
+  bool create_namespace = 2;
+
+  /**
+   * The lifecycle of the four resource definitions (Sandbox, and with
+   * extensions SandboxTemplate, SandboxWarmPool and SandboxClaim). Empty =
+   * install them from the pinned release and keep them on destroy.
+   */
+  KubernetesAgentSandboxControllerCrds crds = 3;
+
+  /**
+   * The extensions: SandboxTemplate, SandboxWarmPool and SandboxClaim, and
+   * the controllers that serve them. Absent = core only (Sandbox), which is
+   * upstream's default and all a product that creates Sandboxes directly
+   * needs. Present = on; turn it on for warm pools and claims, which is what
+   * upstream's SDKs use.
+   */
+  KubernetesAgentSandboxControllerExtensions extensions = 4;
+
+  /**
+   * The controller Deployment (`agent-sandbox-controller`): replicas,
+   * resources, scheduling and every controller setting. Empty = upstream's
+   * release manifest as published.
+   */
+  KubernetesAgentSandboxControllerManager controller = 5;
+
+  /**
+   * The router (`sandbox-router`): the HTTP entry point that forwards a
+   * request to a sandbox named in its `X-Sandbox-ID` header (or in the
+   * path). Absent = no router. Present = installed; its authorization mode
+   * must be chosen explicitly, because upstream's default lets every
+   * request through.
+   */
+  KubernetesAgentSandboxControllerRouter router = 6;
+
+  /**
+   * The cluster's DNS suffix. The controller builds each sandbox Service's
+   * fully qualified name with it, and the router resolves sandboxes with it.
+   * Change it only on a cluster whose DNS domain is not the default.
+   */
+  optional string cluster_domain = 7 [
+    (dev.planton.shared.options.default) = "cluster.local",
+    (buf.validate.field).cel = {
+      id: "cluster_domain_format"
+      message: "cluster_domain must be a DNS domain such as \"cluster.local\": lowercase letters, digits, hyphens and dots"
+      expression: "this.matches('^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$')"
+    }
+  ];
+
+  /**
+   * Registry that replaces the registry part of every image this kind runs
+   * (the controller and the router, both published on registry.k8s.io) -
+   * the air-gap and private-mirror path. Each image keeps its path and tag,
+   * so "mirror.example.com/k8s" pulls
+   * registry.k8s.io/agent-sandbox/agent-sandbox-controller:v1.0.7 as
+   * mirror.example.com/k8s/agent-sandbox/agent-sandbox-controller:v1.0.7.
+   * An image override on the controller or router wins over this for that
+   * image. Sandbox images are your own and never move. Empty =
+   * registry.k8s.io.
+   */
+  string image_registry = 8 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).cel = {
+      id: "image_registry_format"
+      message: "image_registry is a registry root such as \"mirror.example.com/k8s\": no scheme and no trailing slash"
+      expression: "!this.endsWith('/') && !this.contains('://')"
+    }
+  ];
+
+  /**
+   * Names of image-pull Secrets in `agent-sandbox-system` for pulling the
+   * controller and router images from a private registry.
+   */
+  repeated string image_pull_secrets = 9 [(dev.planton.shared.options.sensitive_exempt_reason) = "Names of existing Kubernetes Secrets (references), not secret material"];
+}
+
+/**
+ * The lifecycle of the resource definitions. The definitions are applied as
+ * kept resources, stamped with their source and release, and checked before
+ * every write: a definition someone else applied (another install of
+ * agent-sandbox, GKE's add-on, a kubectl apply) is refused with its owner
+ * named, and a release older than the one that wrote the cluster's
+ * definitions is refused as a downgrade.
+ */
+message KubernetesAgentSandboxControllerCrds {
+  /**
+   * Apply the definitions from the pinned release. Set false only when
+   * another tool manages them (a GitOps repository applying upstream's
+   * definitions) and no other installation of agent-sandbox runs on the
+   * cluster; the controller still installs and needs them.
+   */
+  optional bool install = 1 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * Leave the definitions on the cluster when this resource is destroyed.
+   * Deleting a definition deletes every object of that type, so false
+   * deletes every Sandbox, SandboxTemplate, SandboxWarmPool and SandboxClaim
+   * on the cluster, with their pods; their volumes follow their own
+   * reclaim policy. Keep it true outside throwaway clusters.
+   */
+  optional bool keep_on_uninstall = 2 [(dev.planton.shared.options.default) = "true"];
+}
+
+/**
+ * The extensions: SandboxTemplate, SandboxWarmPool and SandboxClaim. Their
+ * settings live here, so a setting that only extensions read cannot be set
+ * on a core-only install.
+ */
+message KubernetesAgentSandboxControllerExtensions {
+  /**
+   * Run the extension controllers and install their definitions. False keeps
+   * the settings below while turning the extensions off. Their definitions
+   * stay on the cluster while crds.keep_on_uninstall is true, so existing
+   * templates, warm pools and claims survive and resume when the extensions
+   * return; with it false they are deleted, with every object of their kind.
+   */
+  optional bool enabled = 1 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * Label domains a SandboxClaim may set on its sandbox's pod through
+   * `additionalPodMetadata.labels`. A label is allowed when its prefix is a
+   * listed domain or a subdomain of one; every other prefixed label, and
+   * every unprefixed one, refuses the claim. The list replaces upstream's
+   * default, so include "sandbox.users.io" to keep it. The controller reads
+   * the list at startup; a change restarts it. Empty = "sandbox.users.io".
+   */
+  repeated string allowed_label_domains = 2 [(buf.validate.field).repeated = {
+    unique: true
+    items: {
+      cel: {
+        id: "allowed_label_domains_format"
+        message: "each allowed label domain must be a lowercase DNS domain such as \"sandbox.users.io\" or \"example.com\""
+        expression: "this.matches('^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$')"
+      }
+    }
+  }];
+
+  /**
+   * The SandboxClaim controller.
+   */
+  KubernetesAgentSandboxControllerClaimSettings claim = 3;
+
+  /**
+   * The SandboxWarmPool controller.
+   */
+  KubernetesAgentSandboxControllerWarmPoolSettings warm_pool = 4;
+
+  /**
+   * The SandboxTemplate controller.
+   */
+  KubernetesAgentSandboxControllerTemplateSettings template = 5;
+}
+
+/**
+ * How the SandboxClaim controller binds claims. Touch these for large claim
+ * bursts or when claims fall back to cold starts too early.
+ */
+message KubernetesAgentSandboxControllerClaimSettings {
+  /**
+   * Claims reconciled at once.
+   */
+  optional int32 concurrent_workers = 1 [
+    (dev.planton.shared.options.default) = "50",
+    (buf.validate.field).int32.gt = 0
+  ];
+
+  /**
+   * How long a new claim waits for a warm pool member to report a pod IP
+   * before it creates a cold sandbox instead (Go duration such as "2s").
+   * Raise it when warm members report late and claims start cold.
+   */
+  optional string warm_candidate_grace_period = 2 [
+    (dev.planton.shared.options.default) = "2s",
+    (buf.validate.field).cel = {
+      id: "warm_candidate_grace_period_positive"
+      message: "warm_candidate_grace_period must be a positive Go duration such as \"2s\" or \"500ms\""
+      expression: "this.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$') && !this.matches('^(0+(\\\\.0+)?(ns|us|ms|s|m|h))+$')"
+    }
+  ];
+
+  /**
+   * Stop the claim controller emitting Kubernetes Events, saving API writes
+   * during large claim bursts.
+   */
+  bool events_disabled = 3;
+
+  /**
+   * Stop persisting a claim's observability annotations (when the controller
+   * first saw it, its trace context), saving one API write per claim.
+   * Startup-latency metrics and trace propagation keep working inside the
+   * running controller; the on-object breadcrumbs are lost, and so is the
+   * latency metric for claims first seen before a controller restart.
+   */
+  bool observability_annotations_disabled = 4;
+}
+
+/**
+ * How the SandboxWarmPool controller fills and refills pools. Touch these for
+ * large pools, slow-starting sandbox images, or a busy API server.
+ */
+message KubernetesAgentSandboxControllerWarmPoolSettings {
+  /**
+   * Pools reconciled at once.
+   */
+  optional int32 concurrent_workers = 1 [
+    (dev.planton.shared.options.default) = "1",
+    (buf.validate.field).int32.gt = 0
+  ];
+
+  /**
+   * Sandboxes created or deleted in one batch. A pool fills in about
+   * replicas / max_batch_size round trips to the API server; raising it
+   * trades round trips for burst size.
+   */
+  optional int32 max_batch_size = 2 [
+    (dev.planton.shared.options.default) = "300",
+    (buf.validate.field).int32.gt = 0
+  ];
+
+  /**
+   * How long refill waits after members leave the pool (claims adopting
+   * them), so a claim burst gets the API server first (Go duration). The
+   * wait restarts while members keep leaving. "0s" refills at once.
+   */
+  optional string replenish_delay = 3 [
+    (dev.planton.shared.options.default) = "0s",
+    (buf.validate.field).cel = {
+      id: "replenish_delay_format"
+      message: "replenish_delay must be a Go duration such as \"0s\", \"500ms\" or \"10s\""
+      expression: "this.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$')"
+    }
+  ];
+
+  /**
+   * Most replacement sandboxes created per second per pool, which turns
+   * refill into a steady stream instead of whole-deficit bursts. Combines
+   * with replenish_delay: the delay decides when refill starts, the rate how
+   * fast it flows. 0 leaves refill unpaced.
+   */
+  optional double max_refill_rate = 4 [
+    (dev.planton.shared.options.default) = "0",
+    (buf.validate.field).cel = {
+      id: "max_refill_rate_range"
+      message: "max_refill_rate must be a finite number of sandboxes per second, 0 or more (0 leaves refill unpaced)"
+      expression: "this >= 0.0 && this <= 1000000000.0"
+    }
+  ];
+
+  /**
+   * How long a pool member may stay not Ready, counted from when its pod was
+   * scheduled, before the controller replaces it, or holds it when its pod
+   * cannot be scheduled (Go duration). Raise it for images that take long to
+   * initialize.
+   */
+  optional string readiness_grace_period = 5 [
+    (dev.planton.shared.options.default) = "5m",
+    (buf.validate.field).cel = {
+      id: "readiness_grace_period_positive"
+      message: "readiness_grace_period must be a positive Go duration such as \"5m\" or \"90s\""
+      expression: "this.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$') && !this.matches('^(0+(\\\\.0+)?(ns|us|ms|s|m|h))+$')"
+    }
+  ];
+
+  /**
+   * How often a pool holding unschedulable members past their grace period
+   * is checked again (Go duration).
+   */
+  optional string unschedulable_recheck_interval = 6 [
+    (dev.planton.shared.options.default) = "1m",
+    (buf.validate.field).cel = {
+      id: "unschedulable_recheck_interval_positive"
+      message: "unschedulable_recheck_interval must be a positive Go duration such as \"1m\" or \"30s\""
+      expression: "this.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$') && !this.matches('^(0+(\\\\.0+)?(ns|us|ms|s|m|h))+$')"
+    }
+  ];
+
+  /**
+   * Mark pool members' pods safe for the cluster autoscaler to evict, so an
+   * idle warm pool never holds a node up. Set false to keep warm members
+   * where they are.
+   */
+  optional bool eviction_enabled = 7 [(dev.planton.shared.options.default) = "true"];
+}
+
+/**
+ * How the SandboxTemplate controller reconciles templates and their network
+ * policies.
+ */
+message KubernetesAgentSandboxControllerTemplateSettings {
+  /**
+   * Templates reconciled at once.
+   */
+  optional int32 concurrent_workers = 1 [
+    (dev.planton.shared.options.default) = "1",
+    (buf.validate.field).int32.gt = 0
+  ];
+}
+
+/**
+ * The controller Deployment and every controller setting. The everyday
+ * settings come first; the groups after them (API client, profiling,
+ * logging) are for tuning and diagnostics.
+ */
+message KubernetesAgentSandboxControllerManager {
+  /**
+   * Override the controller image (a patched build, or a private mirror's
+   * path). Empty = registry.k8s.io/agent-sandbox/agent-sandbox-controller at
+   * the pinned release (moved to image_registry when that is set).
+   */
+  dev.planton.kubernetes.ContainerImage image = 1;
+
+  /**
+   * Controller pods. One leads and the rest wait as hot standbys, so more
+   * than one needs leader election (on by default).
+   */
+  optional int32 replicas = 2 [
+    (dev.planton.shared.options.default) = "1",
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  /**
+   * Resources for the controller container. Empty = none set (upstream's
+   * manifest sets none); set requests on clusters with resource quotas.
+   */
+  dev.planton.kubernetes.ContainerResources resources = 3;
+
+  /**
+   * Node selector for the controller pods.
+   */
+  map<string, string> node_selector = 4;
+
+  /**
+   * Tolerations for the controller pods.
+   */
+  repeated dev.planton.kubernetes.WorkloadToleration tolerations = 5;
+
+  /**
+   * Leader election among controller pods.
+   */
+  KubernetesAgentSandboxControllerLeaderElection leader_election = 6;
+
+  /**
+   * The metrics endpoint the controller serves, and its TLS.
+   */
+  KubernetesAgentSandboxControllerMetrics metrics = 7;
+
+  /**
+   * Port of the controller's /healthz and /readyz endpoints.
+   */
+  optional int32 health_probe_port = 8 [
+    (dev.planton.shared.options.default) = "8081",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+
+  /**
+   * The Sandbox controller.
+   */
+  KubernetesAgentSandboxControllerSandboxSettings sandbox = 9;
+
+  /**
+   * Limit the controller's Pod and Service caches to objects carrying the
+   * sandbox tracking label, cutting watch traffic, CPU and memory from the
+   * whole cluster's pods to the sandboxes' own. Turn it on for shared or
+   * busy clusters. Pods and Services created outside the controller and
+   * adopted through the `agents.x-k8s.io/adoptable` label must then also
+   * carry the tracking label, or the controller cannot see them.
+   */
+  bool cache_label_selectors = 10;
+
+  /**
+   * How the controller talks to the Kubernetes API server. Touch these only
+   * when a large fleet makes the controller wait on its own API client.
+   */
+  KubernetesAgentSandboxControllerKubeApi kube_api = 11;
+
+  /**
+   * Send traces to an OpenTelemetry collector over OTLP gRPC. Absent = no
+   * tracing.
+   */
+  KubernetesAgentSandboxControllerTracing tracing = 12;
+
+  /**
+   * Profiling endpoints on the metrics server, for diagnosing a live
+   * controller. Absent = off.
+   */
+  KubernetesAgentSandboxControllerProfiling profiling = 13;
+
+  /**
+   * Log format and verbosity. Empty = JSON at info level.
+   */
+  KubernetesAgentSandboxControllerLogging logging = 14;
+
+  option (buf.validate.message).cel = {
+    id: "controller.replicas_need_leader_election"
+    message: "more than one controller replica needs leader election: without it every replica reconciles at once; keep leader_election.enabled true or set replicas to 1"
+    expression: "!has(this.replicas) || this.replicas <= 1 || !has(this.leader_election) || !has(this.leader_election.enabled) || this.leader_election.enabled"
+  };
+  option (buf.validate.message).cel = {
+    id: "controller.distinct_ports"
+    message: "the controller's metrics port and health probe port must differ"
+    expression: "(has(this.metrics) && has(this.metrics.port) ? this.metrics.port : 8080) != (has(this.health_probe_port) ? this.health_probe_port : 8081)"
+  };
+}
+
+/**
+ * Leader election among controller pods.
+ */
+message KubernetesAgentSandboxControllerLeaderElection {
+  /**
+   * Elect one active controller among the replicas. Turn it off only for a
+   * single replica that must start without waiting for a lease.
+   */
+  optional bool enabled = 1 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * Namespace that holds the election lease. Empty = the controller's own
+   * namespace, `agent-sandbox-system`.
+   */
+  string namespace = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.max_len = 63,
+    (buf.validate.field).cel = {
+      id: "leader_election_namespace_format"
+      message: "leader_election.namespace must be a Kubernetes namespace name: lowercase letters, digits and hyphens, starting and ending with a letter or digit"
+      expression: "this.matches('^[a-z0-9]([-a-z0-9]*[a-z0-9])?$')"
+    }
+  ];
+}
+
+/**
+ * The controller's metrics endpoint.
+ */
+message KubernetesAgentSandboxControllerMetrics {
+  /**
+   * Port the metrics endpoint listens on, and the port of the
+   * `agent-sandbox-controller` Service in front of it. The conventional
+   * port for HTTPS metrics is 8443.
+   */
+  optional int32 port = 1 [
+    (dev.planton.shared.options.default) = "8080",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+
+  /**
+   * Publish the Kubernetes API client's own metrics (request latency, DNS
+   * resolution, request and response sizes, rate limiting, retries). Set
+   * false if their histograms cost too much.
+   */
+  optional bool rest_client_metrics_enabled = 2 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * Serve metrics over HTTPS. Absent = plain HTTP.
+   */
+  KubernetesAgentSandboxControllerMetricsTls tls = 3;
+}
+
+/**
+ * HTTPS for the controller's metrics endpoint.
+ */
+message KubernetesAgentSandboxControllerMetricsTls {
+  /**
+   * Serve metrics over HTTPS. False keeps the settings below while serving
+   * plain HTTP.
+   */
+  optional bool enabled = 1 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * Secret in `agent-sandbox-system` holding the server certificate as
+   * `tls.crt` and `tls.key`, typically written by a cert-manager
+   * Certificate. Empty = the controller generates a self-signed certificate
+   * at startup, which scrapers must then be told to trust or skip.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef certificate_secret = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesCertificate,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.secret_name",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Name of an existing kubernetes.io/tls Secret (a reference), not secret material"
+  ];
+
+  /**
+   * Oldest TLS version the metrics endpoint accepts. Empty = TLS 1.2 (Go's
+   * default).
+   */
+  KubernetesAgentSandboxControllerTlsVersion min_version = 3;
+
+  /**
+   * Cipher suites the metrics endpoint offers, by Go name (for example
+   * "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"). TLS 1.3 suites are not
+   * configurable. Empty = Go's defaults.
+   */
+  repeated string cipher_suites = 4 [(buf.validate.field).repeated = {
+    unique: true
+    items: {
+      cel: {
+        id: "metrics_cipher_suites_format"
+        message: "each cipher suite must be a Go cipher-suite name such as \"TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256\""
+        expression: "this.matches('^TLS_[A-Z0-9_]+$')"
+      }
+    }
+  }];
+
+  option (buf.validate.message).cel = {
+    id: "metrics_tls.no_ciphers_with_tls13"
+    message: "cipher_suites cannot be set with min_version tls13: TLS 1.3 cipher suites are not configurable, so the list would be ignored"
+    expression: "this.min_version != 4 || size(this.cipher_suites) == 0"
+  };
+}
+
+/**
+ * A minimum TLS version.
+ */
+enum KubernetesAgentSandboxControllerTlsVersion {
+  tls_version_unspecified = 0;
+  tls10 = 1;
+  tls11 = 2;
+  tls12 = 3;
+  tls13 = 4;
+}
+
+/**
+ * The Sandbox controller.
+ */
+message KubernetesAgentSandboxControllerSandboxSettings {
+  /**
+   * Sandboxes reconciled at once.
+   */
+  optional int32 concurrent_workers = 1 [
+    (dev.planton.shared.options.default) = "100",
+    (buf.validate.field).int32.gt = 0
+  ];
+
+  /**
+   * Stop the Sandbox controller emitting Kubernetes Events, saving API
+   * writes during large warm-pool fills.
+   */
+  bool events_disabled = 2;
+
+  /**
+   * Window over which the Sandbox controller coalesces its recoverable,
+   * metadata-only writes into one (Go duration). "0s" writes each at once.
+   */
+  optional string write_behind_window = 3 [
+    (dev.planton.shared.options.default) = "0s",
+    (buf.validate.field).cel = {
+      id: "write_behind_window_format"
+      message: "write_behind_window must be a Go duration such as \"0s\" or \"200ms\""
+      expression: "this.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$')"
+    }
+  ];
+}
+
+/**
+ * The controller's Kubernetes API client.
+ */
+message KubernetesAgentSandboxControllerKubeApi {
+  /**
+   * Client-side limit on requests per second. Empty = no client-side limit
+   * (the API server's own flow control still applies).
+   */
+  optional double qps = 1 [(buf.validate.field).cel = {
+    id: "kube_api_qps_positive"
+    message: "kube_api.qps must be a positive number of requests per second; leave it empty for no client-side limit"
+    expression: "this > 0.0 && this <= 1000000.0"
+  }];
+
+  /**
+   * Requests allowed above qps in a burst.
+   */
+  optional int32 burst = 2 [
+    (dev.planton.shared.options.default) = "10",
+    (buf.validate.field).int32.gt = 0
+  ];
+
+  /**
+   * Separate HTTP/2 connections to the API server for requests other than
+   * watches. The API server caps concurrent requests per connection (100 by
+   * default), so one connection caps the controller there whatever its
+   * workers and qps; more connections raise the ceiling about N times.
+   */
+  optional int32 connections = 3 [
+    (dev.planton.shared.options.default) = "1",
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  /**
+   * Give the controller's watch streams their own connection, so watch
+   * events never queue behind bursts of writes on a shared one.
+   */
+  bool separate_watch_connection = 4;
+}
+
+/**
+ * Tracing over OTLP gRPC.
+ */
+message KubernetesAgentSandboxControllerTracing {
+  /**
+   * The collector's OTLP gRPC endpoint, for example
+   * "http://otel-collector.observability.svc.cluster.local:4317". The
+   * controller exits at startup when it cannot set up the exporter.
+   */
+  string otlp_endpoint = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "tracing_otlp_endpoint_format"
+      message: "tracing.otlp_endpoint must be a URL such as \"http://otel-collector.observability:4317\""
+      expression: "this.matches('^https?://[^/?#\\\\s]+(/[^?#\\\\s]*)?$')"
+    }
+  ];
+
+  /**
+   * Connect to the collector without TLS.
+   */
+  bool insecure = 2;
+
+  /**
+   * Headers sent with every export, read from a key of a Secret in
+   * `agent-sandbox-system` in OpenTelemetry's form
+   * ("name1=value1,name2=value2"), for example a hosted collector's API key
+   * ("x-honeycomb-team=..."). The other OpenTelemetry exporter settings
+   * (certificates, compression, timeouts, per-signal endpoints) are not
+   * modeled; the guide says why.
+   */
+  KubernetesAgentSandboxControllerSecretKey headers = 3;
+}
+
+/**
+ * Profiling endpoints, served on the metrics port.
+ */
+message KubernetesAgentSandboxControllerProfiling {
+  /**
+   * Serve the CPU profile at /debug/pprof/profile.
+   */
+  bool cpu_enabled = 1;
+
+  /**
+   * Serve every pprof endpoint (heap, goroutine, block, mutex, trace,
+   * cmdline, symbol) and fgprof, the CPU profile included. These can expose
+   * sensitive process details and cost performance; use them while
+   * diagnosing, then turn them off.
+   */
+  bool debug_enabled = 2;
+
+  /**
+   * Block-profile sampling rate when debug_enabled is on: 0 or less
+   * disables it, 1 samples every blocking event, N samples one event per N
+   * nanoseconds blocked (1000000 is about 1ms).
+   */
+  optional int32 block_profile_rate = 3 [(dev.planton.shared.options.default) = "1000000"];
+
+  /**
+   * Mutex-contention sampling when debug_enabled is on: 0 or less disables
+   * it, 1 samples every event, N samples about one in N.
+   */
+  optional int32 mutex_profile_fraction = 4 [(dev.planton.shared.options.default) = "10"];
+
+  // The platform fills the two sampling defaults into every manifest before
+  // validation, so the rule accepts them without debug_enabled.
+  option (buf.validate.message).cel = {
+    id: "profiling.sampling_needs_debug"
+    message: "block_profile_rate and mutex_profile_fraction apply only with debug_enabled: turn debug_enabled on, or leave them at their defaults"
+    expression: "this.debug_enabled || ((!has(this.block_profile_rate) || this.block_profile_rate == 1000000) && (!has(this.mutex_profile_fraction) || this.mutex_profile_fraction == 10))"
+  };
+}
+
+/**
+ * Log format and verbosity.
+ */
+message KubernetesAgentSandboxControllerLogging {
+  /**
+   * Development logging: human-readable console output, debug level and
+   * stack traces from warnings up, unless the settings below say otherwise.
+   */
+  bool development = 1;
+
+  /**
+   * Log encoding. Empty = JSON (console when development is on).
+   */
+  Encoder encoder = 2;
+
+  /**
+   * Verbosity: "debug", "info", "error" or "panic", or a whole number above
+   * 0 for increasingly verbose debug levels. Empty = "info" ("debug" when
+   * development is on).
+   */
+  string level = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).cel = {
+      id: "logging_level_format"
+      message: "logging.level must be \"debug\", \"info\", \"error\" or \"panic\", or a whole number above 0"
+      expression: "this.matches('^(debug|info|error|panic|[1-9][0-9]*)$')"
+    }
+  ];
+
+  /**
+   * Level from which log lines carry a stack trace. Empty = error (warn when
+   * development is on).
+   */
+  StacktraceLevel stacktrace_level = 4;
+
+  /**
+   * How timestamps are written. Empty = RFC 3339.
+   */
+  TimeEncoding time_encoding = 5;
+
+  /**
+   * A log encoding.
+   */
+  enum Encoder {
+    encoder_unspecified = 0;
+    json = 1;
+    console = 2;
+  }
+
+  /**
+   * A stack-trace level.
+   */
+  enum StacktraceLevel {
+    stacktrace_level_unspecified = 0;
+    info = 1;
+    error = 2;
+    panic = 3;
+  }
+
+  /**
+   * A timestamp encoding.
+   */
+  enum TimeEncoding {
+    time_encoding_unspecified = 0;
+    epoch = 1;
+    millis = 2;
+    nano = 3;
+    iso8601 = 4;
+    rfc3339 = 5;
+    rfc3339nano = 6;
+  }
+}
+
+/**
+ * The router: an HTTP proxy that forwards a request to the sandbox it names.
+ * A caller sets `X-Sandbox-ID` (and `X-Sandbox-Namespace`, `X-Sandbox-Port`),
+ * or uses the path form when path_routing_prefix is set. The router keeps
+ * upstream's `app: sandbox-router` label, which is what the default
+ * SandboxTemplate network policy admits.
+ */
+message KubernetesAgentSandboxControllerRouter {
+  /**
+   * Install the router. False keeps the settings below while removing it.
+   */
+  optional bool enabled = 1 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * Override the router image. Empty =
+   * registry.k8s.io/agent-sandbox/sandbox-router-go at the pinned release
+   * (moved to image_registry when that is set).
+   */
+  dev.planton.kubernetes.ContainerImage image = 2;
+
+  /**
+   * Router pods, spread across zones and nodes. Two is the minimum for
+   * availability, not a capacity figure; the router is CPU-bound at high
+   * request rates.
+   */
+  optional int32 replicas = 3 [
+    (dev.planton.shared.options.default) = "2",
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  /**
+   * Resources for the router container. Empty = upstream's: requests 250m
+   * CPU and 256Mi memory, limits 2 CPU and 1Gi.
+   */
+  dev.planton.kubernetes.ContainerResources resources = 4;
+
+  /**
+   * Node selector for the router pods.
+   */
+  map<string, string> node_selector = 5;
+
+  /**
+   * Tolerations for the router pods.
+   */
+  repeated dev.planton.kubernetes.WorkloadToleration tolerations = 6;
+
+  /**
+   * Router pods that must stay up during voluntary disruptions such as node
+   * drains (the router's PodDisruptionBudget). It must be lower than
+   * replicas, or a drain waits forever. 0 removes the budget.
+   */
+  optional int32 min_available = 7 [
+    (dev.planton.shared.options.default) = "1",
+    (buf.validate.field).int32.gte = 0
+  ];
+
+  /**
+   * Who may reach a sandbox through the router. Required: upstream's default
+   * lets every request through, so an open router is chosen, never
+   * inherited.
+   */
+  KubernetesAgentSandboxControllerRouterAuthorization authorization = 8 [(buf.validate.field).required = true];
+
+  /**
+   * Serve the proxy over TLS. Absent = plain HTTP only.
+   */
+  KubernetesAgentSandboxControllerRouterTls tls = 9;
+
+  /**
+   * How requests are forwarded to sandboxes.
+   */
+  KubernetesAgentSandboxControllerRouterProxy proxy = 10;
+
+  /**
+   * The router's pod-IP cache.
+   */
+  KubernetesAgentSandboxControllerRouterCache cache = 11;
+
+  /**
+   * Send traces and metrics to an OpenTelemetry collector over OTLP gRPC.
+   * Absent = none (the Prometheus /metrics endpoint is always served).
+   */
+  KubernetesAgentSandboxControllerRouterTelemetry telemetry = 12;
+
+  /**
+   * Log one structured line per proxied request (health and metrics
+   * requests are skipped).
+   */
+  optional bool access_log_enabled = 13 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * The router's plain-HTTP, metrics and health ports.
+   */
+  KubernetesAgentSandboxControllerRouterPorts ports = 14;
+
+  /**
+   * The router's NetworkPolicy.
+   */
+  KubernetesAgentSandboxControllerRouterNetworkPolicy network_policy = 15;
+
+  // The platform fills replicas (2) and min_available (1) into every
+  // manifest before validation.
+  option (buf.validate.message).cel = {
+    id: "router.budget_below_replicas"
+    message: "router.min_available must be lower than router.replicas, or no router pod can ever be drained; lower it, raise replicas, or set it to 0 to remove the budget"
+    expression: "!has(this.min_available) || this.min_available == 0 || this.min_available < (has(this.replicas) ? this.replicas : 2)"
+  };
+  option (buf.validate.message).cel = {
+    id: "router.cookie_needs_path_routing"
+    message: "router.authorization.cookie needs router.proxy.path_routing_prefix: a browser reaches a sandbox only by path, so without a prefix there is no route for the cookie to protect"
+    expression: "!has(this.authorization) || !has(this.authorization.cookie) || (has(this.proxy) && this.proxy.path_routing_prefix != '')"
+  };
+  option (buf.validate.message).cel = {
+    id: "router.verification_keys_need_cache"
+    message: "scoped_token.verification_keys need the pod-IP cache: v2 tokens are bound to a sandbox's UID, which only the cache can route; leave router.cache.enabled on"
+    expression: "!has(this.authorization) || !has(this.authorization.scoped_token) || !has(this.authorization.scoped_token.verification_keys) || !has(this.cache) || !has(this.cache.enabled) || this.cache.enabled"
+  };
+  option (buf.validate.message).cel = {
+    id: "router.listener_required"
+    message: "the router needs a listener: keep router.tls.http_enabled true, or the router serves nothing without TLS"
+    expression: "!has(this.tls) || !has(this.tls.http_enabled) || this.tls.http_enabled || !has(this.tls.enabled) || this.tls.enabled"
+  };
+  option (buf.validate.message).cel = {
+    id: "router.distinct_ports"
+    message: "the router's HTTP, HTTPS, metrics and health ports must all differ"
+    expression: "[has(this.ports) && has(this.ports.http) ? this.ports.http : 8080, has(this.ports) && has(this.ports.metrics) ? this.ports.metrics : 9090, has(this.ports) && has(this.ports.health_probe) ? this.ports.health_probe : 8081, has(this.tls) && has(this.tls.port) ? this.tls.port : 8443].all(p, [has(this.ports) && has(this.ports.http) ? this.ports.http : 8080, has(this.ports) && has(this.ports.metrics) ? this.ports.metrics : 9090, has(this.ports) && has(this.ports.health_probe) ? this.ports.health_probe : 8081, has(this.tls) && has(this.tls.port) ? this.tls.port : 8443].filter(q, q == p).size() == 1)"
+  };
+}
+
+/**
+ * Who may reach a sandbox through the router. Exactly one mode.
+ */
+message KubernetesAgentSandboxControllerRouterAuthorization {
+  oneof mode {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * Every request is let through. Anything that can reach the router can
+     * reach every sandbox, so pair it with a NetworkPolicy, a Gateway that
+     * authenticates, or a cluster you fully trust.
+     */
+    KubernetesAgentSandboxControllerRouterAllowAll allow_all = 1;
+
+    /**
+     * Each request carries a Kubernetes bearer token
+     * (`Authorization: Bearer ...`), checked through the TokenReview API.
+     * Fits callers that run in the cluster with a ServiceAccount.
+     */
+    KubernetesAgentSandboxControllerRouterTokenReview token_review = 2;
+
+    /**
+     * Each request carries a token scoped to one sandbox, minted out of band
+     * by the product that created it: v1 tokens are HMAC-signed with a
+     * shared secret, v2 tokens are Ed25519-signed and bound to the sandbox's
+     * UID.
+     */
+    KubernetesAgentSandboxControllerRouterScopedToken scoped_token = 3;
+  }
+
+  /**
+   * Also accept the credential from a cookie, the one channel a browser
+   * attaches to every request, a WebSocket handshake included. Needs
+   * token_review or scoped_token, and proxy.path_routing_prefix.
+   */
+  KubernetesAgentSandboxControllerRouterCookie cookie = 4;
+
+  option (buf.validate.message).cel = {
+    id: "authorization.cookie_needs_a_credential"
+    message: "authorization.cookie has no effect with allow_all, which authorizes every request regardless; choose token_review or scoped_token, or remove the cookie"
+    expression: "!has(this.cookie) || !has(this.allow_all)"
+  };
+}
+
+/**
+ * The open mode, chosen explicitly.
+ */
+message KubernetesAgentSandboxControllerRouterAllowAll {}
+
+/**
+ * Bearer tokens checked through the Kubernetes TokenReview API. The router's
+ * ServiceAccount is bound to `system:auth-delegator`, which the deploying
+ * identity must be allowed to grant.
+ */
+message KubernetesAgentSandboxControllerRouterTokenReview {
+  /**
+   * How long a review's answer is cached (Go duration). Shorter catches a
+   * revoked token sooner at the cost of more API server load.
+   */
+  optional string ttl = 1 [
+    (dev.planton.shared.options.default) = "30s",
+    (buf.validate.field).cel = {
+      id: "token_review_ttl_positive"
+      message: "token_review.ttl must be a positive Go duration such as \"30s\" or \"2m\""
+      expression: "this.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$') && !this.matches('^(0+(\\\\.0+)?(ns|us|ms|s|m|h))+$')"
+    }
+  ];
+
+  /**
+   * Cached review answers kept before the oldest is evicted.
+   */
+  optional int32 cache_size = 2 [
+    (dev.planton.shared.options.default) = "2048",
+    (buf.validate.field).int32.gt = 0
+  ];
+
+  /**
+   * Refuse requests without a bearer token (401). Off lets tokenless
+   * requests through, which only suits a rollout while callers start
+   * sending tokens.
+   */
+  bool require_token = 3;
+
+  /**
+   * Audiences a token's `aud` claim must include. Required for projected
+   * ServiceAccount tokens minted with an audience. Empty = no audience
+   * check.
+   */
+  repeated string audiences = 4 [(buf.validate.field).repeated = {
+    unique: true
+    items: {
+      string: {min_len: 1}
+    }
+  }];
+}
+
+/**
+ * Per-sandbox tokens minted out of band. Set the v1 secret, the v2 keys, or
+ * both while moving from v1 to v2.
+ */
+message KubernetesAgentSandboxControllerRouterScopedToken {
+  /**
+   * The shared HMAC-SHA256 secret that verifies v1 tokens, as a key of a
+   * Secret in `agent-sandbox-system`.
+   */
+  KubernetesAgentSandboxControllerSecretKey v1_secret = 1;
+
+  /**
+   * The JSON key set of Ed25519 public keys that verifies v2 tokens, as a
+   * key of a Secret in `agent-sandbox-system`. Needs the pod-IP cache.
+   */
+  KubernetesAgentSandboxControllerSecretKey verification_keys = 2;
+
+  /**
+   * The moment v1 tokens stop being accepted while v1 and v2 run side by
+   * side (RFC 3339, for example "2026-12-31T00:00:00Z", exclusive).
+   * Required when both are set.
+   */
+  string v1_accept_until = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).cel = {
+      id: "v1_accept_until_format"
+      message: "scoped_token.v1_accept_until must be an RFC 3339 time such as \"2026-12-31T00:00:00Z\""
+      expression: "this.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$')"
+    }
+  ];
+
+  option (buf.validate.message).cel = {
+    id: "scoped_token.verifier_required"
+    message: "scoped_token needs v1_secret, verification_keys, or both: otherwise no token can ever be verified"
+    expression: "has(this.v1_secret) || has(this.verification_keys)"
+  };
+  option (buf.validate.message).cel = {
+    id: "scoped_token.cutoff_with_both"
+    message: "scoped_token.v1_accept_until is required while v1_secret and verification_keys are both set: it is when v1 tokens stop being accepted"
+    expression: "!has(this.v1_secret) || !has(this.verification_keys) || this.v1_accept_until != ''"
+  };
+  option (buf.validate.message).cel = {
+    id: "scoped_token.cutoff_needs_v1"
+    message: "scoped_token.v1_accept_until applies only to v1 tokens; set v1_secret or remove the cutoff"
+    expression: "this.v1_accept_until == '' || has(this.v1_secret)"
+  };
+}
+
+/**
+ * A key of a Secret in `agent-sandbox-system`, mounted into the router as a
+ * file.
+ */
+message KubernetesAgentSandboxControllerSecretKey {
+  /**
+   * The Secret's name.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.secret_name",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Name of an existing Kubernetes Secret (a reference), not secret material"
+  ];
+
+  /**
+   * The key within the Secret.
+   */
+  string key = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "secret_key_format"
+      message: "key must be a Secret key: letters, digits, \"-\", \"_\" and \".\""
+      expression: "this.matches('^[-._a-zA-Z0-9]+$')"
+    }
+  ];
+}
+
+/**
+ * A credential carried in a browser cookie.
+ */
+message KubernetesAgentSandboxControllerRouterCookie {
+  /**
+   * The cookie's name: letters, digits, "-", "_", "." and "~".
+   */
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "cookie_name_format"
+      message: "cookie.name must be a cookie-name token: letters, digits, \"-\", \"_\", \".\" and \"~\""
+      expression: "this.matches('^[A-Za-z0-9._~-]+$')"
+    }
+  ];
+
+  /**
+   * A URL query parameter that sets the cookie: a GET or HEAD request that
+   * presents a valid credential here gets the cookie, scoped to exactly the
+   * sandbox it authorized, and is redirected to the same URL without the
+   * parameter, so the credential spends the least time in URLs, history and
+   * Referer headers. Empty = the cookie must be set some other way.
+   */
+  string query_param = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).cel = {
+      id: "cookie_query_param_format"
+      message: "cookie.query_param must be a token: letters, digits, \"-\", \"_\", \".\" and \"~\""
+      expression: "this.matches('^[A-Za-z0-9._~-]+$')"
+    }
+  ];
+
+  /**
+   * The cookie's SameSite attribute. Empty = lax, which covers same-site
+   * embedding without HTTPS. strict is never sent cross-site, including the
+   * navigation that sets it. none is for genuinely cross-site embedding,
+   * needs a Secure cookie, and some browsers block it regardless.
+   */
+  SameSite same_site = 3;
+
+  /**
+   * Drop the cookie's Secure attribute. Only for local development over
+   * plain HTTP; not allowed with same_site none.
+   */
+  bool insecure = 4;
+
+  /**
+   * Origins (scheme://host[:port]) whose pages may make cookie-authorized
+   * requests. Same-origin requests and requests without an Origin header
+   * are always let through; only cookie-borne credentials are checked.
+   */
+  repeated string allowed_origins = 5 [(buf.validate.field).repeated = {
+    unique: true
+    items: {
+      cel: {
+        id: "cookie_allowed_origins_format"
+        message: "each allowed origin must be scheme://host[:port], such as \"https://ide.example.com\", with no path, query or fragment"
+        expression: "this.matches('^[a-z][a-z0-9+.-]*://[^/?#\\\\s]+$')"
+      }
+    }
+  }];
+
+  /**
+   * Read the request's scheme from X-Forwarded-Proto for the same-origin
+   * check. Needed behind a TLS-terminating load balancer or Gateway; turn it
+   * on only when the router is reachable solely through a proxy that sets
+   * the header itself and strips any the client sent.
+   */
+  bool trust_forwarded_proto = 6;
+
+  /**
+   * A SameSite attribute.
+   */
+  enum SameSite {
+    same_site_unspecified = 0;
+    lax = 1;
+    strict = 2;
+    none = 3;
+  }
+
+  option (buf.validate.message).cel = {
+    id: "cookie.same_site_none_needs_secure"
+    message: "cookie.same_site none needs a Secure cookie, so it cannot be combined with cookie.insecure"
+    expression: "!(this.same_site == 3 && this.insecure)"
+  };
+}
+
+/**
+ * TLS for the router's proxy listener.
+ */
+message KubernetesAgentSandboxControllerRouterTls {
+  /**
+   * Serve the proxy over TLS. False keeps the settings below while serving
+   * plain HTTP only.
+   */
+  optional bool enabled = 1 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * Secret in `agent-sandbox-system` holding the server certificate as
+   * `tls.crt` and `tls.key`, typically written by a cert-manager
+   * Certificate.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef certificate_secret = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesCertificate,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.secret_name",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Name of an existing kubernetes.io/tls Secret (a reference), not secret material"
+  ];
+
+  /**
+   * Port of the TLS listener, and of the router Service's `proxy-tls` port.
+   */
+  optional int32 port = 3 [
+    (dev.planton.shared.options.default) = "8443",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+
+  /**
+   * Keep the plain-HTTP listener beside TLS. Set false to serve TLS only.
+   */
+  optional bool http_enabled = 4 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * Client-certificate verification. Empty = off. optional verifies a
+   * certificate when a client presents one; required refuses clients
+   * without one. Both need client_ca.
+   */
+  MtlsMode mtls_mode = 5;
+
+  /**
+   * The CA bundle that verifies client certificates, as a key of a Secret in
+   * `agent-sandbox-system` (a cert-manager Certificate's Secret carries it
+   * as `ca.crt`).
+   */
+  KubernetesAgentSandboxControllerSecretKey client_ca = 6;
+
+  /**
+   * Oldest TLS version the listener accepts. Empty = TLS 1.2.
+   */
+  KubernetesAgentSandboxControllerTlsVersion min_version = 7;
+
+  /**
+   * Cipher suites the listener offers, by Go name. TLS 1.3 suites are not
+   * configurable. Empty = Go's defaults.
+   */
+  repeated string cipher_suites = 8 [(buf.validate.field).repeated = {
+    unique: true
+    items: {
+      cel: {
+        id: "router_cipher_suites_format"
+        message: "each cipher suite must be a Go cipher-suite name such as \"TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256\""
+        expression: "this.matches('^TLS_[A-Z0-9_]+$')"
+      }
+    }
+  }];
+
+  /**
+   * A client-certificate verification policy.
+   */
+  enum MtlsMode {
+    mtls_mode_unspecified = 0;
+    off = 1;
+    optional = 2;
+    required = 3;
+  }
+
+  option (buf.validate.message).cel = {
+    id: "router_tls.mtls_needs_client_ca"
+    message: "router.tls.mtls_mode optional or required needs client_ca, the CA bundle that verifies client certificates"
+    expression: "(this.mtls_mode != 2 && this.mtls_mode != 3) || has(this.client_ca)"
+  };
+  option (buf.validate.message).cel = {
+    id: "router_tls.no_ciphers_with_tls13"
+    message: "cipher_suites cannot be set with min_version tls13: TLS 1.3 cipher suites are not configurable, so the list would be ignored"
+    expression: "this.min_version != 4 || size(this.cipher_suites) == 0"
+  };
+}
+
+/**
+ * How the router forwards requests.
+ */
+message KubernetesAgentSandboxControllerRouterProxy {
+  /**
+   * Total time budget for proxying one request (Go duration). Long-running
+   * requests and streams need more.
+   */
+  optional string timeout = 1 [
+    (dev.planton.shared.options.default) = "180s",
+    (buf.validate.field).cel = {
+      id: "proxy_timeout_positive"
+      message: "proxy.timeout must be a positive Go duration such as \"180s\" or \"10m\""
+      expression: "this.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$') && !this.matches('^(0+(\\\\.0+)?(ns|us|ms|s|m|h))+$')"
+    }
+  ];
+
+  /**
+   * Longest wait for a sandbox's response headers (Go duration).
+   */
+  optional string response_header_timeout = 2 [
+    (dev.planton.shared.options.default) = "30s",
+    (buf.validate.field).cel = {
+      id: "proxy_response_header_timeout_positive"
+      message: "proxy.response_header_timeout must be a positive Go duration such as \"30s\""
+      expression: "this.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$') && !this.matches('^(0+(\\\\.0+)?(ns|us|ms|s|m|h))+$')"
+    }
+  ];
+
+  /**
+   * Time to drain in-flight requests when a router pod stops (Go duration).
+   * The pod's termination grace period is set 15 seconds longer.
+   */
+  optional string shutdown_timeout = 3 [
+    (dev.planton.shared.options.default) = "30s",
+    (buf.validate.field).cel = {
+      id: "proxy_shutdown_timeout_format"
+      message: "proxy.shutdown_timeout must be a Go duration such as \"30s\" (\"0s\" stops without draining)"
+      expression: "this.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$')"
+    }
+  ];
+
+  /**
+   * Largest request body accepted, in bytes. 0 = no limit.
+   */
+  int64 max_request_body_bytes = 4 [(buf.validate.field).int64.gte = 0];
+
+  /**
+   * Accept a loopback address (127.0.0.0/8, ::1) in X-Sandbox-Pod-IP. Only
+   * for a router running as a sidecar beside its sandbox, or tests against
+   * localhost; link-local, multicast and unspecified addresses stay refused.
+   */
+  bool allow_loopback_pod_ip = 5;
+
+  /**
+   * A path prefix that also lets a caller address a sandbox by URL:
+   * <prefix>/<namespace>/<id>/<port>/<rest>. Browsers need it: a WebSocket
+   * handshake cannot carry custom headers, so a web IDE's terminal or a dev
+   * server's live reload inside a sandbox is reachable only by path. Every
+   * path under the prefix is claimed for routing, so pick one no sandbox
+   * route uses. Empty = headers only.
+   */
+  string path_routing_prefix = 6 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).cel = {
+      id: "path_routing_prefix_format"
+      message: "proxy.path_routing_prefix must start with \"/\", must not end with \"/\", and must not contain spaces, such as \"/sandboxes\""
+      expression: "this.matches('^/[^\\\\s]*[^/\\\\s]$')"
+    }
+  ];
+
+  /**
+   * Extra connection attempts when a sandbox cannot be dialed (DNS failure,
+   * connection refused) before the router answers 502. Smooths requests to
+   * a sandbox that is still starting. 0 = no retries.
+   */
+  optional int32 upstream_max_retries = 7 [
+    (dev.planton.shared.options.default) = "3",
+    (buf.validate.field).int32.gte = 0
+  ];
+
+  /**
+   * Wait before the first retry; each later wait doubles, up to
+   * upstream_retry_max_delay (Go duration).
+   */
+  optional string upstream_retry_initial_delay = 8 [
+    (dev.planton.shared.options.default) = "200ms",
+    (buf.validate.field).cel = {
+      id: "upstream_retry_initial_delay_format"
+      message: "proxy.upstream_retry_initial_delay must be a Go duration such as \"200ms\""
+      expression: "this.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$')"
+    }
+  ];
+
+  /**
+   * Longest wait between retries (Go duration).
+   */
+  optional string upstream_retry_max_delay = 9 [
+    (dev.planton.shared.options.default) = "800ms",
+    (buf.validate.field).cel = {
+      id: "upstream_retry_max_delay_format"
+      message: "proxy.upstream_retry_max_delay must be a Go duration such as \"800ms\" or \"2s\""
+      expression: "this.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$')"
+    }
+  ];
+}
+
+/**
+ * The router's pod-IP cache.
+ */
+message KubernetesAgentSandboxControllerRouterCache {
+  /**
+   * Watch sandbox pods and dial a cached pod IP for requests that carry
+   * X-Sandbox-UID, skipping DNS. Needs read access to pods, which the router
+   * gets cluster-wide (it filters system pods out itself). Off = DNS-only
+   * routing, and no pod read access.
+   */
+  optional bool enabled = 1 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * Watch only this namespace's pods. Empty = every namespace.
+   */
+  string namespace = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.max_len = 63,
+    (buf.validate.field).cel = {
+      id: "router_cache_namespace_format"
+      message: "router.cache.namespace must be a Kubernetes namespace name: lowercase letters, digits and hyphens, starting and ending with a letter or digit"
+      expression: "this.matches('^[a-z0-9]([-a-z0-9]*[a-z0-9])?$')"
+    }
+  ];
+}
+
+/**
+ * OpenTelemetry export from the router over OTLP gRPC.
+ */
+message KubernetesAgentSandboxControllerRouterTelemetry {
+  /**
+   * The collector's OTLP gRPC endpoint, for example
+   * "http://otel-collector.observability.svc.cluster.local:4317".
+   */
+  string otlp_endpoint = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "router_telemetry_otlp_endpoint_format"
+      message: "router.telemetry.otlp_endpoint must be a URL such as \"http://otel-collector.observability:4317\""
+      expression: "this.matches('^https?://[^/?#\\\\s]+(/[^?#\\\\s]*)?$')"
+    }
+  ];
+
+  /**
+   * Connect to the collector without TLS.
+   */
+  bool insecure = 2;
+
+  /**
+   * Send traces.
+   */
+  optional bool traces_enabled = 3 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * Also push metrics (the Prometheus /metrics endpoint stays served).
+   */
+  optional bool metrics_enabled = 4 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * Headers sent with every export, read from a key of a Secret in
+   * `agent-sandbox-system` in OpenTelemetry's form
+   * ("name1=value1,name2=value2"), for example a hosted collector's API key.
+   */
+  KubernetesAgentSandboxControllerSecretKey headers = 5;
+}
+
+/**
+ * The router's listener ports.
+ */
+message KubernetesAgentSandboxControllerRouterPorts {
+  /**
+   * Port of the plain-HTTP proxy listener, and of the `sandbox-router-svc`
+   * Service's `proxy` port that upstream's SDKs dial.
+   */
+  optional int32 http = 1 [
+    (dev.planton.shared.options.default) = "8080",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+
+  /**
+   * Port of the Prometheus /metrics endpoint.
+   */
+  optional int32 metrics = 2 [
+    (dev.planton.shared.options.default) = "9090",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+
+  /**
+   * Port of the /healthz and /readyz endpoints the pod's probes use.
+   */
+  optional int32 health_probe = 3 [
+    (dev.planton.shared.options.default) = "8081",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+}
+
+/**
+ * The router's NetworkPolicy, which only takes effect on a cluster whose
+ * network enforces NetworkPolicy.
+ */
+message KubernetesAgentSandboxControllerRouterNetworkPolicy {
+  /**
+   * Install the router's NetworkPolicy. False leaves the router's traffic
+   * unrestricted.
+   */
+  optional bool enabled = 1 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * Labels of the namespaces whose pods may send requests to the router,
+   * for example {"kubernetes.io/metadata.name": "gateway"} for a Gateway's
+   * namespace. Empty = every namespace, which is upstream's starting point;
+   * narrow it to your callers.
+   */
+  map<string, string> client_namespace_labels = 2;
+
+  /**
+   * Namespace whose pods may scrape the router's metrics.
+   */
+  optional string metrics_namespace = 3 [
+    (dev.planton.shared.options.default) = "monitoring",
+    (buf.validate.field).string.max_len = 63,
+    (buf.validate.field).cel = {
+      id: "router_metrics_namespace_format"
+      message: "router.network_policy.metrics_namespace must be a Kubernetes namespace name: lowercase letters, digits and hyphens, starting and ending with a letter or digit"
+      expression: "this.matches('^[a-z0-9]([-a-z0-9]*[a-z0-9])?$')"
+    }
+  ];
+
+  /**
+   * Ports the router may open to sandboxes. A sandbox serving on any other
+   * port is unreachable through the router behind this policy, so list every
+   * port your sandboxes serve. Empty = 8888, upstream's default sandbox
+   * port.
+   */
+  repeated int32 sandbox_ports = 4 [(buf.validate.field).repeated = {
+    unique: true
+    items: {
+      int32: {
+        gte: 1
+        lte: 65535
+      }
+    }
+  }];
+}

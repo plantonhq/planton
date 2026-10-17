@@ -1,0 +1,4 @@
+name: kubernetes-agent-sandbox-claim
+runtime:
+  name: go
+description: Pulumi module that provisions an agent-sandbox SandboxClaim from a KubernetesAgentSandboxClaim manifest.

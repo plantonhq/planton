@@ -1,0 +1,66 @@
+# =============================================================================
+# Manifest Projection Guard
+# =============================================================================
+# Fails the PR when a Kubernetes manifest-projection kind (a kind whose spec
+# mirrors one custom resource field for field) stops delivering what its spec
+# promises:
+#
+#   - the projection markers sit only where pkg/iac/specprojection honors them;
+#   - every custom resource definition pinned under
+#     pkg/kubernetes/manifestprojection/testdata/schemas is mirrored by its
+#     kind's spec, key for key and type for type, in both directions;
+#   - every e2e scenario and full-surface e2e/manifest.yaml of a pinned kind,
+#     rendered the way both engines render it, survives the API server's own
+#     pruning and validation (k8s.io/apiextensions-apiserver) untouched;
+#   - the projection writes each shape as the API server reads it (numbers,
+#     int-or-string values, list-valued maps, 64-bit integers).
+#
+# All static: no cluster, no network. To fix a failure, change the spec (or the
+# scenario), never the pinned definition; move a pin by replacing the file from
+# a newer upstream release. See pkg/kubernetes/manifestprojection and
+# _rules/catalog-kind/forge/flow/001-spec-proto.mdc.
+# =============================================================================
+
+name: lint.manifest-projection
+
+on:
+  pull_request:
+    paths:
+      - 'catalog/kubernetes/*.proto'
+      - 'catalog/kubernetes/**/v1alpha1/**'
+      - 'catalog/kubernetes/**/e2e/**'
+      - 'pkg/kubernetes/manifestprojection/**'
+      - 'pkg/iac/specprojection/**'
+      - 'shared/options/**'
+      - 'shared/catalogkind/**'
+      - '.github/workflows/lint.manifest-projection.yaml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'catalog/kubernetes/*.proto'
+      - 'catalog/kubernetes/**/v1alpha1/**'
+      - 'catalog/kubernetes/**/e2e/**'
+      - 'pkg/kubernetes/manifestprojection/**'
+      - 'pkg/iac/specprojection/**'
+      - 'shared/options/**'
+      - 'shared/catalogkind/**'
+      - '.github/workflows/lint.manifest-projection.yaml'
+
+permissions:
+  contents: read
+
+jobs:
+  manifest-projection:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+
+      - name: Run the projection gates
+        run: go test ./pkg/kubernetes/manifestprojection/ ./pkg/iac/specprojection/

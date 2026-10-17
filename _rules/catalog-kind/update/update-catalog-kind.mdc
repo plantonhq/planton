@@ -917,14 +917,23 @@ Based on scenario:
   composed key doubles as the import ID: the map derives every
   composed-ID placeholder via `from_address_key_segment` (0-based `//`
   segments; the namespace segment resolves empty for cluster-scoped
-  documents and its bracketed group drops). Pulumi applies via the
-  CLASSIC `yaml` ConfigFile with the manifest URL plus a TRANSFORMATION
-  that patches the typed overrides onto the operator Deployment (env
-  appends, image/resources/placement) — the Terraform twin patches
+  documents and its bracketed group drops). Pulumi fetches the same
+  manifest in Go, splits and keys it the same way, patches the typed
+  settings onto the parsed documents, and applies them as `yaml`
+  ConfigGroups (`Objs`) — never a classic ConfigFile with a
+  transformation, which patches objects the module cannot inspect, so no
+  test can hold the two engines equal. The Terraform twin patches
   through locals merges, and swapping the patched document into the
   applied set uses `merge(all_docs, { (key) = patched })`, never a
   per-element ternary (differently-shaped objects fail plan-time type
-  unification). Two more contracts: apply with SERVER-SIDE APPLY on both
+  unification). Settings land on upstream's OWN container arguments: a
+  flag upstream passes keeps its position and takes the new value, any
+  other flag is appended in a fixed order and only when it differs from
+  upstream's default, so an empty spec installs upstream as published.
+  A gated parity test plans the Terraform module (`tofu plan` +
+  `show -json`) and compares every planned document with the Pulumi
+  composition, across several specs (the agent-sandbox controller's
+  `parity_test.go` is the reference). Two more contracts: apply with SERVER-SIDE APPLY on both
   engines when any document is large (a CRD past ~256 KB exceeds the
   client-side last-applied-configuration annotation cap — verified at a
   342 KB CRD), and give such kinds NO user-facing version field when a
@@ -934,6 +943,36 @@ Based on scenario:
   manifest's own cross-references (webhook client configs, certificate
   DNS names, CA-injection annotations) are NOT configurable — document
   them as the upstream contract instead of rewriting the reference graph.
+- **A released manifest whose CRDs back typed catalog kinds, or must
+  outlive the controller, takes the CRD decision tree's DERIVE branch
+  through the bundle source** (`helmcrds.Source{BundleURL, BundleName,
+  Version}`; the generated `helm_crds.tf` with `bundle = { name, url }`
+  and `chart = null`): the module drops the CRDs from its own document
+  set, and the kept-CRD primitive derives them from the same release
+  asset, kept, stamped and ownership-checked. When the controller holds
+  no finalizers and registers no webhook at the pinned release, the
+  order is namespace ← kept CRDs ← workloads with the rollout AWAITED
+  (nothing deadlocks, and a destroy needs no live controller to drain
+  anything); otherwise the three-group order below. A companion
+  component upstream ships as repository files rather than a release
+  asset (a router, a gateway) is fetched from raw files at the SAME tag,
+  with its image pinned to the release in the module.
+- **Upstream's fixed names are a contract, so a kind that installs under
+  them refuses rather than adopts**: before writing anything, read each
+  Deployment it applies under a fixed name and refuse one without the
+  kind's `planton.ai/kind` label (another installation: a managed
+  add-on, a `kubectl apply` of the release) — the Pulumi helper is
+  `pkg/iac/pulumi/pulumimodule/provider/kubernetes/workloadowner`, the
+  Terraform twin a `kubernetes_resources` read plus preconditions on a
+  `terraform_data` preflight (values known at plan, never evaluated on
+  destroy). A fixed namespace still has a choosable OWNER: when the kind
+  reads Secrets that must exist before its pods start (TLS, token keys,
+  pull secrets), model `namespace` as the usual KubernetesNamespace
+  reference with its value pinned by CEL, plus `create_namespace`, and
+  refuse three states in the same three-part words on both engines: the
+  namespace missing while another resource owns it, created by someone
+  else while this resource would create it, and created by this resource
+  while `create_namespace` is now off (the engines would delete it).
 - **A manifest bundle that packs an operator WITH its CRDs applies as
   THREE ordered groups — namespace ← workloads ← CRDs — on BOTH
   engines; a flat one-pass apply is wrong in both directions** (verified
@@ -1246,6 +1285,16 @@ After all updates, **execute validation commands in sequence**:
    pruned (stale manifest entries fail the gate). If the kind was at total accounting
    before the update, it must still be after -- never re-baseline a kind that was
    clean. The `lint.provider-parity` CI lane is this step's tripwire.
+   For a Kubernetes projection kind the yardstick is its pinned custom resource
+   definition instead: when the upstream release or the cloud's served version
+   moves, re-pin the definition and run the projection tests (the forge
+   orchestrator's Phase 6e has the capture and the command: the mirror test
+   for keys, the served-schema test for the values every scenario sends); a
+   projection kind with no pinned definition yet enrolls in the same update.
+   A family whose definitions an operator kind installs from a pinned release
+   (the agent-sandbox controller and its four resource kinds) moves together:
+   the operator's pin and every resource kind's pinned definition change in
+   one update.
    If the provider has a committed parity page (`catalog/<provider>/terraform-parity.md`),
    regenerate it in the same change -- `make generate-provider-parity-report` -- the
    page's drift test fails CI when the accounting moved and the page did not.

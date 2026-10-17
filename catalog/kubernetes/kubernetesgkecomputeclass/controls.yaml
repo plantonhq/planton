@@ -1,0 +1,85 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/catalogkindcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: CatalogKindControlProfile
+metadata:
+  name: kubernetesgkecomputeclass
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: module_default
+        reference: Every node GKE creates for the class boots from a Compute Engine disk, which Google encrypts at rest by default; the class stores nothing itself.
+    - control_id: enc-at-rest-cmk
+      status: configurable
+      field_path: priorities.storage.boot_disk_kms_key
+      evidence:
+        type: spec_default
+        reference: storage.boot_disk_kms_key on a rule encrypts its nodes' boot disks with a customer-managed Cloud KMS key (a reference to GcpKmsKey); unset, Google-managed keys apply.
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: The class serves no traffic -- it is a cluster-scoped configuration object GKE's autoscaler reads over the Kubernetes API's TLS.
+    - control_id: no-public-access
+      status: configurable
+      field_path: node_pool_config.ip_type
+      evidence:
+        type: spec_default
+        reference: node_pool_config.ip_type private gives the class's nodes no public IP addresses; unset, the cluster's own private-node setting applies.
+    - control_id: restricted-ingress
+      status: configurable
+      field_path: node_pool_config.resource_manager_tags
+      evidence:
+        type: spec_default
+        reference: resource_manager_tags (purpose GCE_FIREWALL) attach firewall-policy tags to every node of the class, so tag-based firewall rules govern their ingress.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The class serves no HTTP traffic -- web application firewalls do not apply.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: module_default
+        reference: The rendered ComputeClass is a cluster-scoped cloud.google.com/v1 object -- creating or changing classes is governed by the cluster's Kubernetes RBAC on computeclasses. The spec refuses GKE's built-in class names (autopilot*), so a manifest cannot redefine them.
+    - control_id: workload-identity
+      status: configurable
+      field_path: node_pool_config.workload_metadata
+      evidence:
+        type: spec_default
+        reference: node_pool_config.workload_metadata GKE_METADATA runs the GKE metadata server on the class's nodes, which Workload Identity requires and which keeps pods from reading the node's own credentials; node_pool_config.service_account sets a dedicated least-privilege node identity (a reference to GcpServiceAccount).
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: The class exposes no authentication path of its own.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component itself enforces no end-user sign-in -- it packages no human sign-in surface; any credentials it carries are workload or administrative access, whose posture rbac and workload-identity carry.
+    - control_id: audit-logging
+      status: not_applicable
+      notes: Changes to the class are Kubernetes API operations on a cluster-scoped object, captured by GKE's Kubernetes audit logs; node pool creation for the class is logged by GKE's cluster autoscaler events.
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: The class has no metrics seam -- GKE reports provisioning decisions as cluster autoscaler visibility events and the class's Health condition.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: Nodes created for the class are disposable by design -- removed when unneeded, recreated when pods are pending. The class declaration itself is a Kubernetes object that backs up with the cluster.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: configurable
+      field_path: priorities.location
+      evidence:
+        type: spec_default
+        reference: location (per rule, or priority_defaults.location) lists the zones or zone types nodes may come from and the BALANCED or ANY spread; the 01-stockout-resilient-default preset spreads its fallback across four machine families, which is the class's availability posture against a regional stockout.
+      notes: An unconstrained rule may create nodes in any of the cluster's node locations.
+    - control_id: deletion-protection
+      status: not_applicable
+      notes: No deletion-protection flag exists on the ComputeClass. Deleting the class leaves running nodes in place, but pods that select it can no longer get new nodes, and a deleted `default` class returns the cluster to GKE's own default.
+    - control_id: managed-patching
+      status: configurable
+      field_path: node_pool_config.auto_upgrade
+      evidence:
+        type: spec_default
+        reference: node_pool_config.auto_upgrade and auto_repair keep the class's node pools on the cluster's GKE version and replace unhealthy nodes; maintenance_exclusion UNTIL_END_OF_SUPPORT holds them on their minor version when required.

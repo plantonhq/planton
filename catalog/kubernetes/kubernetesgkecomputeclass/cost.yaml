@@ -1,0 +1,41 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: CatalogKindCostProfile
+metadata:
+  name: kubernetesgkecomputeclass
+spec:
+  billing_model: usage_based
+  cost_drivers:
+    - field_path: priorities
+      sku_meter: compute engine instance hours
+      pricing_unit: hours
+      impact: WHAT GKE may create, in order -- machine families and types, Spot (a deep, interruptible discount), flex-start (discounted, queued) and reservations (capacity already paid for). Every node GKE creates for the class bills Compute Engine's hourly rate for the machine it chose, plus its boot disk and local SSDs; the order decides which rate is paid first, and a fallback family can cost more than the first choice.
+    - field_path: when_unsatisfiable
+      sku_meter: compute engine instance hours
+      pricing_unit: hours
+      impact: "ScaleUpAnyway runs pods on GKE's default machine series when every rule fails -- capacity the class never listed, at that series' rate; DoNotScaleUp spends nothing and leaves the pods pending."
+    - field_path: minimum_capacity
+      sku_meter: compute engine instance hours
+      pricing_unit: hours
+      impact: "THE ONE COMMITTED-SPEND LEVER: a target node count GKE keeps provisioned with no pods pending, billed around the clock (class level, or per rule)."
+    - field_path: active_migration
+      sku_meter: compute engine instance hours
+      pricing_unit: hours
+      impact: optimize_rule_priority moves pods back to the first rule's capacity once it returns, which ends the time spent on a dearer fallback family (or on-demand after a Spot shortage).
+    - field_path: autoscaling_policy
+      sku_meter: compute engine instance hours
+      pricing_unit: hours
+      impact: How long an unneeded node lives before removal and how empty it must be. A short delay returns idle capacity quickly; a long one trades paid idle time for less churn.
+    - field_path: node_pool_config
+      sku_meter: compute engine instance hours
+      pricing_unit: hours
+      impact: Confidential computing and GKE Sandbox restrict the machines a class can use and can carry their own surcharges; the logging variant MAX_THROUGHPUT runs a larger agent on every node.
+  estimate_exclusions:
+    - the ComputeClass object itself is a cluster-scoped Kubernetes declaration that costs nothing -- ALL real spend is the Compute Engine nodes GKE creates for it, billed at the hourly rate of whatever machine the first satisfiable rule allowed (on-demand, Spot, flex-start or reserved)
+    - node counts follow POD DEMAND -- GKE creates nodes when pods that select the class are pending and removes them when they empty, so the bill tracks the workloads, not this declaration
+    - each node's boot disk, local SSDs and secondary boot disks bill as Compute Engine persistent disk and local SSD
+    - reserved capacity consumed through a reservations rule is already paid for by the reservation, whether or not the class uses it
+    - when minimum_capacity sets a target node count, those nodes are COMMITTED spend held continuously
+  notes: "A class is a fleet SHAPE, not a fleet: it decides which machines GKE may buy, in which order, when pods need them. The dials that govern real spend are the rule order (Spot and reservations before on-demand), when_unsatisfiable (whether an unlisted machine may be bought), and minimum_capacity (the only standing spend)."

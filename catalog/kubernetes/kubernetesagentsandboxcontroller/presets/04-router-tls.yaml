@@ -1,0 +1,29 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxController
+metadata:
+  name: agent-sandbox
+spec:
+  # A KubernetesNamespace owns agent-sandbox-system, so the certificate can
+  # be issued into it before the router starts and survives a reinstall of
+  # this resource.
+  namespace:
+    valueFrom:
+      kind: KubernetesNamespace
+      name: agent-sandbox-system
+      fieldPath: spec.name
+  extensions: {}
+  router:
+    authorization:
+      tokenReview:
+        requireToken: true
+    # TLS only: the router serves HTTPS on 8443 from a certificate
+    # cert-manager writes into agent-sandbox-system, and the plain listener
+    # is off.
+    tls:
+      certificateSecret:
+        valueFrom:
+          kind: KubernetesCertificate
+          name: sandbox-router-tls
+          fieldPath: status.outputs.secret_name
+      httpEnabled: false
+      minVersion: tls13

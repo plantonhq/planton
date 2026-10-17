@@ -1,0 +1,73 @@
+# The production composition the catalog page describes: a KubernetesNamespace
+# owns agent-sandbox-system, a cert-manager certificate is issued into it,
+# and the controller references both. On top: a warm standby controller with
+# declared resources and tuned concurrency, label domains for claims, and a
+# router serving HTTPS only on TLS 1.3 behind TokenReview.
+#
+# The verifier proves: the namespace is NOT this resource's (and survives its
+# destroy); a claim binds with a pod label from the declared domain
+# example.com; over HTTPS a tokenless request is refused (401) and a
+# ServiceAccount token reaches the sandbox (200). keepOnUninstall is off, so
+# the destroy takes the definitions.
+#
+# The fixture chain is declared in full and in deploy order (a path-declared
+# fixture's own annotation is never read): cert-manager's ClusterIssuer, the
+# namespace, then the certificate in it.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxController
+metadata:
+  name: e2e-asbx-full
+  annotations:
+    planton.dev/e2e-prerequisites: "KubernetesClusterIssuer, catalog/kubernetes/kubernetesagentsandboxcontroller/e2e/fixture-namespace.yaml, catalog/kubernetes/kubernetesagentsandboxcontroller/e2e/fixture-router-certificate.yaml"
+spec:
+  namespace:
+    valueFrom:
+      kind: KubernetesNamespace
+      name: e2e-asbx-namespace
+      fieldPath: spec.name
+  crds:
+    keepOnUninstall: false
+  extensions:
+    allowedLabelDomains:
+      - example.com
+      - sandbox.users.io
+    claim:
+      concurrentWorkers: 20
+    warmPool:
+      maxBatchSize: 50
+  controller:
+    replicas: 2
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 500m
+        memory: 256Mi
+    kubeApi:
+      qps: 50
+      burst: 100
+    logging:
+      encoder: json
+      level: debug
+  router:
+    replicas: 2
+    minAvailable: 1
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 500m
+        memory: 256Mi
+    authorization:
+      tokenReview:
+        requireToken: true
+    tls:
+      certificateSecret:
+        valueFrom:
+          kind: KubernetesCertificate
+          name: e2e-asbx-router-cert
+          fieldPath: status.outputs.secret_name
+      httpEnabled: false
+      minVersion: tls13

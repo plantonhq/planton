@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesagentsandboxtemplate.v1alpha1;
+
+// KubernetesAgentSandboxTemplateOutputs captures observable outputs after the
+// SandboxTemplate is created on the target cluster. A warm pool references the
+// template by name in the same namespace, so the identity is what a consumer
+// needs.
+message KubernetesAgentSandboxTemplateOutputs {
+  // Name of the created SandboxTemplate (equals metadata.name); a
+  // KubernetesAgentSandboxWarmPool's `sandbox_template_ref.name` references
+  // it.
+  string sandbox_template_name = 1;
+
+  // Namespace the SandboxTemplate was created in (the resolved
+  // spec.namespace).
+  string namespace = 2;
+}

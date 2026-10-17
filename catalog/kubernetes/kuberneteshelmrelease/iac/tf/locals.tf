@@ -86,19 +86,30 @@ locals {
   # unless the chart keeps them itself or allow_helm_managed accepts them.
   # A chart without CRDs (most charts) is ordinary: nothing is applied.
   helm_crds_args = {
-    install            = try(var.spec.crds.install, null) == null ? true : var.spec.crds.install
-    keep_on_uninstall  = try(var.spec.crds.keep_on_uninstall, null) == null ? true : var.spec.crds.keep_on_uninstall
-    expect_crds        = false
-    allow_helm_managed = try(var.spec.crds.allow_helm_managed, null) == null ? false : var.spec.crds.allow_helm_managed
+    install           = try(var.spec.crds.install, null) == null ? true : var.spec.crds.install
+    keep_on_uninstall = try(var.spec.crds.keep_on_uninstall, null) == null ? true : var.spec.crds.keep_on_uninstall
+    expect_crds       = false
 
-    render_override = ""
-    api_versions    = []
-    bundle_url      = ""
+    version       = local.chart_version
+    version_field = "spec.version"
 
-    # The same credentials and set layers the release uses.
-    repository_username = try(var.spec.repository_username, "")
-    repository_password = try(var.spec.repository_password, "")
-    set                 = local.helm_set
-    set_sensitive       = local.helm_set_sensitive
+    chart = {
+      repository   = local.helm_chart_repo
+      name         = local.helm_chart_name
+      release_name = local.release_name
+      namespace    = local.namespace
+      values       = local.helm_release_values
+
+      render_override    = ""
+      api_versions       = []
+      allow_helm_managed = try(var.spec.crds.allow_helm_managed, null) == null ? false : var.spec.crds.allow_helm_managed
+
+      # The same credentials and set layers the release uses.
+      repository_username = try(var.spec.repository_username, "")
+      repository_password = try(var.spec.repository_password, "")
+      set                 = local.helm_set
+      set_sensitive       = local.helm_set_sensitive
+    }
+    bundle = null
   }
 }

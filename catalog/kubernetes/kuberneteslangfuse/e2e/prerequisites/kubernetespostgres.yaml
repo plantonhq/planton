@@ -1,0 +1,27 @@
+# Consumer-scoped PostgreSQL fixture for the KubernetesLangfuse lanes -
+# the composed application database:
+# - OWNS THE SHARED NAMESPACE (e2e-langfuse): it deploys first among the
+#   stores (registry prerequisite order), so it alone creates the
+#   namespace and every other fixture joins it. Langfuse co-locates with
+#   them because each store password reaches its pods through a
+#   secretKeyRef, which cannot cross namespaces.
+# - ONE BOOTSTRAP DATABASE: initdb creates `langfuse` owned by the
+#   `langfuse` role - Langfuse runs its Prisma migrations inside it.
+# - The operator maintains the `e2e-lf-pg-app` credential Secret (keys
+#   username/password) across failovers - the composition target of every
+#   scenario's password reference.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPostgres
+metadata:
+  name: e2e-lf-pg
+spec:
+  namespace:
+    value: e2e-langfuse
+  createNamespace: true
+  instances: 1
+  storage:
+    size: 2Gi
+  bootstrap:
+    initdb:
+      database: langfuse
+      owner: langfuse

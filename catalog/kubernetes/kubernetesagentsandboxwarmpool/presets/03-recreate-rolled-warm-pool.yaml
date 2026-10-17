@@ -1,0 +1,13 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxWarmPool
+metadata:
+  name: <pool-name>
+spec:
+  namespace:
+    value: <namespace>
+  replicas: 5
+  sandboxTemplateRef:
+    name:
+      value: <template-name>
+  updateStrategy:
+    type: Recreate

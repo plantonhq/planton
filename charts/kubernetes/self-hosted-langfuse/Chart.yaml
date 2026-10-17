@@ -1,0 +1,19 @@
+apiVersion: infra-hub.planton.ai/v1alpha1
+kind: InfraChart
+metadata:
+  name: Kubernetes Self-Hosted Langfuse
+spec:
+  selector:
+    kind: platform
+  description: >-
+    Your own Langfuse, the open-source LLM engineering platform for tracing,
+    prompts and evaluations, on your cluster in one deploy, with all four of
+    its stores composed and wired by reference: a CloudNativePG PostgreSQL,
+    a replicated-ready ClickHouse with Keeper, a never-evicting Valkey queue
+    and a SeaweedFS bucket. Secrets are generated and kept out of Helm
+    values, and an organization, project, API key pair and admin are seeded,
+    so an SDK can send its first trace the moment the deploy finishes.
+  iconUrl: https://downloads.planton.ai/catalog/logos/kubernetes/kuberneteslangfuse/logo.svg
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/kubernetes/self-hosted-langfuse
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/kubernetes/self-hosted-langfuse/README.md

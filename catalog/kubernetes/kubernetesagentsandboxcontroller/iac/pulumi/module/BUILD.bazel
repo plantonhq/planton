@@ -1,0 +1,53 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "module",
+    srcs = [
+        "compose.go",
+        "documents.go",
+        "flags.go",
+        "locals.go",
+        "main.go",
+        "outputs.go",
+        "settings.go",
+        "vars.go",
+        "workloads.go",
+    ],
+    importpath = "github.com/plantonhq/planton/catalog/kubernetes/kubernetesagentsandboxcontroller/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//catalog/kubernetes",
+        "//catalog/kubernetes/kubernetesagentsandboxcontroller/v1alpha1",
+        "//pkg/failure",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/keptcrds",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/workloadowner",
+        "//pkg/kubernetes/helmcrds",
+        "//shared",
+        "//shared/catalogkind",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/yaml",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+        "@io_k8s_sigs_yaml//:yaml",
+    ],
+)
+
+go_test(
+    name = "module_test",
+    srcs = [
+        "compose_test.go",
+        "parity_test.go",
+    ],
+    data = glob(["testdata/**"]),
+    embed = [":module"],
+    deps = [
+        "//catalog/kubernetes",
+        "//catalog/kubernetes/kubernetesagentsandboxcontroller/v1alpha1",
+        "//pkg/failure",
+        "//pkg/iac/tofu/generators",
+        "//shared",
+        "//shared/foreignkey/v1:foreignkey",
+        "@io_k8s_sigs_yaml//:yaml",
+    ],
+)

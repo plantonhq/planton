@@ -45,7 +45,10 @@ built-ins, and knowing why prevents double-installs:
 | `<env>-gke-nodes` | GcpServiceAccount | ONE least-privilege node identity (system pool + every NAP pool) | — |
 | `<env>-gke` | GcpGkeCluster | Regional control plane, Dataplane V2, private nodes, NAP; publishes the Kubernetes connection | — |
 | `<env>-gke-system` | GcpGkeNodePool | Always-on floor for cluster-critical pods, autoscaled per zone | — |
-| `<env>-gke-spot` | GcpGkeNodePool | Scale-to-zero Spot pool, tainted (opt-in capacity) | `spot_pool_enabled` |
+| `<env>-gke-default-class` | KubernetesGkeComputeClass | The cluster's `default` compute class: the system pool first, then the listed families, so nodes keep coming through a machine-type stockout | `default_compute_class_enabled` |
+| `<env>-gke-spot` | GcpGkeNodePool | Scale-to-zero Spot pool, tainted (opt-in capacity) | `default_compute_class_enabled` | `false` | On for production in busy regions: GKE falls back across machine families when one runs out (changes which families the cluster buys) |
+| `default_compute_class_families` / `default_compute_class_min_cores` | n2d, c3d, n2, t2d / 4 | Interchangeable families at the size your workloads were sized for (default class only) |
+| `spot_pool_enabled` |
 | `<env>-gke-cert-manager` + `-wi` + `<env>-cert-manager` | GcpServiceAccount + GcpGkeWorkloadIdentityBinding + KubernetesCertManager | Certificate machinery with keyless Cloud DNS DNS-01 | — |
 | `<env>-letsencrypt-prod` / `-staging` | KubernetesClusterIssuer ×2 | Let's Encrypt issuers (staging first — see After deployment) | — |
 | `<env>-gke-external-dns` + `-wi` + `<env>-external-dns` | GcpServiceAccount + GcpGkeWorkloadIdentityBinding + KubernetesExternalDns | Kubernetes exposure → real Cloud DNS records | — |
@@ -165,6 +168,12 @@ keep `env` at 13 characters or fewer.
   are immutable; Dataplane V2 is chosen at creation; deleting the cluster
   requires first setting `deletion_protection` to false on the cluster
   resource — the guard is the point.
+- **Capacity resilience**: in a busy region, turn on
+  `default_compute_class_enabled`. The cluster's `default` compute class
+  sends pods to the system pool first and then through the listed families,
+  so a machine-type stockout (`ZONE_RESOURCE_POOL_EXHAUSTED` in every zone)
+  no longer stalls installs and rollouts. It is safe to turn on in place;
+  pods that select a class of their own are unaffected.
 - **Cost levers**: the Spot pool is the biggest saving for tolerant
   workloads; NAP's `OPTIMIZE_UTILIZATION` profile packs harder if churn is
   acceptable; one auto-allocated Cloud NAT is already the cost-conscious

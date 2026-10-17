@@ -1,0 +1,96 @@
+# THE FULL SURFACE THAT RUNS ON KIND: the namespace through valueFrom, the
+# object's own labels and annotations, a hardened pod with resources and a
+# probe, a workspace claim template, the headless Service, custom network
+# rules (the router and the template's own namespace in; cluster DNS and HTTPS
+# out), and both claim policies opened. The verifier reads every field back
+# and proves the controller's shared NetworkPolicy carries exactly the
+# declared rules.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxTemplate
+metadata:
+  name: e2e-asbx-tpl-full
+  annotations:
+    planton.dev/e2e-prerequisites: "catalog/kubernetes/kubernetesagentsandboxtemplate/e2e/fixture-namespace.yaml"
+spec:
+  namespace:
+    valueFrom:
+      kind: KubernetesNamespace
+      name: e2e-asbx-tpl-ns
+      fieldPath: spec.name
+  labels:
+    team: agents
+  annotations:
+    example.com/owner: platform
+  podTemplate:
+    metadata:
+      labels:
+        app: e2e-template
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        fsGroup: 65534
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: app
+          image: registry.k8s.io/e2e-test-images/agnhost:2.53
+          args: ["netexec", "--http-port=8888", "--udp-port=-1"]
+          ports:
+            - name: http
+              containerPort: 8888
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+          readinessProbe:
+            httpGet:
+              path: /hostname
+              port: http
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: workspace
+              mountPath: /workspace
+  volumeClaimTemplates:
+    - metadata:
+        name: workspace
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+  service: true
+  networkPolicy:
+    ingress:
+      - from:
+          - namespaceSelector:
+              matchLabels:
+                kubernetes.io/metadata.name: agent-sandbox-system
+            podSelector:
+              matchLabels:
+                app: sandbox-router
+          - podSelector: {}
+        ports:
+          - protocol: TCP
+            port: "8888"
+    egress:
+      - to:
+          - namespaceSelector:
+              matchLabels:
+                kubernetes.io/metadata.name: kube-system
+        ports:
+          - protocol: UDP
+            port: "53"
+          - protocol: TCP
+            port: "53"
+      - ports:
+          - protocol: TCP
+            port: "443"
+  networkPolicyManagement: Managed
+  envVarsInjectionPolicy: Allowed
+  volumeClaimTemplatesPolicy: Overrides

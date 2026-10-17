@@ -1,0 +1,101 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/catalogkindcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: CatalogKindControlProfile
+metadata:
+  name: kubernetesagentsandbox
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: configurable
+      field_path: volume_claim_templates
+      evidence:
+        type: spec_default
+        reference: Each claim is provisioned by its storage class (`volume_claim_templates[].spec.storage_class_name`); encryption at rest is the storage class's provisioner's property, as on every major cloud's default disk class.
+      notes: The Sandbox object itself is persisted in the cluster's etcd, whose encryption at rest belongs to the cluster component.
+    - control_id: enc-at-rest-cmk
+      status: configurable
+      field_path: volume_claim_templates
+      evidence:
+        type: spec_default
+        reference: A storage class whose provisioner encrypts with a customer-managed key (a KubernetesStorageClass with the provider's key parameter) keys every claim the sandbox owns.
+      notes: The key is the storage class's choice, not the sandbox's; reference a class configured with one.
+    - control_id: enc-in-transit
+      status: configurable
+      field_path: pod_template
+      evidence:
+        type: spec_default
+        reference: Traffic to the sandbox reaches its own process over the ports it serves; TLS is the sandbox image's choice, and the controller's router terminates TLS for callers outside the pod network (KubernetesAgentSandboxController router.tls).
+      notes: The object opens no connection itself.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: module_default
+        reference: The sandbox gets at most a headless ClusterIP Service (`service`), never a LoadBalancer or an Ingress; nothing outside the cluster reaches it unless another component exposes it.
+      notes: Expose a sandbox to the internet only through the controller's router behind a gateway you declare.
+    - control_id: restricted-ingress
+      status: configurable
+      field_path: pod_template
+      evidence:
+        type: spec_default
+        reference: The pod's labels (`pod_template.metadata.labels`) are what a KubernetesNetworkPolicy selects to restrict who reaches the sandbox; a SandboxTemplate's managed policy does this for sandboxes it creates, but a directly declared Sandbox carries none of its own.
+      notes: Pair a long-lived sandbox with a network policy selecting its labels.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The sandbox is not an internet edge (see no-public-access).
+    - control_id: rbac
+      status: configurable
+      field_path: pod_template
+      evidence:
+        type: spec_default
+        reference: The pod runs as the ServiceAccount `pod_template.spec.service_account_name` references, and `automount_service_account_token` decides whether its code holds Kubernetes credentials at all.
+      notes: Who may create, change or delete the Sandbox is the cluster's Kubernetes RBAC.
+    - control_id: workload-identity
+      status: configurable
+      field_path: pod_template
+      evidence:
+        type: spec_default
+        reference: A ServiceAccount bound to a cloud identity (a KubernetesServiceAccount with workload identity) gives the sandbox's code short-lived cloud credentials with no key in the pod.
+      notes: Leave the token unmounted for an agent that needs no cloud access.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: The object performs no authentication; callers authenticate to the controller's router.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The object has no users.
+    - control_id: audit-logging
+      status: not_applicable
+      notes: Changes to the Sandbox are recorded by the cluster's API server audit log, a property of the cluster component; the controller records its own events on the object.
+    - control_id: monitoring-integration
+      status: configurable
+      field_path: pod_template
+      evidence:
+        type: spec_default
+        reference: The pod's labels and annotations (`pod_template.metadata`) are what a KubernetesPodMonitor or a scrape annotation selects; the controller's own metrics (sandbox creation latency, warm pool size) come from KubernetesAgentSandboxController.
+      notes: The sandbox's Ready, Suspended and Finished conditions are on the object for any tool that watches it.
+    - control_id: backup-recovery
+      status: configurable
+      field_path: volume_claim_templates
+      evidence:
+        type: spec_default
+        reference: The sandbox's state lives in its claims; a storage class with snapshot support, or a volume backup tool selecting the claims' labels (`volume_claim_templates[].metadata.labels`), backs it up.
+      notes: The object itself recovers by re-applying the manifest.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: Retention belongs to the backup tool or snapshot schedule that protects the claims, not to the sandbox.
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: A sandbox is one pod by design (a singleton with a stable identity); its availability is a pod's, rescheduled by the controller if its node fails, with its claims following under the storage class's zone rules.
+    - control_id: deletion-protection
+      status: not_applicable
+      notes: The object carries no deletion protection of its own; Kubernetes objects are protected through RBAC and admission policy on the cluster. Deleting the Sandbox deletes its pod, Service and claims.
+    - control_id: managed-patching
+      status: configurable
+      field_path: pod_template
+      evidence:
+        type: spec_default
+        reference: The sandbox runs the image its containers name; patching is a new image tag in `pod_template.spec.containers[].image`, applied by redeploying.
+      notes: The controller that runs it is patched through KubernetesAgentSandboxController.

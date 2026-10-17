@@ -14,6 +14,7 @@ architecture diagram the platform renders.
 
 | Pattern | The truth it owns |
 |---|---|
+| [gke-capacity-fallback.md](gke-capacity-fallback.md) | Keeping a GKE cluster able to get nodes through a machine-type stockout: the cluster's default compute class switch, a `default` ComputeClass listing several families of the same size, and the fixed node pool it uses first |
 | [namespace-ownership.md](namespace-ownership.md) | Who owns a namespace: a dedicated KubernetesNamespace component vs the `createNamespace` flag — including the sole-tenant infra case where the flag is the normal shape |
 | [operator-prerequisite.md](operator-prerequisite.md) | Custom-resource kinds need their controller watching their namespace; the dependency is registry metadata, draws no diagram edge, and operators disagree on default watch scope |
 | [observability-stack.md](observability-stack.md) | "Give me observability": the assembled stack (collector, Loki, Tempo, kube-prometheus-stack, Grafana) vs the all-in-one (Signoz + composed ClickHouse), with the fully wired example |

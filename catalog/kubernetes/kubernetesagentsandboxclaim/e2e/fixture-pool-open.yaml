@@ -1,0 +1,14 @@
+# The full-surface claim's pool, built from fixture-template-open.yaml, kept
+# empty: a claim that sets variables or volumes always starts cold, so warm
+# members would only cost capacity.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxWarmPool
+metadata:
+  name: e2e-asbx-cl-pool-open
+spec:
+  namespace:
+    value: default
+  replicas: 0
+  sandboxTemplateRef:
+    name:
+      value: e2e-asbx-cl-tpl-open

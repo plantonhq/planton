@@ -1,0 +1,108 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/catalogkindcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: CatalogKindControlProfile
+metadata:
+  name: kuberneteslangfuse
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: configurable
+      field_path: blob_storage.event_upload.sse
+      evidence:
+        type: spec_default
+        reference: Unset means objects carry the bucket's own default encryption; sse with aes256 or aws_kms makes Langfuse request server-side encryption on every event it writes to S3 (media_upload.sse and batch_export.sse do the same for their objects).
+      notes: Langfuse provisions no volumes. Users, projects, prompts and API keys rest in Postgres, traces in ClickHouse and queued jobs in the Redis-protocol store, and each store's encryption at rest is that component's posture. Stored LLM provider keys and integration credentials are additionally encrypted by Langfuse itself with the instance encryption key before they reach Postgres.
+    - control_id: enc-at-rest-cmk
+      status: configurable
+      field_path: blob_storage.event_upload.sse.kms_key_id
+      evidence:
+        type: spec_validation
+        reference: kms_key_id applies only with the aws_kms algorithm (rule spec.blob_storage.sse.kms_key_requires_kms); it names the customer-managed key Langfuse requests for each object, and defaults compose an AwsKmsKey's ARN. Empty with aws_kms means the bucket's AWS-managed key.
+      notes: Customer-managed keys for Postgres, ClickHouse and the Redis-protocol store belong to those components. The instance encryption key (secrets.encryption_key) is declarable as a managed secret, which keeps the application-level key under the organization's custody.
+    - control_id: enc-in-transit
+      status: configurable
+      field_path: clickhouse.secure
+      evidence:
+        type: spec_default
+        reference: Unset means plain HTTP and native-protocol connections to ClickHouse (in-cluster traffic); secure with the TLS ports encrypts both, as ClickHouse Cloud requires.
+      notes: The other store connections are configurable the same way -- redis.tls for the Redis-protocol store (with Sentinel TLS), postgres.args for sslmode, and https endpoints for object storage. The web server serves plain HTTP on port 3000 inside the cluster; TLS for people and SDKs terminates at the route or ingress composed over the service output.
+    - control_id: no-public-access
+      status: configurable
+      field_path: web.service.type
+      evidence:
+        type: spec_default
+        reference: Unset means ClusterIP -- nothing is reachable from outside the cluster until a route or ingress is composed explicitly; NodePort or LoadBalancer opts into direct exposure, with web.service.annotations carrying the cloud load balancer configuration.
+      notes: Every preset keeps the ClusterIP default. Media and batch-export downloads use presigned URLs against the object store, whose own exposure is the store's posture.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: The modules render no NetworkPolicies and the spec has no seam for them -- restricting which sources reach the web Service is the cluster's NetworkPolicy posture (a KubernetesNetworkPolicy composes naturally). Outbound requests to user-configured endpoints are restricted separately through network.allowlists.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The component terminates no edge traffic itself -- exposure happens through separate route or ingress kinds, and a web application firewall belongs to that layer.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: module_default
+        reference: Langfuse authorizes every UI action against organization and project roles (owner, admin, member, viewer, none), and every public API request against a project's key pair -- the kind's e2e verifier asserts that an anonymous GET /api/public/projects is refused with 401 on both engines.
+      notes: auth.new_user_access sets the roles people receive on arrival; auth.disable_sign_up closes self-service accounts on an exposed instance.
+    - control_id: workload-identity
+      status: configurable
+      field_path: service_account.workload_identity
+      evidence:
+        type: spec_default
+        reference: Unset means no cloud identity on the ServiceAccount; set it to federate with an AWS IAM role (EKS IRSA), a Google service account (GKE Workload Identity) or an Azure managed identity, rendered as the annotation each cloud expects. With it, S3 and GCS targets leave their static credentials empty and Langfuse uses the pod's identity.
+      notes: The same identity covers Bedrock, Vertex and SES for Langfuse AI and email. Azure Blob Storage is the exception -- Langfuse authenticates to it with the storage account key only.
+    - control_id: no-legacy-auth
+      status: enforced_by_default
+      evidence:
+        type: module_default
+        reference: No default credential ever ships -- both modules generate the API-key salt, the encryption key, the NextAuth session secret, the seeded project key pair and the seeded admin's password into the module-owned instance Secret when the spec leaves them empty, and Langfuse reads each through a secretKeyRef.
+      notes: The chart's own fallback Secret (<name>-app) is created empty because the module supplies all three instance secrets by reference.
+    - control_id: strong-user-auth
+      status: configurable
+      field_path: auth.sso
+      evidence:
+        type: spec_default
+        reference: Unset means email-and-password sign-in only; each configured provider (Google, GitHub, GitHub Enterprise, GitLab, Azure AD, Okta, Authentik, OneLogin, Auth0, Cognito, Keycloak, JumpCloud, WorkOS, WordPress or a custom OIDC provider) adds single sign-on, where the identity provider enforces MFA.
+      notes: auth.disable_password_sign_in makes single sign-on the only door, and auth.sso_enforced_domains forces it for chosen email domains.
+    - control_id: audit-logging
+      status: configurable
+      field_path: enterprise.license_key
+      evidence:
+        type: spec_default
+        reference: Unset means the open-source edition, which keeps no audit log; an Enterprise Edition license key enables Langfuse's audit logs of changes to projects, members, keys and settings.
+      notes: Changes to the release itself are Kubernetes API operations captured by the target cluster's audit policy. Application logs stream to stdout for the cluster's log collector (observability.log_format json makes them structured).
+    - control_id: monitoring-integration
+      status: configurable
+      field_path: observability
+      evidence:
+        type: spec_default
+        reference: Unset means Langfuse logs to stdout at its default level and exports no traces of itself; observability sets the log level and format and an OpenTelemetry endpoint for Langfuse's own traces.
+      notes: The web server's /api/public/health and /api/public/ready endpoints back its liveness and readiness probes; the worker's liveness can also fail when queue consumption stalls (worker.fail_liveness_if_queue_consumption_stuck).
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The component holds no durable data of its own -- everything restorable lives in Postgres (users, projects, prompts, API keys), ClickHouse (traces, observations, scores) and object storage, whose backup posture rides those components (KubernetesPostgres backup, for example). The salt and encryption key must be backed up with Postgres -- declare them as managed secrets so they survive this component.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist on this component to retain (see backup-recovery). Langfuse's data retention setting (init.project.retention_days, Enterprise Edition) deletes old traces and is not a backup policy.
+    - control_id: multi-zone-ha
+      status: configurable
+      field_path: web.replicas
+      evidence:
+        type: spec_default
+        reference: Defaults to 1; the web server is stateless, so replicas scale freely, and the worker scales the same way (worker.replicas). web.scheduling and worker.scheduling carry topology spread constraints and pod anti-affinity for spreading replicas across zones.
+      notes: Pair two or more replicas with web.pdb and worker.pdb so voluntary disruptions keep one serving. Zone survival of the data rides the composed stores' own replication.
+    - control_id: deletion-protection
+      status: not_applicable
+      notes: Neither Kubernetes nor Helm offers a deletion-protection flag on a release; protection is operational (namespace RBAC, change review). Deleting the resource removes the release and the instance Secret -- the four stores holding everything of value are separate resources and survive, but generated salt and encryption key values go with the Secret unless they are declared.
+    - control_id: managed-patching
+      status: configurable
+      field_path: chart_version
+      evidence:
+        type: spec_default
+        reference: Defaults to chart 2.1.5 (Langfuse 4.56.0); each chart release pins one Langfuse version, so a version change is a deliberate manifest edit rolled out as an atomic Helm upgrade, with Postgres and ClickHouse migrations running when the new web server starts.
+      notes: web.image.tag and worker.image.tag override the chart's pinned image when a patch release lands before a chart release.

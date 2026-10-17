@@ -1,0 +1,115 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesagentsandboxwarmpool.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// KubernetesAgentSandboxWarmPoolSpec defines an agent-sandbox SandboxWarmPool:
+// a number of sandboxes, built from one KubernetesAgentSandboxTemplate, kept
+// running and ready so a claim gets one in the time it takes to hand it over
+// instead of the time it takes to start a pod. The agent-sandbox controller
+// (KubernetesAgentSandboxController, extensions on) keeps the pool filled,
+// gives a ready member to each claim, and replaces what it hands out.
+//
+// 100% fidelity with the upstream SandboxWarmPool custom resource
+// (extensions.agents.x-k8s.io/v1beta1), pinned to agent-sandbox v1.0.7 -- the
+// release KubernetesAgentSandboxController installs -- and held to its served
+// definition by the mirror test. The upstream spec follows the Planton envelope
+// directly: the size, the template, and how stale members are replaced.
+//
+// The pool is what a product claims from: its name and namespace are what
+// agent-sandbox's SDKs take (`create_sandbox(warmpool=..., namespace=...)`).
+// It is also the cost dial -- every member reserves its template's resources
+// while it waits -- and the scale target an autoscaler can own (it serves the
+// scale subresource; leave `replicas` unset when one does).
+message KubernetesAgentSandboxWarmPoolSpec {
+  // Kubernetes namespace the SandboxWarmPool is created in; its members, the
+  // claims made against it and its template live there too. Typically a
+  // reference to a KubernetesNamespace resource's `spec.name`.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // Labels on the SandboxWarmPool object itself (its metadata.labels),
+  // merged under Planton's identity labels (a key in both keeps the identity
+  // value). The members' pod labels come from the template.
+  map<string, string> labels = 2 [
+    (dev.planton.shared.options.kubernetes_object_metadata) = object_labels,
+    (buf.validate.field).map = {
+      keys: {
+        string: {
+          min_len: 1
+          max_len: 317
+          pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?[A-Za-z0-9]([-A-Za-z0-9_.]{0,61}[A-Za-z0-9])?$"
+        }
+      }
+      values: {
+        string: {
+          max_len: 63
+          pattern: "^([A-Za-z0-9]([-A-Za-z0-9_.]{0,61}[A-Za-z0-9])?)?$"
+        }
+      }
+    }
+  ];
+
+  // Annotations on the SandboxWarmPool object itself (its
+  // metadata.annotations).
+  map<string, string> annotations = 3 [(dev.planton.shared.options.kubernetes_object_metadata) = object_annotations];
+
+  // How many ready sandboxes the pool keeps. Each member is a Sandbox named
+  // `<pool>-<random>` running the template's pod; a claimed member leaves the
+  // pool and the controller starts a replacement. Zero keeps the pool empty
+  // (every claim starts cold).
+  //
+  // Unset, the cluster writes 1 when the pool is created, and Planton never
+  // writes it again: leave it unset when a HorizontalPodAutoscaler or KEDA
+  // scales the pool through its scale subresource, so each apply does not
+  // fight the autoscaler.
+  optional int32 replicas = 4 [(buf.validate.field).int32.gte = 0];
+
+  // The template the pool's members are built from, in the pool's namespace.
+  KubernetesAgentSandboxWarmPoolTemplateRef sandbox_template_ref = 5 [(buf.validate.field).required = true];
+
+  // How the pool replaces members that no longer match their template (a
+  // change to the template's pod, volume claim templates or `service`, or to
+  // `sandbox_template_ref`). Labels, annotations and the template's claim
+  // and network policies never make a member stale. Claimed sandboxes are
+  // never touched: they belong to their claims.
+  KubernetesAgentSandboxWarmPoolUpdateStrategy update_strategy = 6;
+}
+
+// KubernetesAgentSandboxWarmPoolTemplateRef names the SandboxTemplate a pool's
+// members are built from. Faithful to upstream SandboxTemplateRef.
+message KubernetesAgentSandboxWarmPoolTemplateRef {
+  // Name of the SandboxTemplate, in the pool's namespace. Defaults to a
+  // KubernetesAgentSandboxTemplate reference (its sandbox_template_name
+  // output), so the template is created first; pass the literal name with
+  // `value:` for a template Planton does not manage.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesAgentSandboxTemplate,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.sandbox_template_name",
+    (dev.planton.shared.options.diagram_label) = "template"
+  ];
+}
+
+// KubernetesAgentSandboxWarmPoolUpdateStrategy is how a pool replaces stale
+// members. Faithful to upstream SandboxWarmPoolUpdateStrategy.
+message KubernetesAgentSandboxWarmPoolUpdateStrategy {
+  // "Recreate" deletes stale unclaimed members at once, so the pool holds
+  // only sandboxes matching the current template (a rollout with a dip in
+  // ready members while replacements start). "OnReplenish" leaves stale
+  // members until each is claimed or deleted, and builds every replacement
+  // from the current template (no dip, but claims may get the old shape for
+  // a while). Unset, the cluster writes "OnReplenish".
+  optional string type = 1 [(buf.validate.field).string = {
+    in: [
+      "Recreate",
+      "OnReplenish"
+    ]
+  }];
+}

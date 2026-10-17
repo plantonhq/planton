@@ -1,0 +1,16 @@
+# THE CONTROLLER-OWNED-ELSEWHERE REFUSAL: a Deployment named
+# agent-sandbox-controller already runs in agent-sandbox-system without this
+# kind's mark (the fixture, standing in for GKE's add-on or a kubectl apply
+# of upstream's release). The deploy must be refused before anything is
+# written rather than take that controller over; the verifier asserts the
+# three parts and that the other controller gained no mark.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxController
+metadata:
+  name: e2e-asbx-ctrl-owned
+  annotations:
+    planton.dev/e2e-prerequisites: "catalog/kubernetes/kubernetesagentsandboxcontroller/e2e/fixture-foreign-controller.yaml"
+    planton.dev/e2e-expect-deploy-failure: workload-owned-elsewhere
+spec:
+  namespace:
+    value: agent-sandbox-system

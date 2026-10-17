@@ -223,6 +223,12 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| KubernetesLangfuse | `spec.blobStorage.target.r2.credentials.accessKeyId` | `status.outputs.r2_access_key_id` |
+| KubernetesLangfuse | `spec.blobStorage.target.r2.credentials.secretAccessKey` | `status.outputs.r2_secret_access_key` |
+| KubernetesLangfuse | `spec.blobStorage.mediaUpload.target.r2.credentials.accessKeyId` | `status.outputs.r2_access_key_id` |
+| KubernetesLangfuse | `spec.blobStorage.mediaUpload.target.r2.credentials.secretAccessKey` | `status.outputs.r2_secret_access_key` |
+| KubernetesLangfuse | `spec.blobStorage.batchExport.target.r2.credentials.accessKeyId` | `status.outputs.r2_access_key_id` |
+| KubernetesLangfuse | `spec.blobStorage.batchExport.target.r2.credentials.secretAccessKey` | `status.outputs.r2_secret_access_key` |
 | KubernetesLoki | `spec.storage.r2.credentials.accessKeyId` | `status.outputs.r2_access_key_id` |
 | KubernetesLoki | `spec.storage.r2.credentials.secretAccessKey` | `status.outputs.r2_secret_access_key` |
 | KubernetesMongodb | `spec.backup.storages[].r2.credentials.accessKeyId` | `status.outputs.r2_access_key_id` |

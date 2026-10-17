@@ -1775,7 +1775,7 @@ Allowed values (use exactly as shown):
 - `GcpCloudBuildWorkerPool` -- 3260–3269: GCP platform engineering, continued (Cloud Build and Cloud Deploy resources many pipelines share) A private Cloud Build worker pool: build machines many triggers and Cloud Deploy targets share, optionally on a private network.
 - `GcpDeployPolicy` -- A Cloud Deploy deploy policy: rollout restrictions (freeze windows) that apply to every pipeline and target its selectors match.
 - `GcpDeployCustomTargetType` -- A Cloud Deploy custom target type: how to render and deploy to a target Google does not deploy natively; many targets share one.
-- `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4190–4199 reserved for growth) 4000–4029: Kubernetes building blocks (core API primitives)
+- `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4180–4199 hosts agent sandbox runtimes) 4000–4029: Kubernetes building blocks (core API primitives)
 - `KubernetesDeployment`
 - `KubernetesStatefulSet`
 - `KubernetesDaemonSet`
@@ -1834,6 +1834,7 @@ Allowed values (use exactly as shown):
 - `KubernetesKarpenterEc2NodeClass`
 - `KubernetesClusterAutoscaler`
 - `KubernetesVelero`
+- `KubernetesGkeComputeClass`
 - `KubernetesKubePrometheusStack` -- 4070–4079: Kubernetes observability
 - `KubernetesGrafana`
 - `KubernetesSignoz` -- KubernetesClickHouse is a prerequisite because SigNoz stores every trace, metric and log in ClickHouse and deploys none of its own — the telemetry store is composed, never bundled.
@@ -1888,6 +1889,7 @@ Allowed values (use exactly as shown):
 - `KubernetesMlflow` -- KubernetesPostgres is a prerequisite because MLflow's backend store composes a KubernetesPostgres in its production arm (FK defaults onto its outputs; the module composes the connection URI from its credential Secret), and KubernetesSeaweedFs because the artifact store's S3-compatible arm FK-defaults onto the SeaweedFS endpoint and credential Secret.
 - `KubernetesTrino` -- KubernetesPostgres is a prerequisite because Trino's postgres catalogs compose a KubernetesPostgres (the catalog host and credential FK-default onto its outputs), and the pods read that database's credential Secret to resolve catalog passwords from environment.
 - `KubernetesSuperset` -- KubernetesPostgres is a prerequisite because Superset's REQUIRED metadata database composes a KubernetesPostgres (FK defaults onto its outputs; the module composes the environment Secret from its credential Secret), and KubernetesValkey because the cache/broker arm FK-defaults onto a KubernetesValkey's service and password Secret.
+- `KubernetesLangfuse` -- Langfuse's four required stores each FK-default onto a catalog kind: KubernetesPostgres (users, projects, prompts, API keys - host and password Secret), KubernetesClickHouse (traces and scores - host, cluster name and auth Secret), KubernetesValkey (the ingestion queues - host, ACL user and password Secret), and KubernetesSeaweedFs (the S3-compatible event store - endpoint and credentials Secret).
 - `KubernetesArgocd` -- 4150–4169: Kubernetes GitOps and CI/CD
 - `KubernetesArgoWorkflows`
 - `KubernetesTektonOperator`
@@ -1896,7 +1898,7 @@ Allowed values (use exactly as shown):
 - `KubernetesGhaRunnerScaleSet` -- KubernetesGhaRunnerScaleSetController is a prerequisite because this kind renders an AutoscalingRunnerSet custom resource that only the controller's CRDs admit and only the controller reconciles into listener and runner pods.
 - `KubernetesHarbor`
 - `KubernetesJenkins`
-- `KubernetesTemporal` -- 4170–4189: Kubernetes app platforms KubernetesPostgres is a prerequisite because the recommended (and E2E-proven) database composition backs Temporal's default and visibility stores with a CloudNativePG cluster.
+- `KubernetesTemporal` -- 4170–4179: Kubernetes app platforms KubernetesPostgres is a prerequisite because the recommended (and E2E-proven) database composition backs Temporal's default and visibility stores with a CloudNativePG cluster.
 - `KubernetesNats`
 - `KubernetesLocust`
 - `KubernetesPlantonRunner`
@@ -1906,6 +1908,11 @@ Allowed values (use exactly as shown):
 - `KubernetesFlagd`
 - `KubernetesGoFeatureFlagFlagFile`
 - `KubernetesFlagdFlagFile`
+- `KubernetesAgentSandboxController` -- 4180–4199: agent sandbox runtimes (4180–4189 Kubernetes SIG Apps' agent-sandbox; 4190–4199 Agent Substrate)
+- `KubernetesAgentSandbox` -- KubernetesAgentSandboxController is a prerequisite because it installs the agents.x-k8s.io definition the Sandbox is an instance of, and the controller that runs its pod.
+- `KubernetesAgentSandboxTemplate` -- KubernetesAgentSandboxController is a prerequisite because it installs the extensions.agents.x-k8s.io definition the SandboxTemplate is an instance of, and the extension controllers that turn it into network policy and warm pool members.
+- `KubernetesAgentSandboxWarmPool` -- KubernetesAgentSandboxController is a prerequisite because it installs the extensions.agents.x-k8s.io definition the SandboxWarmPool is an instance of, and the controller that keeps the pool's members ready.
+- `KubernetesAgentSandboxClaim` -- KubernetesAgentSandboxController is a prerequisite because it installs the extensions.agents.x-k8s.io definition the SandboxClaim is an instance of, and the controller that binds it to a warm pool member.
 - `DigitalOceanApp` -- 5000–5999: DigitalOcean resources
 - `DigitalOceanBucket`
 - `DigitalOceanContainerRegistry`
@@ -2783,7 +2790,7 @@ Allowed values (use exactly as shown):
 - `GcpCloudBuildWorkerPool` -- 3260–3269: GCP platform engineering, continued (Cloud Build and Cloud Deploy resources many pipelines share) A private Cloud Build worker pool: build machines many triggers and Cloud Deploy targets share, optionally on a private network.
 - `GcpDeployPolicy` -- A Cloud Deploy deploy policy: rollout restrictions (freeze windows) that apply to every pipeline and target its selectors match.
 - `GcpDeployCustomTargetType` -- A Cloud Deploy custom target type: how to render and deploy to a target Google does not deploy natively; many targets share one.
-- `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4190–4199 reserved for growth) 4000–4029: Kubernetes building blocks (core API primitives)
+- `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4180–4199 hosts agent sandbox runtimes) 4000–4029: Kubernetes building blocks (core API primitives)
 - `KubernetesDeployment`
 - `KubernetesStatefulSet`
 - `KubernetesDaemonSet`
@@ -2842,6 +2849,7 @@ Allowed values (use exactly as shown):
 - `KubernetesKarpenterEc2NodeClass`
 - `KubernetesClusterAutoscaler`
 - `KubernetesVelero`
+- `KubernetesGkeComputeClass`
 - `KubernetesKubePrometheusStack` -- 4070–4079: Kubernetes observability
 - `KubernetesGrafana`
 - `KubernetesSignoz` -- KubernetesClickHouse is a prerequisite because SigNoz stores every trace, metric and log in ClickHouse and deploys none of its own — the telemetry store is composed, never bundled.
@@ -2896,6 +2904,7 @@ Allowed values (use exactly as shown):
 - `KubernetesMlflow` -- KubernetesPostgres is a prerequisite because MLflow's backend store composes a KubernetesPostgres in its production arm (FK defaults onto its outputs; the module composes the connection URI from its credential Secret), and KubernetesSeaweedFs because the artifact store's S3-compatible arm FK-defaults onto the SeaweedFS endpoint and credential Secret.
 - `KubernetesTrino` -- KubernetesPostgres is a prerequisite because Trino's postgres catalogs compose a KubernetesPostgres (the catalog host and credential FK-default onto its outputs), and the pods read that database's credential Secret to resolve catalog passwords from environment.
 - `KubernetesSuperset` -- KubernetesPostgres is a prerequisite because Superset's REQUIRED metadata database composes a KubernetesPostgres (FK defaults onto its outputs; the module composes the environment Secret from its credential Secret), and KubernetesValkey because the cache/broker arm FK-defaults onto a KubernetesValkey's service and password Secret.
+- `KubernetesLangfuse` -- Langfuse's four required stores each FK-default onto a catalog kind: KubernetesPostgres (users, projects, prompts, API keys - host and password Secret), KubernetesClickHouse (traces and scores - host, cluster name and auth Secret), KubernetesValkey (the ingestion queues - host, ACL user and password Secret), and KubernetesSeaweedFs (the S3-compatible event store - endpoint and credentials Secret).
 - `KubernetesArgocd` -- 4150–4169: Kubernetes GitOps and CI/CD
 - `KubernetesArgoWorkflows`
 - `KubernetesTektonOperator`
@@ -2904,7 +2913,7 @@ Allowed values (use exactly as shown):
 - `KubernetesGhaRunnerScaleSet` -- KubernetesGhaRunnerScaleSetController is a prerequisite because this kind renders an AutoscalingRunnerSet custom resource that only the controller's CRDs admit and only the controller reconciles into listener and runner pods.
 - `KubernetesHarbor`
 - `KubernetesJenkins`
-- `KubernetesTemporal` -- 4170–4189: Kubernetes app platforms KubernetesPostgres is a prerequisite because the recommended (and E2E-proven) database composition backs Temporal's default and visibility stores with a CloudNativePG cluster.
+- `KubernetesTemporal` -- 4170–4179: Kubernetes app platforms KubernetesPostgres is a prerequisite because the recommended (and E2E-proven) database composition backs Temporal's default and visibility stores with a CloudNativePG cluster.
 - `KubernetesNats`
 - `KubernetesLocust`
 - `KubernetesPlantonRunner`
@@ -2914,6 +2923,11 @@ Allowed values (use exactly as shown):
 - `KubernetesFlagd`
 - `KubernetesGoFeatureFlagFlagFile`
 - `KubernetesFlagdFlagFile`
+- `KubernetesAgentSandboxController` -- 4180–4199: agent sandbox runtimes (4180–4189 Kubernetes SIG Apps' agent-sandbox; 4190–4199 Agent Substrate)
+- `KubernetesAgentSandbox` -- KubernetesAgentSandboxController is a prerequisite because it installs the agents.x-k8s.io definition the Sandbox is an instance of, and the controller that runs its pod.
+- `KubernetesAgentSandboxTemplate` -- KubernetesAgentSandboxController is a prerequisite because it installs the extensions.agents.x-k8s.io definition the SandboxTemplate is an instance of, and the extension controllers that turn it into network policy and warm pool members.
+- `KubernetesAgentSandboxWarmPool` -- KubernetesAgentSandboxController is a prerequisite because it installs the extensions.agents.x-k8s.io definition the SandboxWarmPool is an instance of, and the controller that keeps the pool's members ready.
+- `KubernetesAgentSandboxClaim` -- KubernetesAgentSandboxController is a prerequisite because it installs the extensions.agents.x-k8s.io definition the SandboxClaim is an instance of, and the controller that binds it to a warm pool member.
 - `DigitalOceanApp` -- 5000–5999: DigitalOcean resources
 - `DigitalOceanBucket`
 - `DigitalOceanContainerRegistry`
@@ -4987,7 +5001,7 @@ Allowed values (use exactly as shown):
 - `GcpCloudBuildWorkerPool` -- 3260–3269: GCP platform engineering, continued (Cloud Build and Cloud Deploy resources many pipelines share) A private Cloud Build worker pool: build machines many triggers and Cloud Deploy targets share, optionally on a private network.
 - `GcpDeployPolicy` -- A Cloud Deploy deploy policy: rollout restrictions (freeze windows) that apply to every pipeline and target its selectors match.
 - `GcpDeployCustomTargetType` -- A Cloud Deploy custom target type: how to render and deploy to a target Google does not deploy natively; many targets share one.
-- `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4190–4199 reserved for growth) 4000–4029: Kubernetes building blocks (core API primitives)
+- `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4180–4199 hosts agent sandbox runtimes) 4000–4029: Kubernetes building blocks (core API primitives)
 - `KubernetesDeployment`
 - `KubernetesStatefulSet`
 - `KubernetesDaemonSet`
@@ -5046,6 +5060,7 @@ Allowed values (use exactly as shown):
 - `KubernetesKarpenterEc2NodeClass`
 - `KubernetesClusterAutoscaler`
 - `KubernetesVelero`
+- `KubernetesGkeComputeClass`
 - `KubernetesKubePrometheusStack` -- 4070–4079: Kubernetes observability
 - `KubernetesGrafana`
 - `KubernetesSignoz` -- KubernetesClickHouse is a prerequisite because SigNoz stores every trace, metric and log in ClickHouse and deploys none of its own — the telemetry store is composed, never bundled.
@@ -5100,6 +5115,7 @@ Allowed values (use exactly as shown):
 - `KubernetesMlflow` -- KubernetesPostgres is a prerequisite because MLflow's backend store composes a KubernetesPostgres in its production arm (FK defaults onto its outputs; the module composes the connection URI from its credential Secret), and KubernetesSeaweedFs because the artifact store's S3-compatible arm FK-defaults onto the SeaweedFS endpoint and credential Secret.
 - `KubernetesTrino` -- KubernetesPostgres is a prerequisite because Trino's postgres catalogs compose a KubernetesPostgres (the catalog host and credential FK-default onto its outputs), and the pods read that database's credential Secret to resolve catalog passwords from environment.
 - `KubernetesSuperset` -- KubernetesPostgres is a prerequisite because Superset's REQUIRED metadata database composes a KubernetesPostgres (FK defaults onto its outputs; the module composes the environment Secret from its credential Secret), and KubernetesValkey because the cache/broker arm FK-defaults onto a KubernetesValkey's service and password Secret.
+- `KubernetesLangfuse` -- Langfuse's four required stores each FK-default onto a catalog kind: KubernetesPostgres (users, projects, prompts, API keys - host and password Secret), KubernetesClickHouse (traces and scores - host, cluster name and auth Secret), KubernetesValkey (the ingestion queues - host, ACL user and password Secret), and KubernetesSeaweedFs (the S3-compatible event store - endpoint and credentials Secret).
 - `KubernetesArgocd` -- 4150–4169: Kubernetes GitOps and CI/CD
 - `KubernetesArgoWorkflows`
 - `KubernetesTektonOperator`
@@ -5108,7 +5124,7 @@ Allowed values (use exactly as shown):
 - `KubernetesGhaRunnerScaleSet` -- KubernetesGhaRunnerScaleSetController is a prerequisite because this kind renders an AutoscalingRunnerSet custom resource that only the controller's CRDs admit and only the controller reconciles into listener and runner pods.
 - `KubernetesHarbor`
 - `KubernetesJenkins`
-- `KubernetesTemporal` -- 4170–4189: Kubernetes app platforms KubernetesPostgres is a prerequisite because the recommended (and E2E-proven) database composition backs Temporal's default and visibility stores with a CloudNativePG cluster.
+- `KubernetesTemporal` -- 4170–4179: Kubernetes app platforms KubernetesPostgres is a prerequisite because the recommended (and E2E-proven) database composition backs Temporal's default and visibility stores with a CloudNativePG cluster.
 - `KubernetesNats`
 - `KubernetesLocust`
 - `KubernetesPlantonRunner`
@@ -5118,6 +5134,11 @@ Allowed values (use exactly as shown):
 - `KubernetesFlagd`
 - `KubernetesGoFeatureFlagFlagFile`
 - `KubernetesFlagdFlagFile`
+- `KubernetesAgentSandboxController` -- 4180–4199: agent sandbox runtimes (4180–4189 Kubernetes SIG Apps' agent-sandbox; 4190–4199 Agent Substrate)
+- `KubernetesAgentSandbox` -- KubernetesAgentSandboxController is a prerequisite because it installs the agents.x-k8s.io definition the Sandbox is an instance of, and the controller that runs its pod.
+- `KubernetesAgentSandboxTemplate` -- KubernetesAgentSandboxController is a prerequisite because it installs the extensions.agents.x-k8s.io definition the SandboxTemplate is an instance of, and the extension controllers that turn it into network policy and warm pool members.
+- `KubernetesAgentSandboxWarmPool` -- KubernetesAgentSandboxController is a prerequisite because it installs the extensions.agents.x-k8s.io definition the SandboxWarmPool is an instance of, and the controller that keeps the pool's members ready.
+- `KubernetesAgentSandboxClaim` -- KubernetesAgentSandboxController is a prerequisite because it installs the extensions.agents.x-k8s.io definition the SandboxClaim is an instance of, and the controller that binds it to a warm pool member.
 - `DigitalOceanApp` -- 5000–5999: DigitalOcean resources
 - `DigitalOceanBucket`
 - `DigitalOceanContainerRegistry`
@@ -5995,7 +6016,7 @@ Allowed values (use exactly as shown):
 - `GcpCloudBuildWorkerPool` -- 3260–3269: GCP platform engineering, continued (Cloud Build and Cloud Deploy resources many pipelines share) A private Cloud Build worker pool: build machines many triggers and Cloud Deploy targets share, optionally on a private network.
 - `GcpDeployPolicy` -- A Cloud Deploy deploy policy: rollout restrictions (freeze windows) that apply to every pipeline and target its selectors match.
 - `GcpDeployCustomTargetType` -- A Cloud Deploy custom target type: how to render and deploy to a target Google does not deploy natively; many targets share one.
-- `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4190–4199 reserved for growth) 4000–4029: Kubernetes building blocks (core API primitives)
+- `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4180–4199 hosts agent sandbox runtimes) 4000–4029: Kubernetes building blocks (core API primitives)
 - `KubernetesDeployment`
 - `KubernetesStatefulSet`
 - `KubernetesDaemonSet`
@@ -6054,6 +6075,7 @@ Allowed values (use exactly as shown):
 - `KubernetesKarpenterEc2NodeClass`
 - `KubernetesClusterAutoscaler`
 - `KubernetesVelero`
+- `KubernetesGkeComputeClass`
 - `KubernetesKubePrometheusStack` -- 4070–4079: Kubernetes observability
 - `KubernetesGrafana`
 - `KubernetesSignoz` -- KubernetesClickHouse is a prerequisite because SigNoz stores every trace, metric and log in ClickHouse and deploys none of its own — the telemetry store is composed, never bundled.
@@ -6108,6 +6130,7 @@ Allowed values (use exactly as shown):
 - `KubernetesMlflow` -- KubernetesPostgres is a prerequisite because MLflow's backend store composes a KubernetesPostgres in its production arm (FK defaults onto its outputs; the module composes the connection URI from its credential Secret), and KubernetesSeaweedFs because the artifact store's S3-compatible arm FK-defaults onto the SeaweedFS endpoint and credential Secret.
 - `KubernetesTrino` -- KubernetesPostgres is a prerequisite because Trino's postgres catalogs compose a KubernetesPostgres (the catalog host and credential FK-default onto its outputs), and the pods read that database's credential Secret to resolve catalog passwords from environment.
 - `KubernetesSuperset` -- KubernetesPostgres is a prerequisite because Superset's REQUIRED metadata database composes a KubernetesPostgres (FK defaults onto its outputs; the module composes the environment Secret from its credential Secret), and KubernetesValkey because the cache/broker arm FK-defaults onto a KubernetesValkey's service and password Secret.
+- `KubernetesLangfuse` -- Langfuse's four required stores each FK-default onto a catalog kind: KubernetesPostgres (users, projects, prompts, API keys - host and password Secret), KubernetesClickHouse (traces and scores - host, cluster name and auth Secret), KubernetesValkey (the ingestion queues - host, ACL user and password Secret), and KubernetesSeaweedFs (the S3-compatible event store - endpoint and credentials Secret).
 - `KubernetesArgocd` -- 4150–4169: Kubernetes GitOps and CI/CD
 - `KubernetesArgoWorkflows`
 - `KubernetesTektonOperator`
@@ -6116,7 +6139,7 @@ Allowed values (use exactly as shown):
 - `KubernetesGhaRunnerScaleSet` -- KubernetesGhaRunnerScaleSetController is a prerequisite because this kind renders an AutoscalingRunnerSet custom resource that only the controller's CRDs admit and only the controller reconciles into listener and runner pods.
 - `KubernetesHarbor`
 - `KubernetesJenkins`
-- `KubernetesTemporal` -- 4170–4189: Kubernetes app platforms KubernetesPostgres is a prerequisite because the recommended (and E2E-proven) database composition backs Temporal's default and visibility stores with a CloudNativePG cluster.
+- `KubernetesTemporal` -- 4170–4179: Kubernetes app platforms KubernetesPostgres is a prerequisite because the recommended (and E2E-proven) database composition backs Temporal's default and visibility stores with a CloudNativePG cluster.
 - `KubernetesNats`
 - `KubernetesLocust`
 - `KubernetesPlantonRunner`
@@ -6126,6 +6149,11 @@ Allowed values (use exactly as shown):
 - `KubernetesFlagd`
 - `KubernetesGoFeatureFlagFlagFile`
 - `KubernetesFlagdFlagFile`
+- `KubernetesAgentSandboxController` -- 4180–4199: agent sandbox runtimes (4180–4189 Kubernetes SIG Apps' agent-sandbox; 4190–4199 Agent Substrate)
+- `KubernetesAgentSandbox` -- KubernetesAgentSandboxController is a prerequisite because it installs the agents.x-k8s.io definition the Sandbox is an instance of, and the controller that runs its pod.
+- `KubernetesAgentSandboxTemplate` -- KubernetesAgentSandboxController is a prerequisite because it installs the extensions.agents.x-k8s.io definition the SandboxTemplate is an instance of, and the extension controllers that turn it into network policy and warm pool members.
+- `KubernetesAgentSandboxWarmPool` -- KubernetesAgentSandboxController is a prerequisite because it installs the extensions.agents.x-k8s.io definition the SandboxWarmPool is an instance of, and the controller that keeps the pool's members ready.
+- `KubernetesAgentSandboxClaim` -- KubernetesAgentSandboxController is a prerequisite because it installs the extensions.agents.x-k8s.io definition the SandboxClaim is an instance of, and the controller that binds it to a warm pool member.
 - `DigitalOceanApp` -- 5000–5999: DigitalOcean resources
 - `DigitalOceanBucket`
 - `DigitalOceanContainerRegistry`
@@ -8320,7 +8348,7 @@ Allowed values (use exactly as shown):
 - `GcpCloudBuildWorkerPool` -- 3260–3269: GCP platform engineering, continued (Cloud Build and Cloud Deploy resources many pipelines share) A private Cloud Build worker pool: build machines many triggers and Cloud Deploy targets share, optionally on a private network.
 - `GcpDeployPolicy` -- A Cloud Deploy deploy policy: rollout restrictions (freeze windows) that apply to every pipeline and target its selectors match.
 - `GcpDeployCustomTargetType` -- A Cloud Deploy custom target type: how to render and deploy to a target Google does not deploy natively; many targets share one.
-- `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4190–4199 reserved for growth) 4000–4029: Kubernetes building blocks (core API primitives)
+- `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4180–4199 hosts agent sandbox runtimes) 4000–4029: Kubernetes building blocks (core API primitives)
 - `KubernetesDeployment`
 - `KubernetesStatefulSet`
 - `KubernetesDaemonSet`
@@ -8379,6 +8407,7 @@ Allowed values (use exactly as shown):
 - `KubernetesKarpenterEc2NodeClass`
 - `KubernetesClusterAutoscaler`
 - `KubernetesVelero`
+- `KubernetesGkeComputeClass`
 - `KubernetesKubePrometheusStack` -- 4070–4079: Kubernetes observability
 - `KubernetesGrafana`
 - `KubernetesSignoz` -- KubernetesClickHouse is a prerequisite because SigNoz stores every trace, metric and log in ClickHouse and deploys none of its own — the telemetry store is composed, never bundled.
@@ -8433,6 +8462,7 @@ Allowed values (use exactly as shown):
 - `KubernetesMlflow` -- KubernetesPostgres is a prerequisite because MLflow's backend store composes a KubernetesPostgres in its production arm (FK defaults onto its outputs; the module composes the connection URI from its credential Secret), and KubernetesSeaweedFs because the artifact store's S3-compatible arm FK-defaults onto the SeaweedFS endpoint and credential Secret.
 - `KubernetesTrino` -- KubernetesPostgres is a prerequisite because Trino's postgres catalogs compose a KubernetesPostgres (the catalog host and credential FK-default onto its outputs), and the pods read that database's credential Secret to resolve catalog passwords from environment.
 - `KubernetesSuperset` -- KubernetesPostgres is a prerequisite because Superset's REQUIRED metadata database composes a KubernetesPostgres (FK defaults onto its outputs; the module composes the environment Secret from its credential Secret), and KubernetesValkey because the cache/broker arm FK-defaults onto a KubernetesValkey's service and password Secret.
+- `KubernetesLangfuse` -- Langfuse's four required stores each FK-default onto a catalog kind: KubernetesPostgres (users, projects, prompts, API keys - host and password Secret), KubernetesClickHouse (traces and scores - host, cluster name and auth Secret), KubernetesValkey (the ingestion queues - host, ACL user and password Secret), and KubernetesSeaweedFs (the S3-compatible event store - endpoint and credentials Secret).
 - `KubernetesArgocd` -- 4150–4169: Kubernetes GitOps and CI/CD
 - `KubernetesArgoWorkflows`
 - `KubernetesTektonOperator`
@@ -8441,7 +8471,7 @@ Allowed values (use exactly as shown):
 - `KubernetesGhaRunnerScaleSet` -- KubernetesGhaRunnerScaleSetController is a prerequisite because this kind renders an AutoscalingRunnerSet custom resource that only the controller's CRDs admit and only the controller reconciles into listener and runner pods.
 - `KubernetesHarbor`
 - `KubernetesJenkins`
-- `KubernetesTemporal` -- 4170–4189: Kubernetes app platforms KubernetesPostgres is a prerequisite because the recommended (and E2E-proven) database composition backs Temporal's default and visibility stores with a CloudNativePG cluster.
+- `KubernetesTemporal` -- 4170–4179: Kubernetes app platforms KubernetesPostgres is a prerequisite because the recommended (and E2E-proven) database composition backs Temporal's default and visibility stores with a CloudNativePG cluster.
 - `KubernetesNats`
 - `KubernetesLocust`
 - `KubernetesPlantonRunner`
@@ -8451,6 +8481,11 @@ Allowed values (use exactly as shown):
 - `KubernetesFlagd`
 - `KubernetesGoFeatureFlagFlagFile`
 - `KubernetesFlagdFlagFile`
+- `KubernetesAgentSandboxController` -- 4180–4199: agent sandbox runtimes (4180–4189 Kubernetes SIG Apps' agent-sandbox; 4190–4199 Agent Substrate)
+- `KubernetesAgentSandbox` -- KubernetesAgentSandboxController is a prerequisite because it installs the agents.x-k8s.io definition the Sandbox is an instance of, and the controller that runs its pod.
+- `KubernetesAgentSandboxTemplate` -- KubernetesAgentSandboxController is a prerequisite because it installs the extensions.agents.x-k8s.io definition the SandboxTemplate is an instance of, and the extension controllers that turn it into network policy and warm pool members.
+- `KubernetesAgentSandboxWarmPool` -- KubernetesAgentSandboxController is a prerequisite because it installs the extensions.agents.x-k8s.io definition the SandboxWarmPool is an instance of, and the controller that keeps the pool's members ready.
+- `KubernetesAgentSandboxClaim` -- KubernetesAgentSandboxController is a prerequisite because it installs the extensions.agents.x-k8s.io definition the SandboxClaim is an instance of, and the controller that binds it to a warm pool member.
 - `DigitalOceanApp` -- 5000–5999: DigitalOcean resources
 - `DigitalOceanBucket`
 - `DigitalOceanContainerRegistry`
@@ -9328,7 +9363,7 @@ Allowed values (use exactly as shown):
 - `GcpCloudBuildWorkerPool` -- 3260–3269: GCP platform engineering, continued (Cloud Build and Cloud Deploy resources many pipelines share) A private Cloud Build worker pool: build machines many triggers and Cloud Deploy targets share, optionally on a private network.
 - `GcpDeployPolicy` -- A Cloud Deploy deploy policy: rollout restrictions (freeze windows) that apply to every pipeline and target its selectors match.
 - `GcpDeployCustomTargetType` -- A Cloud Deploy custom target type: how to render and deploy to a target Google does not deploy natively; many targets share one.
-- `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4190–4199 reserved for growth) 4000–4029: Kubernetes building blocks (core API primitives)
+- `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4180–4199 hosts agent sandbox runtimes) 4000–4029: Kubernetes building blocks (core API primitives)
 - `KubernetesDeployment`
 - `KubernetesStatefulSet`
 - `KubernetesDaemonSet`
@@ -9387,6 +9422,7 @@ Allowed values (use exactly as shown):
 - `KubernetesKarpenterEc2NodeClass`
 - `KubernetesClusterAutoscaler`
 - `KubernetesVelero`
+- `KubernetesGkeComputeClass`
 - `KubernetesKubePrometheusStack` -- 4070–4079: Kubernetes observability
 - `KubernetesGrafana`
 - `KubernetesSignoz` -- KubernetesClickHouse is a prerequisite because SigNoz stores every trace, metric and log in ClickHouse and deploys none of its own — the telemetry store is composed, never bundled.
@@ -9441,6 +9477,7 @@ Allowed values (use exactly as shown):
 - `KubernetesMlflow` -- KubernetesPostgres is a prerequisite because MLflow's backend store composes a KubernetesPostgres in its production arm (FK defaults onto its outputs; the module composes the connection URI from its credential Secret), and KubernetesSeaweedFs because the artifact store's S3-compatible arm FK-defaults onto the SeaweedFS endpoint and credential Secret.
 - `KubernetesTrino` -- KubernetesPostgres is a prerequisite because Trino's postgres catalogs compose a KubernetesPostgres (the catalog host and credential FK-default onto its outputs), and the pods read that database's credential Secret to resolve catalog passwords from environment.
 - `KubernetesSuperset` -- KubernetesPostgres is a prerequisite because Superset's REQUIRED metadata database composes a KubernetesPostgres (FK defaults onto its outputs; the module composes the environment Secret from its credential Secret), and KubernetesValkey because the cache/broker arm FK-defaults onto a KubernetesValkey's service and password Secret.
+- `KubernetesLangfuse` -- Langfuse's four required stores each FK-default onto a catalog kind: KubernetesPostgres (users, projects, prompts, API keys - host and password Secret), KubernetesClickHouse (traces and scores - host, cluster name and auth Secret), KubernetesValkey (the ingestion queues - host, ACL user and password Secret), and KubernetesSeaweedFs (the S3-compatible event store - endpoint and credentials Secret).
 - `KubernetesArgocd` -- 4150–4169: Kubernetes GitOps and CI/CD
 - `KubernetesArgoWorkflows`
 - `KubernetesTektonOperator`
@@ -9449,7 +9486,7 @@ Allowed values (use exactly as shown):
 - `KubernetesGhaRunnerScaleSet` -- KubernetesGhaRunnerScaleSetController is a prerequisite because this kind renders an AutoscalingRunnerSet custom resource that only the controller's CRDs admit and only the controller reconciles into listener and runner pods.
 - `KubernetesHarbor`
 - `KubernetesJenkins`
-- `KubernetesTemporal` -- 4170–4189: Kubernetes app platforms KubernetesPostgres is a prerequisite because the recommended (and E2E-proven) database composition backs Temporal's default and visibility stores with a CloudNativePG cluster.
+- `KubernetesTemporal` -- 4170–4179: Kubernetes app platforms KubernetesPostgres is a prerequisite because the recommended (and E2E-proven) database composition backs Temporal's default and visibility stores with a CloudNativePG cluster.
 - `KubernetesNats`
 - `KubernetesLocust`
 - `KubernetesPlantonRunner`
@@ -9459,6 +9496,11 @@ Allowed values (use exactly as shown):
 - `KubernetesFlagd`
 - `KubernetesGoFeatureFlagFlagFile`
 - `KubernetesFlagdFlagFile`
+- `KubernetesAgentSandboxController` -- 4180–4199: agent sandbox runtimes (4180–4189 Kubernetes SIG Apps' agent-sandbox; 4190–4199 Agent Substrate)
+- `KubernetesAgentSandbox` -- KubernetesAgentSandboxController is a prerequisite because it installs the agents.x-k8s.io definition the Sandbox is an instance of, and the controller that runs its pod.
+- `KubernetesAgentSandboxTemplate` -- KubernetesAgentSandboxController is a prerequisite because it installs the extensions.agents.x-k8s.io definition the SandboxTemplate is an instance of, and the extension controllers that turn it into network policy and warm pool members.
+- `KubernetesAgentSandboxWarmPool` -- KubernetesAgentSandboxController is a prerequisite because it installs the extensions.agents.x-k8s.io definition the SandboxWarmPool is an instance of, and the controller that keeps the pool's members ready.
+- `KubernetesAgentSandboxClaim` -- KubernetesAgentSandboxController is a prerequisite because it installs the extensions.agents.x-k8s.io definition the SandboxClaim is an instance of, and the controller that binds it to a warm pool member.
 - `DigitalOceanApp` -- 5000–5999: DigitalOcean resources
 - `DigitalOceanBucket`
 - `DigitalOceanContainerRegistry`

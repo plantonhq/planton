@@ -2372,6 +2372,7 @@ Fields on other kinds that can point at this resource:
 | Kind | Field | Reads |
 |---|---|---|
 | GcpDataprocCluster | `spec.virtualClusterConfig.kubernetesClusterConfig.gkeClusterConfig.nodePoolTarget[].nodePool` | `status.outputs.node_pool_id` |
+| KubernetesGkeComputeClass | `spec.priorities[].nodepools` | `status.outputs.node_pool_name` |
 
 ## See Also
 

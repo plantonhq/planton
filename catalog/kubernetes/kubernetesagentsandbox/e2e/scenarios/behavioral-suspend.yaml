@@ -1,0 +1,37 @@
+# THE SUSPEND PROMISE: a suspended sandbox keeps its volume. Act one runs the
+# sandbox with a workspace claim; the verifier waits for Ready, writes a
+# marker file into /workspace and marks the claim with its own UID. Act two
+# (behavioral-suspend.to.yaml) redeploys it Suspended: the pod must be gone
+# while the Sandbox and the same claim (its mark intact) remain; the verifier
+# then resumes the sandbox and reads the marker file back from the new pod.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandbox
+metadata:
+  name: e2e-asbx-sbx-suspend
+  annotations:
+    planton.dev/e2e-upgrade-manifest: behavioral-suspend.to.yaml
+spec:
+  namespace:
+    value: default
+  podTemplate:
+    spec:
+      containers:
+        - name: app
+          image: registry.k8s.io/e2e-test-images/agnhost:2.53
+          args: ["netexec", "--http-port=8888", "--udp-port=-1"]
+          readinessProbe:
+            httpGet:
+              path: /hostname
+              port: "8888"
+          volumeMounts:
+            - name: workspace
+              mountPath: /workspace
+  volumeClaimTemplates:
+    - metadata:
+        name: workspace
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+  operatingMode: Running

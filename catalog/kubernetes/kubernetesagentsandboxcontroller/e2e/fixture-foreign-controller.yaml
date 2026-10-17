@@ -1,0 +1,38 @@
+# THE OTHER INSTALLATION for the controller-owned-elsewhere lane: a
+# Deployment under upstream's fixed controller name in agent-sandbox-system,
+# without this kind's ownership label, standing in for GKE's Agent Sandbox
+# add-on or a kubectl apply of upstream's release. The fixture owns the
+# namespace too, so the controller under test runs with create_namespace
+# false and the refusal it must give is the controller's, not the
+# namespace's. A pause container is enough: the refusal is about who wrote
+# the Deployment, read before anything is applied.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesManifest
+metadata:
+  name: e2e-asbx-foreign-controller
+spec:
+  namespace:
+    value: agent-sandbox-system
+  create_namespace: true
+  skip_await: true
+  manifest_yaml: |
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: agent-sandbox-controller
+      namespace: agent-sandbox-system
+      labels:
+        app: agent-sandbox-controller
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: agent-sandbox-controller
+      template:
+        metadata:
+          labels:
+            app: agent-sandbox-controller
+        spec:
+          containers:
+            - name: agent-sandbox-controller
+              image: registry.k8s.io/pause:3.10

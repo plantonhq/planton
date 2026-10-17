@@ -1,0 +1,86 @@
+# THE UPGRADE PROOF, act two: the pinned default chart. Same resource,
+# same stores, same declared key pair and salt; only the chart version
+# moves. The verifier requires act one's state trace to still be readable,
+# then ingests a fresh one through the upgraded workloads.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesLangfuse
+metadata:
+  name: e2e-lf-state
+  annotations:
+    # Act two of behavioral-state.yaml: discovery skips it, and the runner
+    # deploys it only through that scenario's upgrade annotation.
+    planton.dev/e2e-second-act: behavioral-state.yaml
+spec:
+  namespace:
+    value: e2e-langfuse
+  postgres:
+    host:
+      valueFrom:
+        name: e2e-lf-pg
+    username: langfuse
+    passwordSecret:
+      secretName:
+        valueFrom:
+          name: e2e-lf-pg
+  clickhouse:
+    host:
+      valueFrom:
+        name: e2e-lf-ch
+    username: langfuse
+    passwordSecret:
+      secretName:
+        valueFrom:
+          name: e2e-lf-ch
+    cluster:
+      name:
+        valueFrom:
+          name: e2e-lf-ch
+  redis:
+    standalone:
+      host:
+        valueFrom:
+          name: e2e-lf-vlk
+    username:
+      valueFrom:
+        name: e2e-lf-vlk
+    passwordSecret:
+      secretName:
+        valueFrom:
+          name: e2e-lf-vlk
+      secretKey:
+        valueFrom:
+          name: e2e-lf-vlk
+  blobStorage:
+    target:
+      s3Compatible:
+        endpoint:
+          valueFrom:
+            name: e2e-lf-s3
+        bucket: langfuse
+        credentialsSecret:
+          secretName:
+            valueFrom:
+              name: e2e-lf-s3
+  secrets:
+    salt: e2e-state-salt-0123456789abcdefghijklmnopqrstuv
+    encryptionKey: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+  init:
+    project:
+      publicKey: pk-lf-e2e-state-public
+      secretKey: sk-lf-e2e-state-secret
+  web:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: "2"
+        memory: 2Gi
+  worker:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: "2"
+        memory: 2Gi

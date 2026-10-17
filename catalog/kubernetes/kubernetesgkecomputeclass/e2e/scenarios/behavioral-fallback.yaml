@@ -1,0 +1,32 @@
+# Behavioral ComputeClass on the gcp-gke real-cluster profile: proves the
+# class FALLS BACK. The first rule asks for n2d-standard-224, a machine no
+# default project quota can hold (regional N2D quotas start far below 224
+# vCPUs), so node creation fails the way a stockout does and GKE moves to the
+# next rule -- deterministic, and free. (A rule GKE can tell is impossible up
+# front -- a missing reservation, a minCores no machine of the family has --
+# is not a fallback test: GKE marks the class CrdMisconfigured instead.) In a
+# project whose N2D quota covers 224 vCPUs this first rule would succeed, so
+# run the batch in an ordinary project. The verifier schedules a pod that
+# selects the class and asserts it lands on a node of the second rule's e2
+# family, then deletes the pod and waits for the one-minute consolidation
+# delay to reclaim the node.
+# Keep the family in step with computeClassFallbackFamily in
+# catalog/kubernetes/aa_e2e/verify/computeclass.go.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGkeComputeClass
+metadata:
+  name: e2e-gke-computeclass-fallback
+  annotations:
+    planton.dev/e2e-cluster-profile: "gcp-gke"
+spec:
+  name: e2e-gke-computeclass-fallback
+  description: E2E fallback proof; safe to delete.
+  priorities:
+    - machineType: n2d-standard-224
+    - machineFamily: e2
+      minCores: 2
+  whenUnsatisfiable: DoNotScaleUp
+  nodePoolAutoCreation:
+    enabled: true
+  autoscalingPolicy:
+    consolidationDelayMinutes: 1

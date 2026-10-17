@@ -65,7 +65,7 @@ func (c ExistingCRD) OwnerDescription() string {
 	case c.HelmReleaseName != "":
 		return fmt.Sprintf("owned by Helm release %s in namespace %s", c.HelmReleaseName, c.HelmReleaseNamespace)
 	case c.SourceLabel != "":
-		return fmt.Sprintf("derived from chart %s by another Planton module", c.SourceLabel)
+		return fmt.Sprintf("derived from %s by another Planton module", c.SourceLabel)
 	case len(c.Managers) > 0:
 		return fmt.Sprintf("last written by field manager(s) %s", strings.Join(c.Managers, ", "))
 	}
@@ -86,15 +86,16 @@ func CheckOwnership(existing []ExistingCRD, src Source) error {
 }
 
 // CheckNoDowngrade refuses when any existing CRD carries a strictly higher
-// source version than the version about to be applied. Helm's own semver
-// (Masterminds/semver) orders the versions, so prerelease and build metadata
-// behave exactly as Helm's repository index would order them. A CRD without
-// a version stamp is not this source's (CheckOwnership answers for it) and is
-// skipped here.
-func CheckNoDowngrade(existing []ExistingCRD, requestedVersion string) error {
-	requested, err := semver.NewVersion(requestedVersion)
+// source version than src.Version, the version about to be applied. Helm's
+// own semver (Masterminds/semver) orders the versions, so prerelease and
+// build metadata behave exactly as Helm's repository index would order them,
+// and an upstream release's leading "v" reads as it does in a tag. A CRD
+// without a version stamp is not this source's (CheckOwnership answers for
+// it) and is skipped here.
+func CheckNoDowngrade(existing []ExistingCRD, src Source) error {
+	requested, err := semver.NewVersion(src.Version)
 	if err != nil {
-		return UnparseableVersionFailure("requested", requestedVersion)
+		return UnparseableVersionFailure(src, "requested", src.Version)
 	}
 	for _, crd := range existing {
 		if crd.Version == "" {
@@ -102,10 +103,10 @@ func CheckNoDowngrade(existing []ExistingCRD, requestedVersion string) error {
 		}
 		current, err := semver.NewVersion(crd.Version)
 		if err != nil {
-			return UnparseableVersionFailure("cluster's "+crd.Name, crd.Version)
+			return UnparseableVersionFailure(src, "cluster's "+crd.Name, crd.Version)
 		}
 		if requested.LessThan(current) {
-			return DowngradeFailure(crd.Name, crd.Version, requestedVersion)
+			return DowngradeFailure(src, crd.Name, crd.Version)
 		}
 	}
 	return nil

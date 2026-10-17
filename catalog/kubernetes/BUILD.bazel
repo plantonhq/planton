@@ -3,15 +3,18 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "kubernetes",
     srcs = [
+        "agent_sandbox_api.pb.go",
         "cert_manager_issuer.pb.go",
         "cert_manager_issuer_ref.go",
         "cli_help.go",
         "container_env.pb.go",
+        "core_v1_api.pb.go",
         "external_secrets_store.pb.go",
         "gateway_api.pb.go",
         "istio_api.pb.go",
         "kubernetes.pb.go",
         "kubernetes_secret.pb.go",
+        "networking_v1_api.pb.go",
         "options.pb.go",
         "probe.pb.go",
         "prometheus_operator_api.pb.go",
@@ -36,11 +39,16 @@ go_library(
 
 go_test(
     name = "kubernetes_test",
-    srcs = ["provider_test.go"],
+    srcs = [
+        "core_v1_api_test.go",
+        "provider_test.go",
+    ],
     embed = [":kubernetes"],
     deps = [
+        "//shared/foreignkey/v1:foreignkey",
         "@build_buf_go_protovalidate//:protovalidate",
         "@com_github_onsi_ginkgo_v2//:ginkgo",
         "@com_github_onsi_gomega//:gomega",
+        "@org_golang_google_protobuf//proto",
     ],
 )

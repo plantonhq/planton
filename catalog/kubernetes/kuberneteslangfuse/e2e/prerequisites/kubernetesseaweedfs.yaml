@@ -1,0 +1,18 @@
+# Consumer-scoped SeaweedFS fixture for the KubernetesLangfuse lanes - the
+# composed S3-compatible event store:
+# - JOINS the PostgreSQL fixture's namespace (e2e-langfuse): the module
+#   wires the store's credentials Secret into Langfuse's pods through
+#   secretKeyRefs, which cannot cross namespaces.
+# - ONE BUCKET: `langfuse` is declared at install - every ingested event
+#   is written there before the worker loads it into ClickHouse, so it
+#   must exist before the first trace.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesSeaweedFs
+metadata:
+  name: e2e-lf-s3
+spec:
+  namespace:
+    value: e2e-langfuse
+  s3:
+    buckets:
+      - name: langfuse

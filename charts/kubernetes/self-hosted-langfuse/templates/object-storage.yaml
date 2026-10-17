@@ -1,0 +1,37 @@
+# SeaweedFS: the S3-compatible object store behind Langfuse. Every ingested
+# event is written here before the worker loads it into ClickHouse, so the
+# bucket must exist before the first trace; media attachments and batch
+# exports land here too.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesSeaweedFs
+metadata:
+  name: "{{ values.env }}-langfuse-s3"
+{% if values.connection != "" %}
+  annotations:
+    planton.dev/connection: "{{ values.connection }}"
+{% endif %}
+spec:
+  namespace:
+    valueFrom:
+      name: "{{ values.env }}-langfuse-ns"
+  createNamespace: false
+{% if values.high_availability | bool %}
+  # Three masters hold a raft quorum over the volume layout, and "001"
+  # writes every object to a second volume server, so one server's loss
+  # loses nothing.
+  master:
+    replicas: 3
+  volume:
+    replicas: 2
+    dataVolume:
+      size: "{{ values.object_storage_disk_size }}"
+  replication: "001"
+{% else %}
+  volume:
+    replicas: 1
+    dataVolume:
+      size: "{{ values.object_storage_disk_size }}"
+{% endif %}
+  s3:
+    buckets:
+      - name: langfuse

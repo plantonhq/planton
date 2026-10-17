@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesagentsandbox.v1alpha1;
+
+// KubernetesAgentSandboxOutputs captures observable outputs after the Sandbox
+// is created on the target cluster. The sandbox's identity is what a caller
+// needs: the router reaches it by name and namespace (the X-Sandbox-ID and
+// X-Sandbox-Namespace headers), and with `service` true its headless Service
+// answers at `<sandbox_name>.<namespace>.svc`.
+message KubernetesAgentSandboxOutputs {
+  // Name of the created Sandbox (equals metadata.name); its pod and headless
+  // Service carry the same name.
+  string sandbox_name = 1;
+
+  // Namespace the Sandbox was created in (the resolved spec.namespace).
+  string namespace = 2;
+}

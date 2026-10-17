@@ -645,6 +645,11 @@ contained dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.project_id -> Gcp
 contained dev.planton.gcp.gcpworkloadidentitypool.v1alpha1.GcpWorkloadIdentityPoolSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderSpec.workload_identity_pool_id -> GcpWorkloadIdentityPool
+contained dev.planton.kubernetes.kubernetesagentsandbox.v1alpha1.KubernetesAgentSandboxSpec.namespace -> KubernetesNamespace
+contained dev.planton.kubernetes.kubernetesagentsandboxclaim.v1alpha1.KubernetesAgentSandboxClaimSpec.namespace -> KubernetesNamespace
+contained dev.planton.kubernetes.kubernetesagentsandboxcontroller.v1alpha1.KubernetesAgentSandboxControllerSpec.namespace -> KubernetesNamespace
+contained dev.planton.kubernetes.kubernetesagentsandboxtemplate.v1alpha1.KubernetesAgentSandboxTemplateSpec.namespace -> KubernetesNamespace
+contained dev.planton.kubernetes.kubernetesagentsandboxwarmpool.v1alpha1.KubernetesAgentSandboxWarmPoolSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesairflow.v1alpha1.KubernetesAirflowSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesargocd.v1alpha1.KubernetesArgocdSpec.namespace -> KubernetesNamespace
@@ -707,6 +712,7 @@ contained dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesK
 contained dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1.KubernetesKubeRayOperatorSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyvernoSpec.namespace -> KubernetesNamespace
+contained dev.planton.kubernetes.kuberneteslangfuse.v1alpha1.KubernetesLangfuseSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSetSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocustSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSpec.namespace -> KubernetesNamespace
@@ -1049,6 +1055,8 @@ exempt    dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExtern
 exempt    dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsCloudflare.zone_id_filters -> CloudflareDnsZone
 exempt    dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsGoogleCloudDns.project -> GcpProject
 exempt    dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsGoogleCloudDns.zone_id_filters -> GcpDnsZone
+exempt    dev.planton.kubernetes.kubernetesgkecomputeclass.v1alpha1.KubernetesGkeComputeClassSecondaryBootDisk.project -> GcpProject
+exempt    dev.planton.kubernetes.kubernetesgkecomputeclass.v1alpha1.KubernetesGkeComputeClassSpecificReservation.project -> GcpProject
 exempt    dev.planton.kubernetes.kubernetesgofeatureflag.v1alpha1.KubernetesGoFeatureFlagConfigMapRetriever.namespace -> KubernetesNamespace
 exempt    dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnectSpec.bootstrap_servers -> KubernetesKafka
 exempt    dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2Source.bootstrap_servers -> KubernetesKafka
@@ -1058,6 +1066,8 @@ exempt    dev.planton.kubernetes.kuberneteskafkaui.v1alpha1.KubernetesKafkaUiClu
 exempt    dev.planton.kubernetes.kuberneteskafkaui.v1alpha1.KubernetesKafkaUiConnectCluster.address -> KubernetesKafkaConnect
 exempt    dev.planton.kubernetes.kuberneteskarapace.v1alpha1.KubernetesKarapaceKafka.bootstrap_servers -> KubernetesKafka
 exempt    dev.planton.kubernetes.kuberneteskarapace.v1alpha1.KubernetesKarapaceKafkaTls.ca_secret_name -> KubernetesKafka
+exempt    dev.planton.kubernetes.kuberneteslangfuse.v1alpha1.KubernetesLangfuseAzureBlobTarget.endpoint -> AzureStorageAccount
+exempt    dev.planton.kubernetes.kuberneteslangfuse.v1alpha1.KubernetesLangfuseAzureBlobTarget.storage_account -> AzureStorageAccount
 exempt    dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyIpBlock.cidr -> *
 exempt    dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyIpBlock.except -> *
 exempt    dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcpKmsSeal.key_ring -> GcpKmsKeyRing

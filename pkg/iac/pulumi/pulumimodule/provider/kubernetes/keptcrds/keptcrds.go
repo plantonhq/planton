@@ -1,6 +1,8 @@
-// Package keptcrds applies a Helm chart's CustomResourceDefinitions as
-// module-owned, kept resources ahead of the chart's release: the Pulumi half of
-// the catalog's derive-branch primitive for charts that carry CRDs.
+// Package keptcrds applies a kind's CustomResourceDefinitions as module-owned,
+// kept resources ahead of the workloads that serve them: the Pulumi half of the
+// catalog's derive-branch primitive, for Helm charts that carry CRDs and for
+// upstream manifests (a CRD bundle beside a chart, or an install manifest when
+// upstream publishes no chart).
 //
 // A module on the derive branch does three things, and this package does the
 // first two for it: derive the CRD set from the pinned version (through
@@ -8,9 +10,12 @@
 // as a kept resource that re-adopts on reinstall, refuses a schema downgrade,
 // refuses to take over a CRD someone else owns, and refuses before touching
 // anything when the deploy's identity may not write CRDs; and then install the
-// release with CRDs skipped and the chart's own CRD switch pinned off (the
-// module's release code). The Terraform twin is the generated helm_crds.tf
-// every module carries byte-identically.
+// workloads with CRDs left out (a chart's release with CRDs skipped and its
+// own CRD switch pinned off, or a manifest's other documents). Apply's reads
+// run before it registers anything, so a module that calls it before
+// registering any resource of its own refuses with nothing written. The
+// Terraform twin is the generated helm_crds.tf every module carries
+// byte-identically.
 //
 // Why the mechanics look the way they do, each verified live:
 //
@@ -168,7 +173,7 @@ func Apply(ctx *pulumi.Context, args Args) ([]pulumi.Resource, error) {
 	if err := helmcrds.CheckOwnership(existing, args.Source); err != nil {
 		return nil, err
 	}
-	if err := helmcrds.CheckNoDowngrade(existing, args.Source.Version); err != nil {
+	if err := helmcrds.CheckNoDowngrade(existing, args.Source); err != nil {
 		return nil, err
 	}
 	if err := cluster.refuseIfDenied(args); err != nil {
@@ -178,7 +183,7 @@ func Apply(ctx *pulumi.Context, args Args) ([]pulumi.Resource, error) {
 		// The explained success: a kept CRD from an earlier install is about
 		// to be re-adopted, and the deploy log should say so rather than
 		// leave a reader to infer it from a "create" that changed nothing.
-		_ = ctx.Log.Info(fmt.Sprintf("re-adopting CRD %s the cluster already carries from %s at chart version %s", crd.Name, args.Source.SourceDescription(), crd.Version), nil)
+		_ = ctx.Log.Info(fmt.Sprintf("re-adopting CRD %s the cluster already carries from %s at %s", crd.Name, args.Source.SourceDescription(), args.Source.VersionPhrase(crd.Version)), nil)
 	}
 
 	upsertProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfigUpsert(ctx,

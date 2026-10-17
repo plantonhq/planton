@@ -39,50 +39,38 @@ func TestHelmCRDsTFRefusals(t *testing.T) {
 		nextStepHas string
 	}{
 		{
-			name: "version not in the repository index",
-			locals: contractLocals(`
-  helm_chart_repo = "https://stefanprodan.github.io/podinfo"
-  helm_chart_name = "podinfo"
-  chart_version   = "99.99.99"`, `expect_crds = false`, `render_override = ""`, `bundle_url = ""`),
+			name:        "version not in the repository index",
+			locals:      contractLocals(`expect_crds = false`, "99.99.99", "spec.chart_version", chartBranch("https://stefanprodan.github.io/podinfo", "podinfo", `""`, `[]`), "null"),
 			observedHas: "chart podinfo 99.99.99 is not in the index of https://stefanprodan.github.io/podinfo",
 			nextStepHas: "index.yaml",
 		},
 		{
-			name: "typed kind whose render yields no CRD",
-			locals: contractLocals(`
-  helm_chart_repo = "https://stefanprodan.github.io/podinfo"
-  helm_chart_name = "podinfo"
-  chart_version   = "6.7.1"`, `expect_crds = true`, `render_override = "crds:\n  create: true\n"`, `bundle_url = ""`),
+			name:        "typed kind whose render yields no CRD",
+			locals:      contractLocals(`expect_crds = true`, "6.7.1", "spec.chart_version", chartBranch("https://stefanprodan.github.io/podinfo", "podinfo", `"crds:\n  create: true\n"`, `[]`), "null"),
 			observedHas: "produced no CustomResourceDefinition documents",
 			nextStepHas: "helm show values podinfo",
 		},
 		{
-			name: "helm-managed CRDs without the keep mark, dial off",
-			locals: contractLocals(`
-  helm_chart_repo = "https://opensearch-project.github.io/opensearch-k8s-operator/"
-  helm_chart_name = "opensearch-operator"
-  chart_version   = "2.8.0"
-  helm_release_values = ["installCRDs: true\n"]`, `expect_crds = false`, `render_override = ""`, `bundle_url = ""`),
+			name:        "helm-managed CRDs without the keep mark, dial off",
+			locals:      contractLocals(`expect_crds = false`, "2.8.0", "spec.chart_version", chartBranch("https://opensearch-project.github.io/opensearch-k8s-operator/", "opensearch-operator", `""`, `["installCRDs: true\n"]`), "null"),
 			observedHas: "templates 10 CustomResourceDefinition(s) as release resources without the helm.sh/resource-policy: keep annotation",
 			nextStepHas: "allow_helm_managed",
 		},
 		{
-			name: "bundle URL answers 404",
-			locals: contractLocals(`
-  helm_chart_repo = "https://example.invalid/unused"
-  helm_chart_name = "solr-operator"
-  chart_version   = "0.0.1"`, `expect_crds = true`, `render_override = ""`,
-				`bundle_url = "https://archive.apache.org/dist/solr/solr-operator/v{{version}}/crds/all-with-dependencies.yaml"`),
+			name:        "bundle URL answers 404 at a version a user chose",
+			locals:      contractLocals(`expect_crds = true`, "0.0.1", "spec.chart_version", "null", bundleBranch("solr-operator", "https://archive.apache.org/dist/solr/solr-operator/v{{version}}/crds/all-with-dependencies.yaml")),
 			observedHas: "answered HTTP 404",
-			nextStepHas: "confirm version 0.0.1 exists at the upstream download page",
+			nextStepHas: "confirm version 0.0.1 exists at the upstream download page; set spec.chart_version to a published version",
 		},
 		{
-			name: "bundle URL serves no CRD",
-			locals: contractLocals(`
-  helm_chart_repo = "https://example.invalid/unused"
-  helm_chart_name = "podinfo"
-  chart_version   = "6.7.1"`, `expect_crds = true`, `render_override = ""`,
-				`bundle_url = "https://raw.githubusercontent.com/stefanprodan/podinfo/{{version}}/charts/podinfo/Chart.yaml"`),
+			name:        "bundle URL answers 404 at the release the module pins",
+			locals:      contractLocals(`expect_crds = true`, "v0.0.1", "", "null", bundleBranch("agent-sandbox", "https://github.com/kubernetes-sigs/agent-sandbox/releases/download/{{version}}/sandbox.yaml")),
+			observedHas: "answered HTTP 404",
+			nextStepHas: "confirm what upstream publishes for agent-sandbox release v0.0.1",
+		},
+		{
+			name:        "bundle URL serves no CRD",
+			locals:      contractLocals(`expect_crds = true`, "6.7.1", "", "null", bundleBranch("podinfo", "https://raw.githubusercontent.com/stefanprodan/podinfo/{{version}}/charts/podinfo/Chart.yaml")),
 			observedHas: "contained no CustomResourceDefinition documents",
 			nextStepHas: "correct the module's bundle URL template",
 		},
@@ -130,34 +118,50 @@ func TestHelmCRDsTFRefusals(t *testing.T) {
 	}
 }
 
-// contractLocals is a module's locals.tf as the block's header specifies it,
-// with the chart identity and the policy knobs a case varies.
-func contractLocals(identity, expectCRDs, renderOverride, bundleURL string) string {
-	values := "  helm_release_values = []"
-	if strings.Contains(identity, "helm_release_values") {
-		values = ""
-	}
+// contractLocals is a module's locals.tf as the block's header specifies it:
+// the policy knob a case varies, the version and the field that chooses it
+// ("" when the module pins it), and exactly one of the two branches as HCL
+// (the other "null").
+func contractLocals(expectCRDs, version, versionField, chart, bundle string) string {
 	return fmt.Sprintf(`locals {
-  release_name = "refusal"
-  namespace    = "refusal"
-%s
-%s
-
   helm_crds_args = {
-    install             = true
-    keep_on_uninstall   = true
+    install           = true
+    keep_on_uninstall = true
     %s
-    allow_helm_managed  = false
-    %s
-    api_versions        = []
-    %s
-    repository_username = ""
-    repository_password = ""
-    set                 = []
-    set_sensitive       = []
+    version           = %q
+    version_field     = %q
+    chart             = %s
+    bundle            = %s
   }
 }
-`, values, identity, expectCRDs, renderOverride, bundleURL)
+`, expectCRDs, version, versionField, chart, bundle)
+}
+
+// chartBranch is the contract's chart object for a public chart rendered
+// under a scratch identity.
+func chartBranch(repository, name, renderOverride, values string) string {
+	return fmt.Sprintf(`{
+      repository          = %q
+      name                = %q
+      release_name        = "refusal"
+      namespace           = "refusal"
+      values              = %s
+      render_override     = %s
+      api_versions        = []
+      allow_helm_managed  = false
+      repository_username = ""
+      repository_password = ""
+      set                 = []
+      set_sensitive       = []
+    }`, repository, name, values, renderOverride)
+}
+
+// bundleBranch is the contract's bundle object.
+func bundleBranch(name, url string) string {
+	return fmt.Sprintf(`{
+      name = %q
+      url  = %q
+    }`, name, url)
 }
 
 // scratchProviders pins the same four providers a derive-branch module pins,

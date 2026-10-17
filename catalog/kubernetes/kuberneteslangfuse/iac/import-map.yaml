@@ -1,0 +1,136 @@
+apiVersion: iac.planton.dev/v1
+kind: CatalogKindImportMap
+metadata:
+  name: kuberneteslangfuse
+spec:
+  # Helm-release class: one release named after metadata.name (the
+  # module pins fullnameOverride to the same value, so every chart
+  # child — the `<name>-web` and `<name>-worker` Deployments and
+  # Services, the `<name>-app` Secret the chart always keeps, the
+  # autoscalers, disruption budgets and service account — travels with
+  # the release import), plus the optional anchor namespace and the
+  # module-owned instance Secret with its random companions. The
+  # `<name>-secrets` Secret always exists; its generated keys re-render
+  # identically after adoption because every random imports by VALUE.
+  # Where the value Langfuse reads differs from the form the importer
+  # takes, the Secret carries the importer's form beside it: the
+  # encryption key's bytes in standard base64, and each seeded project
+  # key without its pk-lf-/sk-lf- prefix. A random exists only when the
+  # spec leaves its value empty: a declared value generates nothing.
+  values:
+    - name: release_name
+      derivations:
+        - from_metadata_name: true
+      where_to_find: >-
+        `helm list -n <namespace>` (NAME column) — the release shares
+        the resource's name.
+    - name: release_namespace
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        `helm list -A` (NAMESPACE column); conventionally "langfuse".
+    # ── the optional anchor namespace ──────────────────────────────────
+    - name: namespace_name
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Only imported when create_namespace is true; the installation
+        namespace itself.
+    # ── the instance Secret (always module-owned) ───────────────────────
+    - name: secret_name
+      tofu_resource_name: instance
+      derivations:
+        - from_output: instance_secret_name
+        - from_metadata_name_suffix: "-secrets"
+      where_to_find: >-
+        "<resource-name>-secrets" — every declared secret value plus
+        the generated credentials, read by the chart and the workloads
+        through secretKeyRef; `kubectl get secrets -n <namespace>`.
+    - name: secret_namespace
+      tofu_resource_name: instance
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Same namespace as the installation.
+    # ── the generated credentials (random companions) ───────────────────
+    - name: password_value
+      tofu_resource_name: salt
+      derivations:
+        - from_cluster_secret_key:
+            name_suffix: "-secrets"
+            key: salt
+      where_to_find: >-
+        SECRET MATERIAL — the API-key hashing salt (changing it
+        invalidates every API key). kubectl get secret
+        <resource-name>-secrets -n <namespace>
+        -o jsonpath='{.data.salt}' | base64 -d
+    - name: bytes_value
+      tofu_resource_name: encryption_key
+      derivations:
+        - from_cluster_secret_key:
+            name_suffix: "-secrets"
+            key: encryption-key-std-b64
+      where_to_find: >-
+        SECRET MATERIAL — the key that encrypts stored LLM API keys
+        and integration credentials. The Secret's companion
+        `encryption-key-std-b64` key carries the STANDARD-base64 form
+        the random_bytes importer requires (the `encryption-key` key
+        holds the same bytes hex-encoded, the form Langfuse reads).
+        kubectl get secret <resource-name>-secrets -n <namespace>
+        -o jsonpath='{.data.encryption-key-std-b64}' | base64 -d
+    - name: password_value
+      tofu_resource_name: nextauth_secret
+      derivations:
+        - from_cluster_secret_key:
+            name_suffix: "-secrets"
+            key: nextauth-secret
+      where_to_find: >-
+        SECRET MATERIAL — the session-signing secret. kubectl get
+        secret <resource-name>-secrets -n <namespace>
+        -o jsonpath='{.data.nextauth-secret}' | base64 -d
+    - name: password_value
+      tofu_resource_name: slack_state_secret
+      derivations:
+        - from_cluster_secret_key:
+            name_suffix: "-secrets"
+            key: slack-state-secret
+      where_to_find: >-
+        SECRET MATERIAL — the Slack OAuth state secret (Slack arm
+        only). kubectl get secret <resource-name>-secrets -n
+        <namespace> -o jsonpath='{.data.slack-state-secret}' | base64 -d
+    - name: password_value
+      tofu_resource_name: init_user_password
+      derivations:
+        - from_cluster_secret_key:
+            name_suffix: "-secrets"
+            key: init-user-password
+      where_to_find: >-
+        SECRET MATERIAL — the seeded admin's password (seeded admin
+        only). kubectl get secret <resource-name>-secrets -n
+        <namespace> -o jsonpath='{.data.init-user-password}' | base64 -d
+    - name: password_value
+      tofu_resource_name: init_project_public_key
+      derivations:
+        - from_cluster_secret_key:
+            name_suffix: "-secrets"
+            key: init-project-public-key-suffix
+      where_to_find: >-
+        The seeded project's public key without its "pk-lf-" prefix,
+        the form the random_password importer requires. kubectl get
+        secret <resource-name>-secrets -n <namespace>
+        -o jsonpath='{.data.init-project-public-key-suffix}' | base64 -d
+    - name: password_value
+      tofu_resource_name: init_project_secret_key
+      derivations:
+        - from_cluster_secret_key:
+            name_suffix: "-secrets"
+            key: init-project-secret-key-suffix
+      where_to_find: >-
+        SECRET MATERIAL — the seeded project's secret key without its
+        "sk-lf-" prefix, the form the random_password importer
+        requires. kubectl get secret <resource-name>-secrets -n
+        <namespace> -o jsonpath='{.data.init-project-secret-key-suffix}'
+        | base64 -d

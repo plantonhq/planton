@@ -1,0 +1,25 @@
+{% if values.install_cnpg_operator | bool %}
+# CloudNativePG: the CNCF PostgreSQL operator that reconciles database.yaml
+# into a real cluster with streaming replication and automated failover. A
+# ONE-PER-CLUSTER singleton: the Helm release name, the cluster-scoped CRDs
+# and the webhook identity are fixed upstream, so a second installation
+# would fight the first. That is what the install_cnpg_operator toggle is
+# for: clusters that already run it set false, and the resident operator
+# reconciles the database instead.
+#
+# The operator lives in cnpg-system (the upstream convention), not in the
+# stack's namespace: it is cluster infrastructure that outlives any one
+# database and watches the whole cluster by default.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesCloudNativePgOperator
+metadata:
+  name: "{{ values.env }}-cnpg-operator"
+{% if values.connection != "" %}
+  annotations:
+    planton.dev/connection: "{{ values.connection }}"
+{% endif %}
+spec:
+  namespace:
+    value: cnpg-system
+  createNamespace: true
+{% endif %}

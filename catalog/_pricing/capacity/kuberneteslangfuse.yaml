@@ -1,0 +1,45 @@
+# Capacity derivation: the machine-executable rules turning any
+# KubernetesLangfuse manifest's spec values into the capacity footprint it
+# reserves from its target cluster. The estimate generator replays the
+# catalog presets through these rules to emit
+# ../estimates/kuberneteslangfuse.yaml; a server-side estimator can
+# evaluate the same rules against live manifests. Langfuse's spec sizes
+# its two pod classes -- the web server and the worker. Langfuse
+# provisions no volumes -- all durable state lives in the four composed
+# stores.
+# Schema: finops/catalogkindcapacityderivation/v1.
+apiVersion: finops.planton.dev/v1
+kind: CatalogKindCapacityDerivation
+metadata:
+  name: kuberneteslangfuse
+spec:
+  workloads:
+    - label: web replica
+      resources_path: web.resources
+      instances:
+        field_value:
+          field_path: web.replicas
+          default_when_unset: "1"
+    - label: worker
+      resources_path: worker.resources
+      instances:
+        field_value:
+          field_path: worker.replicas
+          default_when_unset: "1"
+  exclusions:
+    - text: the dollar value of this capacity is the target cluster's node economics
+    - applies_when:
+        - field_path: web.autoscaling
+          op: is_set
+      text: a web autoscaler owns the web replica count (or, for a VPA, the requests) at runtime -- the footprint states the manifest-declared replicas and requests
+    - applies_when:
+        - field_path: worker.autoscaling
+          op: is_set
+      text: a worker autoscaler owns the worker replica count (or, for a VPA, the requests) at runtime -- the footprint states the manifest-declared replicas and requests
+    - applies_when:
+        - field_path: helm_values
+          op: is_set
+      text: the helm_values overlay merges last and can override any modeled value, including resources and replica counts -- this footprint states the typed spec's declaration
+    - text: Postgres, ClickHouse, the Redis-protocol store and the object storage target are separate components whose capacity and bills ride their own footprints
+  notes:
+    - text: Langfuse provisions no volumes -- all durable state lives in the four composed stores, so the footprint is purely compute reservations

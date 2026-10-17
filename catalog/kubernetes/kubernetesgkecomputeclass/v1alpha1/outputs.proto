@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesgkecomputeclass.v1alpha1;
+
+// KubernetesGkeComputeClassOutputs captures observable outputs after the
+// ComputeClass is created on the target cluster.
+message KubernetesGkeComputeClassOutputs {
+  // Name of the created ComputeClass (the spec's `name`, its metadata.name in
+  // the cluster). A workload selects the class with the node selector
+  // `cloud.google.com/compute-class: <compute_class_name>`; a class named
+  // `default` applies to every pod that selects none when the cluster's
+  // default compute class is enabled.
+  string compute_class_name = 1;
+}

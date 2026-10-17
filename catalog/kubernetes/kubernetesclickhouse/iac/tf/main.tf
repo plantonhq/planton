@@ -4,7 +4,9 @@
 #
 #   1. the namespace (optional, create_namespace),
 #   2. the auth Secret (when users are declared) — one key per user name,
-#      referenced from the CHI so no password ever appears in the CR,
+#      holding the declared password or one generated here for a user
+#      declared without one, referenced from the CHI so no password ever
+#      appears in the CR,
 #   3. the ClickHouseKeeperInstallation CR (when coordination resolves to
 #      a managed Keeper) — the same operator reconciles it,
 #   4. the clickhouse.altinity.com/v1 ClickHouseInstallation CR itself —
@@ -41,12 +43,47 @@ resource "kubernetes_namespace_v1" "namespace" {
   }
 }
 
+# ---- generated passwords ----------------------------------------------------
+# One generated password per user declared WITHOUT one, keyed by USER NAME —
+# the credential's identity. User names are unique (they are the CHI users
+# section's keys), so the password follows its user through spec reorders
+# (an index keying would silently SWAP passwords when the list order
+# changes), and a renamed user is honestly a NEW credential. A user that
+# declares a password is not in this map at all. Twin: the Pulumi module's
+# per-user RandomPassword resources.
+resource "random_password" "user" {
+  for_each = local.generated_password_users
+
+  # Letters and digits, no symbols: clients embed the value in connection
+  # URLs (clickhouse://user:password@host), where a symbol is the one class
+  # that can need escaping; 32 alphanumerics (~190 bits) is far past any
+  # practical bar.
+  length  = 32
+  special = false
+
+  # The generation-shape arguments are ignored after creation so an
+  # IMPORTED credential never silently regenerates: rotation stays an
+  # explicit verb, never plan fallout. Twin: the Pulumi module's
+  # IgnoreChanges on the same argument set.
+  lifecycle {
+    ignore_changes = [
+      length, special, upper, lower, numeric,
+      min_lower, min_numeric, min_special, min_upper, override_special,
+    ]
+  }
+}
+
 # ---- the auth Secret --------------------------------------------------------
-# One key per declared user, value = that user's (already-resolved)
-# password. The CHI wires each user's password to its key via
+# One key per user, value = that user's password: the declared one
+# (already resolved) when the spec carries it, the generated one above when
+# it does not. The CHI wires each user's password to its key via
 # valueFrom.secretKeyRef — rotating the Secret alone does not re-render
 # ClickHouse config (upstream-documented); bump any spec field to roll a
 # rotation out.
+#
+# The data is ONE merge: a per-user conditional that indexed
+# random_password.user[<name>] would evaluate that lookup for a declared
+# user too, whose key is not in the map, and fail the plan.
 resource "kubernetes_secret_v1" "auth" {
   count = length(try(var.spec.users, [])) > 0 ? 1 : 0
 
@@ -56,7 +93,10 @@ resource "kubernetes_secret_v1" "auth" {
     labels    = local.labels
   }
 
-  data = { for u in var.spec.users : u.name => u.password }
+  data = merge(
+    { for name, generated in random_password.user : name => generated.result },
+    local.declared_passwords,
+  )
 
   type = "Opaque"
 

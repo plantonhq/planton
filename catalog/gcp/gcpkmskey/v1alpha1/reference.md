@@ -380,6 +380,7 @@ Fields on other kinds that can point at this resource:
 | GcpVertexAiSearchEngine | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpVertexAiTensorboard | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpWorkflow | `spec.cryptoKey` | `status.outputs.key_id` |
+| KubernetesGkeComputeClass | `spec.priorities[].storage.bootDiskKMSKey` | `status.outputs.key_id` |
 | KubernetesOpenBao | `spec.autoUnseal.gcpKms.cryptoKey` | `status.outputs.key_name` |
 | KubernetesPlantonPlatform | `spec.vault.autoUnseal.gcpKms.cryptoKey` | `status.outputs.key_name` |
 

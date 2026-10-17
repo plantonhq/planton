@@ -35,9 +35,9 @@ import "shared/options/options.proto";
 //     accepted.
 //   - Upstream pointer fields, where an explicit `false` or `""` differs from
 //     unset, are proto `optional`, so the explicit value reaches the object.
-//   - Integers follow the upstream range in a 32-bit type, never `int64`:
-//     protojson writes 64-bit integers as JSON strings, which the API server
-//     refuses for an integer field.
+//   - Integers follow the upstream format; every integer here is upstream's
+//     `int32`. (A 64-bit field would also reach the object as a number: the
+//     projection rewrites protojson's 64-bit strings.)
 //   - A Secret or ConfigMap a monitor reads is a reference: the selector's
 //     `name` is a StringValueOrRef whose default kind is KubernetesSecret or
 //     KubernetesConfigMap, so the resource graph shows the dependency and

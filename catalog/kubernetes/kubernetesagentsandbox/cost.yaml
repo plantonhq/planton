@@ -1,0 +1,23 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: CatalogKindCostProfile
+metadata:
+  name: kubernetesagentsandbox
+spec:
+  billing_model: cluster_capacity
+  cost_drivers:
+    - field_path: pod_template
+      sku_meter: cluster CPU and memory reservations
+      impact: The sandbox's pod reserves what its containers request (and, with pod-level resources, what the pod requests), plus its runtime class's overhead -- a gVisor or Kata sandbox costs a little more than a plain pod of the same size.
+    - field_path: volume_claim_templates
+      sku_meter: persistent volume storage
+      impact: Each template becomes a claim of its requested size on its storage class, billed for as long as the sandbox exists -- suspended included.
+    - field_path: operating_mode
+      sku_meter: cluster CPU and memory reservations
+      impact: Suspended deletes the pod, so a suspended sandbox reserves no CPU or memory; its claims stay, and keep costing storage.
+  estimate_exclusions:
+    - no capacity derivation is published for this kind -- the pod's reservations sit in a repeated container list the derivation grammar cannot walk
+    - the price of reserved CPU, memory and storage is the target cluster's node and storage economics, which this catalog cannot know
+  notes: "A sandbox creates no cloud SKU of its own -- its cost is the share of the cluster its pod reserves while Running and the storage its claims hold for its whole life. Suspend an idle sandbox to give the CPU and memory back while keeping its files."

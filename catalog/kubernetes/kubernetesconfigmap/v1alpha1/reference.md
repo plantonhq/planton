@@ -149,6 +149,22 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| KubernetesAgentSandbox | `spec.podTemplate.spec.volumes[].configMap.name` | `status.outputs.configmap_name` |
+| KubernetesAgentSandbox | `spec.podTemplate.spec.volumes[].projected.sources[].configMap.name` | `status.outputs.configmap_name` |
+| KubernetesAgentSandbox | `spec.podTemplate.spec.initContainers[].envFrom[].configMapRef.name` | `status.outputs.configmap_name` |
+| KubernetesAgentSandbox | `spec.podTemplate.spec.initContainers[].env[].valueFrom.configMapKeyRef.name` | `status.outputs.configmap_name` |
+| KubernetesAgentSandbox | `spec.podTemplate.spec.containers[].envFrom[].configMapRef.name` | `status.outputs.configmap_name` |
+| KubernetesAgentSandbox | `spec.podTemplate.spec.containers[].env[].valueFrom.configMapKeyRef.name` | `status.outputs.configmap_name` |
+| KubernetesAgentSandbox | `spec.podTemplate.spec.ephemeralContainers[].envFrom[].configMapRef.name` | `status.outputs.configmap_name` |
+| KubernetesAgentSandbox | `spec.podTemplate.spec.ephemeralContainers[].env[].valueFrom.configMapKeyRef.name` | `status.outputs.configmap_name` |
+| KubernetesAgentSandboxTemplate | `spec.podTemplate.spec.volumes[].configMap.name` | `status.outputs.configmap_name` |
+| KubernetesAgentSandboxTemplate | `spec.podTemplate.spec.volumes[].projected.sources[].configMap.name` | `status.outputs.configmap_name` |
+| KubernetesAgentSandboxTemplate | `spec.podTemplate.spec.initContainers[].envFrom[].configMapRef.name` | `status.outputs.configmap_name` |
+| KubernetesAgentSandboxTemplate | `spec.podTemplate.spec.initContainers[].env[].valueFrom.configMapKeyRef.name` | `status.outputs.configmap_name` |
+| KubernetesAgentSandboxTemplate | `spec.podTemplate.spec.containers[].envFrom[].configMapRef.name` | `status.outputs.configmap_name` |
+| KubernetesAgentSandboxTemplate | `spec.podTemplate.spec.containers[].env[].valueFrom.configMapKeyRef.name` | `status.outputs.configmap_name` |
+| KubernetesAgentSandboxTemplate | `spec.podTemplate.spec.ephemeralContainers[].envFrom[].configMapRef.name` | `status.outputs.configmap_name` |
+| KubernetesAgentSandboxTemplate | `spec.podTemplate.spec.ephemeralContainers[].env[].valueFrom.configMapKeyRef.name` | `status.outputs.configmap_name` |
 | KubernetesBackendTlsPolicy | `spec.validation.caCertificateRefs[].name` | `status.outputs.configmap_name` |
 | KubernetesGateway | `spec.tls.frontend.default.validation.caCertificateRefs[].name` | `status.outputs.configmap_name` |
 | KubernetesGateway | `spec.tls.frontend.perPort[].tls.validation.caCertificateRefs[].name` | `status.outputs.configmap_name` |

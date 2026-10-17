@@ -1,0 +1,379 @@
+# The full surface of a KubernetesAgentSandbox, offline: every top-level key
+# of the Sandbox spec and of the pod specification, every container setting,
+# every probe and hook handler, and a volume of each common source -- including
+# what kind cannot run (a gVisor runtime class, feature-gated fields). The
+# served-schema test renders it and holds it to the pinned definition: nothing
+# pruned, nothing refused. The live lanes run e2e/scenarios/.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandbox
+metadata:
+  name: agent-workbench
+spec:
+  namespace:
+    value: agents
+  labels:
+    team: agents
+  annotations:
+    example.com/owner: platform
+  podTemplate:
+    metadata:
+      labels:
+        app: agent-workbench
+      annotations:
+        example.com/purpose: coding-agent
+    spec:
+      runtimeClassName: gvisor
+      nodeSelector:
+        sandbox.gke.io/runtime: gvisor
+      tolerations:
+        - key: sandbox.gke.io/runtime
+          operator: Equal
+          value: gvisor
+          effect: NoSchedule
+        - key: node.kubernetes.io/not-ready
+          operator: Exists
+          effect: NoExecute
+          tolerationSeconds: 300
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/arch
+                    operator: In
+                    values: ["amd64"]
+                matchFields:
+                  - key: metadata.name
+                    operator: NotIn
+                    values: ["drained-node"]
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 50
+              preference:
+                matchExpressions:
+                  - key: example.com/cpu-generation
+                    operator: Gt
+                    values: ["3"]
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 20
+              podAffinityTerm:
+                topologyKey: topology.kubernetes.io/zone
+                labelSelector:
+                  matchLabels:
+                    app: agent-cache
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values: ["agent-workbench"]
+              namespaceSelector: {}
+              matchLabelKeys: ["pod-template-hash"]
+      topologySpreadConstraints:
+        - maxSkew: 1
+          minDomains: 2
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app: agent-workbench
+          nodeAffinityPolicy: Honor
+          nodeTaintsPolicy: Ignore
+      priorityClassName:
+        value: agent-standard
+      priority: 1000
+      preemptionPolicy: Never
+      schedulerName: default-scheduler
+      serviceAccountName:
+        value: agent-workbench
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      shareProcessNamespace: false
+      hostname: workbench
+      subdomain: agents
+      setHostnameAsFQDN: false
+      hostAliases:
+        - ip: 10.0.0.10
+          hostnames: ["internal-registry.example.com"]
+      dnsPolicy: None
+      dnsConfig:
+        nameservers: ["10.96.0.10"]
+        searches: ["agents.svc.cluster.local"]
+        options:
+          - name: ndots
+            value: "2"
+      imagePullSecrets:
+        - name:
+            value: registry-credentials
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      activeDeadlineSeconds: 86400
+      readinessGates:
+        - conditionType: example.com/agent-ready
+      os:
+        name: linux
+      hostUsers: false
+      resources:
+        requests:
+          cpu: "1"
+          memory: 2Gi
+        limits:
+          memory: 4Gi
+      overhead:
+        cpu: 250m
+        memory: 120Mi
+      schedulingGates:
+        - name: example.com/quota-approved
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [2000]
+        supplementalGroupsPolicy: Strict
+        seccompProfile:
+          type: RuntimeDefault
+        appArmorProfile:
+          type: RuntimeDefault
+        seLinuxChangePolicy: MountOption
+        sysctls:
+          - name: net.ipv4.ip_unprivileged_port_start
+            value: "0"
+      initContainers:
+        - name: clone
+          image: alpine/git:2.47.2
+          args: ["clone", "--depth=1", "https://github.com/example/repo", "/workspace/repo"]
+          volumeMounts:
+            - name: workspace
+              mountPath: /workspace
+        - name: log-shipper
+          image: fluent/fluent-bit:4.0.3
+          restartPolicy: Always
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+      containers:
+        - name: agent
+          image: us-docker.pkg.dev/example/agents/workbench:1.4.2
+          imagePullPolicy: IfNotPresent
+          command: ["/usr/local/bin/workbench"]
+          args: ["serve", "--port=8888"]
+          workingDir: /workspace
+          ports:
+            - name: http
+              containerPort: 8888
+              protocol: TCP
+            - name: grpc
+              containerPort: 9090
+          env:
+            - name: AGENT_MODE
+              value: interactive
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name:
+                    value: agent-credentials
+                  key: api-key
+            - name: MODEL
+              valueFrom:
+                configMapKeyRef:
+                  name:
+                    value: agent-settings
+                  key: model
+                  optional: true
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: MEMORY_LIMIT
+              valueFrom:
+                resourceFieldRef:
+                  containerName: agent
+                  resource: limits.memory
+                  divisor: 1Mi
+          envFrom:
+            - prefix: AGENT_
+              configMapRef:
+                name:
+                  value: agent-settings
+            - secretRef:
+                name:
+                  value: agent-credentials
+                optional: true
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: "2"
+              memory: 3Gi
+          resizePolicy:
+            - resourceName: cpu
+              restartPolicy: NotRequired
+            - resourceName: memory
+              restartPolicy: RestartContainer
+          restartPolicy: Always
+          restartPolicyRules:
+            - action: Restart
+              exitCodes:
+                operator: In
+                values: [42]
+          volumeMounts:
+            - name: workspace
+              mountPath: /workspace
+            - name: tmp
+              mountPath: /tmp
+            - name: settings
+              mountPath: /etc/agent
+              readOnly: true
+              recursiveReadOnly: IfPossible
+            - name: identity
+              mountPath: /var/run/identity
+              readOnly: true
+            - name: tools
+              mountPath: /opt/tools
+              subPath: bin
+              mountPropagation: None
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+              scheme: HTTP
+              httpHeaders:
+                - name: X-Probe
+                  value: readiness
+            initialDelaySeconds: 2
+            periodSeconds: 5
+            timeoutSeconds: 2
+            successThreshold: 1
+            failureThreshold: 3
+          livenessProbe:
+            grpc:
+              port: 9090
+              service: workbench.v1.Health
+            periodSeconds: 10
+            terminationGracePeriodSeconds: 15
+          startupProbe:
+            tcpSocket:
+              port: "8888"
+            failureThreshold: 60
+            periodSeconds: 2
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/usr/local/bin/workbench", "warm-cache"]
+            preStop:
+              httpGet:
+                path: /drain
+                port: "8888"
+            stopSignal: SIGTERM
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: FallbackToLogsOnError
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+            procMount: Default
+          stdin: false
+          tty: false
+      volumes:
+        - name: tmp
+          emptyDir:
+            medium: Memory
+            sizeLimit: 256Mi
+        - name: settings
+          configMap:
+            name:
+              value: agent-settings
+            defaultMode: 420
+            items:
+              - key: workbench.yaml
+                path: workbench.yaml
+        - name: credentials
+          secret:
+            secretName:
+              value: agent-credentials
+            defaultMode: 256
+        - name: identity
+          projected:
+            defaultMode: 288
+            sources:
+              - serviceAccountToken:
+                  audience: https://api.example.com
+                  expirationSeconds: 3600
+                  path: token
+              - downwardAPI:
+                  items:
+                    - path: labels
+                      fieldRef:
+                        fieldPath: metadata.labels
+              - configMap:
+                  name:
+                    value: agent-settings
+                  items:
+                    - key: ca.crt
+                      path: ca.crt
+              - secret:
+                  name:
+                    value: agent-credentials
+                  items:
+                    - key: api-key
+                      path: api-key
+        - name: tools
+          image:
+            reference: us-docker.pkg.dev/example/agents/tools:2.1.0
+            pullPolicy: IfNotPresent
+        - name: shared-cache
+          persistentVolumeClaim:
+            claimName:
+              value: agent-cache
+            readOnly: true
+        - name: scratch
+          ephemeral:
+            volumeClaimTemplate:
+              spec:
+                accessModes: ["ReadWriteOnce"]
+                storageClassName:
+                  value: standard-rwo
+                resources:
+                  requests:
+                    storage: 10Gi
+        - name: secrets-store
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: agent-secrets
+        - name: pod-info
+          downwardAPI:
+            items:
+              - path: annotations
+                fieldRef:
+                  fieldPath: metadata.annotations
+  volumeClaimTemplates:
+    - metadata:
+        name: workspace
+        labels:
+          example.com/data: workspace
+        annotations:
+          example.com/backup: daily
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName:
+          value: standard-rwo
+        volumeMode: Filesystem
+        resources:
+          requests:
+            storage: 20Gi
+  service: true
+  shutdownTime: "2099-01-01T00:00:00Z"
+  shutdownPolicy: Retain
+  operatingMode: Running

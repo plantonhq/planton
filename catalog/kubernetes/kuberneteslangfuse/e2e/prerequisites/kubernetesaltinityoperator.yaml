@@ -1,0 +1,16 @@
+# Consumer-scoped operator fixture for the KubernetesLangfuse lanes: the
+# Altinity operator watching ALL namespaces (its chart default is
+# own-namespace only), so the composed ClickHouse fixture reconciles in
+# the lane's shared namespace. Without this override the resolver falls
+# back to the operator's own minimal scenario - own-namespace-fenced - and
+# the fixture installation would silently never reconcile.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAltinityOperator
+metadata:
+  name: e2e-lf-altop
+spec:
+  namespace:
+    value: clickhouse-operator-system
+  createNamespace: true
+  watchNamespaces:
+    - ".*"

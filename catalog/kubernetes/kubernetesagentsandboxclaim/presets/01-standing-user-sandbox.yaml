@@ -1,0 +1,13 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxClaim
+metadata:
+  name: <user>-sandbox
+spec:
+  namespace:
+    value: <namespace>
+  warmPoolRef:
+    name:
+      value: <pool-name>
+  additionalPodMetadata:
+    labels:
+      sandbox.users.io/user: alice # the owner, as a label value

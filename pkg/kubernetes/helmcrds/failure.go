@@ -83,10 +83,17 @@ func bundleFetchFailure(src Source, status int, err error) error {
 		}
 	}
 	if status == 404 {
+		if src.VersionField == "" {
+			return &Failure{
+				Observed: fmt.Sprintf("the CRD bundle URL %s answered HTTP 404", url),
+				Meaning:  fmt.Sprintf("upstream does not serve %s, the release this module pins, at that URL: the release was withdrawn, or upstream changed its download layout", src.VersionPhrase(src.Version)),
+				NextStep: fmt.Sprintf("confirm what upstream publishes for %s (`curl -I %s`), then correct the module's bundle URL template or its pin", src.VersionPhrase(src.Version), url),
+			}
+		}
 		return &Failure{
 			Observed: fmt.Sprintf("the CRD bundle URL %s answered HTTP 404", url),
 			Meaning:  "no bundle is published at this version, or upstream changed the URL pattern",
-			NextStep: fmt.Sprintf("confirm version %s exists at the upstream download page; set spec.chart_version to a published version, or correct the module's bundle URL template", src.Version),
+			NextStep: fmt.Sprintf("confirm version %s exists at the upstream download page; set %s to a published version, or correct the module's bundle URL template", src.Version, src.VersionField),
 		}
 	}
 	return &Failure{
@@ -111,14 +118,18 @@ func HelmManagedCRDsFailure(src Source, names []string) error {
 }
 
 // DowngradeFailure is the refusal when the cluster already carries a CRD at a
-// higher source version than the manifest asks for. Lowering a schema can
-// strip fields from existing custom resources on their next write, so the
-// primitive stops before touching anything.
-func DowngradeFailure(crdName, existingVersion, requestedVersion string) error {
+// higher source version than src.Version, the version this deploy would
+// apply. Lowering a schema can strip fields from existing custom resources on
+// their next write, so the primitive stops before touching anything.
+func DowngradeFailure(src Source, crdName, existingVersion string) error {
+	asks := "the manifest asks for"
+	if src.VersionField == "" {
+		asks = "this module pins"
+	}
 	return &Failure{
-		Observed: fmt.Sprintf("the cluster carries CRD %s derived from chart version %s; the manifest asks for chart version %s", crdName, existingVersion, requestedVersion),
+		Observed: fmt.Sprintf("the cluster carries CRD %s derived from %s; %s %s", crdName, src.VersionPhrase(existingVersion), asks, src.VersionPhrase(src.Version)),
 		Meaning:  "applying an older CRD schema over a newer one can strip fields from existing custom resources the next time anything writes them",
-		NextStep: fmt.Sprintf("set spec.chart_version to %s or higher; if you accept the loss and want the older schema, delete the CRD first (`kubectl delete crd %s`) and re-run", existingVersion, crdName),
+		NextStep: fmt.Sprintf("%s; if you accept the loss and want the older schema, delete the CRD first (`kubectl delete crd %s`) and re-run", src.versionRemedy(existingVersion+" or higher"), crdName),
 	}
 }
 
@@ -136,19 +147,31 @@ func DowngradeFailure(crdName, existingVersion, requestedVersion string) error {
 // whether Helm owns the CRD as a release resource, because handing over a
 // CRD Helm still owns is a trap (Helm deletes it with that release later), so
 // that remedy first tells the user to free it.
+//
+// The first remedy differs by branch. A chart's release installs the
+// operator either way, so leaving the definitions with their owner is
+// harmless. A bundle kind installs an upstream's own workloads, and a foreign
+// definition most often means another installation of that upstream is
+// already running (a managed add-on, a `kubectl apply` of the same release),
+// which must never get a second copy beside it, so the remedy says when
+// leaving the definitions with their owner is right.
 func OwnedElsewhereFailure(crd ExistingCRD, src Source) error {
-	handOver := fmt.Sprintf("hand them to this module once you know they match chart version %s: `kubectl label crd %s %s=%s` and `kubectl annotate crd %s %s=%s %s=%s`, then re-run",
-		src.Version, crd.Name, LabelSource, labelSourceValue(src), crd.Name, AnnotationSourceChart, src.SourceDescription(), AnnotationSourceVersion, src.Version)
+	handOver := fmt.Sprintf("hand them to this module once you know they match %s: `kubectl label crd %s %s=%s` and `kubectl annotate crd %s %s=%s %s=%s`, then re-run",
+		src.VersionPhrase(src.Version), crd.Name, LabelSource, labelSourceValue(src), crd.Name, AnnotationSourceChart, src.SourceDescription(), AnnotationSourceVersion, src.Version)
 	if crd.HelmReleaseName != "" {
 		handOver = fmt.Sprintf("or, to move ownership here, first uninstall Helm release %s (or mark the CRD helm.sh/resource-policy: keep in that release) so Helm will not delete it later, then %s",
 			crd.HelmReleaseName, handOver)
 	} else {
 		handOver = "or " + handOver
 	}
+	leaveWithOwner := "set spec.crds.install to false to leave the definitions with their current owner (the release still installs and uses them)"
+	if src.IsBundle() {
+		leaveWithOwner = fmt.Sprintf("set spec.crds.install to false only when another tool manages these definitions and no other installation of %s runs on this cluster (this kind still installs %s itself)", src.Name(), src.Name())
+	}
 	return &Failure{
 		Observed: fmt.Sprintf("CRD %s already exists on the cluster and was not applied by this module (%s)", crd.Name, crd.OwnerDescription()),
-		Meaning:  fmt.Sprintf("two owners would write one schema, and the module cannot tell whether the existing definition is newer or older than chart version %s, so it stops before changing it", src.Version),
-		NextStep: fmt.Sprintf("set spec.crds.install to false to leave the definitions with their current owner (the release still installs and uses them); %s", handOver),
+		Meaning:  fmt.Sprintf("two owners would write one schema, and the module cannot tell whether the existing definition is newer or older than %s, so it stops before changing it", src.VersionPhrase(src.Version)),
+		NextStep: fmt.Sprintf("%s; %s", leaveWithOwner, handOver),
 	}
 }
 
@@ -162,12 +185,19 @@ func CRDApplyDeniedFailure(user, verb, reason string) error {
 	return failure.KubernetesForbidden(user, verb, failure.CustomResourceDefinitionsResource, "apiextensions.k8s.io", "at the cluster scope", reason)
 }
 
-// UnparseableVersionFailure covers a stamp or a manifest version that is not
+// UnparseableVersionFailure covers a stamp or a requested version that is not
 // semver. Refusing is safer than guessing an order.
-func UnparseableVersionFailure(which, value string) error {
+func UnparseableVersionFailure(src Source, which, value string) error {
+	next := "use the exact version string the chart repository index publishes (for example 0.120.0)"
+	switch {
+	case src.IsBundle() && src.VersionField != "":
+		next = fmt.Sprintf("set %s to the release tag exactly as upstream publishes it (for example v1.0.7)", src.VersionField)
+	case src.IsBundle():
+		next = "the module's pinned release must be upstream's tag exactly as published (for example v1.0.7); correct the module's pin"
+	}
 	return &Failure{
-		Observed: fmt.Sprintf("the %s chart version %q is not a semantic version", which, value),
+		Observed: fmt.Sprintf("the %s %s %q is not a semantic version", which, src.versionNoun(), value),
 		Meaning:  "the never-downgrade check cannot order versions it cannot parse, so it refuses rather than guess",
-		NextStep: "use the exact version string the chart repository index publishes (for example 0.120.0)",
+		NextStep: next,
 	}
 }

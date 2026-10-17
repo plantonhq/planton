@@ -1,0 +1,69 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/catalogkindcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: CatalogKindControlProfile
+metadata:
+  name: kubernetesagentsandboxwarmpool
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: "The pool stores no data of its own; its members' claims are encrypted by the storage class their template names (see KubernetesAgentSandboxTemplate)."
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: "Customer-managed keys for the members' volumes are the template's storage class's choice."
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: "The pool opens no connection; traffic to its members follows the template and the controller's router."
+    - control_id: no-public-access
+      status: not_applicable
+      notes: "A pool is configuration the controller acts on, not a network endpoint; its members' exposure is the template's."
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: "The members' network fence is the template's NetworkPolicy."
+    - control_id: edge-protection
+      status: not_applicable
+      notes: "There is no endpoint to protect at the edge."
+    - control_id: rbac
+      status: not_applicable
+      notes: "Who may create, change or scale the pool, and who may claim from it, is the cluster's Kubernetes RBAC (create on sandboxclaims in the pool's namespace)."
+    - control_id: workload-identity
+      status: not_applicable
+      notes: "The members' identity is the template's ServiceAccount."
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: "The pool performs no authentication."
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: "The pool has no users."
+    - control_id: audit-logging
+      status: not_applicable
+      notes: "Changes to the pool are recorded by the cluster's API server audit log, a property of the cluster component."
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: module_default
+        reference: "The agent-sandbox controller exports the pool's size (agent_sandbox_warmpool_size) on its metrics endpoint, and the pool's status reports its ready members; KubernetesAgentSandboxController's metrics Service is what a KubernetesServiceMonitor scrapes."
+      notes: "Alert when ready members stay below the declared size: claims then start cold."
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: "The pool holds no state; it recovers by re-applying the manifest, and the controller refills it."
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: "There is nothing to retain (see backup-recovery)."
+    - control_id: multi-zone-ha
+      status: configurable
+      field_path: replicas
+      evidence:
+        type: spec_default
+        reference: "replicas sets how many ready members the pool keeps; spreading them across zones is the template's topology spread constraints, and an autoscaler on the pool's scale endpoint keeps the size matched to demand."
+      notes: "A pool of one is a single point of delay, not of failure: when it is empty, claims start cold."
+    - control_id: deletion-protection
+      status: not_applicable
+      notes: "The object carries no deletion protection of its own; Kubernetes objects are protected through RBAC and admission policy on the cluster. Deleting the pool deletes its unclaimed members; claimed sandboxes belong to their claims and stay."
+    - control_id: managed-patching
+      status: not_applicable
+      notes: "The pool runs the template's image; a template change rolls out to members by the pool's update strategy."

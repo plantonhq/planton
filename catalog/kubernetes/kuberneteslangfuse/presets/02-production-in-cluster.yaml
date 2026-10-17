@@ -1,0 +1,120 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesLangfuse
+metadata:
+  name: my-langfuse
+spec:
+  namespace:
+    value: langfuse
+  # The public address a KubernetesHttpRoute or KubernetesIngress serves
+  # over the service output: the base of every sign-in redirect and link.
+  external_url: https://langfuse.replaceme.example.com
+  postgres:
+    host:
+      value_from:
+        name: langfuse-pg
+    username: langfuse
+    password_secret:
+      secret_name:
+        value_from:
+          name: langfuse-pg
+  # Cluster mode on (the default): a KubernetesClickHouse with replicas
+  # and a managed Keeper. The cluster name follows the ClickHouse resource.
+  clickhouse:
+    host:
+      value_from:
+        name: langfuse-ch
+    username: langfuse
+    password_secret:
+      secret_name:
+        value_from:
+          name: langfuse-ch
+    cluster:
+      name:
+        value_from:
+          name: langfuse-ch
+  redis:
+    standalone:
+      host:
+        value_from:
+          name: langfuse-valkey
+    username:
+      value_from:
+        name: langfuse-valkey
+    password_secret:
+      secret_name:
+        value_from:
+          name: langfuse-valkey
+      secret_key:
+        value_from:
+          name: langfuse-valkey
+  blob_storage:
+    target:
+      s3_compatible:
+        endpoint:
+          value_from:
+            name: langfuse-s3
+        bucket: langfuse
+        credentials_secret:
+          secret_name:
+            value_from:
+              name: langfuse-s3
+    # Browsers and SDKs reach media and exports through presigned URLs:
+    # sign them for the address a route serves the SeaweedFS S3 API at.
+    media_upload:
+      public_endpoint: https://s3.langfuse.replaceme.example.com
+    batch_export:
+      public_endpoint: https://s3.langfuse.replaceme.example.com
+  # Declared from the first deploy: Langfuse hashes API keys with the salt
+  # and encrypts stored credentials with the key, and both results live in
+  # Postgres. Declared values survive a delete and recreate; generated ones
+  # do not. The encryption key is 64 hex characters (openssl rand -hex 32).
+  secrets:
+    salt: $secret/replace-with-langfuse-salt
+    encryption_key: $secret/replace-with-langfuse-encryption-key
+  init:
+    organization:
+      name: Acme
+    project:
+      name: Production
+    # The first owner; the generated password is readable through the
+    # admin_password_secret output.
+    admin:
+      email: admin@replaceme.example.com
+      name: Platform Admin
+  auth:
+    disable_sign_up: true
+  # Langfuse's production sizing: 2 CPU and 4 GiB per pod, two replicas of
+  # each workload spread across zones, one always kept through voluntary
+  # disruptions.
+  web:
+    replicas: 2
+    resources:
+      requests:
+        cpu: "2"
+        memory: 4Gi
+      limits:
+        cpu: "4"
+        memory: 4Gi
+    pdb:
+      min_available: "1"
+    scheduling:
+      topology_spread_constraints:
+        - max_skew: 1
+          topology_key: topology.kubernetes.io/zone
+          when_unsatisfiable: ScheduleAnyway
+  worker:
+    replicas: 2
+    resources:
+      requests:
+        cpu: "2"
+        memory: 4Gi
+      limits:
+        cpu: "4"
+        memory: 4Gi
+    pdb:
+      min_available: "1"
+    scheduling:
+      topology_spread_constraints:
+        - max_skew: 1
+          topology_key: topology.kubernetes.io/zone
+          when_unsatisfiable: ScheduleAnyway

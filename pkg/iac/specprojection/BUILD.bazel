@@ -23,6 +23,7 @@ go_test(
     name = "specprojection_test",
     srcs = [
         "flatten_test.go",
+        "int64_test.go",
         "markers_test.go",
         "typerules_test.go",
     ],
@@ -30,7 +31,9 @@ go_test(
     deps = [
         "//catalog/_test/testcatalogkindkubernetes/v1alpha1",
         "//catalog/kubernetes",
+        "//catalog/kubernetes/kubernetesgkecomputeclass/v1alpha1",
         "//catalog/kubernetes/kubernetesservicemonitor/v1alpha1",
+        "//catalog/stripe/stripecoupon/v1alpha1",
         "//shared/foreignkey/v1:foreignkey",
         "@org_golang_google_protobuf//encoding/protojson",
     ],

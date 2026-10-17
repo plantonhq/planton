@@ -56,12 +56,26 @@ SEQUENTIAL STEPS
 1) Identify: Determine the provider and kind name from the resource being forged
    - Provider from directory path (e.g., `catalog/gcp/gcpcertmanagercert` → gcp)
    - Kind name from directory name in PascalCase (e.g., `gcpcertmanagercert` → GcpCertManagerCert)
+   - The provider is the API the kind is applied through, never the cloud
+     that ships it. A custom resource applied through a cluster's Kubernetes
+     API is a Kubernetes kind under `catalog/kubernetes/`, named
+     `Kubernetes<Vendor or controller><Resource>`, whichever cloud serves it:
+     AWS's Karpenter EC2NodeClass is `KubernetesKarpenterEc2NodeClass` and
+     GKE's ComputeClass is `KubernetesGkeComputeClass`. Its input carries the
+     Kubernetes provider config, its modules deploy through the cluster
+     connection, and its e2e runs in the Kubernetes harness (a real-cluster
+     batch when only that cloud's clusters serve the definition). The cloud
+     kinds it pairs with (the cluster, its node pools, a service account)
+     are referenced across providers through `default_kind`, and its pages
+     point back at them so the cloud's readers find it.
 
-2) Find Next Enum Value:
+2) Find the Enum Value:
    - Read `shared/catalogkind/catalog_kind.proto`
    - Identify provider's range from PROVIDER RANGES above
-   - Scan existing entries in that range to find the highest used number
-   - Next value = highest + 1
+   - Place the kind in the family sub-band its comment names (the
+     autoscaling kinds sit together, the observability kinds together), at
+     the next free number inside that sub-band; only a kind with no family
+     takes the provider's highest number + 1
    - Ensure it's within the provider's range
 
 3) Generate ID Prefix:
@@ -116,7 +130,9 @@ SEQUENTIAL STEPS
      }];
      ```
    - For kinds that project a single Kubernetes custom resource, add
-     kubernetes_manifest_projection if applicable
+     kubernetes_manifest_projection if applicable, and pin the custom
+     resource's definition for the mirror test (see the orchestrator's
+     Phase 6e)
    - For a kind that deliberately runs on fewer engines than both, add
      `provisioners` with the engines it runs on, by IacProvisioner value
      name: `provisioners: ["tofu"]` for a kind proven on OpenTofu alone,

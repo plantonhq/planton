@@ -1,0 +1,92 @@
+# THE UPGRADE PROOF, act one: the previous published chart (2.1.4 =
+# Langfuse 4.50.0). The verifier ingests a deterministic state trace with
+# the declared key pair and reads it back. Act two
+# (behavioral-state.to.yaml) moves to the pinned default chart: both
+# workloads roll to the new version, its migrations run against the live
+# Postgres and ClickHouse, and the act-one trace must still be readable
+# with the same key - state lives in the composed stores, never in the
+# release.
+#
+# The key pair and the salt are declared so both acts authenticate the
+# same way.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesLangfuse
+metadata:
+  name: e2e-lf-state
+  annotations:
+    planton.dev/e2e-upgrade-manifest: behavioral-state.to.yaml
+spec:
+  namespace:
+    value: e2e-langfuse
+  chartVersion: "2.1.4"
+  postgres:
+    host:
+      valueFrom:
+        name: e2e-lf-pg
+    username: langfuse
+    passwordSecret:
+      secretName:
+        valueFrom:
+          name: e2e-lf-pg
+  clickhouse:
+    host:
+      valueFrom:
+        name: e2e-lf-ch
+    username: langfuse
+    passwordSecret:
+      secretName:
+        valueFrom:
+          name: e2e-lf-ch
+    cluster:
+      name:
+        valueFrom:
+          name: e2e-lf-ch
+  redis:
+    standalone:
+      host:
+        valueFrom:
+          name: e2e-lf-vlk
+    username:
+      valueFrom:
+        name: e2e-lf-vlk
+    passwordSecret:
+      secretName:
+        valueFrom:
+          name: e2e-lf-vlk
+      secretKey:
+        valueFrom:
+          name: e2e-lf-vlk
+  blobStorage:
+    target:
+      s3Compatible:
+        endpoint:
+          valueFrom:
+            name: e2e-lf-s3
+        bucket: langfuse
+        credentialsSecret:
+          secretName:
+            valueFrom:
+              name: e2e-lf-s3
+  secrets:
+    salt: e2e-state-salt-0123456789abcdefghijklmnopqrstuv
+    encryptionKey: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+  init:
+    project:
+      publicKey: pk-lf-e2e-state-public
+      secretKey: sk-lf-e2e-state-secret
+  web:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: "2"
+        memory: 2Gi
+  worker:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: "2"
+        memory: 2Gi

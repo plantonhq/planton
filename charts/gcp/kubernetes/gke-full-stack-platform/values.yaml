@@ -114,6 +114,40 @@ params:
       request (4 GiB per vCPU matches general-purpose shapes).
     value: "400"
 
+  # ── Default compute class (opt-in, stockout fallback) ───────────────────
+  - name: default_compute_class_enabled
+    type: bool
+    description: >
+      Turn on the cluster's default compute class and declare one: every
+      pod that selects no class runs on the system pool first, then on the
+      families below, in order. A busy region runs out of one machine type
+      for hours at a time; with this on, GKE creates the next family's
+      nodes instead of leaving pods pending. Off by default because it
+      changes which machine families the cluster buys.
+    value: false
+
+  - name: default_compute_class_families
+    type: list
+    description: >
+      The machine families the default class falls back through, in order
+      (only used when default_compute_class_enabled is true). Keep them
+      interchangeable: same CPU architecture and boot disk type. n2d, c3d,
+      n2 and t2d are all x86 on pd-balanced, across AMD and Intel capacity.
+      A fourth-generation family (c4, c4d, n4) boots only from Hyperdisk
+      and does not belong in this list.
+    value:
+      - n2d
+      - c3d
+      - n2
+      - t2d
+
+  - name: default_compute_class_min_cores
+    description: >
+      The fewest vCPUs a fallback node may have, the same on every family
+      so a fallback node fits the pods the first choice would have run
+      (only used when default_compute_class_enabled is true).
+    value: "4"
+
   # ── Spot capacity (opt-in, scale-to-zero) ────────────────────────────────
   - name: spot_pool_enabled
     type: bool

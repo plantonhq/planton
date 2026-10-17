@@ -17,7 +17,8 @@ const (
 	SnakeCaseKeys KeyStyle = iota
 	// JSONKeys keeps protojson's names (lowerCamelCase or an explicit
 	// json_name), which for a Kubernetes-manifest-projection kind are the
-	// custom resource's own keys.
+	// custom resource's own keys, and writes 64-bit integers as numbers,
+	// the form an API server accepts for an integer property.
 	JSONKeys
 )
 
@@ -39,6 +40,9 @@ func Project(msg proto.Message, style KeyStyle) (map[string]interface{}, error) 
 		data = map[string]interface{}{}
 	}
 
-	flattenWithOpts(data, msg.ProtoReflect().Descriptor(), DefaultRules(), flattenOpts{preserveJSONNames: style == JSONKeys})
+	flattenWithOpts(data, msg.ProtoReflect().Descriptor(), DefaultRules(), flattenOpts{
+		preserveJSONNames: style == JSONKeys,
+		int64AsNumber:     style == JSONKeys,
+	})
 	return data, nil
 }

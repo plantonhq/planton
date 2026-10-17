@@ -1,0 +1,60 @@
+# The Langfuse keyless-storage set: Langfuse writes every ingested event to
+# Google Cloud Storage through its native GCS driver, authenticating with
+# Application Default Credentials -- on GKE, the metadata server's token for
+# the Google service account its Kubernetes ServiceAccount is bound to. No
+# key exists anywhere.
+#
+# - The identity is Langfuse's own (one identity per workload, one blast
+#   radius), not a backup identity.
+# - The binding's KSA coordinates are the scenario's: the chart names the
+#   ServiceAccount after the resource (`e2e-lf-gke`), in the namespace the
+#   lane's store fixtures own (`e2e-langfuse`).
+# - The bucket is Langfuse's own, so a lane's events never mix with backup
+#   archives. objectAdmin covers what the driver does: write, read, list and
+#   delete objects (delete for data retention). force_destroy lets the
+#   teardown delete it with the lane's events still inside.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpServiceAccount
+metadata:
+  name: planton-e2e-gke-langfuse
+spec:
+  serviceAccountId: planton-e2e-gke-langfuse
+  projectId:
+    value: ${GCP_PROJECT_ID}
+  displayName: Planton E2E (gcp-gke) - Langfuse object storage via Workload Identity
+  description: Keyless identity the Langfuse web server and worker assume through GKE Workload Identity to read and write events, media and exports in the Langfuse bucket
+---
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeWorkloadIdentityBinding
+metadata:
+  name: planton-e2e-gke-langfuse-wi
+spec:
+  projectId:
+    value: ${GCP_PROJECT_ID}
+  serviceAccountEmail:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: planton-e2e-gke-langfuse
+      fieldPath: status.outputs.email
+  ksaNamespace: e2e-langfuse
+  ksaName: e2e-lf-gke
+---
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGcsBucket
+metadata:
+  name: planton-e2e-gke-langfuse
+spec:
+  projectId:
+    value: ${GCP_PROJECT_ID}
+  bucketName: planton-e2e-gke-langfuse-${GCP_PROJECT_ID}
+  location: ${GCP_REGION}
+  uniformBucketLevelAccessEnabled: true
+  publicAccessPrevention: enforced
+  forceDestroy: true
+  iamMembers:
+    - role: roles/storage.objectAdmin
+      member:
+        valueFrom:
+          kind: GcpServiceAccount
+          name: planton-e2e-gke-langfuse
+          fieldPath: status.outputs.member

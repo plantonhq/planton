@@ -1,0 +1,22 @@
+# THE POLICY PROMISE: a claim that injects an environment variable into a pool
+# whose template disallows it is refused by the controller, not silently
+# given a sandbox without the variable. The verifier proves the fields read
+# back and the claim reports Ready=False with reason EnvVarsInjectionRejected.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxClaim
+metadata:
+  name: e2e-asbx-cl-refused
+  annotations:
+    planton.dev/e2e-prerequisites: "catalog/kubernetes/kubernetesagentsandboxclaim/e2e/fixture-template.yaml, catalog/kubernetes/kubernetesagentsandboxclaim/e2e/fixture-pool.yaml"
+spec:
+  namespace:
+    value: default
+  warmPoolRef:
+    name:
+      valueFrom:
+        kind: KubernetesAgentSandboxWarmPool
+        name: e2e-asbx-cl-pool
+        fieldPath: status.outputs.sandbox_warm_pool_name
+  env:
+    - name: SANDBOX_TASK
+      value: not-allowed

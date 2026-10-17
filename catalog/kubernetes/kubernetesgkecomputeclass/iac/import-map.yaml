@@ -1,0 +1,31 @@
+apiVersion: iac.planton.dev/v1
+kind: CatalogKindImportMap
+metadata:
+  name: kubernetesgkecomputeclass
+spec:
+  # One kubectl_manifest applying the ComputeClass. The composed import ID is
+  # apiVersion//kind//name — apiVersion and kind are constants of this module
+  # (it renders exactly one GVK), declared as literals. ComputeClass is
+  # cluster-scoped, so the optional namespace segment drops.
+  values:
+    - name: api_version
+      derivations:
+        - literal: cloud.google.com/v1
+      where_to_find: >-
+        Always "cloud.google.com/v1" — the module pins the served ComputeClass
+        version.
+    - name: kind
+      derivations:
+        - literal: ComputeClass
+      where_to_find: Always "ComputeClass" — the CR kind this module applies.
+    - name: name
+      derivations:
+        - from_output: compute_class_name
+        - from_spec_field: name
+      where_to_find: >-
+        The ComputeClass's metadata.name (the spec's `name`) —
+        `kubectl get computeclasses` (NAME column).
+    - name: namespace
+      where_to_find: >-
+        Not applicable — ComputeClass is cluster-scoped, so the composed import
+        ID has no namespace segment (the optional [//{namespace}] group drops).

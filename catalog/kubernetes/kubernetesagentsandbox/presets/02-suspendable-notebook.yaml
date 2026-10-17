@@ -1,0 +1,43 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandbox
+metadata:
+  name: <notebook-name>
+spec:
+  namespace:
+    value: <namespace>
+  podTemplate:
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 100
+      containers:
+        - name: notebook
+          image: quay.io/jupyter/scipy-notebook:2025-09-08
+          args: ["start-notebook.py", "--IdentityProvider.token=", "--ServerApp.base_url=/"]
+          ports:
+            - name: http
+              containerPort: 8888
+          resources:
+            requests:
+              cpu: 500m
+              memory: 2Gi
+            limits:
+              memory: 4Gi
+          readinessProbe:
+            httpGet:
+              path: /api
+              port: http
+          volumeMounts:
+            - name: work
+              mountPath: /home/jovyan/work
+  volumeClaimTemplates:
+    - metadata:
+        name: work
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 10Gi
+  # Set to Suspended when the notebook is idle: the pod goes, the files stay.
+  operatingMode: Running

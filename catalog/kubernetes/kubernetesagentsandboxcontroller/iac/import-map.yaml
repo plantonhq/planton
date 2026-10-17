@@ -1,0 +1,73 @@
+apiVersion: iac.planton.dev/v1
+kind: CatalogKindImportMap
+metadata:
+  name: kubernetesagentsandboxcontroller
+spec:
+  # The module applies upstream's release documents (and the router's files
+  # when a router is set) through two kubectl_manifest resources, "namespace"
+  # and "workloads", whose for_each is keyed by each document's own composed
+  # identity -- apiVersion//kind//name[//namespace] -- exactly the ID form
+  # the kubectl importer takes. The unscoped placeholders below therefore
+  # read the segments of the address key itself (the multi-GVK bundle
+  # class). Cluster-scoped documents (the Namespace, the ClusterRoles and
+  # their bindings) carry 3-part keys; the namespace segment resolves empty
+  # and the ID's bracketed group drops it.
+  values:
+    - name: api_version
+      derivations:
+        - from_address_key_segment: 0
+      where_to_find: >-
+        The document's own apiVersion -- the first "//" segment of the state
+        address key; `kubectl get <kind> <name> -o
+        jsonpath='{.apiVersion}'`.
+    - name: kind
+      derivations:
+        - from_address_key_segment: 1
+      where_to_find: >-
+        The document's own kind -- the second "//" segment of the state
+        address key.
+    - name: name
+      derivations:
+        - from_address_key_segment: 2
+      where_to_find: >-
+        The document's metadata.name -- the third "//" segment of the state
+        address key. Every name is fixed by upstream (the controller
+        Deployment is "agent-sandbox-controller", the router Deployment
+        "sandbox-router").
+    - name: namespace
+      derivations:
+        - from_address_key_segment: 3
+      where_to_find: >-
+        "agent-sandbox-system" for namespaced documents (upstream's fixed
+        namespace); absent for the cluster-scoped ones.
+    # -- the kept resource definitions (for_each resource "helm_crds") ------
+    # Derived from the same release asset at plan time (the generated
+    # helm_crds.tf, bundle branch) and keyed by each definition's own
+    # metadata.name; cluster-scoped, so the composed ID has three parts.
+    # Absent entirely when crds.install is false.
+    - name: api_version
+      tofu_resource_name: helm_crds
+      derivations:
+        - literal: apiextensions.k8s.io/v1
+      where_to_find: Always "apiextensions.k8s.io/v1" -- the CRD group/version.
+    - name: kind
+      tofu_resource_name: helm_crds
+      derivations:
+        - literal: CustomResourceDefinition
+      where_to_find: Always "CustomResourceDefinition".
+    - name: name
+      tofu_resource_name: helm_crds
+      derivations:
+        - from_address_key: true
+      where_to_find: >-
+        Each definition's metadata.name (the for_each key) -- `kubectl get
+        crd -l planton.ai/crd-source=agent-sandbox` (NAME column):
+        sandboxes.agents.x-k8s.io, plus sandboxtemplates,
+        sandboxwarmpools and sandboxclaims on
+        extensions.agents.x-k8s.io when extensions are on.
+    - name: namespace
+      tofu_resource_name: helm_crds
+      where_to_find: >-
+        Not applicable -- CustomResourceDefinitions are cluster-scoped, so
+        the composed import ID has no namespace segment (the optional
+        [//{namespace}] group drops).

@@ -1,0 +1,94 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/catalogkindcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: CatalogKindControlProfile
+metadata:
+  name: kubernetesagentsandboxcontroller
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: The controller stores no data of its own -- sandboxes, templates, pools and claims are custom resources in the cluster's etcd, and a sandbox's volumes are PersistentVolumeClaims whose encryption at rest is their storage class's. Both are the target cluster's posture.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: No storage seam exists on this component (see enc-at-rest); customer-managed keys apply to the cluster's etcd encryption and to the storage classes sandbox volumes use.
+    - control_id: enc-in-transit
+      status: configurable
+      field_path: router.tls
+      evidence:
+        type: spec_default
+        reference: Absent, the router serves plain HTTP inside the cluster network. Declaring router.tls serves the proxy over TLS from a certificate Secret (typically a cert-manager Certificate), with http_enabled false for TLS only, mtls_mode for client certificates, and min_version and cipher_suites for the protocol floor. controller.metrics.tls serves the controller's metrics over HTTPS the same way.
+      notes: The router forwards to sandboxes over plain HTTP inside the cluster (upstream's design); a sandbox that needs end-to-end TLS terminates it itself.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: module_default
+        reference: Every Service the modules apply is ClusterIP -- the controller's metrics Service and the router's sandbox-router-svc (upstream's own files, verified at v1.0.7). Nothing is exposed outside the cluster; exposing the router is a separate, deliberate Gateway or Ingress in front of it.
+    - control_id: restricted-ingress
+      status: configurable
+      field_path: router.network_policy
+      evidence:
+        type: spec_default
+        reference: The router's NetworkPolicy is installed by default and admits proxy traffic from client_namespace_labels (every namespace when empty, upstream's starting point), metrics scrapes only from metrics_namespace, and opens only sandbox_ports to sandboxes. Every SandboxTemplate's own default policy admits traffic only from this router.
+      notes: NetworkPolicy takes effect only on a cluster whose network enforces it. Narrow client_namespace_labels to the namespaces that call the router.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The router is a cluster-internal proxy; a web application firewall belongs on whatever edge (Gateway, load balancer) a deployment puts in front of it.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: module_default
+        reference: The controller's ClusterRoles come from upstream's release verbatim (pods, services, PVCs and the agent-sandbox resources; with extensions also NetworkPolicies). The router gets read-only access to pods for its cache, and the system:auth-delegator binding only with token_review authorization.
+      notes: The controller's RBAC is necessarily cluster-wide -- it creates sandbox pods, Services and volumes in every namespace that declares a Sandbox.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The controller and router authenticate to the Kubernetes API through their ServiceAccount tokens and hold no cloud credentials. Cloud identity for a sandbox is set on its pod template (the SandboxTemplate or Sandbox kinds).
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: The component carries no credentials of its own and offers no legacy authentication path; the router's authorization modes are explicit and chosen per install.
+    - control_id: strong-user-auth
+      status: configurable
+      field_path: router.authorization
+      evidence:
+        type: spec_validation
+        reference: A router cannot be declared without choosing its authorization explicitly -- allow_all, token_review (Kubernetes bearer tokens checked through the TokenReview API, with require_token and audiences) or scoped_token (per-sandbox tokens signed by the product that created the sandbox) -- because upstream's default lets every request through. The cookie mode carries the same credential for browsers.
+      notes: allow_all is a deliberate choice for a router reachable only by trusted callers (pair it with network_policy). Without a router, sandboxes are reached only through the Kubernetes API, under the cluster's own authentication.
+    - control_id: audit-logging
+      status: configurable
+      field_path: router.access_log_enabled
+      evidence:
+        type: spec_default
+        reference: The router logs one structured line per proxied request by default. Every mutation the controller performs is a Kubernetes API operation, captured by the cluster's audit policy, and controller.logging sets the controller's log format and verbosity.
+    - control_id: monitoring-integration
+      status: configurable
+      field_path: controller.tracing
+      evidence:
+        type: spec_default
+        reference: The controller and the router always serve Prometheus metrics (the metrics_service_name and metrics_port outputs name the controller's scrape target). controller.tracing and router.telemetry export traces, and the router's metrics too, to an OpenTelemetry collector, with headers from a Secret for hosted collectors.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The controller holds no data to back up -- the sandboxes and their definitions are the cluster's etcd and volumes. The definitions are kept on destroy (crds.keep_on_uninstall, default true), so removing the controller never deletes a sandbox, its pod or its volume.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist on this component (see backup-recovery), so no retention policy applies.
+    - control_id: multi-zone-ha
+      status: configurable
+      field_path: router.replicas
+      evidence:
+        type: spec_default
+        reference: The router runs two replicas by default, spread across zones and nodes by upstream's topology constraints, with a disruption budget (min_available) so a drain never takes it all down. controller.replicas adds leader-elected hot standbys for the controller.
+      notes: A controller outage pauses reconciliation only -- running sandboxes keep running.
+    - control_id: deletion-protection
+      status: enforced_by_default
+      evidence:
+        type: module_default
+        reference: The resource definitions are applied as kept resources (crds.keep_on_uninstall defaults true), so destroying this component cannot delete a Sandbox, SandboxTemplate, SandboxWarmPool or SandboxClaim. The modules also refuse to install over definitions or a controller another installation created, so a destroy never removes workloads this kind did not create.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: module_default
+        reference: The modules pin agent-sandbox v1.0.7 (release manifest, router files and both images at that tag), and the spec has no version field -- the catalog's sandbox kinds mirror these definitions field for field, so a release moves only as a catalog module update. A newer release's definitions are never lowered (the kept-CRD downgrade refusal).
+      notes: The image overrides exist for mirrors and patched builds of the same release, not for version selection.

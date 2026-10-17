@@ -1,0 +1,22 @@
+# Consumer-scoped Valkey fixture for the KubernetesLangfuse lanes - the
+# composed queue and cache:
+# - JOINS the PostgreSQL fixture's namespace (e2e-langfuse).
+# - `noeviction`: Langfuse's queues are durable jobs, and an evicting
+#   store silently drops them (also Valkey's own default, stated here
+#   because it is load-bearing).
+# - Auth on with the `default` user declared without a password: the
+#   module generates it into `e2e-lf-vlk-auth` (key `default`), the
+#   composition target of every scenario's password reference.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesValkey
+metadata:
+  name: e2e-lf-vlk
+spec:
+  namespace:
+    value: e2e-langfuse
+  config:
+    maxMemory: 256mb
+    maxMemoryPolicy: noeviction
+  auth:
+    users:
+      - name: default

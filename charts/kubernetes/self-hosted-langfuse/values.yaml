@@ -1,0 +1,158 @@
+params:
+  # ── Cluster binding ──────────────────────────────────────────────────────
+  - name: connection
+    description: >
+      Slug of the Planton Kubernetes provider connection that selects the
+      cluster this chart deploys onto. When set, every resource in the chart
+      carries it as an explicit connection annotation, overriding the
+      environment- and organization-level default connections. Leave empty to
+      deploy onto the environment's default Kubernetes connection, the right
+      choice when the environment maps one-to-one to a cluster.
+    value: ""
+
+  # ── Placement ────────────────────────────────────────────────────────────
+  - name: namespace
+    description: >
+      Kubernetes namespace the whole stack lives in: Langfuse AND its four
+      stores together, deliberately. Langfuse reads every store password
+      through a secretKeyRef, and a secretKeyRef can only read Secrets in the
+      workload's own namespace, so co-location is the design, not a
+      convenience. Change it to run a second independent Langfuse on the same
+      cluster.
+    value: langfuse
+
+  - name: install_cnpg_operator
+    type: bool
+    description: >
+      Installs the CloudNativePG operator (the engine that reconciles the
+      PostgreSQL database) into cnpg-system. The operator is a one-per-cluster
+      singleton: its Helm release name, cluster-scoped CRDs and webhook
+      identity are fixed upstream, so a second installation fights the first.
+      Keep true on a cluster that does not run CloudNativePG yet; set false on
+      clusters that already run it, and the resident operator reconciles this
+      chart's database instead.
+    value: true
+
+  - name: install_altinity_operator
+    type: bool
+    description: >
+      Installs the Altinity ClickHouse operator (the engine that reconciles
+      the ClickHouse installation and its Keeper) into
+      clickhouse-operator-system, watching every namespace. Like
+      CloudNativePG it is a one-per-cluster singleton. Set false on clusters
+      that already run it, and make sure the resident operator watches this
+      chart's namespace: an operator fenced to its own namespace leaves the
+      ClickHouse installation unreconciled, and the Langfuse deploy then
+      times out waiting for it.
+    value: true
+
+  # ── Availability and sizing ──────────────────────────────────────────────
+  - name: high_availability
+    type: bool
+    description: >
+      Runs every tier with redundancy: three PostgreSQL instances with
+      automated failover, two ClickHouse replicas on separate nodes with a
+      three-node Keeper quorum, a Valkey primary with two replicas, SeaweedFS
+      with three masters and every object written to two volume servers, and
+      two replicas each of the Langfuse web server and worker at Langfuse's
+      production sizing (2 CPU and 4 GiB requested per pod) behind disruption
+      budgets. Off, each tier runs one instance at evaluation sizing; the data
+      layout is identical either way (ClickHouse always runs replicated tables
+      on Keeper), so turning this on later adds capacity without migrating
+      data.
+    value: false
+
+  - name: postgres_disk_size
+    description: >
+      Persistent volume size per PostgreSQL instance (a Kubernetes quantity).
+      Postgres holds users, projects, prompts, API keys and settings, never
+      traces, so it stays small. Grows apply in place when the storage class
+      supports expansion; shrinks are rejected.
+    value: 10Gi
+
+  - name: clickhouse_disk_size
+    description: >
+      Persistent volume size per ClickHouse replica (a Kubernetes quantity).
+      ClickHouse holds every trace, observation and score, so this is the
+      volume that grows with usage. Size it for your retention: compressed
+      trace data commonly runs a few hundred bytes to a few kilobytes per
+      observation.
+    value: 50Gi
+
+  - name: object_storage_disk_size
+    description: >
+      Persistent volume size per SeaweedFS volume server (a Kubernetes
+      quantity). Every ingested event lands here before the worker loads it
+      into ClickHouse, along with media attachments and batch exports. Events
+      are disposable once loaded, so this tracks media volume more than trace
+      volume.
+    value: 50Gi
+
+  # ── Langfuse ─────────────────────────────────────────────────────────────
+  - name: admin_email
+    description: >
+      Email of the admin Langfuse seeds at first start, the owner of the
+      seeded organization and the first sign-in name. Its password is
+      generated; read it through the Langfuse resource's admin_password_secret
+      output. Sign-up stays closed, so this admin is the one who invites
+      everyone else. Change it to your platform team's address: Langfuse
+      creates the admin only once, and a later change adds no second admin.
+    value: admin@example.com
+
+  - name: salt_secret
+    description: >
+      Slug of a managed secret holding the API-key salt (any random string of
+      256 bits or more, e.g. openssl rand -base64 32). Leave empty to have it
+      generated. Langfuse hashes API keys with the salt and stores the hashes
+      in Postgres, so a generated salt dies with the Langfuse resource while
+      the hashes survive: recreating Langfuse against the same database then
+      breaks every API key. Declare it for any install you intend to keep.
+    value: ""
+
+  - name: encryption_key_secret
+    description: >
+      Slug of a managed secret holding the encryption key: exactly 64 hex
+      characters (openssl rand -hex 32). Leave empty to have it generated.
+      Langfuse encrypts stored LLM provider keys and integration credentials
+      with it into Postgres, so the same rule as the salt applies: declare it
+      for any install you intend to keep.
+    value: ""
+
+  # ── Exposure ─────────────────────────────────────────────────────────────
+  - name: hostname
+    description: >
+      Public host name Langfuse is served at (e.g. langfuse.example.com).
+      When set, the chart adds an Ingress routing it to the Langfuse web
+      Service and sets Langfuse's external URL to it, the base of every
+      sign-in redirect and every link Langfuse writes. Leave empty to keep
+      Langfuse cluster-internal and reach it through its port-forward command.
+      Point DNS at the ingress controller yourself, or let external-dns do it.
+    value: ""
+
+  - name: ingress_class
+    description: >
+      IngressClass of the controller that serves the hostname (only used when
+      hostname is set). "nginx" matches the ingress-nginx controller the
+      cluster baseline charts install; leave empty to use the cluster's
+      default class.
+    value: nginx
+
+  - name: cluster_issuer
+    description: >
+      Name of the cert-manager ClusterIssuer that issues the hostname's TLS
+      certificate (only used when hostname is set). When set, the Ingress
+      terminates TLS with a certificate cert-manager issues into the
+      <env>-langfuse-tls Secret, and the external URL uses https. Leave empty
+      to serve plain HTTP, which is only acceptable on a private network.
+    value: ""
+
+  - name: media_public_endpoint
+    description: >
+      The public URL of the SeaweedFS S3 API (e.g.
+      https://s3.langfuse.example.com), when you expose it through your own
+      route. Browsers and SDKs upload media and download exports straight
+      from object storage through presigned URLs; with this set, Langfuse
+      signs them for the public address while still reading through the
+      in-cluster one. Leave empty while everything that sends media runs
+      inside the cluster.
+    value: ""

@@ -16,7 +16,8 @@ import (
 // Kubernetes custom resource. A marker anywhere else would be read by no
 // engine, so the field would reach its module in the wrong shape.
 //
-//   - kubernetes_object_metadata: a top-level map<string, string> of the spec.
+//   - kubernetes_object_metadata: a top-level map<string, string> of the spec
+//     for labels and annotations, a top-level singular string for the name.
 //   - kubernetes_int_or_string: a singular string field.
 //   - kubernetes_list_valued_map: a map whose value is a message with exactly
 //     one field, and that field repeated.
@@ -47,7 +48,8 @@ func TestProjectionMarkers_SitWhereTheyAreHonored(t *testing.T) {
 			fields := md.Fields()
 			for i := 0; i < fields.Len(); i++ {
 				fd := fields.Get(i)
-				objectMetadata := manifestprojection.ObjectMetadataOf(fd) != options.KubernetesObjectMetadataField_kubernetes_object_metadata_field_unspecified
+				metadataPart := manifestprojection.ObjectMetadataOf(fd)
+				objectMetadata := metadataPart != options.KubernetesObjectMetadataField_kubernetes_object_metadata_field_unspecified
 				intOrString := specprojection.IsKubernetesIntOrStringField(fd)
 				listValuedMap := specprojection.IsKubernetesListValuedMapField(fd)
 
@@ -57,8 +59,15 @@ func TestProjectionMarkers_SitWhereTheyAreHonored(t *testing.T) {
 						t.Errorf("%s: %s carries a projection marker, but %s is not a Kubernetes manifest projection kind, so no engine honors it", kind, fd.FullName(), kind)
 					}
 				}
-				if objectMetadata && !(md == spec && fd.IsMap() && fd.MapValue().Kind() == protoreflect.StringKind) {
-					t.Errorf("%s: kubernetes_object_metadata on %s, which is not a top-level map<string, string> of the spec", kind, fd.FullName())
+				switch {
+				case metadataPart == options.KubernetesObjectMetadataField_object_name:
+					if !(md == spec && fd.Kind() == protoreflect.StringKind && !fd.IsList() && !fd.IsMap()) {
+						t.Errorf("%s: kubernetes_object_metadata = object_name on %s, which is not a top-level singular string of the spec", kind, fd.FullName())
+					}
+				case objectMetadata:
+					if !(md == spec && fd.IsMap() && fd.MapValue().Kind() == protoreflect.StringKind) {
+						t.Errorf("%s: kubernetes_object_metadata on %s, which is not a top-level map<string, string> of the spec", kind, fd.FullName())
+					}
 				}
 				if intOrString && (fd.Kind() != protoreflect.StringKind || fd.IsList() || fd.IsMap()) {
 					t.Errorf("%s: kubernetes_int_or_string on %s, which is not a singular string field", kind, fd.FullName())

@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"testing"
 
+	kubernetesgkecomputeclassv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesgkecomputeclass/v1alpha1"
 	kubernetesprometheusrulev1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesprometheusrule/v1alpha1"
 	"github.com/plantonhq/planton/shared"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
@@ -127,5 +128,63 @@ func TestRender_RefusesAKindThatIsNotAProjection(t *testing.T) {
 	m.Kind = "KubernetesKubePrometheusStack"
 	if _, err := Render(m); err == nil {
 		t.Fatal("Render accepted a kind with no kubernetes_manifest_projection")
+	}
+}
+
+func computeClassManifest() *kubernetesgkecomputeclassv1alpha1.KubernetesGkeComputeClass {
+	return &kubernetesgkecomputeclassv1alpha1.KubernetesGkeComputeClass{
+		ApiVersion: "kubernetes.planton.dev/v1alpha1",
+		Kind:       "KubernetesGkeComputeClass",
+		Metadata:   &shared.CatalogObjectMetadata{Name: "prod-gke-default-class"},
+		Spec: &kubernetesgkecomputeclassv1alpha1.KubernetesGkeComputeClassSpec{
+			Name:              "default",
+			Labels:            map[string]string{"team": "platform"},
+			WhenUnsatisfiable: ptr("ScaleUpAnyway"),
+			Priorities: []*kubernetesgkecomputeclassv1alpha1.KubernetesGkeComputeClassPriority{
+				{MachineFamily: ptr("n2d"), MinCores: ptr(int32(8))},
+				{MachineFamily: ptr("c3d"), MinCores: ptr(int32(8))},
+			},
+		},
+	}
+}
+
+func TestEnvelopeOf_FindsTheObjectNameField(t *testing.T) {
+	spec := (&kubernetesgkecomputeclassv1alpha1.KubernetesGkeComputeClassSpec{}).ProtoReflect().Descriptor()
+	got := EnvelopeOf(spec)
+	want := Envelope{NameKey: "name", LabelsKey: "labels", AnnotationsKey: "annotations"}
+	if got != want {
+		t.Fatalf("EnvelopeOf = %+v, want %+v", got, want)
+	}
+	if !reflect.DeepEqual(got.Keys(), []string{"name", "labels", "annotations"}) {
+		t.Errorf("Keys = %v, want name, labels, annotations in metadata order", got.Keys())
+	}
+}
+
+func TestRender_NamesTheObjectFromItsNameField(t *testing.T) {
+	obj, err := Render(computeClassManifest())
+	if err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	if obj.Name != "default" {
+		t.Errorf("object name = %q, want the spec's name %q (not metadata.name)", obj.Name, "default")
+	}
+	if obj.Labels[LabelResourceName] != "prod-gke-default-class" {
+		t.Errorf("identity label %s = %q, want the resource name", LabelResourceName, obj.Labels[LabelResourceName])
+	}
+	if _, ok := obj.Spec["name"]; ok {
+		t.Error("the envelope's name leaked into the custom resource's spec")
+	}
+	gotSpec, _ := json.Marshal(obj.Spec)
+	wantSpec := `{"priorities":[{"machineFamily":"n2d","minCores":8},{"machineFamily":"c3d","minCores":8}],"whenUnsatisfiable":"ScaleUpAnyway"}`
+	if string(gotSpec) != wantSpec {
+		t.Errorf("spec =\n%s\nwant\n%s", gotSpec, wantSpec)
+	}
+}
+
+func TestRender_RefusesAnEmptyObjectName(t *testing.T) {
+	m := computeClassManifest()
+	m.Spec.Name = ""
+	if _, err := Render(m); err == nil {
+		t.Fatal("Render accepted an object-name field left empty")
 	}
 }

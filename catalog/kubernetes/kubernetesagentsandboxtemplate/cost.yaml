@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: CatalogKindCostProfile
+metadata:
+  name: kubernetesagentsandboxtemplate
+spec:
+  billing_model: free
+  free_tier: A SandboxTemplate is a record in the Kubernetes API server -- a blueprint and a NetworkPolicy the controller keeps for it. It runs no pod and reserves no cluster capacity of its own.
+  notes: "The spend is in the sandboxes created from the template: every warm pool member and every claimed sandbox reserves what pod_template requests, plus its runtime class's overhead, and holds what volume_claim_templates request in storage for its life. The template's resources are where that per-sandbox cost is decided; the warm pool's replicas multiply it."

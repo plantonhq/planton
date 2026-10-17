@@ -1,0 +1,137 @@
+# The full surface of a KubernetesAgentSandboxTemplate, offline: every key of
+# the SandboxTemplate spec, a hardened gVisor pod, a workspace claim template,
+# and network rules exercising every peer and port shape (pod and namespace
+# selectors with expressions, an IP block with exceptions, a port range). The
+# served-schema test renders it and holds it to the pinned definition: nothing
+# pruned, nothing refused. The live lanes run e2e/scenarios/.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxTemplate
+metadata:
+  name: coding-agent
+spec:
+  namespace:
+    value: agents
+  labels:
+    team: agents
+  annotations:
+    example.com/owner: platform
+  podTemplate:
+    metadata:
+      labels:
+        app: coding-agent
+      annotations:
+        example.com/purpose: claimable-sandbox
+    spec:
+      runtimeClassName: gvisor
+      nodeSelector:
+        sandbox.gke.io/runtime: gvisor
+      tolerations:
+        - key: sandbox.gke.io/runtime
+          operator: Equal
+          value: gvisor
+          effect: NoSchedule
+      automountServiceAccountToken: false
+      serviceAccountName:
+        value: coding-agent
+      priorityClassName:
+        value: agent-standard
+      terminationGracePeriodSeconds: 10
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: agent
+          image: us-docker.pkg.dev/example/agents/coding-agent:2.3.0
+          ports:
+            - name: http
+              containerPort: 8888
+          env:
+            - name: MODEL
+              valueFrom:
+                configMapKeyRef:
+                  name:
+                    value: agent-settings
+                  key: model
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              memory: 2Gi
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: workspace
+              mountPath: /workspace
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir:
+            sizeLimit: 1Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: workspace
+        labels:
+          example.com/data: workspace
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName:
+          value: standard-rwo
+        resources:
+          requests:
+            storage: 10Gi
+  service: true
+  networkPolicy:
+    ingress:
+      - from:
+          - namespaceSelector:
+              matchLabels:
+                kubernetes.io/metadata.name: agent-sandbox-system
+            podSelector:
+              matchLabels:
+                app: sandbox-router
+          - namespaceSelector:
+              matchExpressions:
+                - key: example.com/tenant
+                  operator: In
+                  values: ["acme", "globex"]
+        ports:
+          - protocol: TCP
+            port: http
+    egress:
+      - to:
+          - namespaceSelector:
+              matchLabels:
+                kubernetes.io/metadata.name: kube-system
+            podSelector:
+              matchLabels:
+                k8s-app: kube-dns
+        ports:
+          - protocol: UDP
+            port: "53"
+          - protocol: TCP
+            port: "53"
+      - to:
+          - ipBlock:
+              cidr: 0.0.0.0/0
+              except: ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "169.254.0.0/16"]
+        ports:
+          - protocol: TCP
+            port: "443"
+          - protocol: TCP
+            port: "8000"
+            endPort: 8100
+  networkPolicyManagement: Managed
+  envVarsInjectionPolicy: Overrides
+  volumeClaimTemplatesPolicy: Allowed

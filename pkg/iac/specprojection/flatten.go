@@ -17,8 +17,15 @@ import (
 // Either way, type rules act on message *type*, not key case, so flattening
 // (StringValueOrRef -> string) and skipping (ValueFromRef) behave
 // identically under both.
+//
+// int64AsNumber writes every 64-bit integer field as a JSON number. Protojson
+// writes those fields as strings ("1000"), which a typed Terraform variable
+// converts back but a Kubernetes API server refuses for an integer property,
+// so the manifest-projection path -- the one that becomes a cluster object --
+// turns them into numbers here.
 type flattenOpts struct {
 	preserveJSONNames bool
+	int64AsNumber     bool
 }
 
 // Flatten walks a JSON map (produced by protojson.Marshal + json.Unmarshal)
@@ -88,6 +95,13 @@ func flattenWithOpts(data map[string]interface{}, md protoreflect.MessageDescrip
 		if IsKubernetesIntOrStringField(fd) {
 			data[activeKey] = intOrString(val)
 			continue
+		}
+
+		if opts.int64AsNumber {
+			if numbered, ok := int64FieldAsNumbers(fd, val); ok {
+				data[activeKey] = numbered
+				continue
+			}
 		}
 
 		if fd.Kind() != protoreflect.MessageKind {
@@ -241,6 +255,65 @@ func intOrString(val interface{}) interface{} {
 		return val
 	}
 	return float64(n)
+}
+
+// int64FieldAsNumbers rewrites a 64-bit integer field's protojson strings as
+// JSON numbers: the singular value, every element of a repeated field, or every
+// value of a map. It reports false for any other field, leaving it to the rest
+// of the walk.
+func int64FieldAsNumbers(fd protoreflect.FieldDescriptor, val interface{}) (interface{}, bool) {
+	kind := fd.Kind()
+	if fd.IsMap() {
+		kind = fd.MapValue().Kind()
+	}
+	if !is64BitIntegerKind(kind) {
+		return nil, false
+	}
+	switch typed := val.(type) {
+	case []interface{}:
+		for i, elem := range typed {
+			typed[i] = int64Number(elem)
+		}
+		return typed, true
+	case map[string]interface{}:
+		for k, elem := range typed {
+			typed[k] = int64Number(elem)
+		}
+		return typed, true
+	default:
+		return int64Number(val), true
+	}
+}
+
+func is64BitIntegerKind(kind protoreflect.Kind) bool {
+	switch kind {
+	case protoreflect.Int64Kind, protoreflect.Sint64Kind, protoreflect.Sfixed64Kind,
+		protoreflect.Uint64Kind, protoreflect.Fixed64Kind:
+		return true
+	}
+	return false
+}
+
+// int64Number turns one protojson 64-bit integer string into a number. A value
+// beyond 53 bits stays a string: a JSON number that large is not exact in the
+// float64 every consumer of this map decodes it into, and a silently rounded
+// integer is worse than the API server refusing it in plain words.
+func int64Number(val interface{}) interface{} {
+	s, ok := val.(string)
+	if !ok {
+		return val
+	}
+	const exact = 1 << 53
+	if n, err := strconv.ParseInt(s, 10, 64); err == nil {
+		if n > exact || n < -exact {
+			return val
+		}
+		return float64(n)
+	}
+	if n, err := strconv.ParseUint(s, 10, 64); err == nil && n <= exact {
+		return float64(n)
+	}
+	return val
 }
 
 // unwrapListValues replaces each value of a list-valued map -- a wrapper

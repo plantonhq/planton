@@ -1,0 +1,46 @@
+# The full surface of a KubernetesAgentSandboxClaim, offline: every key of the
+# SandboxClaim spec. The served-schema test renders it and holds it to the
+# pinned definition. The live lanes run e2e/scenarios/.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxClaim
+metadata:
+  name: alice-workbench
+spec:
+  namespace:
+    value: agents
+  labels:
+    team: agents
+  annotations:
+    example.com/owner: platform
+  warmPoolRef:
+    name:
+      value: coding-agent-pool
+  lifecycle:
+    shutdownTime: "2099-01-01T00:00:00Z"
+    ttlSecondsAfterFinished: 3600
+    shutdownPolicy: DeleteForeground
+  additionalPodMetadata:
+    labels:
+      sandbox.users.io/user: alice
+    annotations:
+      cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
+  env:
+    - name: TASK_ID
+      value: task-4217
+      containerName: agent
+    - name: MODEL
+      value: frontier-large
+  volumeClaimTemplates:
+    - metadata:
+        name: workspace
+        labels:
+          example.com/user: alice
+        annotations:
+          example.com/backup: daily
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName:
+          value: standard-rwo
+        resources:
+          requests:
+            storage: 50Gi

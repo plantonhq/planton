@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Calculate the next semantic version from git tags.
 
-Every release in this repository is a tag named by the artifact's directory
-and its version: the bare `vX.Y.Z` releases the repository (the catalog),
+Every release in this repository is a tag named by what it releases and its
+version: the bare `vX.Y.Z` releases the repository (the catalog),
 `operator/vX.Y.Z` the operator, `helm/<chart>/vX.Y.Z` a Helm chart. This
 script finds the newest strict-semver tag under one such prefix and bumps it,
-so each `make release-*` front door computes its next version the same way.
+so each `make release-*` front door for Planton's own lines computes its next
+version the same way. A third-party line (`agent-substrate/vX.Y.Z`) carries
+upstream's version and is never bumped here.
 
 Usage:
     next_version.py [patch|minor|major] [--prefix operator/]

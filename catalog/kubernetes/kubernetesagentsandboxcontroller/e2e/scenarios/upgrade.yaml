@@ -1,0 +1,21 @@
+# THE EXTENSIONS-OFF UPGRADE: install with the extensions on, then redeploy
+# from upgrade.to.yaml with them off and a router added. After the upgrade
+# the verifier asserts the controller runs the core release asset (no
+# --extensions), the extension definitions are GONE (keepOnUninstall is off,
+# so they follow the install), the Sandbox definition stays, a Sandbox still
+# becomes Ready, and the router serves it.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxController
+metadata:
+  name: e2e-asbx-upgrade
+  annotations:
+    planton.dev/e2e-upgrade-manifest: upgrade.to.yaml
+spec:
+  namespace:
+    value: agent-sandbox-system
+  createNamespace: true
+  crds:
+    keepOnUninstall: false
+  extensions:
+    allowedLabelDomains:
+      - example.com

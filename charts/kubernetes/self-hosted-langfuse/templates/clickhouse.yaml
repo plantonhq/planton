@@ -1,0 +1,75 @@
+# The ClickHouse installation behind Langfuse: every trace, observation and
+# score. Langfuse creates its tables ON CLUSTER with replicated engines, so
+# the installation ALWAYS runs on ClickHouse Keeper, even with one replica:
+# turning high_availability on later adds replicas to the same replicated
+# tables instead of migrating data to new ones.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesClickHouse
+metadata:
+  name: "{{ values.env }}-langfuse-ch"
+{% if values.connection != "" %}
+  annotations:
+    planton.dev/connection: "{{ values.connection }}"
+{% endif %}
+{% if values.install_altinity_operator | bool %}
+  relationships:
+    # A ClickHouseInstallation custom resource: the operator and its CRDs
+    # must exist first, and no spec field consumes an operator output.
+    - kind: KubernetesAltinityOperator
+      name: "{{ values.env }}-altinity-operator"
+      type: depends_on
+{% endif %}
+spec:
+  namespace:
+    valueFrom:
+      name: "{{ values.env }}-langfuse-ns"
+  createNamespace: false
+  # Langfuse v4 needs ClickHouse 25.12 or newer. Pinned to an exact release:
+  # the operator's fallback is the `latest` tag, which would upgrade the
+  # server implicitly on a pod restart.
+  version: "25.12.5"
+  diskSize: "{{ values.clickhouse_disk_size }}"
+{% if values.high_availability | bool %}
+  # Two full copies of the data, never on the same node; a three-node
+  # Keeper quorum survives the loss of one.
+  replicas: 2
+  spreadReplicasAcrossNodes: true
+  resources:
+    requests:
+      cpu: "2"
+      memory: 8Gi
+    limits:
+      cpu: "4"
+      memory: 16Gi
+  coordination:
+    type: managed_keeper
+    keeper:
+      replicas: 3
+      diskSize: 5Gi
+{% else %}
+  replicas: 1
+  resources:
+    requests:
+      cpu: 500m
+      memory: 2Gi
+    limits:
+      cpu: "2"
+      memory: 4Gi
+  coordination:
+    type: managed_keeper
+    keeper:
+      replicas: 1
+      diskSize: 5Gi
+{% endif %}
+  users:
+    # Declared without a password: the module generates one into the
+    # `<name>-clickhouse-auth` Secret under the user's name, which is
+    # exactly where langfuse.yaml's password reference looks. No grants
+    # means ClickHouse's unrestricted default, which covers Langfuse's
+    # migrations and their ON CLUSTER statements. The networks are what let
+    # Langfuse's pods connect at all: a user without them is fenced to
+    # ClickHouse's own pods, and the refusal looks like a wrong password.
+    - name: langfuse
+      networks:
+        - 0.0.0.0/0
+        - "::/0"

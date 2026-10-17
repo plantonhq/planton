@@ -1,0 +1,19 @@
+# The smallest useful pool: the template by reference and nothing else, so
+# the cluster writes one replica. The verifier proves every field reads back,
+# the pool fills to one ready member, and its scale endpoint reports it --
+# the endpoint an autoscaler would drive.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxWarmPool
+metadata:
+  name: e2e-asbx-wp-min
+  annotations:
+    planton.dev/e2e-prerequisites: "catalog/kubernetes/kubernetesagentsandboxwarmpool/e2e/fixture-template.yaml"
+spec:
+  namespace:
+    value: default
+  sandboxTemplateRef:
+    name:
+      valueFrom:
+        kind: KubernetesAgentSandboxTemplate
+        name: e2e-asbx-wp-tpl
+        fieldPath: status.outputs.sandbox_template_name

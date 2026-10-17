@@ -2,7 +2,11 @@ package helmcrds
 
 import (
 	"context"
+	"fmt"
 	"strings"
+
+	"github.com/pkg/errors"
+	"k8s.io/apimachinery/pkg/util/validation"
 )
 
 // Stamp keys written onto every derived CRD. They are the one contract both
@@ -13,12 +17,13 @@ const (
 	// AnnotationSourceChart records "<repository>/<chart>" the CRD was derived
 	// from (or the bundle URL template for bundle-branch kinds).
 	AnnotationSourceChart = "planton.ai/crd-source-chart"
-	// AnnotationSourceVersion records the chart version the CRD was derived
-	// at. The never-downgrade check compares against it.
+	// AnnotationSourceVersion records the version the CRD was derived at (the
+	// chart version, or the upstream release for a bundle). The
+	// never-downgrade check compares against it.
 	AnnotationSourceVersion = "planton.ai/crd-source-version"
-	// LabelSource carries the chart name so a module can select the CRDs it
-	// owns with one label selector (label values cannot carry "/" or ":",
-	// which is why the full source lives in the annotation).
+	// LabelSource carries the source's name (Source.Name) so a module can
+	// select the CRDs it owns with one label selector (label values cannot
+	// carry "/" or ":", which is why the full source lives in the annotation).
 	LabelSource = "planton.ai/crd-source"
 )
 
@@ -37,9 +42,16 @@ type Source struct {
 	Repository string
 	// Chart is the chart name inside Repository. Render branch.
 	Chart string
-	// Version is the exact chart version to render. Both branches use it for
-	// the stamp; the bundle branch also substitutes it into BundleURL.
+	// Version is the exact chart version to render, or the upstream release
+	// a bundle is fetched at. Both branches use it for the stamp; the bundle
+	// branch also substitutes it into BundleURL.
 	Version string
+	// VersionField is the spec field a user sets to choose Version (for
+	// example "spec.chart_version"), so a refusal names the setting that
+	// fixes it. Empty when the module pins the version itself, as a kind
+	// built on one upstream release does: the remedy is then a Planton
+	// release that pins another version, never a setting.
+	VersionField string
 	// Username and Password authenticate to a private repository or registry,
 	// exactly as the release install does. Empty for public charts.
 	Username string
@@ -68,16 +80,77 @@ type Source struct {
 	// KubeVersion feeds .Capabilities.KubeVersion; empty uses Helm's default.
 	KubeVersion string
 
-	// BundleURL is the upstream CRD bundle for charts that ship no CRDs at
-	// all. It may contain "{{version}}", replaced with Version. Bundle
-	// branch. Use the URL form that survives the next upstream release
-	// (Apache's dist tree holds only the current release; archive.apache.org
-	// holds every release).
+	// BundleURL is a manifest upstream publishes its CRDs in: a CRD bundle
+	// beside a chart that ships none, or the install manifest of an upstream
+	// that publishes no chart at all (every non-CRD document in it is
+	// ignored here; the module applies those itself). It may contain
+	// "{{version}}", replaced with Version. Bundle branch. Use the URL form
+	// that survives the next upstream release (Apache's dist tree holds only
+	// the current release; archive.apache.org holds every release).
 	BundleURL string
+	// BundleName names the upstream project the bundle belongs to (for
+	// example "agent-sandbox"): the bundle branch's twin of Chart, carried
+	// by LabelSource as the mark that the CRDs are this source's. The URL
+	// cannot serve, because unrelated projects publish from the same host.
+	// Bundle branch; required there, and a valid label value.
+	BundleName string
 }
 
 // IsBundle reports whether the source is the bundle branch.
 func (s Source) IsBundle() bool { return s.BundleURL != "" }
+
+// Name is what LabelSource carries and what a refusal calls the source: the
+// chart name on the render branch, the bundle's own name on the bundle branch.
+func (s Source) Name() string {
+	if s.IsBundle() {
+		return s.BundleName
+	}
+	return s.Chart
+}
+
+// versionNoun is how a reader recognizes one of the source's versions: a
+// chart version on the render branch, an upstream release on the bundle
+// branch ("agent-sandbox release").
+func (s Source) versionNoun() string {
+	if s.IsBundle() {
+		return s.BundleName + " release"
+	}
+	return "chart version"
+}
+
+// VersionPhrase is versionNoun with a version, for example "chart version
+// 0.120.0" or "agent-sandbox release v1.0.7": how every text, the deploy log
+// included, names a version of this source.
+func (s Source) VersionPhrase(version string) string {
+	return s.versionNoun() + " " + version
+}
+
+// versionRemedy is the next step that moves the source to target (a version,
+// or a version with a qualifier such as "0.120.0 or higher"): the setting
+// when a user chooses the version, a Planton release when the module pins it.
+func (s Source) versionRemedy(target string) string {
+	if s.VersionField != "" {
+		return fmt.Sprintf("set %s to %s", s.VersionField, target)
+	}
+	return fmt.Sprintf("deploy with a Planton release whose module pins %s (this module pins %s)", s.VersionPhrase(target), s.Version)
+}
+
+// validate refuses a source a module author assembled wrongly. These are
+// defects in the module, not conditions a user meets, so they are plain
+// errors rather than Failures.
+func (s Source) validate() error {
+	switch {
+	case s.IsBundle() && s.Chart != "":
+		return errors.New("a CRD source sets Chart or BundleURL, never both")
+	case s.IsBundle() && s.BundleName == "":
+		return errors.New("a bundle CRD source needs a BundleName")
+	case s.IsBundle() && len(validation.IsValidLabelValue(s.BundleName)) > 0:
+		return errors.Errorf("a bundle CRD source's BundleName must be a label value, got %q", s.BundleName)
+	case !s.IsBundle() && s.Chart == "":
+		return errors.New("a CRD source needs a Chart or a BundleURL")
+	}
+	return nil
+}
 
 // ResolvedBundleURL substitutes the version into the bundle URL template.
 func (s Source) ResolvedBundleURL() string {
@@ -141,6 +214,9 @@ type CRD struct {
 // values inside a CRD (a conversion-webhook service, an inject-ca-from
 // annotation) come out pointing at the real release.
 func Derive(ctx context.Context, src Source, policy Policy, releaseName, namespace string) (Derived, error) {
+	if err := src.validate(); err != nil {
+		return Derived{}, err
+	}
 	var candidates []crdDocument
 	var err error
 	if src.IsBundle() {

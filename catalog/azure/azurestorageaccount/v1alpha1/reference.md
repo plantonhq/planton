@@ -1828,6 +1828,12 @@ Fields on other kinds that can point at this resource:
 | AzureStorageQueue | `spec.storageAccountId` | `status.outputs.storage_account_id` |
 | AzureStorageShare | `spec.storageAccountId` | `status.outputs.storage_account_id` |
 | AzureStorageTable | `spec.storageAccountId` | `status.outputs.storage_account_id` |
+| KubernetesLangfuse | `spec.blobStorage.target.azureBlob.storageAccount` | `status.outputs.storage_account_name` |
+| KubernetesLangfuse | `spec.blobStorage.target.azureBlob.endpoint` | `status.outputs.primary_blob_endpoint` |
+| KubernetesLangfuse | `spec.blobStorage.mediaUpload.target.azureBlob.storageAccount` | `status.outputs.storage_account_name` |
+| KubernetesLangfuse | `spec.blobStorage.mediaUpload.target.azureBlob.endpoint` | `status.outputs.primary_blob_endpoint` |
+| KubernetesLangfuse | `spec.blobStorage.batchExport.target.azureBlob.storageAccount` | `status.outputs.storage_account_name` |
+| KubernetesLangfuse | `spec.blobStorage.batchExport.target.azureBlob.endpoint` | `status.outputs.primary_blob_endpoint` |
 
 ## See Also
 

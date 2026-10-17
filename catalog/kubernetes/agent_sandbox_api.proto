@@ -1,0 +1,123 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes;
+
+import "buf/validate/validate.proto";
+import "catalog/kubernetes/core_v1_api.proto";
+
+// Shared Kubernetes SIG Apps agent-sandbox API types (agents.x-k8s.io/v1beta1)
+// used across the Planton kinds that mirror its custom resources:
+// KubernetesAgentSandbox, KubernetesAgentSandboxTemplate and
+// KubernetesAgentSandboxClaim. Translated from agent-sandbox v1.0.7
+// (api/v1beta1/sandbox_types.go): the pod template a sandbox runs, the pod
+// metadata it carries, and the PersistentVolumeClaim templates that give a
+// sandbox its own volumes. The pod and claim specifications themselves are
+// Kubernetes' own, from `core_v1_api.proto`.
+//
+// Messages are named for their upstream type, prefixed
+// `KubernetesAgentSandboxApi*`; field JSON names are upstream's, so a projected
+// custom resource is the object a person would write by hand. Status types are
+// excluded.
+
+// KubernetesAgentSandboxApiPodTemplate describes the pod the controller runs
+// for a sandbox: Kubernetes' full pod specification, and the labels and
+// annotations the pod carries. Faithful to upstream PodTemplate.
+message KubernetesAgentSandboxApiPodTemplate {
+  // The pod's specification: containers, volumes, security, scheduling, the
+  // runtime class that isolates it (gVisor's `gvisor`, Kata's `kata-qemu`).
+  //
+  // When the sandbox comes from a template (a warm pool member or a claimed
+  // sandbox) and `automountServiceAccountToken` is unset, the controller sets
+  // it to false, so a sandbox holds no Kubernetes credentials unless asked.
+  // An agent's code rarely needs them; give it a ServiceAccount of its own
+  // when it does.
+  KubernetesCoreV1ApiPodSpec spec = 1 [(buf.validate.field).required = true];
+
+  // The labels and annotations the pod carries. Only these two are used;
+  // the controller names the pod after the sandbox.
+  KubernetesAgentSandboxApiPodMetadata metadata = 2;
+}
+
+// KubernetesAgentSandboxApiPodMetadata is the metadata a sandbox's pod carries:
+// labels and annotations, nothing else. Faithful to upstream PodMetadata.
+//
+// Keys under `agents.x-k8s.io/` and `extensions.agents.x-k8s.io/` belong to
+// the controller, which stamps its own (the sandbox's name hash, whether it
+// launched warm or cold) and strips any you set there.
+message KubernetesAgentSandboxApiPodMetadata {
+  // Labels on the pod, which Services, NetworkPolicies and monitors select it
+  // by. More info:
+  // https://kubernetes.io/docs/concepts/overview/working-with-objects/labels
+  map<string, string> labels = 1 [(buf.validate.field).map = {
+    keys: {
+      string: {
+        min_len: 1
+        max_len: 317
+        pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?[A-Za-z0-9]([-A-Za-z0-9_.]{0,61}[A-Za-z0-9])?$"
+      }
+    }
+    values: {
+      string: {
+        max_len: 63
+        pattern: "^([A-Za-z0-9]([-A-Za-z0-9_.]{0,61}[A-Za-z0-9])?)?$"
+      }
+    }
+  }];
+
+  // Annotations on the pod: metadata for tools, such as a service mesh's
+  // sidecar switch or a scrape hint. More info:
+  // https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations
+  map<string, string> annotations = 2;
+}
+
+// KubernetesAgentSandboxApiPersistentVolumeClaimTemplate is a volume a sandbox
+// owns: the controller creates one PersistentVolumeClaim per template, named
+// `<template name>-<sandbox name>`, and the pod mounts it by the template's
+// name. The claim belongs to the sandbox, so it survives the pod (a suspended
+// sandbox keeps its files) and goes with the sandbox when the sandbox is
+// deleted. Faithful to upstream PersistentVolumeClaimTemplate.
+message KubernetesAgentSandboxApiPersistentVolumeClaimTemplate {
+  // The claim's name, labels and annotations.
+  KubernetesAgentSandboxApiEmbeddedObjectMetadata metadata = 1 [(buf.validate.field).required = true];
+
+  // The claim's specification: access modes, size, storage class.
+  KubernetesCoreV1ApiPersistentVolumeClaimSpec spec = 2 [(buf.validate.field).required = true];
+}
+
+// KubernetesAgentSandboxApiEmbeddedObjectMetadata is the metadata of an object
+// the controller creates from a template. Faithful to upstream
+// EmbeddedObjectMetadata.
+message KubernetesAgentSandboxApiEmbeddedObjectMetadata {
+  // The template's name: the pod's volume name (a `volumeMounts` entry names
+  // it) and the first half of the claim's name. Upstream marks it optional,
+  // but the controller names the pod volume and the claim after it, so a
+  // template without one produces no usable volume; it is required here.
+  string name = 1 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 63
+    pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+  }];
+
+  // Labels on the claim. More info:
+  // https://kubernetes.io/docs/concepts/overview/working-with-objects/labels
+  map<string, string> labels = 2 [(buf.validate.field).map = {
+    keys: {
+      string: {
+        min_len: 1
+        max_len: 317
+        pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?[A-Za-z0-9]([-A-Za-z0-9_.]{0,61}[A-Za-z0-9])?$"
+      }
+    }
+    values: {
+      string: {
+        max_len: 63
+        pattern: "^([A-Za-z0-9]([-A-Za-z0-9_.]{0,61}[A-Za-z0-9])?)?$"
+      }
+    }
+  }];
+
+  // Annotations on the claim, such as a storage provisioner's options. More
+  // info:
+  // https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations
+  map<string, string> annotations = 3;
+}

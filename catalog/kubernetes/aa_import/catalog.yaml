@@ -194,6 +194,18 @@ spec:
         - yaml_body
         - yaml_body_parsed
 
+    # OpenTofu's built-in terraform_data, as a module's preflight: a resource
+    # that writes nothing to the cluster and exists to carry plan-time
+    # refusals as preconditions (the agent-sandbox controller's ownership
+    # checks).
+    - terraform_type: terraform_data
+      not_importable_upstream_reason: >-
+        terraform_data is OpenTofu's built-in store, not a cluster object: a
+        preflight holds no input and writes nothing to the cluster, it only
+        carries the module's plan-time refusals. Left out of the import, it is
+        created on the first apply after import, which changes nothing on the
+        cluster (the round trip's only re-create).
+
     # --- Random (provider-local — no cluster state) ---------------------------
     - terraform_type: random_password
       pulumi_type: random:index/randomPassword:RandomPassword

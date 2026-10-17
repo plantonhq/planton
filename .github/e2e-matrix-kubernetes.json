@@ -36,17 +36,17 @@
       "name": "Tier 3 Pulumi",
       "tier": 3,
       "engine": "pulumi",
-      "timeout": 895,
-      "run_regex": "Test(KubernetesAirflow|KubernetesClickHouse|KubernetesFlinkDeployment|KubernetesGhaRunnerScaleSet|KubernetesJupyterHub|KubernetesKeycloak|KubernetesMlflow|KubernetesOpenSearch|KubernetesOpenSearchOperator|KubernetesOtelCollector|KubernetesPlantonPlatform|KubernetesPodMonitor|KubernetesPrometheusRule|KubernetesRabbitMq|KubernetesRayCluster|KubernetesServiceMonitor|KubernetesSignoz|KubernetesSolr|KubernetesSolrOperator|KubernetesSuperset|KubernetesTekton|KubernetesTrino)_Pulumi",
-      "kind_count": 22
+      "timeout": 1050,
+      "run_regex": "Test(KubernetesAirflow|KubernetesClickHouse|KubernetesFlinkDeployment|KubernetesGhaRunnerScaleSet|KubernetesJupyterHub|KubernetesKeycloak|KubernetesLangfuse|KubernetesMlflow|KubernetesOpenSearch|KubernetesOpenSearchOperator|KubernetesOtelCollector|KubernetesPlantonPlatform|KubernetesPodMonitor|KubernetesPrometheusRule|KubernetesRabbitMq|KubernetesRayCluster|KubernetesServiceMonitor|KubernetesSignoz|KubernetesSolr|KubernetesSolrOperator|KubernetesSuperset|KubernetesTekton|KubernetesTrino)_Pulumi",
+      "kind_count": 23
     },
     {
       "name": "Tier 3 Terraform",
       "tier": 3,
       "engine": "terraform",
-      "timeout": 895,
-      "run_regex": "Test(KubernetesAirflow|KubernetesClickHouse|KubernetesFlinkDeployment|KubernetesGhaRunnerScaleSet|KubernetesJupyterHub|KubernetesKeycloak|KubernetesMlflow|KubernetesOpenSearch|KubernetesOpenSearchOperator|KubernetesOtelCollector|KubernetesPlantonPlatform|KubernetesPodMonitor|KubernetesPrometheusRule|KubernetesRabbitMq|KubernetesRayCluster|KubernetesServiceMonitor|KubernetesSignoz|KubernetesSolr|KubernetesSolrOperator|KubernetesSuperset|KubernetesTekton|KubernetesTrino)_Terraform",
-      "kind_count": 22
+      "timeout": 1050,
+      "run_regex": "Test(KubernetesAirflow|KubernetesClickHouse|KubernetesFlinkDeployment|KubernetesGhaRunnerScaleSet|KubernetesJupyterHub|KubernetesKeycloak|KubernetesLangfuse|KubernetesMlflow|KubernetesOpenSearch|KubernetesOpenSearchOperator|KubernetesOtelCollector|KubernetesPlantonPlatform|KubernetesPodMonitor|KubernetesPrometheusRule|KubernetesRabbitMq|KubernetesRayCluster|KubernetesServiceMonitor|KubernetesSignoz|KubernetesSolr|KubernetesSolrOperator|KubernetesSuperset|KubernetesTekton|KubernetesTrino)_Terraform",
+      "kind_count": 23
     },
     {
       "name": "Tier 4 Pulumi",

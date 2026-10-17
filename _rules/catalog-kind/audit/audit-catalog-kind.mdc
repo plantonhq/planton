@@ -52,7 +52,11 @@ User: @audit-catalog-kind <KindName>
   and stale manifest entries. This is a DIFFERENT axis from `--parity`: `--parity` compares
   the kind's two IaC engines to each other; `--provider-parity` compares the kind's
   spec surface to the provider's. Use this when the goal of the session is to bring a
-  kind to full configuration depth.
+  kind to full configuration depth. For a Kubernetes projection kind the verdict
+  is the mirror test against its pinned custom resource definition
+  (`go test ./pkg/kubernetes/manifestprojection/ -run Mirror`); a projection kind with
+  no definition under `testdata/schemas/` is reported as not yet measured, never as
+  at parity.
 
 ## Workflow
 

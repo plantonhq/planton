@@ -1,0 +1,17 @@
+# The smallest useful template: one container, everything else upstream's
+# default. The verifier proves every field reads back, and that the
+# controller gave the template its secure-default NetworkPolicy (ingress only
+# from the router), which is what "Managed" with no rules promises.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAgentSandboxTemplate
+metadata:
+  name: e2e-asbx-tpl-min
+spec:
+  namespace:
+    value: default
+  podTemplate:
+    spec:
+      containers:
+        - name: app
+          image: registry.k8s.io/e2e-test-images/agnhost:2.53
+          args: ["netexec", "--http-port=8888", "--udp-port=-1"]

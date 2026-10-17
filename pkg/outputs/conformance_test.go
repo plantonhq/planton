@@ -968,6 +968,19 @@ func TestOutputsConformance(t *testing.T) {
 			},
 		},
 		{
+			// KubernetesGkeComputeClass: the created class's name (spec.name,
+			// the value pods select) from both engines must land on the
+			// Outputs proto.
+			name: "KubernetesGkeComputeClass",
+			kind: catalogkind.CatalogKind_KubernetesGkeComputeClass,
+			rawOutputs: map[string]interface{}{
+				"compute_class_name": "default",
+			},
+			mustPopulate: []string{
+				"compute_class_name",
+			},
+		},
+		{
 			// KubernetesKarpenterEc2NodeClass: the created cluster-scoped
 			// CR's identity (what NodePools reference via node_class_ref)
 			// from both engines must land on the Outputs proto.
@@ -1210,6 +1223,42 @@ func TestOutputsConformance(t *testing.T) {
 				"namespace":            "monitoring",
 			},
 			mustPopulate: []string{"prometheus_rule_name", "namespace"},
+		},
+		{
+			name: "KubernetesAgentSandbox",
+			kind: catalogkind.CatalogKind_KubernetesAgentSandbox,
+			rawOutputs: map[string]interface{}{
+				"sandbox_name": "coding-agent",
+				"namespace":    "agents",
+			},
+			mustPopulate: []string{"sandbox_name", "namespace"},
+		},
+		{
+			name: "KubernetesAgentSandboxTemplate",
+			kind: catalogkind.CatalogKind_KubernetesAgentSandboxTemplate,
+			rawOutputs: map[string]interface{}{
+				"sandbox_template_name": "coding-agent",
+				"namespace":             "agents",
+			},
+			mustPopulate: []string{"sandbox_template_name", "namespace"},
+		},
+		{
+			name: "KubernetesAgentSandboxWarmPool",
+			kind: catalogkind.CatalogKind_KubernetesAgentSandboxWarmPool,
+			rawOutputs: map[string]interface{}{
+				"sandbox_warm_pool_name": "coding-agent-pool",
+				"namespace":              "agents",
+			},
+			mustPopulate: []string{"sandbox_warm_pool_name", "namespace"},
+		},
+		{
+			name: "KubernetesAgentSandboxClaim",
+			kind: catalogkind.CatalogKind_KubernetesAgentSandboxClaim,
+			rawOutputs: map[string]interface{}{
+				"sandbox_claim_name": "alice-workbench",
+				"namespace":          "agents",
+			},
+			mustPopulate: []string{"sandbox_claim_name", "namespace"},
 		},
 		{
 			name: "KubernetesServiceMonitor",
@@ -1749,6 +1798,24 @@ func TestOutputsConformance(t *testing.T) {
 			},
 		},
 		{
+			// KubernetesAgentSandboxController: upstream's fixed namespace,
+			// the controller's metrics handles a ServiceMonitor composes
+			// against, and the router handles (populated with a router).
+			name: "KubernetesAgentSandboxController",
+			kind: catalogkind.CatalogKind_KubernetesAgentSandboxController,
+			rawOutputs: map[string]interface{}{
+				"namespace":            "agent-sandbox-system",
+				"metrics_service_name": "agent-sandbox-controller",
+				"metrics_port":         "8080",
+				"router_service_name":  "sandbox-router-svc",
+				"router_endpoint":      "http://sandbox-router-svc.agent-sandbox-system.svc.cluster.local:8080",
+			},
+			mustPopulate: []string{
+				"namespace", "metrics_service_name", "metrics_port",
+				"router_service_name", "router_endpoint",
+			},
+		},
+		{
 			// KubernetesTekton: the resolved installation handles — target
 			// namespace, profile, and the dashboard Service handles exposure
 			// kinds compose against (populated on profile `all`).
@@ -1879,6 +1946,41 @@ func TestOutputsConformance(t *testing.T) {
 				"otel_collector_service", "otlp_grpc_endpoint", "otlp_http_endpoint",
 				"clickhouse_endpoint", "clickhouse_username",
 				"clickhouse_password_secret",
+			},
+		},
+		{
+			// KubernetesLangfuse: the pinned-fullname naming contract — the
+			// `<name>-web` Service and its endpoints, the module-owned instance
+			// Secret, the seeded organization and project, and the two Secret
+			// handles into that instance Secret (nested name/key).
+			name: "KubernetesLangfuse",
+			kind: catalogkind.CatalogKind_KubernetesLangfuse,
+			rawOutputs: map[string]interface{}{
+				"namespace":            "langfuse",
+				"service":              "tracing-web",
+				"endpoint":             "http://tracing-web.langfuse.svc.cluster.local:3000",
+				"external_url":         "https://langfuse.example.com",
+				"otel_endpoint":        "http://tracing-web.langfuse.svc.cluster.local:3000/api/public/otel",
+				"port_forward_command": "kubectl port-forward -n langfuse svc/tracing-web 3000:3000",
+				"instance_secret_name": "tracing-secrets",
+				"organization_id":      "tracing",
+				"project_id":           "tracing-project",
+				"project_public_key":   "pk-lf-0a1b2c3d4e5f",
+				"project_secret_key_secret": map[string]interface{}{
+					"name": "tracing-secrets",
+					"key":  "init-project-secret-key",
+				},
+				"admin_email": "admin@example.com",
+				"admin_password_secret": map[string]interface{}{
+					"name": "tracing-secrets",
+					"key":  "init-user-password",
+				},
+			},
+			mustPopulate: []string{
+				"namespace", "service", "endpoint", "external_url", "otel_endpoint",
+				"port_forward_command", "instance_secret_name", "organization_id",
+				"project_id", "project_public_key", "project_secret_key_secret",
+				"admin_email", "admin_password_secret",
 			},
 		},
 		{

@@ -6,7 +6,8 @@
 # needs no cluster connection at plan time, so the cluster can be planned
 # before the Altinity operator's CRDs exist (single-run infra charts,
 # offline plan proofs). The hashicorp kubernetes provider materializes the
-# optional namespace and the auth Secret.
+# optional namespace and the auth Secret; the random provider generates the
+# password of every user declared without one.
 #
 # Both providers are configured by the calling workspace/environment (the
 # same kubeconfig environment contract).
@@ -22,6 +23,10 @@ terraform {
     kubectl = {
       source  = "alekc/kubectl"
       version = ">= 2.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.6"
     }
   }
 }

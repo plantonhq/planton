@@ -1,0 +1,34 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "workloadowner",
+    srcs = ["workloadowner.go"],
+    importpath = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/workloadowner",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//catalog/kubernetes",
+        "//pkg/failure",
+        "//pkg/iac/pulumi/pulumimodule/iacinput",
+        "//pkg/kubernetes/execcredential",
+        "//pkg/kubernetes/kubeconfig",
+        "@com_github_pkg_errors//:errors",
+        "@io_k8s_apimachinery//pkg/api/errors",
+        "@io_k8s_apimachinery//pkg/apis/meta/v1:meta",
+        "@io_k8s_apimachinery//pkg/apis/meta/v1/unstructured",
+        "@io_k8s_apimachinery//pkg/runtime/schema",
+        "@io_k8s_client_go//dynamic",
+    ],
+)
+
+go_test(
+    name = "workloadowner_test",
+    srcs = ["workloadowner_test.go"],
+    embed = [":workloadowner"],
+    deps = [
+        "//pkg/failure",
+        "@io_k8s_apimachinery//pkg/apis/meta/v1:meta",
+        "@io_k8s_apimachinery//pkg/apis/meta/v1/unstructured",
+        "@io_k8s_apimachinery//pkg/runtime",
+        "@io_k8s_client_go//dynamic/fake",
+    ],
+)

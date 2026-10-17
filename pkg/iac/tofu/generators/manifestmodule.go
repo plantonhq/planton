@@ -61,9 +61,8 @@ func GenerateManifestModule(kind catalogkind.CatalogKind, msg proto.Message) (ma
 	// A namespace foreign key means the CR is namespaced and maps to
 	// metadata.namespace (cluster-scoped kinds such as GatewayClass have
 	// none); fields marked kubernetes_object_metadata map to the object's own
-	// labels and annotations. None of them reaches the CR spec.
+	// name, labels and annotations. None of them reaches the CR spec.
 	envelope := manifestprojection.EnvelopeOf(specMsg)
-	nsJSONName, namespaced := envelope.NamespaceKey, envelope.Namespaced()
 	label := kebabFromPascal(crdKind)
 
 	files := map[string]string{
@@ -74,7 +73,7 @@ func GenerateManifestModule(kind catalogkind.CatalogKind, msg proto.Message) (ma
 		"main.tf":      manifestMainTF(strings.ReplaceAll(label, "-", "_"), apiVersion, crdKind, envelope),
 	}
 
-	outputs, err := manifestOutputsTF(md, specMsg, crdKind, nsJSONName, namespaced)
+	outputs, err := manifestOutputsTF(md, specMsg, crdKind, envelope)
 	if err != nil {
 		return nil, err
 	}
@@ -213,8 +212,19 @@ func manifestLocalsTF(kindName string, envelope manifestprojection.Envelope) str
 		fmt.Fprintf(&b, "  annotations = try(var.spec.%s, {})\n\n", envelope.AnnotationsKey)
 	}
 
-	excluded := envelopeKeys(envelope)
+	excluded := envelope.Keys()
 	switch {
+	case envelope.NameKey != "":
+		b.WriteString("  # The CR spec is var.spec minus the envelope: the fields that describe the\n")
+		fmt.Fprintf(&b, "  # object (%s)\n", envelopePhrase(envelope))
+		b.WriteString("  # and map to its metadata instead. The converter already emits camelCase,\n")
+		b.WriteString("  # null-pruned keys with StringValueOrRef foreign keys resolved to literal\n")
+		b.WriteString("  # strings, so no other transformation is needed.\n")
+		quoted := make([]string, len(excluded))
+		for i, k := range excluded {
+			quoted[i] = fmt.Sprintf("%q", k)
+		}
+		fmt.Fprintf(&b, "  manifest_spec = { for k, v in var.spec : k => v if !contains([%s], k) }\n", strings.Join(quoted, ", "))
 	case len(excluded) == 1 && envelope.Namespaced():
 		fmt.Fprintf(&b, "  # The CR spec is var.spec minus the Planton %q foreign key, which maps to\n", envelope.NamespaceKey)
 		b.WriteString("  # metadata.namespace rather than into the CR spec. The converter already emits\n")
@@ -268,46 +278,56 @@ func writeIdentityLabelEntries(b *strings.Builder, kindName, indent string) {
 	fmt.Fprintf(b, "%s} : k => v if v != null\n", indent)
 }
 
-// envelopeKeys lists the envelope's keys in spec order of meaning: namespace,
-// labels, annotations.
-func envelopeKeys(e manifestprojection.Envelope) []string {
-	var keys []string
-	for _, k := range []string{e.NamespaceKey, e.LabelsKey, e.AnnotationsKey} {
-		if k != "" {
-			keys = append(keys, k)
-		}
+// envelopePhrase names the envelope fields a kind with an object-name field
+// carries, as the generated locals' comment reads them ("its name, its own
+// labels and annotations").
+func envelopePhrase(e manifestprojection.Envelope) string {
+	parts := []string{"its name"}
+	if e.Namespaced() {
+		parts = append(parts, "its namespace")
 	}
-	return keys
+	switch {
+	case e.LabelsKey != "" && e.AnnotationsKey != "":
+		parts = append(parts, "its own labels and annotations")
+	case e.LabelsKey != "":
+		parts = append(parts, "its own labels")
+	case e.AnnotationsKey != "":
+		parts = append(parts, "its own annotations")
+	}
+	return strings.Join(parts, ", ")
+}
+
+// objectNameExpr is the HCL the object's metadata.name reads: the spec's
+// object-name field when the kind has one, the manifest's name otherwise.
+func objectNameExpr(e manifestprojection.Envelope) string {
+	if e.NameKey != "" {
+		return "var.spec." + e.NameKey
+	}
+	return "var.metadata.name"
 }
 
 func manifestMainTF(resourceName, apiVersion, crdKind string, envelope manifestprojection.Envelope) string {
-	var metadata string
-	switch {
-	case envelope.Namespaced() && envelope.AnnotationsKey != "":
-		metadata = fmt.Sprintf(`    metadata = {
-      name        = var.metadata.name
-      namespace   = var.spec.%s
-      labels      = local.labels
-      annotations = local.annotations
-    }`, envelope.NamespaceKey)
-	case envelope.Namespaced():
-		metadata = fmt.Sprintf(`    metadata = {
-      name      = var.metadata.name
-      namespace = var.spec.%s
-      labels    = local.labels
-    }`, envelope.NamespaceKey)
-	case envelope.AnnotationsKey != "":
-		metadata = `    metadata = {
-      name        = var.metadata.name
-      labels      = local.labels
-      annotations = local.annotations
-    }`
-	default:
-		metadata = `    metadata = {
-      name   = var.metadata.name
-      labels = local.labels
-    }`
+	entries := [][2]string{{"name", objectNameExpr(envelope)}}
+	if envelope.Namespaced() {
+		entries = append(entries, [2]string{"namespace", "var.spec." + envelope.NamespaceKey})
 	}
+	entries = append(entries, [2]string{"labels", "local.labels"})
+	if envelope.AnnotationsKey != "" {
+		entries = append(entries, [2]string{"annotations", "local.annotations"})
+	}
+	width := 0
+	for _, e := range entries {
+		if len(e[0]) > width {
+			width = len(e[0])
+		}
+	}
+	var md strings.Builder
+	md.WriteString("    metadata = {\n")
+	for _, e := range entries {
+		fmt.Fprintf(&md, "      %s%s = %s\n", e[0], strings.Repeat(" ", width-len(e[0])), e[1])
+	}
+	md.WriteString("    }")
+	metadata := md.String()
 	return fmt.Sprintf(`# Applies the %s custom resource through kubectl_manifest (alekc/kubectl):
 # no plan-time cluster dependency (plannable before the CRDs exist), applied
 # server-side. No wait, deliberately: the CR is configuration its controller
@@ -326,7 +346,8 @@ resource "kubectl_manifest" %q {
 `, crdKind, resourceName, apiVersion, crdKind, metadata)
 }
 
-func manifestOutputsTF(md, specMsg protoreflect.MessageDescriptor, crdKind, nsJSONName string, namespaced bool) (string, error) {
+func manifestOutputsTF(md, specMsg protoreflect.MessageDescriptor, crdKind string, envelope manifestprojection.Envelope) (string, error) {
+	nsJSONName, namespaced := envelope.NamespaceKey, envelope.Namespaced()
 	statusMsg := messageOfField(md, "status")
 	if statusMsg == nil {
 		return "", nil
@@ -350,6 +371,11 @@ func manifestOutputsTF(md, specMsg protoreflect.MessageDescriptor, crdKind, nsJS
 			// the converter routes to metadata.namespace, not into the CR spec.
 			value = "var.spec." + nsJSONName
 			desc = fmt.Sprintf("Namespace the %s was created in.", crdKind)
+		case strings.HasSuffix(name, "_name") && specJSONName == "" && envelope.NameKey != "":
+			// An identity-name output of a kind whose spec names the object is
+			// the object-name field, routed to the object's metadata.name.
+			value = objectNameExpr(envelope)
+			desc = fmt.Sprintf("Name of the created %s (its metadata.name, from spec.%s).", crdKind, envelope.NameKey)
 		case strings.HasSuffix(name, "_name") && specJSONName == "":
 			// An identity-name output with no matching spec field is the resource
 			// name (e.g. destination_rule_name, route_name) == metadata.name.

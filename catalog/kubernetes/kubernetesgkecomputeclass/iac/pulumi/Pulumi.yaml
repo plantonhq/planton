@@ -1,0 +1,4 @@
+name: kubernetes-gke-compute-class
+runtime:
+  name: go
+description: Pulumi module that provisions a GKE ComputeClass from a KubernetesGkeComputeClass manifest.

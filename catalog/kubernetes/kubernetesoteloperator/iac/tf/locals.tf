@@ -64,25 +64,36 @@ locals {
 
     # A typed kind knows its chart carries CRDs and pins the switch: a render
     # that yields none is a failure, and nothing is ever left to Helm.
-    expect_crds        = true
-    allow_helm_managed = false
+    expect_crds = true
 
-    # The chart's CRD switch, turned on for the render only. The release
-    # pins it off (see helm_release_values).
-    render_override = yamlencode({ crds = { create = true } })
+    version       = local.chart_version
+    version_field = "spec.chart_version"
 
-    # The collector CRD's cert-manager.io/inject-ca-from annotation renders
-    # only when the chart sees cert-manager.io/v1 served; the render must
-    # declare it or the kept CRD loses its conversion trust.
-    api_versions = ["cert-manager.io/v1"]
+    chart = {
+      repository   = local.helm_chart_repo
+      name         = local.helm_chart_name
+      release_name = local.release_name
+      namespace    = local.namespace
+      values       = local.helm_release_values
 
-    # This chart templates its CRDs from a public repository, with no
-    # set-style overrides; no upstream bundle.
-    bundle_url          = ""
-    repository_username = ""
-    repository_password = ""
-    set                 = []
-    set_sensitive       = []
+      # The chart's CRD switch, turned on for the render only. The release
+      # pins it off (see helm_release_values).
+      render_override = yamlencode({ crds = { create = true } })
+
+      # The collector CRD's cert-manager.io/inject-ca-from annotation renders
+      # only when the chart sees cert-manager.io/v1 served; the render must
+      # declare it or the kept CRD loses its conversion trust.
+      api_versions       = ["cert-manager.io/v1"]
+      allow_helm_managed = false
+
+      # This chart templates its CRDs from a public repository, with no
+      # set-style overrides.
+      repository_username = ""
+      repository_password = ""
+      set                 = []
+      set_sensitive       = []
+    }
+    bundle = null
   }
 
   # ---- webhook artifact names (twins of the Pulumi module's locals) ---------

@@ -1,0 +1,50 @@
+# Estimate model: the authored half of this kind's per-preset cost
+# estimates -- quantity assumptions derived from the preset manifests and
+# defended in prose. All four presets are genuinely zero-committed: a
+# ComputeClass is a fleet SHAPE, not a fleet -- no node exists until pods
+# that select the class are pending, every node GKE creates bills Compute
+# Engine's rate for the machine the first satisfiable rule allowed
+# (rate-delegated), and idle nodes are removed. Stated in exclusions, never
+# padded into fabricated dollars. The one setting that WOULD commit spend --
+# minimum_capacity -- is set by no committed preset. Schema:
+# finops/catalogkindcostestimatemodel/v1.
+apiVersion: finops.planton.dev/v1
+kind: CatalogKindCostEstimateModel
+metadata:
+  name: kubernetesgkecomputeclass
+spec:
+  presets:
+    - preset: 01-stockout-resilient-default
+      region_assumption: us-central1
+      currency: USD
+      hours_per_month: 730
+      exclusions:
+        - the class object itself bills nothing -- nodes exist only while pods need them, created from n2d, then c3d, n2 or t2d at 8 vCPUs when the earlier family is out, each at Compute Engine's on-demand rate for the machine GKE chose
+        - whenUnsatisfiable ScaleUpAnyway may create a node from GKE's default E2 series when every family is out, at that series' rate
+        - each node's boot disk bills as Compute Engine persistent disk
+      notes: Zero committed cost -- the class decides which machines GKE buys and in which order; it spends nothing itself.
+    - preset: 02-spot-first-on-demand-fallback
+      region_assumption: us-central1
+      currency: USD
+      hours_per_month: 730
+      exclusions:
+        - nodes bill Compute Engine SPOT rates (a deep discount to on-demand, reclaimable with 30 seconds' notice) across n2d, c3d and e2; on-demand n2d or e2 rates apply only while every Spot family is short
+        - active migration moves pods back to Spot once it returns, which ends the on-demand spend
+      notes: Zero committed cost -- Spot capacity appears with pod demand and disappears with it (or with the market).
+    - preset: 03-gpu-l4-with-fallback
+      region_assumption: us-central1
+      currency: USD
+      hours_per_month: 730
+      exclusions:
+        - g2-standard-8 nodes (one NVIDIA L4 each) bill Compute Engine GPU-machine rates while inference pods run, Spot first, on-demand when Spot L4s are out -- among the most expensive machine hours a cluster buys, which is why nothing is held idle
+        - gpuConsolidationThreshold 100 makes a node whose GPU is not fully used a candidate for removal
+        - whenUnsatisfiable DoNotScaleUp never buys a CPU-only fallback
+      notes: Zero committed cost -- not one GPU hour is bought until an inference pod asks.
+    - preset: 04-reservation-first
+      region_assumption: us-central1
+      currency: USD
+      hours_per_month: 730
+      exclusions:
+        - the named reservation's n2d-standard-16 capacity is already paid for by the reservation, whether or not the class consumes it
+        - on-demand n2d-standard-16, then c3d at 16 vCPUs, bill Compute Engine on-demand rates only for nodes beyond the reservations
+      notes: Zero committed cost from the class -- it spends reservations first and buys on-demand only for overflow.

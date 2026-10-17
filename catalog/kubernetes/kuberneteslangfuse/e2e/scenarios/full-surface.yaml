@@ -1,0 +1,196 @@
+# The broad surface on both engines - every group the module renders
+# into chart values or the additionalEnv channels carries at least one
+# setting, so a rendering defect on either engine fails the install (the
+# chart refuses a variable set both ways, and Langfuse refuses an invalid
+# value at boot):
+# - two web replicas from a cold start, so concurrent first-boot
+#   migrations race on purpose; a disruption budget, topology spread,
+#   rollout bounds, probes and pod metadata on the web server;
+# - the worker's stuck-consumption liveness and an autoscaler;
+# - a seeded admin with a generated password, named organization and
+#   project, sign-up closed, new-user access, session lifetime;
+# - ClickHouse lightweight deletes and updates, a Redis key prefix, blob
+#   prefixes and batch-export tuning, caching, ingestion and logging;
+# - the spec's extra environment and the helm_values escape hatch.
+#
+# The verifier proves both ingestion doors - a trace through the OTLP
+# endpoint (the `otel_endpoint` output) and a score on it through the public
+# ingestion API, which takes only scores in Langfuse v4 - and that the seeded
+# admin's generated password exists.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesLangfuse
+metadata:
+  name: e2e-lf-full
+spec:
+  namespace:
+    value: e2e-langfuse
+  externalUrl: http://langfuse.e2e.local
+  postgres:
+    host:
+      valueFrom:
+        name: e2e-lf-pg
+    port: 5432
+    database: langfuse
+    username: langfuse
+    passwordSecret:
+      secretName:
+        valueFrom:
+          name: e2e-lf-pg
+      secretKey: password
+    autoMigrate: true
+  clickhouse:
+    host:
+      valueFrom:
+        name: e2e-lf-ch
+    httpPort: 8123
+    nativePort: 9000
+    database: default
+    username: langfuse
+    passwordSecret:
+      secretName:
+        valueFrom:
+          name: e2e-lf-ch
+    cluster:
+      enabled: true
+      name:
+        valueFrom:
+          name: e2e-lf-ch
+    deleteMode: lightweight_update
+    useLightweightUpdate: true
+    deletionTimeoutMs: 900000
+  redis:
+    standalone:
+      host:
+        valueFrom:
+          name: e2e-lf-vlk
+      port: 6379
+    username:
+      valueFrom:
+        name: e2e-lf-vlk
+    passwordSecret:
+      secretName:
+        valueFrom:
+          name: e2e-lf-vlk
+      secretKey:
+        valueFrom:
+          name: e2e-lf-vlk
+    keyPrefix: "e2e-full:"
+    socketTimeoutMs: 30000
+  blobStorage:
+    target:
+      s3Compatible:
+        endpoint:
+          valueFrom:
+            name: e2e-lf-s3
+        bucket: langfuse
+        region: auto
+        forcePathStyle: true
+        credentialsSecret:
+          secretName:
+            valueFrom:
+              name: e2e-lf-s3
+    eventUpload:
+      prefix: events/
+    mediaUpload:
+      prefix: media/
+      maxContentLengthBytes: 100000000
+      downloadUrlExpirySeconds: 1800
+    batchExport:
+      enabled: true
+      prefix: exports/
+      pageSize: 250
+      rowLimit: 100000
+      downloadLinkExpirationHours: 12
+    concurrentReads: 25
+    concurrentWrites: 25
+  init:
+    organization:
+      name: E2E Organization
+    project:
+      name: E2E Project
+    admin:
+      email: admin@langfuse.e2e.local
+      name: E2E Admin
+  auth:
+    disableSignUp: true
+    sessionMaxAgeMinutes: 1440
+    newUserAccess:
+      organizationId: e2e-lf-full
+      organizationRole: VIEWER
+  features:
+    telemetryEnabled: false
+    markdownRenderCharacterLimit: 100000
+  caching:
+    apiKeyCacheTtlSeconds: 30
+    promptCacheTtlSeconds: 600
+  ingestion:
+    queueProcessingConcurrency: 10
+  observability:
+    logLevel: info
+    logFormat: json
+    logPropagatedHeaders:
+      - x-request-id
+  network:
+    noProxy:
+      - .svc.cluster.local
+  web:
+    replicas: 2
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: "2"
+        memory: 2Gi
+    pdb:
+      minAvailable: "1"
+    livenessProbe:
+      initialDelaySeconds: 30
+      failureThreshold: 6
+    readinessProbe:
+      periodSeconds: 5
+    service:
+      annotations:
+        e2e.planton.dev/surface: full
+    scheduling:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+    workload:
+      podLabels:
+        e2e.planton.dev/component: web
+      podAnnotations:
+        e2e.planton.dev/surface: full
+      strategy:
+        type: RollingUpdate
+        maxSurge: "1"
+        maxUnavailable: "0"
+      revisionHistoryLimit: 3
+    extraEnv:
+      LANGFUSE_RATE_LIMITS_ENABLED: "true"
+  worker:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: "2"
+        memory: 2Gi
+    autoscaling:
+      hpa:
+        minReplicas: 1
+        maxReplicas: 2
+        targetCpuUtilizationPercent: 80
+    failLivenessIfQueueConsumptionStuck: true
+    queueConsumptionStuckThresholdMinutes: 60
+  serviceAccount:
+    annotations:
+      e2e.planton.dev/surface: full
+  extraEnv:
+    LANGFUSE_INGESTION_QUEUE_DELAY_MS: "1000"
+  helmValues: |
+    langfuse:
+      deployment:
+        annotations:
+          e2e.planton.dev/escape-hatch: applied

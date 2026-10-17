@@ -1,0 +1,175 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesagentsandboxclaim.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/kubernetes/agent_sandbox_api.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// KubernetesAgentSandboxClaimSpec defines an agent-sandbox SandboxClaim: a
+// request for one sandbox from a KubernetesAgentSandboxWarmPool. The
+// agent-sandbox controller (KubernetesAgentSandboxController, extensions on)
+// hands the claim a ready member of the pool (a warm start, in about the time
+// it takes to update an object), or starts a fresh sandbox from the pool's
+// template when none is ready or the claim asks for something a running pod
+// cannot take. The claimed sandbox then belongs to the claim, and goes with it.
+//
+// 100% fidelity with the upstream SandboxClaim custom resource
+// (extensions.agents.x-k8s.io/v1beta1), pinned to agent-sandbox v1.0.7 -- the
+// release KubernetesAgentSandboxController installs -- and held to its served
+// definition by the mirror test. The upstream spec follows the Planton envelope
+// directly: the pool, the lifecycle, the pod metadata, and the environment
+// variables and volumes the claim adds.
+//
+// Products usually create claims at runtime through agent-sandbox's SDKs.
+// Declare one here when a sandbox from a pool should exist as long as the
+// declaration does: a standing sandbox for a named user or team, a demo
+// environment, a canary that proves the pool hands out working sandboxes.
+// The claimed sandbox's name is in the claim's status (`sandbox.name`), which
+// is what a caller sends to the router.
+message KubernetesAgentSandboxClaimSpec {
+  // Kubernetes namespace the SandboxClaim is created in. A claim draws from a
+  // pool in its own namespace, and its sandbox lives there. Typically a
+  // reference to a KubernetesNamespace resource's `spec.name`.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // Labels on the SandboxClaim object itself (its metadata.labels), merged
+  // under Planton's identity labels (a key in both keeps the identity value).
+  // Labels for the sandbox's pod are `additional_pod_metadata.labels`.
+  map<string, string> labels = 2 [
+    (dev.planton.shared.options.kubernetes_object_metadata) = object_labels,
+    (buf.validate.field).map = {
+      keys: {
+        string: {
+          min_len: 1
+          max_len: 317
+          pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?[A-Za-z0-9]([-A-Za-z0-9_.]{0,61}[A-Za-z0-9])?$"
+        }
+      }
+      values: {
+        string: {
+          max_len: 63
+          pattern: "^([A-Za-z0-9]([-A-Za-z0-9_.]{0,61}[A-Za-z0-9])?)?$"
+        }
+      }
+    }
+  ];
+
+  // Annotations on the SandboxClaim object itself (its metadata.annotations).
+  map<string, string> annotations = 3 [(dev.planton.shared.options.kubernetes_object_metadata) = object_annotations];
+
+  // The warm pool to take a sandbox from, in the claim's namespace. Upstream
+  // reaches a template only through a pool, so this is how a claim chooses
+  // what its sandbox runs.
+  KubernetesAgentSandboxClaimWarmPoolRef warm_pool_ref = 4 [(buf.validate.field).required = true];
+
+  // When the claim expires and what happens then. Unset, the claim never
+  // expires.
+  KubernetesAgentSandboxClaimLifecycle lifecycle = 5;
+
+  // Labels and annotations added to the claimed sandbox's pod, on top of the
+  // template's. The controller refuses a label whose key lacks one of its
+  // allowed label domains (`sandbox.users.io` and its subdomains unless the
+  // controller's `extensions.allowed_label_domains` says otherwise), and an
+  // annotation in a restricted system domain (except
+  // `cluster-autoscaler.kubernetes.io/safe-to-evict`); the claim then
+  // reports Ready=False with reason InvalidMetadata. A warm member takes
+  // these without a restart.
+  dev.planton.kubernetes.KubernetesAgentSandboxApiPodMetadata additional_pod_metadata = 6;
+
+  // Environment variables added to the sandbox's pod. Any variable forces a
+  // cold start (a warm member's pod is already running), and the pool's
+  // template must allow it: its `env_vars_injection_policy` must be
+  // "Allowed" (new names only) or "Overrides". Under "Disallowed" the claim
+  // reports Ready=False with reason EnvVarsInjectionRejected. The values land
+  // in the custom resource as written; keep secrets in the template's
+  // `secretKeyRef` variables instead.
+  repeated KubernetesAgentSandboxClaimEnvVar env = 7 [(buf.validate.field).cel = {
+    id: "env.unique_names"
+    message: "Each environment variable needs a unique name within its container"
+    expression: "this.map(e, e.container_name + '/' + e.name).unique()"
+  }];
+
+  // Volumes the claim's sandbox owns in addition to (or, with "Overrides",
+  // instead of) the template's: one PersistentVolumeClaim per template,
+  // named `<template name>-<sandbox name>`. Any template forces a cold start,
+  // and the pool's template must allow it through its
+  // `volume_claim_templates_policy`; otherwise the claim reports Ready=False
+  // with reason VolumeClaimTemplatesError.
+  repeated dev.planton.kubernetes.KubernetesAgentSandboxApiPersistentVolumeClaimTemplate volume_claim_templates = 8 [(buf.validate.field).cel = {
+    id: "volume_claim_templates.unique_names"
+    message: "Each volume claim template needs a unique name: the pod mounts each claim by its template's name"
+    expression: "this.map(t, t.metadata.name).unique()"
+  }];
+}
+
+// KubernetesAgentSandboxClaimWarmPoolRef names the SandboxWarmPool a claim
+// draws from. Faithful to upstream SandboxWarmPoolRef.
+message KubernetesAgentSandboxClaimWarmPoolRef {
+  // Name of the SandboxWarmPool, in the claim's namespace. Defaults to a
+  // KubernetesAgentSandboxWarmPool reference (its sandbox_warm_pool_name
+  // output), so the pool is created first; pass the literal name with
+  // `value:` for a pool Planton does not manage.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesAgentSandboxWarmPool,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.sandbox_warm_pool_name",
+    (dev.planton.shared.options.diagram_label) = "warm pool"
+  ];
+}
+
+// KubernetesAgentSandboxClaimLifecycle is when and how a claim ends. Faithful
+// to upstream Lifecycle (the claim's own, distinct from a Sandbox's).
+message KubernetesAgentSandboxClaimLifecycle {
+  // When the claim expires, as an RFC 3339 time ("2026-12-31T18:00:00Z"). At
+  // that moment the controller deletes the claim's sandbox (pod, Service and
+  // claims) and applies `shutdown_policy` to the claim. The time is the
+  // claim's own and is not copied to the sandbox. Unset, the claim never
+  // expires.
+  optional string shutdown_time = 1 [(buf.validate.field).string.pattern = "^[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt][0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?([Zz]|[+-][0-9]{2}:[0-9]{2})$"];
+
+  // How long a finished claim is kept, in seconds, counted from when its
+  // sandbox's pod finished (succeeded or failed) -- for sandboxes that run a
+  // task to completion. Unset, a finished claim is kept.
+  optional int32 ttl_seconds_after_finished = 2 [(buf.validate.field).int32.gte = 0];
+
+  // What happens to the claim when it expires (its sandbox is deleted
+  // either way): "Retain" keeps the claim, marked expired; "Delete" deletes
+  // it; "DeleteForeground" deletes it but keeps it visible, with a deletion
+  // timestamp, until its sandbox and pod are gone, so a watcher can follow
+  // the shutdown. Unset, the cluster writes "Retain". "Delete" and
+  // "DeleteForeground" remove an object Planton still declares, so the next
+  // apply recreates it; keep "Retain" for a declared claim.
+  optional string shutdown_policy = 3 [(buf.validate.field).string = {
+    in: [
+      "Delete",
+      "DeleteForeground",
+      "Retain"
+    ]
+  }];
+}
+
+// KubernetesAgentSandboxClaimEnvVar is one environment variable a claim adds
+// to its sandbox. Faithful to upstream EnvVar (agent-sandbox's own: a name, a
+// literal value and the target container).
+message KubernetesAgentSandboxClaimEnvVar {
+  // Name of the environment variable: any printable characters except "=",
+  // as Kubernetes accepts.
+  string name = 1 [(buf.validate.field).string = {
+    min_len: 1
+    pattern: "^[ -<>-~]+$"
+  }];
+
+  // Value of the environment variable, as a literal. It cannot be empty
+  // (upstream requires a value); leave the variable out instead.
+  string value = 2 [(buf.validate.field).string.min_len = 1];
+
+  // The container that receives the variable. Unset, the first container of
+  // the pool's template.
+  string container_name = 3;
+}

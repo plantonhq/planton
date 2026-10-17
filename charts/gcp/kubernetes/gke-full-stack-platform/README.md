@@ -29,7 +29,7 @@ Everything in the baseline:
 | Layer | Resources |
 |---|---|
 | Network | GcpVpcNetwork (custom mode), GcpSubnetwork (node range + named pod/service secondary ranges), GcpRouterNat (Cloud Router + NAT — private-node egress) |
-| Cluster | GcpServiceAccount (least-privilege node identity), GcpGkeCluster (regional, Dataplane V2, private nodes, node auto-provisioning; publishes the connection), system GcpGkeNodePool, scale-to-zero Spot pool (toggle) |
+| Cluster | GcpServiceAccount (least-privilege node identity), GcpGkeCluster (regional, Dataplane V2, private nodes, node auto-provisioning; publishes the connection), system GcpGkeNodePool, scale-to-zero Spot pool (toggle), a `default` KubernetesGkeComputeClass that falls back across machine families during a stockout (toggle: `default_compute_class_enabled`) |
 | Keyless identity | A GcpServiceAccount + GcpGkeWorkloadIdentityBinding pair per controller: cert-manager, external-dns, external-secrets, Velero — no cluster output needed, no key anywhere |
 | Addon spine | cert-manager + Let's Encrypt prod/staging ClusterIssuers (keyless Cloud DNS DNS-01), external-dns (Cloud DNS), ingress-nginx XOR the native GKE Gateway, external-secrets + GCP Secret Manager ClusterSecretStore (toggle) |
 | Backups | GCS bucket (versioned, public access enforced off, bucket-scoped grant), the Velero custom role + project grant, the Velero VolumeSnapshotClass, Velero with a daily schedule (toggle) |

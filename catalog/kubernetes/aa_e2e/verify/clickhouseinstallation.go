@@ -36,7 +36,9 @@ type ClickHouseInstallationVerifier struct {
 	TotalHosts int
 	// Username/Password are the first declared user's credentials; the
 	// SQL round-trip runs as that user (the built-in default user is
-	// network-fenced to the cluster's own pods by the operator).
+	// network-fenced to the cluster's own pods by the operator). An
+	// empty Password means the scenario declares the user without one,
+	// and the verifier reads the generated password from the auth Secret.
 	Username string
 	Password string
 	// ManagedKeeper asserts the module-managed Keeper and its client
@@ -68,6 +70,22 @@ func (v *ClickHouseInstallationVerifier) VerifyExists(ctx context.Context, kubec
 	if v.Username == "" {
 		fmt.Printf("  [verify] no declared user in the scenario — skipping the SQL round-trip\n")
 		return nil
+	}
+	if v.Password == "" {
+		// A user declared without a password authenticates with the one
+		// the module generated, read from where every client reads it:
+		// the auth Secret, keyed by the user's name. The round-trip below
+		// then proves the generated credential end to end.
+		authSecret := v.ChiName + "-clickhouse-auth"
+		generated, err := readSecretKey(ctx, kubeconfig, v.Namespace, authSecret, v.Username)
+		if err != nil {
+			return errors.Wrapf(err, "reading the generated password of user %q from secret %s", v.Username, authSecret)
+		}
+		if generated == "" {
+			return errors.Errorf("secret %s carries no generated password under key %q", authSecret, v.Username)
+		}
+		v.Password = generated
+		fmt.Printf("  [verify] GENERATED PASSWORD: user %q authenticates with the module-generated password from %s\n", v.Username, authSecret)
 	}
 	return v.proveSqlRoundTrip(ctx, kubeconfig)
 }

@@ -1,0 +1,4 @@
+name: kubernetes-agent-sandbox-template
+runtime:
+  name: go
+description: Pulumi module that provisions an agent-sandbox SandboxTemplate from a KubernetesAgentSandboxTemplate manifest.

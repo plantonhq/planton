@@ -2105,6 +2105,8 @@ Fields on other kinds that can point at this resource:
 | KubernetesKeycloak | `spec.db.host` | `status.outputs.rw_service` |
 | KubernetesKeycloak | `spec.db.usernameSecret.name` | `status.outputs.password_secret.name` |
 | KubernetesKeycloak | `spec.db.passwordSecret.name` | `status.outputs.password_secret.name` |
+| KubernetesLangfuse | `spec.postgres.host` | `status.outputs.rw_service` |
+| KubernetesLangfuse | `spec.postgres.passwordSecret.secretName` | `status.outputs.password_secret.name` |
 | KubernetesMlflow | `spec.backendStore.postgres.host` | `status.outputs.rw_service` |
 | KubernetesMlflow | `spec.backendStore.postgres.passwordSecret.secretName` | `status.outputs.password_secret.name` |
 | KubernetesOpenBao | `spec.server.postgresql.host` | `status.outputs.rw_service` |

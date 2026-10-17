@@ -1,0 +1,57 @@
+{% if values.default_compute_class_enabled | bool %}
+# The cluster's DEFAULT compute class — the stockout answer. A busy region
+# runs out of one machine type for hours at a time (node creation fails with
+# ZONE_RESOURCE_POOL_EXHAUSTED in every zone, quota untouched), and a cluster
+# that can only create one shape stalls with it. Named `default`, this class
+# applies to every pod that selects none (the cluster's
+# defaultComputeClassEnabled switch, cluster/gke-cluster.yaml), and GKE
+# creates nodes from the next family when the first runs out.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGkeComputeClass
+metadata:
+  name: "{{ values.env }}-gke-default-class"
+  annotations:
+    # CONSUME: deployed through the connection the cluster publishes.
+    planton.dev/connection: "{{ values.cluster_connection_name }}"
+  relationships:
+    - kind: GcpGkeCluster
+      name: "{{ values.env }}-gke"
+      type: runs_on
+spec:
+  name: default
+  description: Cluster default. The system pool first, then several machine families of the same size, so nodes keep coming when one family runs out.
+  priorities:
+    # The system pool FIRST, by reference. Once a default class applies,
+    # pods that select no class schedule only onto the class's nodes — leave
+    # the pool out and the controllers it was sized for move to new nodes
+    # while it sits idle. The reference is also the ordering edge.
+    - nodepools:
+        - valueFrom:
+            kind: GcpGkeNodePool
+            name: "{{ values.env }}-gke-system"
+            fieldPath: status.outputs.node_pool_name
+    # Then the fallback families, all at the same size so a fallback node
+    # fits exactly the pods the first choice would have run.
+{% for family in values.default_compute_class_families %}
+    - machineFamily: "{{ family }}"
+      minCores: {{ values.default_compute_class_min_cores }}
+{% endfor %}
+  # Every listed family out: still create a node from GKE's default series,
+  # so installs and controllers keep scheduling through the stockout.
+  whenUnsatisfiable: ScaleUpAnyway
+  # Without it the class could only use the system pool.
+  nodePoolAutoCreation:
+    enabled: true
+  # Move pods back to the first family once its capacity returns.
+  activeMigration:
+    optimizeRulePriority: true
+  nodePoolConfig:
+    # The fallback pools run as the same least-privilege node identity as
+    # every other pool, never the Compute Engine default account.
+    serviceAccount:
+      valueFrom:
+        kind: GcpServiceAccount
+        name: "{{ values.env }}-gke-nodes"
+        fieldPath: status.outputs.email
+    workloadMetadata: GKE_METADATA
+{% endif %}

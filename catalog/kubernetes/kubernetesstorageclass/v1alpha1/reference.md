@@ -251,6 +251,11 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| KubernetesAgentSandbox | `spec.podTemplate.spec.volumes[].ephemeral.volumeClaimTemplate.spec.storageClassName` | `status.outputs.storage_class_name` |
+| KubernetesAgentSandbox | `spec.volumeClaimTemplates[].spec.storageClassName` | `status.outputs.storage_class_name` |
+| KubernetesAgentSandboxClaim | `spec.volumeClaimTemplates[].spec.storageClassName` | `status.outputs.storage_class_name` |
+| KubernetesAgentSandboxTemplate | `spec.podTemplate.spec.volumes[].ephemeral.volumeClaimTemplate.spec.storageClassName` | `status.outputs.storage_class_name` |
+| KubernetesAgentSandboxTemplate | `spec.volumeClaimTemplates[].spec.storageClassName` | `status.outputs.storage_class_name` |
 | KubernetesClickHouse | `spec.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesClickHouse | `spec.coordination.keeper.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesGhaRunnerScaleSet | `spec.containerMode.kubernetesWorkVolume.storageClass` | `status.outputs.storage_class_name` |

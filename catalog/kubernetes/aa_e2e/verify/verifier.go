@@ -310,6 +310,15 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 			Name: info.Name,
 		}, nil
 
+	// GKE serves the ComputeClass definition only on GKE clusters, so these
+	// lanes run on the gcp-gke real-cluster batch. Health=True is GKE's
+	// acceptance of the class; the behavioral scenario proves it falls back.
+	case "kubernetesgkecomputeclass":
+		return &ComputeClassVerifier{
+			Name:       info.Name,
+			Behavioral: strings.Contains(manifestPath, "behavioral-fallback"),
+		}, nil
+
 	// A claim under a WaitForFirstConsumer StorageClass is correctly Pending
 	// until a pod consumes it, so existence (not Bound) is the verifiable
 	// contract; the composed consumer scenario proves real binding.
@@ -668,6 +677,39 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 	case "kubernetessolroperator":
 		return newSolrOperatorInstallVerifier(manifestPath, info.Name, info.Namespace), nil
 
+	// The agent-sandbox controller: the controller (and router) Available
+	// and the kept definitions stamped, then a probe proving it serves: a
+	// Sandbox Ready, a claim bound from a warm pool, a request through the
+	// router by sandbox name. Destroy asserts the sandbox outlives it.
+	case "kubernetesagentsandboxcontroller":
+		return newAgentSandboxControllerVerifier(manifestPath), nil
+
+	// An agent-sandbox Sandbox: every field the scenario sets reads back,
+	// the Sandbox Ready (or Suspended with no pod), its claims created. The
+	// behavioral-suspend scenario's two acts prove suspending keeps the same
+	// claim and resuming brings the sandbox's files back.
+	case "kubernetesagentsandbox":
+		return newAgentSandboxVerifier(manifestPath, info.Name, info.Namespace), nil
+
+	// An agent-sandbox SandboxTemplate: every field reads back, and the
+	// controller's shared NetworkPolicy is the secure default, exactly the
+	// declared rules, or absent when the template is Unmanaged.
+	case "kubernetesagentsandboxtemplate":
+		return newAgentSandboxTemplateVerifier(manifestPath, info.Name, info.Namespace), nil
+
+	// An agent-sandbox SandboxWarmPool: every field reads back, the pool
+	// fills to its size with ready members, and its scale endpoint (the one
+	// an autoscaler drives) reports that size.
+	case "kubernetesagentsandboxwarmpool":
+		return newAgentSandboxWarmPoolVerifier(manifestPath, info.Name, info.Namespace), nil
+
+	// An agent-sandbox SandboxClaim: every field reads back, and the claim
+	// binds warm (a ready pool member) or cold (a sandbox of its own, with
+	// its variables, labels and volumes) exactly as its spec requires, or is
+	// refused with its template's reason.
+	case "kubernetesagentsandboxclaim":
+		return newAgentSandboxClaimVerifier(manifestPath, info.Name, info.Namespace), nil
+
 	// An operator-managed SolrCloud: every node ready + the common
 	// Service. The behavioral-collection scenario (recognized by name)
 	// creates a collection, indexes a document and queries it back —
@@ -848,6 +890,26 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 	// behavioral-state scenario (recognized by name) re-authenticates
 	// and re-queries AFTER a server pod replacement — users survive on
 	// the SQLite PVC, telemetry in the composed ClickHouse.
+	// A Langfuse install: both workloads rolled out, health and readiness,
+	// THE AUTH GATE (an anonymous public-API read refused), and THE
+	// INGESTION PROOF on every lane - a trace ingested with the seeded key
+	// pair (read from the instance Secret) and read back by ID through the
+	// v4 observations API, a round trip through all four composed stores.
+	// The full-surface scenario adds THE OTLP PROOF and the seeded admin's
+	// generated password; the behavioral-state and reinstall scenarios
+	// carry a deterministic state trace, which the upgrade act
+	// (behavioral-state.to.yaml) requires to have survived.
+	case "kuberneteslangfuse":
+		spec := manifestSpecMap(manifestPath)
+		return &LangfuseVerifier{
+			Namespace:    info.Namespace,
+			Name:         info.Name,
+			WebPort:      langfuseWebPort(spec),
+			OtlpProof:    strings.Contains(manifestPath, "full-surface"),
+			StateTrace:   strings.Contains(manifestPath, "behavioral-state") || strings.Contains(manifestPath, "reinstall"),
+			RequireState: strings.HasSuffix(manifestPath, ".to.yaml"),
+		}, nil
+
 	case "kubernetessignoz":
 		spec := manifestSpecMap(manifestPath)
 		zipkinPort, jaegerPort := SignozReceiverPosture(spec)
