@@ -128,7 +128,7 @@ spec:
           fieldPath: status.outputs.bucket_name
 ```
 
-The InfraPipeline creates the cluster, the three service accounts (with a GcpServiceAccountIamMember letting the API server's mint the transfer account's tokens), the Cloud SQL instance and the bucket first, then installs the control plane with every identity and address wired by reference.
+The InfraPipeline creates the cluster, the three service accounts (with a GCP Service Account IAM Member grant letting the API server's account mint the transfer account's tokens), the Cloud SQL instance and the bucket first, then installs the control plane with every identity and address wired by reference.
 
 ## Key Configuration
 
