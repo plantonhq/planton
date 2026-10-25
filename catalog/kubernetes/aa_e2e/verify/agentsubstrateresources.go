@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"io"
 	"math/rand/v2"
 	"net/http"
 	"net/url"
@@ -29,14 +28,15 @@ import (
 // plane's outputs (agentsubstrateapi.go), never through restated names.
 //
 //   - Every lane reads every field the scenario sets back from the live object
-//     (the API server prunes what its definition does not serve).
-//   - A SandboxConfig is proved usable: the API server accepts an actor
-//     template that names it, and refuses one of the other class.
+//     (the API server prunes what its definition does not serve), and the
+//     cluster's admission of the object proves its upstream rules.
 //   - A WorkerPool is proved serving: its workers roll out, its class
 //     resolves to the expected SandboxConfig, and every worker registers with
-//     the API. The actor lane then proves the promise Substrate exists for:
-//     an actor created from a template, reached through the router, suspended
-//     into the control plane's storage, and resumed with its files.
+//     the API in that class. The actor lane then proves the promise Substrate
+//     exists for: an actor created from a template that selects the pool,
+//     booted on the runtime of the SandboxConfig the pool resolves, reached
+//     through the router over mutual TLS, suspended into the control plane's
+//     snapshot location, and resumed with its files.
 const (
 	agentSubstrateWorkerPoolResource    = "workerpools.ate.dev"
 	agentSubstrateSandboxConfigResource = "sandboxconfigs.ate.dev"
@@ -47,9 +47,6 @@ const (
 	// left behind, and creating any of them is expected to succeed outright.
 	agentSubstrateActorTemplate = "e2e-counter"
 	agentSubstrateActorName     = "e2e-counter-1"
-	// agentSubstrateConfigProbeTemplate is the template the SandboxConfig
-	// lanes create to prove the API server resolves the config.
-	agentSubstrateConfigProbeTemplate = "e2e-config-probe"
 
 	// The control plane reads its snapshot-store key from the Secret the
 	// KubernetesSecret in front of it publishes (its secret_name and
@@ -72,15 +69,15 @@ const (
 // memory and really came back from storage. Planton publishes the image with
 // the release (images.json, key "counter").
 const (
-	counterImageKey      = "counter"
-	counterCommand       = "/ko-app/counter"
-	counterPort          = 80
-	counterDataMount     = "/home/counter"
-	counterMemoryPrefix  = "preserved memory count: "
-	counterFilePrefix    = "preserved file counter: "
-	counterActorCPU      = "1"
-	counterActorMemory   = "512Mi"
-	agentSubstrateHeader = "ate-target-actor"
+	counterImageKey        = "counter"
+	counterCommand         = "/ko-app/counter"
+	counterPort            = 80
+	counterDataMount       = "/home/counter"
+	counterMemoryPrefix    = "preserved memory count: "
+	counterFilePrefix      = "preserved file counter: "
+	counterActorMillicores = 1000
+	counterActorMemory     = 512 << 20
+	agentSubstrateHeader   = "ate-target-actor"
 )
 
 // ---------------------------------------------------------------------------
@@ -88,7 +85,8 @@ const (
 // ---------------------------------------------------------------------------
 
 // AgentSubstrateSandboxConfigVerifier proves a SandboxConfig is what the
-// manifest declares and that the API server resolves it for a template.
+// manifest declares. Nothing in the API names a config: a worker pool
+// resolves it, which the actor lane proves end to end.
 type AgentSubstrateSandboxConfigVerifier struct {
 	ManifestPath string
 	Name         string
@@ -104,64 +102,16 @@ func newAgentSubstrateSandboxConfigVerifier(manifestPath, name string) *AgentSub
 	}
 }
 
-func (v *AgentSubstrateSandboxConfigVerifier) VerifyExists(ctx context.Context, kubeconfig string) (err error) {
+func (v *AgentSubstrateSandboxConfigVerifier) VerifyExists(ctx context.Context, kubeconfig string) error {
 	fmt.Printf("  [verify] Agent Substrate SandboxConfig %s (class %s)\n", v.Name, v.Class)
 	if err := KubectlResourceExists(ctx, kubeconfig, agentSubstrateSandboxConfigResource, v.Name, ""); err != nil {
 		return err
 	}
-	if err := proveProjectionReadback(ctx, kubeconfig, agentSubstrateSandboxConfigResource, v.Name, "", v.ManifestPath); err != nil {
-		return err
-	}
-	outputs, err := agentSubstrateOutputsFromPrerequisite(ctx)
-	if err != nil {
-		return err
-	}
-	if err := applySubstrateProbe(ctx, kubeconfig, fmt.Sprint(outputs["api_access_namespace_label"]), false); err != nil {
-		return err
-	}
-	conn, err := dialSubstrateAPI(ctx, kubeconfig, outputs)
-	if err != nil {
-		return err
-	}
-	defer conn.Close()
-	images, err := releaseImages(ctx, fmt.Sprint(outputs["version"]))
-	if err != nil {
-		return err
-	}
-	atespace := laneAtespace("config")
-	if err := ensureAtespace(ctx, conn, atespace); err != nil {
-		return err
-	}
-	defer func() { err = withLaneCleanup(err, cleanUpLaneAtespace(ctx, conn, atespace, nil)) }()
-	storage := snapshotLocation(fmt.Sprint(outputs["storage_location"]), atespace)
-
-	// A template of the config's class is accepted, once the API server has
-	// seen the config. Only then is the refusal below evidence: a template of
-	// the other class is refused for its class, not for a config the API
-	// server has not seen yet.
-	accepted := counterTemplate(atespace, agentSubstrateConfigProbeTemplate, images[counterImageKey], v.Class, v.Name, storage, nil)
-	accepted.SnapshotConfig.GoldenSnapshotConfig = &ateapipb.GoldenSnapshotConfig{Mode: ateapipb.GoldenSnapshotMode_GOLDEN_SNAPSHOT_MODE_DISABLED}
-	if err := createTemplateOnceConfigSeen(ctx, conn, accepted); err != nil {
-		return errors.Wrapf(err, "the API server refused an actor template naming SandboxConfig %s (class %s)", v.Name, v.Class)
-	}
-	other := "microvm"
-	if v.Class == "microvm" {
-		other = "gvisor"
-	}
-	mismatched := counterTemplate(atespace, agentSubstrateConfigProbeTemplate+"-other", images[counterImageKey], other, v.Name, storage, nil)
-	refusal := fmt.Sprintf("SandboxConfig %q has class %q", v.Name, v.Class)
-	if err := createTemplate(ctx, conn, mismatched); status.Code(err) != codes.FailedPrecondition || !strings.Contains(err.Error(), refusal) {
-		return errors.Errorf("a template naming SandboxConfig %s with class %s returned %v; the API server must refuse it as FailedPrecondition, saying %s", v.Name, other, err, refusal)
-	}
-	fmt.Printf("  [verify] the API server resolves SandboxConfig %s for a %s template and refuses it for a %s one\n", v.Name, v.Class, other)
-	return nil
+	return proveProjectionReadback(ctx, kubeconfig, agentSubstrateSandboxConfigResource, v.Name, "", v.ManifestPath)
 }
 
 func (v *AgentSubstrateSandboxConfigVerifier) VerifyAbsent(ctx context.Context, kubeconfig string) error {
-	if err := KubectlResourceAbsent(ctx, kubeconfig, agentSubstrateSandboxConfigResource, v.Name, ""); err != nil {
-		return err
-	}
-	return removeSubstrateProbe(ctx, kubeconfig)
+	return KubectlResourceAbsent(ctx, kubeconfig, agentSubstrateSandboxConfigResource, v.Name, "")
 }
 
 // ---------------------------------------------------------------------------
@@ -267,7 +217,7 @@ func (v *AgentSubstrateWorkerPoolVerifier) VerifyExists(ctx context.Context, kub
 	if err != nil {
 		return err
 	}
-	if err := applySubstrateProbe(ctx, kubeconfig, fmt.Sprint(outputs["api_access_namespace_label"]), false); err != nil {
+	if err := applySubstrateProbe(ctx, kubeconfig, outputs, false); err != nil {
 		return err
 	}
 	conn, err := dialSubstrateAPI(ctx, kubeconfig, outputs)
@@ -351,8 +301,9 @@ func (v *AgentSubstrateWorkerPoolVerifier) awaitRegistered(ctx context.Context, 
 			for _, w := range resp.GetWorkers() {
 				if w.GetWorkerPool() == v.Name && w.GetWorkerNamespace() == v.Namespace &&
 					w.GetStatus().GetState() == ateapipb.WorkerState_WORKER_STATE_ACTIVE {
-					if w.GetSandboxClass() != v.Class {
-						return errors.Errorf("worker %s of pool %s/%s registered with class %s, want %s", w.GetWorkerPod(), v.Namespace, v.Name, w.GetSandboxClass(), v.Class)
+					classes := w.GetStatus().GetSandboxClasses()
+					if len(classes) != 1 || classes[0].GetSandboxClass() != v.Class {
+						return errors.Errorf("worker %s of pool %s/%s reports sandbox classes %v, want %s", w.GetWorkerPod(), v.Namespace, v.Name, classes, v.Class)
 					}
 					active++
 				}
@@ -371,8 +322,10 @@ func (v *AgentSubstrateWorkerPoolVerifier) awaitRegistered(ctx context.Context, 
 
 // proveActorLifecycle is upstream's durable-directory lifecycle
 // (internal/e2e/suites/demo TestDurableDirLifecycle) on this pool: create,
-// resume, call through the router, suspend into storage, find the snapshot in
-// the bucket, resume, call again.
+// resume, call through the router, suspend into the control plane's snapshot
+// location, find the snapshot in the bucket, resume, call again. The actor
+// boots the default version of the SandboxConfig the pool resolved (config),
+// the only runtime the pool's workers run.
 func (v *AgentSubstrateWorkerPoolVerifier) proveActorLifecycle(ctx context.Context, kubeconfig string, conn *substrateAPI, outputs map[string]interface{}, config string) (err error) {
 	if len(v.Labels) == 0 {
 		return errors.New("the actor lane's pool must carry labels: an actor template selects its pool by them")
@@ -391,10 +344,9 @@ func (v *AgentSubstrateWorkerPoolVerifier) proveActorLifecycle(ctx context.Conte
 	actor := &ateapipb.ObjectRef{Atespace: atespace, Name: agentSubstrateActorName}
 	defer func() { err = withLaneCleanup(err, cleanUpLaneAtespace(ctx, conn, atespace, actor)) }()
 
-	storage := snapshotLocation(fmt.Sprint(outputs["storage_location"]), atespace)
-	template := counterTemplate(atespace, agentSubstrateActorTemplate, images[counterImageKey], v.Class, config, storage, v.Labels)
-	if err := createTemplateOnceConfigSeen(ctx, conn, template); err != nil {
-		return errors.Wrapf(err, "creating the counter template on SandboxConfig %s", config)
+	template := counterTemplate(atespace, agentSubstrateActorTemplate, images[counterImageKey], v.Labels)
+	if err := createTemplate(ctx, conn, template); err != nil {
+		return errors.Wrapf(err, "creating the counter template on pool %s/%s (SandboxConfig %s)", v.Namespace, v.Name, config)
 	}
 	if err := awaitGoldenSnapshot(ctx, conn, &ateapipb.ObjectRef{Atespace: atespace, Name: agentSubstrateActorTemplate}); err != nil {
 		return err
@@ -413,7 +365,7 @@ func (v *AgentSubstrateWorkerPoolVerifier) proveActorLifecycle(ctx context.Conte
 		return errors.Wrap(err, "creating the counter actor")
 	}
 
-	router := fmt.Sprint(outputs["router_endpoint"])
+	router := fmt.Sprint(outputs["router_tls_endpoint"])
 	if err := resumeAndCall(ctx, kubeconfig, conn, actor, router, 1, 1, "after creation"); err != nil {
 		return err
 	}
@@ -439,6 +391,9 @@ func (v *AgentSubstrateWorkerPoolVerifier) proveActorLifecycle(ctx context.Conte
 		return errors.Errorf("the actor's snapshot has fidelity %v, want VOLUMES (the template's)", snapshot.GetFidelity())
 	}
 	uri := snapshot.GetDurableSnapshot().GetObject().GetSnapshotUri()
+	if location := strings.TrimSuffix(fmt.Sprint(outputs["storage_location"]), "/") + "/"; !strings.HasPrefix(uri, location) {
+		return errors.Errorf("the actor's snapshot is at %s, outside the control plane's snapshot location %s (the storage_location output)", uri, location)
+	}
 	if err := proveSnapshotInBucket(ctx, kubeconfig, uri); err != nil {
 		return err
 	}
@@ -467,11 +422,12 @@ func (v *AgentSubstrateWorkerPoolVerifier) VerifyAbsent(ctx context.Context, kub
 // Shared API steps
 // ---------------------------------------------------------------------------
 
-// counterTemplate is upstream's counter template (demos/counter at the pinned
-// release) with the lane's image, class, config, storage and pool selector:
-// one container serving port 80, a durable directory at /home/counter, and
-// VOLUMES fidelity (see the counter constants).
-func counterTemplate(atespace, name, image, class, config, storage string, selector map[string]string) *ateapipb.ActorTemplate {
+// counterTemplate is upstream's counter template (demos/counter) with the
+// lane's image and pool selector: one container serving port 80, a durable
+// directory at /home/counter, the limits every actor must declare, and
+// VOLUMES fidelity (see the counter constants). It names no storage
+// location, so its snapshots go under the control plane's own.
+func counterTemplate(atespace, name, image string, selector map[string]string) *ateapipb.ActorTemplate {
 	t := &ateapipb.ActorTemplate{
 		Metadata: &ateapipb.ResourceMetadata{Atespace: atespace, Name: name},
 		Containers: []*ateapipb.Container{{
@@ -482,26 +438,18 @@ func counterTemplate(atespace, name, image, class, config, storage string, selec
 			VolumeMounts: []*ateapipb.VolumeMount{{Name: "data", MountPath: counterDataMount}},
 		}},
 		Volumes: []*ateapipb.Volume{{Name: "data", DurableDir: &ateapipb.DurableDirVolumeSource{}}},
-		Resources: &ateapipb.Resources{Limits: []*ateapipb.Limits{
-			{Name: "cpu", Quantity: counterActorCPU},
-			{Name: "memory", Quantity: counterActorMemory},
+		Resources: &ateapipb.ResourceRequirements{Limits: &ateapipb.Resources{
+			CpuMillicores: counterActorMillicores,
+			MemoryBytes:   counterActorMemory,
 		}},
 		SnapshotConfig: &ateapipb.SnapshotConfig{
-			StorageLocation:   storage,
 			PreferredFidelity: ateapipb.SnapshotFidelity_SNAPSHOT_FIDELITY_VOLUMES,
 		},
-		SandboxConfig: &ateapipb.SandboxConfig{SandboxClass: class, ConfigName: config},
 	}
 	if len(selector) > 0 {
 		t.WorkerSelector = &ateapipb.Selector{MatchLabels: selector}
 	}
 	return t
-}
-
-// snapshotLocation is a prefix under the control plane's storage location
-// (the storage_location output, a bucket URI) that one lane owns.
-func snapshotLocation(storage, prefix string) string {
-	return strings.TrimSuffix(storage, "/") + "/" + prefix + "/"
 }
 
 // releaseImages reads the image index Planton publishes with the release the
@@ -573,22 +521,6 @@ func createTemplate(ctx context.Context, conn *substrateAPI, t *ateapipb.ActorTe
 	return err
 }
 
-// createTemplateOnceConfigSeen creates an actor template, waiting out the
-// moments after a SandboxConfig is created when the API server, which reads
-// configs from its own cache, does not know the config the template names
-// yet. Any other answer, a refusal for the config's class included, returns
-// at once.
-func createTemplateOnceConfigSeen(ctx context.Context, conn *substrateAPI, t *ateapipb.ActorTemplate) error {
-	deadline := time.Now().Add(2 * time.Minute)
-	for {
-		err := createTemplate(ctx, conn, t)
-		if status.Code(err) != codes.FailedPrecondition || !strings.HasSuffix(status.Convert(err).Message(), "not found") || time.Now().After(deadline) {
-			return err
-		}
-		time.Sleep(3 * time.Second)
-	}
-}
-
 // laneAtespace names a fresh atespace for one run of a lane.
 func laneAtespace(purpose string) string {
 	return fmt.Sprintf("e2e-ate-%s-%06x", purpose, rand.Uint32()&0xffffff)
@@ -607,7 +539,7 @@ func cleanUpLaneAtespace(ctx context.Context, conn *substrateAPI, atespace strin
 		if err != nil {
 			return err
 		}
-		_, err = conn.control.DeleteActor(c, &ateapipb.DeleteActorRequest{Actor: actor, AnyState: true})
+		_, err = conn.control.DeleteActor(c, &ateapipb.DeleteActorRequest{Actor: actor})
 		cancelCall()
 		if err != nil && status.Code(err) != codes.NotFound {
 			return errors.Wrapf(err, "deleting actor %s/%s", actor.GetAtespace(), actor.GetName())
@@ -776,54 +708,20 @@ func durableSnapshot(s *ateapipb.ActorStatus) *ateapipb.Snapshot {
 	return best
 }
 
-// callThroughRouter makes the request a product makes: an HTTP POST to the
-// router with `ate-target-actor: <atespace>/<actor>`, over a port-forward to
-// the Service the router_endpoint output names (upstream's own suite reaches
-// the router the same way). A freshly resumed actor can take a moment to
-// accept connections, so the call is retried briefly.
+// callThroughRouter makes the request a product makes, from inside the
+// cluster: the probe's router caller presents its pod certificate to the
+// router's TLS endpoint (the router_tls_endpoint output) with
+// `ate-target-actor: <atespace>/<actor>`. A freshly resumed actor can take a
+// moment to accept connections, so the call is retried briefly.
 func callThroughRouter(ctx context.Context, kubeconfig, router string, actor *ateapipb.ObjectRef) (string, error) {
-	u, err := url.Parse(router)
-	if err != nil || u.Hostname() == "" {
-		return "", errors.Errorf("the router_endpoint output %q is not a URL", router)
-	}
-	labels := strings.Split(u.Hostname(), ".")
-	if len(labels) < 2 {
-		return "", errors.Errorf("the router_endpoint output %q does not name a Service", router)
-	}
-	port := u.Port()
-	if port == "" {
-		port = "80"
-	}
-	localPort, err := freeLocalPort()
-	if err != nil {
-		return "", err
-	}
-	stop, err := startPortForward(ctx, kubeconfig, "svc/"+labels[0], labels[1], fmt.Sprintf("%d:%s", localPort, port))
-	if err != nil {
-		return "", errors.Wrap(err, "forwarding a local port to the router")
-	}
-	defer stop()
-
-	client := &http.Client{Timeout: 30 * time.Second}
 	deadline := time.Now().Add(1 * time.Minute)
 	var last error
 	for time.Now().Before(deadline) {
-		req, err := http.NewRequestWithContext(ctx, http.MethodPost, fmt.Sprintf("http://127.0.0.1:%d/", localPort), nil)
-		if err != nil {
-			return "", err
+		code, body, err := callRouter(ctx, kubeconfig, agentSubstrateRouterCaller, router, actor.GetAtespace()+"/"+actor.GetName())
+		if err == nil && code == http.StatusOK {
+			return body, nil
 		}
-		req.Header.Set(agentSubstrateHeader, actor.GetAtespace()+"/"+actor.GetName())
-		resp, err := client.Do(req)
-		if err == nil {
-			body, readErr := io.ReadAll(resp.Body)
-			_ = resp.Body.Close()
-			if readErr == nil && resp.StatusCode == http.StatusOK {
-				return string(body), nil
-			}
-			last = errors.Errorf("HTTP %d: %s", resp.StatusCode, firstLines(string(body), 3))
-		} else {
-			last = err
-		}
+		last = errors.Errorf("HTTP %d %v: %s", code, err, firstLines(body, 3))
 		time.Sleep(3 * time.Second)
 	}
 	return "", last

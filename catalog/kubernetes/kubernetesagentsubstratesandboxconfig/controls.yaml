@@ -47,7 +47,7 @@ spec:
       notes: "A config has no status; which config each worker pool runs, and whether it resolves, is on the pool's status (the Resolved condition per sandbox class)."
     - control_id: backup-recovery
       status: not_applicable
-      notes: "The config holds no state beyond its manifest; it recovers by re-applying it. The files of its default version must stay at their URLs: every boot and restore fetches them on a node that has not cached them."
+      notes: "The config holds no state beyond its manifest; it recovers by re-applying it. The files of its listed versions must stay at their URLs: a boot fetches the default's, and a restore the files of the version its snapshot was taken with, on a node that has not cached them."
     - control_id: backup-retention-policy
       status: not_applicable
       notes: "There is nothing to retain (see backup-recovery)."
@@ -59,11 +59,11 @@ spec:
       evidence:
         type: module_default
         reference: "Agent Substrate's controller puts the finalizer sandboxconfig.ate.dev/workerpool-protection on a config before any worker pool records it, and a delete waits until no pool runs the config."
-      notes: "A config named only by actor templates deletes at once, and those templates stop resolving; keep a config while templates still name it: their actors resolve it at every boot and resume."
+      notes: "Only a worker pool keeps a config: templates name none. Once no pool runs it, the delete goes through, and actors suspended on its versions resume from their files without their memory."
     - control_id: managed-patching
       status: configurable
       field_path: versions
       evidence:
         type: spec_default
-        reference: "A new runtime release is a new version and a move of default_version; every actor runs the new default from its next boot or resume on, the previous version stays listed for a one-field rollback, and a Disabled version can never be made the default."
+        reference: "A new runtime release is a new version and a move of default_version; every new actor boots the new default, the previous version stays listed for a one-field rollback and for the actors suspended on it to restore their memory, and a Disabled version can never be made the default."
       notes: "Nothing patches a pinned runtime on its own; roll gVisor or Kata releases forward through new versions."

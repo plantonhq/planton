@@ -2,15 +2,14 @@ package module
 
 import (
 	"encoding/json"
+	"strings"
 
 	"github.com/pkg/errors"
 )
 
-// releaseFileSet is every pinned file the composition reads, by path, plus
-// upstream's database setup script.
+// releaseFileSet is every release file the composition reads, by path.
 type releaseFileSet struct {
-	files    map[string]string
-	setupSQL string
+	files map[string]string
 }
 
 // composition is the document set the module applies besides the kept
@@ -23,13 +22,14 @@ type releaseFileSet struct {
 //     which every later component's certificates come from;
 //   - database: the shared OpenTelemetry ConfigMap every workload reads, and
 //     the bundled PostgreSQL with its setup script;
-//   - system: the API server, controller, node agent, router, egress
-//     gateway, credential provider and network policies;
+//   - system: the API server, identity server, controller, node agent,
+//     router, egress gateway, credential provider and network policies;
 //   - runtime: the default gVisor SandboxConfig, applied last so a destroy
 //     deletes it while the controller that clears its finalizer still runs.
 //
 // Every object is upstream's own with the typed settings applied, plus the
-// few the module adds (the database setup ConfigMap). The Terraform twin
+// ConfigMaps upstream's installer writes and the database setup ConfigMap
+// the module adds. The Terraform twin
 // builds the same groups in locals.tf; a gated parity test holds them equal.
 type composition struct {
 	namespaces    []document
@@ -51,7 +51,7 @@ func (c *composition) all() []document {
 	return out
 }
 
-// compose builds the document set from the pinned files.
+// compose builds the document set from the release's files.
 func compose(s *settings, f releaseFileSet) (*composition, error) {
 	parse := func(path string) ([]document, error) {
 		text, ok := f.files[path]
@@ -91,6 +91,7 @@ func compose(s *settings, f releaseFileSet) (*composition, error) {
 	c.prerequisites = append(c.prerequisites, roleDocs...)
 	c.prerequisites = append(c.prerequisites,
 		configMap(configMapAPIEnv, apiEnvConfigMap(s)),
+		configMap(configMapAPIConfig, map[string]string{"apiconfig.textproto": apiConfigText(s)}),
 		configMap(configMapAuthentication, map[string]string{"authentication.yaml": authenticationYAML(s)}),
 	)
 	if s.egress.provider == "kubernetes" {
@@ -150,7 +151,7 @@ func compose(s *settings, f releaseFileSet) (*composition, error) {
 		if err != nil {
 			return nil, err
 		}
-		setup := map[string]string{"setup.sql": f.setupSQL}
+		setup := map[string]string{"setup.sql": f.files[fileSetupSQL]}
 		c.database = append(c.database, configMap(vars.PostgresSetupConfigMap, setup))
 		configMaps[vars.PostgresSetupConfigMap] = setup
 		for _, d := range postgresDocs {
@@ -173,7 +174,7 @@ func compose(s *settings, f releaseFileSet) (*composition, error) {
 
 	// System phase.
 	var system []document
-	for _, path := range []string{fileAPIServer, fileController, fileNodeAgent, fileRouter, fileNetworkPolicies, fileEgress} {
+	for _, path := range []string{fileAPIServer, fileIdentityServer, fileController, fileNodeAgent, fileRouter, fileNetworkPolicies, fileEgress} {
 		docs, err := parse(path)
 		if err != nil {
 			return nil, err
@@ -221,8 +222,8 @@ func compose(s *settings, f releaseFileSet) (*composition, error) {
 		return nil, err
 	}
 
-	// Passes over every document: ownership, placement, images, rollout
-	// hashes, version stamps.
+	// Passes over every document: ownership, placement, preview gates,
+	// images, rollout hashes, version stamps.
 	if s.cordon {
 		cordon, err := parseKustomization(f.files[fileCordon])
 		if err != nil {
@@ -235,7 +236,9 @@ func compose(s *settings, f releaseFileSet) (*composition, error) {
 		}
 	}
 	apiEnv, apiSecret := apiEnvConfigMap(s), apiEnvSecret(s)
+	components := componentImages(c.images)
 	for _, d := range c.all() {
+		applyPreview(d, s.preview, components)
 		mirrorImages(d, s.registry)
 		if !isWorkload(d) {
 			continue
@@ -250,10 +253,46 @@ func compose(s *settings, f releaseFileSet) (*composition, error) {
 		}
 		if str(d, "metadata", "name") == vars.APIServerName {
 			child(annotations, "annotations")[vars.EnvHashAnnotation] = envHash(apiEnv, apiSecret)
-			child(child(d, "metadata"), "annotations")[vars.VersionAnnotation] = vars.Release
+			child(child(d, "metadata"), "annotations")[vars.VersionAnnotation] = s.version
 		}
 	}
 	return c, nil
+}
+
+// envoyImage is the release's Dockerfile-built Envoy dataplane, the one
+// image upstream does not build from its Go packages.
+const envoyImage = "envoy-dataplane"
+
+// componentImages are the release's images built from upstream's Go
+// packages: every one of them takes --preview.
+func componentImages(images map[string]string) map[string]bool {
+	out := map[string]bool{}
+	for name, image := range images {
+		if name != envoyImage {
+			out[image] = true
+		}
+	}
+	return out
+}
+
+// applyPreview turns the spec's preview gates on in every container that
+// runs one of upstream's components, as upstream's installer does
+// (injectPreviewArg); none leaves the binaries' default, off.
+func applyPreview(d document, gates []string, components map[string]bool) {
+	if len(gates) == 0 || !isWorkload(d) {
+		return
+	}
+	spec := podSpec(d)
+	for _, field := range []string{"initContainers", "containers"} {
+		items, _ := spec[field].([]interface{})
+		for _, item := range items {
+			if c, ok := item.(map[string]interface{}); ok {
+				if image, _ := c["image"].(string); components[image] {
+					applyFlags(c, []flag{{name: "preview", value: strings.Join(gates, ",")}})
+				}
+			}
+		}
+	}
 }
 
 // labelWith adds labels to an object (or to a metadata map directly).

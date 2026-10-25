@@ -4,7 +4,7 @@ metadata:
   name: kubernetesagentsubstrate
 spec:
   tier: 4
-  # The Agent Substrate v0.5.0 control plane from Planton's published build
+  # The Agent Substrate v0.6.0 control plane from Planton's published build
   # of upstream's own release, the resource definitions kept and
   # ownership-checked. Every lane proves what a product is promised, from
   # the kind's outputs alone: a service-account token minted for the output

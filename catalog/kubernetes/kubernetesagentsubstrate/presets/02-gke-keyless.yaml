@@ -4,8 +4,9 @@ metadata:
   name: agent-substrate
 spec:
   # GKE, keyless end to end: Cloud SQL with IAM login as the API server's
-  # Google service account, snapshots in a GCS bucket, both through Workload
-  # Identity. The cluster, the instance, the bucket and the two service
+  # Google service account, snapshots in a GCS bucket moved as a transfer
+  # service account the API server impersonates, all through Workload
+  # Identity. The cluster, the instance, the bucket and the three service
   # accounts are resources of their own, referenced by name.
   namespace:
     value: ate-system
@@ -21,6 +22,9 @@ spec:
       nodeAgentServiceAccount:
         valueFrom:
           name: atelet
+      snapshotTransferServiceAccount:
+        valueFrom:
+          name: ate-snapshot-transfer
   database:
     cloudSql:
       instanceConnectionName:
@@ -31,6 +35,13 @@ spec:
       bucket:
         valueFrom:
           name: agent-snapshots
+  apiServer:
+    authorization:
+      bootstrapOwners:
+        - system:serviceaccount:my-product:agent-orchestrator
+  router:
+    allowedClientSpiffeIds:
+      - spiffe://cluster.local/ns/my-product/sa/agent-orchestrator
   egress:
     credentialProvider:
       disabled: {}

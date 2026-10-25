@@ -9,7 +9,7 @@ One tenant's own worker pool: its own label (which only that tenant's actor temp
 
 ## How It Works
 
-The pool carries `tenant: acme`, so only actor templates with `worker_selector.match_labels: {tenant: acme}` run on it. Its workers select the tenant's nodes and tolerate their taint, so nothing else schedules there (taint the nodes `agents.example.com/tenant=acme:NoSchedule` and label them the same). The pool resolves the SandboxConfig it names and holds it from deletion, and the tenant's templates name the same config, which is the runtime their actors boot.
+The pool carries `tenant: acme`, so only actor templates with `worker_selector.match_labels: {tenant: acme}` run on it. Its workers select the tenant's nodes and tolerate their taint, so nothing else schedules there (taint the nodes `agents.example.com/tenant=acme:NoSchedule` and label them the same). The pool resolves the SandboxConfig it names and holds it from deletion, and it is the runtime the tenant's actors boot.
 
 ## Key Configuration Choices
 

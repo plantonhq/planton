@@ -9,15 +9,17 @@
 # spelled out per container: a flag upstream already passes keeps its
 # position and takes the new value; every other flag is appended in order.
 
-data "http" "release_file" {
-  for_each = local.release_files
-
-  url                = "${local.release_base_url}${local.release}/${each.value}"
+# A dropped connection, HTTP 429 or a 5xx is retried (honoring Retry-After),
+# as the Pulumi twin's fetchText does: a plan fetches every release file, so
+# a host limiting a burst of plans slows the deploy down. The three reads run
+# in the Go module's order, each depending on the one before: the seal, then
+# the image list and its install shape, then every other file, so a release
+# Planton never published, or one of another shape, is refused by name
+# before anything else is read.
+data "http" "checksums" {
+  url                = "${local.version_url}${local.checksums_file}"
   request_timeout_ms = 120000
 
-  # A dropped connection, HTTP 429 or a 5xx is retried (honoring
-  # Retry-After), as the Pulumi twin's fetchText does: a plan fetches every
-  # release file, so a host limiting a burst of plans slows the deploy down.
   retry {
     attempts     = 3
     min_delay_ms = 1000
@@ -27,14 +29,15 @@ data "http" "release_file" {
   lifecycle {
     postcondition {
       condition     = self.status_code == 200
-      error_message = self.status_code == 429 ? "observed: ${self.url} answered HTTP 429 on every attempt\nmeaning: the host is limiting how often this address may download; a burst of plans from one address can reach the limit\nnext step: wait a minute and re-run" : self.status_code >= 500 ? "observed: ${self.url} answered HTTP ${self.status_code} on every attempt\nmeaning: the host is failing, not the pin\nnext step: re-run once it answers 200 (curl -I ${self.url})" : "observed: ${self.url} answered HTTP ${self.status_code}\nmeaning: Agent Substrate ${local.release} is not served at the address this module pins\nnext step: confirm what is published (curl -I ${self.url}); if the release was moved or withdrawn, the module's pin needs a catalog fix"
+      error_message = self.status_code == 429 ? "observed: ${self.url} answered HTTP 429 on every attempt\nmeaning: the host is limiting how often this address may download; a burst of plans from one address can reach the limit\nnext step: wait a minute and re-run" : self.status_code >= 500 ? "observed: ${self.url} answered HTTP ${self.status_code} on every attempt\nmeaning: the host is failing, not the release\nnext step: re-run once it answers 200 (`curl -I ${self.url}`)" : "observed: ${self.url} answered HTTP ${self.status_code}\nmeaning: Planton has not published Agent Substrate ${local.version}: every published release carries SHA256SUMS, uploaded last\nnext step: set spec.version to a release Planton publishes (its ${local.release_base_url}<version>/${local.checksums_file} answers 200), or leave it empty for ${local.release}"
     }
   }
 }
 
-data "http" "setup_sql" {
-  url                = local.setup_sql_url
+data "http" "images" {
+  url                = "${local.version_url}${local.images_file}"
   request_timeout_ms = 120000
+  depends_on         = [data.http.checksums]
 
   retry {
     attempts     = 3
@@ -45,8 +48,49 @@ data "http" "setup_sql" {
   lifecycle {
     postcondition {
       condition     = self.status_code == 200
-      error_message = "observed: ${self.url} answered HTTP ${self.status_code}\nmeaning: Agent Substrate ${local.release}'s database setup script is not served at the address this module pins, or the host is failing\nnext step: confirm what upstream publishes (curl -I ${self.url}); if the tag was moved, the module's pin needs a catalog fix"
+      error_message = self.status_code == 429 ? "observed: ${self.url} answered HTTP 429 on every attempt\nmeaning: the host is limiting how often this address may download; a burst of plans from one address can reach the limit\nnext step: wait a minute and re-run" : self.status_code >= 500 ? "observed: ${self.url} answered HTTP ${self.status_code} on every attempt\nmeaning: the host is failing, not the release\nnext step: re-run once it answers 200 (`curl -I ${self.url}`)" : "observed: ${self.url} answered HTTP ${self.status_code}\nmeaning: Agent Substrate ${local.version} is published without ${local.images_file}, which every release of its install shape carries\nnext step: report it to Planton; a published release never changes, so re-running will not help"
     }
+    postcondition {
+      condition     = sha256(self.response_body) == try(local.seal[local.images_file], "")
+      error_message = "observed: ${self.url} does not match the release's SHA256SUMS\nmeaning: the download was altered on its way, or the file changed after the release was sealed\nnext step: re-run; if it repeats, report it to Planton"
+    }
+    postcondition {
+      condition     = coalesce(try(jsondecode(self.response_body).shape, ""), local.version) == local.release
+      error_message = "observed: Agent Substrate ${local.version} has the install shape of ${coalesce(try(jsondecode(self.response_body).shape, ""), local.version)}, and this ${local.kind_name} composes ${local.release}'s\nmeaning: ${local.version} installs differently from what this Planton catalog release knows how to compose, so nothing was applied\nnext step: set spec.version to ${local.release} or a release of its shape, or deploy this resource from a Planton catalog release that composes ${coalesce(try(jsondecode(self.response_body).shape, ""), local.version)}'s shape"
+    }
+  }
+}
+
+data "http" "release_file" {
+  for_each = local.release_files
+
+  url                = "${local.version_url}${each.value}"
+  request_timeout_ms = 120000
+  depends_on         = [data.http.images]
+
+  retry {
+    attempts     = 3
+    min_delay_ms = 1000
+    max_delay_ms = 8000
+  }
+
+  lifecycle {
+    postcondition {
+      condition     = self.status_code == 200
+      error_message = self.status_code == 429 ? "observed: ${self.url} answered HTTP 429 on every attempt\nmeaning: the host is limiting how often this address may download; a burst of plans from one address can reach the limit\nnext step: wait a minute and re-run" : self.status_code >= 500 ? "observed: ${self.url} answered HTTP ${self.status_code} on every attempt\nmeaning: the host is failing, not the release\nnext step: re-run once it answers 200 (`curl -I ${self.url}`)" : "observed: ${self.url} answered HTTP ${self.status_code}\nmeaning: Agent Substrate ${local.version} is published without ${each.value}, which every release of its install shape carries\nnext step: report it to Planton; a published release never changes, so re-running will not help"
+    }
+    postcondition {
+      condition     = sha256(self.response_body) == try(local.seal[each.value], "")
+      error_message = "observed: ${self.url} does not match the release's SHA256SUMS\nmeaning: the download was altered on its way, or the file changed after the release was sealed\nnext step: re-run; if it repeats, report it to Planton"
+    }
+  }
+}
+
+locals {
+  # The release's seal: path -> SHA-256, from SHA256SUMS (parseChecksums).
+  seal = {
+    for line in split("\n", data.http.checksums.response_body) : split("  ", line)[1] => split("  ", line)[0]
+    if length(split("  ", line)) == 2
   }
 }
 
@@ -78,9 +122,9 @@ locals {
     for role, path in local.release_files : role => [
       for doc in split("\n---", "\n${local.decoded_bodies[role]}") : yamldecode("${doc}\n")
       if trimspace(doc) != "" && can(yamldecode("${doc}\n").kind)
-    ] if role != "images"
+    ] if role != "setup_sql"
   }
-  images = jsondecode(data.http.release_file["images"].response_body).images
+  images = jsondecode(data.http.images.response_body).images
 
   # ---- the pod-certificate controller ------------------------------------------
   podcert_upstream  = one([for d in local.documents_by_file.pod_certificates : d if d.kind == "Deployment" && d.metadata.name == local.pod_certificates_name])
@@ -113,6 +157,7 @@ locals {
   # ---- resources, per component (setResources) --------------------------------
   resource_sources = {
     api_server = local.api.resources
+    identity   = local.identity.resources
     controller = local.controller.resources
     node_agent = local.node_agent.resources
     router     = local.router.resources
@@ -142,7 +187,7 @@ locals {
   postgres_doc = merge(local.postgres_upstream, {
     spec = merge(local.postgres_upstream.spec, {
       volumeClaimTemplates = [for claim in local.postgres_upstream.spec.volumeClaimTemplates : merge(claim, { for k, v in {
-        metadata = merge(try(claim.metadata, {}), { labels = merge(try(claim.metadata.labels, {}), { (local.minor_label) = join(".", slice(split(".", trimprefix(local.release, "v")), 0, 2)) }) })
+        metadata = merge(try(claim.metadata, {}), { labels = merge(try(claim.metadata.labels, {}), { (local.minor_label) = join(".", slice(split(".", trimprefix(local.version, "v")), 0, 2)) }) })
         spec = merge(try(claim.spec, {}),
           { for k2, v2 in { storageClassName = local.db.storage_class } : k2 => v2 if local.db.storage_class != "" },
           { resources = merge(try(claim.spec.resources, {}), { requests = merge(try(claim.spec.resources.requests, {}), { storage = local.db.volume_size }) }) },
@@ -192,6 +237,28 @@ locals {
           initContainers = [for c in local.api_upstream.spec.template.spec.initContainers : merge(c, { for k, v in {
             env = concat([for e in try(c.env, []) : e if !contains(local.storage_env_names, e.name)], local.storage_env)
           } : k => v if c.name == "objectstore-plugin" })]
+        })
+      })
+    })
+  })
+
+  # ---- the identity server (patchIdentityServer) -------------------------------
+  identity_upstream    = one([for d in local.documents_by_file.identity_server : d if d.kind == "Deployment" && d.metadata.name == local.identity_server_name])
+  identity_container   = one([for c in local.identity_upstream.spec.template.spec.containers : c if c.name == local.identity_server_name])
+  identity_flag_values = { for f in local.identity_flags : f.name => f.value }
+  identity_args = concat(
+    [for a in local.identity_container.args : substr(a, 0, 2) == "--" && contains(keys(local.identity_flag_values), trimprefix(split("=", a)[0], "--")) ? "--${trimprefix(split("=", a)[0], "--")}=${local.identity_flag_values[trimprefix(split("=", a)[0], "--")]}" : a],
+    [for f in local.identity_flags : "--${f.name}=${f.value}" if !contains([for a in local.identity_container.args : trimprefix(split("=", a)[0], "--") if substr(a, 0, 2) == "--"], f.name)],
+  )
+  identity_doc = merge(local.identity_upstream, {
+    spec = merge(local.identity_upstream.spec, {
+      replicas = local.identity.replicas
+      template = merge(local.identity_upstream.spec.template, {
+        spec = merge(local.identity_upstream.spec.template.spec, {
+          containers = [for c in local.identity_upstream.spec.template.spec.containers : merge(c, { for k, v in merge(
+            { args = local.identity_args },
+            { for k2, v2 in { resources = local.res.identity } : k2 => v2 if length(local.res.identity) > 0 },
+          ) : k => v if c.name == local.identity_server_name })]
         })
       })
     })
@@ -363,15 +430,18 @@ locals {
   # of the volumes collapses the added one into upstream's volume of the same
   # name, which the router already declares), [3] egress:
   # replace container 0, rename volume 0's ConfigMap, remove container 1, add
-  # a volume, [4] the router Service's stats port. components/agentgateway-
-  # egress: [0] drop the minter and the Envoy pod identity, [1] the egress
-  # configuration, [2] mount the egress interception CA.
+  # a volume, [4] the router Service's stats port and its plaintext http and
+  # connect ports, [5] the router NetworkPolicy's first ingress rule admits
+  # those plaintext ports. components/agentgateway-egress: [0] drop the minter
+  # and the Envoy pod identity, [1] the egress configuration, [2] mount the
+  # egress interception CA.
   agw             = local.documents_by_file.agentgateway[0].patches
   agw_egress      = local.documents_by_file.agentgateway_egress[0].patches
   agw_router_ops  = yamldecode(local.agw[1].patch)
   agw_router_smp  = yamldecode(local.agw[2].patch).spec.template
   agw_egress_ops  = yamldecode(local.agw[3].patch)
   agw_service_ops = yamldecode(local.agw[4].patch)
+  agw_policy_ops  = yamldecode(local.agw[5].patch)
   agw_egress_smp  = yamldecode(local.agw_egress[0].patch).spec.template.spec
   agw_egress_cfg  = yamldecode(local.agw_egress[1].patch).data
   agw_egress_ops2 = yamldecode(local.agw_egress[2].patch)
@@ -398,7 +468,15 @@ locals {
   })
   router_service_upstream = one([for d in local.documents_by_file.router : d if d.kind == "Service" && d.metadata.name == local.router_name])
   router_service_agw_doc = merge(local.router_service_upstream, {
-    spec = merge(local.router_service_upstream.spec, { ports = concat(local.router_service_upstream.spec.ports, [local.agw_service_ops[0].value]) })
+    spec = merge(local.router_service_upstream.spec, { ports = concat(local.router_service_upstream.spec.ports, [for op in local.agw_service_ops : op.value]) })
+  })
+  router_policy_upstream = one([for d in local.documents_by_file.network_policies : d if d.kind == "NetworkPolicy" && d.metadata.name == local.router_name])
+  router_policy_agw_doc = merge(local.router_policy_upstream, {
+    spec = merge(local.router_policy_upstream.spec, {
+      ingress = [for i, rule in local.router_policy_upstream.spec.ingress : merge(rule, { for k, v in {
+        ports = concat(try(rule.ports, []), [for op in local.agw_policy_ops : op.value])
+      } : k => v if i == 0 })]
+    })
   })
 
   egress_agw_spec = local.egress_upstream.spec.template.spec
@@ -473,6 +551,7 @@ locals {
     for name, data in merge(
       {
         "ate-api-server-envvars" = local.api_env_config_map
+        "ate-api-config"         = { "apiconfig.textproto" = local.api_config_text }
         "ate-api-authentication" = { "authentication.yaml" = local.authentication_yaml }
       },
       local.egress.provider == "kubernetes" ? { "k8s-credential-provider-namespace-policy" = { "namespace-policy.yaml" = local.policy_yaml } } : {},
@@ -490,7 +569,7 @@ locals {
   database_docs_raw = merge(
     { for i, d in local.documents_by_file.otel_config : local.id_of.otel_config[i] => merge(d, { data = local.otel_data }) },
     { for id, d in merge(
-      { "v1//ConfigMap//${local.postgres_setup_config_map}//${local.namespace}" = { apiVersion = "v1", kind = "ConfigMap", metadata = { name = local.postgres_setup_config_map, namespace = local.namespace }, data = { "setup.sql" = data.http.setup_sql.response_body } } },
+      { "v1//ConfigMap//${local.postgres_setup_config_map}//${local.namespace}" = { apiVersion = "v1", kind = "ConfigMap", metadata = { name = local.postgres_setup_config_map, namespace = local.namespace }, data = { "setup.sql" = local.release_bodies["setup_sql"] } } },
       { for i, d in local.documents_by_file.postgres : local.id_of.postgres[i] => d if !(d.kind == "StatefulSet" && d.metadata.name == local.postgres_name) && !(d.kind == "ConfigMap" && d.metadata.name == "postgres-config") },
       { "v1//ConfigMap//postgres-config//${local.namespace}" = merge(local.postgres_config_upstream, { data = local.postgres_config_data }) },
       { "apps/v1//StatefulSet//${local.postgres_name}//${local.namespace}" = local.postgres_doc },
@@ -500,7 +579,7 @@ locals {
   # Upstream's system files, minus the namespace ate-controller.yaml repeats,
   # with the patched objects swapped in by identity.
   system_roles = concat(
-    ["api_server", "controller", "node_agent", "router", "network_policies", "egress"],
+    ["api_server", "identity_server", "controller", "node_agent", "router", "network_policies", "egress"],
     local.gke ? ["router_monitoring"] : [],
     local.egress.provider == "kubernetes" ? ["credential_provider"] : [],
   )
@@ -522,6 +601,7 @@ locals {
       }) if d.kind == "ServiceAccount" && try(local.sa_annotations[d.metadata.name], "") != ""
     },
     { "apps/v1//Deployment//${local.api_server_name}//${local.namespace}" = local.api_doc_final },
+    { "apps/v1//Deployment//${local.identity_server_name}//${local.namespace}" = local.identity_doc },
     { "apps/v1//Deployment//${local.controller_name}//${local.namespace}" = local.controller_doc },
     { "apps/v1//DaemonSet//${local.node_agent_name}//${local.namespace}" = local.node_doc },
     { for id, d in {
@@ -529,9 +609,10 @@ locals {
       "apps/v1//Deployment//${local.egress_name}//${local.namespace}" = local.egress_envoy_doc
     } : id => d if !local.router.agentgateway },
     { for id, d in {
-      "apps/v1//Deployment//${local.router_name}//${local.namespace}" = local.router_agw_doc
-      "v1//Service//${local.router_name}//${local.namespace}"         = local.router_service_agw_doc
-      "apps/v1//Deployment//${local.egress_name}//${local.namespace}" = local.egress_agw_doc
+      "apps/v1//Deployment//${local.router_name}//${local.namespace}"                 = local.router_agw_doc
+      "v1//Service//${local.router_name}//${local.namespace}"                         = local.router_service_agw_doc
+      "apps/v1//Deployment//${local.egress_name}//${local.namespace}"                 = local.egress_agw_doc
+      "networking.k8s.io/v1//NetworkPolicy//${local.router_name}//${local.namespace}" = local.router_policy_agw_doc
     } : id => d if local.router.agentgateway },
     { "v1//ConfigMap//${local.egress_name}//${local.namespace}" = local.egress_config_doc },
     { for name, d in local.agw_config_docs : "v1//ConfigMap//${name}//${local.namespace}" => d if local.router.agentgateway },
@@ -556,9 +637,14 @@ locals {
     [for d in values(merge(local.prerequisite_docs_raw, local.database_docs_raw, local.system_docs_raw)) : [
       for c in concat(try(d.spec.template.spec.initContainers, []), try(d.spec.template.spec.containers, [])) : try(c.image, "")
     ] if contains(local.workload_kinds, d.kind)],
-    [for d in values(local.runtime_docs_raw) : [for v in try(d.spec.versions, []) : try(v.pauseImage, "")]],
     values(local.images),
   ))))
+
+  # The preview gates (applyPreview): every container that runs one of
+  # upstream's components, the release's images bar the Envoy dataplane,
+  # takes them; none leaves the binaries' default.
+  component_images = [for name, image in local.images : image if name != "envoy-dataplane"]
+  preview_args     = length(local.preview) > 0 ? ["--preview=${join(",", local.preview)}"] : []
   mirrored = {
     for image in local.all_images : image => local.registry == "" ? image : "${local.registry}/${(
       length(split("/", image)) == 1 ? "library/${image}" :
@@ -570,12 +656,8 @@ locals {
   prerequisite_docs = local.processed.prerequisites
   database_docs     = local.processed.database
   system_docs       = local.processed.system
-  runtime_docs = {
-    for id, d in local.runtime_docs_raw : id => merge(d, { spec = merge(d.spec, {
-      versions = [for v in d.spec.versions : merge(v, { for k, pause in { pauseImage = try(local.mirrored[v.pauseImage], "") } : k => pause if try(v.pauseImage, "") != "" })]
-    }) })
-  }
-  namespace_docs = local.namespace_docs_raw
+  runtime_docs      = local.runtime_docs_raw
+  namespace_docs    = local.namespace_docs_raw
 
   processed = {
     for phase, docs in {
@@ -588,7 +670,7 @@ locals {
         for id, d in docs : id => merge(d, {
           metadata = merge(d.metadata,
             { labels = merge(try(d.metadata.labels, {}), { (local.owner_label) = local.kind_name }) },
-            { for k, v in { annotations = merge(try(d.metadata.annotations, {}), { (local.version_annotation) = local.release }) } : k => v if d.metadata.name == local.api_server_name },
+            { for k, v in { annotations = merge(try(d.metadata.annotations, {}), { (local.version_annotation) = local.version }) } : k => v if d.metadata.name == local.api_server_name },
           )
           spec = merge(d.spec, {
             template = merge(d.spec.template, {
@@ -608,9 +690,15 @@ locals {
               )
               spec = merge(d.spec.template.spec,
                 {
-                  containers = [for c in d.spec.template.spec.containers : merge(c, { image = local.mirrored[c.image] })]
+                  containers = [for c in d.spec.template.spec.containers : merge(c,
+                    { for k, v in { args = concat(try(c.args, []), local.preview_args) } : k => v if length(local.preview_args) > 0 && contains(local.component_images, c.image) },
+                    { image = local.mirrored[c.image] },
+                  )]
                 },
-                { for k, v in { initContainers = [for c in try(d.spec.template.spec.initContainers, []) : merge(c, { image = local.mirrored[c.image] })] } : k => v if length(try(d.spec.template.spec.initContainers, [])) > 0 },
+                { for k, v in { initContainers = [for c in try(d.spec.template.spec.initContainers, []) : merge(c,
+                  { for k2, v2 in { args = concat(try(c.args, []), local.preview_args) } : k2 => v2 if length(local.preview_args) > 0 && contains(local.component_images, c.image) },
+                  { image = local.mirrored[c.image] },
+                )] } : k => v if length(try(d.spec.template.spec.initContainers, [])) > 0 },
                 { for k, v in { imagePullSecrets = local.pull_secrets } : k => v if length(local.pull_secrets) > 0 },
                 { for k, v in {
                   nodeSelector              = merge(try(d.spec.template.spec.nodeSelector, {}), local.cordon_deploy.spec.nodeSelector)

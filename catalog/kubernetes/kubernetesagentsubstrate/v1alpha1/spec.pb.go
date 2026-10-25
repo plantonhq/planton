@@ -271,7 +271,7 @@ func (x KubernetesAgentSubstrateRouter_Dataplane) Number() protoreflect.EnumNumb
 
 // Deprecated: Use KubernetesAgentSubstrateRouter_Dataplane.Descriptor instead.
 func (KubernetesAgentSubstrateRouter_Dataplane) EnumDescriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{21, 0}
+	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{25, 0}
 }
 
 // *
@@ -289,6 +289,8 @@ func (KubernetesAgentSubstrateRouter_Dataplane) EnumDescriptor() ([]byte, []int)
 //     worker pods and registers them with the API server;
 //   - the node agent (`atelet`, a DaemonSet), which runs actors on worker
 //     nodes and moves their snapshots to and from object storage (`storage`);
+//   - the identity server (`ate-idp-server`), which publishes the keys actor
+//     JWTs are verified with at the actor-JWT issuer;
 //   - the ingress router (`atenet-router`), the data path a request reaches an
 //     actor by, and the egress gateway (`atenet-egress`), which enforces each
 //     actor's egress policy and can inject credentials into its outbound calls;
@@ -313,16 +315,22 @@ func (KubernetesAgentSubstrateRouter_Dataplane) EnumDescriptor() ([]byte, []int)
 // Upstream supports GKE and kind.
 //
 // DISTRIBUTION AND VERSION: Agent Substrate publishes no images and no
-// installable release, so Planton publishes both: upstream's v0.5.0 built by
-// upstream's own publisher, every image digest-pinned, at
-// https://downloads.planton.ai/releases/agent-substrate/v0.5.0/. The modules
-// compose that tree the way upstream's installer does and apply the typed
-// settings below onto it. There is NO version field: the catalog's Substrate
-// resource kinds mirror these resource definitions field for field, and each
-// Substrate release is a deliberate catalog update. Before 1.0 every minor
-// release is a reinstall upstream (its database schema migrates irreversibly),
-// so the kind refuses an apply over an older minor's installation or database,
-// and says how to move across.
+// installable release, so Planton publishes both: each upstream release built
+// by upstream's own publisher, every image digest-pinned, at
+// https://downloads.planton.ai/releases/agent-substrate/<version>/. The
+// modules compose that tree the way upstream's installer does and apply the
+// typed settings below onto it. They compose one install shape, v0.6.0's,
+// and `version` picks any release Planton publishes with that shape: a
+// release whose install differs from it only in its images, which Planton
+// proves before it publishes one. So a new upstream patch reaches this kind
+// by setting `version`, with no catalog update; a release with another shape
+// is refused at plan time, before anything is applied, and arrives with the
+// catalog update that composes it. The resource definitions belong to the
+// shape, so the catalog's Substrate resource kinds mirror them field for
+// field. Before 1.0 every minor release is a reinstall upstream (its database
+// schema migrates irreversibly), so the kind refuses an apply over an older
+// minor's installation or database, and says how to move across; patch
+// releases of one minor move in place, either way.
 //
 // GENERATED SECRETS: the certificate authorities behind every component's
 // mTLS, the actor-identity CA, the egress interception CA and the actor token
@@ -418,9 +426,9 @@ type KubernetesAgentSubstrateSpec struct {
 	CordonControlPlane bool `protobuf:"varint,15,opt,name=cordon_control_plane,json=cordonControlPlane,proto3" json:"cordon_control_plane,omitempty"`
 	// *
 	// Registry that replaces the registry part of every image the install runs
-	// (Planton's Substrate images on ghcr.io, Envoy and PostgreSQL on Docker
-	// Hub, the pause image on registry.k8s.io, the Cloud SQL proxy on gcr.io,
-	// agentgateway on cr.agentgateway.dev): the air-gap and private-mirror path.
+	// (Planton's Substrate images on ghcr.io, Envoy's among them, PostgreSQL on
+	// Docker Hub, the Cloud SQL proxy on gcr.io, agentgateway on
+	// cr.agentgateway.dev): the air-gap and private-mirror path.
 	// Each image keeps its path, tag and digest, so a mirror must copy images
 	// byte for byte. "us-central1-docker.pkg.dev" pulls Planton's own mirror of
 	// the Substrate images. Docker Hub names without a registry are read the
@@ -432,8 +440,29 @@ type KubernetesAgentSubstrateSpec struct {
 	// Names of image-pull Secrets in `ate-system` for pulling the control
 	// plane's images from a private registry.
 	ImagePullSecrets []string `protobuf:"bytes,17,rep,name=image_pull_secrets,json=imagePullSecrets,proto3" json:"image_pull_secrets,omitempty"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	// *
+	// The Agent Substrate release to install, from those Planton publishes with
+	// this kind's install shape (v0.6.0's): v0.6.0, or a later release whose
+	// install differs from it only in its images. A release Planton has not
+	// published, or one with another shape, is refused before anything is
+	// applied. A patch release of the installed minor moves in place, up or
+	// down; another minor is a reinstall, refused over an existing
+	// installation. Redeploy worker pools after a move, so their workers run
+	// the new release's worker image.
+	Version *string `protobuf:"bytes,18,opt,name=version,proto3,oneof" json:"version,omitempty"`
+	// *
+	// Preview features to turn on in every component: each named gate, or
+	// "ALL". A preview is upstream's not-yet-stable behaviour (external volumes
+	// for actors, golden egress policies on actor templates, a snapshot
+	// location per actor template), and its API can change in a later release.
+	// Empty = none.
+	PreviewGates []string `protobuf:"bytes,19,rep,name=preview_gates,json=previewGates,proto3" json:"preview_gates,omitempty"`
+	// *
+	// The identity server (`ate-idp-server`), which publishes the keys actor
+	// JWTs are verified with.
+	IdentityServer *KubernetesAgentSubstrateIdentityServer `protobuf:"bytes,20,opt,name=identity_server,json=identityServer,proto3" json:"identity_server,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *KubernetesAgentSubstrateSpec) Reset() {
@@ -581,6 +610,27 @@ func (x *KubernetesAgentSubstrateSpec) GetImageRegistry() string {
 func (x *KubernetesAgentSubstrateSpec) GetImagePullSecrets() []string {
 	if x != nil {
 		return x.ImagePullSecrets
+	}
+	return nil
+}
+
+func (x *KubernetesAgentSubstrateSpec) GetVersion() string {
+	if x != nil && x.Version != nil {
+		return *x.Version
+	}
+	return ""
+}
+
+func (x *KubernetesAgentSubstrateSpec) GetPreviewGates() []string {
+	if x != nil {
+		return x.PreviewGates
+	}
+	return nil
+}
+
+func (x *KubernetesAgentSubstrateSpec) GetIdentityServer() *KubernetesAgentSubstrateIdentityServer {
+	if x != nil {
+		return x.IdentityServer
 	}
 	return nil
 }
@@ -746,7 +796,10 @@ func (*KubernetesAgentSubstratePlatform_Generic) isKubernetesAgentSubstratePlatf
 // GKE. The GKE-only pieces stay: the router's Managed Service for Prometheus
 // PodMonitoring, and the node agent's mount of GKE's image credential
 // provider, which lets actors pull private Artifact Registry images with the
-// node's identity.
+// node's identity. With GCS storage, every snapshot moves as one Google
+// service account (snapshot_transfer_service_account) that the API server
+// impersonates, handing each node agent a token scoped to the one actor it
+// moves; no node holds a grant on the snapshot bucket.
 type KubernetesAgentSubstrateGke struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
@@ -758,22 +811,34 @@ type KubernetesAgentSubstrateGke struct {
 	// *
 	// The Google service account the API server acts as through Workload
 	// Identity (the `iam.gke.io/gcp-service-account` annotation on its
-	// Kubernetes service account). It needs storage.objectAdmin and
-	// storage.bucketViewer on the snapshot bucket, and with Cloud SQL
-	// roles/cloudsql.client and roles/cloudsql.instanceUser, and the database
-	// user named after it. Empty = no annotation: grant those roles to the
-	// Kubernetes service account's own Workload Identity principal instead.
+	// Kubernetes service account). With GCS storage it needs
+	// storage.objectAdmin and storage.bucketViewer on the snapshot bucket, and
+	// roles/iam.serviceAccountTokenCreator on the snapshot transfer service
+	// account; with Cloud SQL, roles/cloudsql.client and
+	// roles/cloudsql.instanceUser, and the database user named after it. Empty
+	// = no annotation: grant those roles to the Kubernetes service account's
+	// own Workload Identity principal instead.
 	ApiServerServiceAccount *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=api_server_service_account,json=apiServerServiceAccount,proto3" json:"api_server_service_account,omitempty"`
 	// *
 	// The Google service account the node agent acts as through Workload
-	// Identity. It moves every actor snapshot, so it needs storage.objectAdmin
-	// and storage.bucketViewer on the snapshot bucket, and, for actors that pull
-	// private images, artifactregistry.reader. Empty = no annotation: grant
-	// those roles to the Kubernetes service account's own Workload Identity
-	// principal instead.
+	// Identity. It holds no grant on the snapshot bucket: each snapshot moves
+	// with a token the API server mints for that one actor. For actors that
+	// pull private images it needs artifactregistry.reader, and for microVM
+	// workers storage.objectViewer on the asset bucket that holds their guest
+	// kernels and images ("<snapshot-bucket>-assets", by upstream's
+	// convention). Empty = no annotation: grant those roles to the Kubernetes
+	// service account's own Workload Identity principal instead.
 	NodeAgentServiceAccount *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=node_agent_service_account,json=nodeAgentServiceAccount,proto3" json:"node_agent_service_account,omitempty"`
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
+	// *
+	// The Google service account every GCS snapshot transfer runs as. The API
+	// server impersonates it and hands each node agent a token narrowed to the
+	// one actor's snapshots, so a node can never reach another actor's. It
+	// needs storage.objectAdmin and storage.bucketViewer on the snapshot
+	// bucket, and the API server's service account needs
+	// roles/iam.serviceAccountTokenCreator on it. Required with GCS storage.
+	SnapshotTransferServiceAccount *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=snapshot_transfer_service_account,json=snapshotTransferServiceAccount,proto3" json:"snapshot_transfer_service_account,omitempty"`
+	unknownFields                  protoimpl.UnknownFields
+	sizeCache                      protoimpl.SizeCache
 }
 
 func (x *KubernetesAgentSubstrateGke) Reset() {
@@ -823,6 +888,13 @@ func (x *KubernetesAgentSubstrateGke) GetApiServerServiceAccount() *v1.StringVal
 func (x *KubernetesAgentSubstrateGke) GetNodeAgentServiceAccount() *v1.StringValueOrRef {
 	if x != nil {
 		return x.NodeAgentServiceAccount
+	}
+	return nil
+}
+
+func (x *KubernetesAgentSubstrateGke) GetSnapshotTransferServiceAccount() *v1.StringValueOrRef {
+	if x != nil {
+		return x.SnapshotTransferServiceAccount
 	}
 	return nil
 }
@@ -1409,9 +1481,14 @@ type KubernetesAgentSubstrateStorage struct {
 	//
 	//	*KubernetesAgentSubstrateStorage_Gcs
 	//	*KubernetesAgentSubstrateStorage_S3
-	Kind          isKubernetesAgentSubstrateStorage_Kind `protobuf_oneof:"kind"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	Kind isKubernetesAgentSubstrateStorage_Kind `protobuf_oneof:"kind"`
+	// *
+	// The path in the bucket every actor snapshot is stored under, such as
+	// "substrate/prod", for a bucket shared with other data or installations.
+	// Empty = the bucket's root.
+	SnapshotPrefix string `protobuf:"bytes,3,opt,name=snapshot_prefix,json=snapshotPrefix,proto3" json:"snapshot_prefix,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *KubernetesAgentSubstrateStorage) Reset() {
@@ -1467,6 +1544,13 @@ func (x *KubernetesAgentSubstrateStorage) GetS3() *KubernetesAgentSubstrateS3Sto
 		}
 	}
 	return nil
+}
+
+func (x *KubernetesAgentSubstrateStorage) GetSnapshotPrefix() string {
+	if x != nil {
+		return x.SnapshotPrefix
+	}
+	return ""
 }
 
 type isKubernetesAgentSubstrateStorage_Kind interface {
@@ -1715,13 +1799,15 @@ type KubernetesAgentSubstrateApiServer struct {
 	// manifest sets none).
 	Resources *kubernetes.ContainerResources `protobuf:"bytes,2,opt,name=resources,proto3" json:"resources,omitempty"`
 	// *
-	// Minimum log level.
+	// Minimum log level. The API server reads it from its configuration file
+	// as it changes, so a new level applies without a restart.
 	LogLevel LogLevel `protobuf:"varint,3,opt,name=log_level,json=logLevel,proto3,enum=dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.LogLevel" json:"log_level,omitempty"`
 	// *
-	// Authorization of API calls. Absent = upstream's default: none, so every
-	// authenticated caller (any service-account token for the API's audience
-	// from a namespace labelled ate.dev/api-access=true) has full control of
-	// every atespace.
+	// Authorization of API calls, always enforced: a caller reaches an atespace
+	// only through an access policy, and the bootstrap owners hold every
+	// permission. Absent = upstream's bootstrap owner,
+	// "system:serviceaccount:ate-system:ate-client", which only someone who
+	// can create that service account in ate-system can act as.
 	Authorization *KubernetesAgentSubstrateAuthorization `protobuf:"bytes,4,opt,name=authorization,proto3" json:"authorization,omitempty"`
 	// *
 	// The JWTs the API server mints for actors (presented by an actor, or
@@ -1830,20 +1916,19 @@ func (x *KubernetesAgentSubstrateApiServer) GetTemplateResyncInterval() string {
 }
 
 // *
-// OpenFGA authorization of every API call (upstream marks it experimental).
+// OpenFGA authorization of every API call.
 type KubernetesAgentSubstrateAuthorization struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
-	// Enforce authorization checks on every API call.
-	Enabled *bool `protobuf:"varint,1,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
-	// *
 	// Principal IDs that are always global owners while listed, whatever the
 	// stored global access policy says; removing one revokes it at the next
-	// restart. The way the first owner gets in. A service account calling with
-	// a token is "system:serviceaccount:<namespace>:<name>" (the token's
-	// subject); one calling with its pod certificate is
-	// "spiffe://cluster.local/ns/<namespace>/sa/<name>".
-	BootstrapOwners []string `protobuf:"bytes,2,rep,name=bootstrap_owners,json=bootstrapOwners,proto3" json:"bootstrap_owners,omitempty"`
+	// restart. The way the first owner gets in: name the service account your
+	// product calls the API as. A service account calling with a token is
+	// "system:serviceaccount:<namespace>:<name>" (the token's subject); one
+	// calling with its pod certificate is
+	// "spiffe://cluster.local/ns/<namespace>/sa/<name>". Empty = upstream's
+	// "system:serviceaccount:ate-system:ate-client".
+	BootstrapOwners []string `protobuf:"bytes,1,rep,name=bootstrap_owners,json=bootstrapOwners,proto3" json:"bootstrap_owners,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -1878,13 +1963,6 @@ func (*KubernetesAgentSubstrateAuthorization) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{16}
 }
 
-func (x *KubernetesAgentSubstrateAuthorization) GetEnabled() bool {
-	if x != nil && x.Enabled != nil {
-		return *x.Enabled
-	}
-	return false
-}
-
 func (x *KubernetesAgentSubstrateAuthorization) GetBootstrapOwners() []string {
 	if x != nil {
 		return x.BootstrapOwners
@@ -1902,10 +1980,11 @@ type KubernetesAgentSubstrateActorJwt struct {
 	Algorithm KubernetesAgentSubstrateActorJwt_Algorithm `protobuf:"varint,1,opt,name=algorithm,proto3,enum=dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateActorJwt_Algorithm" json:"algorithm,omitempty"`
 	// *
 	// The iss claim of actor JWTs; relying parties fetch
-	// <issuer>/.well-known/openid-configuration to verify them. Empty =
-	// upstream's default, "https://idp.ate-system.svc", which nothing serves at
-	// this release: set an issuer you publish when a service must verify actor
-	// tokens.
+	// <issuer>/.well-known/openid-configuration to verify them, and the
+	// identity server publishes the keys there. Empty = upstream's default,
+	// "https://idp.ate-system.svc", which the identity server serves inside the
+	// cluster; set your own host when a service outside the cluster must verify
+	// actor tokens, and route it to the `idp` Service in ate-system.
 	Issuer        string `protobuf:"bytes,2,opt,name=issuer,proto3" json:"issuer,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -2064,8 +2143,20 @@ type KubernetesAgentSubstrateNodeAgent struct {
 	// filesystem headroom, because kubelet evicts the pod when the volume
 	// overflows.
 	AssetStagingCapacityGib *int32 `protobuf:"varint,9,opt,name=asset_staging_capacity_gib,json=assetStagingCapacityGib,proto3,oneof" json:"asset_staging_capacity_gib,omitempty"`
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
+	// *
+	// How the node moves suspended actors' snapshots to object storage in the
+	// background, and frees the node of actors that stay suspended.
+	Snapshots *KubernetesAgentSubstrateNodeSnapshots `protobuf:"bytes,10,opt,name=snapshots,proto3" json:"snapshots,omitempty"`
+	// *
+	// The node's cache of sandbox runtime assets (gVisor releases, microVM
+	// kernels, hypervisors and guest images).
+	SandboxAssetCache *KubernetesAgentSubstrateSandboxAssetCache `protobuf:"bytes,11,opt,name=sandbox_asset_cache,json=sandboxAssetCache,proto3" json:"sandbox_asset_cache,omitempty"`
+	// *
+	// The node's cache of snapshot files, which serves a snapshot that several
+	// actors restore from (a template's) once instead of once per actor.
+	SnapshotCache *KubernetesAgentSubstrateSnapshotCache `protobuf:"bytes,12,opt,name=snapshot_cache,json=snapshotCache,proto3" json:"snapshot_cache,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *KubernetesAgentSubstrateNodeAgent) Reset() {
@@ -2161,6 +2252,388 @@ func (x *KubernetesAgentSubstrateNodeAgent) GetAssetStagingCapacityGib() int32 {
 	return 0
 }
 
+func (x *KubernetesAgentSubstrateNodeAgent) GetSnapshots() *KubernetesAgentSubstrateNodeSnapshots {
+	if x != nil {
+		return x.Snapshots
+	}
+	return nil
+}
+
+func (x *KubernetesAgentSubstrateNodeAgent) GetSandboxAssetCache() *KubernetesAgentSubstrateSandboxAssetCache {
+	if x != nil {
+		return x.SandboxAssetCache
+	}
+	return nil
+}
+
+func (x *KubernetesAgentSubstrateNodeAgent) GetSnapshotCache() *KubernetesAgentSubstrateSnapshotCache {
+	if x != nil {
+		return x.SnapshotCache
+	}
+	return nil
+}
+
+// *
+// Background snapshot work on each node. A suspended actor's latest snapshot
+// stays on its node, so it resumes there fastest; the node uploads it to
+// object storage after upload_delay, and after detach_delay frees the node of
+// the actor entirely, so it resumes from object storage on any node.
+type KubernetesAgentSubstrateNodeSnapshots struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// How long after an actor's oldest snapshot not yet in object storage was
+	// taken the node uploads its latest one (Go duration). At most
+	// detach_delay.
+	UploadDelay *string `protobuf:"bytes,1,opt,name=upload_delay,json=uploadDelay,proto3,oneof" json:"upload_delay,omitempty"`
+	// *
+	// How long an actor stays suspended on the node before the node detaches
+	// it (Go duration).
+	DetachDelay *string `protobuf:"bytes,2,opt,name=detach_delay,json=detachDelay,proto3,oneof" json:"detach_delay,omitempty"`
+	// *
+	// How long one upload may run before it is cancelled and retried, on top
+	// of the time the snapshot takes at upload_throughput_mib (Go duration).
+	// Each consecutive failure doubles it, to at most eight times. "0s" turns
+	// the timeout off.
+	UploadTimeout *string `protobuf:"bytes,3,opt,name=upload_timeout,json=uploadTimeout,proto3,oneof" json:"upload_timeout,omitempty"`
+	// *
+	// The upload throughput the timeout allows for, in MiB per second of the
+	// snapshot's allocated size. 0 adds no time for the snapshot's size.
+	UploadThroughputMib *int32 `protobuf:"varint,4,opt,name=upload_throughput_mib,json=uploadThroughputMib,proto3,oneof" json:"upload_throughput_mib,omitempty"`
+	// *
+	// Background uploads the node runs at once.
+	UploadWorkers *int32 `protobuf:"varint,5,opt,name=upload_workers,json=uploadWorkers,proto3,oneof" json:"upload_workers,omitempty"`
+	// *
+	// Background detaches the node runs at once.
+	DetachWorkers *int32 `protobuf:"varint,6,opt,name=detach_workers,json=detachWorkers,proto3,oneof" json:"detach_workers,omitempty"`
+	// *
+	// Snapshot state reports to the API server the node sends at once.
+	ReportWorkers *int32 `protobuf:"varint,7,opt,name=report_workers,json=reportWorkers,proto3,oneof" json:"report_workers,omitempty"`
+	// *
+	// How long the node keeps retrying a failed snapshot state report before
+	// giving up on it (Go duration).
+	ReportGiveUpAfter *string `protobuf:"bytes,8,opt,name=report_give_up_after,json=reportGiveUpAfter,proto3,oneof" json:"report_give_up_after,omitempty"`
+	// *
+	// Memory the node's object-store plugin reserves for compressing and
+	// uploading snapshots, shared by every upload (a Kubernetes quantity);
+	// uploads wait for room.
+	UploadMemoryBudget *string `protobuf:"bytes,9,opt,name=upload_memory_budget,json=uploadMemoryBudget,proto3,oneof" json:"upload_memory_budget,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *KubernetesAgentSubstrateNodeSnapshots) Reset() {
+	*x = KubernetesAgentSubstrateNodeSnapshots{}
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesAgentSubstrateNodeSnapshots) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesAgentSubstrateNodeSnapshots) ProtoMessage() {}
+
+func (x *KubernetesAgentSubstrateNodeSnapshots) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesAgentSubstrateNodeSnapshots.ProtoReflect.Descriptor instead.
+func (*KubernetesAgentSubstrateNodeSnapshots) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *KubernetesAgentSubstrateNodeSnapshots) GetUploadDelay() string {
+	if x != nil && x.UploadDelay != nil {
+		return *x.UploadDelay
+	}
+	return ""
+}
+
+func (x *KubernetesAgentSubstrateNodeSnapshots) GetDetachDelay() string {
+	if x != nil && x.DetachDelay != nil {
+		return *x.DetachDelay
+	}
+	return ""
+}
+
+func (x *KubernetesAgentSubstrateNodeSnapshots) GetUploadTimeout() string {
+	if x != nil && x.UploadTimeout != nil {
+		return *x.UploadTimeout
+	}
+	return ""
+}
+
+func (x *KubernetesAgentSubstrateNodeSnapshots) GetUploadThroughputMib() int32 {
+	if x != nil && x.UploadThroughputMib != nil {
+		return *x.UploadThroughputMib
+	}
+	return 0
+}
+
+func (x *KubernetesAgentSubstrateNodeSnapshots) GetUploadWorkers() int32 {
+	if x != nil && x.UploadWorkers != nil {
+		return *x.UploadWorkers
+	}
+	return 0
+}
+
+func (x *KubernetesAgentSubstrateNodeSnapshots) GetDetachWorkers() int32 {
+	if x != nil && x.DetachWorkers != nil {
+		return *x.DetachWorkers
+	}
+	return 0
+}
+
+func (x *KubernetesAgentSubstrateNodeSnapshots) GetReportWorkers() int32 {
+	if x != nil && x.ReportWorkers != nil {
+		return *x.ReportWorkers
+	}
+	return 0
+}
+
+func (x *KubernetesAgentSubstrateNodeSnapshots) GetReportGiveUpAfter() string {
+	if x != nil && x.ReportGiveUpAfter != nil {
+		return *x.ReportGiveUpAfter
+	}
+	return ""
+}
+
+func (x *KubernetesAgentSubstrateNodeSnapshots) GetUploadMemoryBudget() string {
+	if x != nil && x.UploadMemoryBudget != nil {
+		return *x.UploadMemoryBudget
+	}
+	return ""
+}
+
+// *
+// The node's sandbox asset cache. A running actor's assets, and each local
+// worker's default runtime, are never evicted.
+type KubernetesAgentSubstrateSandboxAssetCache struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// Youngest a cached asset may be and still be evicted (Go duration).
+	MinAge *string `protobuf:"bytes,1,opt,name=min_age,json=minAge,proto3,oneof" json:"min_age,omitempty"`
+	// *
+	// Longest one asset download, and a gVisor release's extraction, may run
+	// (Go duration).
+	FetchTimeout *string `protobuf:"bytes,2,opt,name=fetch_timeout,json=fetchTimeout,proto3,oneof" json:"fetch_timeout,omitempty"`
+	// *
+	// Eviction of the cache.
+	Eviction      *KubernetesAgentSubstrateFileCacheEviction `protobuf:"bytes,3,opt,name=eviction,proto3" json:"eviction,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesAgentSubstrateSandboxAssetCache) Reset() {
+	*x = KubernetesAgentSubstrateSandboxAssetCache{}
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesAgentSubstrateSandboxAssetCache) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesAgentSubstrateSandboxAssetCache) ProtoMessage() {}
+
+func (x *KubernetesAgentSubstrateSandboxAssetCache) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesAgentSubstrateSandboxAssetCache.ProtoReflect.Descriptor instead.
+func (*KubernetesAgentSubstrateSandboxAssetCache) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *KubernetesAgentSubstrateSandboxAssetCache) GetMinAge() string {
+	if x != nil && x.MinAge != nil {
+		return *x.MinAge
+	}
+	return ""
+}
+
+func (x *KubernetesAgentSubstrateSandboxAssetCache) GetFetchTimeout() string {
+	if x != nil && x.FetchTimeout != nil {
+		return *x.FetchTimeout
+	}
+	return ""
+}
+
+func (x *KubernetesAgentSubstrateSandboxAssetCache) GetEviction() *KubernetesAgentSubstrateFileCacheEviction {
+	if x != nil {
+		return x.Eviction
+	}
+	return nil
+}
+
+// *
+// The node's snapshot file cache.
+type KubernetesAgentSubstrateSnapshotCache struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// Turn the cache off: every restore downloads its snapshot files.
+	Disabled bool `protobuf:"varint,1,opt,name=disabled,proto3" json:"disabled,omitempty"`
+	// *
+	// Youngest a cached file may be and still be evicted (Go duration); it
+	// protects a file fetched but not yet linked into a restore.
+	MinAge *string `protobuf:"bytes,2,opt,name=min_age,json=minAge,proto3,oneof" json:"min_age,omitempty"`
+	// *
+	// Longest one cached file download may run (Go duration).
+	FetchTimeout *string `protobuf:"bytes,3,opt,name=fetch_timeout,json=fetchTimeout,proto3,oneof" json:"fetch_timeout,omitempty"`
+	// *
+	// Eviction of the cache.
+	Eviction      *KubernetesAgentSubstrateFileCacheEviction `protobuf:"bytes,4,opt,name=eviction,proto3" json:"eviction,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesAgentSubstrateSnapshotCache) Reset() {
+	*x = KubernetesAgentSubstrateSnapshotCache{}
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesAgentSubstrateSnapshotCache) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesAgentSubstrateSnapshotCache) ProtoMessage() {}
+
+func (x *KubernetesAgentSubstrateSnapshotCache) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesAgentSubstrateSnapshotCache.ProtoReflect.Descriptor instead.
+func (*KubernetesAgentSubstrateSnapshotCache) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *KubernetesAgentSubstrateSnapshotCache) GetDisabled() bool {
+	if x != nil {
+		return x.Disabled
+	}
+	return false
+}
+
+func (x *KubernetesAgentSubstrateSnapshotCache) GetMinAge() string {
+	if x != nil && x.MinAge != nil {
+		return *x.MinAge
+	}
+	return ""
+}
+
+func (x *KubernetesAgentSubstrateSnapshotCache) GetFetchTimeout() string {
+	if x != nil && x.FetchTimeout != nil {
+		return *x.FetchTimeout
+	}
+	return ""
+}
+
+func (x *KubernetesAgentSubstrateSnapshotCache) GetEviction() *KubernetesAgentSubstrateFileCacheEviction {
+	if x != nil {
+		return x.Eviction
+	}
+	return nil
+}
+
+// *
+// How a node file cache is evicted: a pass every gc_period removes the least
+// recently used files nothing links, once the cache is over max_bytes, down
+// to 80% of it.
+type KubernetesAgentSubstrateFileCacheEviction struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// How often an eviction pass runs (Go duration). "0s" turns eviction off.
+	GcPeriod *string `protobuf:"bytes,1,opt,name=gc_period,json=gcPeriod,proto3,oneof" json:"gc_period,omitempty"`
+	// *
+	// The cache's budget, in bytes of disk. 0 = no budget: the cache only
+	// grows.
+	MaxBytes *int64 `protobuf:"varint,2,opt,name=max_bytes,json=maxBytes,proto3,oneof" json:"max_bytes,omitempty"`
+	// *
+	// Log what a pass would remove without removing it.
+	DryRun        bool `protobuf:"varint,3,opt,name=dry_run,json=dryRun,proto3" json:"dry_run,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesAgentSubstrateFileCacheEviction) Reset() {
+	*x = KubernetesAgentSubstrateFileCacheEviction{}
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesAgentSubstrateFileCacheEviction) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesAgentSubstrateFileCacheEviction) ProtoMessage() {}
+
+func (x *KubernetesAgentSubstrateFileCacheEviction) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesAgentSubstrateFileCacheEviction.ProtoReflect.Descriptor instead.
+func (*KubernetesAgentSubstrateFileCacheEviction) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *KubernetesAgentSubstrateFileCacheEviction) GetGcPeriod() string {
+	if x != nil && x.GcPeriod != nil {
+		return *x.GcPeriod
+	}
+	return ""
+}
+
+func (x *KubernetesAgentSubstrateFileCacheEviction) GetMaxBytes() int64 {
+	if x != nil && x.MaxBytes != nil {
+		return *x.MaxBytes
+	}
+	return 0
+}
+
+func (x *KubernetesAgentSubstrateFileCacheEviction) GetDryRun() bool {
+	if x != nil {
+		return x.DryRun
+	}
+	return false
+}
+
 // *
 // The node agent's actor-image cache. Collection starts when the disk is
 // fuller than high_percent and removes the least recently used images, older
@@ -2191,7 +2664,7 @@ type KubernetesAgentSubstrateImageCache struct {
 
 func (x *KubernetesAgentSubstrateImageCache) Reset() {
 	*x = KubernetesAgentSubstrateImageCache{}
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[20]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2203,7 +2676,7 @@ func (x *KubernetesAgentSubstrateImageCache) String() string {
 func (*KubernetesAgentSubstrateImageCache) ProtoMessage() {}
 
 func (x *KubernetesAgentSubstrateImageCache) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[20]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2216,7 +2689,7 @@ func (x *KubernetesAgentSubstrateImageCache) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use KubernetesAgentSubstrateImageCache.ProtoReflect.Descriptor instead.
 func (*KubernetesAgentSubstrateImageCache) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{20}
+	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *KubernetesAgentSubstrateImageCache) GetGcPeriod() string {
@@ -2281,12 +2754,14 @@ type KubernetesAgentSubstrateRouter struct {
 	// Minimum log level.
 	LogLevel LogLevel `protobuf:"varint,4,opt,name=log_level,json=logLevel,proto3,enum=dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.LogLevel" json:"log_level,omitempty"`
 	// *
-	// SPIFFE IDs (exact match) of the in-cluster workloads whose client
-	// certificates the router's TLS listeners accept, one per client workload:
-	// "spiffe://cluster.local/ns/<namespace>/sa/<service-account>". Replaces
-	// upstream's list, which names only upstream's own e2e client. At this
-	// release the router also serves plaintext listeners that accept any
-	// caller; the guide explains the exposure.
+	// SPIFFE IDs (exact match) of the in-cluster workloads that may reach
+	// actors through the router, one per client workload:
+	// "spiffe://cluster.local/ns/<namespace>/sa/<service-account>". A client
+	// calls the router's TLS endpoint with its pod certificate (signer
+	// podidentity.podcert.ate.dev/identity); any listed client may reach any
+	// actor. The Envoy router serves nothing else, so it needs at least one;
+	// agentgateway does not check client certificates yet, and serves
+	// plaintext listeners to any caller.
 	AllowedClientSpiffeIds []string `protobuf:"bytes,5,rep,name=allowed_client_spiffe_ids,json=allowedClientSpiffeIds,proto3" json:"allowed_client_spiffe_ids,omitempty"`
 	// *
 	// End-to-end timeout of one request to an actor (Go duration). A model
@@ -2319,7 +2794,7 @@ type KubernetesAgentSubstrateRouter struct {
 
 func (x *KubernetesAgentSubstrateRouter) Reset() {
 	*x = KubernetesAgentSubstrateRouter{}
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[21]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2331,7 +2806,7 @@ func (x *KubernetesAgentSubstrateRouter) String() string {
 func (*KubernetesAgentSubstrateRouter) ProtoMessage() {}
 
 func (x *KubernetesAgentSubstrateRouter) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[21]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2344,7 +2819,7 @@ func (x *KubernetesAgentSubstrateRouter) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesAgentSubstrateRouter.ProtoReflect.Descriptor instead.
 func (*KubernetesAgentSubstrateRouter) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{21}
+	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *KubernetesAgentSubstrateRouter) GetDataplane() KubernetesAgentSubstrateRouter_Dataplane {
@@ -2444,7 +2919,7 @@ type KubernetesAgentSubstrateParkedRequests struct {
 
 func (x *KubernetesAgentSubstrateParkedRequests) Reset() {
 	*x = KubernetesAgentSubstrateParkedRequests{}
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[22]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2456,7 +2931,7 @@ func (x *KubernetesAgentSubstrateParkedRequests) String() string {
 func (*KubernetesAgentSubstrateParkedRequests) ProtoMessage() {}
 
 func (x *KubernetesAgentSubstrateParkedRequests) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[22]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2469,7 +2944,7 @@ func (x *KubernetesAgentSubstrateParkedRequests) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use KubernetesAgentSubstrateParkedRequests.ProtoReflect.Descriptor instead.
 func (*KubernetesAgentSubstrateParkedRequests) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{22}
+	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *KubernetesAgentSubstrateParkedRequests) GetBudget() string {
@@ -2557,7 +3032,7 @@ type KubernetesAgentSubstrateEgress struct {
 
 func (x *KubernetesAgentSubstrateEgress) Reset() {
 	*x = KubernetesAgentSubstrateEgress{}
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[23]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2569,7 +3044,7 @@ func (x *KubernetesAgentSubstrateEgress) String() string {
 func (*KubernetesAgentSubstrateEgress) ProtoMessage() {}
 
 func (x *KubernetesAgentSubstrateEgress) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[23]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2582,7 +3057,7 @@ func (x *KubernetesAgentSubstrateEgress) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesAgentSubstrateEgress.ProtoReflect.Descriptor instead.
 func (*KubernetesAgentSubstrateEgress) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{23}
+	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *KubernetesAgentSubstrateEgress) GetCredentialProvider() *KubernetesAgentSubstrateCredentialProvider {
@@ -2664,7 +3139,7 @@ type KubernetesAgentSubstrateCredentialProvider struct {
 
 func (x *KubernetesAgentSubstrateCredentialProvider) Reset() {
 	*x = KubernetesAgentSubstrateCredentialProvider{}
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[24]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2676,7 +3151,7 @@ func (x *KubernetesAgentSubstrateCredentialProvider) String() string {
 func (*KubernetesAgentSubstrateCredentialProvider) ProtoMessage() {}
 
 func (x *KubernetesAgentSubstrateCredentialProvider) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[24]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2689,7 +3164,7 @@ func (x *KubernetesAgentSubstrateCredentialProvider) ProtoReflect() protoreflect
 
 // Deprecated: Use KubernetesAgentSubstrateCredentialProvider.ProtoReflect.Descriptor instead.
 func (*KubernetesAgentSubstrateCredentialProvider) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{24}
+	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *KubernetesAgentSubstrateCredentialProvider) GetKind() isKubernetesAgentSubstrateCredentialProvider_Kind {
@@ -2771,7 +3246,7 @@ type KubernetesAgentSubstrateCredentialProviderDisabled struct {
 
 func (x *KubernetesAgentSubstrateCredentialProviderDisabled) Reset() {
 	*x = KubernetesAgentSubstrateCredentialProviderDisabled{}
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[25]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2783,7 +3258,7 @@ func (x *KubernetesAgentSubstrateCredentialProviderDisabled) String() string {
 func (*KubernetesAgentSubstrateCredentialProviderDisabled) ProtoMessage() {}
 
 func (x *KubernetesAgentSubstrateCredentialProviderDisabled) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[25]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2796,7 +3271,7 @@ func (x *KubernetesAgentSubstrateCredentialProviderDisabled) ProtoReflect() prot
 
 // Deprecated: Use KubernetesAgentSubstrateCredentialProviderDisabled.ProtoReflect.Descriptor instead.
 func (*KubernetesAgentSubstrateCredentialProviderDisabled) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{25}
+	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{29}
 }
 
 // *
@@ -2829,7 +3304,7 @@ type KubernetesAgentSubstrateKubernetesSecretsProvider struct {
 
 func (x *KubernetesAgentSubstrateKubernetesSecretsProvider) Reset() {
 	*x = KubernetesAgentSubstrateKubernetesSecretsProvider{}
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[26]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2841,7 +3316,7 @@ func (x *KubernetesAgentSubstrateKubernetesSecretsProvider) String() string {
 func (*KubernetesAgentSubstrateKubernetesSecretsProvider) ProtoMessage() {}
 
 func (x *KubernetesAgentSubstrateKubernetesSecretsProvider) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[26]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2854,7 +3329,7 @@ func (x *KubernetesAgentSubstrateKubernetesSecretsProvider) ProtoReflect() proto
 
 // Deprecated: Use KubernetesAgentSubstrateKubernetesSecretsProvider.ProtoReflect.Descriptor instead.
 func (*KubernetesAgentSubstrateKubernetesSecretsProvider) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{26}
+	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *KubernetesAgentSubstrateKubernetesSecretsProvider) GetGrants() []*KubernetesAgentSubstrateNamespaceGrant {
@@ -2915,7 +3390,7 @@ type KubernetesAgentSubstrateNamespaceGrant struct {
 
 func (x *KubernetesAgentSubstrateNamespaceGrant) Reset() {
 	*x = KubernetesAgentSubstrateNamespaceGrant{}
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[27]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2927,7 +3402,7 @@ func (x *KubernetesAgentSubstrateNamespaceGrant) String() string {
 func (*KubernetesAgentSubstrateNamespaceGrant) ProtoMessage() {}
 
 func (x *KubernetesAgentSubstrateNamespaceGrant) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[27]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2940,7 +3415,7 @@ func (x *KubernetesAgentSubstrateNamespaceGrant) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use KubernetesAgentSubstrateNamespaceGrant.ProtoReflect.Descriptor instead.
 func (*KubernetesAgentSubstrateNamespaceGrant) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{27}
+	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *KubernetesAgentSubstrateNamespaceGrant) GetAtespace() string {
@@ -2977,7 +3452,7 @@ type KubernetesAgentSubstrateExternalCredentialProvider struct {
 
 func (x *KubernetesAgentSubstrateExternalCredentialProvider) Reset() {
 	*x = KubernetesAgentSubstrateExternalCredentialProvider{}
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[28]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2989,7 +3464,7 @@ func (x *KubernetesAgentSubstrateExternalCredentialProvider) String() string {
 func (*KubernetesAgentSubstrateExternalCredentialProvider) ProtoMessage() {}
 
 func (x *KubernetesAgentSubstrateExternalCredentialProvider) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[28]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3002,7 +3477,7 @@ func (x *KubernetesAgentSubstrateExternalCredentialProvider) ProtoReflect() prot
 
 // Deprecated: Use KubernetesAgentSubstrateExternalCredentialProvider.ProtoReflect.Descriptor instead.
 func (*KubernetesAgentSubstrateExternalCredentialProvider) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{28}
+	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *KubernetesAgentSubstrateExternalCredentialProvider) GetName() string {
@@ -3038,7 +3513,7 @@ type KubernetesAgentSubstrateExtProcService struct {
 
 func (x *KubernetesAgentSubstrateExtProcService) Reset() {
 	*x = KubernetesAgentSubstrateExtProcService{}
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[29]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3050,7 +3525,7 @@ func (x *KubernetesAgentSubstrateExtProcService) String() string {
 func (*KubernetesAgentSubstrateExtProcService) ProtoMessage() {}
 
 func (x *KubernetesAgentSubstrateExtProcService) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[29]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3063,7 +3538,7 @@ func (x *KubernetesAgentSubstrateExtProcService) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use KubernetesAgentSubstrateExtProcService.ProtoReflect.Descriptor instead.
 func (*KubernetesAgentSubstrateExtProcService) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{29}
+	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *KubernetesAgentSubstrateExtProcService) GetNamespace() string {
@@ -3111,7 +3586,7 @@ type KubernetesAgentSubstratePodCertificates struct {
 
 func (x *KubernetesAgentSubstratePodCertificates) Reset() {
 	*x = KubernetesAgentSubstratePodCertificates{}
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[30]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3123,7 +3598,7 @@ func (x *KubernetesAgentSubstratePodCertificates) String() string {
 func (*KubernetesAgentSubstratePodCertificates) ProtoMessage() {}
 
 func (x *KubernetesAgentSubstratePodCertificates) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[30]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3136,7 +3611,7 @@ func (x *KubernetesAgentSubstratePodCertificates) ProtoReflect() protoreflect.Me
 
 // Deprecated: Use KubernetesAgentSubstratePodCertificates.ProtoReflect.Descriptor instead.
 func (*KubernetesAgentSubstratePodCertificates) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{30}
+	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *KubernetesAgentSubstratePodCertificates) GetResources() *kubernetes.ContainerResources {
@@ -3203,13 +3678,26 @@ type KubernetesAgentSubstrateTelemetry struct {
 	// *
 	// Timeout of one metric export, in milliseconds. Empty = the SDK's.
 	MetricExportTimeoutMs *int32 `protobuf:"varint,8,opt,name=metric_export_timeout_ms,json=metricExportTimeoutMs,proto3,oneof" json:"metric_export_timeout_ms,omitempty"`
-	unknownFields         protoimpl.UnknownFields
-	sizeCache             protoimpl.SizeCache
+	// *
+	// Trace exporters of the worker pods actors run in ("otlp", or "none"),
+	// which take their own selection rather than the control plane's; they
+	// export through their node agent. Empty = otlp.
+	WorkerTracesExporters []string `protobuf:"bytes,9,rep,name=worker_traces_exporters,json=workerTracesExporters,proto3" json:"worker_traces_exporters,omitempty"`
+	// *
+	// Metric exporters of the worker pods ("otlp", "prometheus", or "none").
+	// Empty = otlp.
+	WorkerMetricsExporters []string `protobuf:"bytes,10,rep,name=worker_metrics_exporters,json=workerMetricsExporters,proto3" json:"worker_metrics_exporters,omitempty"`
+	// *
+	// Exporters of the actor events worker pods log ("otlp", "console", or
+	// "none"). Empty = none.
+	WorkerLogsExporters []string `protobuf:"bytes,11,rep,name=worker_logs_exporters,json=workerLogsExporters,proto3" json:"worker_logs_exporters,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
 func (x *KubernetesAgentSubstrateTelemetry) Reset() {
 	*x = KubernetesAgentSubstrateTelemetry{}
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[31]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3221,7 +3709,7 @@ func (x *KubernetesAgentSubstrateTelemetry) String() string {
 func (*KubernetesAgentSubstrateTelemetry) ProtoMessage() {}
 
 func (x *KubernetesAgentSubstrateTelemetry) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[31]
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3234,7 +3722,7 @@ func (x *KubernetesAgentSubstrateTelemetry) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use KubernetesAgentSubstrateTelemetry.ProtoReflect.Descriptor instead.
 func (*KubernetesAgentSubstrateTelemetry) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{31}
+	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *KubernetesAgentSubstrateTelemetry) GetOtlpEndpoint() string {
@@ -3293,11 +3781,113 @@ func (x *KubernetesAgentSubstrateTelemetry) GetMetricExportTimeoutMs() int32 {
 	return 0
 }
 
+func (x *KubernetesAgentSubstrateTelemetry) GetWorkerTracesExporters() []string {
+	if x != nil {
+		return x.WorkerTracesExporters
+	}
+	return nil
+}
+
+func (x *KubernetesAgentSubstrateTelemetry) GetWorkerMetricsExporters() []string {
+	if x != nil {
+		return x.WorkerMetricsExporters
+	}
+	return nil
+}
+
+func (x *KubernetesAgentSubstrateTelemetry) GetWorkerLogsExporters() []string {
+	if x != nil {
+		return x.WorkerLogsExporters
+	}
+	return nil
+}
+
+// *
+// The identity server: actor JWTs name its address as their issuer, and it
+// serves the issuer's discovery document and key set, so a service verifies
+// a token an actor presents without calling the API.
+type KubernetesAgentSubstrateIdentityServer struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// Identity server pods; a disruption budget keeps all but one up during
+	// node drains.
+	Replicas *int32 `protobuf:"varint,1,opt,name=replicas,proto3,oneof" json:"replicas,omitempty"`
+	// *
+	// Resources for the identity server container. Empty = none set.
+	Resources *kubernetes.ContainerResources `protobuf:"bytes,2,opt,name=resources,proto3" json:"resources,omitempty"`
+	// *
+	// Minimum log level.
+	LogLevel LogLevel `protobuf:"varint,3,opt,name=log_level,json=logLevel,proto3,enum=dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.LogLevel" json:"log_level,omitempty"`
+	// *
+	// How long a terminating pod waits for requests in flight (Go duration).
+	DrainGrace    *string `protobuf:"bytes,4,opt,name=drain_grace,json=drainGrace,proto3,oneof" json:"drain_grace,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesAgentSubstrateIdentityServer) Reset() {
+	*x = KubernetesAgentSubstrateIdentityServer{}
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[36]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesAgentSubstrateIdentityServer) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesAgentSubstrateIdentityServer) ProtoMessage() {}
+
+func (x *KubernetesAgentSubstrateIdentityServer) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[36]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesAgentSubstrateIdentityServer.ProtoReflect.Descriptor instead.
+func (*KubernetesAgentSubstrateIdentityServer) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDescGZIP(), []int{36}
+}
+
+func (x *KubernetesAgentSubstrateIdentityServer) GetReplicas() int32 {
+	if x != nil && x.Replicas != nil {
+		return *x.Replicas
+	}
+	return 0
+}
+
+func (x *KubernetesAgentSubstrateIdentityServer) GetResources() *kubernetes.ContainerResources {
+	if x != nil {
+		return x.Resources
+	}
+	return nil
+}
+
+func (x *KubernetesAgentSubstrateIdentityServer) GetLogLevel() LogLevel {
+	if x != nil {
+		return x.LogLevel
+	}
+	return LogLevel_info
+}
+
+func (x *KubernetesAgentSubstrateIdentityServer) GetDrainGrace() string {
+	if x != nil && x.DrainGrace != nil {
+		return *x.DrainGrace
+	}
+	return ""
+}
+
 var File_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/kubernetes/kubernetesagentsubstrate/v1alpha1/spec.proto\x128dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x84\x1e\n" +
+	"?catalog/kubernetes/kubernetesagentsubstrate/v1alpha1/spec.proto\x128dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xb6&\n" +
 	"\x1cKubernetesAgentSubstrateSpec\x12\xc4\x02\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xf1\x01\xbaH\xdb\x01\xba\x01\xd4\x01\n" +
 	"\x0fnamespace_fixed\x12\x90\x01namespace must be \"ate-system\": upstream's manifests, the API's server name and its token audience name it, so Agent Substrate runs nowhere else\x1a.!has(this.value) || this.value == 'ate-system'\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
@@ -3322,16 +3912,23 @@ const file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDe
 	"\x14cordon_control_plane\x18\x0f \x01(\bR\x12cordonControlPlane\x12\xe3\x01\n" +
 	"\x0eimage_registry\x18\x10 \x01(\tB\xbb\x01\xbaH\xb7\x01\xba\x01\xb0\x01\n" +
 	"\x15image_registry_format\x12iimage_registry is a registry root such as \"mirror.example.com/substrate\": no scheme and no trailing slash\x1a,!this.endsWith('/') && !this.contains('://')\xd8\x01\x01R\rimageRegistry\x12x\n" +
-	"\x12image_pull_secrets\x18\x11 \x03(\tBJ\xaa\xa6\x1dFNames of existing Kubernetes Secrets (references), not secret materialR\x10imagePullSecrets\"$\n" +
+	"\x12image_pull_secrets\x18\x11 \x03(\tBJ\xaa\xa6\x1dFNames of existing Kubernetes Secrets (references), not secret materialR\x10imagePullSecrets\x12I\n" +
+	"\aversion\x18\x12 \x01(\tB*\xbaH\x1dr\x1b2\x19^v[0-9]+\\.[0-9]+\\.[0-9]+$\x8a\xa6\x1d\x06v0.6.0H\x00R\aversion\x88\x01\x01\x12x\n" +
+	"\rpreview_gates\x18\x13 \x03(\tBS\xbaHP\x92\x01M\x18\x01\"IrGR\x03ALLR\x0fExternalVolumesR\x12GoldenEgressPolicyR\x1bPerTemplateSnapshotLocationR\fpreviewGates\x12\x89\x01\n" +
+	"\x0fidentity_server\x18\x14 \x01(\v2`.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateIdentityServerR\x0eidentityServer\"$\n" +
 	"\vClusterSize\x12\t\n" +
 	"\x05size0\x10\x00\x12\n" +
 	"\n" +
-	"\x06size10\x10\x01:\xdc\v\xbaH\xd8\v\x1a\x9e\x03\n" +
+	"\x06size10\x10\x01:\xb1\x11\xbaH\xad\x11\x1a\x9e\x03\n" +
 	"!size10_sizes_the_bundled_database\x12\x98\x02database.bundled.resources cannot be set with cluster_size size10: size10 sizes the bundled database for a dedicated node, its postgresql.conf tuned for 140Gi, and a smaller container would run out of memory under load; use size10 with its own sizing, or size0 with your resources\x1a^this.cluster_size != 1 || !has(this.database.bundled) || !has(this.database.bundled.resources)\x1a\xc1\x01\n" +
 	"\rgcs_needs_gke\x12~storage.gcs authenticates keylessly through GKE Workload Identity, so it needs platform.gke; on another cluster use storage.s3\x1a0!has(this.storage.gcs) || has(this.platform.gke)\x1a\xc1\x01\n" +
 	"\x13cloud_sql_needs_gke\x12qdatabase.cloud_sql connects through the Cloud SQL Auth Proxy with GKE Workload Identity, so it needs platform.gke\x1a7!has(this.database.cloud_sql) || has(this.platform.gke)\x1a\xbe\x03\n" +
-	"'cloud_sql_iam_needs_api_server_identity\x12\xbd\x01database.cloud_sql logs in as the API server's Google service account, so set platform.gke.api_server_service_account (or turn cloud_sql.iam_authentication off and give a connection string)\x1a\xd2\x01!has(this.database.cloud_sql) || (has(this.database.cloud_sql.iam_authentication) && !this.database.cloud_sql.iam_authentication) || (has(this.platform.gke) && has(this.platform.gke.api_server_service_account))\x1a\xeb\x01\n" +
-	"\x13extproc_needs_envoy\x12regress.additional_ext_proc_service splices a filter into Envoy's configuration, so it needs router.dataplane envoy\x1a`!has(this.egress.additional_ext_proc_service) || !has(this.router) || this.router.dataplane != 1\"\xa4\x01\n" +
+	"'cloud_sql_iam_needs_api_server_identity\x12\xbd\x01database.cloud_sql logs in as the API server's Google service account, so set platform.gke.api_server_service_account (or turn cloud_sql.iam_authentication off and give a connection string)\x1a\xd2\x01!has(this.database.cloud_sql) || (has(this.database.cloud_sql.iam_authentication) && !this.database.cloud_sql.iam_authentication) || (has(this.platform.gke) && has(this.platform.gke.api_server_service_account))\x1a\xb4\x02\n" +
+	"+gcs_needs_snapshot_transfer_service_account\x12\x94\x01storage.gcs moves snapshots as a dedicated Google service account the API server impersonates, so set platform.gke.snapshot_transfer_service_account\x1an!has(this.storage.gcs) || (has(this.platform.gke) && has(this.platform.gke.snapshot_transfer_service_account))\x1a\x9b\x03\n" +
+	"\"envoy_router_needs_allowed_clients\x12\x8f\x02router.allowed_client_spiffe_ids needs at least one client: the Envoy router lets only the mutual-TLS callers it names reach actors, and refuses to start with none. Name each workload that calls actors, such as \"spiffe://cluster.local/ns/<namespace>/sa/<service-account>\"\x1achas(this.router) && (this.router.dataplane == 1 || size(this.router.allowed_client_spiffe_ids) > 0)\x1a\xeb\x01\n" +
+	"\x13extproc_needs_envoy\x12regress.additional_ext_proc_service splices a filter into Envoy's configuration, so it needs router.dataplane envoy\x1a`!has(this.egress.additional_ext_proc_service) || !has(this.router) || this.router.dataplane != 1B\n" +
+	"\n" +
+	"\b_version\"\xa4\x01\n" +
 	"\x1cKubernetesAgentSubstrateCrds\x12'\n" +
 	"\ainstall\x18\x01 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\ainstall\x88\x01\x01\x129\n" +
 	"\x11keep_on_uninstall\x18\x02 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x01R\x0fkeepOnUninstall\x88\x01\x01B\n" +
@@ -3341,13 +3938,14 @@ const file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDe
 	" KubernetesAgentSubstratePlatform\x12i\n" +
 	"\x03gke\x18\x01 \x01(\v2U.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateGkeH\x00R\x03gke\x12u\n" +
 	"\ageneric\x18\x02 \x01(\v2Y.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateGenericH\x00R\agenericB\r\n" +
-	"\x04kind\x12\x05\xbaH\x02\b\x01\"\xa2\x05\n" +
+	"\x04kind\x12\x05\xbaH\x02\b\x01\"\xc1\x06\n" +
 	"\x1bKubernetesAgentSubstrateGke\x12\xe0\x02\n" +
 	"\n" +
 	"cluster_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x8c\x02\xbaH\xe2\x01\xba\x01\xdb\x01\n" +
 	"\x15gke_cluster_id_format\x12ggke.cluster_id is a cluster's full resource ID: projects/<project>/locations/<location>/clusters/<name>\x1aY!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/clusters/[^/]+$')\xc8\x01\x01\x88\xd4a\xbf\x17\x92\xd4a\x19status.outputs.cluster_id\x98\xd4a\x01R\tclusterId\x12\x8e\x01\n" +
 	"\x1aapi_server_service_account\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1d\x88\xd4a\xc6\x17\x92\xd4a\x14status.outputs.emailR\x17apiServerServiceAccount\x12\x8e\x01\n" +
-	"\x1anode_agent_service_account\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1d\x88\xd4a\xc6\x17\x92\xd4a\x14status.outputs.emailR\x17nodeAgentServiceAccount\"\xb8\x02\n" +
+	"\x1anode_agent_service_account\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1d\x88\xd4a\xc6\x17\x92\xd4a\x14status.outputs.emailR\x17nodeAgentServiceAccount\x12\x9c\x01\n" +
+	"!snapshot_transfer_service_account\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1d\x88\xd4a\xc6\x17\x92\xd4a\x14status.outputs.emailR\x1esnapshotTransferServiceAccount\"\xb8\x02\n" +
 	"\x1fKubernetesAgentSubstrateGeneric\x12\x94\x02\n" +
 	"\x16service_account_issuer\x18\x01 \x01(\tB\xdd\x01\xbaH\xd9\x01\xba\x01\xd2\x01\n" +
 	"\x1cservice_account_issuer_https\x12\x83\x01service_account_issuer is an https URL with a host and no query or fragment, such as \"https://kubernetes.default.svc.cluster.local\"\x1a,this.matches('^https://[^/?#@]+(/[^?#]*)?$')\xc8\x01\x01R\x14serviceAccountIssuer\"\x90\x04\n" +
@@ -3397,10 +3995,12 @@ const file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDe
 	"\a_schema\"\xb4\x01\n" +
 	"$KubernetesAgentSubstrateSecretKeyRef\x12q\n" +
 	"\x04name\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\xbaH\x03\xc8\x01\x01\x88\xd4a\xa7\x1f\x92\xd4a\x1astatus.outputs.secret_nameR\x04name\x12\x19\n" +
-	"\x03key\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x03key\"\x91\x02\n" +
+	"\x03key\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x03key\"\x89\x05\n" +
 	"\x1fKubernetesAgentSubstrateStorage\x12p\n" +
 	"\x03gcs\x18\x01 \x01(\v2\\.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateGcsStorageH\x00R\x03gcs\x12m\n" +
-	"\x02s3\x18\x02 \x01(\v2[.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateS3StorageH\x00R\x02s3B\r\n" +
+	"\x02s3\x18\x02 \x01(\v2[.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateS3StorageH\x00R\x02s3\x12\xf5\x02\n" +
+	"\x0fsnapshot_prefix\x18\x03 \x01(\tB\xcb\x02\xbaH\xc7\x02\xba\x01\xc0\x02\n" +
+	"\x14snapshot_prefix_path\x12\xa2\x01snapshot_prefix is a path in the bucket such as \"substrate/prod\": no leading or trailing slash, no backslash, no ?, # or @, and no segment of only dots and spaces\x1a\x82\x01!this.startsWith('/') && !this.endsWith('/') && !this.contains('\\\\') && !this.matches('[?#@]') && !this.matches('(^|/)[. ]*(/|$)')\xd8\x01\x01R\x0esnapshotPrefixB\r\n" +
 	"\x04kind\x12\x05\xbaH\x02\b\x01\"\x9b\x01\n" +
 	"\"KubernetesAgentSubstrateGcsStorage\x12u\n" +
 	"\x06bucket\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\xbaH\x03\xc8\x01\x01\x88\xd4a\xbe\x17\x92\xd4a\x1astatus.outputs.bucket_nameR\x06bucket\"\xfb\x04\n" +
@@ -3437,16 +4037,13 @@ const file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDe
 	"\t_replicasB\x0e\n" +
 	"\f_drain_delayB\x10\n" +
 	"\x0e_drain_timeoutB\x1b\n" +
-	"\x19_template_resync_interval\"\x97\x01\n" +
-	"%KubernetesAgentSubstrateAuthorization\x12'\n" +
-	"\aenabled\x18\x01 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01\x129\n" +
-	"\x10bootstrap_owners\x18\x02 \x03(\tB\x0e\xbaH\v\x92\x01\b\x18\x01\"\x04r\x02\x10\x01R\x0fbootstrapOwnersB\n" +
-	"\n" +
-	"\b_enabled\"\x88\x03\n" +
+	"\x19_template_resync_interval\"b\n" +
+	"%KubernetesAgentSubstrateAuthorization\x129\n" +
+	"\x10bootstrap_owners\x18\x01 \x03(\tB\x0e\xbaH\v\x92\x01\b\x18\x01\"\x04r\x02\x10\x01R\x0fbootstrapOwners\"\x8f\x03\n" +
 	" KubernetesAgentSubstrateActorJwt\x12\x82\x01\n" +
-	"\talgorithm\x18\x01 \x01(\x0e2d.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateActorJwt.AlgorithmR\talgorithm\x12\xbb\x01\n" +
-	"\x06issuer\x18\x02 \x01(\tB\xa2\x01\xbaH\x9e\x01\xba\x01\x97\x01\n" +
-	"\x16actor_jwt_issuer_https\x12Oactor_jwt.issuer is an https URL with a host and no userinfo, query or fragment\x1a,this.matches('^https://[^/?#@]+(/[^?#]*)?$')\xd8\x01\x01R\x06issuer\"!\n" +
+	"\talgorithm\x18\x01 \x01(\x0e2d.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateActorJwt.AlgorithmR\talgorithm\x12\xc2\x01\n" +
+	"\x06issuer\x18\x02 \x01(\tB\xa9\x01\xbaH\xa5\x01\xba\x01\x9e\x01\n" +
+	"\x16actor_jwt_issuer_https\x12`actor_jwt.issuer is https://<host>, optionally with a port: no path, userinfo, query or fragment\x1a\"this.matches('^https://[^/?#@]+$')\xd8\x01\x01R\x06issuer\"!\n" +
 	"\tAlgorithm\x12\t\n" +
 	"\x05es256\x10\x00\x12\t\n" +
 	"\x05rs256\x10\x01\"\xb6\x02\n" +
@@ -3454,7 +4051,7 @@ const file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDe
 	"\tresources\x18\x01 \x01(\v2*.dev.planton.kubernetes.ContainerResourcesR\tresources\x12_\n" +
 	"\tlog_level\x18\x02 \x01(\x0e2B.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.LogLevelR\blogLevel\x12I\n" +
 	"\x17worker_sync_concurrency\x18\x03 \x01(\x05B\f\xbaH\x04\x1a\x02 \x00\x8a\xa6\x1d\x012H\x00R\x15workerSyncConcurrency\x88\x01\x01B\x1a\n" +
-	"\x18_worker_sync_concurrency\"\xd3\v\n" +
+	"\x18_worker_sync_concurrency\"\xf1\x0e\n" +
 	"!KubernetesAgentSubstrateNodeAgent\x12H\n" +
 	"\tresources\x18\x01 \x01(\v2*.dev.planton.kubernetes.ContainerResourcesR\tresources\x12_\n" +
 	"\tlog_level\x18\x02 \x01(\x0e2B.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.LogLevelR\blogLevel\x12\x92\x01\n" +
@@ -3469,14 +4066,71 @@ const file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDe
 	"\x1fnode_agent_drain_timeout_format\x120drain_timeout must be a Go duration such as \"5m\"\x1a7this.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$')\x8a\xa6\x1d\x025mH\x02R\fdrainTimeout\x88\x01\x01\x12}\n" +
 	"\vimage_cache\x18\b \x01(\v2\\.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateImageCacheR\n" +
 	"imageCache\x12Q\n" +
-	"\x1aasset_staging_capacity_gib\x18\t \x01(\x05B\x0f\xbaH\a\x1a\x05\x18\x80\b \x00\x8a\xa6\x1d\x018H\x03R\x17assetStagingCapacityGib\x88\x01\x01\x1a?\n" +
+	"\x1aasset_staging_capacity_gib\x18\t \x01(\x05B\x0f\xbaH\a\x1a\x05\x18\x80\b \x00\x8a\xa6\x1d\x018H\x03R\x17assetStagingCapacityGib\x88\x01\x01\x12}\n" +
+	"\tsnapshots\x18\n" +
+	" \x01(\v2_.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNodeSnapshotsR\tsnapshots\x12\x93\x01\n" +
+	"\x13sandbox_asset_cache\x18\v \x01(\v2c.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSandboxAssetCacheR\x11sandboxAssetCache\x12\x86\x01\n" +
+	"\x0esnapshot_cache\x18\f \x01(\v2_.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSnapshotCacheR\rsnapshotCache\x1a?\n" +
 	"\x11NodeSelectorEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x1c\n" +
 	"\x1a_actor_stats_poll_intervalB\x0e\n" +
 	"\f_drain_delayB\x10\n" +
 	"\x0e_drain_timeoutB\x1d\n" +
-	"\x1b_asset_staging_capacity_gib\"\x8c\a\n" +
+	"\x1b_asset_staging_capacity_gib\"\xd6\x11\n" +
+	"%KubernetesAgentSubstrateNodeSnapshots\x12\xfd\x01\n" +
+	"\fupload_delay\x18\x01 \x01(\tB\xd4\x01\xbaH\xca\x01\xba\x01\xc6\x01\n" +
+	"\x1dsnapshots_upload_delay_format\x128upload_delay must be a positive Go duration such as \"5m\"\x1akthis.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$') && !this.matches('^(0+(\\\\.0+)?(ns|us|ms|s|m|h))+$')\x8a\xa6\x1d\x025mH\x00R\vuploadDelay\x88\x01\x01\x12\xff\x01\n" +
+	"\fdetach_delay\x18\x02 \x01(\tB\xd6\x01\xbaH\xcb\x01\xba\x01\xc7\x01\n" +
+	"\x1dsnapshots_detach_delay_format\x129detach_delay must be a positive Go duration such as \"30m\"\x1akthis.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$') && !this.matches('^(0+(\\\\.0+)?(ns|us|ms|s|m|h))+$')\x8a\xa6\x1d\x0330mH\x01R\vdetachDelay\x88\x01\x01\x12\xdc\x01\n" +
+	"\x0eupload_timeout\x18\x03 \x01(\tB\xaf\x01\xbaH\xa5\x01\xba\x01\xa1\x01\n" +
+	"\x1fsnapshots_upload_timeout_format\x12Eupload_timeout must be a Go duration such as \"2m\" (\"0s\" turns it off)\x1a7this.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$')\x8a\xa6\x1d\x022mH\x02R\ruploadTimeout\x88\x01\x01\x12K\n" +
+	"\x15upload_throughput_mib\x18\x04 \x01(\x05B\x12\xbaH\b\x1a\x06\x18\x80\x80@(\x00\x8a\xa6\x1d\x03100H\x03R\x13uploadThroughputMib\x88\x01\x01\x128\n" +
+	"\x0eupload_workers\x18\x05 \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x012H\x04R\ruploadWorkers\x88\x01\x01\x128\n" +
+	"\x0edetach_workers\x18\x06 \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x012H\x05R\rdetachWorkers\x88\x01\x01\x128\n" +
+	"\x0ereport_workers\x18\a \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x06R\rreportWorkers\x88\x01\x01\x12\x9d\x02\n" +
+	"\x14report_give_up_after\x18\b \x01(\tB\xe6\x01\xbaH\xdb\x01\xba\x01\xd7\x01\n" +
+	"%snapshots_report_give_up_after_format\x12Areport_give_up_after must be a positive Go duration such as \"10m\"\x1akthis.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$') && !this.matches('^(0+(\\\\.0+)?(ns|us|ms|s|m|h))+$')\x8a\xa6\x1d\x0310mH\aR\x11reportGiveUpAfter\x88\x01\x01\x12\x85\x02\n" +
+	"\x14upload_memory_budget\x18\t \x01(\tB\xcd\x01\xbaH\xc0\x01\xba\x01\xbc\x01\n" +
+	"'snapshots_upload_memory_budget_quantity\x12Kupload_memory_budget must be a Kubernetes quantity such as \"512Mi\" or \"2Gi\"\x1aDthis.matches('^[0-9]+(\\\\.[0-9]+)?(Ki|Mi|Gi|Ti|Pi|Ei|k|M|G|T|P|E)?$')\x8a\xa6\x1d\x05512MiH\bR\x12uploadMemoryBudget\x88\x01\x01:\xee\x03\xbaH\xea\x03\x1a\xe7\x03\n" +
+	"\x1esnapshots_upload_within_detach\x12pupload_delay must not exceed detach_delay: a snapshot must reach object storage before its actor leaves the node\x1a\xd2\x02!(has(this.upload_delay) ? this.upload_delay : '5m').matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$') || !(has(this.detach_delay) ? this.detach_delay : '30m').matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$') || duration(has(this.upload_delay) ? this.upload_delay : '5m') <= duration(has(this.detach_delay) ? this.detach_delay : '30m')B\x0f\n" +
+	"\r_upload_delayB\x0f\n" +
+	"\r_detach_delayB\x11\n" +
+	"\x0f_upload_timeoutB\x18\n" +
+	"\x16_upload_throughput_mibB\x11\n" +
+	"\x0f_upload_workersB\x11\n" +
+	"\x0f_detach_workersB\x11\n" +
+	"\x0f_report_workersB\x17\n" +
+	"\x15_report_give_up_afterB\x17\n" +
+	"\x15_upload_memory_budget\"\x91\x05\n" +
+	")KubernetesAgentSubstrateSandboxAssetCache\x12\xb6\x01\n" +
+	"\amin_age\x18\x01 \x01(\tB\x97\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
+	"\"sandbox_asset_cache_min_age_format\x12*min_age must be a Go duration such as \"1h\"\x1a7this.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$')\x8a\xa6\x1d\x021hH\x00R\x06minAge\x88\x01\x01\x12\x8b\x02\n" +
+	"\rfetch_timeout\x18\x02 \x01(\tB\xe0\x01\xbaH\xd6\x01\xba\x01\xd2\x01\n" +
+	"(sandbox_asset_cache_fetch_timeout_format\x129fetch_timeout must be a positive Go duration such as \"5m\"\x1akthis.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$') && !this.matches('^(0+(\\\\.0+)?(ns|us|ms|s|m|h))+$')\x8a\xa6\x1d\x025mH\x01R\ffetchTimeout\x88\x01\x01\x12\x7f\n" +
+	"\beviction\x18\x03 \x01(\v2c.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateFileCacheEvictionR\bevictionB\n" +
+	"\n" +
+	"\b_min_ageB\x10\n" +
+	"\x0e_fetch_timeout\"\xa3\x05\n" +
+	"%KubernetesAgentSubstrateSnapshotCache\x12\x1a\n" +
+	"\bdisabled\x18\x01 \x01(\bR\bdisabled\x12\xb3\x01\n" +
+	"\amin_age\x18\x02 \x01(\tB\x94\x01\xbaH\x89\x01\xba\x01\x85\x01\n" +
+	"\x1dsnapshot_cache_min_age_format\x12+min_age must be a Go duration such as \"10m\"\x1a7this.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$')\x8a\xa6\x1d\x0310mH\x00R\x06minAge\x88\x01\x01\x12\x88\x02\n" +
+	"\rfetch_timeout\x18\x03 \x01(\tB\xdd\x01\xbaH\xd2\x01\xba\x01\xce\x01\n" +
+	"#snapshot_cache_fetch_timeout_format\x12:fetch_timeout must be a positive Go duration such as \"10m\"\x1akthis.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$') && !this.matches('^(0+(\\\\.0+)?(ns|us|ms|s|m|h))+$')\x8a\xa6\x1d\x0310mH\x01R\ffetchTimeout\x88\x01\x01\x12\x7f\n" +
+	"\beviction\x18\x04 \x01(\v2c.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateFileCacheEvictionR\bevictionB\n" +
+	"\n" +
+	"\b_min_ageB\x10\n" +
+	"\x0e_fetch_timeout\"\xe2\x02\n" +
+	")KubernetesAgentSubstrateFileCacheEviction\x12\xcf\x01\n" +
+	"\tgc_period\x18\x01 \x01(\tB\xac\x01\xbaH\xa2\x01\xba\x01\x9e\x01\n" +
+	"\x1bfile_cache_gc_period_format\x12Fgc_period must be a Go duration such as \"5m\" (\"0s\" turns eviction off)\x1a7this.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$')\x8a\xa6\x1d\x025mH\x00R\bgcPeriod\x88\x01\x01\x12.\n" +
+	"\tmax_bytes\x18\x02 \x01(\x03B\f\xbaH\x04\"\x02(\x00\x8a\xa6\x1d\x010H\x01R\bmaxBytes\x88\x01\x01\x12\x17\n" +
+	"\adry_run\x18\x03 \x01(\bR\x06dryRunB\f\n" +
+	"\n" +
+	"_gc_periodB\f\n" +
+	"\n" +
+	"_max_bytes\"\x8c\a\n" +
 	"\"KubernetesAgentSubstrateImageCache\x12\xf3\x01\n" +
 	"\tgc_period\x18\x01 \x01(\tB\xd0\x01\xbaH\xc6\x01\xba\x01\xc2\x01\n" +
 	"\x1cimage_cache_gc_period_format\x125gc_period must be a positive Go duration such as \"5m\"\x1akthis.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$') && !this.matches('^(0+(\\\\.0+)?(ns|us|ms|s|m|h))+$')\x8a\xa6\x1d\x025mH\x00R\bgcPeriod\x88\x01\x01\x127\n" +
@@ -3594,7 +4248,7 @@ const file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDe
 	"\x0ekube_api_burst\x18\x04 \x01(\x05B\a\xbaH\x04\x1a\x02 \x00H\x02R\fkubeApiBurst\x88\x01\x01B\x15\n" +
 	"\x13_workers_per_signerB\x0f\n" +
 	"\r_kube_api_qpsB\x11\n" +
-	"\x0f_kube_api_burst\"\x8d\t\n" +
+	"\x0f_kube_api_burst\"\x96\v\n" +
 	"!KubernetesAgentSubstrateTelemetry\x12\xc5\x01\n" +
 	"\rotlp_endpoint\x18\x01 \x01(\tB\x9f\x01\xbaH\x9b\x01\xba\x01\x94\x01\n" +
 	"\x11otlp_endpoint_url\x12\\otlp_endpoint is an http or https URL such as \"http://otel-collector.observability.svc:4317\"\x1a!this.matches('^https?://[^/?#]+')\xd8\x01\x01R\fotlpEndpoint\x12C\n" +
@@ -3606,11 +4260,25 @@ const file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDe
 	"always_offR\ftraceidratioR\x15parentbased_always_onR\x16parentbased_always_offR\x18parentbased_traceidratioR\rtracesSampler\x12N\n" +
 	"\x14traces_sampler_ratio\x18\x06 \x01(\x01B\x17\xbaH\x14\x12\x12\x19\x00\x00\x00\x00\x00\x00\xf0?)\x00\x00\x00\x00\x00\x00\x00\x00H\x00R\x12tracesSamplerRatio\x88\x01\x01\x12G\n" +
 	"\x19metric_export_interval_ms\x18\a \x01(\x05B\a\xbaH\x04\x1a\x02 \x00H\x01R\x16metricExportIntervalMs\x88\x01\x01\x12E\n" +
-	"\x18metric_export_timeout_ms\x18\b \x01(\x05B\a\xbaH\x04\x1a\x02 \x00H\x02R\x15metricExportTimeoutMs\x88\x01\x01:\xe9\x01\xbaH\xe5\x01\x1a\xe2\x01\n" +
+	"\x18metric_export_timeout_ms\x18\b \x01(\x05B\a\xbaH\x04\x1a\x02 \x00H\x02R\x15metricExportTimeoutMs\x88\x01\x01\x12P\n" +
+	"\x17worker_traces_exporters\x18\t \x03(\tB\x18\xbaH\x15\x92\x01\x12\x18\x01\"\x0er\fR\x04otlpR\x04noneR\x15workerTracesExporters\x12^\n" +
+	"\x18worker_metrics_exporters\x18\n" +
+	" \x03(\tB$\xbaH!\x92\x01\x1e\x18\x01\"\x1ar\x18R\x04otlpR\n" +
+	"prometheusR\x04noneR\x16workerMetricsExporters\x12U\n" +
+	"\x15worker_logs_exporters\x18\v \x03(\tB!\xbaH\x1e\x92\x01\x1b\x18\x01\"\x17r\x15R\x04otlpR\aconsoleR\x04noneR\x13workerLogsExporters:\xe9\x01\xbaH\xe5\x01\x1a\xe2\x01\n" +
 	"(traces_sampler_ratio_needs_ratio_sampler\x12Ntraces_sampler_ratio applies to traceidratio and parentbased_traceidratio only\x1af!has(this.traces_sampler_ratio) || this.traces_sampler in ['traceidratio', 'parentbased_traceidratio']B\x17\n" +
 	"\x15_traces_sampler_ratioB\x1c\n" +
 	"\x1a_metric_export_interval_msB\x1b\n" +
-	"\x19_metric_export_timeout_ms*4\n" +
+	"\x19_metric_export_timeout_ms\"\xe4\x03\n" +
+	"&KubernetesAgentSubstrateIdentityServer\x12-\n" +
+	"\breplicas\x18\x01 \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x012H\x00R\breplicas\x88\x01\x01\x12H\n" +
+	"\tresources\x18\x02 \x01(\v2*.dev.planton.kubernetes.ContainerResourcesR\tresources\x12_\n" +
+	"\tlog_level\x18\x03 \x01(\x0e2B.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.LogLevelR\blogLevel\x12\xc2\x01\n" +
+	"\vdrain_grace\x18\x04 \x01(\tB\x9b\x01\xbaH\x91\x01\xba\x01\x8d\x01\n" +
+	"\"identity_server_drain_grace_format\x12.drain_grace must be a Go duration such as \"5s\"\x1a7this.matches('^([0-9]+(\\\\.[0-9]+)?(ns|us|ms|s|m|h))+$')\x8a\xa6\x1d\x025sH\x01R\n" +
+	"drainGrace\x88\x01\x01B\v\n" +
+	"\t_replicasB\x0e\n" +
+	"\f_drain_grace*4\n" +
 	"\bLogLevel\x12\b\n" +
 	"\x04info\x10\x00\x12\t\n" +
 	"\x05debug\x10\x01\x12\b\n" +
@@ -3631,7 +4299,7 @@ func file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDes
 }
 
 var file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 5)
-var file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 33)
+var file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 38)
 var file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_goTypes = []any{
 	(LogLevel)(0), // 0: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.LogLevel
 	(KubernetesAgentSubstrateSpec_ClusterSize)(0),              // 1: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSpec.ClusterSize
@@ -3658,25 +4326,30 @@ var file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_goTypes
 	(*KubernetesAgentSubstrateActorJwt)(nil),                   // 22: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateActorJwt
 	(*KubernetesAgentSubstrateController)(nil),                 // 23: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateController
 	(*KubernetesAgentSubstrateNodeAgent)(nil),                  // 24: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNodeAgent
-	(*KubernetesAgentSubstrateImageCache)(nil),                 // 25: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateImageCache
-	(*KubernetesAgentSubstrateRouter)(nil),                     // 26: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateRouter
-	(*KubernetesAgentSubstrateParkedRequests)(nil),             // 27: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateParkedRequests
-	(*KubernetesAgentSubstrateEgress)(nil),                     // 28: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateEgress
-	(*KubernetesAgentSubstrateCredentialProvider)(nil),         // 29: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCredentialProvider
-	(*KubernetesAgentSubstrateCredentialProviderDisabled)(nil), // 30: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCredentialProviderDisabled
-	(*KubernetesAgentSubstrateKubernetesSecretsProvider)(nil),  // 31: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateKubernetesSecretsProvider
-	(*KubernetesAgentSubstrateNamespaceGrant)(nil),             // 32: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNamespaceGrant
-	(*KubernetesAgentSubstrateExternalCredentialProvider)(nil), // 33: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateExternalCredentialProvider
-	(*KubernetesAgentSubstrateExtProcService)(nil),             // 34: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateExtProcService
-	(*KubernetesAgentSubstratePodCertificates)(nil),            // 35: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstratePodCertificates
-	(*KubernetesAgentSubstrateTelemetry)(nil),                  // 36: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateTelemetry
-	nil,                                   // 37: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNodeAgent.NodeSelectorEntry
-	(*v1.StringValueOrRef)(nil),           // 38: dev.planton.shared.foreignkey.v1.StringValueOrRef
-	(*kubernetes.ContainerResources)(nil), // 39: dev.planton.kubernetes.ContainerResources
-	(*kubernetes.WorkloadToleration)(nil), // 40: dev.planton.kubernetes.WorkloadToleration
+	(*KubernetesAgentSubstrateNodeSnapshots)(nil),              // 25: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNodeSnapshots
+	(*KubernetesAgentSubstrateSandboxAssetCache)(nil),          // 26: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSandboxAssetCache
+	(*KubernetesAgentSubstrateSnapshotCache)(nil),              // 27: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSnapshotCache
+	(*KubernetesAgentSubstrateFileCacheEviction)(nil),          // 28: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateFileCacheEviction
+	(*KubernetesAgentSubstrateImageCache)(nil),                 // 29: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateImageCache
+	(*KubernetesAgentSubstrateRouter)(nil),                     // 30: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateRouter
+	(*KubernetesAgentSubstrateParkedRequests)(nil),             // 31: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateParkedRequests
+	(*KubernetesAgentSubstrateEgress)(nil),                     // 32: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateEgress
+	(*KubernetesAgentSubstrateCredentialProvider)(nil),         // 33: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCredentialProvider
+	(*KubernetesAgentSubstrateCredentialProviderDisabled)(nil), // 34: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCredentialProviderDisabled
+	(*KubernetesAgentSubstrateKubernetesSecretsProvider)(nil),  // 35: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateKubernetesSecretsProvider
+	(*KubernetesAgentSubstrateNamespaceGrant)(nil),             // 36: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNamespaceGrant
+	(*KubernetesAgentSubstrateExternalCredentialProvider)(nil), // 37: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateExternalCredentialProvider
+	(*KubernetesAgentSubstrateExtProcService)(nil),             // 38: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateExtProcService
+	(*KubernetesAgentSubstratePodCertificates)(nil),            // 39: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstratePodCertificates
+	(*KubernetesAgentSubstrateTelemetry)(nil),                  // 40: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateTelemetry
+	(*KubernetesAgentSubstrateIdentityServer)(nil),             // 41: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateIdentityServer
+	nil,                                   // 42: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNodeAgent.NodeSelectorEntry
+	(*v1.StringValueOrRef)(nil),           // 43: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*kubernetes.ContainerResources)(nil), // 44: dev.planton.kubernetes.ContainerResources
+	(*kubernetes.WorkloadToleration)(nil), // 45: dev.planton.kubernetes.WorkloadToleration
 }
 var file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_depIdxs = []int32{
-	38, // 0: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	43, // 0: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	6,  // 1: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSpec.crds:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCrds
 	7,  // 2: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSpec.platform:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstratePlatform
 	10, // 3: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSpec.database:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateDatabase
@@ -3684,67 +4357,76 @@ var file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_depIdxs
 	20, // 5: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSpec.api_server:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateApiServer
 	23, // 6: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSpec.controller:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateController
 	24, // 7: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSpec.node_agent:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNodeAgent
-	26, // 8: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSpec.router:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateRouter
-	28, // 9: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSpec.egress:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateEgress
-	35, // 10: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSpec.pod_certificates:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstratePodCertificates
-	36, // 11: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSpec.telemetry:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateTelemetry
+	30, // 8: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSpec.router:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateRouter
+	32, // 9: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSpec.egress:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateEgress
+	39, // 10: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSpec.pod_certificates:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstratePodCertificates
+	40, // 11: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSpec.telemetry:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateTelemetry
 	1,  // 12: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSpec.cluster_size:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSpec.ClusterSize
-	8,  // 13: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstratePlatform.gke:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateGke
-	9,  // 14: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstratePlatform.generic:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateGeneric
-	38, // 15: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateGke.cluster_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	38, // 16: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateGke.api_server_service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	38, // 17: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateGke.node_agent_service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	11, // 18: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateDatabase.bundled:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateBundledDatabase
-	12, // 19: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateDatabase.external:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateExternalDatabase
-	13, // 20: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateDatabase.cloud_sql:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCloudSqlDatabase
-	39, // 21: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateBundledDatabase.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	15, // 22: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateExternalDatabase.read_write_connection_string:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSecretKeyRef
-	15, // 23: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateExternalDatabase.owner_connection_string:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSecretKeyRef
-	14, // 24: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateExternalDatabase.roles:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateDatabaseRoles
-	38, // 25: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCloudSqlDatabase.instance_connection_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	2,  // 26: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCloudSqlDatabase.ip_type:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCloudSqlDatabase.IpType
-	15, // 27: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCloudSqlDatabase.read_write_connection_string:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSecretKeyRef
-	15, // 28: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCloudSqlDatabase.owner_connection_string:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSecretKeyRef
-	14, // 29: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCloudSqlDatabase.roles:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateDatabaseRoles
-	38, // 30: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSecretKeyRef.name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	17, // 31: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateStorage.gcs:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateGcsStorage
-	18, // 32: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateStorage.s3:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateS3Storage
-	38, // 33: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateGcsStorage.bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	38, // 34: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateS3Storage.endpoint:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	19, // 35: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateS3Storage.credentials:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateS3Credentials
-	38, // 36: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateS3Credentials.secret_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	39, // 37: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateApiServer.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	0,  // 38: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateApiServer.log_level:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.LogLevel
-	21, // 39: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateApiServer.authorization:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateAuthorization
-	22, // 40: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateApiServer.actor_jwt:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateActorJwt
-	3,  // 41: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateActorJwt.algorithm:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateActorJwt.Algorithm
-	39, // 42: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateController.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	0,  // 43: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateController.log_level:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.LogLevel
-	39, // 44: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNodeAgent.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	0,  // 45: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNodeAgent.log_level:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.LogLevel
-	37, // 46: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNodeAgent.node_selector:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNodeAgent.NodeSelectorEntry
-	40, // 47: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNodeAgent.tolerations:type_name -> dev.planton.kubernetes.WorkloadToleration
-	25, // 48: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNodeAgent.image_cache:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateImageCache
-	4,  // 49: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateRouter.dataplane:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateRouter.Dataplane
-	39, // 50: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateRouter.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	0,  // 51: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateRouter.log_level:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.LogLevel
-	27, // 52: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateRouter.parked_requests:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateParkedRequests
-	29, // 53: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateEgress.credential_provider:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCredentialProvider
-	39, // 54: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateEgress.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	0,  // 55: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateEgress.log_level:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.LogLevel
-	34, // 56: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateEgress.additional_ext_proc_service:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateExtProcService
-	30, // 57: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCredentialProvider.disabled:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCredentialProviderDisabled
-	31, // 58: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCredentialProvider.kubernetes_secrets:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateKubernetesSecretsProvider
-	33, // 59: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCredentialProvider.external:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateExternalCredentialProvider
-	32, // 60: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateKubernetesSecretsProvider.grants:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNamespaceGrant
-	39, // 61: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateKubernetesSecretsProvider.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	0,  // 62: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateKubernetesSecretsProvider.log_level:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.LogLevel
-	39, // 63: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstratePodCertificates.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	64, // [64:64] is the sub-list for method output_type
-	64, // [64:64] is the sub-list for method input_type
-	64, // [64:64] is the sub-list for extension type_name
-	64, // [64:64] is the sub-list for extension extendee
-	0,  // [0:64] is the sub-list for field type_name
+	41, // 13: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSpec.identity_server:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateIdentityServer
+	8,  // 14: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstratePlatform.gke:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateGke
+	9,  // 15: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstratePlatform.generic:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateGeneric
+	43, // 16: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateGke.cluster_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	43, // 17: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateGke.api_server_service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	43, // 18: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateGke.node_agent_service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	43, // 19: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateGke.snapshot_transfer_service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	11, // 20: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateDatabase.bundled:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateBundledDatabase
+	12, // 21: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateDatabase.external:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateExternalDatabase
+	13, // 22: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateDatabase.cloud_sql:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCloudSqlDatabase
+	44, // 23: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateBundledDatabase.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	15, // 24: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateExternalDatabase.read_write_connection_string:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSecretKeyRef
+	15, // 25: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateExternalDatabase.owner_connection_string:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSecretKeyRef
+	14, // 26: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateExternalDatabase.roles:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateDatabaseRoles
+	43, // 27: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCloudSqlDatabase.instance_connection_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	2,  // 28: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCloudSqlDatabase.ip_type:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCloudSqlDatabase.IpType
+	15, // 29: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCloudSqlDatabase.read_write_connection_string:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSecretKeyRef
+	15, // 30: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCloudSqlDatabase.owner_connection_string:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSecretKeyRef
+	14, // 31: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCloudSqlDatabase.roles:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateDatabaseRoles
+	43, // 32: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSecretKeyRef.name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	17, // 33: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateStorage.gcs:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateGcsStorage
+	18, // 34: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateStorage.s3:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateS3Storage
+	43, // 35: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateGcsStorage.bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	43, // 36: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateS3Storage.endpoint:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	19, // 37: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateS3Storage.credentials:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateS3Credentials
+	43, // 38: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateS3Credentials.secret_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	44, // 39: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateApiServer.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	0,  // 40: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateApiServer.log_level:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.LogLevel
+	21, // 41: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateApiServer.authorization:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateAuthorization
+	22, // 42: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateApiServer.actor_jwt:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateActorJwt
+	3,  // 43: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateActorJwt.algorithm:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateActorJwt.Algorithm
+	44, // 44: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateController.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	0,  // 45: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateController.log_level:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.LogLevel
+	44, // 46: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNodeAgent.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	0,  // 47: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNodeAgent.log_level:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.LogLevel
+	42, // 48: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNodeAgent.node_selector:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNodeAgent.NodeSelectorEntry
+	45, // 49: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNodeAgent.tolerations:type_name -> dev.planton.kubernetes.WorkloadToleration
+	29, // 50: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNodeAgent.image_cache:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateImageCache
+	25, // 51: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNodeAgent.snapshots:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNodeSnapshots
+	26, // 52: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNodeAgent.sandbox_asset_cache:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSandboxAssetCache
+	27, // 53: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNodeAgent.snapshot_cache:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSnapshotCache
+	28, // 54: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSandboxAssetCache.eviction:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateFileCacheEviction
+	28, // 55: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSnapshotCache.eviction:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateFileCacheEviction
+	4,  // 56: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateRouter.dataplane:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateRouter.Dataplane
+	44, // 57: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateRouter.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	0,  // 58: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateRouter.log_level:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.LogLevel
+	31, // 59: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateRouter.parked_requests:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateParkedRequests
+	33, // 60: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateEgress.credential_provider:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCredentialProvider
+	44, // 61: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateEgress.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	0,  // 62: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateEgress.log_level:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.LogLevel
+	38, // 63: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateEgress.additional_ext_proc_service:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateExtProcService
+	34, // 64: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCredentialProvider.disabled:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCredentialProviderDisabled
+	35, // 65: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCredentialProvider.kubernetes_secrets:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateKubernetesSecretsProvider
+	37, // 66: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateCredentialProvider.external:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateExternalCredentialProvider
+	36, // 67: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateKubernetesSecretsProvider.grants:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateNamespaceGrant
+	44, // 68: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateKubernetesSecretsProvider.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	0,  // 69: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateKubernetesSecretsProvider.log_level:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.LogLevel
+	44, // 70: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstratePodCertificates.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	44, // 71: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateIdentityServer.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	0,  // 72: dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateIdentityServer.log_level:type_name -> dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.LogLevel
+	73, // [73:73] is the sub-list for method output_type
+	73, // [73:73] is the sub-list for method input_type
+	73, // [73:73] is the sub-list for extension type_name
+	73, // [73:73] is the sub-list for extension extendee
+	0,  // [0:73] is the sub-list for field type_name
 }
 
 func init() { file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_init() }
@@ -3752,6 +4434,7 @@ func file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_init()
 	if File_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto != nil {
 		return
 	}
+	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[1].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[2].OneofWrappers = []any{
 		(*KubernetesAgentSubstratePlatform_Gke)(nil),
@@ -3772,28 +4455,32 @@ func file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_init()
 	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[13].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[14].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[15].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[16].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[18].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[19].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[20].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[21].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[22].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[23].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[24].OneofWrappers = []any{
+	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[24].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[25].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[26].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[27].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[28].OneofWrappers = []any{
 		(*KubernetesAgentSubstrateCredentialProvider_Disabled)(nil),
 		(*KubernetesAgentSubstrateCredentialProvider_KubernetesSecrets)(nil),
 		(*KubernetesAgentSubstrateCredentialProvider_External)(nil),
 	}
-	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[26].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[30].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[31].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[34].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[35].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_msgTypes[36].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDesc), len(file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      5,
-			NumMessages:   33,
+			NumMessages:   38,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

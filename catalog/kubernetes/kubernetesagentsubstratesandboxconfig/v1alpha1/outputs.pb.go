@@ -22,10 +22,9 @@ const (
 )
 
 // KubernetesAgentSubstrateSandboxConfigOutputs captures observable outputs
-// after the SandboxConfig is created on the target cluster. The two values are
-// exactly what an actor template names (`sandbox_config.config_name` and
-// `sandbox_config.sandbox_class`, which must agree), and the name is what a
-// worker pool's `sandbox_classes[].config_ref.name` references.
+// after the SandboxConfig is created on the target cluster: exactly what a
+// worker pool's `sandbox_classes` entry pairs (its `sandbox_class`, and its
+// `config_ref.name`, which references the config).
 type KubernetesAgentSubstrateSandboxConfigOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the created SandboxConfig (the spec's `name`, its metadata.name in

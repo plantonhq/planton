@@ -89,7 +89,14 @@ func applySecrets(ctx *pulumi.Context, s *settings, labels map[string]string, op
 		if err != nil {
 			return nil, err
 		}
-		return map[string]string{"pool": jwtPoolJSON(s.apiServer.jwtAlgorithm, pkcs8, args[1].(string))}, nil
+		jwks, err := jwksJSON(s.apiServer.jwtAlgorithm, args[1].(string))
+		if err != nil {
+			return nil, err
+		}
+		return map[string]string{
+			"pool": jwtPoolJSON(s.apiServer.jwtAlgorithm, pkcs8, args[1].(string)),
+			"jwks": jwks,
+		}, nil
 	}).(pulumi.StringMapOutput)
 	if err := secret(secretActorJWTPool, vars.Namespace, "Opaque", jwtData); err != nil {
 		return nil, err

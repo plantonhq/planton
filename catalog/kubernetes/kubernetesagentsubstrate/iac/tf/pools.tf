@@ -8,8 +8,18 @@
 # with its armour and line breaks removed. The key ID is base64url (no
 # padding) of the SHA-256 of the public key's PEM text: upstream names a key
 # by hashing its DER, which Terraform cannot (it hashes only text); the pool
-# accepts any ID, nothing at this release publishes the key set, and both
-# engines derive this one from the text they share.
+# accepts any ID, the published key set carries whatever ID the pool names,
+# and both engines derive this one from the text they share.
+#
+# The key set (jwksJSON) is upstream's JWKS of the pool, byte for byte, in
+# its field order (so a format string, not jsonencode, which sorts keys).
+# Terraform has no bytes, so the public key's DER is decoded as ISO-8859-1,
+# one character per byte, and each coordinate is cut out by regex, which
+# counts characters (substr and length count grapheme clusters, and read a
+# CR LF byte pair as one). The tls provider's keys have fixed layouts: a
+# P-256 SubjectPublicKeyInfo is 91 bytes with x at 27 and y at 59, 32 bytes
+# each; an RSA-4096 one is 550 bytes with the modulus at 33 (after its 0x00
+# sign byte), 512 bytes, and the exponent at 547, 3 bytes.
 #
 # Validity is ten years, not upstream's 365 days: every connection that
 # chains to an expired root fails, and this provider would replace an
@@ -79,4 +89,17 @@ locals {
     }]
     ActiveForSigning = local.actor_jwt_key_id
   })
+
+  actor_jwt_spki = textdecodebase64(replace(replace(tls_private_key.actor_jwt.public_key_pem, "/-----(BEGIN|END) [A-Z ]+-----/", ""), "/\\s+/", ""), "ISO-8859-1")
+  actor_jwt_parts = {
+    for name, at in local.actor_jwt_algorithm == "RS256" ? tomap({ n = [33, 512], e = [547, 3] }) : tomap({ x = [27, 32], y = [59, 32] }) :
+    name => replace(replace(replace(textencodebase64(regex("^(?s).{${at[0]}}(.{${at[1]}})", local.actor_jwt_spki)[0], "ISO-8859-1"), "+", "-"), "/[/]/", "_"), "/=+$/", "")
+  }
+  actor_jwt_jwks = local.actor_jwt_algorithm == "RS256" ? format(
+    "{\"keys\":[{\"kty\":\"RSA\",\"kid\":\"%s\",\"use\":\"sig\",\"alg\":\"%s\",\"n\":\"%s\",\"e\":\"%s\"}]}",
+    local.actor_jwt_key_id, local.actor_jwt_algorithm, local.actor_jwt_parts.n, local.actor_jwt_parts.e,
+    ) : format(
+    "{\"keys\":[{\"kty\":\"EC\",\"kid\":\"%s\",\"use\":\"sig\",\"alg\":\"%s\",\"crv\":\"P-256\",\"x\":\"%s\",\"y\":\"%s\"}]}",
+    local.actor_jwt_key_id, local.actor_jwt_algorithm, local.actor_jwt_parts.x, local.actor_jwt_parts.y,
+  )
 }

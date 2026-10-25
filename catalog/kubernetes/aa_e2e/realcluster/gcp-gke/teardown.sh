@@ -54,6 +54,7 @@ destroy_node cloudflarer2bucket planton-e2e-gke-backups-r2
 destroy_node gcpgcsbucket planton-e2e-gke-backups
 destroy_node gcpgcsbucket planton-e2e-gke-langfuse
 destroy_node gcpgcsbucket planton-e2e-gke-substrate
+destroy_node gcpserviceaccountiammember planton-e2e-gke-ate-transfer-minter
 destroy_node gcpkmskeyiammember planton-e2e-gke-openbao-unseal-viewer
 destroy_node gcpkmskeyiammember planton-e2e-gke-openbao-unseal
 destroy_node gcpkmskey planton-e2e-gke-openbao-unseal
@@ -74,6 +75,7 @@ destroy_node gcpserviceaccount planton-e2e-gke-pg-backup
 destroy_node gcpserviceaccount planton-e2e-gke-langfuse
 destroy_node gcpserviceaccount planton-e2e-gke-atelet
 destroy_node gcpserviceaccount planton-e2e-gke-ate-api
+destroy_node gcpserviceaccount planton-e2e-gke-ate-transfer
 
 rm -f "${state_dir}/env.sh" "${state_dir}/kubeconfig"
 echo "==> teardown finished; run audit.sh"

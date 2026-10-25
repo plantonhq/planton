@@ -107,7 +107,28 @@ SHAPE_SOURCE_PATHS = (
     "cmd/ate-setup/internal/steps",
     "cmd/ate-setup/internal/config",
     "tools/setup-gcp",
+    # Builds the node agent's cache flags from a prefix (--<prefix>-gc-period
+    # and its siblings), which FLAG_PREFIX records.
+    "cmd/atelet/internal/filecachegc",
 )
+
+# The settings the module passes by name: every flag an installed binary
+# registers (a call on a flag set whose first string argument is the flag's
+# name, as pflag.Duration("x", ...) or fs.StringVar(&v, "x", ...)), every
+# ATE_* environment variable it reads, and the preview gates its --preview
+# accepts. A binary refuses a flag or gate it does not know and ignores a
+# variable it no longer reads, so a release claiming an earlier shape must keep
+# every one; one it adds is never set by the module and changes nothing an
+# install does.
+FLAG_REGISTRATION = re.compile(
+    r'\b(?:pflag|flag|fs|flags|\w+\.(?:Persistent)?Flags\(\))\.\w+\(\s*(?:&[\w.\[\]]+\s*,\s*)?"([a-z0-9][a-z0-9-]*)"'
+)
+# The environment variables a binary reads its settings from.
+ENVIRONMENT_VARIABLE = re.compile(r'"(ATE_[A-Z0-9_]+)"')
+# A helper handed a flag set and a prefix, registering the flags under it.
+FLAG_PREFIX = re.compile(r'\w+\(\s*(?:pflag\.CommandLine|fs|flags)\s*,\s*"([a-z0-9][a-z0-9-]*)"')
+PREVIEW_GATES_FILE = "internal/preview/preview.go"
+PREVIEW_GATE = re.compile(r'^\s*Gate\w+\s+Gate\s*=\s*"([^"]+)"', re.MULTILINE)
 
 # The files of a published tree a shape is compared over: everything an
 # install reads. images.json and SHA256SUMS describe the release itself, and
@@ -158,6 +179,8 @@ class Upstream:
     image_by_reference: dict
     # The name the Dockerfile-built Envoy image is published under.
     envoy_image: str
+    # The packages in Components, relative to the checkout.
+    packages: tuple
 
     @property
     def image_names(self) -> set:
@@ -224,6 +247,7 @@ def read_upstream(source: str) -> Upstream:
     return Upstream(
         image_by_reference={f"ko://{module_path}/{pkg}": pkg.rsplit("/", 1)[-1].lower() for pkg in packages},
         envoy_image=envoy_image,
+        packages=tuple(packages),
     )
 
 
@@ -556,6 +580,26 @@ def source_files(source: str) -> dict:
     return files
 
 
+def settings(source: str) -> set:
+    """The flags and environment variables the installed binaries read, and the preview gates."""
+    found = set()
+    for package in read_upstream(source).packages:
+        for root, dirs, names in os.walk(os.path.join(source, package)):
+            for name in names:
+                if name.endswith(".go") and not name.endswith("_test.go"):
+                    with open(os.path.join(root, name), encoding="utf-8") as f:
+                        text = f.read()
+                    found |= {f"{package}: --{flag}" for flag in FLAG_REGISTRATION.findall(text)}
+                    found |= {f"{package}: --{prefix}-*" for prefix in FLAG_PREFIX.findall(text)}
+                    found |= {f"{package}: ${variable}" for variable in ENVIRONMENT_VARIABLE.findall(text)}
+    try:
+        with open(os.path.join(source, PREVIEW_GATES_FILE), encoding="utf-8") as f:
+            found |= {f"preview gate {gate}" for gate in PREVIEW_GATE.findall(f.read())}
+    except OSError:
+        pass
+    return found
+
+
 def differing(ours: dict, theirs: dict, read) -> tuple:
     """The paths only one side has, and the shared paths whose contents differ."""
     only = sorted(set(ours) ^ set(theirs))
@@ -568,8 +612,9 @@ def check_shape(out: str, repository: str, version: str, shape: str, shape_relea
 
     The composed tree must equal the shape's published tree file for file once
     every image reference is reduced to its name (the digests and the tag are
-    the release's own), and the upstream code under SHAPE_SOURCE_PATHS must be
-    byte-identical at both tags.
+    the release's own), the upstream code under SHAPE_SOURCE_PATHS must be
+    byte-identical at both tags, and every setting the shape's binaries accept
+    must still be accepted.
     """
     pinned = re.compile(re.escape(repository) + r"""/([^\s:@"',\]}]+):[^\s@"',\]}]+@sha256:[0-9a-f]{64}""")
 
@@ -602,6 +647,14 @@ def check_shape(out: str, repository: str, version: str, shape: str, shape_relea
             "the installer's steps, settings or Google Cloud setup moved, which the module mirrors and the "
             "published tree does not show",
             f"read the change; then declare {version} as its own shape and adapt the module to it",
+        ))
+    removed = sorted(settings(shape_source) - settings(source))
+    if removed:
+        findings.append(finding(
+            f"{version} no longer accepts settings {shape} accepted: {', '.join(removed)}",
+            "the module passes upstream's flags and preview gates by name, and a binary refuses one it "
+            "does not know, so the module's install of this release would not start",
+            f"declare {version} as its own shape and adapt the module to the settings it accepts",
         ))
     if findings:
         raise CompositionError(findings)

@@ -20,7 +20,7 @@ import (
 // owns the namespace), and refuses at plan time a move the policy forbids.
 // The Terraform twin computes the same rule in preflight.tf.
 
-// version is a parsed release, "v0.5.0", or "v0.5" for a minor stamp.
+// version is a parsed release, "v0.6.0", or "v0.6" for a minor stamp.
 type version struct {
 	major, minor int
 }
@@ -71,17 +71,17 @@ func upgradeRule(installed, requested string) string {
 }
 
 // deploymentUpgradeRefused refuses an apply over an installation whose
-// stamp names a release this one cannot move from.
-func deploymentUpgradeRefused(installed, rule string) error {
+// stamp names a release the requested one cannot move from.
+func deploymentUpgradeRefused(installed, requested, rule string) error {
 	return failure.KubernetesUpgradeRefused(kindName, "Agent Substrate",
-		fmt.Sprintf("Deployment %s/%s", vars.Namespace, vars.APIServerName), installed, vars.Release, rule,
-		fmt.Sprintf("to install %s, back up what you need from the database, destroy this resource, then clear the database it used (`kubectl -n %s delete pvc %s` for the bundled one, or drop the %s schema of an external or Cloud SQL one), and apply again; to keep %s, deploy this resource from the Planton release that installed it", vars.Release, vars.Namespace, vars.PostgresVolumeClaim, "substrate", installed))
+		fmt.Sprintf("Deployment %s/%s", vars.Namespace, vars.APIServerName), installed, requested, rule,
+		fmt.Sprintf("to install %s, back up what you need from the database, destroy this resource, then clear the database it used (`kubectl -n %s delete pvc %s` for the bundled one, or drop the %s schema of an external or Cloud SQL one), and apply again; to keep %s, set spec.version back to it, or, for a release of another install shape, deploy this resource from the Planton release that installed it", requested, vars.Namespace, vars.PostgresVolumeClaim, "substrate", installed))
 }
 
 // volumeUpgradeRefused refuses a bundled database whose volume an earlier
 // installation's minor wrote: the API server would migrate or misread it.
-func volumeUpgradeRefused(installed, rule string) error {
+func volumeUpgradeRefused(installed, requested, rule string) error {
 	return failure.KubernetesUpgradeRefused(kindName, "Agent Substrate",
-		fmt.Sprintf("PersistentVolumeClaim %s/%s, the bundled database's volume left by an earlier installation,", vars.Namespace, vars.PostgresVolumeClaim), installed, vars.Release, rule,
-		fmt.Sprintf("to install %s, back up what you need from that database, delete the volume (`kubectl -n %s delete pvc %s`), and apply again; to keep the data, deploy this resource from the Planton release that wrote it", vars.Release, vars.Namespace, vars.PostgresVolumeClaim))
+		fmt.Sprintf("PersistentVolumeClaim %s/%s, the bundled database's volume left by an earlier installation,", vars.Namespace, vars.PostgresVolumeClaim), installed, requested, rule,
+		fmt.Sprintf("to install %s, back up what you need from that database, delete the volume (`kubectl -n %s delete pvc %s`), and apply again; to keep the data, set spec.version to a release of the minor that wrote it, or, for one of another install shape, deploy this resource from the Planton release that wrote it", requested, vars.Namespace, vars.PostgresVolumeClaim))
 }

@@ -27,26 +27,23 @@ const (
 // SandboxConfig: the exact sandbox runtime an actor boots with, for one
 // sandbox class. A config lists versions, each an exact set of files the node
 // agent downloads (the gVisor release tarball, or a microVM's hypervisor,
-// kernel and root filesystem), checked by SHA-256, plus the pause image a
-// gVisor sandbox holds its namespaces with. Every boot and every restore of
-// an actor uses the default version of the config its actor template names,
-// as the config stands at that moment.
+// kernel and root filesystem), checked by SHA-256. Every boot and every
+// restore of an actor uses the default version of the config its worker pool
+// resolves, as the config stands at that moment.
 //
 // 100% fidelity with the upstream SandboxConfig custom resource
-// (ate.dev/v1alpha1, cluster-scoped), pinned to Agent Substrate v0.5.0 -- the
-// release KubernetesAgentSubstrate installs -- and held to its served
-// definition by the mirror test. The definition's three rules and the
-// per-class asset rules of upstream's admission policy (sandboxconfig-assets)
-// are written below, so a config the cluster would refuse fails validation
+// (ate.dev/v1alpha1, cluster-scoped), pinned to the definition of the
+// Agent Substrate release KubernetesAgentSubstrate composes (v0.6.0) and held
+// to it by the mirror test. The definition's two rules and the per-class
+// asset rules of upstream's admission policy (sandboxconfig-assets) are
+// written below, so a config the cluster would refuse fails validation
 // before the apply.
 //
 // Who reads it:
-//   - an actor template names a config by name and class
-//     (`sandbox_config.config_name`, `sandbox_config.sandbox_class`); the API
-//     server refuses a template whose config is missing or of another class;
-//   - a worker pool resolves one config of its class
+//   - a worker pool resolves one config of each class it runs
 //     (KubernetesAgentSubstrateWorkerPool `sandbox_classes[].config_ref`, or
-//     the class default) and keeps it from deletion while it uses it;
+//     the class default) and keeps it from deletion while it uses it; an
+//     actor runs in the class of the pool its template selects;
 //   - the node agent on every node downloads each config's default version
 //     ahead of time (a microVM config only where /dev/kvm exists), so an
 //     actor's boot does not wait for the download.
@@ -58,12 +55,10 @@ const (
 // sandboxes, whose files you stage in your own bucket.
 type KubernetesAgentSubstrateSandboxConfigSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The SandboxConfig's name in the cluster (its metadata.name): the value an
-	// actor template's `sandbox_config.config_name` and a worker pool's
-	// `config_ref.name` name. A DNS subdomain name. Renaming creates a new
-	// config and deletes the old one; templates that name the old one stop
-	// resolving, and the old one stays (Terminating) while a worker pool still
-	// runs it.
+	// The SandboxConfig's name in the cluster (its metadata.name): the value a
+	// worker pool's `config_ref.name` names. A DNS subdomain name. Renaming
+	// creates a new config and deletes the old one, which stays (Terminating)
+	// while a worker pool still runs it.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// Labels on the SandboxConfig object itself (its metadata.labels), merged
 	// under Planton's identity labels (a key in both keeps the identity value).
@@ -86,13 +81,12 @@ type KubernetesAgentSubstrateSandboxConfigSpec struct {
 	// The sandbox runtime family this config is for. "gvisor" runs the actor
 	// under gVisor inside its worker pod (no node changes needed). "microvm"
 	// runs it in a cloud-hypervisor microVM with Kata's guest kernel and root
-	// filesystem, and needs nodes that expose /dev/kvm. An actor template only
-	// uses configs of its own class, and a worker pool only resolves configs of
-	// its class.
+	// filesystem, and needs nodes that expose /dev/kvm. A worker pool only
+	// resolves configs of its class.
 	//
 	// Required here although the cluster would write "gvisor": the class decides
 	// which assets every version needs, and a consumer reads it back as an
-	// output to fill in a template's `sandbox_config.sandbox_class`.
+	// output to pair the config with a worker pool's `sandbox_classes` entry.
 	SandboxClass string `protobuf:"bytes,4,opt,name=sandbox_class,json=sandboxClass,proto3" json:"sandbox_class,omitempty"`
 	// The version every actor boots and restores with: the name of an entry in
 	// `versions` that is not Disabled. Moving it is how a new runtime rolls
@@ -183,8 +177,8 @@ func (x *KubernetesAgentSubstrateSandboxConfigSpec) GetVersions() []*KubernetesA
 }
 
 // KubernetesAgentSubstrateSandboxConfigVersion is one version of a
-// SandboxConfig: the exact pause image and files a sandbox boots with.
-// Faithful to upstream SandboxVersionConfig.
+// SandboxConfig: the exact files a sandbox boots with. Faithful to upstream
+// SandboxVersionConfig.
 type KubernetesAgentSubstrateSandboxConfigVersion struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The version's name within its config: a DNS label (lower-case
@@ -197,16 +191,6 @@ type KubernetesAgentSubstrateSandboxConfigVersion struct {
 	// out of the runtimes it records for each worker. Unset, the cluster
 	// writes "Enabled".
 	State *string `protobuf:"bytes,2,opt,name=state,proto3,oneof" json:"state,omitempty"`
-	// The image of the root sandbox container, which holds the sandbox's
-	// namespaces and runs no workload code. Required for gvisor, not allowed for
-	// microvm. Pinned by digest (it must contain '@'), a rule of the cluster's
-	// own, so every boot and restore on every node runs the same bytes.
-	// Upstream's choices: `registry.k8s.io/pause:3.10.2@sha256:f548e0e8e3dc1896ca956272154dde3314e8cc4fde0a57577ee9fa1c63f5baf4`
-	// anywhere, or the in-project mirror
-	// `gcr.io/gke-release/pause@sha256:bcbd57ba5653580ec647b16d8163cdd1112df3609129b01f912a8032e48265da`
-	// on GCP. The control plane's registry mirror does not rewrite it here: name
-	// the mirrored image yourself when nodes cannot reach the public one.
-	PauseImage string `protobuf:"bytes,3,opt,name=pause_image,json=pauseImage,proto3" json:"pause_image,omitempty"`
 	// The files the node agent downloads for this version, keyed by the node's
 	// architecture (Go's names: "amd64", "arm64") and then by asset name. A
 	// node uses the block for its own architecture; a version with no block for
@@ -214,16 +198,15 @@ type KubernetesAgentSubstrateSandboxConfigVersion struct {
 	// worker must be able to boot.
 	//
 	// The asset names are the runtime's: gVisor needs "gvisor" (the release's
-	// gvisor.tar.zstd, extracted so runsc's helpers sit beside it; a legacy
-	// bare "runsc" binary still works); microVM needs "cloud-hypervisor",
-	// "virtiofsd", "kata-kernel" and "kata-image". The names stay a free map
-	// because upstream keeps them generic, so a future runtime adds assets
-	// without a schema change.
+	// gvisor.tar.zstd, extracted so runsc's helpers sit beside it); microVM
+	// needs "cloud-hypervisor", "virtiofsd", "kata-kernel" and "kata-image".
+	// The names stay a free map because upstream keeps them generic, so a
+	// future runtime adds assets without a schema change.
 	//
 	// A manifest writes each architecture's files under `entries`
 	// (`amd64: {entries: {gvisor: {url: ..., sha256: ...}}}`); the object
 	// carries the bare map upstream defines.
-	Assets        map[string]*KubernetesAgentSubstrateSandboxConfigAssetFiles `protobuf:"bytes,4,rep,name=assets,proto3" json:"assets,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Assets        map[string]*KubernetesAgentSubstrateSandboxConfigAssetFiles `protobuf:"bytes,3,rep,name=assets,proto3" json:"assets,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -268,13 +251,6 @@ func (x *KubernetesAgentSubstrateSandboxConfigVersion) GetName() string {
 func (x *KubernetesAgentSubstrateSandboxConfigVersion) GetState() string {
 	if x != nil && x.State != nil {
 		return *x.State
-	}
-	return ""
-}
-
-func (x *KubernetesAgentSubstrateSandboxConfigVersion) GetPauseImage() string {
-	if x != nil {
-		return x.PauseImage
 	}
 	return ""
 }
@@ -403,7 +379,7 @@ var File_catalog_kubernetes_kubernetesagentsubstratesandboxconfig_v1alpha1_spec_
 
 const file_catalog_kubernetes_kubernetesagentsubstratesandboxconfig_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Lcatalog/kubernetes/kubernetesagentsubstratesandboxconfig/v1alpha1/spec.proto\x12Edev.planton.kubernetes.kubernetesagentsubstratesandboxconfig.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a\x1cshared/options/options.proto\"\xd9\x14\n" +
+	"Lcatalog/kubernetes/kubernetesagentsubstratesandboxconfig/v1alpha1/spec.proto\x12Edev.planton.kubernetes.kubernetesagentsubstratesandboxconfig.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a\x1cshared/options/options.proto\"\x8a\x12\n" +
 	")KubernetesAgentSubstrateSandboxConfigSpec\x12\xf2\x01\n" +
 	"\x04name\x18\x01 \x01(\tB\xdd\x01\xbaH\xd5\x01\xba\x01\xca\x01\n" +
 	"\x17spec.name.dns_subdomain\x12wname must be a valid DNS subdomain (lowercase alphanumeric, hyphens and dots, starting and ending with an alphanumeric)\x1a6this.matches('^[a-z0-9]([a-z0-9.-]{0,251}[a-z0-9])?$')r\x05\x10\x01\x18\xfd\x01ئ\x1d\x03R\x04name\x12\xda\x02\n" +
@@ -418,20 +394,16 @@ const file_catalog_kubernetes_kubernetesagentsubstratesandboxconfig_v1alpha1_spe
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a>\n" +
 	"\x10AnnotationsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x9f\v\xbaH\x9b\v\x1a\x86\x01\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xd0\b\xbaH\xcc\b\x1a\x86\x01\n" +
 	"\x1bspec.default_version.listed\x12.default_version must name an entry in versions\x1a7this.versions.exists(v, v.name == this.default_version)\x1a\xbc\x01\n" +
-	"\x1cspec.default_version.enabled\x129the version named by default_version must not be Disabled\x1aa!this.versions.exists(v, v.name == this.default_version && has(v.state) && v.state == 'Disabled')\x1a\x8c\x02\n" +
-	"\x19spec.pause_image.by_class\x12npause_image is required on every version for gvisor and not allowed for microvm, which runs no pause container\x1a\x7fthis.sandbox_class == 'gvisor' ? this.versions.all(v, size(v.pause_image) > 0) : this.versions.all(v, size(v.pause_image) == 0)\x1a\xc7\x02\n" +
-	"\x12spec.assets.gvisor\x12\x84\x01a gvisor config must define a 'gvisor' asset (the release tarball) or a legacy 'runsc' asset for every architecture of every version\x1a\xa9\x01this.sandbox_class != 'gvisor' || this.versions.all(v, size(v.assets) > 0 && v.assets.all(arch, 'gvisor' in v.assets[arch].entries || 'runsc' in v.assets[arch].entries))\x1a\xe9\x02\n" +
+	"\x1cspec.default_version.enabled\x129the version named by default_version must not be Disabled\x1aa!this.versions.exists(v, v.name == this.default_version && has(v.state) && v.state == 'Disabled')\x1a\x87\x02\n" +
+	"\x12spec.assets.gvisor\x12ja gvisor config must define a 'gvisor' asset (the release tarball) for every architecture of every version\x1a\x84\x01this.sandbox_class != 'gvisor' || this.versions.all(v, size(v.assets) > 0 && v.assets.all(arch, 'gvisor' in v.assets[arch].entries))\x1a\xe9\x02\n" +
 	"\x13spec.assets.microvm\x12\x83\x01a microvm config must define cloud-hypervisor, virtiofsd, kata-kernel and kata-image assets for every architecture of every version\x1a\xcb\x01this.sandbox_class != 'microvm' || this.versions.all(v, size(v.assets) > 0 && v.assets.all(arch, ['cloud-hypervisor', 'virtiofsd', 'kata-kernel', 'kata-image'].all(name, name in v.assets[arch].entries)))\x1a\x8b\x01\n" +
-	"\x1aspec.versions.unique_names\x12 each version needs a unique name\x1aKthis.versions.all(v, this.versions.filter(w, w.name == v.name).size() == 1)\"\xa9\x05\n" +
+	"\x1aspec.versions.unique_names\x12 each version needs a unique name\x1aKthis.versions.all(v, this.versions.filter(w, w.name == v.name).size() == 1)\"\x82\x04\n" +
 	",KubernetesAgentSubstrateSandboxConfigVersion\x12>\n" +
 	"\x04name\x18\x01 \x01(\tB*\xbaH'r%\x10\x01\x18?2\x1f^[a-z0-9]([-a-z0-9]*[a-z0-9])?$R\x04name\x123\n" +
-	"\x05state\x18\x02 \x01(\tB\x18\xbaH\x15r\x13R\aEnabledR\bDisabledH\x00R\x05state\x88\x01\x01\x12\xa4\x01\n" +
-	"\vpause_image\x18\x03 \x01(\tB\x82\x01\xbaH\x7f\xba\x01w\n" +
-	"\x1aversion.pause_image.digest\x127pause_image must be pinned by digest (image@sha256:...)\x1a this == '' || this.contains('@')r\x03\x18\x80\x04R\n" +
-	"pauseImage\x12\x9d\x01\n" +
-	"\x06assets\x18\x04 \x03(\v2\x7f.dev.planton.kubernetes.kubernetesagentsubstratesandboxconfig.v1alpha1.KubernetesAgentSubstrateSandboxConfigVersion.AssetsEntryB\x04\xf0\xa6\x1d\x01R\x06assets\x1a\xb2\x01\n" +
+	"\x05state\x18\x02 \x01(\tB\x18\xbaH\x15r\x13R\aEnabledR\bDisabledH\x00R\x05state\x88\x01\x01\x12\x9d\x01\n" +
+	"\x06assets\x18\x03 \x03(\v2\x7f.dev.planton.kubernetes.kubernetesagentsubstratesandboxconfig.v1alpha1.KubernetesAgentSubstrateSandboxConfigVersion.AssetsEntryB\x04\xf0\xa6\x1d\x01R\x06assets\x1a\xb2\x01\n" +
 	"\vAssetsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x8c\x01\n" +
 	"\x05value\x18\x02 \x01(\v2v.dev.planton.kubernetes.kubernetesagentsubstratesandboxconfig.v1alpha1.KubernetesAgentSubstrateSandboxConfigAssetFilesR\x05value:\x028\x01B\b\n" +

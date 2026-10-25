@@ -1,13 +1,14 @@
 # The CSIDriverConfig custom resource definition (ate.dev/v1alpha1) as Agent
-# Substrate v0.5.0 publishes it -- the release KubernetesAgentSubstrate
-# installs and the KubernetesAgentSubstrateCsiDriverConfig spec mirrors. It is
-# upstream's own generated definition, byte for byte from its first document
-# (the file's license header and leading separator dropped):
+# Substrate v0.6.0 publishes it -- the release whose install shape
+# KubernetesAgentSubstrate composes, and the one the
+# KubernetesAgentSubstrateCsiDriverConfig spec mirrors. It is upstream's own
+# generated definition, byte for byte from its first document (the file's
+# license header and leading separator dropped):
 #
-#   git show v0.5.0:manifests/ate-install/generated/ate.dev_csidriverconfigs.yaml
+#   git show v0.6.0:manifests/ate-install/generated/ate.dev_csidriverconfigs.yaml
 #
 # in github.com/agent-substrate/substrate (the same document Planton's
-# published crds.yaml for v0.5.0 carries). Never edit it by hand; replace it
+# published crds.yaml for v0.6.0 carries). Never edit it by hand; replace it
 # from a newer tag to move the pin.
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
@@ -56,17 +57,17 @@ spec:
           metadata:
             type: object
           spec:
-            description: CSIDriverConfigSpec defines the desired state of CSIDriverConfig
+            description: spec defines the desired state of CSIDriverConfig
             properties:
               controllerEndpoint:
                 description: |-
-                  ControllerEndpoint is the gRPC endpoint for the CSI Controller service.
+                  controllerEndpoint is the gRPC endpoint for the CSI Controller service.
                   Must be a valid network URI (e.g. dns:///csi-service:9000 or tcp://127.0.0.1:9000).
                 pattern: ^(tcp|dns)://.+$
                 type: string
               driverName:
                 description: |-
-                  DriverName is the standard CSI driver name (e.g. "hostpath.csi.k8s.io").
+                  driverName is the standard CSI driver name (e.g. "hostpath.csi.k8s.io").
                   Matches the StorageClass referenced in ActorTemplate volume definitions.
                 maxLength: 63
                 minLength: 1
@@ -74,23 +75,23 @@ spec:
                 type: string
               nodeSocketOverride:
                 description: |-
-                  NodeSocketOverride is an optional override for the CSI Node service socket
+                  nodeSocketOverride is an optional override for the CSI Node service socket
                   on the worker nodes. If empty, ATE defaults to unix:///var/lib/kubelet/plugins/[DriverName]/csi.sock.
                 pattern: ^unix://.+$
                 type: string
               tls:
-                description: TLS configures TLS/mTLS for the connection to the ControllerEndpoint.
+                description: tls configures TLS/mTLS for the connection to the ControllerEndpoint.
                 properties:
                   enabled:
-                    description: Enabled controls whether TLS is used.
+                    description: enabled controls whether TLS is used.
                     type: boolean
                   serverName:
                     description: |-
-                      ServerName specifies the expected server name (SAN) for TLS certificate verification.
+                      serverName specifies the expected server name (SAN) for TLS certificate verification.
                       Required when TLS is enabled.
                     type: string
                   usePodIdentity:
-                    description: UsePodIdentity indicates whether to reuse Substrate's
+                    description: usePodIdentity indicates whether to reuse Substrate's
                       Pod Identity (SPIFFE) certificates.
                     type: boolean
                 required:

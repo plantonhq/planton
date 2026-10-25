@@ -4,9 +4,9 @@ metadata:
   name: agent-substrate
 spec:
   # A shape to run agents on for real, on GKE: the control plane on its own
-  # nodes, authorization enforced, three API servers, two router and egress
-  # pods, requests the cluster's quotas can count, and telemetry to your
-  # collector.
+  # nodes, three API servers, two router and egress pods, the product's
+  # orchestrator as the API's owner and the router's one client, requests
+  # the cluster's quotas can count, and telemetry to your collector.
   namespace:
     value: ate-system
   createNamespace: true
@@ -21,6 +21,9 @@ spec:
       nodeAgentServiceAccount:
         valueFrom:
           name: atelet
+      snapshotTransferServiceAccount:
+        valueFrom:
+          name: ate-snapshot-transfer
   database:
     cloudSql:
       instanceConnectionName:
@@ -39,7 +42,6 @@ spec:
         cpu: 500m
         memory: 512Mi
     authorization:
-      enabled: true
       bootstrapOwners:
         - system:serviceaccount:platform:agent-orchestrator
   router:

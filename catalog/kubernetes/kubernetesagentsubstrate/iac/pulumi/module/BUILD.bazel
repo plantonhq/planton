@@ -63,6 +63,8 @@ go_test(
         "//pkg/iac/tofu/generators",
         "//shared",
         "//shared/foreignkey/v1:foreignkey",
+        "//shared/options",
         "@io_k8s_sigs_yaml//:yaml",
+        "@org_golang_google_protobuf//proto",
     ],
 )

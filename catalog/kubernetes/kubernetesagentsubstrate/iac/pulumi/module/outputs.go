@@ -25,6 +25,9 @@ const (
 
 // outputValues resolves the outputs from the settings and the release's
 // image list. Terraform twin: iac/tf/outputs.tf.
+//
+// The router's plaintext endpoint exists only with agentgateway, which
+// still serves plaintext listeners; the Envoy router serves only TLS.
 func outputValues(s *settings, images map[string]string) map[string]string {
 	worker := func(component string) string {
 		image := images[component]
@@ -42,14 +45,21 @@ func outputValues(s *settings, images map[string]string) map[string]string {
 		OpAPITrustBundleSigner:    vars.APITrustBundleSign,
 		OpRouterClientSignerName:  vars.RouterClientSigner,
 		OpAPIAccessNamespaceLabel: vars.APIAccessLabelKey + "=" + vars.APIAccessLabelValue,
-		OpRouterEndpoint:          "http://" + vars.RouterName + "." + vars.Namespace + ".svc:80",
+		OpRouterEndpoint:          plaintextRouterEndpoint(s),
 		OpRouterTLSEndpoint:       "https://" + vars.RouterName + "." + vars.Namespace + ".svc:443",
 		OpStorageLocation:         s.storage.location(),
 		OpActorJWTIssuer:          s.apiServer.actorIssuer,
-		OpGvisorWorkerImage:       worker("ateom-gvisor"),
-		OpMicrovmWorkerImage:      worker("ateom-microvm"),
-		OpVersion:                 vars.Release,
+		OpGvisorWorkerImage:       worker("ateworker-gvisor"),
+		OpMicrovmWorkerImage:      worker("ateworker-microvm"),
+		OpVersion:                 s.version,
 	}
+}
+
+func plaintextRouterEndpoint(s *settings) string {
+	if !s.router.agentgateway {
+		return ""
+	}
+	return "http://" + vars.RouterName + "." + vars.Namespace + ".svc:80"
 }
 
 func exportOutputs(ctx *pulumi.Context, s *settings, images map[string]string) {

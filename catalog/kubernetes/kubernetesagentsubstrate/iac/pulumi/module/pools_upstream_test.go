@@ -19,9 +19,11 @@ import (
 // TestBothEnginesPoolsParseWithUpstreamsCode proves the generated key pools
 // are the pools Agent Substrate reads: each engine's CA pools and actor token
 // pool (ES256 and RS256) are parsed by upstream's own localca.Unmarshal and
-// localjwtauthority.Unmarshal at the pinned release, and checked the way
+// localjwtauthority.Unmarshal at the module's release, and checked the way
 // upstream's installer creates them: one CA, active, a CA certificate whose
-// key is the pool's key, of the algorithm upstream uses for that pool.
+// key is the pool's key, of the algorithm upstream uses for that pool. Each
+// engine's published key set must be, byte for byte, what upstream's
+// localjwtauthority.PublicJWKS derives from its pool.
 //
 // The Pulumi side builds its pools here with the module's own builders over
 // keys of each algorithm (the TLS provider emits the same PEM forms). The
@@ -40,18 +42,23 @@ func TestBothEnginesPoolsParseWithUpstreamsCode(t *testing.T) {
 		Kind      string `json:"kind"`      // ca | jwt
 		Algorithm string `json:"algorithm"` // ED25519 | ECDSA | ES256 | RS256
 		Pool      string `json:"pool"`
+		JWKS      string `json:"jwks"` // jwt: the key set the engine publishes
 	}
 	var cases []poolCase
 
 	// Pulumi side: the module's builders over each key form the provider
 	// emits (Ed25519 PKCS #8; ECDSA SEC 1 and RSA PKCS #1, re-encoded).
 	ed, edCert := testCA(t, "ED25519")
-	cases = append(cases, poolCase{"pulumi/ed25519-ca", "ca", "ED25519", caPoolJSON(ed, edCert)})
+	cases = append(cases, poolCase{"pulumi/ed25519-ca", "ca", "ED25519", caPoolJSON(ed, edCert), ""})
 	ec, ecCert := testCA(t, "ECDSA")
-	cases = append(cases, poolCase{"pulumi/ecdsa-ca", "ca", "ECDSA", caPoolJSON(ec, ecCert)})
+	cases = append(cases, poolCase{"pulumi/ecdsa-ca", "ca", "ECDSA", caPoolJSON(ec, ecCert), ""})
 	for _, alg := range []string{"ES256", "RS256"} {
 		key, public := testJWTKey(t, alg)
-		cases = append(cases, poolCase{"pulumi/" + alg, "jwt", alg, jwtPoolJSON(alg, key, public)})
+		jwks, err := jwksJSON(alg, public)
+		if err != nil {
+			t.Fatal(err)
+		}
+		cases = append(cases, poolCase{"pulumi/" + alg, "jwt", alg, jwtPoolJSON(alg, key, public), jwks})
 	}
 
 	// Terraform side: pools.tf applied alone, once per signing algorithm.
@@ -78,6 +85,9 @@ output "ca_pools" {
 output "jwt_pool" {
   value     = local.actor_jwt_pool
   sensitive = true
+}
+output "jwks" {
+  value = local.actor_jwt_jwks
 }
 `
 		tfvars := `metadata = { name = "pools" }
@@ -116,23 +126,27 @@ spec = {
 			JWTPool struct {
 				Value string `json:"value"`
 			} `json:"jwt_pool"`
+			JWKS struct {
+				Value string `json:"value"`
+			} `json:"jwks"`
 		}
 		if err := json.Unmarshal(raw, &outputs); err != nil {
 			t.Fatal(err)
 		}
 		if alg == "es256" {
 			for name, pool := range outputs.CAPools.Value {
-				cases = append(cases, poolCase{"terraform/" + name, "ca", pool.Algorithm, pool.Pool})
+				cases = append(cases, poolCase{"terraform/" + name, "ca", pool.Algorithm, pool.Pool, ""})
 			}
 		}
-		cases = append(cases, poolCase{"terraform/" + alg, "jwt", map[string]string{"es256": "ES256", "rs256": "RS256"}[alg], outputs.JWTPool.Value})
+		cases = append(cases, poolCase{"terraform/" + alg, "jwt", map[string]string{"es256": "ES256", "rs256": "RS256"}[alg], outputs.JWTPool.Value, outputs.JWKS.Value})
 	}
 
-	// Upstream's parsers, from a module under upstream's path.
+	// Upstream's parsers, from a module under upstream's path. Upstream needs
+	// its own Go release, which the toolchain fetches.
 	checker := t.TempDir()
 	casesJSON, _ := json.Marshal(cases)
 	files := map[string]string{
-		"go.mod":     "module github.com/agent-substrate/substrate/plantonpoolcheck\n\ngo 1.26\n\nrequire github.com/agent-substrate/substrate " + vars.Release + "\n",
+		"go.mod":     "module " + upstreamModule + "/plantonpoolcheck\n\ngo 1.27\n\nrequire " + upstreamModule + " " + vars.Release + "\n",
 		"cases.json": string(casesJSON),
 		"main.go":    poolChecker,
 	}
@@ -143,19 +157,22 @@ spec = {
 	}
 	tidy := exec.Command("go", "mod", "tidy")
 	tidy.Dir = checker
-	tidy.Env = append(os.Environ(), "GOWORK=off", "GOFLAGS=-mod=mod")
+	tidy.Env = append(os.Environ(), "GOWORK=off", "GOFLAGS=-mod=mod", "GOTOOLCHAIN=auto")
 	if out, err := tidy.CombinedOutput(); err != nil {
 		t.Fatalf("resolving upstream %s: %v\n%s", vars.Release, err, out)
 	}
 	run := exec.Command("go", "run", ".")
 	run.Dir = checker
-	run.Env = append(os.Environ(), "GOWORK=off")
+	run.Env = append(os.Environ(), "GOWORK=off", "GOTOOLCHAIN=auto")
 	out, err := run.CombinedOutput()
 	if err != nil {
 		t.Fatalf("upstream's parsers refused a pool: %v\n%s", err, out)
 	}
 	t.Logf("%s", out)
 }
+
+// upstreamModule is Agent Substrate's Go module path.
+const upstreamModule = "go.ate.dev/substrate"
 
 func testCA(t *testing.T, algorithm string) (string, string) {
 	t.Helper()
@@ -225,12 +242,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/agent-substrate/substrate/internal/localca"
-	"github.com/agent-substrate/substrate/internal/localjwtauthority"
+	"go.ate.dev/substrate/internal/localca"
+	"go.ate.dev/substrate/internal/localjwtauthority"
 )
 
 type poolCase struct {
-	Name, Kind, Algorithm, Pool string
+	Name, Kind, Algorithm, Pool, JWKS string
 }
 
 func publicOf(key crypto.PrivateKey) []byte {
@@ -308,6 +325,12 @@ func main() {
 				}
 			default:
 				fail(c, "unexpected key type %T", k)
+			}
+			want, err := localjwtauthority.PublicJWKS([]byte(c.Pool))
+			if err != nil {
+				fail(c, "localjwtauthority.PublicJWKS: %v", err)
+			} else if c.JWKS != string(want) {
+				fail(c, "the published key set differs from upstream's:\n got %s\nwant %s", c.JWKS, want)
 			}
 		}
 		if !failed {

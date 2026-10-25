@@ -49,6 +49,13 @@ spec:
       credentials:
         secretName:
           value: substrate-s3
+  apiServer:
+    authorization:
+      bootstrapOwners:
+        - system:serviceaccount:e2e-ate-probe:e2e-ate-client
+  router:
+    allowedClientSpiffeIds:
+      - spiffe://cluster.local/ns/e2e-ate-probe/sa/e2e-ate-client
   egress:
     credentialProvider:
       disabled: {}

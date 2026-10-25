@@ -1,6 +1,6 @@
 # KubernetesAgentSubstrateWorkerPool
 
-Declares an Agent Substrate `WorkerPool`: the worker pods actors run in, many actors to a worker, sized, placed and isolated as one pool. A suspended actor leaves its worker for storage and gives its share back, so a pool serves many more actors than it runs at once. The spec mirrors the upstream `ate.dev/v1alpha1` WorkerPool field for field (pinned to Agent Substrate v0.5.0, the release `KubernetesAgentSubstrate` installs), after a small Planton envelope: the namespace, and the object's own labels and annotations.
+Declares an Agent Substrate `WorkerPool`: the worker pods actors run in, many actors to a worker, sized, placed and isolated as one pool. A suspended actor leaves its worker for storage and gives its share back, so a pool serves many more actors than it runs at once. The spec mirrors the upstream `ate.dev/v1alpha1` WorkerPool field for field (pinned to the definition of the Agent Substrate release `KubernetesAgentSubstrate` composes, v0.6.0), after a small Planton envelope: the namespace, and the object's own labels and annotations.
 
 ## What Gets Created
 
@@ -11,13 +11,13 @@ Substrate's controller then renders a **NetworkPolicy** that admits only Substra
 
 ## How a Product Uses It
 
-An actor template selects the pool by the **pool's own labels**: its `worker_selector.match_labels` must match `labels` here (for example `tenant: acme`). The template names a SandboxConfig of the pool's class (name the one the pool resolves) and declares the resources each actor spends from a worker's limits. The product then creates actors from the template through the API; each runs on a worker of the pool with room for it, and is reached through the router with `ate-target-actor: <atespace>/<actor>`.
+An actor template selects the pool by the **pool's own labels**: its `worker_selector.match_labels` must match `labels` here (for example `tenant: acme`). The template declares the resources each actor spends from a worker's limits; the pool decides its class and its SandboxConfig. The product then creates actors from the template through the API; each runs on a worker of the pool with room for it, and is reached through the router with `ate-target-actor: <atespace>/<actor>`.
 
 ## Size, Placement and Runtime
 
 - **`replicas`** is how many workers the pool runs. It is required and written on every apply.
 - **`template.resources`**: the limits are each worker's capacity, a budget the actors it hosts share (up to 1000 actors per worker at this release); the requests are what the scheduler reserves per worker.
-- **`template`** places workers: a node selector, node affinity and tolerations for dedicated (tenant) nodes, a PriorityClass, and the ServiceAccount they run as.
+- **`template`** places workers: a node selector, node affinity and tolerations for dedicated (tenant) nodes, a PriorityClass, and the ServiceAccount they run as (unset, `ateworker`, which the controller creates in the pool's namespace).
 - **`workerImage`** is the worker built with the installed release: a reference to the control plane's `gvisor_worker_image` (or `microvm_worker_image`) output.
 - **`sandboxClasses`**: one class, `gvisor` or `microvm`, with the SandboxConfig the pool resolves (`configRef`, or the class default).
 

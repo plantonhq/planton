@@ -1,6 +1,6 @@
 # MicroVM Runtime
 
-The microVM sandbox class's runtime, as Agent Substrate v0.5.0 defines it: cloud-hypervisor and virtiofsd with Kata's guest kernel and root filesystem, at the checksums upstream pins for each architecture, staged in your own bucket under a prefix per architecture. It is the class default, so a microVM worker pool that names no config resolves it. Each actor then runs in its own lightweight virtual machine, a harder boundary than gVisor's, on nodes that expose KVM.
+The microVM sandbox class's runtime, as Agent Substrate v0.6.0 defines it: cloud-hypervisor and virtiofsd with Kata's guest kernel and root filesystem, at the checksums upstream pins for each architecture, staged in your own bucket under a prefix per architecture. It is the class default, so a microVM worker pool that names no config resolves it. Each actor then runs in its own lightweight virtual machine, a harder boundary than gVisor's, on nodes that expose KVM.
 
 ## When to Use
 
@@ -9,7 +9,7 @@ The microVM sandbox class's runtime, as Agent Substrate v0.5.0 defines it: cloud
 
 ## How It Works
 
-The files are not baked into the worker image: the node agent fetches each one through the control plane's object-store plugin, verifies its SHA-256 and caches it by hash. The checksums here are the asset sets upstream's `hack/microvm-assets/assemble.sh` produces at v0.5.0, one per architecture: run it with `ARCH=amd64` and with `ARCH=arm64` (each on a Linux host of that architecture), and upload each run's four files (`cloud-hypervisor`, `virtiofsd`, `vmlinux`, `rootfs.img`) under `kata-assets/<arch>/`. The prefix per architecture is what lets one bucket serve a cluster with both kinds of nodes; upstream's own manifest puts one architecture's files at a single path per cluster. A microVM version takes no pause image.
+The files are not baked into the worker image: the node agent fetches each one through the control plane's object-store plugin, verifies its SHA-256 and caches it by hash. The checksums here are the asset sets upstream's `hack/microvm-assets/assemble.sh` produces at v0.6.0, one per architecture: run it with `ARCH=amd64` and with `ARCH=arm64` (each on a Linux host of that architecture), and upload each run's four files (`cloud-hypervisor`, `virtiofsd`, `vmlinux`, `rootfs.img`) under `kata-assets/<arch>/`. The prefix per architecture is what lets one bucket serve a cluster with both kinds of nodes; upstream's own manifest puts one architecture's files at a single path per cluster.
 
 ## Key Configuration Choices
 

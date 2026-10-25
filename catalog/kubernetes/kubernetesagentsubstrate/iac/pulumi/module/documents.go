@@ -30,13 +30,20 @@ const fetchTimeout = 2 * time.Minute
 // twin's http data sources retry the same answers (their retry block).
 const fetchAttempts = 4
 
-// fetchText downloads one pinned file, retrying the answers that pass: a
+// absent explains a release file the host does not serve (an HTTP 4xx): what
+// its absence means, and what to do about it. The caller knows which: a
+// release Planton never published, or a published one missing a file.
+type absent struct {
+	meaning string
+	next    string
+}
+
+// fetchText downloads one release file, retrying the answers that pass: a
 // plan fetches every release file, so a host limiting a burst of plans must
-// slow the deploy down, not fail it. A failure is explained in three parts:
-// these URLs are module constants, so nothing in the spec can fix them, and
-// the reader needs to know whether the network, the host or the pin is at
-// fault.
-func fetchText(url string) (string, error) {
+// slow the deploy down, not fail it. A failure is explained in three parts,
+// because the reader needs to know whether the network, the host or the
+// release is at fault.
+func fetchText(url string, missing absent) (string, error) {
 	client := &http.Client{Timeout: fetchTimeout}
 	var response *http.Response
 	var err error
@@ -57,11 +64,11 @@ func fetchText(url string) (string, error) {
 		time.Sleep(wait)
 	}
 	if err != nil {
-		return "", fmt.Errorf("observed: %s could not be fetched after %d attempts (%s)\nmeaning: the host does not resolve, or egress to it is blocked from where this deploy runs\nnext step: confirm DNS and egress to downloads.planton.ai and raw.githubusercontent.com (`curl -I %s`), then re-run", url, fetchAttempts, err.Error(), url)
+		return "", fmt.Errorf("observed: %s could not be fetched after %d attempts (%s)\nmeaning: the host does not resolve, or egress to it is blocked from where this deploy runs\nnext step: confirm DNS and egress to downloads.planton.ai (`curl -I %s`), then re-run", url, fetchAttempts, err.Error(), url)
 	}
 	defer func() { _ = response.Body.Close() }()
 	if response.StatusCode != http.StatusOK {
-		return "", fetchRefusal(url, response.StatusCode)
+		return "", fetchRefusal(url, response.StatusCode, missing)
 	}
 	raw, err := io.ReadAll(response.Body)
 	if err != nil {
@@ -71,16 +78,16 @@ func fetchText(url string) (string, error) {
 }
 
 // fetchRefusal explains a release file the host would not serve, by what
-// its answer means: a limit to wait out, a failing host, or a pin that no
-// longer resolves.
-func fetchRefusal(url string, status int) error {
+// its answer means: a limit to wait out, a failing host, or a file that is
+// not there.
+func fetchRefusal(url string, status int, missing absent) error {
 	switch {
 	case status == http.StatusTooManyRequests:
 		return fmt.Errorf("observed: %s answered HTTP 429 on all %d attempts\nmeaning: the host is limiting how often this address may download; a burst of plans from one address can reach the limit\nnext step: wait a minute and re-run", url, fetchAttempts)
 	case status >= 500:
-		return fmt.Errorf("observed: %s answered HTTP %d on all %d attempts\nmeaning: the host is failing, not the pin\nnext step: re-run once it answers 200 (`curl -I %s`)", url, status, fetchAttempts, url)
+		return fmt.Errorf("observed: %s answered HTTP %d on all %d attempts\nmeaning: the host is failing, not the release\nnext step: re-run once it answers 200 (`curl -I %s`)", url, status, fetchAttempts, url)
 	default:
-		return fmt.Errorf("observed: %s answered HTTP %d\nmeaning: Agent Substrate %s is not served at the address this module pins\nnext step: confirm what is published (`curl -I %s`); if the release was moved or withdrawn, the module's pin needs a catalog fix", url, status, vars.Release, url)
+		return fmt.Errorf("observed: %s answered HTTP %d\nmeaning: %s\nnext step: %s", url, status, missing.meaning, missing.next)
 	}
 }
 

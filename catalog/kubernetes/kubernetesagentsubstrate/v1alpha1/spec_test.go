@@ -72,6 +72,11 @@ func gcs() *KubernetesAgentSubstrateStorage {
 	return &KubernetesAgentSubstrateStorage{Kind: &KubernetesAgentSubstrateStorage_Gcs{Gcs: &KubernetesAgentSubstrateGcsStorage{Bucket: literal("acme-snapshots")}}}
 }
 
+// envoyRouter is the default router with the one client it requires.
+func envoyRouter() *KubernetesAgentSubstrateRouter {
+	return &KubernetesAgentSubstrateRouter{AllowedClientSpiffeIds: []string{"spiffe://cluster.local/ns/app/sa/web"}}
+}
+
 func disabledProvider() *KubernetesAgentSubstrateEgress {
 	return &KubernetesAgentSubstrateEgress{CredentialProvider: &KubernetesAgentSubstrateCredentialProvider{
 		Kind: &KubernetesAgentSubstrateCredentialProvider_Disabled{Disabled: &KubernetesAgentSubstrateCredentialProviderDisabled{}},
@@ -91,6 +96,7 @@ var _ = ginkgo.Describe("KubernetesAgentSubstrate Validation Tests", func() {
 				Platform:  generic(),
 				Database:  bundled(),
 				Storage:   s3(),
+				Router:    envoyRouter(),
 				Egress:    disabledProvider(),
 			},
 		}
@@ -138,7 +144,7 @@ var _ = ginkgo.Describe("KubernetesAgentSubstrate Validation Tests", func() {
 	})
 
 	ginkgo.Describe("the required choices", func() {
-		ginkgo.It("accepts the minimal spec: platform, database, storage and credential provider", func() {
+		ginkgo.It("accepts the minimal spec: platform, database, storage, the router's client and credential provider", func() {
 			valid()
 		})
 
@@ -176,15 +182,54 @@ var _ = ginkgo.Describe("KubernetesAgentSubstrate Validation Tests", func() {
 		})
 	})
 
+	ginkgo.Describe("the version", func() {
+		ginkgo.It("accepts a release tag", func() {
+			for _, version := range []string{"v0.6.0", "v0.6.12", "v1.0.0"} {
+				input.Spec.Version = stringPtr(version)
+				valid()
+			}
+		})
+
+		ginkgo.It("refuses anything but vMAJOR.MINOR.PATCH, the form Planton publishes releases under", func() {
+			for _, version := range []string{"0.6.0", "v0.6", "latest", "v0.6.0-rc.1"} {
+				input.Spec.Version = stringPtr(version)
+				refusedOnField("version")
+			}
+		})
+	})
+
+	ginkgo.Describe("preview gates", func() {
+		ginkgo.It("accepts upstream's gates and ALL", func() {
+			input.Spec.PreviewGates = []string{"ExternalVolumes", "GoldenEgressPolicy", "PerTemplateSnapshotLocation"}
+			valid()
+			input.Spec.PreviewGates = []string{"ALL"}
+			valid()
+		})
+
+		ginkgo.It("refuses a gate upstream does not know, which every component refuses to start with", func() {
+			input.Spec.PreviewGates = []string{"Teleportation"}
+			refusedOnField("preview_gates")
+		})
+	})
+
 	ginkgo.Describe("GKE", func() {
-		ginkgo.It("accepts the keyless shape: Cloud SQL with IAM login and GCS", func() {
+		ginkgo.It("accepts the keyless shape: Cloud SQL with IAM login and GCS moved as the transfer service account", func() {
 			input.Spec.Platform = gke(&KubernetesAgentSubstrateGke{
-				ClusterId:               literal("projects/acme/locations/us-central1/clusters/agents"),
-				ApiServerServiceAccount: literal("ate-api-server@acme.iam.gserviceaccount.com"),
-				NodeAgentServiceAccount: literal("atelet@acme.iam.gserviceaccount.com"),
+				ClusterId:                      literal("projects/acme/locations/us-central1/clusters/agents"),
+				ApiServerServiceAccount:        literal("ate-api-server@acme.iam.gserviceaccount.com"),
+				NodeAgentServiceAccount:        literal("atelet@acme.iam.gserviceaccount.com"),
+				SnapshotTransferServiceAccount: literal("ate-snapshot-transfer@acme.iam.gserviceaccount.com"),
 			})
 			input.Spec.Database = cloudSQL(&KubernetesAgentSubstrateCloudSqlDatabase{InstanceConnectionName: literal("acme:us-central1:substrate")})
 			input.Spec.Storage = gcs()
+			valid()
+		})
+
+		ginkgo.It("refuses GCS without the transfer service account every snapshot moves as", func() {
+			input.Spec.Platform = gke(&KubernetesAgentSubstrateGke{ClusterId: literal("projects/acme/locations/us-central1/clusters/agents")})
+			input.Spec.Storage = gcs()
+			refusedBy("gcs_needs_snapshot_transfer_service_account")
+			input.Spec.Storage = s3()
 			valid()
 		})
 
@@ -293,6 +338,15 @@ var _ = ginkgo.Describe("KubernetesAgentSubstrate Validation Tests", func() {
 			input.Spec.Database.GetBundled().VolumeSize = stringPtr("big")
 			refusedBy("bundled_volume_size_quantity")
 		})
+
+		ginkgo.It("takes a snapshot prefix that stays inside the bucket", func() {
+			input.Spec.Storage.SnapshotPrefix = "substrate/prod"
+			valid()
+			for _, prefix := range []string{"/substrate", "substrate/", "a//b", "a/../b", "a/./b", `a\b`, "a?b", "a#b", "user@x"} {
+				input.Spec.Storage.SnapshotPrefix = prefix
+				refusedBy("snapshot_prefix_path")
+			}
+		})
 	})
 
 	ginkgo.Describe("the egress gateway", func() {
@@ -330,31 +384,43 @@ var _ = ginkgo.Describe("KubernetesAgentSubstrate Validation Tests", func() {
 	})
 
 	ginkgo.Describe("the router", func() {
+		ginkgo.It("requires a client for the Envoy router, which lets only the clients it names reach actors", func() {
+			input.Spec.Router = nil
+			refusedBy("envoy_router_needs_allowed_clients")
+			input.Spec.Router = &KubernetesAgentSubstrateRouter{}
+			refusedBy("envoy_router_needs_allowed_clients")
+			input.Spec.Router = &KubernetesAgentSubstrateRouter{Dataplane: KubernetesAgentSubstrateRouter_agentgateway}
+			valid()
+		})
+
 		ginkgo.It("refuses a client identity that is not a SPIFFE ID", func() {
 			input.Spec.Router = &KubernetesAgentSubstrateRouter{AllowedClientSpiffeIds: []string{"router-client"}}
 			refusedBy("allowed_client_spiffe_id_format")
 		})
 
 		ginkgo.It("refuses a zero route timeout, which would cut every request", func() {
-			input.Spec.Router = &KubernetesAgentSubstrateRouter{RouteTimeout: stringPtr("0s")}
+			input.Spec.Router.RouteTimeout = stringPtr("0s")
 			refusedBy("route_timeout_format")
 		})
 
 		ginkgo.It("refuses an ext_proc limit below the parking lot, which the router refuses to start with", func() {
-			input.Spec.Router = &KubernetesAgentSubstrateRouter{ExtProcMaxRequests: int32Ptr(128), ParkedRequests: &KubernetesAgentSubstrateParkedRequests{Max: int32Ptr(256)}}
+			input.Spec.Router.ExtProcMaxRequests = int32Ptr(128)
+			input.Spec.Router.ParkedRequests = &KubernetesAgentSubstrateParkedRequests{Max: int32Ptr(256)}
 			refusedBy("router_ext_proc_covers_parked_requests")
 			input.Spec.Router.ExtProcMaxRequests = int32Ptr(512)
 			valid()
-			input.Spec.Router = &KubernetesAgentSubstrateRouter{ExtProcMaxRequests: int32Ptr(512)}
+			input.Spec.Router = envoyRouter()
+			input.Spec.Router.ExtProcMaxRequests = int32Ptr(512)
 			refusedBy("router_ext_proc_covers_parked_requests") // below the unset parking lot's 1024
 			input.Spec.Router.ExtProcMaxRequests = int32Ptr(0)
 			valid()
 		})
 
 		ginkgo.It("refuses a drain shorter than the parking budget, which the router refuses to start with", func() {
-			input.Spec.Router = &KubernetesAgentSubstrateRouter{DrainTimeout: "4s"}
+			input.Spec.Router.DrainTimeout = "4s"
 			refusedBy("router_drain_covers_parked_budget") // below the unset budget's 5s
-			input.Spec.Router = &KubernetesAgentSubstrateRouter{DrainTimeout: "20s", ParkedRequests: &KubernetesAgentSubstrateParkedRequests{Budget: stringPtr("30s")}}
+			input.Spec.Router.DrainTimeout = "20s"
+			input.Spec.Router.ParkedRequests = &KubernetesAgentSubstrateParkedRequests{Budget: stringPtr("30s")}
 			refusedBy("router_drain_covers_parked_budget")
 			input.Spec.Router.ParkedRequests.Budget = stringPtr("8s")
 			valid()
@@ -368,6 +434,36 @@ var _ = ginkgo.Describe("KubernetesAgentSubstrate Validation Tests", func() {
 		})
 	})
 
+	ginkgo.Describe("the node agent's snapshots and caches", func() {
+		ginkgo.It("refuses an upload delay past the detach delay, which the node agent refuses to start with", func() {
+			input.Spec.NodeAgent = &KubernetesAgentSubstrateNodeAgent{Snapshots: &KubernetesAgentSubstrateNodeSnapshots{UploadDelay: stringPtr("40m")}}
+			refusedBy("snapshots_upload_within_detach") // past the unset detach delay's 30m
+			input.Spec.NodeAgent.Snapshots.DetachDelay = stringPtr("1h")
+			valid()
+		})
+
+		ginkgo.It("refuses the zero delays and workers the node agent refuses to start with", func() {
+			input.Spec.NodeAgent = &KubernetesAgentSubstrateNodeAgent{Snapshots: &KubernetesAgentSubstrateNodeSnapshots{UploadDelay: stringPtr("0s")}}
+			refusedBy("snapshots_upload_delay_format")
+			input.Spec.NodeAgent.Snapshots = &KubernetesAgentSubstrateNodeSnapshots{UploadWorkers: int32Ptr(0)}
+			refusedOnField("upload_workers")
+			input.Spec.NodeAgent.Snapshots = &KubernetesAgentSubstrateNodeSnapshots{UploadTimeout: stringPtr("0s")}
+			valid() // a zero upload timeout turns it off
+		})
+
+		ginkgo.It("refuses an upload memory budget that is not a quantity", func() {
+			input.Spec.NodeAgent = &KubernetesAgentSubstrateNodeAgent{Snapshots: &KubernetesAgentSubstrateNodeSnapshots{UploadMemoryBudget: stringPtr("lots")}}
+			refusedBy("snapshots_upload_memory_budget_quantity")
+		})
+
+		ginkgo.It("refuses a zero fetch timeout, which the node agent refuses to start with", func() {
+			input.Spec.NodeAgent = &KubernetesAgentSubstrateNodeAgent{SandboxAssetCache: &KubernetesAgentSubstrateSandboxAssetCache{FetchTimeout: stringPtr("0s")}}
+			refusedBy("sandbox_asset_cache_fetch_timeout_format")
+			input.Spec.NodeAgent = &KubernetesAgentSubstrateNodeAgent{SnapshotCache: &KubernetesAgentSubstrateSnapshotCache{FetchTimeout: stringPtr("0s")}}
+			refusedBy("snapshot_cache_fetch_timeout_format")
+		})
+	})
+
 	ginkgo.Describe("telemetry", func() {
 		ginkgo.It("refuses a sampler ratio for a sampler that takes none", func() {
 			input.Spec.Telemetry = &KubernetesAgentSubstrateTelemetry{TracesSampler: "always_on", TracesSamplerRatio: float64Ptr(0.5)}
@@ -377,13 +473,19 @@ var _ = ginkgo.Describe("KubernetesAgentSubstrate Validation Tests", func() {
 		ginkgo.It("refuses an exporter upstream does not know", func() {
 			input.Spec.Telemetry = &KubernetesAgentSubstrateTelemetry{MetricsExporters: []string{"zipkin"}}
 			refusedOnField("metrics_exporters")
+			input.Spec.Telemetry = &KubernetesAgentSubstrateTelemetry{WorkerTracesExporters: []string{"zipkin"}}
+			refusedOnField("worker_traces_exporters")
 		})
 	})
 
 	ginkgo.Describe("the API server", func() {
-		ginkgo.It("refuses an actor JWT issuer upstream's OIDC rules refuse", func() {
-			input.Spec.ApiServer = &KubernetesAgentSubstrateApiServer{ActorJwt: &KubernetesAgentSubstrateActorJwt{Issuer: "http://idp.example"}}
-			refusedBy("actor_jwt_issuer_https")
+		ginkgo.It("refuses an actor JWT issuer the identity server refuses: https://<host>, no path", func() {
+			for _, issuer := range []string{"http://idp.example", "https://idp.example/actors", "https://idp.example/", "https://user@idp.example"} {
+				input.Spec.ApiServer = &KubernetesAgentSubstrateApiServer{ActorJwt: &KubernetesAgentSubstrateActorJwt{Issuer: issuer}}
+				refusedBy("actor_jwt_issuer_https")
+			}
+			input.Spec.ApiServer = &KubernetesAgentSubstrateApiServer{ActorJwt: &KubernetesAgentSubstrateActorJwt{Issuer: "https://idp.example.com:8443"}}
+			valid()
 		})
 
 		ginkgo.It("refuses a template resync interval under upstream's 1s floor", func() {
@@ -413,7 +515,7 @@ var _ = ginkgo.Describe("KubernetesAgentSubstrate Validation Tests", func() {
 				Storage: s3(),
 				ApiServer: &KubernetesAgentSubstrateApiServer{
 					Replicas: int32Ptr(3), Resources: resources, LogLevel: LogLevel_debug,
-					Authorization:          &KubernetesAgentSubstrateAuthorization{Enabled: boolPtr(true), BootstrapOwners: []string{"spiffe://cluster.local/ns/ops/sa/admin"}},
+					Authorization:          &KubernetesAgentSubstrateAuthorization{BootstrapOwners: []string{"spiffe://cluster.local/ns/ops/sa/admin"}},
 					ActorJwt:               &KubernetesAgentSubstrateActorJwt{Algorithm: KubernetesAgentSubstrateActorJwt_rs256, Issuer: "https://idp.example.com"},
 					DrainDelay:             stringPtr("10s"),
 					DrainTimeout:           stringPtr("20s"),
@@ -430,6 +532,19 @@ var _ = ginkgo.Describe("KubernetesAgentSubstrate Validation Tests", func() {
 						MaxBytes: int64Ptr(100 << 30), MinAge: stringPtr("5m"), DryRun: true,
 					},
 					AssetStagingCapacityGib: int32Ptr(16),
+					Snapshots: &KubernetesAgentSubstrateNodeSnapshots{
+						UploadDelay: stringPtr("2m"), DetachDelay: stringPtr("1h"), UploadTimeout: stringPtr("3m"), UploadThroughputMib: int32Ptr(50),
+						UploadWorkers: int32Ptr(4), DetachWorkers: int32Ptr(3), ReportWorkers: int32Ptr(2), ReportGiveUpAfter: stringPtr("20m"),
+						UploadMemoryBudget: stringPtr("1Gi"),
+					},
+					SandboxAssetCache: &KubernetesAgentSubstrateSandboxAssetCache{
+						MinAge: stringPtr("2h"), FetchTimeout: stringPtr("10m"),
+						Eviction: &KubernetesAgentSubstrateFileCacheEviction{GcPeriod: stringPtr("10m"), MaxBytes: int64Ptr(20 << 30), DryRun: true},
+					},
+					SnapshotCache: &KubernetesAgentSubstrateSnapshotCache{
+						MinAge: stringPtr("20m"), FetchTimeout: stringPtr("15m"),
+						Eviction: &KubernetesAgentSubstrateFileCacheEviction{GcPeriod: stringPtr("1m"), MaxBytes: int64Ptr(10 << 30)},
+					},
 				},
 				Router: &KubernetesAgentSubstrateRouter{
 					Replicas: int32Ptr(2), Resources: resources, LogLevel: LogLevel_debug,
@@ -466,12 +581,19 @@ var _ = ginkgo.Describe("KubernetesAgentSubstrate Validation Tests", func() {
 					LogsExporters:    []string{"console"},
 					TracesSampler:    "parentbased_traceidratio", TracesSamplerRatio: float64Ptr(0.25),
 					MetricExportIntervalMs: int32Ptr(10000), MetricExportTimeoutMs: int32Ptr(5000),
+					WorkerTracesExporters:  []string{"none"},
+					WorkerMetricsExporters: []string{"otlp"},
+					WorkerLogsExporters:    []string{"otlp"},
 				},
 				ClusterSize:        KubernetesAgentSubstrateSpec_size0, // size10 excludes the bundled database's own resources set above
 				CordonControlPlane: true,
 				ImageRegistry:      "us-central1-docker.pkg.dev",
 				ImagePullSecrets:   []string{"mirror-pull"},
+				Version:            stringPtr("v0.6.0"),
+				PreviewGates:       []string{"ExternalVolumes"},
+				IdentityServer:     &KubernetesAgentSubstrateIdentityServer{Replicas: int32Ptr(3), Resources: resources, LogLevel: LogLevel_debug, DrainGrace: stringPtr("10s")},
 			}
+			input.Spec.Storage.SnapshotPrefix = "substrate/prod"
 			valid()
 		})
 	})

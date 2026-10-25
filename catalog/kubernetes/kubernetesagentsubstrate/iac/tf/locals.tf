@@ -16,11 +16,12 @@
 
 locals {
   # ---- the upstream contract (vars.go) ------------------------------------------
-  # Pinned agent-substrate/substrate release. The catalog's Substrate resource
-  # kinds mirror its resource definitions, so moving it is a deliberate
-  # catalog update. MUST equal the Pulumi module's vars.Release (a test holds
-  # them equal).
-  release                    = "v0.5.0"
+  # The agent-substrate/substrate release this module composes: its install
+  # shape, the version installed when spec.version is empty, and the release
+  # whose resource definitions the kind applies. Any release Planton publishes
+  # with this shape installs with this module (images.json's shape names it).
+  # MUST equal the Pulumi module's vars.Release (a test holds them equal).
+  release                    = "v0.6.0"
   bundle_name                = "agent-substrate"
   namespace                  = "ate-system"
   pod_certificates_namespace = "podcertificate-controller-system"
@@ -35,6 +36,7 @@ locals {
   pod_certificates_name    = "podcertificate-controller"
   credential_provider_name = "k8s-credential-provider"
   postgres_name            = "postgres"
+  identity_server_name     = "ate-idp-server"
   postgres_volume_claim    = "data-postgres-0"
 
   api_server_host        = "api.ate-system.svc"
@@ -51,11 +53,19 @@ locals {
   postgres_setup_config_map = "postgres-setup"
   postgres_setup_mount_path = "/etc/postgres-setup"
 
-  release_base_url   = "https://downloads.planton.ai/releases/agent-substrate/"
-  setup_sql_base_url = "https://raw.githubusercontent.com/agent-substrate/substrate/"
-  setup_sql_url      = "${local.setup_sql_base_url}${local.release}/pkg/postgressetup/setup.sql"
+  release_base_url = "https://downloads.planton.ai/releases/agent-substrate/"
 
-  # The release files the composition reads, by role (vars.go).
+  # The release installed (settings.go version), and where its files are.
+  version     = coalesce(try(var.spec.version, null), local.release)
+  version_url = "${local.release_base_url}${local.version}/"
+
+  # The release's seal (vars.go fileChecksums), read first.
+  checksums_file = "SHA256SUMS"
+
+  # The release files the composition reads, by role (vars.go). images.json
+  # is read on its own, before the rest, because it names the release's
+  # install shape.
+  images_file = "images.json"
   release_files = {
     namespace           = "manifests/ate-install/ate-system-namespace.yaml"
     controller_role     = "manifests/ate-install/generated/role.yaml"
@@ -68,6 +78,7 @@ locals {
     podcert_size10      = "manifests/ate-install/podcert-size10/kustomization.yaml"
     api_server          = "manifests/ate-install/ate-api-server.yaml"
     controller          = "manifests/ate-install/ate-controller.yaml"
+    identity_server     = "manifests/ate-install/ate-idp-server.yaml"
     node_agent          = "manifests/ate-install/atelet.yaml"
     router              = "manifests/ate-install/atenet-router.yaml"
     router_monitoring   = "manifests/ate-install/atenet-router-monitoring.yaml"
@@ -79,7 +90,7 @@ locals {
     agentgateway_egress = "manifests/ate-install/components/agentgateway-egress/kustomization.yaml"
     cordon              = "manifests/ate-install/components/cordon-control-plane/kustomization.yaml"
     credential_provider = "manifests/egress-credential-injection/k8s-credential-provider.yaml"
-    images              = "images.json"
+    setup_sql           = "setup.sql"
   }
 
   # ---- who owns the namespace ---------------------------------------------------
@@ -107,8 +118,10 @@ locals {
   gke_cluster_id         = try(var.spec.platform.gke.cluster_id, "")
   api_server_gsa         = try(var.spec.platform.gke.api_server_service_account, "")
   node_agent_gsa         = try(var.spec.platform.gke.node_agent_service_account, "")
+  transfer_gsa           = try(var.spec.platform.gke.snapshot_transfer_service_account, "")
   service_account_issuer = try(var.spec.platform.generic.service_account_issuer, "")
 
+  preview  = try(var.spec.preview_gates, [])
   size10   = try(var.spec.cluster_size, "") == "size10"
   cordon   = try(var.spec.cordon_control_plane, false)
   registry = try(var.spec.image_registry, "")
@@ -155,19 +168,28 @@ locals {
     id_key     = coalesce(try(local.s3.credentials.access_key_id_key, null), "access_key_id")
     secret_key = coalesce(try(local.s3.credentials.secret_access_key_key, null), "secret_access_key")
   }
-  storage_location = local.storage.is_s3 ? "s3://${local.storage.bucket}" : "gs://${local.storage.gcs_bucket}"
+  # Where actor snapshots are stored, the API server's snapshot location: the
+  # bucket, under the prefix when one is set (storageSettings.location).
+  snapshot_prefix  = try(var.spec.storage.snapshot_prefix, "")
+  storage_location = "${local.storage.is_s3 ? "s3://${local.storage.bucket}" : "gs://${local.storage.gcs_bucket}"}${local.snapshot_prefix != "" ? "/${local.snapshot_prefix}" : ""}"
 
   api = {
     replicas         = coalesce(try(var.spec.api_server.replicas, null), 2)
     resources        = try(var.spec.api_server.resources, null)
     log_level        = coalesce(try(var.spec.api_server.log_level, ""), "info")
-    authz            = try(var.spec.api_server.authorization, null) != null && (try(var.spec.api_server.authorization.enabled, null) == null ? true : var.spec.api_server.authorization.enabled)
-    bootstrap_owners = try(var.spec.api_server.authorization.bootstrap_owners, [])
+    bootstrap_owners = coalescelist(try(var.spec.api_server.authorization.bootstrap_owners, []), ["system:serviceaccount:ate-system:ate-client"])
     jwt_algorithm    = upper(coalesce(try(var.spec.api_server.actor_jwt.algorithm, ""), "es256"))
     actor_issuer     = coalesce(try(var.spec.api_server.actor_jwt.issuer, ""), "https://idp.${local.namespace}.svc")
     drain_delay      = coalesce(try(var.spec.api_server.drain_delay, null), "13s")
     drain_timeout    = coalesce(try(var.spec.api_server.drain_timeout, null), "15s")
     resync_interval  = coalesce(try(var.spec.api_server.template_resync_interval, null), "20s")
+  }
+
+  identity = {
+    replicas    = coalesce(try(var.spec.identity_server.replicas, null), 2)
+    resources   = try(var.spec.identity_server.resources, null)
+    log_level   = coalesce(try(var.spec.identity_server.log_level, ""), "info")
+    drain_grace = coalesce(try(var.spec.identity_server.drain_grace, null), "5s")
   }
 
   controller = {
@@ -199,6 +221,43 @@ locals {
     min_age       = coalesce(try(var.spec.node_agent.image_cache.min_age, null), "2m")
     gc_dry_run    = try(var.spec.node_agent.image_cache.dry_run, false)
     staging_gib   = coalesce(try(var.spec.node_agent.asset_staging_capacity_gib, null), 8)
+  }
+  node_snapshots = {
+    upload_delay   = coalesce(try(var.spec.node_agent.snapshots.upload_delay, null), "5m")
+    detach_delay   = coalesce(try(var.spec.node_agent.snapshots.detach_delay, null), "30m")
+    upload_timeout = coalesce(try(var.spec.node_agent.snapshots.upload_timeout, null), "2m")
+    upload_mib     = coalesce(try(var.spec.node_agent.snapshots.upload_throughput_mib, null), 100)
+    upload_workers = coalesce(try(var.spec.node_agent.snapshots.upload_workers, null), 2)
+    detach_workers = coalesce(try(var.spec.node_agent.snapshots.detach_workers, null), 2)
+    report_workers = coalesce(try(var.spec.node_agent.snapshots.report_workers, null), 1)
+    report_give_up = coalesce(try(var.spec.node_agent.snapshots.report_give_up_after, null), "10m")
+    upload_memory  = coalesce(try(var.spec.node_agent.snapshots.upload_memory_budget, null), "512Mi")
+  }
+  # The node's two file caches (resolveFileCache): the same flags under each
+  # cache's prefix, with the fetch timeout named apart.
+  file_caches = {
+    "sandbox-asset-cache" = {
+      timeout_flag    = "sandbox-asset-fetch-timeout"
+      disabled        = false
+      min_age         = coalesce(try(var.spec.node_agent.sandbox_asset_cache.min_age, null), "1h")
+      min_age_default = "1h"
+      timeout         = coalesce(try(var.spec.node_agent.sandbox_asset_cache.fetch_timeout, null), "5m")
+      timeout_default = "5m"
+      gc_period       = coalesce(try(var.spec.node_agent.sandbox_asset_cache.eviction.gc_period, null), "5m")
+      max_bytes       = coalesce(try(var.spec.node_agent.sandbox_asset_cache.eviction.max_bytes, null), 0)
+      gc_dry_run      = try(var.spec.node_agent.sandbox_asset_cache.eviction.dry_run, false)
+    }
+    "snapshot-cache" = {
+      timeout_flag    = "snapshot-cache-fetch-timeout"
+      disabled        = try(var.spec.node_agent.snapshot_cache.disabled, false)
+      min_age         = coalesce(try(var.spec.node_agent.snapshot_cache.min_age, null), "10m")
+      min_age_default = "10m"
+      timeout         = coalesce(try(var.spec.node_agent.snapshot_cache.fetch_timeout, null), "10m")
+      timeout_default = "10m"
+      gc_period       = coalesce(try(var.spec.node_agent.snapshot_cache.eviction.gc_period, null), "5m")
+      max_bytes       = coalesce(try(var.spec.node_agent.snapshot_cache.eviction.max_bytes, null), 0)
+      gc_dry_run      = try(var.spec.node_agent.snapshot_cache.eviction.dry_run, false)
+    }
   }
 
   router = {
@@ -269,6 +328,9 @@ locals {
     sampler_ratio   = try(var.spec.telemetry.traces_sampler_ratio, null)
     export_interval = coalesce(try(var.spec.telemetry.metric_export_interval_ms, null), 0)
     export_timeout  = coalesce(try(var.spec.telemetry.metric_export_timeout_ms, null), 0)
+    worker_traces   = try(var.spec.telemetry.worker_traces_exporters, [])
+    worker_metrics  = try(var.spec.telemetry.worker_metrics_exporters, [])
+    worker_logs     = try(var.spec.telemetry.worker_logs_exporters, [])
   }
 
   # ---- derived configuration (config.go) ----------------------------------------
@@ -281,9 +343,11 @@ locals {
 
   api_env_config_map = merge(
     {
-      "ATE_API_POSTGRES_READ_WRITE_ROLE" = local.db.role_read_write
-      "ATE_API_POSTGRES_OWNER_ROLE"      = local.db.role_owner
-      "ATE_API_ACTOR_JWT_ISSUER"         = local.api.actor_issuer
+      "ATE_API_POSTGRES_READ_WRITE_ROLE"          = local.db.role_read_write
+      "ATE_API_POSTGRES_OWNER_ROLE"               = local.db.role_owner
+      "ATE_API_ACTOR_JWT_ISSUER"                  = local.api.actor_issuer
+      "ATE_API_SNAPSHOT_LOCATION"                 = local.storage_location
+      "ATE_API_SNAPSHOT_TRANSFER_SERVICE_ACCOUNT" = local.transfer_gsa
     },
     local.db.pool_max_conns > 0 ? { "ATE_API_POSTGRES_POOL_MAX_CONNS" = tostring(local.db.pool_max_conns) } : {},
     local.db_kind == "cloudsql" ? {
@@ -311,10 +375,14 @@ locals {
     } : {},
   )
 
+  # The API server's configuration file (config.go apiConfigText): its log
+  # level, read live, so it rolls nothing.
+  api_config_text = "logging: {\n  level: \"${local.api.log_level}\"\n}\n"
+
   # authentication.yaml, byte for byte upstream's buildAuthenticationConfig.
   api_issuer = local.gke ? "https://container.googleapis.com/v1/${local.gke_cluster_id}" : local.service_account_issuer
   authentication_yaml = trimsuffix(join("", concat(
-    ["actorIdentityJWTProvider: kubernetes\njwtProviders:\n- name: kubernetes\n  issuer: ${local.api_issuer}\n  audiences: [${local.api_server_host}]\n"],
+    ["jwtProviders:\n- name: kubernetes\n  issuer: ${local.api_issuer}\n  audiences: [${local.api_server_host}]\n"],
     contains(["https://kubernetes.default.svc", "https://kubernetes.default.svc.cluster.local"], local.api_issuer) ? [
       "  certificateAuthorityFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n  discoveryTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token\n",
     ] : [],
@@ -340,6 +408,9 @@ locals {
     length(local.otel_traces) > 0 ? { "OTEL_TRACES_EXPORTER" = join(",", local.otel_traces) } : {},
     length(local.otel_metrics) > 0 ? { "OTEL_METRICS_EXPORTER" = join(",", local.otel_metrics) } : {},
     length(local.telemetry.logs) > 0 ? { "OTEL_LOGS_EXPORTER" = join(",", local.telemetry.logs) } : {},
+    length(local.telemetry.worker_traces) > 0 ? { "ATE_WORKER_OTEL_TRACES_EXPORTER" = join(",", local.telemetry.worker_traces) } : {},
+    length(local.telemetry.worker_metrics) > 0 ? { "ATE_WORKER_OTEL_METRICS_EXPORTER" = join(",", local.telemetry.worker_metrics) } : {},
+    length(local.telemetry.worker_logs) > 0 ? { "ATE_WORKER_OTEL_LOGS_EXPORTER" = join(",", local.telemetry.worker_logs) } : {},
     local.telemetry.sampler != "" ? { "OTEL_TRACES_SAMPLER" = local.telemetry.sampler } : {},
     local.telemetry.sampler_ratio != null ? { "OTEL_TRACES_SAMPLER_ARG" = tostring(local.telemetry.sampler_ratio) } : {},
     local.telemetry.export_interval > 0 ? { "OTEL_METRIC_EXPORT_INTERVAL" = tostring(local.telemetry.export_interval) } : {},
@@ -359,7 +430,7 @@ locals {
     local.egress.provider == "kubernetes" ? { "k8s-credential-provider-namespace-policy" = { "namespace-policy.yaml" = local.policy_yaml } } : {},
     local.db_kind == "bundled" ? {
       "postgres-config"                 = local.postgres_config_data
-      (local.postgres_setup_config_map) = { "setup.sql" = data.http.setup_sql.response_body }
+      (local.postgres_setup_config_map) = { "setup.sql" = local.release_bodies["setup_sql"] }
     } : {},
   )
   config_readers = {
@@ -381,19 +452,24 @@ locals {
   }
 
   # ---- flags per component (workloads.go) ---------------------------------------
+  # The bootstrap owners are always written, as upstream's installer writes
+  # them; the log level is the configuration file's.
   api_flags = [for f in [
-    { on = local.api.log_level != "info", name = "log-level", value = local.api.log_level },
-    { on = local.api.authz, name = "experimental-enable-authz", value = "true" },
-    { on = length(local.api.bootstrap_owners) > 0, name = "authz-bootstrap-owners", value = join(",", local.api.bootstrap_owners) },
+    { on = true, name = "authz-bootstrap-owners", value = join(",", local.api.bootstrap_owners) },
     { on = local.api.drain_delay != "13s", name = "drain-delay", value = local.api.drain_delay },
     { on = local.api.drain_timeout != "15s", name = "drain-timeout", value = local.api.drain_timeout },
     { on = local.api.resync_interval != "20s", name = "template-resync-interval", value = local.api.resync_interval },
+  ] : f if f.on]
+  identity_flags = [for f in [
+    { on = true, name = "issuer", value = local.api.actor_issuer },
+    { on = local.identity.log_level != "info", name = "log-level", value = local.identity.log_level },
+    { on = local.identity.drain_grace != "5s", name = "drain-grace", value = local.identity.drain_grace },
   ] : f if f.on]
   controller_flags = [for f in [
     { on = local.controller.log_level != "info", name = "log-level", value = local.controller.log_level },
     { on = local.controller.worker_sync != 2, name = "worker-sync-concurrency", value = tostring(local.controller.worker_sync) },
   ] : f if f.on]
-  node_agent_flags = [for f in [
+  node_agent_flags = [for f in concat([
     { on = local.node_agent.log_level != "info", name = "log-level", value = local.node_agent.log_level },
     { on = local.node_agent.stats_poll != "1m", name = "actor-stats-poll-interval", value = local.node_agent.stats_poll },
     { on = local.node_agent.drain_delay != "0s", name = "drain-delay", value = local.node_agent.drain_delay },
@@ -404,9 +480,27 @@ locals {
     { on = local.node_agent.max_bytes != 0, name = "image-cache-max-bytes", value = tostring(local.node_agent.max_bytes) },
     { on = local.node_agent.min_age != "2m", name = "image-cache-min-age", value = local.node_agent.min_age },
     { on = local.node_agent.gc_dry_run, name = "image-cache-gc-dry-run", value = "true" },
-  ] : f if f.on]
+    { on = local.node_snapshots.upload_delay != "5m", name = "snapshot-upload-delay", value = local.node_snapshots.upload_delay },
+    { on = local.node_snapshots.detach_delay != "30m", name = "snapshot-detach-delay", value = local.node_snapshots.detach_delay },
+    { on = local.node_snapshots.upload_timeout != "2m", name = "snapshot-upload-timeout", value = local.node_snapshots.upload_timeout },
+    { on = local.node_snapshots.upload_mib != 100, name = "snapshot-upload-est-throughput-mib", value = tostring(local.node_snapshots.upload_mib) },
+    { on = local.node_snapshots.upload_workers != 2, name = "snapshot-upload-workers", value = tostring(local.node_snapshots.upload_workers) },
+    { on = local.node_snapshots.detach_workers != 2, name = "snapshot-detach-workers", value = tostring(local.node_snapshots.detach_workers) },
+    { on = local.node_snapshots.report_workers != 1, name = "snapshot-report-workers", value = tostring(local.node_snapshots.report_workers) },
+    { on = local.node_snapshots.report_give_up != "10m", name = "snapshot-report-give-up-after", value = local.node_snapshots.report_give_up },
+    ], flatten([for prefix, c in local.file_caches : [
+      { on = c.min_age != c.min_age_default, name = "${prefix}-min-age", value = c.min_age },
+      { on = c.timeout != c.timeout_default, name = c.timeout_flag, value = c.timeout },
+      { on = c.gc_period != "5m", name = "${prefix}-gc-period", value = c.gc_period },
+      { on = c.max_bytes != 0, name = "${prefix}-max-bytes", value = tostring(c.max_bytes) },
+      { on = c.gc_dry_run, name = "${prefix}-gc-dry-run", value = "true" },
+    ]]), [
+    # An empty cache directory turns the snapshot cache off.
+    { on = local.file_caches["snapshot-cache"].disabled, name = "snapshot-cache-dir", value = "" },
+  ]) : f if f.on]
   staging_flags = [for f in [
     { on = local.node_agent.staging_gib != 8, name = "asset-staging-capacity", value = "${local.node_agent.staging_gib}Gi" },
+    { on = local.node_snapshots.upload_memory != "512Mi", name = "upload-memory-budget", value = local.node_snapshots.upload_memory },
   ] : f if f.on]
   router_flags = [for f in [
     { on = local.router.log_level != "info", name = "log-level", value = local.router.log_level },

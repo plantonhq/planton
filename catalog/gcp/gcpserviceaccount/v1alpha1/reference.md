@@ -381,6 +381,7 @@ Fields on other kinds that can point at this resource:
 | GcpWorkflow | `spec.serviceAccount` | `status.outputs.email` |
 | KubernetesAgentSubstrate | `spec.platform.gke.apiServerServiceAccount` | `status.outputs.email` |
 | KubernetesAgentSubstrate | `spec.platform.gke.nodeAgentServiceAccount` | `status.outputs.email` |
+| KubernetesAgentSubstrate | `spec.platform.gke.snapshotTransferServiceAccount` | `status.outputs.email` |
 | KubernetesCertManager | `spec.workloadIdentity.gke.serviceAccountEmail` | `status.outputs.email` |
 | KubernetesExternalDns | `spec.workloadIdentity.gke.serviceAccountEmail` | `status.outputs.email` |
 | KubernetesExternalSecretsOperator | `spec.workloadIdentity.gke.serviceAccountEmail` | `status.outputs.email` |

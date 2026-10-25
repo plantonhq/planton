@@ -18,8 +18,8 @@ planton tofu apply --manifest sandbox-config.yaml
 
 | Output | Description |
 |--------|-------------|
-| `sandbox_config_name` | Name of the created SandboxConfig (the spec's `name`), which worker pools and actor templates name |
-| `sandbox_class` | The config's class, which an actor template's `sandbox_config.sandbox_class` must equal |
+| `sandbox_config_name` | Name of the created SandboxConfig (the spec's `name`), which worker pools name |
+| `sandbox_class` | The config's class, which the worker pool's `sandbox_classes` entry must equal |
 
 ## Import
 

@@ -22,6 +22,8 @@ What it installs, all in `ate-system` unless noted:
     worker pods and registers them with the API server;
   - the node agent (`atelet`, a DaemonSet), which runs actors on worker
     nodes and moves their snapshots to and from object storage (`storage`);
+  - the identity server (`ate-idp-server`), which publishes the keys actor
+    JWTs are verified with at the actor-JWT issuer;
   - the ingress router (`atenet-router`), the data path a request reaches an
     actor by, and the egress gateway (`atenet-egress`), which enforces each
     actor's egress policy and can inject credentials into its outbound calls;
@@ -45,16 +47,22 @@ NetworkPolicy, because the install's isolation is a default-deny policy.
 Upstream supports GKE and kind.
 
 DISTRIBUTION AND VERSION: Agent Substrate publishes no images and no
-installable release, so Planton publishes both: upstream's v0.5.0 built by
-upstream's own publisher, every image digest-pinned, at
-https://downloads.planton.ai/releases/agent-substrate/v0.5.0/. The modules
-compose that tree the way upstream's installer does and apply the typed
-settings below onto it. There is NO version field: the catalog's Substrate
-resource kinds mirror these resource definitions field for field, and each
-Substrate release is a deliberate catalog update. Before 1.0 every minor
-release is a reinstall upstream (its database schema migrates irreversibly),
-so the kind refuses an apply over an older minor's installation or database,
-and says how to move across.
+installable release, so Planton publishes both: each upstream release built
+by upstream's own publisher, every image digest-pinned, at
+https://downloads.planton.ai/releases/agent-substrate/<version>/. The
+modules compose that tree the way upstream's installer does and apply the
+typed settings below onto it. They compose one install shape, v0.6.0's,
+and `version` picks any release Planton publishes with that shape: a
+release whose install differs from it only in its images, which Planton
+proves before it publishes one. So a new upstream patch reaches this kind
+by setting `version`, with no catalog update; a release with another shape
+is refused at plan time, before anything is applied, and arrives with the
+catalog update that composes it. The resource definitions belong to the
+shape, so the catalog's Substrate resource kinds mirror them field for
+field. Before 1.0 every minor release is a reinstall upstream (its database
+schema migrates irreversibly), so the kind refuses an apply over an older
+minor's installation or database, and says how to move across; patch
+releases of one minor move in place, either way.
 
 GENERATED SECRETS: the certificate authorities behind every component's
 mTLS, the actor-identity CA, the egress interception CA and the actor token
@@ -78,8 +86,9 @@ components offer; the guide accounts for each one.
 # definitions handed over on destroy, authorization with an owner, every
 # workload's knobs, the Envoy dataplane with an additional ext_proc filter,
 # the Kubernetes Secrets credential provider with grants, the control plane
-# cordoned onto its own nodes, the size10 tuning, telemetry to a collector,
-# and an image mirror with a pull Secret -- so the offline tofu plan and
+# cordoned onto its own nodes, the size10 tuning, telemetry to a collector
+# with the workers' own exporters, every preview gate, a snapshot prefix, and
+# an image mirror with a pull Secret -- so the offline tofu plan and
 # pulumi preview proofs cover the typed surface. Placeholder values; never
 # applied to a real cluster.
 apiVersion: kubernetes.planton.dev/v1alpha1
@@ -101,6 +110,8 @@ spec:
         value: ate-api-server@example-project.iam.gserviceaccount.com
       nodeAgentServiceAccount:
         value: atelet@example-project.iam.gserviceaccount.com
+      snapshotTransferServiceAccount:
+        value: ate-snapshot-transfer@example-project.iam.gserviceaccount.com
   database:
     cloudSql:
       instanceConnectionName:
@@ -116,6 +127,7 @@ spec:
     gcs:
       bucket:
         value: example-agent-snapshots
+    snapshotPrefix: substrate/prod
   apiServer:
     replicas: 3
     resources:
@@ -127,7 +139,6 @@ spec:
         memory: 2Gi
     logLevel: debug
     authorization:
-      enabled: true
       bootstrapOwners:
         - system:serviceaccount:platform:agent-orchestrator
     actorJwt:
@@ -167,6 +178,29 @@ spec:
       minAge: 1h
       dryRun: false
     assetStagingCapacityGib: 20
+    snapshots:
+      uploadDelay: 2m
+      detachDelay: 1h
+      uploadTimeout: 3m
+      uploadThroughputMib: 50
+      uploadWorkers: 4
+      detachWorkers: 3
+      reportWorkers: 2
+      reportGiveUpAfter: 20m
+      uploadMemoryBudget: 1Gi
+    sandboxAssetCache:
+      minAge: 2h
+      fetchTimeout: 10m
+      eviction:
+        gcPeriod: 10m
+        maxBytes: 21474836480
+        dryRun: false
+    snapshotCache:
+      minAge: 20m
+      fetchTimeout: 15m
+      eviction:
+        gcPeriod: 10m
+        maxBytes: 10737418240
   router:
     dataplane: envoy
     replicas: 2
@@ -241,11 +275,28 @@ spec:
     tracesSamplerRatio: 0.25
     metricExportIntervalMs: 30000
     metricExportTimeoutMs: 10000
+    workerTracesExporters:
+      - otlp
+    workerMetricsExporters:
+      - otlp
+    workerLogsExporters:
+      - otlp
   clusterSize: size10
   cordonControlPlane: true
   imageRegistry: mirror.example.com/substrate
   imagePullSecrets:
     - mirror-pull
+  version: v0.6.0
+  previewGates:
+    - ALL
+  identityServer:
+    replicas: 3
+    resources:
+      requests:
+        cpu: 100m
+        memory: 64Mi
+    logLevel: warn
+    drainGrace: 10s
 ```
 
 ## Spec Fields
@@ -262,6 +313,7 @@ spec:
 | `spec.platform.gke.clusterId` | `string \| valueFrom` | yes |  | GcpGkeCluster (`status.outputs.cluster_id`) |
 | `spec.platform.gke.apiServerServiceAccount` | `string \| valueFrom` |  |  | GcpServiceAccount (`status.outputs.email`) |
 | `spec.platform.gke.nodeAgentServiceAccount` | `string \| valueFrom` |  |  | GcpServiceAccount (`status.outputs.email`) |
+| `spec.platform.gke.snapshotTransferServiceAccount` | `string \| valueFrom` |  |  | GcpServiceAccount (`status.outputs.email`) |
 | `spec.platform.generic` | `KubernetesAgentSubstrateGeneric` |  |  |  |
 | `spec.platform.generic.serviceAccountIssuer` | `string` | yes |  |  |
 | `spec.database` | `KubernetesAgentSubstrateDatabase` | yes |  |  |
@@ -314,6 +366,7 @@ spec:
 | `spec.storage.s3.credentials.secretName` | `string \| valueFrom` | yes |  | KubernetesSecret (`status.outputs.secret_name`) |
 | `spec.storage.s3.credentials.accessKeyIdKey` | `string` | yes | `access_key_id` |  |
 | `spec.storage.s3.credentials.secretAccessKeyKey` | `string` | yes | `secret_access_key` |  |
+| `spec.storage.snapshotPrefix` | `string` |  |  |  |
 | `spec.apiServer` | `KubernetesAgentSubstrateApiServer` |  |  |  |
 | `spec.apiServer.replicas` | `int32` |  | `2` |  |
 | `spec.apiServer.resources` | `ContainerResources` |  |  |  |
@@ -325,7 +378,6 @@ spec:
 | `spec.apiServer.resources.requests.memory` | `string` |  |  |  |
 | `spec.apiServer.logLevel` | `enum` |  |  |  |
 | `spec.apiServer.authorization` | `KubernetesAgentSubstrateAuthorization` |  |  |  |
-| `spec.apiServer.authorization.enabled` | `bool` |  | `true` |  |
 | `spec.apiServer.authorization.bootstrapOwners` | `[]string` |  |  |  |
 | `spec.apiServer.actorJwt` | `KubernetesAgentSubstrateActorJwt` |  |  |  |
 | `spec.apiServer.actorJwt.algorithm` | `enum` |  |  |  |
@@ -370,6 +422,31 @@ spec:
 | `spec.nodeAgent.imageCache.minAge` | `string` |  | `2m` |  |
 | `spec.nodeAgent.imageCache.dryRun` | `bool` |  |  |  |
 | `spec.nodeAgent.assetStagingCapacityGib` | `int32` |  | `8` |  |
+| `spec.nodeAgent.snapshots` | `KubernetesAgentSubstrateNodeSnapshots` |  |  |  |
+| `spec.nodeAgent.snapshots.uploadDelay` | `string` |  | `5m` |  |
+| `spec.nodeAgent.snapshots.detachDelay` | `string` |  | `30m` |  |
+| `spec.nodeAgent.snapshots.uploadTimeout` | `string` |  | `2m` |  |
+| `spec.nodeAgent.snapshots.uploadThroughputMib` | `int32` |  | `100` |  |
+| `spec.nodeAgent.snapshots.uploadWorkers` | `int32` |  | `2` |  |
+| `spec.nodeAgent.snapshots.detachWorkers` | `int32` |  | `2` |  |
+| `spec.nodeAgent.snapshots.reportWorkers` | `int32` |  | `1` |  |
+| `spec.nodeAgent.snapshots.reportGiveUpAfter` | `string` |  | `10m` |  |
+| `spec.nodeAgent.snapshots.uploadMemoryBudget` | `string` |  | `512Mi` |  |
+| `spec.nodeAgent.sandboxAssetCache` | `KubernetesAgentSubstrateSandboxAssetCache` |  |  |  |
+| `spec.nodeAgent.sandboxAssetCache.minAge` | `string` |  | `1h` |  |
+| `spec.nodeAgent.sandboxAssetCache.fetchTimeout` | `string` |  | `5m` |  |
+| `spec.nodeAgent.sandboxAssetCache.eviction` | `KubernetesAgentSubstrateFileCacheEviction` |  |  |  |
+| `spec.nodeAgent.sandboxAssetCache.eviction.gcPeriod` | `string` |  | `5m` |  |
+| `spec.nodeAgent.sandboxAssetCache.eviction.maxBytes` | `int64` |  | `0` |  |
+| `spec.nodeAgent.sandboxAssetCache.eviction.dryRun` | `bool` |  |  |  |
+| `spec.nodeAgent.snapshotCache` | `KubernetesAgentSubstrateSnapshotCache` |  |  |  |
+| `spec.nodeAgent.snapshotCache.disabled` | `bool` |  |  |  |
+| `spec.nodeAgent.snapshotCache.minAge` | `string` |  | `10m` |  |
+| `spec.nodeAgent.snapshotCache.fetchTimeout` | `string` |  | `10m` |  |
+| `spec.nodeAgent.snapshotCache.eviction` | `KubernetesAgentSubstrateFileCacheEviction` |  |  |  |
+| `spec.nodeAgent.snapshotCache.eviction.gcPeriod` | `string` |  | `5m` |  |
+| `spec.nodeAgent.snapshotCache.eviction.maxBytes` | `int64` |  | `0` |  |
+| `spec.nodeAgent.snapshotCache.eviction.dryRun` | `bool` |  |  |  |
 | `spec.router` | `KubernetesAgentSubstrateRouter` |  |  |  |
 | `spec.router.dataplane` | `enum` |  |  |  |
 | `spec.router.replicas` | `int32` |  | `1` |  |
@@ -450,10 +527,26 @@ spec:
 | `spec.telemetry.tracesSamplerRatio` | `double` |  |  |  |
 | `spec.telemetry.metricExportIntervalMs` | `int32` |  |  |  |
 | `spec.telemetry.metricExportTimeoutMs` | `int32` |  |  |  |
+| `spec.telemetry.workerTracesExporters` | `[]string` |  |  |  |
+| `spec.telemetry.workerMetricsExporters` | `[]string` |  |  |  |
+| `spec.telemetry.workerLogsExporters` | `[]string` |  |  |  |
 | `spec.clusterSize` | `enum` |  |  |  |
 | `spec.cordonControlPlane` | `bool` |  |  |  |
 | `spec.imageRegistry` | `string` |  |  |  |
 | `spec.imagePullSecrets` | `[]string` |  |  |  |
+| `spec.version` | `string` |  | `v0.6.0` |  |
+| `spec.previewGates` | `[]string` |  |  |  |
+| `spec.identityServer` | `KubernetesAgentSubstrateIdentityServer` |  |  |  |
+| `spec.identityServer.replicas` | `int32` |  | `2` |  |
+| `spec.identityServer.resources` | `ContainerResources` |  |  |  |
+| `spec.identityServer.resources.limits` | `CpuMemory` |  |  |  |
+| `spec.identityServer.resources.limits.cpu` | `string` |  |  |  |
+| `spec.identityServer.resources.limits.memory` | `string` |  |  |  |
+| `spec.identityServer.resources.requests` | `CpuMemory` |  |  |  |
+| `spec.identityServer.resources.requests.cpu` | `string` |  |  |  |
+| `spec.identityServer.resources.requests.memory` | `string` |  |  |  |
+| `spec.identityServer.logLevel` | `enum` |  |  |  |
+| `spec.identityServer.drainGrace` | `string` |  | `5s` |  |
 
 ## Field Details
 
@@ -551,11 +644,13 @@ trusts Kubernetes service-account tokens issued by
 
 The Google service account the API server acts as through Workload
 Identity (the `iam.gke.io/gcp-service-account` annotation on its
-Kubernetes service account). It needs storage.objectAdmin and
-storage.bucketViewer on the snapshot bucket, and with Cloud SQL
-roles/cloudsql.client and roles/cloudsql.instanceUser, and the database
-user named after it. Empty = no annotation: grant those roles to the
-Kubernetes service account's own Workload Identity principal instead.
+Kubernetes service account). With GCS storage it needs
+storage.objectAdmin and storage.bucketViewer on the snapshot bucket, and
+roles/iam.serviceAccountTokenCreator on the snapshot transfer service
+account; with Cloud SQL, roles/cloudsql.client and
+roles/cloudsql.instanceUser, and the database user named after it. Empty
+= no annotation: grant those roles to the Kubernetes service account's
+own Workload Identity principal instead.
 
 - references: GcpServiceAccount (`status.outputs.email`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpServiceAccount, name: <that resource's name>, fieldPath: status.outputs.email}} -- a bare string does not parse
@@ -565,11 +660,27 @@ Kubernetes service account's own Workload Identity principal instead.
 `string | valueFrom`
 
 The Google service account the node agent acts as through Workload
-Identity. It moves every actor snapshot, so it needs storage.objectAdmin
-and storage.bucketViewer on the snapshot bucket, and, for actors that pull
-private images, artifactregistry.reader. Empty = no annotation: grant
-those roles to the Kubernetes service account's own Workload Identity
-principal instead.
+Identity. It holds no grant on the snapshot bucket: each snapshot moves
+with a token the API server mints for that one actor. For actors that
+pull private images it needs artifactregistry.reader, and for microVM
+workers storage.objectViewer on the asset bucket that holds their guest
+kernels and images ("<snapshot-bucket>-assets", by upstream's
+convention). Empty = no annotation: grant those roles to the Kubernetes
+service account's own Workload Identity principal instead.
+
+- references: GcpServiceAccount (`status.outputs.email`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpServiceAccount, name: <that resource's name>, fieldPath: status.outputs.email}} -- a bare string does not parse
+
+### spec.platform.gke.snapshotTransferServiceAccount
+
+`string | valueFrom`
+
+The Google service account every GCS snapshot transfer runs as. The API
+server impersonates it and hands each node agent a token narrowed to the
+one actor's snapshots, so a node can never reach another actor's. It
+needs storage.objectAdmin and storage.bucketViewer on the snapshot
+bucket, and the API server's service account needs
+roles/iam.serviceAccountTokenCreator on it. Required with GCS storage.
 
 - references: GcpServiceAccount (`status.outputs.email`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpServiceAccount, name: <that resource's name>, fieldPath: status.outputs.email}} -- a bare string does not parse
@@ -1023,6 +1134,17 @@ Key holding the secret access key.
 - default: `secret_access_key`
 - rule: {"string":{"minLen":"1"}}
 
+### spec.storage.snapshotPrefix
+
+`string`
+
+The path in the bucket every actor snapshot is stored under, such as
+"substrate/prod", for a bucket shared with other data or installations.
+Empty = the bucket's root.
+
+- rule: snapshot_prefix is a path in the bucket such as "substrate/prod": no leading or trailing slash, no backslash, no ?, # or @, and no segment of only dots and spaces
+- rule: {"ignore":"IGNORE_IF_ZERO_VALUE"}
+
 ### spec.apiServer
 
 `KubernetesAgentSubstrateApiServer`
@@ -1080,7 +1202,8 @@ Specify the minimum amount of CPU and memory that the container is guaranteed.
 
 `enum`
 
-Minimum log level.
+Minimum log level. The API server reads it from its configuration file
+as it changes, so a new level applies without a restart.
 
 Allowed values (use exactly as shown):
 
@@ -1093,18 +1216,11 @@ Allowed values (use exactly as shown):
 
 `KubernetesAgentSubstrateAuthorization`
 
-Authorization of API calls. Absent = upstream's default: none, so every
-authenticated caller (any service-account token for the API's audience
-from a namespace labelled ate.dev/api-access=true) has full control of
-every atespace.
-
-### spec.apiServer.authorization.enabled
-
-`bool` · optional (explicit presence)
-
-Enforce authorization checks on every API call.
-
-- default: `true`
+Authorization of API calls, always enforced: a caller reaches an atespace
+only through an access policy, and the bootstrap owners hold every
+permission. Absent = upstream's bootstrap owner,
+"system:serviceaccount:ate-system:ate-client", which only someone who
+can create that service account in ate-system can act as.
 
 ### spec.apiServer.authorization.bootstrapOwners
 
@@ -1112,10 +1228,12 @@ Enforce authorization checks on every API call.
 
 Principal IDs that are always global owners while listed, whatever the
 stored global access policy says; removing one revokes it at the next
-restart. The way the first owner gets in. A service account calling with
-a token is "system:serviceaccount:<namespace>:<name>" (the token's
-subject); one calling with its pod certificate is
-"spiffe://cluster.local/ns/<namespace>/sa/<name>".
+restart. The way the first owner gets in: name the service account your
+product calls the API as. A service account calling with a token is
+"system:serviceaccount:<namespace>:<name>" (the token's subject); one
+calling with its pod certificate is
+"spiffe://cluster.local/ns/<namespace>/sa/<name>". Empty = upstream's
+"system:serviceaccount:ate-system:ate-client".
 
 - rule: {"repeated":{"unique":true,"items":{"string":{"minLen":"1"}}}}
 
@@ -1143,12 +1261,13 @@ Allowed values (use exactly as shown):
 `string`
 
 The iss claim of actor JWTs; relying parties fetch
-<issuer>/.well-known/openid-configuration to verify them. Empty =
-upstream's default, "https://idp.ate-system.svc", which nothing serves at
-this release: set an issuer you publish when a service must verify actor
-tokens.
+<issuer>/.well-known/openid-configuration to verify them, and the
+identity server publishes the keys there. Empty = upstream's default,
+"https://idp.ate-system.svc", which the identity server serves inside the
+cluster; set your own host when a service outside the cluster must verify
+actor tokens, and route it to the `idp` Service in ate-system.
 
-- rule: actor_jwt.issuer is an https URL with a host and no userinfo, query or fragment
+- rule: actor_jwt.issuer is https://<host>, optionally with a port: no path, userinfo, query or fragment
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE"}
 
 ### spec.apiServer.drainDelay
@@ -1454,6 +1573,226 @@ overflows.
 - default: `8`
 - rule: {"int32":{"lte":1024,"gt":0}}
 
+### spec.nodeAgent.snapshots
+
+`KubernetesAgentSubstrateNodeSnapshots`
+
+How the node moves suspended actors' snapshots to object storage in the
+background, and frees the node of actors that stay suspended.
+
+- rule: upload_delay must not exceed detach_delay: a snapshot must reach object storage before its actor leaves the node
+
+### spec.nodeAgent.snapshots.uploadDelay
+
+`string` · optional (explicit presence)
+
+How long after an actor's oldest snapshot not yet in object storage was
+taken the node uploads its latest one (Go duration). At most
+detach_delay.
+
+- default: `5m`
+- rule: upload_delay must be a positive Go duration such as "5m"
+
+### spec.nodeAgent.snapshots.detachDelay
+
+`string` · optional (explicit presence)
+
+How long an actor stays suspended on the node before the node detaches
+it (Go duration).
+
+- default: `30m`
+- rule: detach_delay must be a positive Go duration such as "30m"
+
+### spec.nodeAgent.snapshots.uploadTimeout
+
+`string` · optional (explicit presence)
+
+How long one upload may run before it is cancelled and retried, on top
+of the time the snapshot takes at upload_throughput_mib (Go duration).
+Each consecutive failure doubles it, to at most eight times. "0s" turns
+the timeout off.
+
+- default: `2m`
+- rule: upload_timeout must be a Go duration such as "2m" ("0s" turns it off)
+
+### spec.nodeAgent.snapshots.uploadThroughputMib
+
+`int32` · optional (explicit presence)
+
+The upload throughput the timeout allows for, in MiB per second of the
+snapshot's allocated size. 0 adds no time for the snapshot's size.
+
+- default: `100`
+- rule: {"int32":{"lte":1048576,"gte":0}}
+
+### spec.nodeAgent.snapshots.uploadWorkers
+
+`int32` · optional (explicit presence)
+
+Background uploads the node runs at once.
+
+- default: `2`
+- rule: {"int32":{"gte":1}}
+
+### spec.nodeAgent.snapshots.detachWorkers
+
+`int32` · optional (explicit presence)
+
+Background detaches the node runs at once.
+
+- default: `2`
+- rule: {"int32":{"gte":1}}
+
+### spec.nodeAgent.snapshots.reportWorkers
+
+`int32` · optional (explicit presence)
+
+Snapshot state reports to the API server the node sends at once.
+
+- default: `1`
+- rule: {"int32":{"gte":1}}
+
+### spec.nodeAgent.snapshots.reportGiveUpAfter
+
+`string` · optional (explicit presence)
+
+How long the node keeps retrying a failed snapshot state report before
+giving up on it (Go duration).
+
+- default: `10m`
+- rule: report_give_up_after must be a positive Go duration such as "10m"
+
+### spec.nodeAgent.snapshots.uploadMemoryBudget
+
+`string` · optional (explicit presence)
+
+Memory the node's object-store plugin reserves for compressing and
+uploading snapshots, shared by every upload (a Kubernetes quantity);
+uploads wait for room.
+
+- default: `512Mi`
+- rule: upload_memory_budget must be a Kubernetes quantity such as "512Mi" or "2Gi"
+
+### spec.nodeAgent.sandboxAssetCache
+
+`KubernetesAgentSubstrateSandboxAssetCache`
+
+The node's cache of sandbox runtime assets (gVisor releases, microVM
+kernels, hypervisors and guest images).
+
+### spec.nodeAgent.sandboxAssetCache.minAge
+
+`string` · optional (explicit presence)
+
+Youngest a cached asset may be and still be evicted (Go duration).
+
+- default: `1h`
+- rule: min_age must be a Go duration such as "1h"
+
+### spec.nodeAgent.sandboxAssetCache.fetchTimeout
+
+`string` · optional (explicit presence)
+
+Longest one asset download, and a gVisor release's extraction, may run
+(Go duration).
+
+- default: `5m`
+- rule: fetch_timeout must be a positive Go duration such as "5m"
+
+### spec.nodeAgent.sandboxAssetCache.eviction
+
+`KubernetesAgentSubstrateFileCacheEviction`
+
+Eviction of the cache.
+
+### spec.nodeAgent.sandboxAssetCache.eviction.gcPeriod
+
+`string` · optional (explicit presence)
+
+How often an eviction pass runs (Go duration). "0s" turns eviction off.
+
+- default: `5m`
+- rule: gc_period must be a Go duration such as "5m" ("0s" turns eviction off)
+
+### spec.nodeAgent.sandboxAssetCache.eviction.maxBytes
+
+`int64` · optional (explicit presence)
+
+The cache's budget, in bytes of disk. 0 = no budget: the cache only
+grows.
+
+- default: `0`
+- rule: {"int64":{"gte":"0"}}
+
+### spec.nodeAgent.sandboxAssetCache.eviction.dryRun
+
+`bool`
+
+Log what a pass would remove without removing it.
+
+### spec.nodeAgent.snapshotCache
+
+`KubernetesAgentSubstrateSnapshotCache`
+
+The node's cache of snapshot files, which serves a snapshot that several
+actors restore from (a template's) once instead of once per actor.
+
+### spec.nodeAgent.snapshotCache.disabled
+
+`bool`
+
+Turn the cache off: every restore downloads its snapshot files.
+
+### spec.nodeAgent.snapshotCache.minAge
+
+`string` · optional (explicit presence)
+
+Youngest a cached file may be and still be evicted (Go duration); it
+protects a file fetched but not yet linked into a restore.
+
+- default: `10m`
+- rule: min_age must be a Go duration such as "10m"
+
+### spec.nodeAgent.snapshotCache.fetchTimeout
+
+`string` · optional (explicit presence)
+
+Longest one cached file download may run (Go duration).
+
+- default: `10m`
+- rule: fetch_timeout must be a positive Go duration such as "10m"
+
+### spec.nodeAgent.snapshotCache.eviction
+
+`KubernetesAgentSubstrateFileCacheEviction`
+
+Eviction of the cache.
+
+### spec.nodeAgent.snapshotCache.eviction.gcPeriod
+
+`string` · optional (explicit presence)
+
+How often an eviction pass runs (Go duration). "0s" turns eviction off.
+
+- default: `5m`
+- rule: gc_period must be a Go duration such as "5m" ("0s" turns eviction off)
+
+### spec.nodeAgent.snapshotCache.eviction.maxBytes
+
+`int64` · optional (explicit presence)
+
+The cache's budget, in bytes of disk. 0 = no budget: the cache only
+grows.
+
+- default: `0`
+- rule: {"int64":{"gte":"0"}}
+
+### spec.nodeAgent.snapshotCache.eviction.dryRun
+
+`bool`
+
+Log what a pass would remove without removing it.
+
 ### spec.router
 
 `KubernetesAgentSubstrateRouter`
@@ -1538,12 +1877,14 @@ Allowed values (use exactly as shown):
 
 `[]string`
 
-SPIFFE IDs (exact match) of the in-cluster workloads whose client
-certificates the router's TLS listeners accept, one per client workload:
-"spiffe://cluster.local/ns/<namespace>/sa/<service-account>". Replaces
-upstream's list, which names only upstream's own e2e client. At this
-release the router also serves plaintext listeners that accept any
-caller; the guide explains the exposure.
+SPIFFE IDs (exact match) of the in-cluster workloads that may reach
+actors through the router, one per client workload:
+"spiffe://cluster.local/ns/<namespace>/sa/<service-account>". A client
+calls the router's TLS endpoint with its pod certificate (signer
+podidentity.podcert.ate.dev/identity); any listed client may reach any
+actor. The Envoy router serves nothing else, so it needs at least one;
+agentgateway does not check client certificates yet, and serves
+plaintext listeners to any caller.
 
 - rule: {"repeated":{"unique":true,"items":{"cel":[{"id":"allowed_client_spiffe_id_format","message":"each allowed client SPIFFE ID looks like \"spiffe://cluster.local/ns/<namespace>/sa/<service-account>\"","expression":"this.matches('^spiffe://[^/]+/.+$')"}]}}}
 
@@ -2086,6 +2427,34 @@ Timeout of one metric export, in milliseconds. Empty = the SDK's.
 
 - rule: {"int32":{"gt":0}}
 
+### spec.telemetry.workerTracesExporters
+
+`[]string`
+
+Trace exporters of the worker pods actors run in ("otlp", or "none"),
+which take their own selection rather than the control plane's; they
+export through their node agent. Empty = otlp.
+
+- rule: {"repeated":{"unique":true,"items":{"string":{"in":["otlp","none"]}}}}
+
+### spec.telemetry.workerMetricsExporters
+
+`[]string`
+
+Metric exporters of the worker pods ("otlp", "prometheus", or "none").
+Empty = otlp.
+
+- rule: {"repeated":{"unique":true,"items":{"string":{"in":["otlp","prometheus","none"]}}}}
+
+### spec.telemetry.workerLogsExporters
+
+`[]string`
+
+Exporters of the actor events worker pods log ("otlp", "console", or
+"none"). Empty = none.
+
+- rule: {"repeated":{"unique":true,"items":{"string":{"in":["otlp","console","none"]}}}}
+
 ### spec.clusterSize
 
 `enum`
@@ -2120,9 +2489,9 @@ load must not starve the control plane.
 `string`
 
 Registry that replaces the registry part of every image the install runs
-(Planton's Substrate images on ghcr.io, Envoy and PostgreSQL on Docker
-Hub, the pause image on registry.k8s.io, the Cloud SQL proxy on gcr.io,
-agentgateway on cr.agentgateway.dev): the air-gap and private-mirror path.
+(Planton's Substrate images on ghcr.io, Envoy's among them, PostgreSQL on
+Docker Hub, the Cloud SQL proxy on gcr.io, agentgateway on
+cr.agentgateway.dev): the air-gap and private-mirror path.
 Each image keeps its path, tag and digest, so a mirror must copy images
 byte for byte. "us-central1-docker.pkg.dev" pulls Planton's own mirror of
 the Substrate images. Docker Hub names without a registry are read the
@@ -2140,12 +2509,117 @@ never move. Empty = each image's own registry.
 Names of image-pull Secrets in `ate-system` for pulling the control
 plane's images from a private registry.
 
+### spec.version
+
+`string` · optional (explicit presence)
+
+The Agent Substrate release to install, from those Planton publishes with
+this kind's install shape (v0.6.0's): v0.6.0, or a later release whose
+install differs from it only in its images. A release Planton has not
+published, or one with another shape, is refused before anything is
+applied. A patch release of the installed minor moves in place, up or
+down; another minor is a reinstall, refused over an existing
+installation. Redeploy worker pools after a move, so their workers run
+the new release's worker image.
+
+- default: `v0.6.0`
+- rule: {"string":{"pattern":"^v[0-9]+\\.[0-9]+\\.[0-9]+$"}}
+
+### spec.previewGates
+
+`[]string`
+
+Preview features to turn on in every component: each named gate, or
+"ALL". A preview is upstream's not-yet-stable behaviour (external volumes
+for actors, golden egress policies on actor templates, a snapshot
+location per actor template), and its API can change in a later release.
+Empty = none.
+
+- rule: {"repeated":{"unique":true,"items":{"string":{"in":["ALL","ExternalVolumes","GoldenEgressPolicy","PerTemplateSnapshotLocation"]}}}}
+
+### spec.identityServer
+
+`KubernetesAgentSubstrateIdentityServer`
+
+The identity server (`ate-idp-server`), which publishes the keys actor
+JWTs are verified with.
+
+### spec.identityServer.replicas
+
+`int32` · optional (explicit presence)
+
+Identity server pods; a disruption budget keeps all but one up during
+node drains.
+
+- default: `2`
+- rule: {"int32":{"gte":1}}
+
+### spec.identityServer.resources
+
+`ContainerResources`
+
+Resources for the identity server container. Empty = none set.
+
+### spec.identityServer.resources.limits
+
+`CpuMemory`
+
+The resource limits for the container.
+Specify the maximum amount of CPU and memory that the container can use.
+
+### spec.identityServer.resources.limits.cpu
+
+`string`
+
+### spec.identityServer.resources.limits.memory
+
+`string`
+
+### spec.identityServer.resources.requests
+
+`CpuMemory`
+
+The resource requests for the container.
+Specify the minimum amount of CPU and memory that the container is guaranteed.
+
+### spec.identityServer.resources.requests.cpu
+
+`string`
+
+### spec.identityServer.resources.requests.memory
+
+`string`
+
+### spec.identityServer.logLevel
+
+`enum`
+
+Minimum log level.
+
+Allowed values (use exactly as shown):
+
+- `info`
+- `debug`
+- `warn`
+- `error`
+
+### spec.identityServer.drainGrace
+
+`string` · optional (explicit presence)
+
+How long a terminating pod waits for requests in flight (Go duration).
+
+- default: `5s`
+- rule: drain_grace must be a Go duration such as "5s"
+
 ## Validation Rules
 
 - `size10_sizes_the_bundled_database`: database.bundled.resources cannot be set with cluster_size size10: size10 sizes the bundled database for a dedicated node, its postgresql.conf tuned for 140Gi, and a smaller container would run out of memory under load; use size10 with its own sizing, or size0 with your resources
 - `gcs_needs_gke`: storage.gcs authenticates keylessly through GKE Workload Identity, so it needs platform.gke; on another cluster use storage.s3
 - `cloud_sql_needs_gke`: database.cloud_sql connects through the Cloud SQL Auth Proxy with GKE Workload Identity, so it needs platform.gke
 - `cloud_sql_iam_needs_api_server_identity`: database.cloud_sql logs in as the API server's Google service account, so set platform.gke.api_server_service_account (or turn cloud_sql.iam_authentication off and give a connection string)
+- `gcs_needs_snapshot_transfer_service_account`: storage.gcs moves snapshots as a dedicated Google service account the API server impersonates, so set platform.gke.snapshot_transfer_service_account
+- `envoy_router_needs_allowed_clients`: router.allowed_client_spiffe_ids needs at least one client: the Envoy router lets only the mutual-TLS callers it names reach actors, and refuses to start with none. Name each workload that calls actors, such as "spiffe://cluster.local/ns/<namespace>/sa/<service-account>"
 - `extproc_needs_envoy`: egress.additional_ext_proc_service splices a filter into Envoy's configuration, so it needs router.dataplane envoy
 
 ## Outputs
@@ -2161,13 +2635,13 @@ Reference an output from another manifest as `valueFrom: {kind: KubernetesAgentS
 | `status.outputs.api_trust_bundle_name` | `string` | The ClusterTrustBundle holding the CA that signs the API server's (and every in-cluster Substrate service's) certificate: "servicedns.podcert.ate.dev:identity:primary-bundle". A pod reads it through a clusterTrustBundle projected volume by this name. |
 | `status.outputs.api_trust_bundle_signer` | `string` | The signer of that bundle, "servicedns.podcert.ate.dev/identity", for a clusterTrustBundle projection by signer name and label selector. |
 | `status.outputs.api_access_namespace_label` | `string` | The label a caller's namespace must carry to reach the API: "ate.dev/api-access=true". |
-| `status.outputs.router_endpoint` | `string` | The router's plaintext HTTP endpoint, "http://atenet-router.ate-system.svc:80". A request reaches an actor with the header `ate-target-actor: <atespace>/<actor>`. |
-| `status.outputs.router_tls_endpoint` | `string` | The router's TLS endpoint, "https://atenet-router.ate-system.svc:443", which accepts the client certificates router.allowed_client_spiffe_ids names. |
-| `status.outputs.storage_location` | `string` | Where actor snapshots are stored, "gs://<bucket>" or "s3://<bucket>": the location an actor template's snapshot configuration names. |
+| `status.outputs.router_endpoint` | `string` | The agentgateway router's plaintext HTTP endpoint, "http://atenet-router.ate-system.svc:80", which accepts any caller. Empty with the Envoy router, which serves only router_tls_endpoint. |
+| `status.outputs.router_tls_endpoint` | `string` | The router's TLS endpoint, "https://atenet-router.ate-system.svc:443". A request reaches an actor with the header `ate-target-actor: <atespace>/<actor>`; the Envoy router accepts it only from a client presenting a certificate whose SPIFFE ID router.allowed_client_spiffe_ids names (router_client_signer_name). |
+| `status.outputs.storage_location` | `string` | Where actor snapshots are stored, "gs://<bucket>" or "s3://<bucket>", followed by storage.snapshot_prefix when set: the API server's snapshot location, which an actor template overrides only with the PerTemplateSnapshotLocation preview. |
 | `status.outputs.actor_jwt_issuer` | `string` | The iss claim of the JWTs the API server mints for actors. |
 | `status.outputs.gvisor_worker_image` | `string` | The gVisor worker image built for this control plane's version, digest pinned (with image_registry applied): what a WorkerPool of class gvisor runs. |
 | `status.outputs.microvm_worker_image` | `string` | The microVM worker image built for this control plane's version, digest pinned (with image_registry applied): what a WorkerPool of class microvm runs. |
-| `status.outputs.version` | `string` | The Agent Substrate release installed, such as "v0.5.0". |
+| `status.outputs.version` | `string` | The Agent Substrate release installed, such as "v0.6.0": spec.version, or the kind's default. |
 | `status.outputs.router_client_signer_name` | `string` | The signer of the client certificates the router's TLS endpoint accepts, "podidentity.podcert.ate.dev/identity". A workload gets one through a podCertificate projected volume addressed to this signer; the certificate carries the SPIFFE ID spiffe://cluster.local/ns/<namespace>/sa/<service-account>, which router.allowed_client_spiffe_ids must name. |
 
 ## References
@@ -2180,6 +2654,7 @@ Fields that can point at another resource's outputs:
 | `spec.platform.gke.clusterId` | GcpGkeCluster | `status.outputs.cluster_id` |
 | `spec.platform.gke.apiServerServiceAccount` | GcpServiceAccount | `status.outputs.email` |
 | `spec.platform.gke.nodeAgentServiceAccount` | GcpServiceAccount | `status.outputs.email` |
+| `spec.platform.gke.snapshotTransferServiceAccount` | GcpServiceAccount | `status.outputs.email` |
 | `spec.database.external.readWriteConnectionString.name` | KubernetesSecret | `status.outputs.secret_name` |
 | `spec.database.external.ownerConnectionString.name` | KubernetesSecret | `status.outputs.secret_name` |
 | `spec.database.cloudSql.instanceConnectionName` | GcpCloudSql | `status.outputs.connection_name` |

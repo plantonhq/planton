@@ -141,17 +141,6 @@ func mirrorImages(d document, registry string) {
 	if registry == "" {
 		return
 	}
-	if str(d, "kind") == "SandboxConfig" {
-		versions, _ := lookup(d, "spec", "versions").([]interface{})
-		for _, v := range versions {
-			if m, ok := v.(map[string]interface{}); ok {
-				if image, ok := m["pauseImage"].(string); ok && image != "" {
-					m["pauseImage"] = mirrored(image, registry)
-				}
-			}
-		}
-		return
-	}
 	if !isWorkload(d) {
 		return
 	}

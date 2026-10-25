@@ -1,6 +1,6 @@
 # KubernetesAgentSubstrateCsiDriverConfig
 
-Declares an Agent Substrate `CSIDriverConfig`: how Substrate reaches one CSI driver, so an actor's external volume is provisioned and mounted by your storage rather than kept in the actor's snapshots. The spec mirrors the upstream `ate.dev/v1alpha1` CSIDriverConfig field for field (pinned to Agent Substrate v0.5.0, the release `KubernetesAgentSubstrate` installs), after a small Planton envelope: the object's name, labels and annotations. A CSIDriverConfig is cluster-scoped.
+Declares an Agent Substrate `CSIDriverConfig`: how Substrate reaches one CSI driver, so an actor's external volume is provisioned and mounted by your storage rather than kept in the actor's snapshots. The spec mirrors the upstream `ate.dev/v1alpha1` CSIDriverConfig field for field (pinned to the definition of the Agent Substrate release `KubernetesAgentSubstrate` composes, v0.6.0), after a small Planton envelope: the object's name, labels and annotations. A CSIDriverConfig is cluster-scoped.
 
 ## What Gets Created
 

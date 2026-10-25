@@ -37,7 +37,7 @@ It does not install the driver, create a StorageClass, or check that the driver 
 
 ## Parity accounting
 
-Built for 100% parity with the upstream CSIDriverConfig (`ate.dev/v1alpha1`) at Agent Substrate v0.5.0. Every key of its served schema is modeled under the same name, and the mirror test holds the spec to the pinned definition in both directions.
+Built for 100% parity with the upstream CSIDriverConfig (`ate.dev/v1alpha1`) at Agent Substrate v0.6.0, the install shape the control plane composes. Every key of its served schema is modeled under the same name, and the mirror test holds the spec to the pinned definition in both directions.
 
 | Upstream field | Spec field |
 |----------------|------------|

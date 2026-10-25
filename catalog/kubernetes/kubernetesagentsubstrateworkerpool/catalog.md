@@ -1,6 +1,6 @@
 # Agent Substrate Worker Pool
 
-Declares an Agent Substrate WorkerPool: the worker pods agents run in, many actors to a worker, sized, placed and isolated as one pool. Substrate places each actor a product creates or resumes on a worker with room for it, in the pool its template selects, and takes the actor's share back when it is suspended into storage, so a pool serves many more actors than it runs at once. The spec is faithful to the upstream `ate.dev/v1alpha1` WorkerPool (pinned to Agent Substrate v0.5.0) — this is the capacity and the boundary an agent runtime is built from, one pool per tenant if you want.
+Declares an Agent Substrate WorkerPool: the worker pods agents run in, many actors to a worker, sized, placed and isolated as one pool. Substrate places each actor a product creates or resumes on a worker with room for it, in the pool its template selects, and takes the actor's share back when it is suspended into storage, so a pool serves many more actors than it runs at once. The spec is faithful to the upstream `ate.dev/v1alpha1` WorkerPool (pinned to Agent Substrate v0.6.0) — this is the capacity and the boundary an agent runtime is built from, one pool per tenant if you want.
 
 ## What Gets Created
 
@@ -110,7 +110,7 @@ These are the most important decisions when configuring a worker pool. Explore t
 
 **Reference the control plane's worker image.** The image must match the class and the installed release; the `gvisor_worker_image` and `microvm_worker_image` outputs always do, mirror included.
 
-**Name the SandboxConfig the pool resolves.** Leave `configRef` unset to follow the class default, or name a config; the pool holds it from deletion while it uses it. An actor boots the config its own template names, so name the same config in the pool's actor templates.
+**Name the SandboxConfig the pool resolves.** Leave `configRef` unset to follow the class default, or name a config; the pool holds it from deletion while it uses it, and every actor on the pool boots it: templates name no config.
 
 ## Outputs and Dependencies
 

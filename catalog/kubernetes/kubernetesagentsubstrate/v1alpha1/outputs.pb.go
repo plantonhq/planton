@@ -60,18 +60,22 @@ type KubernetesAgentSubstrateOutputs struct {
 	// "ate.dev/api-access=true".
 	ApiAccessNamespaceLabel string `protobuf:"bytes,7,opt,name=api_access_namespace_label,json=apiAccessNamespaceLabel,proto3" json:"api_access_namespace_label,omitempty"`
 	// *
-	// The router's plaintext HTTP endpoint,
-	// "http://atenet-router.ate-system.svc:80". A request reaches an actor with
-	// the header `ate-target-actor: <atespace>/<actor>`.
+	// The agentgateway router's plaintext HTTP endpoint,
+	// "http://atenet-router.ate-system.svc:80", which accepts any caller.
+	// Empty with the Envoy router, which serves only router_tls_endpoint.
 	RouterEndpoint string `protobuf:"bytes,8,opt,name=router_endpoint,json=routerEndpoint,proto3" json:"router_endpoint,omitempty"`
 	// *
-	// The router's TLS endpoint, "https://atenet-router.ate-system.svc:443",
-	// which accepts the client certificates router.allowed_client_spiffe_ids
-	// names.
+	// The router's TLS endpoint, "https://atenet-router.ate-system.svc:443". A
+	// request reaches an actor with the header
+	// `ate-target-actor: <atespace>/<actor>`; the Envoy router accepts it only
+	// from a client presenting a certificate whose SPIFFE ID
+	// router.allowed_client_spiffe_ids names (router_client_signer_name).
 	RouterTlsEndpoint string `protobuf:"bytes,9,opt,name=router_tls_endpoint,json=routerTlsEndpoint,proto3" json:"router_tls_endpoint,omitempty"`
 	// *
-	// Where actor snapshots are stored, "gs://<bucket>" or "s3://<bucket>":
-	// the location an actor template's snapshot configuration names.
+	// Where actor snapshots are stored, "gs://<bucket>" or "s3://<bucket>",
+	// followed by storage.snapshot_prefix when set: the API server's snapshot
+	// location, which an actor template overrides only with the
+	// PerTemplateSnapshotLocation preview.
 	StorageLocation string `protobuf:"bytes,10,opt,name=storage_location,json=storageLocation,proto3" json:"storage_location,omitempty"`
 	// *
 	// The iss claim of the JWTs the API server mints for actors.
@@ -87,7 +91,8 @@ type KubernetesAgentSubstrateOutputs struct {
 	// runs.
 	MicrovmWorkerImage string `protobuf:"bytes,13,opt,name=microvm_worker_image,json=microvmWorkerImage,proto3" json:"microvm_worker_image,omitempty"`
 	// *
-	// The Agent Substrate release installed, such as "v0.5.0".
+	// The Agent Substrate release installed, such as "v0.6.0": spec.version,
+	// or the kind's default.
 	Version string `protobuf:"bytes,14,opt,name=version,proto3" json:"version,omitempty"`
 	// *
 	// The signer of the client certificates the router's TLS endpoint accepts,

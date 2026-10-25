@@ -1,16 +1,23 @@
-# The Agent Substrate keyless snapshot set: the node agent moves every actor
-# snapshot to and from Google Cloud Storage, and the API server reads the
-# bucket, both as Google service accounts their Kubernetes ServiceAccounts
-# are bound to through GKE Workload Identity. No key exists anywhere.
+# The Agent Substrate keyless snapshot set. Every snapshot moves as one
+# transfer service account: the API server impersonates it and hands each
+# node agent a token narrowed to the one actor it moves, so no node holds a
+# grant on the bucket. The API server and the node agent act as Google
+# service accounts their Kubernetes ServiceAccounts are bound to through GKE
+# Workload Identity. No key exists anywhere.
 #
 # - One identity per workload (one blast radius each), named for it.
 # - The bindings' KSA coordinates are upstream's own ServiceAccounts in
 #   upstream's fixed namespace: `ate-system/atelet` and
 #   `ate-system/ate-api-server`.
-# - The bucket is the control plane's own. objectAdmin covers what both
-#   workloads do with objects; bucketViewer lets them read the bucket's
-#   metadata. force_destroy lets the teardown delete it with snapshots still
-#   inside.
+# - The API server may mint the transfer account's tokens
+#   (roles/iam.serviceAccountTokenCreator on that one account).
+# - The bucket is the control plane's own. objectAdmin covers what the API
+#   server and the transfer account do with objects; bucketViewer lets them
+#   read the bucket's metadata. The node agent has no grant on it, which the
+#   lane proves. force_destroy lets the teardown delete it with snapshots
+#   still inside.
+# - No asset bucket: it holds microVM guest kernels and images, and the lane
+#   runs gVisor, whose runtime comes from the public gs://gvisor.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpServiceAccount
 metadata:
@@ -19,8 +26,8 @@ spec:
   serviceAccountId: planton-e2e-gke-atelet
   projectId:
     value: ${GCP_PROJECT_ID}
-  displayName: Planton E2E (gcp-gke) - Agent Substrate node agent snapshots via Workload Identity
-  description: Keyless identity the Agent Substrate node agent assumes through GKE Workload Identity to write and read actor snapshots in the snapshot bucket
+  displayName: Planton E2E (gcp-gke) - Agent Substrate node agent via Workload Identity
+  description: Keyless identity the Agent Substrate node agent assumes through GKE Workload Identity; it holds no grant on the snapshot bucket
 ---
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpServiceAccount
@@ -31,7 +38,36 @@ spec:
   projectId:
     value: ${GCP_PROJECT_ID}
   displayName: Planton E2E (gcp-gke) - Agent Substrate API server via Workload Identity
-  description: Keyless identity the Agent Substrate API server assumes through GKE Workload Identity to read the snapshot bucket
+  description: Keyless identity the Agent Substrate API server assumes through GKE Workload Identity to reach the snapshot bucket and mint transfer tokens
+---
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpServiceAccount
+metadata:
+  name: planton-e2e-gke-ate-transfer
+spec:
+  serviceAccountId: planton-e2e-gke-ate-transfer
+  projectId:
+    value: ${GCP_PROJECT_ID}
+  displayName: Planton E2E (gcp-gke) - Agent Substrate snapshot transfers
+  description: The identity every Agent Substrate snapshot transfer runs as, impersonated by the API server, which narrows each token to one actor
+---
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpServiceAccountIamMember
+metadata:
+  name: planton-e2e-gke-ate-transfer-minter
+spec:
+  serviceAccountId:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: planton-e2e-gke-ate-transfer
+      fieldPath: status.outputs.name
+  role:
+    value: roles/iam.serviceAccountTokenCreator
+  member:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: planton-e2e-gke-ate-api
+      fieldPath: status.outputs.member
 ---
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpGkeWorkloadIdentityBinding
@@ -80,13 +116,13 @@ spec:
       member:
         valueFrom:
           kind: GcpServiceAccount
-          name: planton-e2e-gke-atelet
+          name: planton-e2e-gke-ate-transfer
           fieldPath: status.outputs.member
     - role: roles/storage.bucketViewer
       member:
         valueFrom:
           kind: GcpServiceAccount
-          name: planton-e2e-gke-atelet
+          name: planton-e2e-gke-ate-transfer
           fieldPath: status.outputs.member
     - role: roles/storage.objectAdmin
       member:

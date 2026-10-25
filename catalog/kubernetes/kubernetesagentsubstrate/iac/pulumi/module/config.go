@@ -12,8 +12,9 @@ import (
 
 // The configuration the module derives from the spec, in the exact shapes
 // upstream's installer writes (cmd/ate-setup/internal/steps): the API
-// server's environment ConfigMap and Secret, its authentication file, the
-// credential provider's namespace policy, and the OpenTelemetry ConfigMap.
+// server's environment ConfigMap and Secret, its configuration and
+// authentication files, the credential provider's namespace policy, and the
+// OpenTelemetry ConfigMap.
 // Upstream writes the authentication file and the policy only when absent,
 // so a later change silently does nothing; the module reconciles both from
 // the spec, and rolls the workloads that read them (configHash).
@@ -22,6 +23,7 @@ import (
 const (
 	configMapAPIEnv         = "ate-api-server-envvars"
 	secretAPIEnv            = "ate-api-server-secret-envvars"
+	configMapAPIConfig      = "ate-api-config"
 	configMapAuthentication = "ate-api-authentication"
 	configMapOtel           = "ate-otel-config"
 	configMapPolicy         = "k8s-credential-provider-namespace-policy"
@@ -53,12 +55,17 @@ func cloudSQLDSN(gsa string) string {
 }
 
 // apiEnvConfigMap is ate-api-server-envvars: the roles, the pool size, the
-// actor JWT issuer, and with Cloud SQL the proxy's settings.
+// actor JWT issuer, the snapshot location and transfer service account, and
+// with Cloud SQL the proxy's settings. The transfer service account is
+// written empty off GCS, as upstream writes it, because the object-store
+// sidecar names the key in its arguments.
 func apiEnvConfigMap(s *settings) map[string]string {
 	data := map[string]string{
-		"ATE_API_POSTGRES_READ_WRITE_ROLE": s.database.roleReadWrite,
-		"ATE_API_POSTGRES_OWNER_ROLE":      s.database.roleOwner,
-		"ATE_API_ACTOR_JWT_ISSUER":         s.apiServer.actorIssuer,
+		"ATE_API_POSTGRES_READ_WRITE_ROLE":          s.database.roleReadWrite,
+		"ATE_API_POSTGRES_OWNER_ROLE":               s.database.roleOwner,
+		"ATE_API_ACTOR_JWT_ISSUER":                  s.apiServer.actorIssuer,
+		"ATE_API_SNAPSHOT_LOCATION":                 s.storage.location(),
+		"ATE_API_SNAPSHOT_TRANSFER_SERVICE_ACCOUNT": s.transferGSA,
 	}
 	if s.database.poolMaxConns > 0 {
 		data["ATE_API_POSTGRES_POOL_MAX_CONNS"] = strconv.Itoa(int(s.database.poolMaxConns))
@@ -112,13 +119,22 @@ func apiIssuer(s *settings) string {
 	return s.serviceAccountIssuer
 }
 
+// apiConfigText is the API server's configuration file (apiconfig.textproto,
+// upstream's ateconfigpb.APIConfig in the protobuf text format): its log
+// level. The server reads the file as it changes, so no rollout follows a
+// change. Upstream marshals it with prototext, whose spacing is deliberately
+// unstable; this is its canonical form.
+func apiConfigText(s *settings) string {
+	return fmt.Sprintf("logging: {\n  level: %q\n}\n", s.apiServer.logLevel)
+}
+
 // authenticationYAML is authentication.yaml, byte for byte upstream's
 // buildAuthenticationConfig: one JWT provider for Kubernetes tokens with the
 // API's audience, verified against the cluster's own CA and token for the
 // two in-cluster issuer forms.
 func authenticationYAML(s *settings) string {
 	issuer := apiIssuer(s)
-	config := fmt.Sprintf("actorIdentityJWTProvider: kubernetes\njwtProviders:\n- name: kubernetes\n  issuer: %s\n  audiences: [%s]\n", issuer, vars.APIServerHost)
+	config := fmt.Sprintf("jwtProviders:\n- name: kubernetes\n  issuer: %s\n  audiences: [%s]\n", issuer, vars.APIServerHost)
 	if issuer == inClusterIssuer || issuer == inClusterIssuer+".cluster.local" {
 		config += "  certificateAuthorityFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n" +
 			"  discoveryTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token\n"
@@ -149,7 +165,9 @@ func policyYAML(grants []namespaceGrant) string {
 // sampler and interval setting the spec gives. On a generic cluster with no
 // endpoint nothing is pushed: traces and logs go nowhere, metrics stay on
 // each component's Prometheus endpoint, so no component dials a collector
-// that is not there.
+// that is not there. Worker pods take their own exporter selection
+// (ATE_WORKER_OTEL_*_EXPORTER, which the controller hands them) and export
+// through their node agent, which forwards only to an endpoint it has.
 func otelData(s *settings, upstream map[string]string) map[string]string {
 	data := map[string]string{}
 	for k, v := range upstream {
@@ -178,6 +196,15 @@ func otelData(s *settings, upstream map[string]string) map[string]string {
 	}
 	if len(t.logs) > 0 {
 		data["OTEL_LOGS_EXPORTER"] = strings.Join(t.logs, ",")
+	}
+	if len(t.workerTraces) > 0 {
+		data["ATE_WORKER_OTEL_TRACES_EXPORTER"] = strings.Join(t.workerTraces, ",")
+	}
+	if len(t.workerMetrics) > 0 {
+		data["ATE_WORKER_OTEL_METRICS_EXPORTER"] = strings.Join(t.workerMetrics, ",")
+	}
+	if len(t.workerLogs) > 0 {
+		data["ATE_WORKER_OTEL_LOGS_EXPORTER"] = strings.Join(t.workerLogs, ",")
 	}
 	if t.sampler != "" {
 		data["OTEL_TRACES_SAMPLER"] = t.sampler

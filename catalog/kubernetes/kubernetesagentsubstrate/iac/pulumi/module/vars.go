@@ -1,14 +1,18 @@
 package module
 
-// vars holds the upstream contract the module installs: the pinned release,
-// where its files are served, and the fixed names upstream's manifests bake
-// in. Every value has an exact twin in the Terraform module's locals.tf, and
-// a test holds the two equal.
+// vars holds the upstream contract the module installs: the release whose
+// install it composes, where releases are served, and the fixed names
+// upstream's manifests bake in. Every value has an exact twin in the
+// Terraform module's locals.tf, and a test holds the two equal.
 var vars = struct {
-	// Release is the pinned agent-substrate/substrate release. The catalog's
-	// Substrate resource kinds mirror this release's resource definitions, so
-	// moving it is a deliberate catalog update (the spec has no version
-	// field), and before 1.0 every minor is a reinstall upstream.
+	// Release is the agent-substrate/substrate release this module composes:
+	// its install shape (the files, objects, flags and settings the
+	// composition reads and patches), the version installed when spec.version
+	// is empty, and the release whose resource definitions the kind applies
+	// and the catalog's Substrate resource kinds mirror. Any release Planton
+	// publishes with this shape installs with this module (images.json's
+	// shape names it); moving it is a deliberate catalog update, and before
+	// 1.0 every minor is a reinstall upstream.
 	Release string
 
 	// BundleName is the upstream project's name, the ownership label the
@@ -31,6 +35,7 @@ var vars = struct {
 	PodCertificatesName    string
 	CredentialProviderName string
 	PostgresName           string
+	IdentityServerName     string
 
 	// PostgresVolumeClaim is the bundled database's volume, created by the
 	// StatefulSet from its "data" claim template; it outlives a destroy while
@@ -68,7 +73,7 @@ var vars = struct {
 	PostgresSetupConfigMap string
 	PostgresSetupMountPath string
 }{
-	Release:                  "v0.5.0",
+	Release:                  "v0.6.0",
 	BundleName:               "agent-substrate",
 	Namespace:                "ate-system",
 	PodCertificatesNamespace: "podcertificate-controller-system",
@@ -80,6 +85,7 @@ var vars = struct {
 	PodCertificatesName:      "podcertificate-controller",
 	CredentialProviderName:   "k8s-credential-provider",
 	PostgresName:             "postgres",
+	IdentityServerName:       "ate-idp-server",
 	PostgresVolumeClaim:      "data-postgres-0",
 	APIServerHost:            "api.ate-system.svc",
 	APITrustBundleName:       "servicedns.podcert.ate.dev:identity:primary-bundle",
@@ -97,16 +103,14 @@ var vars = struct {
 
 // releaseBaseURL serves Planton's build of each Substrate release: upstream's
 // whole manifests/ tree with every image digest-pinned, the definitions
-// bundle, the image list and SHA256SUMS. Immutable once a release is sealed.
+// bundle, the image list with the release's install shape, upstream's
+// database setup script, and SHA256SUMS, uploaded last, which seals the
+// release. Immutable once sealed.
 const releaseBaseURL = "https://downloads.planton.ai/releases/agent-substrate/"
 
-// setupSQLBaseURL serves the one upstream file the published tree does not
-// carry: the database setup script, at the same tag.
-const setupSQLBaseURL = "https://raw.githubusercontent.com/agent-substrate/substrate/"
-
-// ReleaseFileURL is one file of the pinned release.
-func ReleaseFileURL(path string) string {
-	return releaseBaseURL + vars.Release + "/" + path
+// ReleaseFileURL is one file of a published release.
+func ReleaseFileURL(release, path string) string {
+	return releaseBaseURL + release + "/" + path
 }
 
 // CRDBundleURLTemplate is the definitions bundle as a kept-CRD bundle URL,
@@ -115,13 +119,13 @@ func CRDBundleURLTemplate() string {
 	return releaseBaseURL + "{{version}}/crds.yaml"
 }
 
-// SetupSQLURL is upstream's database setup script at the pinned tag.
-func SetupSQLURL() string {
-	return setupSQLBaseURL + vars.Release + "/pkg/postgressetup/setup.sql"
-}
+// fileChecksums is the release's seal: every published file's SHA-256, read
+// first, so an unpublished release is refused by name and every file the
+// composition reads is checked against it.
+const fileChecksums = "SHA256SUMS"
 
 // The release files the composition reads, by role. Every one is fetched on
-// every run (about twenty small files), so what a setting selects never
+// every run (about twenty-five small files), so what a setting selects never
 // depends on what an earlier run downloaded.
 const (
 	fileNamespace          = "manifests/ate-install/ate-system-namespace.yaml"
@@ -135,6 +139,7 @@ const (
 	filePodCertSize10      = "manifests/ate-install/podcert-size10/kustomization.yaml"
 	fileAPIServer          = "manifests/ate-install/ate-api-server.yaml"
 	fileController         = "manifests/ate-install/ate-controller.yaml"
+	fileIdentityServer     = "manifests/ate-install/ate-idp-server.yaml"
 	fileNodeAgent          = "manifests/ate-install/atelet.yaml"
 	fileRouter             = "manifests/ate-install/atenet-router.yaml"
 	fileRouterMonitoring   = "manifests/ate-install/atenet-router-monitoring.yaml"
@@ -147,13 +152,14 @@ const (
 	fileCordon             = "manifests/ate-install/components/cordon-control-plane/kustomization.yaml"
 	fileCredentialProvider = "manifests/egress-credential-injection/k8s-credential-provider.yaml"
 	fileImages             = "images.json"
+	fileSetupSQL           = "setup.sql"
 )
 
 // releaseFiles is every release file the module reads.
 var releaseFiles = []string{
 	fileNamespace, fileControllerRole, filePodCertificates, fileSandboxValidation,
 	fileSandboxGvisor, fileOtelConfig, filePostgres, filePostgresSize10, filePodCertSize10,
-	fileAPIServer, fileController, fileNodeAgent, fileRouter, fileRouterMonitoring,
+	fileAPIServer, fileController, fileIdentityServer, fileNodeAgent, fileRouter, fileRouterMonitoring,
 	fileNetworkPolicies, fileEgress, fileCloudSQLPatch, fileAgentgateway, fileAgentgatewayConfig,
-	fileAgentgatewayEgress, fileCordon, fileCredentialProvider, fileImages,
+	fileAgentgatewayEgress, fileCordon, fileCredentialProvider, fileImages, fileSetupSQL,
 }

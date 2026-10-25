@@ -175,7 +175,7 @@ func patchPostgres(d document, s *settings) error {
 		claimSpec["storageClassName"] = s.database.storageClass
 	}
 	child(child(claimSpec, "resources"), "requests")["storage"] = s.database.volumeSize
-	labelWith(child(claim, "metadata"), map[string]string{vars.MinorLabel: minorOf(vars.Release)})
+	labelWith(child(claim, "metadata"), map[string]string{vars.MinorLabel: minorOf(s.version)})
 
 	container, err := containerNamed(podSpec(d), vars.PostgresName, false)
 	if err != nil {
@@ -230,6 +230,8 @@ func patchSystemDocument(d document, s *settings) error {
 		switch name {
 		case vars.APIServerName:
 			return patchAPIServer(d, s)
+		case vars.IdentityServerName:
+			return patchIdentityServer(d, s)
 		case vars.ControllerName:
 			return patchController(d, s)
 		case vars.RouterName:
@@ -268,10 +270,11 @@ func patchAPIServer(d document, s *settings) error {
 	if err != nil {
 		return err
 	}
+	// The bootstrap owners are always written, as upstream's installer
+	// writes them: the API server refuses to start without one. The log level
+	// is the configuration file's (apiConfigText).
 	var l flagList
-	l.add(a.logLevel != "info", "log-level", a.logLevel)
-	l.add(a.authz, "experimental-enable-authz", "true")
-	l.add(len(a.bootstrapOwners) > 0, "authz-bootstrap-owners", strings.Join(a.bootstrapOwners, ","))
+	l.add(true, "authz-bootstrap-owners", strings.Join(a.bootstrapOwners, ","))
 	l.add(a.drainDelay != "13s", "drain-delay", a.drainDelay)
 	l.add(a.drainTimeout != "15s", "drain-timeout", a.drainTimeout)
 	l.add(a.resyncInterval != "20s", "template-resync-interval", a.resyncInterval)
@@ -286,6 +289,25 @@ func patchAPIServer(d document, s *settings) error {
 		return err
 	}
 	storageEnv(sidecar, s.storage)
+	return nil
+}
+
+// patchIdentityServer writes the identity server's settings. The issuer is
+// always written, as upstream's installer writes it (setIDPServerIssuer): the
+// server refuses to start without the one actor JWTs carry.
+func patchIdentityServer(d document, s *settings) error {
+	id := s.identity
+	child(d, "spec")["replicas"] = int64(id.replicas)
+	container, err := containerNamed(podSpec(d), vars.IdentityServerName, false)
+	if err != nil {
+		return err
+	}
+	var l flagList
+	l.add(true, "issuer", s.apiServer.actorIssuer)
+	l.add(id.logLevel != "info", "log-level", id.logLevel)
+	l.add(id.drainGrace != "5s", "drain-grace", id.drainGrace)
+	applyFlags(container, l)
+	setResources(container, id.resources)
 	return nil
 }
 
@@ -320,6 +342,19 @@ func patchNodeAgent(d document, s *settings) error {
 	l.add(n.maxBytes != 0, "image-cache-max-bytes", strconv.FormatInt(n.maxBytes, 10))
 	l.add(n.minAge != "2m", "image-cache-min-age", n.minAge)
 	l.add(n.gcDryRun, "image-cache-gc-dry-run", "true")
+	snap := n.snapshots
+	l.add(snap.uploadDelay != "5m", "snapshot-upload-delay", snap.uploadDelay)
+	l.add(snap.detachDelay != "30m", "snapshot-detach-delay", snap.detachDelay)
+	l.add(snap.uploadTimeout != "2m", "snapshot-upload-timeout", snap.uploadTimeout)
+	l.add(snap.uploadMiB != 100, "snapshot-upload-est-throughput-mib", itoa(snap.uploadMiB))
+	l.add(snap.uploadWorkers != 2, "snapshot-upload-workers", itoa(snap.uploadWorkers))
+	l.add(snap.detachWorkers != 2, "snapshot-detach-workers", itoa(snap.detachWorkers))
+	l.add(snap.reportWorkers != 1, "snapshot-report-workers", itoa(snap.reportWorkers))
+	l.add(snap.reportGiveUp != "10m", "snapshot-report-give-up-after", snap.reportGiveUp)
+	l.addFileCache("sandbox-asset-cache", "sandbox-asset-fetch-timeout", n.assetCache, "1h", "5m")
+	l.addFileCache("snapshot-cache", "snapshot-cache-fetch-timeout", n.snapCache, "10m", "10m")
+	// An empty cache directory turns the snapshot cache off.
+	l.add(n.snapCache.disabled, "snapshot-cache-dir", "")
 	applyFlags(container, l)
 	setResources(container, n.resources)
 
@@ -341,8 +376,11 @@ func patchNodeAgent(d document, s *settings) error {
 	if err != nil {
 		return err
 	}
+	var sl flagList
+	sl.add(n.stagingGiB != 8, "asset-staging-capacity", itoa(n.stagingGiB)+"Gi")
+	sl.add(snap.uploadMemory != "512Mi", "upload-memory-budget", snap.uploadMemory)
+	applyFlags(sidecar, sl)
 	if n.stagingGiB != 8 {
-		applyFlags(sidecar, []flag{{name: "asset-staging-capacity", value: itoa(n.stagingGiB) + "Gi"}})
 		staging := namedItem(spec["volumes"], "name", "asset-staging")
 		if staging == nil {
 			return errors.Errorf("Agent Substrate %s's node agent has no asset-staging volume; the module's pin needs a catalog fix", vars.Release)
@@ -365,6 +403,17 @@ func patchNodeAgent(d document, s *settings) error {
 		spec["tolerations"] = existing
 	}
 	return nil
+}
+
+// addFileCache adds one node file cache's flags where they differ from
+// upstream's: its age and eviction flags under the cache's prefix (upstream's
+// filecachegc flags), and its fetch timeout, which upstream names apart.
+func (l *flagList) addFileCache(prefix, fetchTimeoutFlag string, c fileCacheSettings, minAgeDefault, fetchTimeoutDefault string) {
+	l.add(c.minAge != minAgeDefault, prefix+"-min-age", c.minAge)
+	l.add(c.fetchTimeout != fetchTimeoutDefault, fetchTimeoutFlag, c.fetchTimeout)
+	l.add(c.gcPeriod != "5m", prefix+"-gc-period", c.gcPeriod)
+	l.add(c.maxBytes != 0, prefix+"-max-bytes", strconv.FormatInt(c.maxBytes, 10))
+	l.add(c.gcDryRun, prefix+"-gc-dry-run", "true")
 }
 
 // toleration renders a WorkloadToleration as Kubernetes writes it.
@@ -507,7 +556,7 @@ func patchCredentialProvider(d document, s *settings) error {
 	return nil
 }
 
-// minorOf is "0.5" for "v0.5.0".
+// minorOf is "0.6" for "v0.6.0".
 func minorOf(version string) string {
 	parts := strings.SplitN(strings.TrimPrefix(version, "v"), ".", 3)
 	if len(parts) < 2 {

@@ -111,11 +111,12 @@ func TestAgentSubstrateSandboxConfigVerifierReadsTheScenarios(t *testing.T) {
 	}
 }
 
-// The counter template is upstream's counter demo (demos/counter at the
-// pinned release) with VOLUMES fidelity, so the lane's two counters can tell a
-// restored actor from one that never slept.
+// The counter template is upstream's counter demo (demos/counter) with
+// VOLUMES fidelity, so the lane's two counters can tell a restored actor from
+// one that never slept. It names no storage location, so its snapshots prove
+// the control plane's own.
 func TestCounterTemplateIsUpstreamsCounter(t *testing.T) {
-	tpl := counterTemplate("lane", "t", "img@sha256:x", "gvisor", "cfg", "s3://bucket/lane/", map[string]string{"workload": "e2e-counter"})
+	tpl := counterTemplate("lane", "t", "img@sha256:x", map[string]string{"workload": "e2e-counter"})
 	c := tpl.GetContainers()[0]
 	if c.GetCommand()[0] != "/ko-app/counter" || c.GetWakeupProbe().GetHttpGet().GetPort() != 80 || c.GetWakeupProbe().GetHttpGet().GetPath() != "/readyz" {
 		t.Errorf("container = %v, want upstream's counter: /ko-app/counter, woken on :80/readyz", c)
@@ -126,11 +127,11 @@ func TestCounterTemplateIsUpstreamsCounter(t *testing.T) {
 	if tpl.GetSnapshotConfig().GetPreferredFidelity() != ateapipb.SnapshotFidelity_SNAPSHOT_FIDELITY_VOLUMES {
 		t.Errorf("fidelity = %v, want VOLUMES", tpl.GetSnapshotConfig().GetPreferredFidelity())
 	}
-	if tpl.GetSandboxConfig().GetConfigName() != "cfg" || tpl.GetWorkerSelector().GetMatchLabels()["workload"] != "e2e-counter" {
-		t.Errorf("template must name the pool's config and select the pool by its labels; got %v %v", tpl.GetSandboxConfig(), tpl.GetWorkerSelector())
+	if tpl.GetWorkerSelector().GetMatchLabels()["workload"] != "e2e-counter" || tpl.GetSnapshotConfig().GetStorageLocation() != "" {
+		t.Errorf("template must select the pool by its labels and store under the control plane's location; got %v %v", tpl.GetWorkerSelector(), tpl.GetSnapshotConfig())
 	}
-	if got := snapshotLocation("s3://substrate-snapshots", "lane"); got != "s3://substrate-snapshots/lane/" {
-		t.Errorf("snapshotLocation = %q", got)
+	if limits := tpl.GetResources().GetLimits(); limits.GetCpuMillicores() == 0 || limits.GetMemoryBytes() == 0 {
+		t.Errorf("every actor declares cpu and memory limits; got %v", limits)
 	}
 }
 
@@ -142,11 +143,13 @@ func TestCounterActorFitsTheActorLanePool(t *testing.T) {
 	template, _ := specField(spec, "template").(map[string]interface{})
 	resources, _ := specField(template, "resources").(map[string]interface{})
 	limits, _ := specField(resources, "limits").(map[string]interface{})
-	for name, want := range map[string]string{"cpu": counterActorCPU, "memory": counterActorMemory} {
+	for name, want := range map[string]*resource.Quantity{
+		"cpu":    resource.NewMilliQuantity(counterActorMillicores, resource.DecimalSI),
+		"memory": resource.NewQuantity(counterActorMemory, resource.BinarySI),
+	} {
 		worker := resource.MustParse(stringOr(limits[name], "0"))
-		actor := resource.MustParse(want)
-		if worker.Cmp(actor) < 0 {
-			t.Errorf("the actor lane's workers have %s limit %s, below the counter actor's %s", name, worker.String(), want)
+		if worker.Cmp(*want) < 0 {
+			t.Errorf("the actor lane's workers have %s limit %s, below the counter actor's %s", name, worker.String(), want.String())
 		}
 	}
 }

@@ -5,7 +5,8 @@ metadata:
 spec:
   # The control plane on any conformant cluster, kind included: upstream's
   # bundled PostgreSQL on a small volume, snapshots in an S3-compatible store
-  # (a SeaweedFS by reference), no credential injection. This resource owns
+  # (a SeaweedFS by reference), no credential injection, and one product
+  # workload that owns the API and calls actors. This resource owns
   # ate-system; the S3 access key Secret must be in it.
   namespace:
     value: ate-system
@@ -28,6 +29,17 @@ spec:
         secretName:
           valueFrom:
             name: substrate-s3
+  apiServer:
+    authorization:
+      # The service account your product calls the API as, so it can
+      # create atespaces.
+      bootstrapOwners:
+        - system:serviceaccount:my-product:agent-orchestrator
+  router:
+    # The workloads that call actors, by the SPIFFE ID of their pod
+    # certificate.
+    allowedClientSpiffeIds:
+      - spiffe://cluster.local/ns/my-product/sa/agent-orchestrator
   egress:
     credentialProvider:
       disabled: {}

@@ -1,13 +1,15 @@
 # KubernetesAgentSubstrate Terraform module.
 #
 # Installs the Agent Substrate control plane from Planton's build of the
-# pinned release: upstream's own manifests with every image digest-pinned,
-# composed the way upstream's installer composes them, with the typed
-# settings applied onto upstream's own objects (documents.tf).
+# release spec.version names (local.release when empty): upstream's own
+# manifests with every image digest-pinned, composed the way upstream's
+# installer composes them, with the typed settings applied onto upstream's
+# own objects (documents.tf).
 #
 # ORDER: every refusal fires at plan time, before anything is written
-# (preflight.tf, and helm_crds.tf for a definition someone else owns or a
-# newer one). Then the namespaces; the kept definitions; the generated and
+# (documents.tf for a release Planton has not published, of another install
+# shape, or that does not match its seal; preflight.tf; and helm_crds.tf for
+# a definition someone else owns or a newer one). Then the namespaces; the kept definitions; the generated and
 # derived Secrets (secrets.tf); and the four document phases, each awaited
 # before the next: prerequisites (the pod-certificate controller every
 # certificate comes from), database, system, runtime.
@@ -21,7 +23,10 @@
 
 locals {
   # The kept-definition contract (the generated helm_crds.tf): the bundle
-  # branch, Planton's published crds.yaml at the pinned release.
+  # branch, Planton's published crds.yaml at the release the module composes.
+  # The definitions belong to the install shape, so they stay on it whatever
+  # release spec.version picks, and moving between releases of the shape
+  # never reads as a definition downgrade.
   helm_crds_args = {
     install           = local.crds_install
     keep_on_uninstall = local.crds_keep

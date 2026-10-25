@@ -1818,10 +1818,10 @@ func TestOutputsConformance(t *testing.T) {
 		{
 			// KubernetesAgentSubstrate: the handles a product calls the API
 			// with (address, server name, token audience, trust bundle, the
-			// namespace label the API admits), the router and the signer of
-			// its client certificates, the storage
-			// location actor templates use, and the worker images the worker
-			// pool kind runs.
+			// namespace label the API admits), the router (its plaintext
+			// endpoint as an agentgateway install sets it) and the signer of
+			// its client certificates, the storage location actor templates
+			// use, and the worker images the worker pool kind runs.
 			name: "KubernetesAgentSubstrate",
 			kind: catalogkind.CatalogKind_KubernetesAgentSubstrate,
 			rawOutputs: map[string]interface{}{
@@ -1836,9 +1836,9 @@ func TestOutputsConformance(t *testing.T) {
 				"router_tls_endpoint":        "https://atenet-router.ate-system.svc:443",
 				"storage_location":           "s3://substrate-snapshots",
 				"actor_jwt_issuer":           "https://idp.ate-system.svc",
-				"gvisor_worker_image":        "ghcr.io/plantonhq/planton/agent-substrate/ateom-gvisor:v0.5.0@sha256:0000000000000000000000000000000000000000000000000000000000000000",
-				"microvm_worker_image":       "ghcr.io/plantonhq/planton/agent-substrate/ateom-microvm:v0.5.0@sha256:0000000000000000000000000000000000000000000000000000000000000000",
-				"version":                    "v0.5.0",
+				"gvisor_worker_image":        "ghcr.io/plantonhq/planton/agent-substrate/ateworker-gvisor:v0.6.0@sha256:0000000000000000000000000000000000000000000000000000000000000000",
+				"microvm_worker_image":       "ghcr.io/plantonhq/planton/agent-substrate/ateworker-microvm:v0.6.0@sha256:0000000000000000000000000000000000000000000000000000000000000000",
+				"version":                    "v0.6.0",
 				"router_client_signer_name":  "podidentity.podcert.ate.dev/identity",
 			},
 			mustPopulate: []string{

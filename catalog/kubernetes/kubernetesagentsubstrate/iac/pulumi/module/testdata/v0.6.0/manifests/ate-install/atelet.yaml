@@ -34,12 +34,12 @@ rules:
 # SandboxConfigs are watched to pre-download sandbox assets into the node's
 # cache before the first actor needs them (see cmd/atelet/sandbox_prewarm.go),
 # and to write the runtimes of the configs local workers use to each worker's
-# sandbox versions file (see cmd/atelet/worker_sandbox_syncer.go).
+# sandbox runtimes file (see cmd/atelet/worker_sandbox_syncer.go).
 - apiGroups: ["ate.dev"]
   resources: ["sandboxconfigs"]
   verbs: ["get", "list", "watch"]
 # WorkerPools are watched to find the SandboxConfig each local worker's pool
-# uses, whose versions atelet writes to the worker's sandbox versions file
+# uses, whose versions atelet writes to the worker's sandbox runtimes file
 # (see cmd/atelet/worker_sandbox_syncer.go).
 - apiGroups: ["ate.dev"]
   resources: ["workerpools"]
@@ -141,6 +141,16 @@ spec:
       - key: ate.dev/sandboxClass
         operator: Exists
         effect: NoSchedule
+      # GKE taints the nodes it creates for a ComputeClass with
+      # cloud.google.com/compute-class=<class>:NoSchedule and adds the matching
+      # toleration to pods that select the class, so a WorkerPool whose
+      # template.nodeSelector selects a ComputeClass runs its workers on those
+      # nodes.
+      # TODO(roycaihw): move this GKE-specific toleration into the GKE install
+      # overlay once the new installer lands (#2760).
+      - key: cloud.google.com/compute-class
+        operator: Exists
+        effect: NoSchedule
       # The node object-store plugin moves external snapshots between this
       # node and object storage and fetches sandbox assets for atelet, over a
       # Unix socket in a pod-local emptyDir.
@@ -149,7 +159,7 @@ spec:
       # atelet starts only once the startup probe sees the plugin serving.
       initContainers:
       - name: objectstore-plugin
-        image: ghcr.io/plantonhq/planton/agent-substrate/objectstore-plugin:v0.5.0@sha256:1e62dabec27d642fbd74a3383f47a1a0cc2207b5061cba66247e101d76e30f90
+        image: ghcr.io/plantonhq/planton/agent-substrate/objectstore-plugin:v0.6.0@sha256:ffde6ebacaf885b60ee9a485230ace2bc470f84dc4076c201f01983292fa965f
         restartPolicy: Always
         args:
         - node
@@ -192,14 +202,29 @@ spec:
         # on it.
         - name: ATE_STORAGE_BACKEND
           value: "gcs"
+        # On GCS each transfer runs on a token scoped to its actor, from the
+        # credential exchange the control sidecar serves on the ate-api-server
+        # Service. The plugin derives the exchange's address and certificate
+        # name from the pod's namespace, and verifies the certificate with the
+        # service DNS trust bundle mounted below. S3 never calls it.
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
         envFrom:
         - configMapRef:
             name: ate-otel-config
         volumeMounts:
-        - name: run-ateom
+        # HostToContainer so we also see mounts made under /var/lib/ate after
+        # the pod starts, e.g. a snapshots disk or CSI volumes.
+        - name: ate-base
           mountPath: /var/lib/ate
+          mountPropagation: HostToContainer
         - name: objectstore-plugin
           mountPath: /run/objectstore-plugin
+        - name: servicedns-ca
+          mountPath: /run/servicedns.podcert.ate.dev
+          readOnly: true
         # Sandbox assets are downloaded here and verified against their sha256
         # before the plugin copies them below /var/lib/ate. Only this container
         # mounts it, so atelet never sees bytes it did not pin.
@@ -207,7 +232,7 @@ spec:
           mountPath: /var/lib/objectstore-plugin/asset-staging
       containers:
       - name: atelet
-        image: ghcr.io/plantonhq/planton/agent-substrate/atelet:v0.5.0@sha256:23f986e07c658fd173af81a7b97029a5495ff6f9198bae4de7678314574b3de9
+        image: ghcr.io/plantonhq/planton/agent-substrate/atelet:v0.6.0@sha256:b82c1dfa664282d371262ee7edeea323163be53dd7313888c47d7047e5d3c243
         args:
         # Pull credentials come from the node's own kubelet credential provider
         # plugin (mounted read-only below) rather than a cloud SDK compiled into
@@ -224,7 +249,7 @@ spec:
         - --drain-timeout=5m
         - --objectstore-plugin-socket=/run/objectstore-plugin/node.sock
         # atelet does no mounts, netlink, device, or namespace operations (those
-        # live in the ateom worker pod) — it only reads/writes the
+        # live in the worker pod) — it only reads/writes the
         # /var/lib/ate hostPath as root. CAP_DAC_OVERRIDE is for one thing:
         # emptying a directory a non-root actor created in its 0777 durable dir.
         # It is owned by the actor's uid, typically 0755, so root has no write
@@ -271,8 +296,7 @@ spec:
             name: ate-otel-config
         ports:
         - name: grpc
-          containerPort: 8085
-          hostPort: 8085
+          containerPort: 21998
         - name: prometheus
           containerPort: 9090
           protocol: TCP
@@ -295,8 +319,11 @@ spec:
           initialDelaySeconds: 10
           periodSeconds: 10
         volumeMounts:
-        - name: run-ateom
+        # HostToContainer so we also see mounts made under /var/lib/ate after
+        # the pod starts, e.g. a snapshots disk or CSI volumes.
+        - name: ate-base
           mountPath: /var/lib/ate
+          mountPropagation: HostToContainer
         - name: objectstore-plugin
           mountPath: /run/objectstore-plugin
         - name: podidentity
@@ -326,7 +353,7 @@ spec:
       - name: asset-staging
         emptyDir:
           sizeLimit: 9Gi
-      - name: run-ateom
+      - name: ate-base
         hostPath:
           path: /var/lib/ate
           type: DirectoryOrCreate

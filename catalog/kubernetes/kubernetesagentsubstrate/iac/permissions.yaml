@@ -1,7 +1,8 @@
 # Least-privilege permissions the IaC runner's Kubernetes principal needs to
 # provision, update, and destroy this component with the platform modules.
 # Every entry is `derived` (static analysis of the module sources plus the
-# document census of the pinned v0.5.0 release Planton publishes, cited in
+# document census of the v0.6.0 release Planton publishes, the install
+# shape the modules compose, cited in
 # notes) until the live capture lane upgrades it to `proven`. Schema:
 # iac/catalogkindpermissions/v1.
 apiVersion: iac.planton.dev/v1
@@ -57,7 +58,7 @@ spec:
           - delete
         cluster_scoped: false
         provenance: derived
-        notes: The pod-certificate controller, API server, controller, router, egress gateway and credential provider Deployments, the node agent DaemonSet and the bundled database StatefulSet, with the typed settings applied. list is the plan-time workload ownership read and the installed-version stamp on the API server; watch is the awaited rollout. list and watch are Pulumi's informers on the awaited rollout or delete (pulumi-kubernetes v4.33.0, await.go:984-1006), which OpenTofu, polling with get, never needs.
+        notes: The pod-certificate controller, API server, identity server, controller, router, egress gateway and credential provider Deployments, the node agent DaemonSet and the bundled database StatefulSet, with the typed settings applied. list is the plan-time workload ownership read and the installed-version stamp on the API server; watch is the awaited rollout. list and watch are Pulumi's informers on the awaited rollout or delete (pulumi-kubernetes v4.33.0, await.go:984-1006), which OpenTofu, polling with get, never needs.
       - api_groups:
           - ""
         resources:
@@ -189,7 +190,7 @@ spec:
           - delete
         cluster_scoped: false
         provenance: derived
-        notes: The API server's disruption budget, from upstream's manifest. list and watch are Pulumi's informers on the awaited rollout or delete (pulumi-kubernetes v4.33.0, await.go:984-1006), which OpenTofu, polling with get, never needs.
+        notes: The API server's and the identity server's disruption budgets, from upstream's manifests. list and watch are Pulumi's informers on the awaited rollout or delete (pulumi-kubernetes v4.33.0, await.go:984-1006), which OpenTofu, polling with get, never needs.
       - api_groups:
           - scheduling.k8s.io
         resources:

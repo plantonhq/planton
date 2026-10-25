@@ -12,6 +12,9 @@ import (
 // values and writes a flag or a field only when it differs. Terraform twin:
 // the locals in locals.tf, resolved with the same defaults.
 type settings struct {
+	// version is the release installed: spec.version, or vars.Release.
+	version string
+
 	requestedNamespace string
 	createNamespace    bool
 	identityLabels     map[string]string
@@ -20,17 +23,20 @@ type settings struct {
 	gkeClusterID         string
 	apiServerGSA         string
 	nodeAgentGSA         string
+	transferGSA          string
 	serviceAccountIssuer string
 
 	database    databaseSettings
 	storage     storageSettings
 	apiServer   apiServerSettings
+	identity    identityServerSettings
 	controller  controllerSettings
 	nodeAgent   nodeAgentSettings
 	router      routerSettings
 	egress      egressSettings
 	podCerts    podCertificateSettings
 	telemetry   telemetrySettings
+	preview     []string
 	size10      bool
 	cordon      bool
 	registry    string
@@ -63,6 +69,7 @@ type databaseSettings struct {
 }
 
 type storageSettings struct {
+	prefix      string
 	gcsBucket   string
 	s3Endpoint  string
 	s3Bucket    string
@@ -75,24 +82,36 @@ type storageSettings struct {
 
 func (s storageSettings) isS3() bool { return s.s3Bucket != "" }
 
+// location is where actor snapshots are stored, the API server's snapshot
+// location: the bucket, under the prefix when one is set.
 func (s storageSettings) location() string {
+	location := "gs://" + s.gcsBucket
 	if s.isS3() {
-		return "s3://" + s.s3Bucket
+		location = "s3://" + s.s3Bucket
 	}
-	return "gs://" + s.gcsBucket
+	if s.prefix != "" {
+		location += "/" + s.prefix
+	}
+	return location
 }
 
 type apiServerSettings struct {
 	replicas        int32
 	resources       *kubernetesprovider.ContainerResources
 	logLevel        string
-	authz           bool
 	bootstrapOwners []string
 	jwtAlgorithm    string // ES256 | RS256
 	actorIssuer     string
 	drainDelay      string
 	drainTimeout    string
 	resyncInterval  string
+}
+
+type identityServerSettings struct {
+	replicas   int32
+	resources  *kubernetesprovider.ContainerResources
+	logLevel   string
+	drainGrace string
 }
 
 type controllerSettings struct {
@@ -116,6 +135,33 @@ type nodeAgentSettings struct {
 	minAge       string
 	gcDryRun     bool
 	stagingGiB   int32
+	snapshots    nodeSnapshotSettings
+	assetCache   fileCacheSettings
+	snapCache    fileCacheSettings
+}
+
+type nodeSnapshotSettings struct {
+	uploadDelay   string
+	detachDelay   string
+	uploadTimeout string
+	uploadMiB     int32
+	uploadWorkers int32
+	detachWorkers int32
+	reportWorkers int32
+	reportGiveUp  string
+	uploadMemory  string
+}
+
+// fileCacheSettings is one of the node's file caches: the sandbox asset
+// cache or the snapshot cache, whose flags share a shape under their own
+// prefix.
+type fileCacheSettings struct {
+	disabled     bool
+	minAge       string
+	fetchTimeout string
+	gcPeriod     string
+	maxBytes     int64
+	gcDryRun     bool
 }
 
 type routerSettings struct {
@@ -174,11 +220,19 @@ type telemetrySettings struct {
 	traces         []string
 	metrics        []string
 	logs           []string
+	workerTraces   []string
+	workerMetrics  []string
+	workerLogs     []string
 	sampler        string
 	samplerRatio   *float64
 	exportInterval int32
 	exportTimeout  int32
 }
+
+// defaultBootstrapOwner is upstream's bootstrap owner when the spec names
+// none: ate-system's ate-client service account (installdefaults
+// ClientPrincipal).
+const defaultBootstrapOwner = "system:serviceaccount:ate-system:ate-client"
 
 // The API server's in-cluster issuer forms: for these the API server
 // verifies tokens against the cluster itself, with its own projected CA and
@@ -189,12 +243,14 @@ const inClusterIssuer = "https://kubernetes.default.svc"
 // held each value to its form, so nothing here re-validates.
 func resolveSettings(spec *kubernetesagentsubstratev1alpha1.KubernetesAgentSubstrateSpec) *settings {
 	s := &settings{
+		version:            stringOr(spec.Version, vars.Release),
 		requestedNamespace: spec.GetNamespace().GetValue(),
 		createNamespace:    spec.GetCreateNamespace(),
 		size10:             spec.GetClusterSize() == kubernetesagentsubstratev1alpha1.KubernetesAgentSubstrateSpec_size10,
 		cordon:             spec.GetCordonControlPlane(),
 		registry:           spec.GetImageRegistry(),
 		pullSecrets:        spec.GetImagePullSecrets(),
+		preview:            spec.GetPreviewGates(),
 		crdsInstall:        spec.GetCrds() == nil || spec.GetCrds().Install == nil || spec.GetCrds().GetInstall(),
 		crdsKeep:           spec.GetCrds() == nil || spec.GetCrds().KeepOnUninstall == nil || spec.GetCrds().GetKeepOnUninstall(),
 	}
@@ -203,12 +259,20 @@ func resolveSettings(spec *kubernetesagentsubstratev1alpha1.KubernetesAgentSubst
 		s.gkeClusterID = g.GetClusterId().GetValue()
 		s.apiServerGSA = g.GetApiServerServiceAccount().GetValue()
 		s.nodeAgentGSA = g.GetNodeAgentServiceAccount().GetValue()
+		s.transferGSA = g.GetSnapshotTransferServiceAccount().GetValue()
 	} else {
 		s.serviceAccountIssuer = spec.GetPlatform().GetGeneric().GetServiceAccountIssuer()
 	}
 	s.database = resolveDatabase(spec.GetDatabase())
 	s.storage = resolveStorage(spec.GetStorage())
 	s.apiServer = resolveAPIServer(spec.GetApiServer())
+	identity := orEmpty(spec.GetIdentityServer())
+	s.identity = identityServerSettings{
+		replicas:   int32Or(identity.Replicas, 2),
+		resources:  identity.GetResources(),
+		logLevel:   logLevel(identity.GetLogLevel()),
+		drainGrace: stringOr(identity.DrainGrace, "5s"),
+	}
 	controller := orEmpty(spec.GetController())
 	s.controller = controllerSettings{
 		resources:  controller.GetResources(),
@@ -231,6 +295,9 @@ func resolveSettings(spec *kubernetesagentsubstratev1alpha1.KubernetesAgentSubst
 		traces:         t.GetTracesExporters(),
 		metrics:        t.GetMetricsExporters(),
 		logs:           t.GetLogsExporters(),
+		workerTraces:   t.GetWorkerTracesExporters(),
+		workerMetrics:  t.GetWorkerMetricsExporters(),
+		workerLogs:     t.GetWorkerLogsExporters(),
 		sampler:        t.GetTracesSampler(),
 		samplerRatio:   t.TracesSamplerRatio,
 		exportInterval: t.GetMetricExportIntervalMs(),
@@ -288,11 +355,12 @@ func resolveDatabase(d *kubernetesagentsubstratev1alpha1.KubernetesAgentSubstrat
 
 func resolveStorage(st *kubernetesagentsubstratev1alpha1.KubernetesAgentSubstrateStorage) storageSettings {
 	if g := st.GetGcs(); g != nil {
-		return storageSettings{gcsBucket: g.GetBucket().GetValue()}
+		return storageSettings{prefix: st.GetSnapshotPrefix(), gcsBucket: g.GetBucket().GetValue()}
 	}
 	s3 := orEmpty(st.GetS3())
 	c := orEmpty(s3.GetCredentials())
 	return storageSettings{
+		prefix:      st.GetSnapshotPrefix(),
 		s3Endpoint:  s3.GetEndpoint().GetValue(),
 		s3Bucket:    s3.GetBucket(),
 		s3Region:    stringOr(s3.Region, "us-east-1"),
@@ -318,9 +386,9 @@ func resolveAPIServer(a *kubernetesagentsubstratev1alpha1.KubernetesAgentSubstra
 	if out.actorIssuer == "" {
 		out.actorIssuer = "https://idp." + vars.Namespace + ".svc"
 	}
-	if z := a.GetAuthorization(); z != nil {
-		out.authz = z.Enabled == nil || z.GetEnabled()
-		out.bootstrapOwners = z.GetBootstrapOwners()
+	out.bootstrapOwners = a.GetAuthorization().GetBootstrapOwners()
+	if len(out.bootstrapOwners) == 0 {
+		out.bootstrapOwners = []string{defaultBootstrapOwner}
 	}
 	return out
 }
@@ -328,6 +396,9 @@ func resolveAPIServer(a *kubernetesagentsubstratev1alpha1.KubernetesAgentSubstra
 func resolveNodeAgent(n *kubernetesagentsubstratev1alpha1.KubernetesAgentSubstrateNodeAgent) nodeAgentSettings {
 	n = orEmpty(n)
 	c := orEmpty(n.GetImageCache())
+	snapshots := orEmpty(n.GetSnapshots())
+	assets := orEmpty(n.GetSandboxAssetCache())
+	snapCache := orEmpty(n.GetSnapshotCache())
 	return nodeAgentSettings{
 		resources:    n.GetResources(),
 		logLevel:     logLevel(n.GetLogLevel()),
@@ -343,6 +414,33 @@ func resolveNodeAgent(n *kubernetesagentsubstratev1alpha1.KubernetesAgentSubstra
 		minAge:       stringOr(c.MinAge, "2m"),
 		gcDryRun:     c.GetDryRun(),
 		stagingGiB:   int32Or(n.AssetStagingCapacityGib, 8),
+		snapshots: nodeSnapshotSettings{
+			uploadDelay:   stringOr(snapshots.UploadDelay, "5m"),
+			detachDelay:   stringOr(snapshots.DetachDelay, "30m"),
+			uploadTimeout: stringOr(snapshots.UploadTimeout, "2m"),
+			uploadMiB:     int32Or(snapshots.UploadThroughputMib, 100),
+			uploadWorkers: int32Or(snapshots.UploadWorkers, 2),
+			detachWorkers: int32Or(snapshots.DetachWorkers, 2),
+			reportWorkers: int32Or(snapshots.ReportWorkers, 1),
+			reportGiveUp:  stringOr(snapshots.ReportGiveUpAfter, "10m"),
+			uploadMemory:  stringOr(snapshots.UploadMemoryBudget, "512Mi"),
+		},
+		assetCache: resolveFileCache(false, assets.MinAge, "1h", assets.FetchTimeout, "5m", assets.GetEviction()),
+		snapCache:  resolveFileCache(snapCache.GetDisabled(), snapCache.MinAge, "10m", snapCache.FetchTimeout, "10m", snapCache.GetEviction()),
+	}
+}
+
+// resolveFileCache fills one file cache's defaults; the two caches differ
+// only in their ages and timeouts.
+func resolveFileCache(disabled bool, minAge *string, minAgeDefault string, fetchTimeout *string, fetchTimeoutDefault string, e *kubernetesagentsubstratev1alpha1.KubernetesAgentSubstrateFileCacheEviction) fileCacheSettings {
+	e = orEmpty(e)
+	return fileCacheSettings{
+		disabled:     disabled,
+		minAge:       stringOr(minAge, minAgeDefault),
+		fetchTimeout: stringOr(fetchTimeout, fetchTimeoutDefault),
+		gcPeriod:     stringOr(e.GcPeriod, "5m"),
+		maxBytes:     int64Or(e.MaxBytes, 0),
+		gcDryRun:     e.GetDryRun(),
 	}
 }
 

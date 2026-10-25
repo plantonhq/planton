@@ -1,10 +1,10 @@
 # KubernetesAgentSubstrate Terraform Module
 
-Installs the Agent Substrate v0.5.0 control plane from Planton's digest-pinned build of upstream's release (`https://downloads.planton.ai/releases/agent-substrate/v0.5.0/`), composed the way upstream's installer composes it. The typed spec is applied onto upstream's own objects in `documents.tf`; nothing is rebuilt from scratch, so every setting left unset keeps upstream's value. The exact semantic twin of the Pulumi module (`../pulumi/module/`); a gated test plans this module and holds every document and output equal to the Pulumi composition.
+Installs the Agent Substrate control plane from Planton's digest-pinned build of the release `spec.version` names (`https://downloads.planton.ai/releases/agent-substrate/<version>/`, v0.6.0 when unset), composed the way upstream's installer composes v0.6.0's install shape. The typed spec is applied onto upstream's own objects in `documents.tf`; nothing is rebuilt from scratch, so every setting left unset keeps upstream's value. The exact semantic twin of the Pulumi module (`../pulumi/module/`); a gated test plans this module and holds every document and output equal to the Pulumi composition.
 
 ## How the Documents Are Built
 
-1. `data "http" "release_file"` downloads every release file the composition reads, and `data "http" "setup_sql"` upstream's database setup script at the same tag.
+1. Three reads, each after the one before: `data "http" "checksums"` the release's seal (a release Planton has not published is refused here by name), `data "http" "images"` its image list (refused unless its install shape is the one this module composes), and `data "http" "release_file"` every other file the composition reads, upstream's database setup script included. Every file is checked against the seal.
 2. Each file's octal file-mode literals (`defaultMode: 0600`) are rewritten as decimal first, because Kubernetes reads YAML 1.1 octal and `yamldecode` follows YAML 1.2. The text is then split on separator lines, each piece getting back the newline the split consumed, and every document keyed by its composed identity, `apiVersion//kind//name[//namespace]`, which is also what `../import-map.yaml` reads.
 3. The resource definitions go through the catalog's kept-definition block (`helm_crds.tf`, bundle branch, the release's `crds.yaml`).
 4. Typed settings patch upstream's objects (`locals.tf` resolves them with upstream's defaults). A flag upstream already passes keeps its position and takes the new value; any other flag is appended, only when it differs from upstream's default. Upstream's own components (agentgateway, cordon, size10, the Cloud SQL sidecar) apply as upstream applies them, read from the release; its text markers are filled from `splices.tf`.
@@ -12,17 +12,18 @@ Installs the Agent Substrate v0.5.0 control plane from Planton's digest-pinned b
 
 ## Generated Secrets
 
-`pools.tf` generates the five certificate authorities and the actor token signing key with the TLS provider and writes them in upstream's pool format; it is self-contained so a test applies it alone and parses its pools with upstream's own code. `secrets.tf` writes them, the API server's environment and an external database's server CA as `kubernetes_secret_v1` resources. A re-apply never replaces them; a destroy does.
+`pools.tf` generates the five certificate authorities and the actor token signing key with the TLS provider and writes them in upstream's pool format, and the key's public key set byte for byte as upstream derives it; it is self-contained so a test applies it alone and checks its pools and key set with upstream's own code. `secrets.tf` writes them, the API server's environment and an external database's server CA as `kubernetes_secret_v1` resources. A re-apply never replaces them; a destroy does.
 
 ## Order and Refusals
 
-Every refusal fires at plan time, before anything is written. The preconditions sit on `terraform_data.preflight` (`preflight.tf`), whose values are all known at plan, and conditions are not evaluated on destroy. No data source carries `depends_on`.
+Every refusal fires at plan time, before anything is written. The preconditions sit on `terraform_data.preflight` (`preflight.tf`), whose values are all known at plan, and conditions are not evaluated on destroy. No data source depends on a resource, which would defer its read to apply.
 
 - **A namespace other than upstream's** — a `namespace` reference that resolved to another name.
 - **A workload someone else created** — `data "kubernetes_resources" "owned_workload"` reads each Deployment, DaemonSet and StatefulSet by its fixed name; one without the `planton.ai/kind=KubernetesAgentSubstrate` label belongs to another installation.
 - **A namespace's owner** — `ate-system` (its owner is a choice) and `podcertificate-controller-system` (always this resource's).
 - **A minor-release move** — the installed-version stamp on the API server, and the minor stamp on the bundled database's volume, against upstream's upgrade policy.
 - **A definition someone else owns, or a newer one** — `helm_crds.tf`.
+- **A release this module cannot install** — one Planton has not published, one of another install shape, or a file that differs from the release's seal (`documents.tf`, postconditions on the reads).
 - **The release changed shape** — the workloads, containers, start hook and component patches the module patches must be where it expects them.
 
 Then the apply order (`main.tf`): the namespaces, the kept definitions, the Secrets, and the four phases, each awaited: prerequisites, database, system, runtime.

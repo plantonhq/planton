@@ -1,15 +1,17 @@
 # Every setting a one-node kind cluster can honor, at non-default values:
-# authorization with the verifier's probe client as bootstrap owner, actor
-# JWTs on RS256 with an issuer, every workload's replicas, log levels,
-# drains and resources, the node agent's image cache and staging, the
+# the release named explicitly, the verifier's probe client as bootstrap
+# owner, actor JWTs on RS256 with an issuer, every workload's replicas, log
+# levels, drains and resources (the identity server's too), the node agent's
+# image cache, staging, background snapshot work and file caches, the
 # router's parking and timeouts and its allowed SPIFFE client, the egress
 # gateway's caches and Envoy threads, the pod-certificate controller's rate,
-# the bundled database's own resources, and telemetry exporters with a
-# sampler. size10 sizes the database for a dedicated node, which one kind
+# the bundled database's own resources, a snapshot prefix, a preview gate,
+# and telemetry exporters (the workers' own included) with a sampler. size10 sizes the database for a dedicated node, which one kind
 # node cannot hold, and excludes the database's own resources; the offline
 # manifest covers it.
 #
-# THE AUTHORIZATION PROOF: the probe client
+# THE AUTHORIZATION PROOF (every lane makes it; this one names the owner
+# explicitly): the probe client
 # (system:serviceaccount:e2e-ate-probe:e2e-ate-client, the token subject)
 # creates an atespace as an owner, while a second service account in the
 # same namespace is denied by its principal. cordonControlPlane is left to
@@ -53,6 +55,7 @@ spec:
           value: substrate-s3
         accessKeyIdKey: access_key_id
         secretAccessKeyKey: secret_access_key
+    snapshotPrefix: e2e/full
   apiServer:
     replicas: 1
     resources:
@@ -61,7 +64,6 @@ spec:
         memory: 128Mi
     logLevel: debug
     authorization:
-      enabled: true
       bootstrapOwners:
         - system:serviceaccount:e2e-ate-probe:e2e-ate-client
     actorJwt:
@@ -85,6 +87,29 @@ spec:
       minAge: 30m
       dryRun: true
     assetStagingCapacityGib: 4
+    snapshots:
+      uploadDelay: 2m
+      detachDelay: 1h
+      uploadTimeout: 3m
+      uploadThroughputMib: 50
+      uploadWorkers: 4
+      detachWorkers: 3
+      reportWorkers: 2
+      reportGiveUpAfter: 20m
+      uploadMemoryBudget: 1Gi
+    sandboxAssetCache:
+      minAge: 2h
+      fetchTimeout: 10m
+      eviction:
+        gcPeriod: 10m
+        maxBytes: 21474836480
+        dryRun: true
+    snapshotCache:
+      minAge: 20m
+      fetchTimeout: 15m
+      eviction:
+        gcPeriod: 10m
+        maxBytes: 10737418240
   router:
     replicas: 1
     logLevel: debug
@@ -120,3 +145,16 @@ spec:
       - console
     tracesSampler: parentbased_traceidratio
     tracesSamplerRatio: 0.5
+    workerLogsExporters:
+      - console
+  version: v0.6.0
+  previewGates:
+    - GoldenEgressPolicy
+  identityServer:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+    logLevel: debug
+    drainGrace: 3s

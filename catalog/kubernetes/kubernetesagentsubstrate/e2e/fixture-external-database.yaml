@@ -58,7 +58,7 @@ spec:
                 - -q
                 - -O
                 - /setup/setup.sql
-                - https://raw.githubusercontent.com/agent-substrate/substrate/v0.5.0/pkg/postgressetup/setup.sql
+                - https://downloads.planton.ai/releases/agent-substrate/v0.6.0/setup.sql
               volumeMounts:
                 - name: setup
                   mountPath: /setup

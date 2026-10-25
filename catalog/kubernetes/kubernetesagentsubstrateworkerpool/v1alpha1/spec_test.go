@@ -98,7 +98,7 @@ var _ = ginkgo.Describe("KubernetesAgentSubstrateWorkerPool Validation Tests", f
 
 	ginkgo.It("accepts a pool on the class default, with a literal image and no template", func() {
 		input.Spec.SandboxClasses[0].ConfigRef = nil
-		input.Spec.WorkerImage = literal("ghcr.io/plantonhq/planton/agent-substrate/ateom-gvisor:v0.5.0@sha256:4f14ca1e038e1b174c12c334b46a4328b9d9a0da5a184dd72593e65967203914")
+		input.Spec.WorkerImage = literal("ghcr.io/plantonhq/planton/agent-substrate/ateworker-gvisor:v0.6.0@sha256:e3f59217a1e63c280ea1cc4149dfe0686353f9ef583fe2ff1c129d4ad42f8cba")
 		input.Spec.Template = nil
 		gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 	})
@@ -228,7 +228,7 @@ var _ = ginkgo.Describe("KubernetesAgentSubstrateWorkerPool Validation Tests", f
 	ginkgo.It("refuses an empty literal wherever a reference or a literal goes", func() {
 		input.Spec.WorkerImage = literal("")
 		expectViolation(protovalidate.Validate(input), "string_value_or_ref.non_empty")
-		input.Spec.WorkerImage = literal("ghcr.io/plantonhq/planton/agent-substrate/ateom-gvisor:v0.5.0")
+		input.Spec.WorkerImage = literal("ghcr.io/plantonhq/planton/agent-substrate/ateworker-gvisor:v0.6.0")
 		input.Spec.SandboxClasses[0].ConfigRef.Name = literal("")
 		expectViolation(protovalidate.Validate(input), "string_value_or_ref.non_empty")
 		input.Spec.SandboxClasses[0].ConfigRef = nil

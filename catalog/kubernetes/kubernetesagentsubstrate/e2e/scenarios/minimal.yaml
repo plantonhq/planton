@@ -3,13 +3,13 @@
 # reference, the key in a Secret in ate-system), credential injection off.
 # A KubernetesNamespace owns ate-system so the Secret can be there first.
 # The verifier asserts every workload rolled out, the definitions stamped
-# with v0.5.0, the release stamps on, and then calls the API from the
+# with v0.6.0, the release stamps on, and then calls the API from the
 # outputs alone: an atespace created, read and deleted.
 #
 # THE KEEP-AND-READOPT PROOF: crds.keepOnUninstall defaults true, so the
 # first destroy must leave the three definitions on the cluster, and the
 # bundled database's volume too (another resource owns the namespace); the
-# reinstall the annotation requests must re-adopt both, the volume's 0.5
+# reinstall the annotation requests must re-adopt both, the volume's 0.6
 # stamp passing the upgrade check, and serve again. This is the only lane
 # that keeps definitions behind on the shared cluster; agentgateway, which
 # runs first, lets them go, so the definition refusal after it starts
@@ -40,6 +40,13 @@ spec:
       credentials:
         secretName:
           value: substrate-s3
+  apiServer:
+    authorization:
+      bootstrapOwners:
+        - system:serviceaccount:e2e-ate-probe:e2e-ate-client
+  router:
+    allowedClientSpiffeIds:
+      - spiffe://cluster.local/ns/e2e-ate-probe/sa/e2e-ate-client
   egress:
     credentialProvider:
       disabled: {}

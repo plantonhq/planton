@@ -18,16 +18,18 @@ import (
 	"sigs.k8s.io/yaml"
 )
 
-// Agent Substrate's fixed names and pinned release. The module installs
-// upstream's own release, so these are upstream's names; the release mirrors
-// the module's pin (the definition stamps and the version output carry it).
+// Agent Substrate's fixed names and the release the module composes. The
+// module installs upstream's own release, so these are upstream's names; the
+// release mirrors the module's (the definition stamps carry it, and it is the
+// version a manifest that sets none installs).
 const (
 	agentSubstrateKind               = "KubernetesAgentSubstrate"
-	agentSubstrateRelease            = "v0.5.0"
+	agentSubstrateRelease            = "v0.6.0"
 	agentSubstrateBundle             = "agent-substrate"
 	agentSubstrateNamespace          = "ate-system"
 	agentSubstratePodCertNamespace   = "podcertificate-controller-system"
 	agentSubstrateAPIServer          = "ate-api-server"
+	agentSubstrateIdentityServer     = "ate-idp-server"
 	agentSubstrateCredentialProvider = "k8s-credential-provider"
 	agentSubstrateNodeAgent          = "atelet"
 	agentSubstratePostgres           = "postgres"
@@ -38,16 +40,20 @@ const (
 	agentSubstrateMinorLabel         = "planton.ai/agent-substrate-minor"
 	agentSubstrateConfigHash         = "planton.ai/config-hash"
 
-	// The probe the verifier creates to call the API as a product would: a
-	// namespace carrying the API-access label with two service accounts (a
-	// client, named a bootstrap owner where a lane turns authorization on,
-	// and a stranger who is not), a namespace without the label, and a
-	// small client pod in each for the in-cluster reachability checks.
+	// The probe the verifier creates to call the API and the router as a
+	// product would: a namespace carrying the API-access label with two
+	// service accounts (a client, which every lane names a bootstrap owner
+	// and an allowed router client, and a stranger, which none does), a
+	// namespace without the label, a small shell pod in each for the
+	// in-cluster reachability checks, and a router caller as each service
+	// account.
 	agentSubstrateProbeNamespace    = "e2e-ate-probe"
 	agentSubstrateOutsiderNamespace = "e2e-ate-outsider"
 	agentSubstrateProbeClient       = "e2e-ate-client"
 	agentSubstrateProbeStranger     = "e2e-ate-stranger"
 	agentSubstrateProbePod          = "e2e-ate-shell"
+	agentSubstrateRouterCaller      = "e2e-ate-router-client"
+	agentSubstrateRouterStranger    = "e2e-ate-router-stranger"
 	agentSubstrateProbeAtespace     = "e2e-ate-probe"
 	agentSubstrateProbeImage        = "busybox:1.36"
 
@@ -59,6 +65,7 @@ const (
 var agentSubstrateDeployments = [][2]string{
 	{agentSubstratePodCertNamespace, "podcertificate-controller"},
 	{agentSubstrateNamespace, agentSubstrateAPIServer},
+	{agentSubstrateNamespace, agentSubstrateIdentityServer},
 	{agentSubstrateNamespace, "ate-controller"},
 	{agentSubstrateNamespace, "atenet-router"},
 	{agentSubstrateNamespace, "atenet-egress"},
@@ -83,18 +90,20 @@ var agentSubstrateCrds = []string{
 // output audience, trusted through the output bundle, dialed at the output
 // address under the output server name, creates, reads and deletes an
 // atespace. Around that it asserts every workload rolled out, the
-// definitions are stamped, the version stamps are on, the API admits only
-// namespaces carrying the output label, the router answers, and a lane's
-// declared settings are what runs. Destroy asserts the keep promises: kept
-// definitions, and the bundled database's volume while another resource owns
-// the namespace.
+// definitions are stamped, the version stamps are on, the API authorizes only
+// its owners and admits only namespaces carrying the output label, the
+// router answers only the clients it allows, and a lane's declared settings
+// are what runs. Destroy asserts the keep promises: kept definitions, and the
+// bundled database's volume while another resource owns the namespace.
 type AgentSubstrateVerifier struct {
+	// Version is the release the manifest installs: its spec.version, or the
+	// module's release.
+	Version            string
 	CreateNamespace    bool
 	BundledDatabase    bool
 	Agentgateway       bool
 	CredentialProvider string
 	Grants             []agentSubstrateGrant
-	Authorization      bool
 	BootstrapOwners    []string
 	// EnforcesNetworkPolicy marks a lane whose cluster enforces
 	// NetworkPolicy (the pod-certificates kind profile), so an unlabeled
@@ -116,6 +125,7 @@ type agentSubstrateGrant struct {
 func newAgentSubstrateVerifier(manifestPath string) *AgentSubstrateVerifier {
 	spec := manifestSpecMap(manifestPath)
 	v := &AgentSubstrateVerifier{CredentialProvider: "disabled"}
+	v.Version = stringOr(specField(spec, "version"), agentSubstrateRelease)
 	v.CreateNamespace, _ = specField(spec, "createNamespace").(bool)
 	if db, ok := specField(spec, "database").(map[string]interface{}); ok {
 		_, v.BundledDatabase = specField(db, "bundled").(map[string]interface{})
@@ -142,7 +152,6 @@ func newAgentSubstrateVerifier(manifestPath string) *AgentSubstrateVerifier {
 	}
 	if api, ok := specField(spec, "apiServer").(map[string]interface{}); ok {
 		if authz, ok := specField(api, "authorization").(map[string]interface{}); ok {
-			v.Authorization = boolOr(specField(authz, "enabled"), true)
 			if owners, ok := specField(authz, "bootstrapOwners").([]interface{}); ok {
 				for _, owner := range owners {
 					if s, ok := owner.(string); ok {
@@ -198,10 +207,10 @@ func (v *AgentSubstrateVerifier) VerifyExists(ctx context.Context, kubeconfig st
 // plane, reading the API's coordinates from the outputs alone.
 func (v *AgentSubstrateVerifier) VerifyExistsWithOutputs(ctx context.Context, kubeconfig string, outputs map[string]interface{}) error {
 	out := func(key string) string { return fmt.Sprint(outputs[key]) }
-	fmt.Printf("  [verify] Agent Substrate %s in %s (bundled database=%t, agentgateway=%t, credential provider=%s, authorization=%t)\n",
-		out("version"), out("namespace"), v.BundledDatabase, v.Agentgateway, v.CredentialProvider, v.Authorization)
-	if out("version") != agentSubstrateRelease || out("namespace") != agentSubstrateNamespace {
-		return errors.Errorf("the outputs say %s in %s; the kind installs %s in %s", out("version"), out("namespace"), agentSubstrateRelease, agentSubstrateNamespace)
+	fmt.Printf("  [verify] Agent Substrate %s in %s (bundled database=%t, agentgateway=%t, credential provider=%s)\n",
+		out("version"), out("namespace"), v.BundledDatabase, v.Agentgateway, v.CredentialProvider)
+	if out("version") != v.Version || out("namespace") != agentSubstrateNamespace {
+		return errors.Errorf("the outputs say %s in %s; the manifest installs %s in %s", out("version"), out("namespace"), v.Version, agentSubstrateNamespace)
 	}
 
 	if err := v.verifyRollouts(ctx, kubeconfig); err != nil {
@@ -231,7 +240,7 @@ func (v *AgentSubstrateVerifier) VerifyExistsWithOutputs(ctx context.Context, ku
 		}
 	}
 
-	if err := applySubstrateProbe(ctx, kubeconfig, out("api_access_namespace_label"), true); err != nil {
+	if err := applySubstrateProbe(ctx, kubeconfig, outputs, true); err != nil {
 		return err
 	}
 	if err := v.verifyAPIRoundTrip(ctx, kubeconfig, outputs); err != nil {
@@ -241,26 +250,60 @@ func (v *AgentSubstrateVerifier) VerifyExistsWithOutputs(ctx context.Context, ku
 		return err
 	}
 	if v.GcsBucket != "" {
-		for _, account := range agentSubstrateStorageAccounts {
-			if err := proveKeylessStorage(ctx, kubeconfig, account, v.GcsBucket); err != nil {
-				return err
-			}
+		if err := proveKeylessStorage(ctx, kubeconfig, agentSubstrateAPIServer, v.GcsBucket); err != nil {
+			return err
+		}
+		if err := proveNoStorage(ctx, kubeconfig, agentSubstrateNodeAgent, v.GcsBucket); err != nil {
+			return err
 		}
 	}
-	return v.verifyRouter(ctx, kubeconfig, out("router_endpoint"))
+	return v.verifyRouter(ctx, kubeconfig, outputs)
 }
 
-// agentSubstrateStorageAccounts are the Kubernetes service accounts that
-// read and write actor snapshots; on GKE each is bound through Workload
-// Identity to the Google service account the spec names.
-var agentSubstrateStorageAccounts = []string{"atelet", "ate-api-server"}
-
 // proveKeylessStorage proves the keyless storage path end to end: a pod
-// running as the control plane's own service account takes a token from the
+// running as the API server's own service account takes a token from the
 // GKE metadata server alone (no key anywhere), checks the token belongs to a
 // Google service account rather than the node's, and writes, reads back and
 // deletes an object in the snapshot bucket.
 func proveKeylessStorage(ctx context.Context, kubeconfig, account, bucket string) error {
+	text, phase, email, err := runStorageProbe(ctx, kubeconfig, account, bucket)
+	switch {
+	case phase != "Succeeded" || !strings.Contains(text, "WROTE") || !strings.Contains(text, "READ:keyless") || !strings.Contains(text, "DELETED"):
+		return errors.Errorf("as %s/%s, the snapshot bucket %s could not be written, read and cleaned keylessly (pod %s, %v): %s", agentSubstrateNamespace, account, bucket, phase, err, firstLines(text, 6))
+	case !keylessIdentity(email):
+		return errors.Errorf("as %s/%s, the metadata server answered as %q: the service account is not bound through Workload Identity, so storage would run as the node", agentSubstrateNamespace, account, email)
+	}
+	fmt.Printf("  [verify] KEYLESS: as %s/%s (%s, no key), wrote, read back and deleted an object in gs://%s\n", agentSubstrateNamespace, account, email, bucket)
+	return nil
+}
+
+// proveNoStorage proves an account that must not reach the snapshot bucket
+// cannot: the node agent's own identity is refused a write, so a node that
+// leaks its credentials exposes no actor's snapshots (each transfer runs on
+// a token narrowed to one actor).
+func proveNoStorage(ctx context.Context, kubeconfig, account, bucket string) error {
+	text, _, email, err := runStorageProbe(ctx, kubeconfig, account, bucket)
+	switch {
+	case !keylessIdentity(email):
+		return errors.Errorf("as %s/%s, the metadata server answered as %q: the service account is not bound through Workload Identity (%v): %s", agentSubstrateNamespace, account, email, err, firstLines(text, 4))
+	case strings.Contains(text, "WROTE"):
+		return errors.Errorf("as %s/%s (%s), an object was written to the snapshot bucket %s; the node agent must hold no grant on it", agentSubstrateNamespace, account, email, bucket)
+	}
+	fmt.Printf("  [verify] KEYLESS: as %s/%s (%s), the snapshot bucket gs://%s refused a write\n", agentSubstrateNamespace, account, email, bucket)
+	return nil
+}
+
+// keylessIdentity reports a Google service account reached through Workload
+// Identity rather than the node's default compute identity.
+func keylessIdentity(email string) bool {
+	return strings.HasSuffix(email, ".iam.gserviceaccount.com") && !strings.Contains(email, "-compute@developer.")
+}
+
+// runStorageProbe runs, as one of the control plane's service accounts, a
+// pod that takes a token from the GKE metadata server and tries to write,
+// read back and delete an object in the snapshot bucket, and returns its log,
+// its final phase and the identity the metadata server answered as.
+func runStorageProbe(ctx context.Context, kubeconfig, account, bucket string) (string, string, string, error) {
 	pod := "e2e-ate-gcs-" + account
 	object := fmt.Sprintf("e2e-keyless-%s-%d", account, time.Now().UnixNano())
 	script := `set -e
@@ -297,7 +340,7 @@ spec:
 		_ = exec.Command("kubectl", "--kubeconfig", kubeconfig, "-n", agentSubstrateNamespace, "delete", "pod", pod, "--ignore-not-found", "--wait=false").Run()
 	}()
 	if err := kubectlApplyStdin(ctx, kubeconfig, manifest); err != nil {
-		return errors.Wrapf(err, "starting the keyless storage probe as %s", account)
+		return "", "", "", errors.Wrapf(err, "starting the keyless storage probe as %s", account)
 	}
 	phase, err := awaitJSONPath(ctx, kubeconfig, "pod", pod, agentSubstrateNamespace, `{.status.phase}`, 3*time.Minute)
 	for err == nil && (phase == "Pending" || phase == "Running") {
@@ -312,14 +355,7 @@ spec:
 			email = strings.TrimSpace(rest)
 		}
 	}
-	switch {
-	case phase != "Succeeded" || !strings.Contains(text, "WROTE") || !strings.Contains(text, "READ:keyless") || !strings.Contains(text, "DELETED"):
-		return errors.Errorf("as %s/%s, the snapshot bucket %s could not be written, read and cleaned keylessly (pod %s, %v): %s", agentSubstrateNamespace, account, bucket, phase, err, firstLines(text, 6))
-	case !strings.HasSuffix(email, ".iam.gserviceaccount.com") || strings.Contains(email, "-compute@developer."):
-		return errors.Errorf("as %s/%s, the metadata server answered as %q: the service account is not bound through Workload Identity, so storage would run as the node", agentSubstrateNamespace, account, email)
-	}
-	fmt.Printf("  [verify] KEYLESS: as %s/%s (%s, no key), wrote, read back and deleted an object in gs://%s\n", agentSubstrateNamespace, account, email, bucket)
-	return nil
+	return text, phase, email, err
 }
 
 func (v *AgentSubstrateVerifier) verifyRollouts(ctx context.Context, kubeconfig string) error {
@@ -374,8 +410,8 @@ func (v *AgentSubstrateVerifier) verifyStamps(ctx context.Context, kubeconfig st
 	if err != nil {
 		return errors.Wrap(err, "reading the API server's release stamp")
 	}
-	if strings.TrimSpace(stamp) != agentSubstrateRelease {
-		return errors.Errorf("the API server carries %s=%q, want %s", agentSubstrateVersionAnnotation, strings.TrimSpace(stamp), agentSubstrateRelease)
+	if strings.TrimSpace(stamp) != v.Version {
+		return errors.Errorf("the API server carries %s=%q, want %s", agentSubstrateVersionAnnotation, strings.TrimSpace(stamp), v.Version)
 	}
 	if v.BundledDatabase {
 		minor, err := kubectlGetJSONPath(ctx, kubeconfig, "pvc", agentSubstrateVolumeClaim, agentSubstrateNamespace,
@@ -383,7 +419,7 @@ func (v *AgentSubstrateVerifier) verifyStamps(ctx context.Context, kubeconfig st
 		if err != nil {
 			return errors.Wrap(err, "reading the database volume's minor stamp")
 		}
-		if want := strings.TrimPrefix(agentSubstrateRelease[:strings.LastIndex(agentSubstrateRelease, ".")], "v"); strings.TrimSpace(minor) != want {
+		if want := strings.TrimPrefix(v.Version[:strings.LastIndex(v.Version, ".")], "v"); strings.TrimSpace(minor) != want {
 			return errors.Errorf("the database volume carries %s=%q, want %s", agentSubstrateMinorLabel, strings.TrimSpace(minor), want)
 		}
 	}
@@ -502,19 +538,17 @@ func (v *AgentSubstrateVerifier) verifyAPIRoundTrip(ctx context.Context, kubecon
 		return errors.Errorf("a call without a token returned %v; the API must refuse it as Unauthenticated", err)
 	}
 
-	if v.Authorization {
-		c, cancel, err := conn.as(ctx, agentSubstrateProbeStranger, 30*time.Second)
-		if err != nil {
-			return err
-		}
-		_, err = api.CreateAtespace(c, &ateapipb.CreateAtespaceRequest{Atespace: &ateapipb.Atespace{Metadata: &ateapipb.ResourceMetadata{Name: agentSubstrateProbeAtespace}}})
-		cancel()
-		strangerID := "system:serviceaccount:" + agentSubstrateProbeNamespace + ":" + agentSubstrateProbeStranger
-		if status.Code(err) != codes.PermissionDenied || !strings.Contains(err.Error(), `principal "`+ateAuthorizationUser(strangerID)+`"`) {
-			return errors.Errorf("with authorization on, a caller who is not an owner (%s) got %v; the API must deny it by that principal", strangerID, err)
-		}
-		fmt.Printf("  [verify] with authorization on, a non-owner was denied by its principal %s\n", strangerID)
+	c, cancel, err := conn.as(ctx, agentSubstrateProbeStranger, 30*time.Second)
+	if err != nil {
+		return err
 	}
+	_, err = api.CreateAtespace(c, &ateapipb.CreateAtespaceRequest{Atespace: &ateapipb.Atespace{Metadata: &ateapipb.ResourceMetadata{Name: agentSubstrateProbeAtespace}}})
+	cancel()
+	strangerID := "system:serviceaccount:" + agentSubstrateProbeNamespace + ":" + agentSubstrateProbeStranger
+	if status.Code(err) != codes.PermissionDenied || !strings.Contains(err.Error(), `principal "`+ateAuthorizationUser(strangerID)+`"`) {
+		return errors.Errorf("a caller who is not an owner (%s) got %v; authorization is always on, so the API must deny it by that principal", strangerID, err)
+	}
+	fmt.Printf("  [verify] a non-owner was denied by its principal %s\n", strangerID)
 
 	deadline := time.Now().Add(3 * time.Minute)
 	for {
@@ -532,7 +566,7 @@ func (v *AgentSubstrateVerifier) verifyAPIRoundTrip(ctx context.Context, kubecon
 		}
 		time.Sleep(5 * time.Second)
 	}
-	c, cancel, err := conn.as(ctx, agentSubstrateProbeClient, 30*time.Second)
+	c, cancel, err = conn.as(ctx, agentSubstrateProbeClient, 30*time.Second)
 	if err != nil {
 		return err
 	}
@@ -594,27 +628,45 @@ func (v *AgentSubstrateVerifier) verifyReachability(ctx context.Context, kubecon
 	return nil
 }
 
-// verifyRouter checks the router answers HTTP at its output endpoint. With no
-// actor behind the request, any HTTP status proves it serves.
-func (v *AgentSubstrateVerifier) verifyRouter(ctx context.Context, kubeconfig, endpoint string) error {
+// verifyRouter checks the router serves the clients it allows and only them.
+// With no actor behind the request, any HTTP status proves it serves. The
+// Envoy router serves only TLS (router_tls_endpoint), so the allowed client
+// gets an HTTP answer and the stranger is refused before HTTP; agentgateway
+// still serves plaintext at router_endpoint to any caller.
+func (v *AgentSubstrateVerifier) verifyRouter(ctx context.Context, kubeconfig string, outputs map[string]interface{}) error {
+	endpoint := fmt.Sprint(outputs["router_tls_endpoint"])
+	if v.Agentgateway {
+		endpoint = fmt.Sprint(outputs["router_endpoint"])
+	}
+	target := agentSubstrateProbeAtespace + "/absent"
 	deadline := time.Now().Add(2 * time.Minute)
 	var last string
-	for time.Now().Before(deadline) {
-		out, _ := exec.CommandContext(ctx, "kubectl", "--kubeconfig", kubeconfig, "exec", agentSubstrateProbePod, "-n", agentSubstrateProbeNamespace, "--",
-			"wget", "-S", "-q", "-O", "/dev/null", "-T", "5", endpoint+"/").CombinedOutput()
-		last = string(out)
-		if strings.Contains(last, "HTTP/") {
-			fmt.Printf("  [verify] the router answered HTTP at %s\n", endpoint)
-			return nil
+	for {
+		code, body, err := callRouter(ctx, kubeconfig, agentSubstrateRouterCaller, endpoint, target)
+		if err == nil && code != 0 {
+			break
+		}
+		last = fmt.Sprintf("HTTP %d %v %s", code, err, firstLines(body, 2))
+		if time.Now().After(deadline) {
+			return errors.Errorf("the router never answered an allowed client at %s; last: %s", endpoint, last)
 		}
 		time.Sleep(5 * time.Second)
 	}
-	return errors.Errorf("the router never answered HTTP at %s (the router_endpoint output); last: %s", endpoint, firstLines(last, 3))
+	if v.Agentgateway {
+		fmt.Printf("  [verify] the router answered HTTP at %s\n", endpoint)
+		return nil
+	}
+	code, _, _ := callRouter(ctx, kubeconfig, agentSubstrateRouterStranger, endpoint, target)
+	if code != 0 {
+		return errors.Errorf("the router answered HTTP %d to %s, which router.allowed_client_spiffe_ids does not name; it must refuse the TLS handshake", code, agentSubstrateProbeStranger)
+	}
+	fmt.Printf("  [verify] the router answered its allowed client at %s and refused a stranger's certificate\n", endpoint)
+	return nil
 }
 
 // ateAuthorizationUser is the principal as the API's authorizer names it in
 // a denial: "user:" and the identity with the characters its authorization
-// store reserves percent-encoded (upstream's formatUser at v0.5.0,
+// store reserves percent-encoded (upstream's formatUser,
 // cmd/ateapi/internal/authz/authz_util.go).
 func ateAuthorizationUser(id string) string {
 	return "user:" + strings.NewReplacer("%", "%25", ":", "%3A", "#", "%23", " ", "%20", "*", "%2A").Replace(id)
@@ -667,7 +719,7 @@ func (v *AgentSubstrateVerifier) VerifyAbsent(ctx context.Context, kubeconfig st
 // this kind's refusals here, the definition primitive's in helmCRDLifecycle.
 func (v *AgentSubstrateVerifier) VerifyExpectedDeployFailure(ctx context.Context, kubeconfig, expectation string, deployErr error) error {
 	text := strings.Join(strings.Fields(strings.ReplaceAll(deployErr.Error(), "|", " ")), " ")
-	wants, err := agentSubstrateRefusalTexts(expectation, v.ExpectedVersion)
+	wants, err := agentSubstrateRefusalTexts(expectation, v.ExpectedVersion, v.Version)
 	if err != nil {
 		return v.verifyRefusal(ctx, kubeconfig, expectation, deployErr)
 	}
@@ -710,14 +762,14 @@ func (v *AgentSubstrateVerifier) VerifyExpectedDeployFailure(ctx context.Context
 }
 
 // manifestVolumeLane reports a refused upgrade read from the database volume
-// rather than the API server (the planted stamp is a minor, "v0.4").
+// rather than the API server (the planted stamp is a minor, "v0.5").
 func manifestVolumeLane(v *AgentSubstrateVerifier) bool {
 	return strings.Count(v.ExpectedVersion, ".") == 1
 }
 
 // agentSubstrateRefusalTexts are the phrases each of this kind's refusals
 // must carry, in the words the modules write.
-func agentSubstrateRefusalTexts(expectation, installed string) ([]string, error) {
+func agentSubstrateRefusalTexts(expectation, installed, version string) ([]string, error) {
 	switch expectation {
 	case failureWorkloadOwnedElsewhere:
 		return []string{
@@ -749,8 +801,8 @@ func agentSubstrateRefusalTexts(expectation, installed string) ([]string, error)
 		}
 		return []string{
 			record,
-			"records Agent Substrate " + installed + " on this cluster, and this " + agentSubstrateKind + " installs " + agentSubstrateRelease,
-			"Agent Substrate does not move from " + installed + " to " + agentSubstrateRelease + " in place: before 1.0 every minor release is a reinstall",
+			"records Agent Substrate " + installed + " on this cluster, and this " + agentSubstrateKind + " installs " + version,
+			"Agent Substrate does not move from " + installed + " to " + version + " in place: before 1.0 every minor release is a reinstall",
 			remedy,
 		}, nil
 	}

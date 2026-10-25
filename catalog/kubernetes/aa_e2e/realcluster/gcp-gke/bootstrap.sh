@@ -148,6 +148,7 @@ langfuse_gsa="planton-e2e-gke-langfuse@${GCP_PROJECT_ID}.iam.gserviceaccount.com
 langfuse_bucket="planton-e2e-gke-langfuse-${GCP_PROJECT_ID}"
 substrate_atelet_gsa="planton-e2e-gke-atelet@${GCP_PROJECT_ID}.iam.gserviceaccount.com"
 substrate_api_gsa="planton-e2e-gke-ate-api@${GCP_PROJECT_ID}.iam.gserviceaccount.com"
+substrate_transfer_gsa="planton-e2e-gke-ate-transfer@${GCP_PROJECT_ID}.iam.gserviceaccount.com"
 substrate_bucket="planton-e2e-gke-substrate-${GCP_PROJECT_ID}"
 # The seal's key ring and key are named by the manifest (the ring fixed and
 # permanent, the key by this bootstrap's id); the OpenBao seal wants the
@@ -205,6 +206,7 @@ export PLANTON_E2E_GKE_LANGFUSE_GSA="${langfuse_gsa}"
 export PLANTON_E2E_GKE_LANGFUSE_BUCKET="${langfuse_bucket}"
 export PLANTON_E2E_GKE_SUBSTRATE_ATELET_GSA="${substrate_atelet_gsa}"
 export PLANTON_E2E_GKE_SUBSTRATE_API_GSA="${substrate_api_gsa}"
+export PLANTON_E2E_GKE_SUBSTRATE_TRANSFER_GSA="${substrate_transfer_gsa}"
 export PLANTON_E2E_GKE_SUBSTRATE_BUCKET="${substrate_bucket}"
 export PLANTON_E2E_GKE_CLUSTER_LOCATION="${GKE_CLUSTER_LOCATION}"
 export PLANTON_E2E_GKE_CLUSTER_NAME="${GKE_CLUSTER_NAME}"

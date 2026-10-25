@@ -131,11 +131,10 @@ func sandboxConfigSpec() *kubernetesagentsubstratesandboxconfigv1alpha1.Kubernet
 		SandboxClass:   "gvisor",
 		DefaultVersion: "v1",
 		Versions: []*kubernetesagentsubstratesandboxconfigv1alpha1.KubernetesAgentSubstrateSandboxConfigVersion{{
-			Name:       "v1",
-			PauseImage: "registry.k8s.io/pause:3.10.2@sha256:f548e0e8e3dc1896ca956272154dde3314e8cc4fde0a57577ee9fa1c63f5baf4",
+			Name: "v1",
 			Assets: map[string]*kubernetesagentsubstratesandboxconfigv1alpha1.KubernetesAgentSubstrateSandboxConfigAssetFiles{
 				"amd64": {Entries: map[string]*kubernetesagentsubstratesandboxconfigv1alpha1.KubernetesAgentSubstrateSandboxConfigAssetFile{
-					"gvisor": {Url: "gs://gvisor/releases/nightly/2026-10-10/x86_64/gvisor.tar.zstd", Sha256: "4ae7fab988c3647d2a835d6c3c70c6a99021c562db97827592562b6c51c3e88c"},
+					"gvisor": {Url: "gs://gvisor/releases/nightly/2026-10-17/x86_64/gvisor.tar.zstd", Sha256: "fa72f0d45756c69a30beec21222c78241b0d330c36f4f2185648617cc23415c8"},
 				}},
 				"arm64": {},
 			},
@@ -153,8 +152,8 @@ func TestProject_MapValuedMap_WrappersBecomeBareMaps(t *testing.T) {
 		want := map[string]interface{}{
 			"amd64": map[string]interface{}{
 				"gvisor": map[string]interface{}{
-					"url":    "gs://gvisor/releases/nightly/2026-10-10/x86_64/gvisor.tar.zstd",
-					"sha256": "4ae7fab988c3647d2a835d6c3c70c6a99021c562db97827592562b6c51c3e88c",
+					"url":    "gs://gvisor/releases/nightly/2026-10-17/x86_64/gvisor.tar.zstd",
+					"sha256": "fa72f0d45756c69a30beec21222c78241b0d330c36f4f2185648617cc23415c8",
 				},
 			},
 			"arm64": map[string]interface{}{},

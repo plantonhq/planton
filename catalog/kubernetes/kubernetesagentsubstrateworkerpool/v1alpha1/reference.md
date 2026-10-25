@@ -17,9 +17,9 @@ suspended actor leaves its worker for storage and gives its share back,
 which is how a pool serves more actors than it holds at once.
 
 100% fidelity with the upstream WorkerPool custom resource
-(ate.dev/v1alpha1), pinned to Agent Substrate v0.5.0 -- the release
-KubernetesAgentSubstrate installs -- and held to its served definition by
-the mirror test. The upstream spec follows the Planton envelope directly:
+(ate.dev/v1alpha1), pinned to the definition of the Agent Substrate release
+KubernetesAgentSubstrate composes (v0.6.0) and held to it by the mirror
+test. The upstream spec follows the Planton envelope directly:
 the size, the worker image, the worker pods' placement and resources, and
 the sandbox class the pool runs.
 
@@ -35,9 +35,9 @@ What a pool is for:
     template's `worker_selector` names the pool by the pool's labels.
   - Runtime. A pool runs one sandbox class (gVisor or microVM) and
     resolves one SandboxConfig of that class, which the cluster then keeps
-    from deletion. The runtime an actor boots comes from the SandboxConfig
-    its actor template names, so the templates that run on a pool name the
-    config the pool resolves.
+    from deletion. An actor runs in the class of the pool its template
+    selects and boots the default version of the config that pool
+    resolves.
 
 A pool can live in any namespace and needs no label there; the controller
 adds a NetworkPolicy that admits only Substrate's router to the workers.
@@ -48,7 +48,7 @@ adds a NetworkPolicy that admits only Substrate's router to the workers.
 # The full surface, for offline proofs (tofu plan, pulumi preview, a server
 # dry run): every field of the pool, with literal values where the lanes
 # reference fixtures (the worker image the control plane publishes for
-# v0.5.0, the ServiceAccount, the PriorityClass and a SandboxConfig).
+# v0.6.0, the ServiceAccount, the PriorityClass and a SandboxConfig).
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesAgentSubstrateWorkerPool
 metadata:
@@ -62,7 +62,7 @@ spec:
     planton.dev/e2e-note: full-surface
   replicas: 2
   workerImage:
-    value: ghcr.io/plantonhq/planton/agent-substrate/ateom-gvisor:v0.5.0@sha256:4f14ca1e038e1b174c12c334b46a4328b9d9a0da5a184dd72593e65967203914
+    value: ghcr.io/plantonhq/planton/agent-substrate/ateworker-gvisor:v0.6.0@sha256:e3f59217a1e63c280ea1cc4149dfe0686353f9ef583fe2ff1c129d4ad42f8cba
   template:
     labels:
       team: platform
@@ -216,8 +216,10 @@ The worker image the pool runs, which must match the sandbox class: the
 control plane's `gvisor_worker_image` output for a gvisor pool, its
 `microvm_worker_image` output for a microvm pool. Defaults to a
 KubernetesAgentSubstrate reference (its gvisor_worker_image output), so
-the pool always runs the worker built with the installed release, with
-the control plane's registry mirror already applied; a microvm pool
+the pool runs the worker built with the installed release, with the
+control plane's registry mirror already applied (after the control
+plane's version moves, redeploy the pool to roll its workers onto the new
+release's image); a microvm pool
 points the reference at `status.outputs.microvm_worker_image`. A literal
 image works too, pinned by digest.
 
@@ -597,7 +599,8 @@ result of this request.
 `string | valueFrom`
 
 The ServiceAccount the worker pods run as, in the pool's namespace.
-Unset, the namespace's default ServiceAccount. Defaults to a
+Unset, the pods run as `ateworker`, which the controller creates in the
+pool's namespace. Defaults to a
 KubernetesServiceAccount reference (its service_account_name output);
 pass the literal name with `value:` for one Planton does not manage.
 
@@ -638,12 +641,9 @@ Unset, the pool resolves the newest config of the class annotated
 control plane's `gvisor-default` unless a newer default exists). The
 pool's status reports the config in use; the controller starts the
 worker Deployment only once the class resolves, and a config a pool uses
-cannot be deleted until the pool moves off it.
-
-An actor boots the default version of the config its actor template
-names, not of this one, so name the same config in the templates that
-run on the pool: the pool's deletion guard then covers the runtime its
-actors boot.
+cannot be deleted until the pool moves off it. Every actor on the pool
+boots this config's default version, so the deletion guard covers the
+runtime its actors run.
 
 ### spec.sandboxClasses[].configRef.name
 

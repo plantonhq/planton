@@ -1,6 +1,6 @@
 # Agent Substrate CSI Driver Config
 
-Declares an Agent Substrate CSIDriverConfig: how Substrate reaches one CSI driver — its Controller endpoint, its node socket and how the connection is trusted — so an agent's external volume is provisioned and mounted by your storage instead of riding in the agent's snapshots. When an actor template asks for a volume of a StorageClass, Substrate finds this config by the class's provisioner and calls the driver itself. The spec is faithful to the upstream `ate.dev/v1alpha1` CSIDriverConfig (pinned to Agent Substrate v0.5.0) — this is how agents use the storage you already run.
+Declares an Agent Substrate CSIDriverConfig: how Substrate reaches one CSI driver — its Controller endpoint, its node socket and how the connection is trusted — so an agent's external volume is provisioned and mounted by your storage instead of riding in the agent's snapshots. When an actor template asks for a volume of a StorageClass, Substrate finds this config by the class's provisioner and calls the driver itself. The spec is faithful to the upstream `ate.dev/v1alpha1` CSIDriverConfig (pinned to Agent Substrate v0.6.0) — this is how agents use the storage you already run.
 
 ## What Gets Created
 

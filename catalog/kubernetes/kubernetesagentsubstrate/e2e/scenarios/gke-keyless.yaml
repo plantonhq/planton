@@ -1,11 +1,13 @@
 # THE KEYLESS GKE PROOF: snapshots in Google Cloud Storage with no key
-# anywhere. The node agent and the API server act as the Google service
+# anywhere. The API server and the node agent act as the Google service
 # accounts the gcp-gke batch created and bound to their Kubernetes
 # ServiceAccounts through Workload Identity
-# (aa_e2e/realcluster/gcp-gke, manifests/07-agent-substrate-gcs.yaml), the
-# API server trusts GKE's own token issuer for the cluster named here, and
-# this resource creates and owns ate-system (nothing has to be there
-# first). The bundled database keeps the lane free of a Cloud SQL
+# (aa_e2e/realcluster/gcp-gke, manifests/07-agent-substrate-gcs.yaml): the
+# API server can reach the snapshot bucket, the node agent cannot, and every
+# snapshot moves as the transfer service account the API server
+# impersonates. The API server trusts GKE's own token issuer for the cluster
+# named here, and this resource creates and owns ate-system (nothing has to
+# be there first). The bundled database keeps the lane free of a Cloud SQL
 # instance; the offline proofs cover Cloud SQL.
 #
 # The batch cluster must serve the pod-certificate and cluster-trust-bundle
@@ -31,6 +33,8 @@ spec:
         value: ${E2E_ENV:PLANTON_E2E_GKE_SUBSTRATE_API_GSA}
       nodeAgentServiceAccount:
         value: ${E2E_ENV:PLANTON_E2E_GKE_SUBSTRATE_ATELET_GSA}
+      snapshotTransferServiceAccount:
+        value: ${E2E_ENV:PLANTON_E2E_GKE_SUBSTRATE_TRANSFER_GSA}
   database:
     bundled:
       volumeSize: 10Gi
@@ -38,6 +42,13 @@ spec:
     gcs:
       bucket:
         value: ${E2E_ENV:PLANTON_E2E_GKE_SUBSTRATE_BUCKET}
+  apiServer:
+    authorization:
+      bootstrapOwners:
+        - system:serviceaccount:e2e-ate-probe:e2e-ate-client
+  router:
+    allowedClientSpiffeIds:
+      - spiffe://cluster.local/ns/e2e-ate-probe/sa/e2e-ate-client
   egress:
     credentialProvider:
       disabled: {}

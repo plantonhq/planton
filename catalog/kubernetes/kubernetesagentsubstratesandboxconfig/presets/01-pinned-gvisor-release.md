@@ -1,6 +1,6 @@
 # Pinned gVisor Release
 
-One gVisor release, pinned to the byte, that your worker pools and actor templates name explicitly. It is the release Agent Substrate v0.5.0 ships as `gvisor-default` (gVisor nightly 2026-10-10, the build with the filesystem checkpoint Substrate's durable directories need), so the config starts out equal to the shipped one and stays where you put it when a later control plane ships a newer release.
+One gVisor release, pinned to the byte, that your worker pools name explicitly. It is the release Agent Substrate v0.6.0 ships as `gvisor-default` (gVisor nightly 2026-10-17, the first build that checkpoints an actor's root filesystem and durable directories as separate bundles, which Substrate's workers need), so the config starts out equal to the shipped one and stays where you put it when a later control plane ships a newer release.
 
 ## When to Use
 
@@ -9,13 +9,13 @@ One gVisor release, pinned to the byte, that your worker pools and actor templat
 
 ## How It Works
 
-Every node downloads the tarball for its own architecture ahead of time, verifies it against its SHA-256 and caches it by hash. Worker pools that name this config (`sandboxClasses[].configRef.name`) keep it from deletion, and the actors of templates that name it (`sandbox_config.config_name`) boot and restore with its default version. The pause image holds each sandbox's namespaces and is pinned by digest, as the cluster requires.
+Every node downloads the tarball for its own architecture ahead of time, verifies it against its SHA-256 and caches it by hash. Worker pools that name this config (`sandboxClasses[].configRef.name`) keep it from deletion, and the actors that land on them boot its default version.
 
 ## Key Configuration Choices
 
-- **A version named after what it pins.** `gvisor-2026-10-10` reads as a fact in a template or a status line; a counter does not.
+- **A version named after what it pins.** `gvisor-2026-10-17` reads as a fact in a pool's status line; a counter does not.
 - **Both architectures.** Keep a block for every architecture your workers run on; a version with no files for a node's architecture cannot boot there.
-- **No class-default annotation.** This config is named explicitly; `gvisor-default` stays what pools that name no config resolve. Templates always name their config.
+- **No class-default annotation.** This config is named explicitly; `gvisor-default` stays what pools that name no config resolve.
 
 ## Prerequisites
 
@@ -26,4 +26,4 @@ Every node downloads the tarball for its own architecture ahead of time, verifie
 
 | Placeholder | Description |
 |-------------|-------------|
-| `gvisor-pinned` (name) | The config's name in the cluster, which worker pools and actor templates name; rename it freely (a DNS subdomain name). |
+| `gvisor-pinned` (name) | The config's name in the cluster, which worker pools name; rename it freely (a DNS subdomain name). |

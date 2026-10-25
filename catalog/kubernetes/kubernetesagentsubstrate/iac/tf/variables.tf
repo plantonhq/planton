@@ -32,6 +32,9 @@ variable "spec" {
 
         # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
         node_agent_service_account = optional(string, "")
+
+        # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
+        snapshot_transfer_service_account = optional(string, "")
       }))
       generic = optional(object({
         service_account_issuer = string
@@ -123,6 +126,7 @@ variable "spec" {
           secret_access_key_key = optional(string)
         })
       }))
+      snapshot_prefix = optional(string, "")
     })
     api_server = optional(object({
       replicas = optional(number)
@@ -143,7 +147,6 @@ variable "spec" {
       }))
       log_level = optional(string, "")
       authorization = optional(object({
-        enabled          = optional(bool)
         bootstrap_owners = optional(list(string), [])
       }))
       actor_jwt = optional(object({
@@ -222,6 +225,36 @@ variable "spec" {
         dry_run      = optional(bool, false)
       }))
       asset_staging_capacity_gib = optional(number)
+      snapshots = optional(object({
+        upload_delay          = optional(string)
+        detach_delay          = optional(string)
+        upload_timeout        = optional(string)
+        upload_throughput_mib = optional(number)
+        upload_workers        = optional(number)
+        detach_workers        = optional(number)
+        report_workers        = optional(number)
+        report_give_up_after  = optional(string)
+        upload_memory_budget  = optional(string)
+      }))
+      sandbox_asset_cache = optional(object({
+        min_age       = optional(string)
+        fetch_timeout = optional(string)
+        eviction = optional(object({
+          gc_period = optional(string)
+          max_bytes = optional(number)
+          dry_run   = optional(bool, false)
+        }))
+      }))
+      snapshot_cache = optional(object({
+        disabled      = optional(bool, false)
+        min_age       = optional(string)
+        fetch_timeout = optional(string)
+        eviction = optional(object({
+          gc_period = optional(string)
+          max_bytes = optional(number)
+          dry_run   = optional(bool, false)
+        }))
+      }))
     }))
     router = optional(object({
       dataplane = optional(string, "")
@@ -344,10 +377,35 @@ variable "spec" {
       traces_sampler_ratio      = optional(number)
       metric_export_interval_ms = optional(number)
       metric_export_timeout_ms  = optional(number)
+      worker_traces_exporters   = optional(list(string), [])
+      worker_metrics_exporters  = optional(list(string), [])
+      worker_logs_exporters     = optional(list(string), [])
     }))
     cluster_size         = optional(string, "")
     cordon_control_plane = optional(bool, false)
     image_registry       = optional(string, "")
     image_pull_secrets   = optional(list(string), [])
+    version              = optional(string)
+    preview_gates        = optional(list(string), [])
+    identity_server = optional(object({
+      replicas = optional(number)
+      resources = optional(object({
+        # The resource limits for the container.
+        # Specify the maximum amount of CPU and memory that the container can use.
+        limits = optional(object({
+          cpu    = optional(string, "")
+          memory = optional(string, "")
+        }))
+
+        # The resource requests for the container.
+        # Specify the minimum amount of CPU and memory that the container is guaranteed.
+        requests = optional(object({
+          cpu    = optional(string, "")
+          memory = optional(string, "")
+        }))
+      }))
+      log_level   = optional(string, "")
+      drain_grace = optional(string)
+    }))
   })
 }

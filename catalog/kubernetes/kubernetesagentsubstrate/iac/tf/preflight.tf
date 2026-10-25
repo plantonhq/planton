@@ -13,6 +13,7 @@ locals {
     {
       "Deployment/${local.pod_certificates_namespace}/${local.pod_certificates_name}" = { api_version = "apps/v1", kind = "Deployment", namespace = local.pod_certificates_namespace, name = local.pod_certificates_name }
       "Deployment/${local.namespace}/${local.api_server_name}"                        = { api_version = "apps/v1", kind = "Deployment", namespace = local.namespace, name = local.api_server_name }
+      "Deployment/${local.namespace}/${local.identity_server_name}"                   = { api_version = "apps/v1", kind = "Deployment", namespace = local.namespace, name = local.identity_server_name }
       "Deployment/${local.namespace}/${local.controller_name}"                        = { api_version = "apps/v1", kind = "Deployment", namespace = local.namespace, name = local.controller_name }
       "DaemonSet/${local.namespace}/${local.node_agent_name}"                         = { api_version = "apps/v1", kind = "DaemonSet", namespace = local.namespace, name = local.node_agent_name }
       "Deployment/${local.namespace}/${local.router_name}"                            = { api_version = "apps/v1", kind = "Deployment", namespace = local.namespace, name = local.router_name }
@@ -63,6 +64,7 @@ locals {
   owned_workload_order = [
     "Deployment/${local.pod_certificates_namespace}/${local.pod_certificates_name}",
     "Deployment/${local.namespace}/${local.api_server_name}",
+    "Deployment/${local.namespace}/${local.identity_server_name}",
     "Deployment/${local.namespace}/${local.controller_name}",
     "DaemonSet/${local.namespace}/${local.node_agent_name}",
     "Deployment/${local.namespace}/${local.router_name}",
@@ -119,7 +121,7 @@ locals {
   rule_skip       = "upgrades go one minor release at a time"
   rule_rollback   = "a rollback goes back at most one minor release, because the newer API server has already migrated the database schema forward"
 
-  requested_parts = [for p in slice(split(".", trimprefix(local.release, "v")), 0, 2) : tonumber(p)]
+  requested_parts = [for p in slice(split(".", trimprefix(local.version, "v")), 0, 2) : tonumber(p)]
   upgrade_rules = {
     for record, installed in { deployment = local.installed_version, volume = local.volume_version } : record => (
       length(regexall("^v?[0-9]+\\.[0-9]+", installed)) == 0 ? "" : (
@@ -159,16 +161,17 @@ resource "terraform_data" "preflight" {
     }
     precondition {
       condition     = local.upgrade_rules.deployment == ""
-      error_message = local.upgrade_rules.deployment == "" ? "" : "observed: Deployment ${local.namespace}/${local.api_server_name} records Agent Substrate ${local.installed_version} on this cluster, and this ${local.kind_name} installs ${local.release}\nmeaning: Agent Substrate does not move from ${local.installed_version} to ${local.release} in place: ${local.upgrade_rules.deployment}\nnext step: to install ${local.release}, back up what you need from the database, destroy this resource, then clear the database it used (`kubectl -n ${local.namespace} delete pvc ${local.postgres_volume_claim}` for the bundled one, or drop the substrate schema of an external or Cloud SQL one), and apply again; to keep ${local.installed_version}, deploy this resource from the Planton release that installed it"
+      error_message = local.upgrade_rules.deployment == "" ? "" : "observed: Deployment ${local.namespace}/${local.api_server_name} records Agent Substrate ${local.installed_version} on this cluster, and this ${local.kind_name} installs ${local.version}\nmeaning: Agent Substrate does not move from ${local.installed_version} to ${local.version} in place: ${local.upgrade_rules.deployment}\nnext step: to install ${local.version}, back up what you need from the database, destroy this resource, then clear the database it used (`kubectl -n ${local.namespace} delete pvc ${local.postgres_volume_claim}` for the bundled one, or drop the substrate schema of an external or Cloud SQL one), and apply again; to keep ${local.installed_version}, set spec.version back to it, or, for a release of another install shape, deploy this resource from the Planton release that installed it"
     }
     precondition {
       condition     = local.upgrade_rules.volume == ""
-      error_message = local.upgrade_rules.volume == "" ? "" : "observed: PersistentVolumeClaim ${local.namespace}/${local.postgres_volume_claim}, the bundled database's volume left by an earlier installation, records Agent Substrate ${local.volume_version} on this cluster, and this ${local.kind_name} installs ${local.release}\nmeaning: Agent Substrate does not move from ${local.volume_version} to ${local.release} in place: ${local.upgrade_rules.volume}\nnext step: to install ${local.release}, back up what you need from that database, delete the volume (`kubectl -n ${local.namespace} delete pvc ${local.postgres_volume_claim}`), and apply again; to keep the data, deploy this resource from the Planton release that wrote it"
+      error_message = local.upgrade_rules.volume == "" ? "" : "observed: PersistentVolumeClaim ${local.namespace}/${local.postgres_volume_claim}, the bundled database's volume left by an earlier installation, records Agent Substrate ${local.volume_version} on this cluster, and this ${local.kind_name} installs ${local.version}\nmeaning: Agent Substrate does not move from ${local.volume_version} to ${local.version} in place: ${local.upgrade_rules.volume}\nnext step: to install ${local.version}, back up what you need from that database, delete the volume (`kubectl -n ${local.namespace} delete pvc ${local.postgres_volume_claim}`), and apply again; to keep the data, set spec.version to a release of the minor that wrote it, or, for one of another install shape, deploy this resource from the Planton release that wrote it"
     }
     precondition {
       condition = alltrue([
         local.podcert_container != null,
         local.api_container != null,
+        local.identity_container != null,
         local.controller_container != null,
         local.node_container != null,
         local.node_sidecar != null,
@@ -178,7 +181,8 @@ resource "terraform_data" "preflight" {
         local.postgres_container != null,
         length([for e in local.podcert_container.env : e if e.name == "WORKERS_PER_SIGNER"]) == 1,
         length(local.postgres_hook) == 3,
-        length(local.agw) == 5 && length(local.agw_egress) == 3 && length(local.cordon_patches) == 2,
+        length(local.agw) == 6 && length(local.agw_egress) == 3 && length(local.cordon_patches) == 2,
+        local.router_policy_upstream != null,
         alltrue([for role, modes in local.octal_modes : length(modes) <= 4]),
       ])
       error_message = "observed: Agent Substrate ${local.release}'s manifests no longer carry the workloads, containers, start hook and component patches the module patches, where it expects them\nmeaning: the published release changed shape\nnext step: the module's pin needs a catalog fix"

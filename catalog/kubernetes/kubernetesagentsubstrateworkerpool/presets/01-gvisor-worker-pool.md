@@ -9,7 +9,7 @@ Three gVisor workers on any nodes, each with four CPUs and eight GiB for the act
 
 ## How It Works
 
-Substrate's controller runs three worker pods and registers each with the API server. Actor templates whose `worker_selector.match_labels` is `{workload: agents}` run on the pool. Each actor spends the limits its template declares from a worker's four CPUs and eight GiB, so a worker hosts four actors of one CPU and two GiB; a suspended actor gives its share back. The pool resolves the class default runtime (`gvisor-default`, unless a newer gVisor config is annotated as the default), and the templates name the same config.
+Substrate's controller runs three worker pods and registers each with the API server. Actor templates whose `worker_selector.match_labels` is `{workload: agents}` run on the pool. Each actor spends the limits its template declares from a worker's four CPUs and eight GiB, so a worker hosts four actors of one CPU and two GiB; a suspended actor gives its share back. The pool resolves the class default runtime (`gvisor-default`, unless a newer gVisor config is annotated as the default), and its actors boot it.
 
 ## Key Configuration Choices
 

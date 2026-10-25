@@ -20,6 +20,9 @@ spec:
     - field_path: api_server.replicas
       sku_meter: cluster CPU and memory reservations
       impact: Each API server pod reserves api_server.resources again (two by default), plus its object-storage sidecar's 50m CPU and 128Mi.
+    - field_path: identity_server.replicas
+      sku_meter: cluster CPU and memory reservations
+      impact: Each identity server pod reserves identity_server.resources (two pods by default, none reserved unless set).
     - field_path: node_agent.node_selector
       sku_meter: cluster CPU and memory reservations
       impact: The node agent runs one pod per selected node (every node by default), each reserving 100m CPU and 256Mi with its sidecar. Narrow it to the nodes worker pools use.

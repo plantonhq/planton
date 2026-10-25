@@ -145,8 +145,10 @@ The pieces, all read by `release.agent-substrate.yaml`:
   install of one release, and installs any published release of that shape at
   the version a customer sets. A release that claims an earlier shape is
   published only when its install is that shape's apart from its images: the
-  rehearsal compares the composed tree with the shape's published one, and
-  upstream's installer and Google Cloud setup at both tags. So an upstream
+  rehearsal compares the composed tree with the shape's published one,
+  upstream's installer and Google Cloud setup at both tags, and the flags,
+  `ATE_*` variables and preview gates the installed binaries accept (the
+  release may add one, never drop one the module may pass). So an upstream
   patch that changes nothing but its images reaches customers with this lane
   alone; one that changes the install is declared its own shape, and customers
   get it once the module composes it.

@@ -7,5 +7,5 @@ metadata:
   name: kubernetesagentsubstratesandboxconfig
 spec:
   billing_model: free
-  free_tier: A SandboxConfig is a cluster-scoped Agent Substrate declaration -- the runtime files (a gVisor tarball, or a microVM's hypervisor, kernel and root filesystem) and pause image an actor boots, by version. It is a custom resource the API server and node agents read; no compute runs for it and no provider meters it.
+  free_tier: A SandboxConfig is a cluster-scoped Agent Substrate declaration -- the runtime files (a gVisor tarball, or a microVM's hypervisor, kernel and root filesystem) an actor boots, by version. It is a custom resource the API server and node agents read; no compute runs for it and no provider meters it.
   notes: "No field of this spec buys anything. The spend near a config rides elsewhere: the worker pools that run it reserve their nodes' capacity (KubernetesAgentSubstrateWorkerPool), every node downloads each config's default version once and caches it by hash (object-store egress from a bucket you own, nothing for the public gs://gvisor releases), and microVM files staged in your bucket bill as that bucket's storage."

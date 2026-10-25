@@ -11,7 +11,7 @@ import (
 
 // upstreamRelease is the release the copies come from; it moves with the
 // KubernetesAgentSubstrate module's pin.
-const upstreamRelease = "v0.5.0"
+const upstreamRelease = "v0.6.0"
 
 // TestCopiesMatchUpstream holds the two generated files byte-equal to
 // upstream's at the pinned tag, so the verifier speaks exactly the API the

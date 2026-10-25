@@ -1,7 +1,7 @@
 # Every field: the object's labels and annotations, a Controller endpoint,
 # a node socket override and TLS through Substrate's pod identity -- upstream's
 # own hostpath driver registration (cmd/ate-setup/internal/steps/csi.go at
-# v0.5.0). The verifier reads every field back from the live object.
+# v0.6.0). The verifier reads every field back from the live object.
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesAgentSubstrateCsiDriverConfig
 metadata:

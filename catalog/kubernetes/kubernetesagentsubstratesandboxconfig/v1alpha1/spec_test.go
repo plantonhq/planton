@@ -14,9 +14,9 @@ import (
 
 // The validation suite pins what the spec refuses before the cluster sees the
 // SandboxConfig: the object's name, the closed set of classes, the
-// definition's own rules (the default names an Enabled, listed version; a
-// pause image exactly for gVisor, pinned by digest), the per-class asset
-// rules upstream's sandboxconfig-assets admission policy enforces at apply,
+// definition's own rules (the default names an Enabled, listed version), the
+// per-class asset rules upstream's sandboxconfig-assets admission policy
+// enforces at apply,
 // unique version names, and well-formed files (a URL and a lower-case hex
 // SHA-256).
 
@@ -25,10 +25,7 @@ func TestKubernetesAgentSubstrateSandboxConfig(t *testing.T) {
 	ginkgo.RunSpecs(t, "KubernetesAgentSubstrateSandboxConfig Suite")
 }
 
-const (
-	pauseImage = "registry.k8s.io/pause:3.10.2@sha256:f548e0e8e3dc1896ca956272154dde3314e8cc4fde0a57577ee9fa1c63f5baf4"
-	sum        = "4ae7fab988c3647d2a835d6c3c70c6a99021c562db97827592562b6c51c3e88c"
-)
+const sum = "fa72f0d45756c69a30beec21222c78241b0d330c36f4f2185648617cc23415c8"
 
 func ptr[T any](v T) *T { return &v }
 
@@ -42,8 +39,7 @@ func files(names ...string) *KubernetesAgentSubstrateSandboxConfigAssetFiles {
 
 func gvisorVersion(name string) *KubernetesAgentSubstrateSandboxConfigVersion {
 	return &KubernetesAgentSubstrateSandboxConfigVersion{
-		Name:       name,
-		PauseImage: pauseImage,
+		Name: name,
 		Assets: map[string]*KubernetesAgentSubstrateSandboxConfigAssetFiles{
 			"amd64": files("gvisor"),
 			"arm64": files("gvisor"),
@@ -92,15 +88,10 @@ var _ = ginkgo.Describe("KubernetesAgentSubstrateSandboxConfig Validation Tests"
 		gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 	})
 
-	ginkgo.It("accepts a microVM config with no pause image", func() {
+	ginkgo.It("accepts a microVM config", func() {
 		input.Spec.SandboxClass = "microvm"
 		input.Spec.DefaultVersion = "v1"
 		input.Spec.Versions = []*KubernetesAgentSubstrateSandboxConfigVersion{microvmVersion("v1")}
-		gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
-	})
-
-	ginkgo.It("accepts a legacy bare runsc asset for gVisor", func() {
-		input.Spec.Versions[1].Assets["amd64"] = files("runsc")
 		gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 	})
 
@@ -136,32 +127,15 @@ var _ = ginkgo.Describe("KubernetesAgentSubstrateSandboxConfig Validation Tests"
 		expectViolation(protovalidate.Validate(input), "string.in")
 	})
 
-	ginkgo.It("requires a pause image on every gVisor version", func() {
-		input.Spec.Versions[1].PauseImage = ""
-		expectViolation(protovalidate.Validate(input), "spec.pause_image.by_class")
-	})
-
-	ginkgo.It("refuses a pause image on a microVM version", func() {
-		input.Spec.SandboxClass = "microvm"
-		input.Spec.DefaultVersion = "v1"
-		version := microvmVersion("v1")
-		version.PauseImage = pauseImage
-		input.Spec.Versions = []*KubernetesAgentSubstrateSandboxConfigVersion{version}
-		expectViolation(protovalidate.Validate(input), "spec.pause_image.by_class")
-	})
-
-	ginkgo.It("refuses a pause image not pinned by digest", func() {
-		input.Spec.Versions[1].PauseImage = "registry.k8s.io/pause:3.10.2"
-		expectViolation(protovalidate.Validate(input), "version.pause_image.digest")
-	})
-
 	ginkgo.It("refuses a gVisor version with no assets", func() {
 		input.Spec.Versions[1].Assets = nil
 		expectViolation(protovalidate.Validate(input), "spec.assets.gvisor")
 	})
 
-	ginkgo.It("refuses a gVisor architecture without a gvisor or runsc asset", func() {
+	ginkgo.It("refuses a gVisor architecture without the gvisor release tarball, a bare runsc binary included", func() {
 		input.Spec.Versions[1].Assets["arm64"] = files("kata-kernel")
+		expectViolation(protovalidate.Validate(input), "spec.assets.gvisor")
+		input.Spec.Versions[1].Assets["arm64"] = files("runsc")
 		expectViolation(protovalidate.Validate(input), "spec.assets.gvisor")
 	})
 
@@ -207,10 +181,7 @@ var _ = ginkgo.Describe("KubernetesAgentSubstrateSandboxConfig Validation Tests"
 		expectViolation(protovalidate.Validate(input), "string.max_len")
 	})
 
-	ginkgo.It("bounds the pause image and every file's URL", func() {
-		input.Spec.Versions[0].PauseImage = "registry.example.com/" + strings.Repeat("p", 512) + "@sha256:0"
-		expectViolation(protovalidate.Validate(input), "string.max_len")
-		input.Spec.Versions[0].PauseImage = pauseImage
+	ginkgo.It("bounds every file's URL", func() {
 		input.Spec.Versions[1].Assets["amd64"].Entries["gvisor"].Url = "gs://bucket/" + strings.Repeat("u", 2048)
 		expectViolation(protovalidate.Validate(input), "string.max_len")
 	})

@@ -140,7 +140,7 @@ spec:
     spec:
       containers:
       - name: controller
-        image: ghcr.io/plantonhq/planton/agent-substrate/podcertcontroller:v0.5.0@sha256:2f2e1bf08c5e538fa3c3845737d02b119f832e1f49347a4b375fbd3bd93fd87c
+        image: ghcr.io/plantonhq/planton/agent-substrate/podcertcontroller:v0.6.0@sha256:edd0c6645a0916735ee0f0e00734507f2e5fe7015ffc9270f65984c1ef708694
         args:
         - --in-cluster=true
         - --sharding-pod-namespace=$(POD_NAMESPACE)

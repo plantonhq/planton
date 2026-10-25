@@ -1,9 +1,8 @@
 # A gVisor SandboxConfig that is not the class default, which the actor
 # lane's pool names through its configRef: the pool must resolve to it (not
-# to gvisor-default), and the counter template names the config the pool's
-# status reports, so the actor boots this config's default version -- the
-# end-to-end proof that a configRef reaches the pool and that a config
-# declared through the catalog runs an actor. Upstream's own release, under
+# to gvisor-default), and the counter actor lands on the pool and boots this
+# config's default version -- the end-to-end proof that a configRef reaches
+# the pool and that a config declared through the catalog runs an actor. Upstream's own release, under
 # its own name.
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesAgentSubstrateSandboxConfig
@@ -12,18 +11,17 @@ metadata:
 spec:
   name: e2e-gvisor-workers
   sandboxClass: gvisor
-  defaultVersion: gvisor-2026-10-10
+  defaultVersion: gvisor-2026-10-17
   versions:
-    - name: gvisor-2026-10-10
-      pauseImage: registry.k8s.io/pause:3.10.2@sha256:f548e0e8e3dc1896ca956272154dde3314e8cc4fde0a57577ee9fa1c63f5baf4
+    - name: gvisor-2026-10-17
       assets:
         amd64:
           entries:
             gvisor:
-              url: gs://gvisor/releases/nightly/2026-10-10/x86_64/gvisor.tar.zstd
-              sha256: 4ae7fab988c3647d2a835d6c3c70c6a99021c562db97827592562b6c51c3e88c
+              url: gs://gvisor/releases/nightly/2026-10-17/x86_64/gvisor.tar.zstd
+              sha256: fa72f0d45756c69a30beec21222c78241b0d330c36f4f2185648617cc23415c8
         arm64:
           entries:
             gvisor:
-              url: gs://gvisor/releases/nightly/2026-10-10/aarch64/gvisor.tar.zstd
-              sha256: aaf414f06eea7960238e43165c691f0a36cefc0593fb141e011e96211c7b6f57
+              url: gs://gvisor/releases/nightly/2026-10-17/aarch64/gvisor.tar.zstd
+              sha256: 238634978d99f0dd3e631c4f88eae7b19fb36937065428467f0b6d6b10697689

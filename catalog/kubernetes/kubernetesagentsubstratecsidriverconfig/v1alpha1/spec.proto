@@ -14,7 +14,9 @@ import "shared/options/options.proto";
 // itself: the API server reaches the driver's Controller service at
 // `controller_endpoint`, and each node agent reaches its node's Node service
 // over the kubelet plugin socket. The driver must already run on the cluster;
-// this config registers it with Substrate, it does not install it.
+// this config registers it with Substrate, it does not install it. External
+// volumes are a preview: the API server serves them only with the
+// ExternalVolumes gate in the control plane's `preview_gates`.
 //
 // The API server and every node agent read a driver's config the first time
 // an actor needs the driver, and keep the client they build from it until
@@ -24,9 +26,9 @@ import "shared/options/options.proto";
 // deployment/ate-api-server daemonset/atelet`.
 //
 // 100% fidelity with the upstream CSIDriverConfig custom resource
-// (ate.dev/v1alpha1, cluster-scoped), pinned to Agent Substrate v0.5.0 -- the
-// release KubernetesAgentSubstrate installs -- and held to its served
-// definition by the mirror test. The definition's rules are written below,
+// (ate.dev/v1alpha1, cluster-scoped), pinned to the definition of the Agent
+// Substrate release KubernetesAgentSubstrate composes (v0.6.0) and held to it
+// by the mirror test. The definition's rules are written below,
 // with one more: the name must equal `driver_name`, because both the API
 // server and the node agent look a driver's config up by its object name, so
 // a config named anything else is never found.

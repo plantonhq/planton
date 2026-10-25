@@ -57,8 +57,8 @@ func refuseUpgrade(client dynamic.Interface, s *settings) error {
 	if err != nil {
 		return err
 	}
-	if rule := upgradeRule(installed, vars.Release); rule != "" {
-		return deploymentUpgradeRefused(installed, rule)
+	if rule := upgradeRule(installed, s.version); rule != "" {
+		return deploymentUpgradeRefused(installed, s.version, rule)
 	}
 	if s.database.kind != "bundled" {
 		return nil
@@ -73,8 +73,8 @@ func refuseUpgrade(client dynamic.Interface, s *settings) error {
 	if err != nil {
 		return err
 	}
-	if rule := upgradeRule(minor, vars.Release); rule != "" {
-		return volumeUpgradeRefused(minor, rule)
+	if rule := upgradeRule(minor, s.version); rule != "" {
+		return volumeUpgradeRefused(minor, s.version, rule)
 	}
 	return nil
 }
@@ -103,6 +103,7 @@ func ownedWorkloads(s *settings) []workloadowner.Workload {
 	workloads := []workloadowner.Workload{
 		deployment(vars.PodCertificatesNamespace, vars.PodCertificatesName),
 		deployment(vars.Namespace, vars.APIServerName),
+		deployment(vars.Namespace, vars.IdentityServerName),
 		deployment(vars.Namespace, vars.ControllerName),
 		{Kind: workloadowner.DaemonSet, Namespace: vars.Namespace, Name: vars.NodeAgentName},
 		deployment(vars.Namespace, vars.RouterName),

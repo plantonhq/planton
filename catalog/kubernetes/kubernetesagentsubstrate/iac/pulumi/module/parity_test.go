@@ -85,7 +85,7 @@ func TestEnginesApplyTheSameDocuments(t *testing.T) {
 			}
 			s := resolveSettings(spec)
 			s.identityLabels = identityLabels(parityMetadata)
-			files, err := fetchRelease()
+			files, err := fetchRelease(s.version)
 			if err != nil {
 				t.Fatal(err)
 			}

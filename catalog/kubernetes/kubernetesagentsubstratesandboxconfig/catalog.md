@@ -1,6 +1,6 @@
 # Agent Substrate Sandbox Config
 
-Declares an Agent Substrate SandboxConfig: the exact sandbox runtime an actor boots with — the gVisor release, or a microVM's hypervisor, kernel and root filesystem — as versions of files checked by SHA-256, rolled forward and back by moving the default. Actor templates name the config, and their actors boot and restore with its default version; worker pools resolve it and keep it from deletion. The spec is faithful to the upstream `ate.dev/v1alpha1` SandboxConfig (pinned to Agent Substrate v0.5.0) — this is how a team pins, rolls out and rolls back the runtime its agents run in.
+Declares an Agent Substrate SandboxConfig: the exact sandbox runtime an actor boots with — the gVisor release, or a microVM's hypervisor, kernel and root filesystem — as versions of files checked by SHA-256, rolled forward and back by moving the default. Worker pools resolve the config and keep it from deletion, and the actors on them boot its default version. The spec is faithful to the upstream `ate.dev/v1alpha1` SandboxConfig (pinned to Agent Substrate v0.6.0) — this is how a team pins, rolls out and rolls back the runtime its agents run in.
 
 ## What Gets Created
 
@@ -43,28 +43,27 @@ metadata:
 spec:
   name: gvisor-pinned
   sandboxClass: gvisor
-  defaultVersion: gvisor-2026-10-10
+  defaultVersion: gvisor-2026-10-17
   versions:
-    - name: gvisor-2026-10-10
-      pauseImage: registry.k8s.io/pause:3.10.2@sha256:f548e0e8e3dc1896ca956272154dde3314e8cc4fde0a57577ee9fa1c63f5baf4
+    - name: gvisor-2026-10-17
       assets:
         amd64:
           entries:
             gvisor:
-              url: gs://gvisor/releases/nightly/2026-10-10/x86_64/gvisor.tar.zstd
-              sha256: 4ae7fab988c3647d2a835d6c3c70c6a99021c562db97827592562b6c51c3e88c
+              url: gs://gvisor/releases/nightly/2026-10-17/x86_64/gvisor.tar.zstd
+              sha256: fa72f0d45756c69a30beec21222c78241b0d330c36f4f2185648617cc23415c8
         arm64:
           entries:
             gvisor:
-              url: gs://gvisor/releases/nightly/2026-10-10/aarch64/gvisor.tar.zstd
-              sha256: aaf414f06eea7960238e43165c691f0a36cefc0593fb141e011e96211c7b6f57
+              url: gs://gvisor/releases/nightly/2026-10-17/aarch64/gvisor.tar.zstd
+              sha256: 238634978d99f0dd3e631c4f88eae7b19fb36937065428467f0b6d6b10697689
 ```
 
 ```shell
 planton apply -f sandbox-config.yaml
 ```
 
-Every node downloads that gVisor release ahead of time, a worker pool that names `gvisor-pinned` keeps it from deletion, and the actors of templates that name it boot it. An Infra Job tracks the provisioning in real time.
+Every node downloads that gVisor release ahead of time, and a worker pool that names `gvisor-pinned` keeps it from deletion and boots its actors with it. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -82,7 +81,7 @@ spec:
             fieldPath: status.outputs.sandbox_config_name
 ```
 
-A product's actor templates read the `sandbox_config_name` and `sandbox_class` outputs.
+A product's actor templates select that pool by its labels; they name no config.
 
 ## Key Configuration
 
@@ -90,11 +89,11 @@ These are the most important decisions when configuring a sandbox config. Explor
 
 **A version is an exact runtime.** Every file is checked by SHA-256 on every node, so a version boots the same bytes everywhere, and a changed file is refused. Publish new bytes as a new version.
 
-**Roll out by moving the default.** Add the new version, move `defaultVersion` to it, and keep the previous one listed: rolling back is moving it back. An actor runs the new default from its next boot or resume on, whatever version it was suspended under.
+**Roll out by moving the default.** Add the new version, move `defaultVersion` to it, and keep the previous one listed: rolling back is moving it back. A new actor boots the new default; an actor suspended under the previous version restores its memory on it while it stays listed.
 
 **Cover every architecture your workers run on.** A version with no files for a node's architecture cannot boot there; the default version must cover them all.
 
-**The class default is an annotation.** `sandboxconfig.ate.dev/is-class-default: "true"` makes this config what a worker pool resolves when it names none; the default created last wins, so annotating an older config later never takes over. Pools and templates that name a config explicitly never move on their own.
+**The class default is an annotation.** `sandboxconfig.ate.dev/is-class-default: "true"` makes this config what a worker pool resolves when it names none; the default created last wins, so annotating an older config later never takes over. Pools that name a config explicitly never move on their own.
 
 ## Outputs and Dependencies
 
@@ -110,8 +109,8 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|-----------------------|
-| `sandbox_config_name` | Name of the created SandboxConfig | A worker pool's `configRef.name`; an actor template's `sandbox_config.config_name` |
-| `sandbox_class` | The config's class (`gvisor` or `microvm`) | An actor template's `sandbox_config.sandbox_class` |
+| `sandbox_config_name` | Name of the created SandboxConfig | A worker pool's `configRef.name` |
+| `sandbox_class` | The config's class (`gvisor` or `microvm`) | The worker pool's `sandboxClasses[].name` |
 
 ## Common Patterns
 

@@ -1,0 +1,28 @@
+{
+  "images": {
+    "ate-idp-server": "ghcr.io/plantonhq/planton/agent-substrate/ate-idp-server:v0.6.0@sha256:a2dbc429bc69aa0757f15aeeef29c5407eaf5390f6bdebb8aaefd36b04a86e79",
+    "ateapi": "ghcr.io/plantonhq/planton/agent-substrate/ateapi:v0.6.0@sha256:a05123a5b735c3fe9cb945fda3503075ac9c74e2c7062ef39fa52fb85bdd7cd7",
+    "atecontroller": "ghcr.io/plantonhq/planton/agent-substrate/atecontroller:v0.6.0@sha256:f090db9e6d5f7d95114ed006b4b008443da46d6ffaefeb0a68f7a457f766b927",
+    "atelet": "ghcr.io/plantonhq/planton/agent-substrate/atelet:v0.6.0@sha256:b82c1dfa664282d371262ee7edeea323163be53dd7313888c47d7047e5d3c243",
+    "atenet": "ghcr.io/plantonhq/planton/agent-substrate/atenet:v0.6.0@sha256:ed90011ed8ac23bde2fad2c6c0fe86dfdb4a9098047da6eb834451501c7e8c07",
+    "ateworker-gvisor": "ghcr.io/plantonhq/planton/agent-substrate/ateworker-gvisor:v0.6.0@sha256:e3f59217a1e63c280ea1cc4149dfe0686353f9ef583fe2ff1c129d4ad42f8cba",
+    "ateworker-microvm": "ghcr.io/plantonhq/planton/agent-substrate/ateworker-microvm:v0.6.0@sha256:369306bc0a3f97a4c38f60ff39cd90bcfadc7b58fe64c8f33e97c84dfa6ef005",
+    "counter": "ghcr.io/plantonhq/planton/agent-substrate/counter:v0.6.0@sha256:7fd33489913d5d5d8e51cb9b5fe1301eb388fc675b59775716f2dd6dbf004be9",
+    "egress": "ghcr.io/plantonhq/planton/agent-substrate/egress:v0.6.0@sha256:9d2c1c3d706b60dd59950ea4fc8bc3db4e383f33c27bf485e1c7ae7e71cc6def",
+    "envoy-dataplane": "ghcr.io/plantonhq/planton/agent-substrate/envoy-dataplane:v0.6.0@sha256:420ded0e923db68248ecfbd2f73cfd4694c4a2bad4ba3cd69effea7b5aec64e8",
+    "fake-atelet": "ghcr.io/plantonhq/planton/agent-substrate/fake-atelet:v0.6.0@sha256:37aba5019495aa49bbc58a88af4a9829aa54208d07be724b2c3921904f7d4901",
+    "fake-workersync": "ghcr.io/plantonhq/planton/agent-substrate/fake-workersync:v0.6.0@sha256:bb06f9afd291b68dd9e6771854d7f134818cbd30c365a75b5bbe6f18fa48b6d3",
+    "fspersist": "ghcr.io/plantonhq/planton/agent-substrate/fspersist:v0.6.0@sha256:2390f7b4a7a7290b202f62869c8365e61b50b134718aa94e9a49e164cb7761cc",
+    "kubernetes-secrets": "ghcr.io/plantonhq/planton/agent-substrate/kubernetes-secrets:v0.6.0@sha256:4e42807ea8d7a705bd99dd46a8bfdb8f77b1100b75bcdbaf7e2226538f7b84d0",
+    "objectstore-plugin": "ghcr.io/plantonhq/planton/agent-substrate/objectstore-plugin:v0.6.0@sha256:ffde6ebacaf885b60ee9a485230ace2bc470f84dc4076c201f01983292fa965f",
+    "podcertcontroller": "ghcr.io/plantonhq/planton/agent-substrate/podcertcontroller:v0.6.0@sha256:edd0c6645a0916735ee0f0e00734507f2e5fe7015ffc9270f65984c1ef708694",
+    "sandbox": "ghcr.io/plantonhq/planton/agent-substrate/sandbox:v0.6.0@sha256:2ae37e7272834f61ebe5e67d086a5f8b2e683b5bed51729d2c47d5d6b8a656cd"
+  },
+  "shape": "v0.6.0",
+  "source": {
+    "commit": "d3f2363590a11b2f50489971985ba033b4c9eff7",
+    "repository": "https://github.com/agent-substrate/substrate",
+    "tag": "v0.6.0"
+  },
+  "version": "v0.6.0"
+}

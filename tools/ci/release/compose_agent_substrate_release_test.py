@@ -40,6 +40,30 @@ const (
 )
 """
 
+API_MAIN_GO = """package main
+
+var (
+	snapshotLocation = pflag.String("snapshot-location", "", "Base object-storage URI.")
+	previewFlags     = pflag.StringSlice("preview", nil, "Preview gates to enable.")
+)
+
+func init() {
+	fs.StringVar(&cfg.AllowedIDs, "ingress-allowed-spiffe-ids", nil, "SPIFFE IDs.")
+	cacheFlags = filecachegc.NewFlags(pflag.CommandLine, "snapshot-cache", "snapshot cache")
+	slog.String("not-a-flag", "logged")
+	loadFromEnv(snapshotLocation, "ATE_API_SNAPSHOT_LOCATION")
+}
+"""
+
+PREVIEW_GO = """package preview
+
+const (
+	GateExternalVolumes Gate = "ExternalVolumes"
+
+	GatePerTemplateSnapshotLocation Gate = "PerTemplateSnapshotLocation"
+)
+"""
+
 APP_YAML = f"""# The installer resolves every ko:// image reference below.
 apiVersion: apps/v1
 kind: Deployment
@@ -108,6 +132,8 @@ class Fixture:
         write(os.path.join(self.source, "tools/setup-gcp/README.md"), "# setup-gcp\n")
         write(os.path.join(self.source, "pkg/postgressetup/setup.sql"), "CREATE SCHEMA substrate;\n")
         write(os.path.join(self.source, "cmd/ate-setup/internal/steps/overlay.go"), OVERLAY_GO)
+        write(os.path.join(self.source, "cmd/ateapi/main.go"), API_MAIN_GO)
+        write(os.path.join(self.source, "internal/preview/preview.go"), PREVIEW_GO)
         write(os.path.join(self.source, "manifests/ate-install/app.yaml"), APP_YAML)
         write(os.path.join(self.source, "manifests/ate-install/generated/ate.dev_workerpools.yaml"), CRD_YAML)
         write(os.path.join(self.source, "manifests/ate-install/base/kustomization.yaml"),
@@ -305,6 +331,35 @@ class ShapeTest(unittest.TestCase):
             self.claim()
         self.assertIn("upstream changed how an install is assembled", str(raised.exception))
         self.assertIn("cmd/ate-setup/internal/steps/apienv.go", str(raised.exception))
+
+    def test_a_removed_flag_refuses_the_claim(self):
+        write(os.path.join(self.patch.source, "cmd/ateapi/main.go"), API_MAIN_GO.replace('"snapshot-location"', '"snapshot-uri"'))
+        with self.assertRaises(CompositionError) as raised:
+            self.claim()
+        self.assertIn(f"{PATCH} no longer accepts settings {VERSION} accepted: cmd/ateapi: --snapshot-location", str(raised.exception))
+        self.assertNotIn("not-a-flag", str(raised.exception))
+
+    def test_a_removed_flag_prefix_refuses_the_claim(self):
+        write(os.path.join(self.patch.source, "cmd/ateapi/main.go"), API_MAIN_GO.replace('"snapshot-cache"', '"snapshots"'))
+        with self.assertRaises(CompositionError) as raised:
+            self.claim()
+        self.assertIn("cmd/ateapi: --snapshot-cache-*", str(raised.exception))
+
+    def test_a_removed_environment_variable_refuses_the_claim(self):
+        write(os.path.join(self.patch.source, "cmd/ateapi/main.go"), API_MAIN_GO.replace('"ATE_API_SNAPSHOT_LOCATION"', '"ATE_API_SNAPSHOT_URI"'))
+        with self.assertRaises(CompositionError) as raised:
+            self.claim()
+        self.assertIn("cmd/ateapi: $ATE_API_SNAPSHOT_LOCATION", str(raised.exception))
+
+    def test_a_removed_preview_gate_refuses_the_claim(self):
+        write(os.path.join(self.patch.source, "internal/preview/preview.go"), PREVIEW_GO.replace('GateExternalVolumes Gate = "ExternalVolumes"\n', ""))
+        with self.assertRaises(CompositionError) as raised:
+            self.claim()
+        self.assertIn("preview gate ExternalVolumes", str(raised.exception))
+
+    def test_an_added_flag_keeps_the_shape(self):
+        write(os.path.join(self.patch.source, "cmd/atelet/flags.go"), 'package main\n\nvar budget = pflag.Int("upload-budget", 0, "New.")\n')
+        self.claim()
 
 
 class ReadUpstreamTest(unittest.TestCase):

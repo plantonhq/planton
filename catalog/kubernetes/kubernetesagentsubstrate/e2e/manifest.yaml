@@ -3,8 +3,9 @@
 # definitions handed over on destroy, authorization with an owner, every
 # workload's knobs, the Envoy dataplane with an additional ext_proc filter,
 # the Kubernetes Secrets credential provider with grants, the control plane
-# cordoned onto its own nodes, the size10 tuning, telemetry to a collector,
-# and an image mirror with a pull Secret -- so the offline tofu plan and
+# cordoned onto its own nodes, the size10 tuning, telemetry to a collector
+# with the workers' own exporters, every preview gate, a snapshot prefix, and
+# an image mirror with a pull Secret -- so the offline tofu plan and
 # pulumi preview proofs cover the typed surface. Placeholder values; never
 # applied to a real cluster.
 apiVersion: kubernetes.planton.dev/v1alpha1
@@ -26,6 +27,8 @@ spec:
         value: ate-api-server@example-project.iam.gserviceaccount.com
       nodeAgentServiceAccount:
         value: atelet@example-project.iam.gserviceaccount.com
+      snapshotTransferServiceAccount:
+        value: ate-snapshot-transfer@example-project.iam.gserviceaccount.com
   database:
     cloudSql:
       instanceConnectionName:
@@ -41,6 +44,7 @@ spec:
     gcs:
       bucket:
         value: example-agent-snapshots
+    snapshotPrefix: substrate/prod
   apiServer:
     replicas: 3
     resources:
@@ -52,7 +56,6 @@ spec:
         memory: 2Gi
     logLevel: debug
     authorization:
-      enabled: true
       bootstrapOwners:
         - system:serviceaccount:platform:agent-orchestrator
     actorJwt:
@@ -92,6 +95,29 @@ spec:
       minAge: 1h
       dryRun: false
     assetStagingCapacityGib: 20
+    snapshots:
+      uploadDelay: 2m
+      detachDelay: 1h
+      uploadTimeout: 3m
+      uploadThroughputMib: 50
+      uploadWorkers: 4
+      detachWorkers: 3
+      reportWorkers: 2
+      reportGiveUpAfter: 20m
+      uploadMemoryBudget: 1Gi
+    sandboxAssetCache:
+      minAge: 2h
+      fetchTimeout: 10m
+      eviction:
+        gcPeriod: 10m
+        maxBytes: 21474836480
+        dryRun: false
+    snapshotCache:
+      minAge: 20m
+      fetchTimeout: 15m
+      eviction:
+        gcPeriod: 10m
+        maxBytes: 10737418240
   router:
     dataplane: envoy
     replicas: 2
@@ -166,8 +192,25 @@ spec:
     tracesSamplerRatio: 0.25
     metricExportIntervalMs: 30000
     metricExportTimeoutMs: 10000
+    workerTracesExporters:
+      - otlp
+    workerMetricsExporters:
+      - otlp
+    workerLogsExporters:
+      - otlp
   clusterSize: size10
   cordonControlPlane: true
   imageRegistry: mirror.example.com/substrate
   imagePullSecrets:
     - mirror-pull
+  version: v0.6.0
+  previewGates:
+    - ALL
+  identityServer:
+    replicas: 3
+    resources:
+      requests:
+        cpu: 100m
+        memory: 64Mi
+    logLevel: warn
+    drainGrace: 10s

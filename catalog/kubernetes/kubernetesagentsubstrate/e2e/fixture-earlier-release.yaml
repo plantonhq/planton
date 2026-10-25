@@ -1,6 +1,6 @@
 # AN EARLIER INSTALLATION for the upgrade-refused lane: the API server
 # Deployment as this kind leaves it, carrying the kind's ownership label and
-# the release stamp of v0.4.0, the minor before the pinned one. Before 1.0
+# the release stamp of v0.5.0, the minor before the pinned one. Before 1.0
 # every minor is a reinstall, so the deploy must refuse at plan with the
 # backup, destroy and clear steps, and leave the stamp as it was. The
 # fixture owns the namespace, so the control plane runs with
@@ -25,7 +25,7 @@ spec:
         app: ate-api-server
         planton.ai/kind: KubernetesAgentSubstrate
       annotations:
-        planton.ai/agent-substrate-version: v0.4.0
+        planton.ai/agent-substrate-version: v0.5.0
     spec:
       replicas: 1
       selector:

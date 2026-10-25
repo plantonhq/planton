@@ -35,6 +35,10 @@ spec:
           value: substrate-s3
   router:
     dataplane: agentgateway
+  apiServer:
+    authorization:
+      bootstrapOwners:
+        - system:serviceaccount:e2e-ate-probe:e2e-ate-client
   egress:
     credentialProvider:
       disabled: {}

@@ -9,7 +9,7 @@ Two microVM workers, each running every actor it hosts in that actor's own light
 
 ## How It Works
 
-The pool runs the control plane's microVM worker image. Substrate's controller requests the KVM device the node agent advertises, so workers schedule only onto nodes with KVM (bare metal, or virtual machines with nested virtualization), and mounts the host's TUN device into each worker. The pool resolves the microVM class default SandboxConfig (a microVM config you declare, annotated as the class default); actor templates with `worker_selector.match_labels: {isolation: microvm}` and `sandbox_config.sandbox_class: microvm` run on them.
+The pool runs the control plane's microVM worker image. Substrate's controller requests the KVM device the node agent advertises, so workers schedule only onto nodes with KVM (bare metal, or virtual machines with nested virtualization), and mounts the host's TUN device into each worker. The pool resolves the microVM class default SandboxConfig (a microVM config you declare, annotated as the class default); actor templates with `worker_selector.match_labels: {isolation: microvm}` run on them, in the microVM class.
 
 ## Key Configuration Choices
 

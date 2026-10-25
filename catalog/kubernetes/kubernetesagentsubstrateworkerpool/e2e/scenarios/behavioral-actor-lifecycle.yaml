@@ -7,9 +7,9 @@
 #   1. waits for the pool to resolve to that config and its workers to
 #      register;
 #   2. creates an atespace and upstream's counter template (VOLUMES fidelity,
-#      a durable directory, the pool's labels as its worker selector, the
-#      config the pool resolved, snapshots under the control plane's storage
-#      location) and waits for its golden snapshot;
+#      a durable directory, the pool's labels as its worker selector,
+#      snapshots under the control plane's storage location) and waits for
+#      its golden snapshot;
 #   3. creates and resumes the actor, and calls it through the router with
 #      `ate-target-actor`: file counter 1, memory 1;
 #   4. suspends it, and lists the snapshot in the S3 store with the control

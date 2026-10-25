@@ -29,8 +29,10 @@ output "api_access_namespace_label" {
   value = "${local.api_access_label_key}=${local.api_access_label_value}"
 }
 
+# Only agentgateway still serves plaintext listeners; the Envoy router serves
+# only TLS (outputs.go plaintextRouterEndpoint).
 output "router_endpoint" {
-  value = "http://${local.router_name}.${local.namespace}.svc:80"
+  value = local.router.agentgateway ? "http://${local.router_name}.${local.namespace}.svc:80" : ""
 }
 
 output "router_tls_endpoint" {
@@ -46,15 +48,15 @@ output "actor_jwt_issuer" {
 }
 
 output "gvisor_worker_image" {
-  value = try(local.mirrored[local.images["ateom-gvisor"]], "")
+  value = try(local.mirrored[local.images["ateworker-gvisor"]], "")
 }
 
 output "microvm_worker_image" {
-  value = try(local.mirrored[local.images["ateom-microvm"]], "")
+  value = try(local.mirrored[local.images["ateworker-microvm"]], "")
 }
 
 output "version" {
-  value = local.release
+  value = local.version
 }
 
 output "router_client_signer_name" {

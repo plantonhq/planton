@@ -201,7 +201,7 @@ spec:
       terminationGracePeriodSeconds: 60
       containers:
       - name: atenet-router
-        image: ghcr.io/plantonhq/planton/agent-substrate/atenet:v0.5.0@sha256:e2105f3ca32540f713d2fd21d174c1149adc2bb5ed7b4a8730847a9547074530
+        image: ghcr.io/plantonhq/planton/agent-substrate/atenet:v0.6.0@sha256:ed90011ed8ac23bde2fad2c6c0fe86dfdb4a9098047da6eb834451501c7e8c07
         args:
         - "router"
         # Serve the ingress direction only: the ingress ext_proc handler, plus
@@ -213,7 +213,6 @@ spec:
         # directions scale independently.
         - "--mode=ingress"
         - "--namespace=ate-system"
-        - "--port-http=8080"
         - "--port-xds=18000"
         - "--port-extproc=50051"
         - "--extproc-address=127.0.0.1"
@@ -221,26 +220,17 @@ spec:
         - "--port-https=8443"
         - "--envoy-cert-path=/run/servicedns.podcert.ate.dev/credential-bundle.pem"
         # CONNECT-tunneled ingress (arbitrary-port support).
-        - "--port-connect=8081"
         - "--port-connect-tls=8444"
-        # Client auth on the TLS listeners (--port-https, --port-connect-tls).
-        # A client certificate must chain to the podidentity
-        # ClusterTrustBundle, which the envoy container mounts too, and carry
-        # one of the SPIFFE IDs below. The default --ingress-auth-mode,
-        # deprecated-insecure, only checks a certificate a client chooses to
-        # present, and keeps the plaintext listeners open;
-        # components/router-static-mtls makes the certificate mandatory.
+        # Every client must present a certificate that chains to the
+        # podidentity ClusterTrustBundle, which the envoy container mounts
+        # too, and carries one of the allowed SPIFFE IDs.
         #
-        # Allowed SPIFFE IDs (exact match), one per client workload:
-        #
-        #   spiffe://cluster.local/ns/ate-e2e-router-client/sa/router-client
-        #       The e2e suites' router client (see internal/e2e/ingressauth.go).
-        #
-        # Add an ID for every in-cluster workload that sends traffic to actors
-        # through the router. The podidentity signer issues
-        # spiffe://cluster.local/ns/<namespace>/sa/<service-account>.
+        # The allowed SPIFFE IDs are the install's choice, so this manifest
+        # carries none: cmd/ate-setup appends --ingress-allowed-spiffe-ids from
+        # its own --ingress-allowed-spiffe-ids (ATE_INGRESS_ALLOWED_SPIFFE_IDS),
+        # and the router refuses to start without it.
         - "--ingress-client-ca-file=/run/podidentity.podcert.ate.dev/trust-bundle.pem"
-        - "--ingress-allowed-spiffe-ids=spiffe://cluster.local/ns/ate-e2e-router-client/sa/router-client"
+        # - "--ingress-allowed-spiffe-ids=spiffe://cluster.local/ns/ate-e2e-router-client/sa/router-client"
         # Client auth to ateapi (mtls): verify the serving cert against the
         # servicedns trust bundle and present the podidentity client cert.
         - "--ateapi-address=k8s:///api.ate-system.svc:443"
@@ -321,7 +311,8 @@ spec:
         - name: "drain-signal"
           mountPath: "/var/run/atenet"
       - name: envoy
-        image: envoyproxy/envoy:v1.39.4@sha256:74bd4eb5629708d3fadca1a5e6b85d208f338d7bb54e06b69565905c5294cc01
+        # ENVOY_DATAPLANE_IMAGE is substituted for the image URI by ate-setup
+        image: ghcr.io/plantonhq/planton/agent-substrate/envoy-dataplane:v0.6.0@sha256:420ded0e923db68248ecfbd2f73cfd4694c4a2bad4ba3cd69effea7b5aec64e8
         command:
         - "/usr/local/bin/envoy"
         - "-c"
@@ -335,12 +326,8 @@ spec:
             exec:
               command: ["sh", "-c", "while [ ! -f /var/run/atenet/drain-complete ]; do sleep 0.5; done"]
         ports:
-        - name: http
-          containerPort: 8080
         - name: https
           containerPort: 8443
-        - name: connect
-          containerPort: 8081
         - name: connect-tls
           containerPort: 8444
         # Filtered admin view (GET /stats/prometheus and /ready only). The
@@ -361,7 +348,8 @@ spec:
         # podidentity credential + trust bundles for actor-facing (upstream)
         # mTLS. Envoy presents this credential bundle as its client cert when
         # opening CONNECT tunnels to the worker's atunnel on :8443, and
-        # validates that server against the trust bundle.
+        # validates that server against the trust bundle and the SPIFFE ID of
+        # the worker pod's namespace and ServiceAccount.
         # The issued SPIFFE identity is
         # spiffe://cluster.local/ns/ate-system/sa/atenet-router, which atunnel's
         # --atunnel-client-identity allows.
@@ -421,17 +409,9 @@ spec:
   selector:
     app: atenet-router
   ports:
-  - name: http
-    port: 80
-    targetPort: 8080
-    protocol: TCP
   - name: https
     port: 443
     targetPort: 8443
-    protocol: TCP
-  - name: connect
-    port: 8081
-    targetPort: 8081
     protocol: TCP
   - name: connect-tls
     port: 8444

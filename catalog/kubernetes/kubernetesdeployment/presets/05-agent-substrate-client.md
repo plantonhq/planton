@@ -13,6 +13,7 @@ This preset deploys a service that creates and calls actors on a KubernetesAgent
 - **Endpoints by reference** — the API address, its server name and the router's TLS endpoint come from the substrate's outputs, not literals
 - **A labeled namespace** — the substrate's NetworkPolicy admits callers only from namespaces carrying its `api_access_namespace_label` (`ate.dev/api-access=true`); the namespace reference points at a KubernetesNamespace that sets the label (see the KubernetesNamespace preset **04-agent-substrate-client**)
 - **The router's allow-list** — the pod certificate carries `spiffe://cluster.local/ns/<namespace>/sa/<service-account>`; name it in the substrate's `router.allowed_client_spiffe_ids` for the TLS endpoint to accept it
+- **An owner of the API** — the API authorizes every call; name the service account (`system:serviceaccount:<namespace>:<service-account>`) in the substrate's `apiServer.authorization.bootstrapOwners`, or have an owner grant it an atespace's access policy, or every call is denied
 
 ## Engine and Cluster
 

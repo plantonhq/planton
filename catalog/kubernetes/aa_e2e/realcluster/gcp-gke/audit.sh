@@ -15,7 +15,7 @@ CLOUDFLARE_ACCOUNT_ID="${CLOUDFLARE_ACCOUNT_ID:-${PLANTON_E2E_GKE_R2_ACCOUNT_ID:
 rc=0
 
 echo "==> service accounts"
-for sa in planton-e2e-gke-pg-backup planton-e2e-gke-mongo-backup planton-e2e-gke-openbao-backup planton-e2e-gke-openbao-unseal planton-e2e-gke-langfuse planton-e2e-gke-atelet planton-e2e-gke-ate-api; do
+for sa in planton-e2e-gke-pg-backup planton-e2e-gke-mongo-backup planton-e2e-gke-openbao-backup planton-e2e-gke-openbao-unseal planton-e2e-gke-langfuse planton-e2e-gke-atelet planton-e2e-gke-ate-api planton-e2e-gke-ate-transfer; do
   if gcloud iam service-accounts describe "${sa}@${GCP_PROJECT_ID}.iam.gserviceaccount.com" --project "${GCP_PROJECT_ID}" >/dev/null 2>&1; then
     echo "  SURVIVOR: service account ${sa}"; rc=1
   fi

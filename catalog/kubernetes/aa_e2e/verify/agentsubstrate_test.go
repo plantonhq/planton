@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"regexp"
+	"slices"
 	"strings"
 	"testing"
 
@@ -18,7 +19,7 @@ import (
 // changes what a lane asserts shows up as a failing test, not as a lane that
 // quietly proves something else. The refusal phrases the lanes look for are
 // held to the texts the modules actually write, and the release to both
-// modules' pin.
+// modules' own.
 
 const agentSubstrateScenarios = "../../kubernetesagentsubstrate/e2e/scenarios"
 
@@ -29,17 +30,17 @@ func TestAgentSubstrateVerifierReadsTheScenarios(t *testing.T) {
 		{Atespace: "support", AllowedNamespaces: []string{"support-credentials"}},
 	}
 	type lane struct {
-		create, bundled, agentgateway, authz, keep, refused, policy, gcs bool
-		provider, installed                                              string
-		grants                                                           []agentSubstrateGrant
-		crds                                                             []string
+		create, bundled, agentgateway, keep, refused, policy, gcs bool
+		provider, installed                                       string
+		grants                                                    []agentSubstrateGrant
+		crds                                                      []string
 	}
 	kind := lane{bundled: true, policy: true, provider: "disabled", crds: agentSubstrateCrds}
 	with := func(edit func(*lane)) lane { l := kind; edit(&l); return l }
 	cases := map[string]lane{
 		"minimal.yaml":                     with(func(l *lane) { l.keep = true }),
 		"agentgateway.yaml":                with(func(l *lane) { l.agentgateway = true }),
-		"full-surface.yaml":                with(func(l *lane) { l.authz = true }),
+		"full-surface.yaml":                kind,
 		"credential-policy-change.yaml":    with(func(l *lane) { l.provider, l.grants = "kubernetes", research }),
 		"credential-policy-change.to.yaml": with(func(l *lane) { l.provider, l.grants = "kubernetes", changed }),
 		"external-database.yaml":           with(func(l *lane) { l.bundled = false }),
@@ -50,8 +51,8 @@ func TestAgentSubstrateVerifierReadsTheScenarios(t *testing.T) {
 		"crds-owned-elsewhere.yaml": with(func(l *lane) {
 			l.create, l.refused, l.crds = true, true, []string{"workerpools.ate.dev"}
 		}),
-		"upgrade-refused.yaml":        with(func(l *lane) { l.keep, l.refused, l.installed = true, true, "v0.4.0" }),
-		"volume-upgrade-refused.yaml": with(func(l *lane) { l.keep, l.refused, l.installed = true, true, "v0.4" }),
+		"upgrade-refused.yaml":        with(func(l *lane) { l.keep, l.refused, l.installed = true, true, "v0.5.0" }),
+		"volume-upgrade-refused.yaml": with(func(l *lane) { l.keep, l.refused, l.installed = true, true, "v0.5" }),
 	}
 	files, err := filepath.Glob(filepath.Join(agentSubstrateScenarios, "*.yaml"))
 	if err != nil || len(files) != len(cases) {
@@ -61,7 +62,7 @@ func TestAgentSubstrateVerifierReadsTheScenarios(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			v := newAgentSubstrateVerifier(filepath.Join(agentSubstrateScenarios, name))
 			got := lane{
-				create: v.CreateNamespace, bundled: v.BundledDatabase, agentgateway: v.Agentgateway, authz: v.Authorization,
+				create: v.CreateNamespace, bundled: v.BundledDatabase, agentgateway: v.Agentgateway,
 				keep: v.KeepOnUninstall, refused: v.DeployRefused, policy: v.EnforcesNetworkPolicy, gcs: v.GcsBucket != "",
 				provider: v.CredentialProvider, installed: v.ExpectedVersion, grants: v.Grants, crds: v.CRDs,
 			}
@@ -75,13 +76,39 @@ func TestAgentSubstrateVerifierReadsTheScenarios(t *testing.T) {
 	}
 }
 
-// The authorization lane proves the owner promise only if the owner it
-// names is the principal the probe calls as.
-func TestAgentSubstrateFullSurfaceOwnsTheProbe(t *testing.T) {
-	v := newAgentSubstrateVerifier(filepath.Join(agentSubstrateScenarios, "full-surface.yaml"))
-	if !reflect.DeepEqual(v.BootstrapOwners, []string{v.probeOwner()}) {
-		t.Errorf("full-surface names bootstrap owners %v; the probe calls as %s", v.BootstrapOwners, v.probeOwner())
+// Authorization is always on and the Envoy router serves only the clients it
+// names, so a lane that installs proves its promises only if the probe is
+// one of its bootstrap owners and, behind the Envoy router, one of its
+// allowed router clients: the API and the router would refuse it otherwise.
+func TestEveryInstallingLaneAdmitsTheProbe(t *testing.T) {
+	files, err := filepath.Glob(filepath.Join(agentSubstrateScenarios, "*.yaml"))
+	if err != nil {
+		t.Fatal(err)
 	}
+	client := "spiffe://cluster.local/ns/" + agentSubstrateProbeNamespace + "/sa/" + agentSubstrateProbeClient
+	for _, path := range append(files, "../../kubernetesagentsubstrate/e2e/prerequisite.yaml") {
+		v := newAgentSubstrateVerifier(path)
+		if v.DeployRefused {
+			continue
+		}
+		if !slices.Contains(v.BootstrapOwners, v.probeOwner()) {
+			t.Errorf("%s names bootstrap owners %v; the probe calls as %s", filepath.Base(path), v.BootstrapOwners, v.probeOwner())
+		}
+		router, _ := specField(manifestSpecMap(path), "router").(map[string]interface{})
+		allowed, _ := specField(router, "allowedClientSpiffeIds").([]interface{})
+		if !v.Agentgateway && !containsValue(allowed, client) {
+			t.Errorf("%s allows router clients %v; the probe's router caller is %s", filepath.Base(path), allowed, client)
+		}
+	}
+}
+
+func containsValue(list []interface{}, want string) bool {
+	for _, item := range list {
+		if item == want {
+			return true
+		}
+	}
+	return false
 }
 
 // Each refusal phrase the lanes look for must appear in the text the
@@ -116,7 +143,7 @@ func TestAgentSubstrateRefusalTextsMatchTheModules(t *testing.T) {
 		failureNamespaceOwnedElsewhere: failure.KubernetesNamespaceOwnedElsewhere(agentSubstrateKind, agentSubstrateNamespace, "no owner label").Error(),
 	}
 	for expectation, text := range rendered {
-		wants, err := agentSubstrateRefusalTexts(expectation, "")
+		wants, err := agentSubstrateRefusalTexts(expectation, "", agentSubstrateRelease)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -128,15 +155,15 @@ func TestAgentSubstrateRefusalTextsMatchTheModules(t *testing.T) {
 	}
 
 	for installed, record := range map[string]string{
-		"v0.4.0": "Deployment " + agentSubstrateNamespace + "/" + agentSubstrateAPIServer,
-		"v0.4":   "PersistentVolumeClaim " + agentSubstrateNamespace + "/" + agentSubstrateVolumeClaim + ", the bundled database's volume left by an earlier installation,",
+		"v0.5.0": "Deployment " + agentSubstrateNamespace + "/" + agentSubstrateAPIServer,
+		"v0.5":   "PersistentVolumeClaim " + agentSubstrateNamespace + "/" + agentSubstrateVolumeClaim + ", the bundled database's volume left by an earlier installation,",
 	} {
 		remedy := "back up what you need from the database, destroy this resource"
-		if installed == "v0.4" {
+		if installed == "v0.5" {
 			remedy = "delete the volume (`kubectl -n " + agentSubstrateNamespace + " delete pvc " + agentSubstrateVolumeClaim + "`)"
 		}
 		text := failure.KubernetesUpgradeRefused(agentSubstrateKind, "Agent Substrate", record, installed, agentSubstrateRelease, rule[1], remedy).Error()
-		wants, err := agentSubstrateRefusalTexts(failureUpgradeRefused, installed)
+		wants, err := agentSubstrateRefusalTexts(failureUpgradeRefused, installed, agentSubstrateRelease)
 		if err != nil {
 			t.Fatal(err)
 		}

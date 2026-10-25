@@ -2,13 +2,14 @@
 
 A shape to run agents on for real, on GKE.
 - **Dedicated nodes:** the control plane runs on nodes labelled and tainted `ate.dev/workloadType=ate-control-plane`, so a surge of agents never starves it. Upstream's production posture.
-- **Authorization:** every API call is checked against Substrate's access policies. Your orchestrator's service account is the first owner and grants the rest.
+- **Authorization:** every API call is checked against Substrate's access policies. Your orchestrator's service account is the first owner and grants the rest, and it is the one workload the router lets call agents.
 - **Scale:** three API servers, and two router and egress pods.
 - **The node agent** runs only on the nodes your worker pools use.
 - **Telemetry** goes to your OpenTelemetry collector.
 
 Change first:
 - Label and taint the control-plane nodes before you deploy.
+- The three service accounts and their grants, as in **GKE Keyless**.
 - `bootstrapOwners`: your product's service account as its API token names it, `system:serviceaccount:<namespace>:<name>`.
 - `allowedClientSpiffeIds`: the same service account as its pod certificate names it, `spiffe://cluster.local/ns/<namespace>/sa/<name>`.
 - `nodeAgent.nodeSelector`: the label your worker node pool carries.

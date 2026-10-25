@@ -8,6 +8,6 @@ Pick this when agents call APIs that need keys, and those keys should stay out o
 
 Change first:
 - `grants`: one entry per atespace, naming the namespaces whose Secrets its agents may use.
-- The platform, database and storage, as in the **Local or Generic** or **GKE Keyless** preset.
+- The platform, database, storage, owner and router clients, as in the **Local or Generic** or **GKE Keyless** preset.
 
 See [03-credential-injection.yaml](./03-credential-injection.yaml) for the manifest.

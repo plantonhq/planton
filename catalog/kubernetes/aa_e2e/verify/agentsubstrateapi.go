@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net"
 	"os/exec"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -42,10 +43,14 @@ func agentSubstrateOutputsFromPrerequisite(ctx context.Context) (map[string]inte
 }
 
 // applySubstrateProbe creates the probe namespace carrying the API-access
-// label, its two service accounts (a client and a stranger) and a small shell
-// pod for in-cluster calls. With outsider set it also creates a namespace
-// without the label, with its own shell, for the network-policy check.
-func applySubstrateProbe(ctx context.Context, kubeconfig, accessLabel string, outsider bool) error {
+// label, its two service accounts (a client and a stranger), a small shell
+// pod for in-cluster calls, and a router caller as each service account:
+// the router accepts a client by the SPIFFE ID of its pod certificate, so
+// only an in-cluster workload holding one can call an actor, as a product's
+// does. With outsider set it also creates a namespace without the label,
+// with its own shell, for the network-policy check.
+func applySubstrateProbe(ctx context.Context, kubeconfig string, outputs map[string]interface{}, outsider bool) error {
+	accessLabel := fmt.Sprint(outputs["api_access_namespace_label"])
 	key, value, ok := strings.Cut(accessLabel, "=")
 	if !ok {
 		return errors.Errorf("the api_access_namespace_label output %q is not key=value", accessLabel)
@@ -84,6 +89,9 @@ metadata:
   namespace: %[1]s
 `, agentSubstrateProbeNamespace, key, value, agentSubstrateProbeClient, agentSubstrateProbeStranger)
 	manifest += shell(agentSubstrateProbeNamespace)
+	for pod, account := range routerCallers {
+		manifest += routerCaller(pod, account, fmt.Sprint(outputs["router_client_signer_name"]), fmt.Sprint(outputs["api_trust_bundle_name"]))
+	}
 	namespaces := []string{agentSubstrateProbeNamespace}
 	if outsider {
 		manifest += fmt.Sprintf("---\napiVersion: v1\nkind: Namespace\nmetadata:\n  name: %s\n", agentSubstrateOutsiderNamespace)
@@ -98,7 +106,84 @@ metadata:
 			return errors.Wrapf(err, "the probe shell in %s never became Ready", namespace)
 		}
 	}
+	for pod := range routerCallers {
+		if err := kubectlWait(ctx, kubeconfig, "pod", pod, agentSubstrateProbeNamespace, "condition=Ready", 3*time.Minute); err != nil {
+			return errors.Wrapf(err, "the router caller %s never became Ready (its pod certificate is projected before it starts)", pod)
+		}
+	}
 	return nil
+}
+
+// routerCallers are the probe's router callers, by pod, each running as one
+// of the probe's service accounts: the client, which the lanes' manifests
+// list among the router's allowed clients, and the stranger, which they do
+// not.
+var routerCallers = map[string]string{
+	agentSubstrateRouterCaller:   agentSubstrateProbeClient,
+	agentSubstrateRouterStranger: agentSubstrateProbeStranger,
+}
+
+// routerCaller is a curl pod holding what a product's workload holds to call
+// actors: a pod certificate from the router's client signer (the
+// router_client_signer_name output), whose SPIFFE ID names its service
+// account, and the trust bundle the router's serving certificate chains to
+// (the api_trust_bundle_name output; every in-cluster Substrate service is
+// signed by that signer).
+func routerCaller(pod, serviceAccount, signer, bundle string) string {
+	return fmt.Sprintf(`---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: %s
+  namespace: %s
+spec:
+  serviceAccountName: %s
+  containers:
+    - name: curl
+      image: %s
+      command: ["sleep", "3600"]
+      volumeMounts:
+        - {name: identity, mountPath: /run/router-client, readOnly: true}
+        - {name: trust, mountPath: /run/router-trust, readOnly: true}
+  volumes:
+    - name: identity
+      projected:
+        sources:
+          - podCertificate: {signerName: %q, keyType: ECDSAP256, credentialBundlePath: credential-bundle.pem}
+    - name: trust
+      projected:
+        sources:
+          - clusterTrustBundle: {name: %q, path: trust-bundle.pem}
+`, pod, agentSubstrateProbeNamespace, serviceAccount, agentSandboxClientImage, signer, bundle)
+}
+
+// callRouter makes one request a product makes to an actor: a POST to the
+// router with `ate-target-actor: <atespace>/<actor>`, from the given router
+// caller. Over TLS (the Envoy router) the caller presents its pod
+// certificate and trusts only the Substrate bundle; over plaintext
+// (agentgateway's router_endpoint) it sends the request as is. It returns
+// the HTTP status, 0 when the router answered no HTTP at all (a refused TLS
+// handshake), and the body.
+func callRouter(ctx context.Context, kubeconfig, caller, endpoint, target string) (int, string, error) {
+	args := []string{"--kubeconfig", kubeconfig, "exec", caller, "-n", agentSubstrateProbeNamespace, "--",
+		"curl", "-sS", "-m", "20", "-X", "POST", "-H", agentSubstrateHeader + ": " + target, "-w", "\n%{http_code}"}
+	if strings.HasPrefix(endpoint, "https://") {
+		args = append(args, "--cert", "/run/router-client/credential-bundle.pem", "--key", "/run/router-client/credential-bundle.pem",
+			"--cacert", "/run/router-trust/trust-bundle.pem")
+	}
+	args = append(args, strings.TrimSuffix(endpoint, "/")+"/")
+	out, err := exec.CommandContext(ctx, "kubectl", args...).CombinedOutput()
+	text := strings.TrimRight(string(out), "\n")
+	cut := strings.LastIndex(text, "\n")
+	code, convErr := strconv.Atoi(strings.TrimSpace(text[cut+1:]))
+	if convErr != nil {
+		return 0, text, errors.Errorf("no HTTP answer from %s as %s (%v): %s", endpoint, caller, err, firstLines(text, 3))
+	}
+	body := ""
+	if cut > 0 {
+		body = text[:cut]
+	}
+	return code, body, nil
 }
 
 // removeSubstrateProbe deletes every namespace applySubstrateProbe can
