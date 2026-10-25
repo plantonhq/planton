@@ -12,8 +12,13 @@ releases/agent-substrate/<version>/:
     crds.yaml                    every CustomResourceDefinition in that tree, in
                                  file order: the bundle the kept-CRD mechanism
                                  fetches (pkg/kubernetes/helmcrds, BundleURL)
-    images.json                  the version, the upstream commit, and every
-                                 image's digest-pinned reference
+    images.json                  the version, its install shape, the upstream
+                                 commit, and every image's digest-pinned
+                                 reference
+    setup.sql                    upstream's database setup script
+                                 (pkg/postgressetup/setup.sql), which the
+                                 control-plane module runs in the bundled
+                                 database
     LICENSE                      upstream's license
     third-party-licenses.tar.gz  upstream's _LICENSES/ tree: the notices of every
                                  dependency compiled into the images
@@ -41,11 +46,27 @@ Every output is a pure function of its inputs (sorted walks, fixed archive
 timestamps), so a re-run of a version composes the same bytes and the publish
 step can prove what it serves equals what this run built.
 
+The install shape. Planton's control-plane module composes one install: the
+files, objects, flags and settings of one release, its shape. A release whose
+install is the shape's own apart from its images installs with that module
+unchanged, so a customer adopts it by setting the kind's version, with no
+catalog release. images.json records the shape every release belongs to, and
+the module refuses a release of any other shape before it applies anything.
+A release is its own shape (--shape equal to --version) or claims an earlier
+one, and the claim is proven here, never trusted: the composed tree must equal
+the shape's published tree once image references are reduced to their names,
+file for file, and the upstream code that decides how an install is assembled
+(the installer's steps and settings, the Google Cloud setup) must be the same
+at both tags. Any difference refuses the claim; the release is then its own
+shape and waits for the module to compose it.
+
 Usage:
     compose_agent_substrate_release.py --source <upstream checkout at the tag>
         --layouts <directory of OCI layouts, one per image name>
         --repository <registry path the lane publishes under>
-        --version vX.Y.Z --commit <sha> --out <directory>
+        --version vX.Y.Z --shape vX.Y.Z --commit <sha> --out <directory>
+        [--shape-release <the shape's published tree>
+         --shape-source <upstream checkout at the shape's tag>]
         [--kustomize <kustomize binary>]
 
 With --kustomize, every kustomization in the composed tree is built, and every
@@ -67,14 +88,31 @@ from dataclasses import dataclass
 
 UPSTREAM_REPOSITORY = "https://github.com/agent-substrate/substrate"
 
-# Upstream's module path; a ko:// reference is it joined with a package
-# (images.ModulePath).
-MODULE_PATH = "github.com/agent-substrate/substrate"
-
-# Where upstream keeps the two facts the rewrite needs. A minor release that
-# moves either fails composition with the file named, never silently.
+# Where upstream keeps the three facts the rewrite needs: its module path
+# (a ko:// reference is it joined with a package), the closed package list,
+# and the Envoy image's name. A release that moves any of them fails
+# composition with the file named, never silently.
 COMPONENTS_FILE = "cmd/ate-setup/internal/images/images.go"
 ENVOY_IMAGE_FILE = "cmd/ate-setup/internal/steps/overlay.go"
+
+# Upstream's database setup script, published beside the manifests so the
+# seal covers it.
+SETUP_SQL_FILE = "pkg/postgressetup/setup.sql"
+
+# The upstream code that decides how an install is assembled beyond the
+# manifests: the installer's steps (the objects and flags it adds, the markers
+# it fills), its settings, and the Google Cloud identities and grants an
+# install needs. A release claiming an earlier shape must not change them.
+SHAPE_SOURCE_PATHS = (
+    "cmd/ate-setup/internal/steps",
+    "cmd/ate-setup/internal/config",
+    "tools/setup-gcp",
+)
+
+# The files of a published tree a shape is compared over: everything an
+# install reads. images.json and SHA256SUMS describe the release itself, and
+# the licenses are not installed.
+SHAPE_EXEMPT_FILES = ("images.json", "SHA256SUMS", "LICENSE", "third-party-licenses.tar.gz")
 
 # Upstream's own pattern for a whole ko:// reference (images/prebuilt.go,
 # koRef): matching the whole reference is what keeps ko://.../cmd/atelet from
@@ -127,20 +165,32 @@ class Upstream:
 
 
 def read_upstream(source: str) -> Upstream:
-    """Read the closed component list and the Envoy image name from the tag."""
+    """Read the module path, the closed component list and the Envoy image name from the tag."""
     components_path = os.path.join(source, COMPONENTS_FILE)
     envoy_path = os.path.join(source, ENVOY_IMAGE_FILE)
     findings = []
 
     packages = []
+    module_path = ""
     try:
         with open(components_path, encoding="utf-8") as f:
             text = f.read()
         block = re.search(r"var Components = \[\]string\{(.*?)\n\}", text, re.DOTALL)
         if block:
             packages = re.findall(r'^\s*"([^"]+)",', block.group(1), re.MULTILINE)
+        match = re.search(r'^const ModulePath = "([^"]+)"', text, re.MULTILINE)
+        if match:
+            module_path = match.group(1)
     except OSError:
         pass
+    if not module_path:
+        findings.append(finding(
+            f"no `const ModulePath = \"...\"` in {COMPONENTS_FILE}",
+            "upstream moved the module path its ko:// references start with, so no "
+            "reference can be matched to a published image",
+            f"read {COMPONENTS_FILE} at this tag and update read_upstream to the new shape "
+            "in the change that adopts this version",
+        ))
     if not packages:
         findings.append(finding(
             f"no `var Components = []string{{...}}` package list in {COMPONENTS_FILE}",
@@ -172,7 +222,7 @@ def read_upstream(source: str) -> Upstream:
     # images.ImageName: the last element of the import path, which is what
     # ko's --base-import-paths publishes it as.
     return Upstream(
-        image_by_reference={f"ko://{MODULE_PATH}/{pkg}": pkg.rsplit("/", 1)[-1].lower() for pkg in packages},
+        image_by_reference={f"ko://{module_path}/{pkg}": pkg.rsplit("/", 1)[-1].lower() for pkg in packages},
         envoy_image=envoy_image,
     )
 
@@ -323,7 +373,7 @@ def deterministic_tar_gz(source_dir: str, arcname: str, destination: str) -> Non
             gz.write(buffer.getvalue())
 
 
-def compose(source: str, layouts: str, repository: str, version: str, commit: str, out: str) -> dict:
+def compose(source: str, layouts: str, repository: str, version: str, shape: str, commit: str, out: str) -> dict:
     """Write the release set to out and return the published image references."""
     upstream = read_upstream(source)
     references = pinned_references(upstream, read_layout_digests(layouts), repository, version)
@@ -372,6 +422,7 @@ def compose(source: str, layouts: str, repository: str, version: str, commit: st
         json.dump(
             {
                 "version": version,
+                "shape": shape,
                 "source": {"repository": UPSTREAM_REPOSITORY, "tag": version, "commit": commit},
                 "images": references,
             },
@@ -381,6 +432,7 @@ def compose(source: str, layouts: str, repository: str, version: str, commit: st
         )
         f.write("\n")
 
+    shutil.copyfile(os.path.join(source, SETUP_SQL_FILE), os.path.join(out, "setup.sql"))
     shutil.copyfile(os.path.join(source, "LICENSE"), os.path.join(out, "LICENSE"))
     deterministic_tar_gz(os.path.join(source, "_LICENSES"), "_LICENSES", os.path.join(out, "third-party-licenses.tar.gz"))
 
@@ -426,7 +478,7 @@ def check(out: str, repository: str, references: dict, kustomize: str) -> None:
         if ENVOY_PLACEHOLDER in text:
             findings.append(finding(
                 f"{where} still carries {ENVOY_PLACEHOLDER}",
-                "the egress gateway would deploy with no Envoy image",
+                "a workload that runs Envoy would deploy with no image",
                 "fix the composer's rewrite before publishing",
             ))
         for reference in sorted(set(ours.findall(text)) - published):
@@ -479,12 +531,91 @@ def check(out: str, repository: str, references: dict, kustomize: str) -> None:
         raise CompositionError(findings)
 
 
+def installed_files(tree: str) -> dict:
+    """Every file of a published tree an install reads, by relative path."""
+    files = {}
+    for root, dirs, names in os.walk(tree):
+        dirs.sort()
+        for name in sorted(names):
+            path = os.path.join(root, name)
+            relative = os.path.relpath(path, tree)
+            if relative not in SHAPE_EXEMPT_FILES:
+                files[relative] = path
+    return files
+
+
+def source_files(source: str) -> dict:
+    """The upstream files under SHAPE_SOURCE_PATHS, by relative path."""
+    files = {}
+    for top in SHAPE_SOURCE_PATHS:
+        for root, dirs, names in os.walk(os.path.join(source, top)):
+            dirs.sort()
+            for name in sorted(names):
+                path = os.path.join(root, name)
+                files[os.path.relpath(path, source)] = path
+    return files
+
+
+def differing(ours: dict, theirs: dict, read) -> tuple:
+    """The paths only one side has, and the shared paths whose contents differ."""
+    only = sorted(set(ours) ^ set(theirs))
+    changed = [path for path in sorted(set(ours) & set(theirs)) if read(ours[path]) != read(theirs[path])]
+    return only, changed
+
+
+def check_shape(out: str, repository: str, version: str, shape: str, shape_release: str, source: str, shape_source: str) -> None:
+    """Prove a release claiming an earlier shape installs exactly as that shape does.
+
+    The composed tree must equal the shape's published tree file for file once
+    every image reference is reduced to its name (the digests and the tag are
+    the release's own), and the upstream code under SHAPE_SOURCE_PATHS must be
+    byte-identical at both tags.
+    """
+    pinned = re.compile(re.escape(repository) + r"""/([^\s:@"',\]}]+):[^\s@"',\]}]+@sha256:[0-9a-f]{64}""")
+
+    def reduced(path: str) -> str:
+        with open(path, encoding="utf-8") as f:
+            return pinned.sub(lambda m: f"{repository}/{m.group(1)}", f.read())
+
+    def raw(path: str) -> bytes:
+        with open(path, "rb") as f:
+            return f.read()
+
+    findings = []
+    only, changed = differing(installed_files(out), installed_files(shape_release), reduced)
+    if only or changed:
+        findings.append(finding(
+            f"{version}'s install differs from {shape}'s beyond its images: "
+            + "; ".join(filter(None, [
+                only and f"present in one release only: {', '.join(only)}",
+                changed and f"changed: {', '.join(changed)}",
+            ])),
+            f"the control-plane module composes {shape}'s install, so it cannot be trusted to install {version}",
+            f"declare {version} as its own shape (shape: {version} in tools/ci/release/agent-substrate.yaml) "
+            "and adapt the module to it before customers can set it",
+        ))
+    only, changed = differing(source_files(source), source_files(shape_source), raw)
+    if only or changed:
+        findings.append(finding(
+            f"upstream changed how an install is assembled between {shape} and {version}: "
+            + ", ".join(only + changed),
+            "the installer's steps, settings or Google Cloud setup moved, which the module mirrors and the "
+            "published tree does not show",
+            f"read the change; then declare {version} as its own shape and adapt the module to it",
+        ))
+    if findings:
+        raise CompositionError(findings)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--source", required=True, help="upstream checkout at the release tag")
     parser.add_argument("--layouts", required=True, help="directory holding one OCI layout per image name")
     parser.add_argument("--repository", required=True, help="registry path the images are published under")
     parser.add_argument("--version", required=True, help="the upstream release tag, vX.Y.Z")
+    parser.add_argument("--shape", required=True, help="the release whose install this one shares; equal to --version for a new shape")
+    parser.add_argument("--shape-release", help="the shape's published tree; required when --shape differs from --version")
+    parser.add_argument("--shape-source", help="upstream checkout at the shape's tag; required when --shape differs from --version")
     parser.add_argument("--commit", required=True, help="the commit the tag names")
     parser.add_argument("--out", required=True, help="empty directory to write the release set into")
     parser.add_argument("--kustomize", help="kustomize binary; when set, the composed tree is checked")
@@ -493,11 +624,17 @@ def main() -> None:
     if os.path.exists(args.out) and os.listdir(args.out):
         print(f"Error: --out {args.out} is not empty; compose into a fresh directory", file=sys.stderr)
         sys.exit(2)
+    claims_earlier_shape = args.shape != args.version
+    if claims_earlier_shape and not (args.shape_release and args.shape_source):
+        print(f"Error: {args.version} claims shape {args.shape}; pass --shape-release and --shape-source to prove it", file=sys.stderr)
+        sys.exit(2)
     os.makedirs(args.out, exist_ok=True)
     try:
-        references = compose(args.source, args.layouts, args.repository, args.version, args.commit, args.out)
+        references = compose(args.source, args.layouts, args.repository, args.version, args.shape, args.commit, args.out)
         if args.kustomize:
             check(args.out, args.repository, references, args.kustomize)
+        if claims_earlier_shape:
+            check_shape(args.out, args.repository, args.version, args.shape, args.shape_release, args.source, args.shape_source)
     except CompositionError as err:
         print(f"Composing Agent Substrate {args.version} failed:\n", file=sys.stderr)
         print(err, file=sys.stderr)

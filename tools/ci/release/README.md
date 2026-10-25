@@ -134,17 +134,28 @@ Agent Substrate publishes no images and no pre-built install, so Planton
 publishes both for the Substrate kinds and for anyone else who installs it.
 The pieces, all read by `release.agent-substrate.yaml`:
 
-- `agent-substrate.yaml` declares the one version the lane builds. A pull
-  request that touches the lane rehearses that version end to end (build both
+- `agent-substrate.yaml` declares the one version the lane builds and the
+  install shape it claims. A pull request that touches the lane, or a dispatch
+  with `dry_run`, rehearses that version end to end (build both
   architectures, compose, check; nothing is published), `make
   release-agent-substrate` tags it, and the lane refuses to publish any other
   version that is not already published. Adopting a new upstream release moves
-  this line in the pull request whose rehearsal proves it.
+  these lines in the change whose rehearsal proves it.
+- **The install shape.** The control-plane module composes one shape, the
+  install of one release, and installs any published release of that shape at
+  the version a customer sets. A release that claims an earlier shape is
+  published only when its install is that shape's apart from its images: the
+  rehearsal compares the composed tree with the shape's published one, and
+  upstream's installer and Google Cloud setup at both tags. So an upstream
+  patch that changes nothing but its images reaches customers with this lane
+  alone; one that changes the install is declared its own shape, and customers
+  get it once the module composes it.
 - `compose_agent_substrate_release.py` turns the build into the install set:
   upstream's `manifests/` tree with every image pinned by digest, the CRD
-  bundle, `images.json`, the licenses and `SHA256SUMS`. Its docstring says why
-  the install is upstream's whole tree rather than one file. Tests:
-  `cd tools/ci/release && python3 -m unittest compose_agent_substrate_release_test.py`
+  bundle, `images.json` (with the shape), upstream's database setup script,
+  the licenses and `SHA256SUMS`. Its docstring says why the install is
+  upstream's whole tree rather than one file, and how a shape is proven.
+  Tests: `cd tools/ci/release && python3 -m unittest compose_agent_substrate_release_test.py`
   (the overlay checks need `kustomize` on PATH).
 - `verify_agent_substrate_release.sh <version> [<composed directory>]` proves a
   published version from an adopter's side, with no credentials: every file

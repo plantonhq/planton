@@ -11,16 +11,20 @@ import unittest
 from compose_agent_substrate_release import (
     CompositionError,
     check,
+    check_shape,
     compose,
     read_upstream,
 )
 
 REPOSITORY = "registry.example.com/agent-substrate"
-VERSION = "v0.5.0"
+VERSION = "v0.6.0"
+PATCH = "v0.6.1"
 COMMIT = "e8d40c33f96f4b7a4984bfea7334a36ab5b45b7b"
-MODULE = "ko://github.com/agent-substrate/substrate"
+MODULE = "ko://go.ate.dev/substrate"
 
 COMPONENTS_GO = """package images
+
+const ModulePath = "go.ate.dev/substrate"
 
 var Components = []string{
 	"cmd/ateapi",
@@ -72,10 +76,11 @@ def write(path, text):
         f.write(text)
 
 
-def write_layout(layouts, name, platforms=("linux/amd64", "linux/arm64"), media_type="application/vnd.oci.image.index.v1+json"):
+def write_layout(layouts, name, platforms=("linux/amd64", "linux/arm64"), media_type="application/vnd.oci.image.index.v1+json", build=""):
     index = json.dumps({
         "schemaVersion": 2,
         "mediaType": media_type,
+        "annotations": {"build": build},
         "manifests": [
             {"platform": {"os": p.split("/")[0], "architecture": p.split("/")[1]}, "digest": "sha256:" + "0" * 64}
             for p in platforms
@@ -93,11 +98,15 @@ def write_layout(layouts, name, platforms=("linux/amd64", "linux/arm64"), media_
 class Fixture:
     """An upstream checkout at a tag and the layouts its build exported."""
 
-    def __init__(self, root):
+    def __init__(self, root, version=VERSION):
         self.source = os.path.join(root, "source")
         self.layouts = os.path.join(root, "layouts")
         self.root = root
+        self.version = version
         write(os.path.join(self.source, "cmd/ate-setup/internal/images/images.go"), COMPONENTS_GO)
+        write(os.path.join(self.source, "cmd/ate-setup/internal/config/config.go"), "package config\n")
+        write(os.path.join(self.source, "tools/setup-gcp/README.md"), "# setup-gcp\n")
+        write(os.path.join(self.source, "pkg/postgressetup/setup.sql"), "CREATE SCHEMA substrate;\n")
         write(os.path.join(self.source, "cmd/ate-setup/internal/steps/overlay.go"), OVERLAY_GO)
         write(os.path.join(self.source, "manifests/ate-install/app.yaml"), APP_YAML)
         write(os.path.join(self.source, "manifests/ate-install/generated/ate.dev_workerpools.yaml"), CRD_YAML)
@@ -108,15 +117,18 @@ class Fixture:
         write(os.path.join(self.source, "manifests/microvm/sandboxconfig.yaml.tmpl"), TEMPLATE)
         write(os.path.join(self.source, "LICENSE"), "Apache License 2.0\n")
         write(os.path.join(self.source, "_LICENSES/github.com/x/y/LICENSE"), "MIT\n")
-        self.digests = {name: write_layout(self.layouts, name) for name in ("ateapi", "atelet", "fspersist", "envoy-dataplane")}
+        self.digests = {
+            name: write_layout(self.layouts, name, build=version)
+            for name in ("ateapi", "atelet", "fspersist", "envoy-dataplane")
+        }
 
-    def compose(self, out_name="out"):
+    def compose(self, out_name="out", shape=None):
         out = os.path.join(self.root, out_name)
         os.makedirs(out)
-        return out, compose(self.source, self.layouts, REPOSITORY, VERSION, COMMIT, out)
+        return out, compose(self.source, self.layouts, REPOSITORY, self.version, shape or self.version, COMMIT, out)
 
     def pinned(self, name):
-        return f"{REPOSITORY}/{name}:{VERSION}@{self.digests[name]}"
+        return f"{REPOSITORY}/{name}:{self.version}@{self.digests[name]}"
 
 
 class ComposeTest(unittest.TestCase):
@@ -193,6 +205,7 @@ class ComposeTest(unittest.TestCase):
         out, references = self.fixture.compose()
         images = json.loads(self.read(out, "images.json"))
         self.assertEqual(images["version"], VERSION)
+        self.assertEqual(images["shape"], VERSION)
         self.assertEqual(images["source"], {"repository": "https://github.com/agent-substrate/substrate", "tag": VERSION, "commit": COMMIT})
         self.assertEqual(images["images"], references)
         self.assertEqual(sorted(references), ["ateapi", "atelet", "envoy-dataplane", "fspersist"])
@@ -214,6 +227,7 @@ class ComposeTest(unittest.TestCase):
         self.assertEqual(set(listed), on_disk)
         self.assertIn("third-party-licenses.tar.gz", on_disk)
         self.assertIn("LICENSE", on_disk)
+        self.assertIn("setup.sql", on_disk)
 
     def test_composing_twice_writes_the_same_bytes(self):
         first, _ = self.fixture.compose("first")
@@ -234,7 +248,77 @@ class ComposeTest(unittest.TestCase):
         self.assertIn(f"names {REPOSITORY}/atelet:v0.4.0", str(raised.exception))
 
 
+class ShapeTest(unittest.TestCase):
+    """A patch claiming the shape of the release before it."""
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp()
+        self.shape = Fixture(os.path.join(self.tmp, "shape"))
+        self.shape_release, _ = self.shape.compose()
+        self.patch = Fixture(os.path.join(self.tmp, "patch"), version=PATCH)
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp)
+
+    def claim(self):
+        out, _ = self.patch.compose(shape=VERSION)
+        check_shape(out, REPOSITORY, PATCH, VERSION, self.shape_release, self.patch.source, self.shape.source)
+        return out
+
+    def test_a_release_that_differs_only_in_its_images_keeps_the_shape(self):
+        out = self.claim()
+        with open(os.path.join(out, "images.json"), encoding="utf-8") as f:
+            images = json.load(f)
+        self.assertEqual((images["version"], images["shape"]), (PATCH, VERSION))
+        self.assertNotEqual(self.patch.digests, self.shape.digests)
+
+    def test_a_changed_manifest_refuses_the_claim(self):
+        with open(os.path.join(self.patch.source, "manifests/ate-install/app.yaml"), "a", encoding="utf-8") as f:
+            f.write("        args: [--new-required-flag]\n")
+        with self.assertRaises(CompositionError) as raised:
+            self.claim()
+        self.assertIn("changed: manifests/ate-install/app.yaml", str(raised.exception))
+        self.assertIn(f"declare {PATCH} as its own shape", str(raised.exception))
+
+    def test_a_new_manifest_file_refuses_the_claim(self):
+        write(os.path.join(self.patch.source, "manifests/ate-install/new-component.yaml"), "kind: Service\n")
+        with self.assertRaises(CompositionError) as raised:
+            self.claim()
+        self.assertIn("present in one release only: manifests/ate-install/new-component.yaml", str(raised.exception))
+
+    def test_a_changed_definition_refuses_the_claim(self):
+        with open(os.path.join(self.patch.source, "manifests/ate-install/generated/ate.dev_workerpools.yaml"), "a", encoding="utf-8") as f:
+            f.write("  names:\n    kind: WorkerPool\n")
+        with self.assertRaises(CompositionError) as raised:
+            self.claim()
+        self.assertIn("crds.yaml", str(raised.exception))
+
+    def test_a_changed_setup_script_refuses_the_claim(self):
+        write(os.path.join(self.patch.source, "pkg/postgressetup/setup.sql"), "CREATE SCHEMA substrate_v2;\n")
+        with self.assertRaises(CompositionError) as raised:
+            self.claim()
+        self.assertIn("changed: setup.sql", str(raised.exception))
+
+    def test_a_changed_installer_refuses_the_claim(self):
+        write(os.path.join(self.patch.source, "cmd/ate-setup/internal/steps/apienv.go"), "package steps\n")
+        with self.assertRaises(CompositionError) as raised:
+            self.claim()
+        self.assertIn("upstream changed how an install is assembled", str(raised.exception))
+        self.assertIn("cmd/ate-setup/internal/steps/apienv.go", str(raised.exception))
+
+
 class ReadUpstreamTest(unittest.TestCase):
+    def test_a_missing_module_path_fails_with_the_file_named(self):
+        tmp = tempfile.mkdtemp()
+        try:
+            write(os.path.join(tmp, "cmd/ate-setup/internal/images/images.go"), COMPONENTS_GO.replace('const ModulePath = "go.ate.dev/substrate"\n', ""))
+            write(os.path.join(tmp, "cmd/ate-setup/internal/steps/overlay.go"), OVERLAY_GO)
+            with self.assertRaises(CompositionError) as raised:
+                read_upstream(tmp)
+            self.assertIn("ModulePath", str(raised.exception))
+        finally:
+            shutil.rmtree(tmp)
+
     def test_a_moved_component_list_fails_with_the_file_named(self):
         tmp = tempfile.mkdtemp()
         try:

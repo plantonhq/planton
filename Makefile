@@ -766,8 +766,8 @@ release-operator:  ## Release the operator image + chart: auto-bump (bump=major|
 # `agent-substrate/vX.Y.Z` publishes ghcr.io/plantonhq/planton/agent-substrate/<component>:vX.Y.Z
 # and downloads.planton.ai/releases/agent-substrate/vX.Y.Z/. The version is
 # upstream's, never bumped: the target tags the one version the committed
-# tools/ci/release/agent-substrate.yaml declares, which the pull request that
-# declared it has rehearsed.
+# tools/ci/release/agent-substrate.yaml declares, after a rehearsal of the lane
+# (a pull request touching it, or a dispatch with dry_run) has built it.
 .PHONY: release-agent-substrate
 release-agent-substrate:  ## Publish Agent Substrate's images and install set at the version tools/ci/release/agent-substrate.yaml declares
 	@rel_version=$$(git show HEAD:tools/ci/release/agent-substrate.yaml | sed -n 's/^version: *//p'); \

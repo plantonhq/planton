@@ -2,9 +2,17 @@
 # (.github/workflows/release.agent-substrate.yaml; tools/ci/release/README.md).
 #
 # Upstream (github.com/agent-substrate/substrate) publishes no images, so this
-# is the one version the lane builds: a pull request that touches the lane
-# rehearses it end to end, `make release-agent-substrate` tags it, and the lane
-# refuses to publish any version that is neither this one nor already
-# published. Adopting a new upstream release moves this line, in the pull
-# request whose rehearsal proves the new version builds and composes.
-version: v0.5.0
+# is the one version the lane builds: a rehearsal of the lane builds it end to
+# end, `make release-agent-substrate` tags it, and the lane refuses to publish
+# any version that is neither this one nor already published. Adopting a new
+# upstream release moves this line, in the change whose rehearsal proves the
+# new version builds and composes.
+version: v0.6.0
+# The release whose install this one shares (images.json's `shape`): the
+# control-plane module composes exactly one shape, and installs any published
+# release of it when a customer sets the kind's version. A release equal to
+# `version` is a new shape, which the module must be adapted to before anyone
+# can install it. A release claiming an earlier shape is published only when
+# its install is that shape's apart from its images, which the lane proves
+# (compose_agent_substrate_release.py, "The install shape").
+shape: v0.6.0

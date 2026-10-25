@@ -11,11 +11,16 @@
 #   Install: https://downloads.planton.ai/releases/agent-substrate/vX.Y.Z/
 #            manifests/...  upstream's manifests/ tree, images pinned by digest
 #            crds.yaml      the CRD bundle the kept-CRD mechanism fetches
-#            images.json    the version, the upstream commit, every pinned image
+#            images.json    the version, its install shape, the upstream commit,
+#                           every pinned image
+#            setup.sql      upstream's database setup script
 #            LICENSE, third-party-licenses.tar.gz, SHA256SUMS (uploaded last)
 #
 # The version is upstream's, never bumped here. tools/ci/release/compose_agent_substrate_release.py
-# says why the install is upstream's whole tree rather than one file.
+# says why the install is upstream's whole tree rather than one file, and how a
+# release claiming an earlier install shape is proven to share it: the stage
+# job compares the composed tree with the shape's published one, and upstream's
+# installer and Google Cloud setup at both tags, before anything is published.
 #
 # Triggers:
 #   - push of a tag agent-substrate/vX.Y.Z   (front door: make release-agent-substrate)
@@ -106,6 +111,7 @@ jobs:
     timeout-minutes: 10
     outputs:
       version: ${{ steps.version.outputs.version }}
+      shape: ${{ steps.version.outputs.shape }}
       commit: ${{ steps.version.outputs.commit }}
       publish: ${{ steps.version.outputs.publish }}
       sealed: ${{ steps.seal.outputs.sealed }}
@@ -122,6 +128,7 @@ jobs:
           DRY_RUN: ${{ inputs.dry_run }}
         run: |
           declared="$(sed -n 's/^version: *//p' tools/ci/release/agent-substrate.yaml)"
+          declared_shape="$(sed -n 's/^shape: *//p' tools/ci/release/agent-substrate.yaml)"
           case "${EVENT}" in
             push)         version="${GITHUB_REF_NAME#agent-substrate/}"; publish=true ;;
             pull_request) version="${declared}"; publish=false ;;
@@ -148,13 +155,24 @@ jobs:
             echo "::error::${UPSTREAM} has no tag ${version}. Planton publishes only upstream's own releases; check the version against https://github.com/${UPSTREAM}/tags"
             exit 1
           fi
+          # The declared version carries its declared shape; any other version
+          # this run builds (a dry run of an undeclared one) is its own.
+          shape="${version}"
+          if [ "${version}" = "${declared}" ]; then
+            shape="${declared_shape}"
+          fi
+          case "${shape}" in
+            v[0-9]*.[0-9]*.[0-9]*) ;;
+            *) echo "::error::tools/ci/release/agent-substrate.yaml must declare the shape as vX.Y.Z (got '${shape}')"; exit 1 ;;
+          esac
           {
             echo "version=${version}"
+            echo "shape=${shape}"
             echo "declared=${declared}"
             echo "commit=${commit}"
             echo "publish=${publish}"
           } >> "$GITHUB_OUTPUT"
-          echo "Agent Substrate ${version} at ${commit}; publish=${publish}; declared=${declared}"
+          echo "Agent Substrate ${version} (shape ${shape}) at ${commit}; publish=${publish}; declared=${declared}"
 
       - name: Is the version already sealed?
         id: seal
@@ -300,7 +318,11 @@ jobs:
     timeout-minutes: 20
     env:
       VERSION: ${{ needs.resolve.outputs.version }}
-      KUSTOMIZE_VERSION: v5.8.1 # the release built from sigs.k8s.io/kustomize/api v0.21.1, which upstream's installer embeds at v0.5.0
+      SHAPE: ${{ needs.resolve.outputs.shape }}
+      # The kustomize release built from the sigs.k8s.io/kustomize/api upstream's
+      # installer embeds (v0.21.1 in the declared version's go.mod); moving the
+      # declared version re-checks it.
+      KUSTOMIZE_VERSION: v5.8.1
       # The release's own checksums.txt entry for the linux_amd64 tarball.
       KUSTOMIZE_SHA256: 029a7f0f4e1932c52a0476cf02a0fd855c0bb85694b82c338fc648dcb53a819d
     steps:
@@ -321,6 +343,36 @@ jobs:
           name: agent-substrate-images
           path: ${{ runner.temp }}/layouts
 
+      # A release claiming an earlier shape is compared with that shape: its
+      # upstream code at the shape's tag, and its install set as published,
+      # every file checked against the seal.
+      - name: Check out upstream at the shape's tag
+        if: env.SHAPE != env.VERSION
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.UPSTREAM }}
+          ref: refs/tags/${{ env.SHAPE }}
+          path: upstream-shape
+          persist-credentials: false
+
+      - name: Download the shape's published install set
+        if: env.SHAPE != env.VERSION
+        run: |
+          base="https://downloads.planton.ai/releases/agent-substrate/${SHAPE}"
+          tree="${RUNNER_TEMP}/shape-release"
+          mkdir -p "${tree}"
+          if ! curl -fsSL "${base}/SHA256SUMS" -o "${tree}/SHA256SUMS"; then
+            echo "::error::Observed: ${base}/SHA256SUMS does not download."
+            echo "::error::Means: ${VERSION} claims the install shape of ${SHAPE}, which Planton has not published."
+            echo "::error::Next: declare a published shape, or ${VERSION} itself, in tools/ci/release/agent-substrate.yaml."
+            exit 1
+          fi
+          while read -r _ path; do
+            mkdir -p "$(dirname "${tree}/${path}")"
+            curl -fsSL "${base}/${path}" -o "${tree}/${path}"
+          done < "${tree}/SHA256SUMS"
+          (cd "${tree}" && sha256sum --quiet -c SHA256SUMS)
+
       - name: Install kustomize
         run: |
           curl -sSfL -o /tmp/kustomize.tar.gz \
@@ -334,16 +386,22 @@ jobs:
 
       - name: Compose and check the install set
         run: |
+          shape_args=()
+          if [ "${SHAPE}" != "${VERSION}" ]; then
+            shape_args=(--shape-release "${RUNNER_TEMP}/shape-release" --shape-source upstream-shape)
+          fi
           python3 tools/ci/release/compose_agent_substrate_release.py \
             --source upstream \
             --layouts "${RUNNER_TEMP}/layouts" \
             --repository "${REPOSITORY}" \
             --version "${VERSION}" \
+            --shape "${SHAPE}" \
+            "${shape_args[@]}" \
             --commit "${{ needs.resolve.outputs.commit }}" \
             --out "${RUNNER_TEMP}/release" \
             --kustomize /usr/local/bin/kustomize
           {
-            echo "### Agent Substrate ${VERSION}"
+            echo "### Agent Substrate ${VERSION} (shape ${SHAPE})"
             echo
             echo '```'
             jq -r '.images | to_entries[] | "\(.key)  \(.value)"' "${RUNNER_TEMP}/release/images.json"
