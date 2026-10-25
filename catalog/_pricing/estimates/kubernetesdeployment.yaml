@@ -50,3 +50,12 @@ spec:
         basis: 3 replicas x (100m CPU / 256Mi memory requests, 1000m CPU / 1Gi limits)
       exclusions:
         - the dollar value of this capacity is the target cluster's node economics
+    - preset: 05-agent-substrate-client
+      capacity_footprint:
+        cpu_requests: 50m
+        memory_requests: 100Mi
+        cpu_limits: "1"
+        memory_limits: 1Gi
+        basis: 1 replica x (50m CPU / 100Mi memory requests, 1000m CPU / 1Gi limits)
+      exclusions:
+        - the dollar value of this capacity is the target cluster's node economics
