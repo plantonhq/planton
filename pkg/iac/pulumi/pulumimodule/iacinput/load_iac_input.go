@@ -76,16 +76,25 @@ func LoadIacInput(ctx *pulumi.Context, iacInput proto.Message) error {
 	if err != nil {
 		return errors.Wrap(err, "failed to extract api resource spec field")
 	}
+	return validateUnlessDestroying((*targetSpec).Interface())
+}
 
+// validateUnlessDestroying judges the spec by its rules, except during a destroy. The rules say what
+// may be created; a destroy deletes what the state holds, and a resource deployed under an older
+// release can break a rule a later release added, which must never stop it from being torn down.
+// The spec still has to parse.
+func validateUnlessDestroying(spec proto.Message) error {
+	if IsDestroy() {
+		return nil
+	}
 	v, err := protovalidate.New(
 		protovalidate.WithDisableLazy(),
-		protovalidate.WithMessages((*targetSpec).Interface()),
+		protovalidate.WithMessages(spec),
 	)
 	if err != nil {
 		fmt.Println("failed to initialize validator:", err)
 	}
-
-	if err = v.Validate((*targetSpec).Interface()); err != nil {
+	if err = v.Validate(spec); err != nil {
 		return errors.Errorf("%s", err)
 	}
 	return nil

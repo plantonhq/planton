@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "iacinput",
@@ -14,4 +14,11 @@ go_library(
         "@org_golang_google_protobuf//encoding/protojson",
         "@org_golang_google_protobuf//proto",
     ],
+)
+
+go_test(
+    name = "iacinput_test",
+    srcs = ["load_iac_input_test.go"],
+    embed = [":iacinput"],
+    deps = ["//catalog/kubernetes/kubernetesagentsubstrate/v1alpha1"],
 )
