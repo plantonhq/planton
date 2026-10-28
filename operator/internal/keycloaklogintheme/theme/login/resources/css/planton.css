@@ -1,10 +1,12 @@
 /*
  * Planton login theme -- the monochrome design system translated to the
- * identity server's pages.
+ * identity server's pages, in the console's light palette: light is the
+ * console's default mode, so a person who never chose meets one theme from
+ * this page into the product.
  *
  * Source of truth for every color here is the console's theme package
- * (the platform's design tokens); the values are a deliberate,
- * documented copy -- update both together. The selectors target
+ * (the platform's design tokens, light-colors.ts); the values are a
+ * deliberate, documented copy -- update both together. The selectors target
  * PatternFly v5 (what keycloak.v2 renders) plus the few keycloak-specific
  * hooks (#kc-header-wrapper, kc-logo-text) its own stylesheet defines.
  */
@@ -18,19 +20,19 @@
 }
 
 :root {
-  /* Planton tokens */
-  --planton-bg: #0d1117;
-  --planton-surface: #161b22;
-  --planton-border: #30363d;
-  --planton-text: #b0b8c2;
-  --planton-text-emphasis: #f0f6fc;
-  --planton-text-muted: #7d8590;
-  --planton-input-bg: #21262d;
-  --planton-btn-bg: #e6edf3;
-  --planton-btn-fg: #0d1117;
-  --planton-btn-hover-bg: #c9d1d9;
-  --planton-error: #f85149;
-  --planton-focus-border: #696741;
+  /* Planton tokens (light-colors.ts) */
+  --planton-bg: #ffffff; /* greyLight[0], the canvas */
+  --planton-surface: #f6f8fa; /* greyLight[20], background.paper */
+  --planton-border: #d0d7de; /* greyLight[60] */
+  --planton-text: #1f2328; /* greyLight[10] */
+  --planton-text-emphasis: #1f2328; /* greyLight[95] */
+  --planton-text-muted: #656d76; /* greyLight[30] */
+  --planton-input-bg: #ffffff; /* greyLight[0]: the console's light inputs sit on background.default */
+  --planton-btn-bg: #1f2328; /* primaryLight[75] */
+  --planton-btn-fg: #ffffff; /* greyLight[0] */
+  --planton-btn-hover-bg: #24292f; /* primaryLight[95] */
+  --planton-error: #cf222e; /* errorLight[50] */
+  --planton-focus-border: #1f2328; /* focusLight.border (greyLight[10]) */
 
   /* PatternFly globals -> Planton palette */
   --pf-v5-global--FontFamily--text: 'Inter', system-ui, -apple-system, sans-serif;
@@ -53,31 +55,41 @@
   --keycloak-card-top-color: transparent;
   --keycloak-bg-logo-url: none;
   /* The installation's own logo, served by the control plane behind the same
-   * front door (its version for the dark theme, else the logo, else Planton's
-   * mark -- this page is dark by design). A logo change reaches this page with
-   * no theme change and no identity-server restart. */
+   * front door (the logo itself, the light theme's version, else Planton's
+   * mark in dark ink). A logo change reaches this page with no theme change
+   * and no identity-server restart. */
   --keycloak-logo-url: url('/storage/v1/branding/sign-in.png');
-  --keycloak-logo-height: 64px;
-  --keycloak-logo-width: 64px;
+  /* keycloak.v2 draws the logo once, in its own .kc-logo-text slot, at this
+   * size; the box is wider than tall so a wide company logo keeps its shape
+   * (the image is contained, never stretched). */
+  --keycloak-logo-height: 40px;
+  --keycloak-logo-width: 160px;
 }
 
-/* Full-bleed dark canvas -- no photo backdrop. */
+/* Full-bleed canvas -- no photo backdrop. */
 .login-pf body,
 body {
   background: var(--planton-bg) !important;
   color: var(--planton-text);
 }
 
-/* The realm-name banner: replace the uppercase text with the installation's logo.
+/* The realm-name banner: the installation's logo in place of the uppercase
+ * text, drawn ONCE by keycloak.v2's own logo slot (--keycloak-logo-*). A
+ * background here as well drew a second, differently sized copy over it.
  * 40px logo, 48px credential-zone gap -- without the removed sign-in title
  * the logo must carry the whole brand beat; 32px read as cramped in review. */
 #kc-header-wrapper {
   font-size: 0;
   letter-spacing: 0;
-  background: var(--keycloak-logo-url) no-repeat center;
-  background-size: contain;
   height: 40px;
   margin: 0 auto 48px;
+}
+
+/* The slot itself: centered in the card, and the logo centered within it
+ * (keycloak.v2 pins both to the left edge). */
+.kc-logo-text {
+  margin: 0 auto;
+  background-position: center;
 }
 
 /* The card: the CONTAINER carries the surface so the logo sits inside the
@@ -229,7 +241,7 @@ label[for='logout-sessions'] {
   display: none;
 }
 
-/* Buttons: monochrome primary (near-white bg, near-black text), 6px radius,
+/* Buttons: monochrome primary (near-black bg, white text), 6px radius,
  * no uppercase, no shadows. */
 .pf-v5-c-button {
   border-radius: 6px;
@@ -246,6 +258,22 @@ label[for='logout-sessions'] {
 .pf-v5-c-button.pf-m-primary:hover {
   background-color: var(--planton-btn-hover-bg);
   color: var(--planton-btn-fg);
+}
+
+/* Secondary buttons (a sign-in provider such as Google): the console's secondary
+ * button -- a hairline in the border token around the page's text -- never the
+ * primary ink as a frame, which PatternFly draws by default. The hosted sign-in
+ * page draws the same (secondaryButtonBorder). */
+.pf-v5-c-button.pf-m-secondary {
+  color: var(--planton-text-emphasis);
+}
+
+.pf-v5-c-button.pf-m-secondary::after {
+  border-color: var(--planton-border);
+}
+
+.pf-v5-c-button.pf-m-secondary:hover::after {
+  border-color: var(--planton-text-muted);
 }
 
 /* Alerts: genuine errors keep the boxed red treatment; the informational

@@ -53,7 +53,8 @@ func TestThemePropertiesShape(t *testing.T) {
 		// The parent's stylesheet must stay in the list (child-first lookup
 		// falls back to the parent for it), ours appended after.
 		"styles=css/styles.css css/planton.css",
-		// The OS must not flip the page out of the dark design.
+		// The OS must not flip the page into PatternFly's dark mode: the page
+		// is the console's light design, whatever the visitor's OS prefers.
 		"darkMode=false",
 	} {
 		if !strings.Contains(props, want) {
@@ -203,13 +204,13 @@ func TestStylesCarryTheDesignTokens(t *testing.T) {
 	// test fails after a console token change, update the stylesheet with
 	// it (that pairing is the documented contract).
 	for token, value := range map[string]string{
-		"page background":   "--planton-bg: #0d1117",
-		"card surface":      "--planton-surface: #161b22",
-		"border":            "--planton-border: #30363d",
-		"primary text":      "--planton-text: #b0b8c2",
-		"button background": "--planton-btn-bg: #e6edf3",
-		"error":             "--planton-error: #f85149",
-		"focus accent":      "--planton-focus-border: #696741",
+		"page background":   "--planton-bg: #ffffff",
+		"card surface":      "--planton-surface: #f6f8fa",
+		"border":            "--planton-border: #d0d7de",
+		"primary text":      "--planton-text: #1f2328",
+		"button background": "--planton-btn-bg: #1f2328",
+		"error":             "--planton-error: #cf222e",
+		"focus accent":      "--planton-focus-border: #1f2328",
 		"font self-hosting": "url('../fonts/inter-latin.woff2')",
 		"installation logo": "url('/storage/v1/branding/sign-in.png')",
 		"no photo backdrop": "--keycloak-bg-logo-url: none",

@@ -463,9 +463,9 @@ questions:
       `planton branding set-logo acme.png --dark-theme acme-white.png`: one
       change sets the logo and its version for the dark theme, and every
       surface of the installation draws it in place of Planton's mark. The
-      sign-in page is dark by design, so it shows the dark-theme version,
-      else the logo, else Planton's mark, read from the installation itself
-      -- no operator change and no identity-server restart.
+      sign-in page is light by design, so it shows the logo itself (never
+      the white version), else Planton's mark, read from the installation
+      itself -- no operator change and no identity-server restart.
     checks:
       - skill: planton
         file: SKILL.md

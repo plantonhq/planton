@@ -27,12 +27,12 @@ Planton is a 61+ package monorepo developed primarily by AI agents. The code is 
 
 ## Design Philosophy
 
-### Monochrome, Data-Dense, Dark-First
+### Monochrome, Data-Dense, Light by Default
 
-The visual language is inspired by GitHub Dark Default and the density of tools like Cursor. The rationale:
+The visual language is inspired by GitHub's light and dark defaults and the density of tools like Cursor. The rationale:
 
 - **No colored chrome.** Navigation, headers, sidebars, buttons, tabs, and interactive elements use neutral grays. Color is reserved for semantic status (success, error, warning) and provider brand logos.
-- **Dark as default.** New users start in dark mode across all surfaces. Light mode is available and persists via cookie/localStorage.
+- **Light as default.** New users start in light mode across all surfaces, sign-in included. Dark mode is one click away and persists via a cookie (web) or local storage (desktop).
 - **Hierarchy by luminance.** Visual priority is established through brightness steps in the gray ramp, not through competing hues. A reader should understand information hierarchy without learning a color code.
 - **Borders, not backgrounds.** Cards and sections are separated by borders, not by contrasting background colors. This is the GitHub pattern (unified canvas) rather than the VS Code pattern (dark frame).
 - **Honest semantics.** Green, red, and amber appear only where they carry meaning — deployment status, validation errors, capacity warnings. They are never decorative.
@@ -525,7 +525,7 @@ These rules apply to all Planton surfaces. Every component, every styled file, e
 | `src/themes/light.tsx` | Light MUI ThemeOptions + component overrides |
 | `src/themes/theme.ts` | `createTheme` + shared override helpers |
 | `src/themes/graph-colors.ts` | Centralized graph/chart/syntax color constants |
-| `src/contexts/appContext.tsx` | Theme state management, dark-first fallback, ThemeProvider |
+| `src/contexts/appContext.tsx` | Theme state management, light-default fallback, ThemeProvider |
 | `src/components/providers/index.tsx` | Context bridges including PlantonThemeBridge |
 | `src/app/layout.tsx` | Flash prevention inline script |
 | `src/app/global-error.tsx` | Standalone error boundary with own palette |

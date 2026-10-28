@@ -40,11 +40,11 @@ PNG, JPEG or WebP at any size; the CLI converts it to a PNG at most 512 pixels o
 
 ## The dark theme
 
-The console defaults to dark, and a dark logo vanishes on it. When the logo would be hard to see, `set-logo` and `show` say so and print the exact `--dark-theme` command; the console's editor goes further and offers a fix it can make (a recolored version of a one-color mark, a removed background). The version for the dark theme is drawn in the logo's place whenever the theme is dark.
+The console defaults to light, and anyone may switch to dark, where a dark logo vanishes. When the logo would be hard to see on either theme, `set-logo` and `show` say so and print the exact `--dark-theme` command; the console's editor goes further and offers a fix it can make (a recolored version of a one-color mark, a removed background). The version for the dark theme is drawn in the logo's place whenever the theme is dark.
 
 ## The sign-in page
 
-The identity server's sign-in page is dark by design, so it draws the **version for the dark theme, else the logo, else Planton's mark**. It reads them from the installation itself (the control plane serves `/storage/v1/branding/sign-in.png` on the same front door), so a logo change reaches it within a minute -- no operator change, no identity-server restart, nothing fetched from a third party. A sign-in page still showing Planton's mark after a change means either no logo is set (`planton branding show`), or the operator predates the release that serves it (`references/self-hosted.upgrading.md`).
+The identity server's sign-in page is light by design (the console's default mode), so it draws the **logo itself, else Planton's mark** -- never the version for the dark theme, which would vanish there. It reads them from the installation itself (the control plane serves `/storage/v1/branding/sign-in.png` on the same front door), so a logo change reaches it within a minute -- no operator change, no identity-server restart, nothing fetched from a third party. A sign-in page still showing Planton's mark after a change means either no logo is set (`planton branding show`), or the operator predates the release that serves it (`references/self-hosted.upgrading.md`).
 
 ## On planton.ai
 
