@@ -66,6 +66,8 @@ The compiler resolves a plain reference from three places, most specific first:
 2. **Your organization** — a published `TektonTask` record with that name.
 3. **The platform catalog** — `git-clone`, `buildkit-daemonless`, `buildpacks`, `kustomize-build` (their definitions live in the open-source repository under `cicd/tekton/tasks/`).
 
+To pass Dockerfile build args (`ARG` values baked in at build time), hand `buildkit-daemonless` a `buildArgs` param of `KEY=value` lines, one arg per line. Each reaches the build exactly as typed, spaces included. Blank lines are skipped, a line with no `=` fails the build, and the build log names every arg it passed. Values end up in the image, so pass secrets as secret files, never as build args.
+
 A repository task with the same name as a catalog task wins — your file is what runs, and the run record shows it. A `taskRef` that uses a remote resolver (`resolver: git`, `hub`, `bundles`) is refused: compiled pipelines are self-contained, so nothing is fetched at run time.
 
 A repository task is an ordinary Tekton `Task`:

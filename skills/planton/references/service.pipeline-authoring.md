@@ -121,6 +121,7 @@ Pin every image by digest (`crane digest <image:tag>`); secrets are never litera
 
 ## Asked for → what you edit
 
+- **"Pass a build arg to the Dockerfile"** (an `ARG` such as Expo's `EXPO_PUBLIC_API_URL`, baked in at build time): give the pipeline a param (e.g. `build-args`, `type: string`) and pass it to `buildkit-daemonless` as `{name: buildArgs, value: "$(params.build-args)"}`; the service sets it under `spec.build.tektonPipeline.params` as a block of `KEY=value` lines. Each line is one arg exactly as typed, spaces included; blank lines are skipped, a line with no `=` fails the build, and the build log says `Build args passed to the build: <names>`. Values land in the image, so never a secret -- that is a secret file (above).
 - **"Add a lint/test/scan step"**: write `.planton/tasks/<name>.yaml` (a Task with a `source` workspace), add a pipeline task with `taskRef: {name: <name>}`, `runAfter: [git-checkout]`, and make `build-image` `runAfter` it if the step must gate the build.
 - **"Only on releases" / "only on pull requests"**: declare `git-tag` (or `pull-request-number`) with `default: ""`; on the task add `when: [{input: "$(params.git-tag)", operator: notin, values: [""]}]` (use `in` with `values: [""]` for "only when NOT a tag").
 - **"Use our own clone/build step"**: put a Task with the catalog task's name in `tasks/` — it shadows the catalog's.

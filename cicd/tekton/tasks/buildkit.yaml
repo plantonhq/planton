@@ -52,6 +52,11 @@ spec:
       default: "true"
     - name: buildArgs              # each line KEY=value
       type: string
+      description: >-
+        Dockerfile build args, one KEY=value per line; blank lines are
+        skipped and a line with no '=' fails the build. The run log names
+        every arg passed. Values are baked into the image and shown in the
+        step's trace, so never pass a secret this way.
       default: ""
     - name: buildkitImage          # override only if needed
       type: string
@@ -174,6 +179,11 @@ spec:
         # starts costs the full minute before its log is printed.
         - name: BUILDCTL_CONNECT_RETRIES_MAX
           value: "70"
+        # The build args arrive through the environment, not pasted into the
+        # script, so a value holding $, ` or $(...) reaches BuildKit as typed
+        # instead of being run by the shell.
+        - name: BUILD_ARGS
+          value: "$(params.buildArgs)"
       script: |
         #!/usr/bin/env sh
         set -eux
@@ -217,9 +227,26 @@ spec:
           fi
         fi
 
-        printf '%s\n' "$(params.buildArgs)" | while IFS= read -r arg; do
-          [ -z "$arg" ] || extra_opts="$extra_opts --opt build-arg:$arg"
-        done
+        # Each build arg becomes its own pair of positional arguments, so a
+        # value with spaces stays one arg. The loop reads a here-document,
+        # not a pipe: a loop on the right of a pipe runs in a subshell, and
+        # every arg it collected was thrown away (planton#639).
+        set +x
+        set --
+        arg_names=""
+        while IFS= read -r arg; do
+          [ -n "$arg" ] || continue
+          case "$arg" in
+            *=*) ;;
+            *) echo "Build arg line '$arg' has no '=': each line of buildArgs is KEY=value." >&2; exit 1 ;;
+          esac
+          set -- "$@" --opt "build-arg:$arg"
+          arg_names="$arg_names ${arg%%=*}"
+        done <<EOF
+        $BUILD_ARGS
+        EOF
+        [ -z "$arg_names" ] || echo "Build args passed to the build:$arg_names"
+        set -x
 
         # Use modern dockerfile frontend (v1) for proper ARG variable expansion
         # The legacy dockerfile.v0 has known bugs with ARG expansion in COPY instructions
@@ -237,7 +264,7 @@ spec:
           --opt filename=$(params.dockerfilePath) \
           --local context=$(workspaces.source.path)/$(params.contextDir) \
           --local dockerfile=$(workspaces.source.path)/$(params.contextDir) \
-          $extra_opts \
+          $extra_opts "$@" \
           --output "type=image,\"name=$names\",push=$(params.push)" \
           --metadata-file /tmp/build-metadata.json \
           --progress=plain > /tmp/build.fifo 2>&1

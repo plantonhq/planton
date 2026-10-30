@@ -4,8 +4,10 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"reflect"
+	"regexp"
 	"sort"
 	"strings"
 	"testing"
@@ -97,6 +99,182 @@ func TestContent_theBuildKitStepWaitsForItsDaemonToStart(t *testing.T) {
 		t.Fatal("build-and-push does not set BUILDCTL_CONNECT_RETRIES_MAX -- without it the build gives its daemon about 2.2 seconds to start")
 	}
 	t.Fatal("the BuildKit task has no build-and-push step")
+}
+
+// Every build arg a pipeline passes reaches BuildKit, each as one argument and
+// exactly as typed, and the run log names them. The build-and-push script
+// itself runs here against a stand-in buildctl-daemonless.sh that records its
+// arguments: the args were once collected in a piped loop's subshell and all
+// thrown away while the build went green (planton#639), which no reading of
+// the YAML would catch.
+func TestContent_everyBuildArgReachesBuildKit(t *testing.T) {
+	if _, err := exec.LookPath("sh"); err != nil {
+		t.Skip("no sh to run the build step with")
+	}
+	script := buildAndPushScript(t)
+	if strings.Contains(script, "$(params.buildArgs)") {
+		t.Fatal("build-and-push pastes $(params.buildArgs) into its script, where the shell expands a value's $, ` and $(...) -- read it from the BUILD_ARGS env instead")
+	}
+
+	cases := []struct {
+		name      string
+		buildArgs string
+		wantArgs  []string
+		wantLog   string
+		wantError string
+	}{
+		{
+			name:      "each line is one arg, as typed",
+			buildArgs: "EXPO_PUBLIC_API_URL=https://api.example.edu.in\n\nTITLE=My App\nX=$HOME\nCMD=$(id) `id`\n",
+			wantArgs:  []string{"EXPO_PUBLIC_API_URL=https://api.example.edu.in", "TITLE=My App", "X=$HOME", "CMD=$(id) `id`"},
+			wantLog:   "Build args passed to the build: EXPO_PUBLIC_API_URL TITLE X CMD",
+		},
+		{
+			name:      "no build args",
+			buildArgs: "",
+		},
+		{
+			name:      "a line with no '=' fails the build before it starts",
+			buildArgs: "GOOD=1\nNOEQUALS",
+			wantError: "Build arg line 'NOEQUALS' has no '='",
+		},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			args, out, err := runBuildAndPush(t, script, tc.buildArgs)
+			if tc.wantError != "" {
+				if err == nil {
+					t.Fatalf("the build passed, want it to fail with %q\n%s", tc.wantError, out)
+				}
+				if !strings.Contains(out, tc.wantError) {
+					t.Fatalf("the build failed without saying %q\n%s", tc.wantError, out)
+				}
+				if args != nil {
+					t.Fatal("BuildKit ran although a build arg line was malformed")
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("the build failed: %v\n%s", err, out)
+			}
+			var got []string
+			for i := 0; i+1 < len(args); i++ {
+				if args[i] == "--opt" && strings.HasPrefix(args[i+1], "build-arg:") {
+					got = append(got, strings.TrimPrefix(args[i+1], "build-arg:"))
+				}
+			}
+			if !reflect.DeepEqual(got, tc.wantArgs) {
+				t.Fatalf("BuildKit received build args %q, want %q\nall arguments: %q", got, tc.wantArgs, args)
+			}
+			if tc.wantLog != "" && !strings.Contains(out, tc.wantLog) {
+				t.Fatalf("the run log does not say %q\n%s", tc.wantLog, out)
+			}
+			if tc.wantLog == "" && strings.Contains(out, "Build args passed to the build") {
+				t.Fatalf("the run log names build args although none were passed\n%s", out)
+			}
+		})
+	}
+}
+
+// buildAndPushScript returns the BuildKit task's build-and-push script.
+func buildAndPushScript(t *testing.T) string {
+	t.Helper()
+	tasks, err := TaskFiles()
+	if err != nil {
+		t.Fatal(err)
+	}
+	var task struct {
+		Spec struct {
+			Steps []struct {
+				Name   string `json:"name"`
+				Script string `json:"script"`
+			} `json:"steps"`
+		} `json:"spec"`
+	}
+	if err := yaml.Unmarshal(tasks["buildkit"], &task); err != nil {
+		t.Fatalf("parsing the BuildKit task: %v", err)
+	}
+	for _, step := range task.Spec.Steps {
+		if step.Name == "build-and-push" {
+			return step.Script
+		}
+	}
+	t.Fatal("the BuildKit task has no build-and-push step")
+	return ""
+}
+
+var tektonReference = regexp.MustCompile(`\$\((params|results|workspaces)\.([A-Za-z0-9_.-]+)\)`)
+
+// runBuildAndPush runs the build-and-push script the way Tekton would, with
+// buildArgs in the BUILD_ARGS env, against a stand-in buildctl-daemonless.sh
+// that records its arguments and reports a pushed digest. args is nil when
+// BuildKit never ran.
+func runBuildAndPush(t *testing.T, script, buildArgs string) (args []string, out string, err error) {
+	t.Helper()
+	dir := t.TempDir()
+	for _, sub := range []string{"bin", "results", "source", "tmp"} {
+		if err := os.Mkdir(filepath.Join(dir, sub), 0o755); err != nil {
+			t.Fatal(err)
+		}
+	}
+	params := map[string]string{
+		"image": "registry.example.com/app:abc123", "contextDir": ".", "dockerfilePath": "Dockerfile",
+		"platforms": "", "cache": "false", "cacheImage": "", "registrySignInExpiresAt": "",
+		"releaseTag": "", "push": "true",
+	}
+	var unknown []string
+	script = tektonReference.ReplaceAllStringFunc(script, func(ref string) string {
+		m := tektonReference.FindStringSubmatch(ref)
+		switch {
+		case m[1] == "params":
+			if v, ok := params[m[2]]; ok {
+				return v
+			}
+		case m[1] == "results" && strings.HasSuffix(m[2], ".path"):
+			return filepath.Join(dir, "results", strings.TrimSuffix(m[2], ".path"))
+		case m[1] == "workspaces" && m[2] == "source.path":
+			return filepath.Join(dir, "source")
+		}
+		unknown = append(unknown, ref)
+		return ref
+	})
+	if len(unknown) > 0 {
+		t.Fatalf("build-and-push reads %v, which this test does not supply -- add it to runBuildAndPush", unknown)
+	}
+	// The step keeps its scratch files under /tmp; each run here gets its own.
+	script = strings.ReplaceAll(script, "/tmp/", filepath.Join(dir, "tmp")+"/")
+
+	argsFile := filepath.Join(dir, "buildctl-args")
+	stub := "#!/bin/sh\n" +
+		"printf '%s\\0' \"$@\" > \"$BUILDCTL_ARGS_FILE\"\n" +
+		"while [ $# -gt 0 ]; do\n" +
+		"  if [ \"$1\" = --metadata-file ]; then\n" +
+		"    printf '{\"containerimage.digest\": \"sha256:%064d\"}' 0 > \"$2\"\n" +
+		"  fi\n" +
+		"  shift\n" +
+		"done\n"
+	if err := os.WriteFile(filepath.Join(dir, "bin", "buildctl-daemonless.sh"), []byte(stub), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	scriptFile := filepath.Join(dir, "build-and-push.sh")
+	if err := os.WriteFile(scriptFile, []byte(script), 0o755); err != nil {
+		t.Fatal(err)
+	}
+
+	cmd := exec.Command("sh", scriptFile)
+	cmd.Dir = filepath.Join(dir, "source")
+	cmd.Env = []string{
+		"PATH=" + filepath.Join(dir, "bin") + string(os.PathListSeparator) + os.Getenv("PATH"),
+		"HOME=" + dir,
+		"BUILD_ARGS=" + buildArgs,
+		"BUILDCTL_ARGS_FILE=" + argsFile,
+	}
+	combined, runErr := cmd.CombinedOutput()
+	recorded, readErr := os.ReadFile(argsFile)
+	if readErr == nil {
+		args = strings.Split(strings.TrimSuffix(string(recorded), "\x00"), "\x00")
+	}
+	return args, string(combined), runErr
 }
 
 // Exactly the image-building step of each image task declares a size, and no
@@ -345,6 +523,7 @@ var reviewedLedger = []string{
 	"v8 edbafddc965a05a343ba736924d633949932861b0ead3d4417d11f395392d646",
 	"v9 674e42c1d0dbf3b624459631467f09ee6efdb7f19e34147c4ab41a213affb7b4",
 	"v10 e20b7f0efcfbf30a810cda14631b9d943734b91e6767249d4b4414e253514be3",
+	"v11 91c06969eba215aee707960adee2527469881192c6d087ff7641cb363f8fa4e7",
 }
 
 func TestContent_theLedgerNeverRewritesARecordedState(t *testing.T) {
