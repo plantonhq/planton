@@ -2,7 +2,7 @@ apiVersion: aws.planton.dev/v1alpha1
 kind: AwsServerlessElasticache
 metadata:
   name: ${name}
-  org: ${org}
+  org: '${org}'
   env: prod
   id: ${name}-prod
 spec:

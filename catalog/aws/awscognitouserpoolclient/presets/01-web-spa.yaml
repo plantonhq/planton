@@ -2,7 +2,7 @@ apiVersion: aws.planton.dev/v1alpha1
 kind: AwsCognitoUserPoolClient
 metadata:
   name: ${name}
-  org: ${org}
+  org: '${org}'
   env: ${env}
   id: ${id}
   annotations:

@@ -71,7 +71,7 @@ jobs:
 
       - uses: plantonhq/planton/actions/deploy@main
         with:
-          org: acme
+          org: 'acme'
           service: checkout-api
           environment: prod
           image: ghcr.io/acme/checkout-api@${{ steps.build.outputs.digest }}
@@ -97,7 +97,7 @@ The trust acts as a service account. Name none and Planton provisions one for th
 apiVersion: iam.planton.ai/v1alpha1
 kind: WorkloadIdentityBinding
 metadata:
-  org: acme
+  org: 'acme'
   name: checkout-api-github
 spec:
   audience: https://acme.example/planton

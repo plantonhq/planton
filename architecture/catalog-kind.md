@@ -47,7 +47,7 @@ apiVersion: <provider>.planton.dev/<version>
 kind: <KindName>
 metadata:
   name: <resource-name>
-  org: <organization>
+  org: '<organization>'
   env: <environment>
 spec:
   # Provider-specific configuration
