@@ -42,12 +42,15 @@ planton infra stack get <id-or-name> --env <env>  # one stack, full record (its 
 planton infra stack history <name> --env <env>  # its revisions: every plan applied, newest first
 planton infra stack plan <name> --env <env>     # what applying would do now (writes nothing)
 planton infra stack review <name> --env <env>   # the request waiting in a protected environment (writes nothing)
-planton infra stack status <name>                # its environments in promotion order: what each runs, its
-                                                 # chart version, how far behind or ahead, what is moving in
+planton infra stack status <name>                # its environments path by path, stage by stage: what each
+                                                 # runs, its chart version, how far behind or ahead, what is
+                                                 # moving in
 planton infra stack diff <name> --env <env> --against <env>   # two environments side by side, values first
                                                  # (or --revision N --against-revision M); exit 1 = they differ
 planton env list                          # environments in the org
-planton service status <service>          # a service's environments in promotion order: the build each
+planton promotion-path list               # the order they move in: each Promotion Path's stages (siblings
+                                          # in braces), where Promotion Only starts, those on no path
+planton service status <service>          # a service's environments path by path, stage by stage: the build each
                                           # runs, rollout, distance ("3 commits behind dev"), runs in
                                           # flight by number; -o json|yaml for the path itself
 planton search connections                # provider connections (which clouds/clusters)
@@ -83,7 +86,7 @@ confirmation, same as any other.
 
 `planton env list` includes pull-request PREVIEW environments
 (`{service}-pr-{n}`, marked as previews in the KIND column). They come and go
-with pull requests, refuse direct deletes, and never join promotion order —
+with pull requests, refuse direct deletes, and never sit on a Promotion Path —
 never propose architecture that depends on one. Their story lives in
 `references/service.preview-environments.md`.
 
@@ -106,7 +109,7 @@ planton infra stack apply <name> [folder] --env <env> -m "<why>" --plan-digest <
 planton infra stack reconcile <name> --env <env>      # plans putting back what drifted; applies
                               # like apply (-m, --plan-digest; --dry-run stops at the plan)
 planton infra stack withdraw <name> --env <env>       # takes a waiting request back
-planton infra stack promote <name> --from <env> --to <env>
+planton infra stack promote <name> --from <env> [--to <env>]   # left out, --to is the next stage
 planton infra stack rollback <name> --env <env> [--to-revision N]
 planton infra stack upgrade <name> --env <env>
 ```
@@ -130,9 +133,10 @@ carries promote, roll back, upgrade and the CI flow.
 ## Delivering a service (mutations, except the reads marked)
 
 ```
-planton service status <service>                        # read: each environment in promotion order
-planton service promote <service> --from <env> --to <env> --dry-run   # what the run would do
-planton service promote <service> --from <env> --to <env>   # or --deployment <svcdepl_id> --to <env>
+planton service status <service>                        # read: each environment, path by path and stage by stage
+planton service promote <service> --from <env> [--to <env>] --dry-run   # what the run would do
+planton service promote <service> --from <env> [--to <env>]   # or --deployment <svcdepl_id> --to <env>;
+                                                        # left out, --to is the next stage on the path
 planton service rollback <service> --env <env> [--to-deployment <svcdepl_id>]
 planton service redeploy <service> --env <env>          # what runs, applied again (puts drift back)
 planton service deploy <service> --env <env> --image <ref>

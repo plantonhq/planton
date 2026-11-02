@@ -17,7 +17,7 @@ excerpt: "Control which Git events build, which environments a run walks, how pr
 
 # How to Configure Branch Deployments and Tag Releases
 
-This tutorial shows you how to control the relationship between Git activity and deployments in Planton. You will learn which pushes build, how a run walks your environments in promotion order, how a protected environment pauses a run for approval, how to build (or deploy) pull requests and tags, how to bind a standing branch to exactly one environment, and how to start a run by hand.
+This tutorial shows you how to control the relationship between Git activity and deployments in Planton. You will learn which pushes build, how a run walks your environments along your organization's Promotion Paths, how a protected environment pauses a run for approval, how to build (or deploy) pull requests and tags, how to bind a standing branch to exactly one environment, and how to start a run by hand.
 
 If you completed [How to Deploy Your First Service with Zero-Config CI/CD](/tutorials/how-to-deploy-your-first-service-with-zero-config-cicd), you have a Service that builds on pushes to `main` and deploys the overlays your repository carries. This tutorial builds on that foundation.
 
@@ -26,7 +26,7 @@ If you completed [How to Deploy Your First Service with Zero-Config CI/CD](/tuto
 ## What You Will Learn
 
 - Where every trigger rule lives: `spec.build.triggers`
-- How a run walks your environments, and why the order and the gates are the environments' properties, not the service's
+- How a run walks your environments, and why the order (your organization's Promotion Paths) and the gates (each environment's protection) are not the service's to set
 - How to build pull requests, and how to give each one a preview environment
 - How to set up tag-based releases with glob patterns
 - How to bind a branch to one environment (`spec.deploy.branchDeployments`)
@@ -35,12 +35,12 @@ If you completed [How to Deploy Your First Service with Zero-Config CI/CD](/tuto
 ## Prerequisites
 
 - [ ] A working Service deployed through Planton (see [How to Deploy Your First Service with Zero-Config CI/CD](/tutorials/how-to-deploy-your-first-service-with-zero-config-cicd))
-- [ ] At least two environments in your Planton organization (e.g., `dev` and `production`)
+- [ ] At least two environments in your Planton organization (e.g., `dev` and `production`), with `dev` on a Promotion Path
 - [ ] The `planton` CLI installed and authenticated
 
 ## How Triggers and Deployments Relate
 
-Two things decide what happens on a push. **Triggers** (`spec.build.triggers`) decide whether the push BUILDS: which branches, which paths, whether pull requests and tags count. **Your environments** decide where a successful build DEPLOYS: a run walks every environment the service declares, in the organization's promotion order, and pauses wherever an environment is protected. The service does not list environments in a second place — for a git-maintained service the overlays under `_kustomize/overlays/<env>/` ARE the environment set; for a manually configured service, the entries under `spec.deploy.environments` are.
+Two things decide what happens on a push. **Triggers** (`spec.build.triggers`) decide whether the push BUILDS: which branches, which paths, whether pull requests and tags count. **Your environments** decide where a successful build DEPLOYS: a run walks every environment the service declares along the organization's **Promotion Paths** — each path's stages in order, stopping where the path marks the rest Promotion Only — and pauses wherever an environment is protected. An environment the service declares but your organization has placed on no path is skipped, with the reason, never guessed into the order. The service does not list environments in a second place — for a git-maintained service the overlays under `_kustomize/overlays/<env>/` ARE the environment set; for a manually configured service, the entries under `spec.deploy.environments` are.
 
 ## Step 1: Deploy to a Second Environment
 
@@ -81,7 +81,14 @@ spec:
           memory: 2Gi
 ```
 
-Commit and push. That push is itself a run: the platform reads the new overlay, records `production` as one of the service's environments, and from now on every run walks `dev` and then `production`, in the promotion order your organization defines for those environments. If `dev` fails, `production` is never attempted; completed environments stay deployed.
+Then place `production` on the Promotion Path `dev` sits on, as the stage after it. This step is required: no push to `main` deploys an environment on no path, and the run would read **Not on a Promotion Path** for `production`. In the web console, open **Environments → Promotion** and use **Move To** on `production` under **Not on a Path**; from the CLI, set the path whole (`planton promotion-path list` names it):
+
+```bash
+planton promotion-path list
+planton promotion-path set my-org --stage dev --stage production
+```
+
+Commit and push. That push is itself a run: the platform reads the new overlay, records `production` as one of the service's environments, and from now on every run walks `dev` and then `production`, the stages of their path. If `dev` fails, `production` is never attempted; completed environments stay deployed. To have pushes stop before `production` and leave it to a promotion, add `--promotion-only-from 2`.
 
 ## Step 2: Gate Production with an Approval
 
@@ -139,7 +146,7 @@ A preview is torn down automatically when the pull request closes, or when it go
 
 ## Step 5: Configure Tag-Based Releases
 
-A tag is a release. A tag run builds the image tagged with the TAG NAME (a branch run tags with the commit sha) and, when tag deploys are enabled, rides the full promotion walk — gates and protection included — exactly like a default-branch push.
+A tag is a release. A tag run builds the image tagged with the TAG NAME (a branch run tags with the commit sha) and, when tag deploys are enabled, walks the Promotion Paths in full — gates and protection included — exactly like a default-branch push.
 
 Build tags without deploying them:
 
@@ -180,7 +187,7 @@ spec:
         env: staging
 ```
 
-A push to `staging` builds and deploys into `staging` only — it never walks the promotion order — and inherits that environment's gate and protection. A branch may be a trigger branch OR a mapped branch, never both; the platform refuses the ambiguity when you apply. Pushes to the trigger branches keep the promotion walk.
+A push to `staging` builds and deploys into `staging` only — it never walks the Promotion Paths — and inherits that environment's gate and protection. A branch may be a trigger branch OR a mapped branch, never both; the platform refuses the ambiguity when you apply. Pushes to the trigger branches keep walking the paths.
 
 ## Step 7: Start, Re-run, and Cancel Runs by Hand
 
@@ -194,7 +201,7 @@ planton service cancel my-service 43
 planton service runs my-service                                 # everything that ran, newest first, each by its number
 ```
 
-A manual run goes through the same path as a push: the same compile, the same build, and the same destination. A trigger branch walks the promotion order, and a mapped branch deploys only to its environment; `--deploy-env` names one environment instead. A service with no trigger branch has no walk for a commit to ride, so `--commit` there needs `--branch` (deploying where that branch is mapped) or `--deploy-env`, and is refused without one. Every run has a number within its service ("Run #42"), and every run verb takes it after the service name, or the run's id. A rerun replays a build's stamped pipeline definition without recompiling, so it is the right verb after a fix outside the code (a credential, a runner); after a code fix, push a new commit. A promotion, rollback, or image deploy is never rerun — it built nothing — so the platform refuses it and names the command to use instead: promote again, roll back again, or deploy the image again.
+A manual run goes through the same path as a push: the same compile, the same build, and the same destination. A trigger branch walks the Promotion Paths, and a mapped branch deploys only to its environment; `--deploy-env` names one environment instead. A service with no trigger branch has no walk for a commit to ride, so `--commit` there needs `--branch` (deploying where that branch is mapped) or `--deploy-env`, and is refused without one. Every run has a number within its service ("Run #42"), and every run verb takes it after the service name, or the run's id. A rerun replays a build's stamped pipeline definition without recompiling, so it is the right verb after a fix outside the code (a credential, a runner); after a code fix, push a new commit. A promotion, rollback, or image deploy is never rerun — it built nothing — so the platform refuses it and names the command to use instead: promote again, roll back again, or deploy the image again.
 
 ## Common Patterns and Tips
 

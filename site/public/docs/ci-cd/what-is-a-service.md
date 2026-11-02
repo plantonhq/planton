@@ -20,8 +20,8 @@ Think of a Service like a `.vercel.json` file, but for backend applications with
 <!-- SCREENSHOT: Service details overview
   Page: /{org}/service/{slug}
   Action: Show the Overview of a configured service: its repository and latest run, and its environments drawn as the Delivery Path
-  Focus: Full page showing the source band and the environment tiles in promotion order
-  Alt: Service details page showing the connected repository, the latest run, and each environment's build in promotion order
+  Focus: Full page showing the source band and the environment tiles along the Promotion Path
+  Alt: Service details page showing the connected repository, the latest run, and each environment's build along its Promotion Path
 -->
 
 ## The Four Pillars of a Service
@@ -151,7 +151,7 @@ The web console provides a guided wizard for creating services:
 
 After creation, the service's page has these tabs:
 
-- **Overview**: the repository and the latest run, then the **Delivery Path** — each environment in promotion order with the build it runs, how far it is from the environment before ("3 commits behind dev"), and any run moving into it, live. **Promote** sits on the step between two environments. See [Deployment Environments](/docs/ci-cd/deployment-environments#where-each-environment-stands-the-delivery-path).
+- **Overview**: the repository and the latest run, then the **Delivery Path** — each environment along your organization's Promotion Paths, one row per path, with the build it runs, how far it is from the environment it is compared with ("3 commits behind dev"), and any run moving into it, live. **Promote** sits on the step between two stages, and a build is promoted only between stages of the same path. See [Deployment Environments](/docs/ci-cd/deployment-environments#where-each-environment-stands-the-delivery-path).
 - **Deployments**: each environment's deployment history, with **Roll Back** and **Roll Back to This** beside the records they restore, and on each environment **Redeploy** (apply what runs there again, putting back anything changed outside Planton) and **Check for Drift** (compare what runs with the cloud; the result shows on each environment as In Sync or Drifted).
 - **Runs**: every run, newest first — Planton's runs by number ("Run #128") and the repository's own CI runs by workflow — updating live, with the **Run** button.
 - **Configuration**: the environments the service deploys to, build triggers, deploy settings, and the switches that pause builds or deployments.
@@ -194,7 +194,8 @@ planton service run my-service --tag v1.4.0
 # View deployment history
 planton service deployments my-service
 
-# Promote what runs in dev into staging; roll staging back
+# Promote what runs in dev to the next stage on its path (name --to to pick one); roll staging back
+planton service promote my-service --from dev
 planton service promote my-service --from dev --to staging
 planton service rollback my-service --env staging
 

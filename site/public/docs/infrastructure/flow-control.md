@@ -52,7 +52,7 @@ A single job may also ask for this pause on its own — a destroy you want to re
 ## What the Environment Adds
 
 - **A protected environment** forces the pause between preview and apply on every job that changes a resource there directly, and the approval must come from someone other than the person who started it while another approver exists. A stack's run into a protected environment is a **request** instead: the approver reads the exact plan once, before anything applies, and the jobs it runs do not ask again (see [Infra Stacks](/docs/infrastructure/infra-stacks#in-a-protected-environment-a-change-is-a-request)).
-- **An environment marked Promotion Only** changes by promotion from the environment before it. For a service, automatic pushes stop there. For an Infra Stack, a template edit that did not arrive by promotion is cautioned on its plan ("prod changes by promotion from staging. This edit makes prod differ from staging.") and never refused; protection still decides who may make it.
+- **An environment in a Promotion Only stage** changes by promotion from an earlier stage of its path. Promotion Only belongs to the stage on its [Promotion Path](/docs/ci-cd/deployment-environments#promotion-paths-the-order-a-push-walks), not to the environment: it covers that stage and every later one, so moving an environment to another stage changes whether it is Promotion Only. For a service, pushes stop there. For an Infra Stack, a template edit that did not arrive by promotion is cautioned on its plan ("prod changes by promotion from staging. This edit makes prod differ from staging.") and never refused; protection still decides who may make it.
 
 ## Annotations a Stack's Plan Reads
 

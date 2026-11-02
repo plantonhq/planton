@@ -40,7 +40,7 @@ You will do two things: tell Planton where your code lives and where you want it
 
 ## Prerequisites
 
-- [ ] A Planton organization with at least one environment configured
+- [ ] A Planton organization with at least one environment configured (this tutorial uses `dev`), placed on a Promotion Path — creating an environment asks where it goes
 - [ ] A GitHub connection (see [How to Connect Your GitHub Account to Planton](/tutorials/how-to-connect-your-github-account-to-planton))
 - [ ] A container registry connection (see [How to Connect a Container Registry to Planton](/tutorials/how-to-connect-a-container-registry-to-planton))
 - [ ] A Kubernetes cluster accessible from your Planton organization
@@ -228,7 +228,7 @@ Here is what each section does:
 - `registry` and `imageRepositoryPath` say where the image is pushed: `<registry host>/<imageRepositoryPath>:<commit sha>`.
 - `triggers.branches` lists the branches whose pushes build. Leaving it empty means the repository's default branch. Every trigger rule — branches, paths, pull requests, tags — lives here and nowhere else.
 
-**`deploy.kustomize: {}`**: Declares that your repository's `_kustomize/` tree is what the service deploys. The overlays under `_kustomize/overlays/` ARE the environment set — a `dev` overlay means the service deploys to `dev`; add a `production` overlay later and it deploys there too, in your organization's promotion order. There is no separate list of environments to keep in sync.
+**`deploy.kustomize: {}`**: Declares that your repository's `_kustomize/` tree is what the service deploys. The overlays under `_kustomize/overlays/` ARE the environment set — a `dev` overlay means the service deploys to `dev`; add a `production` overlay later and it deploys there too, once `production` sits on your organization's Promotion Paths, which set the order a push walks. There is no separate list of environments to keep in sync.
 
 ## Step 3: Apply the Service and Watch the Initial Pipeline
 
@@ -250,7 +250,7 @@ planton service run my-service --branch main --follow
 2. **build-image**: Buildpacks detects your language, compiles your application, and pushes a container image tagged with the commit SHA
 3. **kustomize-build**: Renders each overlay against the base and stores the result for the deploy stage
 
-Then the deploy stage walks your environments in promotion order — here, `dev` — applying the rendered manifests with the built image reference injected.
+Then the deploy stage walks your environments along your organization's Promotion Paths — here, `dev` — applying the rendered manifests with the built image reference injected. An environment on no path is skipped and reads **Not on a Promotion Path**; place it on **Environments → Promotion** (or with `planton promotion-path set`) and run again.
 
 To find a run later, or to read a build's own output (the place a build failure explains itself):
 
@@ -364,7 +364,7 @@ Note the `isIngressPort: true` flag on the port -- this tells the ingress contro
 
 ### Adding a Production Environment
 
-Create `_kustomize/overlays/production/kustomization.yaml` and `_kustomize/overlays/production/service.yaml` with production-specific settings (higher resource limits, more replicas), commit, and push. That push is a run: the platform reads the new overlay, records `production` as one of the service's environments, and every run from then on walks `dev` and then `production` in your organization's promotion order. There is no list on the Service to update — the overlays are the environment set. To pause a run before `production` for a human decision, mark the environment protected in your organization; see [How to Configure Branch Deployments and Tag Releases](/tutorials/how-to-configure-branch-deployments-and-tag-releases).
+Create `_kustomize/overlays/production/kustomization.yaml` and `_kustomize/overlays/production/service.yaml` with production-specific settings (higher resource limits, more replicas). Then place `production` on the Promotion Path `dev` sits on, as the stage after it: **Environments → Promotion** and **Move To** on `production`, or `planton promotion-path set my-org --stage dev --stage production`. This step is required — a push to `main` never deploys an environment on no path. Commit and push. That push is a run: the platform reads the new overlay, records `production` as one of the service's environments, and every run from then on walks `dev` and then `production`, the stages of their path. There is no list on the Service to update — the overlays are the environment set. To pause a run before `production` for a human decision, mark the environment protected in your organization; see [How to Configure Branch Deployments and Tag Releases](/tutorials/how-to-configure-branch-deployments-and-tag-releases).
 
 ### Overriding the Kustomize Directory
 

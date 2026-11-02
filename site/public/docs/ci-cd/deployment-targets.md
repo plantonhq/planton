@@ -120,26 +120,24 @@ The web console displays a note: "No deployment targets configured. Pipelines wi
 
 ## Manual Approval Gates
 
-Each deployment target can require manual approval before the pipeline deploys to that environment.
+A deployment target into a **protected environment** waits for approval before the pipeline deploys there. Protection is a property of the environment, set once on it, so every service that deploys there inherits the gate; a deployment target carries no approval setting of its own.
 
-When a manual gate is active:
+When a run reaches a protected environment:
 
 1. The pipeline completes preceding deployments.
-2. The pipeline pauses at the gated environment.
+2. The pipeline pauses at the protected environment.
 3. A team member approves or rejects via the web console or CLI.
 4. On approval, deployment proceeds. On rejection, the pipeline stops.
 
-Manual gates can also be enforced by the organization's promotion policy, independent of per-target settings. If either the target or the policy requires approval, the gate is enforced.
-
 ```bash
-# Approve or reject a manual gate from the CLI
-planton service pipeline resolve-manual-gate <pipeline-id> <deployment-task-name> yes
-planton service pipeline resolve-manual-gate <pipeline-id> <deployment-task-name> no
+# Approve or reject a gate from the CLI (the run by its service and number, or by its id)
+planton service resolve-env-manual-gate my-service 130 prod approve
+planton service resolve-env-manual-gate my-service 130 prod reject
 ```
 
-## Deployment Ordering
+## Which Environment Deploys First
 
-Deployment targets are executed in the order defined by the organization's promotion policy, not by the order in which targets are listed in the Service configuration. The promotion policy defines the canonical deployment sequence (e.g., dev, then staging, then production) and determines which transitions require manual approval.
+Deployment targets run in the order your organization's [Promotion Paths](/docs/ci-cd/deployment-environments#promotion-paths-the-order-a-push-walks) place their environments, not in the order the targets are listed in the Service configuration. Each path is a product line's stages, first to last (e.g., dev, then staging, then production); a push walks them stage by stage and stops where the path marks the rest Promotion Only. A target whose environment sits on no path is skipped by a push, with the reason and how to place it, because Planton never guesses where an environment belongs. The paths decide the order only; protection decides who must approve.
 
 ## Configuring Deployment Targets
 
@@ -150,7 +148,6 @@ During service creation, the deployment configuration step allows adding targets
 1. **Environment name**: Free-text with suggestions (dev, staging, production).
 2. **Cloud provider**: Filtered by artifact type — container images show Kubernetes, AWS, GCP; Cloudflare Workers show Cloudflare only.
 3. **Resource type**: Provider-specific options (e.g., Deployment or StatefulSet for Kubernetes).
-4. **Manual approval**: Optional checkbox per target.
 
 Targets appear as cards that can be edited or removed. After creation, targets are managed in the service details page.
 

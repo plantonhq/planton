@@ -381,7 +381,7 @@ Hold these invariants in every service answer:
   declaring `deploy.kustomize`) the platform's build lane writes
   `deploy.environments`; user applies preserve the stored section. On a
   manually-declared service, the caller writes it. Nothing else ever does (`references/service.configuring-deployments.md`).
-- **Environments are the organization's, ordered by promotion rank**; protection and
+- **Environments are the organization's, placed on its Promotion Paths** (stages; siblings share one; a push's walk skips an environment on no path); protection and
   approval are the ENVIRONMENT's properties, never the service's. A delivery's initiator approves it only when no other approver exists.
 - **Receipts are exact.** Promote re-applies a captured artifact+configuration pair; rollback restores a receipt byte-for-byte; redeploy applies what runs again, exactly, to put drift back; none re-renders or needs the repository reachable. What a run no longer declares is removed after the rest applied (`references/service.delivery-verbs.md`).
 - **Refusals name their working paths**: relay them, never retry them.
@@ -415,7 +415,7 @@ Read the file whose "Read when" matches the moment; never answer from memory wha
 | `references/infra.config-references.md` | A field needs a credential or operator-managed config value; the `$var`/`$secret` grammar; which field a secret reference may go in (sensitive fields, and the secret home a viewer-readable field names) and why; looking up or creating secrets and variables |
 | `references/infra.kubernetes-on-cluster.md` | The chart has Kubernetes-kind resources; wiring workloads to a cluster |
 | `references/infra.diagrams.md` | How the platform draws what you author (account rooms, placement, lines, `metadata.group` trays); choosing a reference, `runs_on`, or a dedicated kind with the picture in mind; predicting the picture |
-| `references/infra.environments.md` | The user mentions environments; how many clusters; cross-env connection authorization |
+| `references/infra.environments.md` | The user mentions environments; placing one on a Promotion Path, or the order pushes and promotions move through them (`planton promotion-path`); how many clusters; cross-env connection authorization |
 | `references/infra.build-contract.md` | Parsing build output; exit codes; CI usage; endpoint pinning; the wire channel |
 | `references/infra.issue-catalog.md` | A build failed and you need the fix pattern for an error |
 | `references/infra.deployment-model.md` | What happens after deploy (Infra Stacks, pipelines, Infra Jobs, IaC modules); explaining or diagnosing it |

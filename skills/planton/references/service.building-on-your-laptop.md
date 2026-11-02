@@ -37,7 +37,7 @@ planton daemon logs <part>                # one part's log from the latest start
 planton local restart                     # every part starts fresh, no data touched; waits until healthy
 planton follow <run>                      # the run live: the wake as its own beat, the build, the deploy, the GitHub line, the platform line
 planton service urls <service>            # the environment card's truth: URL and rollout verdict, or why there is no address
-planton service status <service>          # every environment in promotion order: its build, verdict, distance, and runs in flight
+planton service status <service>          # every environment, path by path and stage by stage: its build, verdict, distance, and runs in flight
 ```
 
 Reading `planton local build-cluster status`: **Not Set Up** (no cluster, no cost) · **Setting Up · <note>** (the ladder is narrating) · **Ready · idle for N minutes** / **Building · N builds running** · **Stopped — starts in about fifteen seconds when a build is dispatched** (asleep, costs nothing; the estimate is this machine's own last start) · **Stopped — <cause>** (an unexpected stop, or Docker off — the cause is the sentence) · **Failed · <sentence>** (Try Again in the desktop or `enable` again; the sentence names the next step).

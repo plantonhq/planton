@@ -116,7 +116,7 @@ export const PERSONAS: readonly Persona[] = [
       { chapter: 'every-deployment-leaves-a-record', weight: 'lead', angle: 'The deploy nobody watched is an Infra Job with the configuration embedded, the verdicts stamped, and the approver named. You read it; you do not reconstruct it.', proof: [0, 1, 3], provenAt: '/trust/the-record' },
       { chapter: 'what-planton-is', weight: 'supporting', angle: 'Two halves: Infra Hub, where a design becomes a template your team redeploys, and Service Hub, where a push becomes a deployment inside your environments\u2019 gates.', proof: [0, 1], provenAt: '/product/infra-hub' },
       { chapter: 'runs-where-you-decide', weight: 'supporting', angle: 'Start on your laptop for free and move to hosted or your own cluster with the same manifests. Connections can be keyless, and every module is open source.', proof: [0, 1, 3], provenAt: '/distributions' },
-      { chapter: 'services-ship-from-git', weight: 'supporting', angle: 'Once the infrastructure exists, developers connect a repository and every push obeys the promotion order and the gates you declared.', proof: [1, 2], provenAt: '/product/service-hub' },
+      { chapter: 'services-ship-from-git', weight: 'supporting', angle: 'Once the infrastructure exists, developers connect a repository and every push follows your Promotion Paths and the gates you declared.', proof: [1, 2], provenAt: '/product/service-hub' },
       { chapter: 'bring-what-you-have', weight: 'supporting', angle: 'What already exists is adopted and its state imported in one verified step, so the record covers your estate, not only what Planton created.', proof: [0, 1, 2], provenAt: '/product/import' },
     ],
     objections: [

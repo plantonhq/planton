@@ -64,7 +64,8 @@ Environments are logical groupings that separate your resources — typically co
 1. Navigate to **Infra Hub** in the sidebar
 2. Click **Create Environment** (or find the environment creation option)
 3. Enter a name — start with something like `dev` or `development`
-4. Click **Create**
+4. Choose where it goes on your **Promotion Paths**, the order pushes deploy your environments in — for your first environment, a new path named after your organization. No trigger-branch push or tag release deploys an environment on no path.
+5. Click **Create**
 
 <!-- SCREENSHOT: Create Environment
   Page: /orgs/{org}/environments/create
@@ -82,8 +83,18 @@ Acme Corp / dev
 **Using the CLI:**
 
 ```bash
-# Create an environment
+# Create an environment; at a terminal it asks where it goes on your Promotion Paths
+# (for your first one, a new path named after your organization)
 planton env create dev --description "Development environment"
+
+# Later ones can say it up front: a new last stage of an existing path
+# (--stage <n> joins stage n beside its environments), or on no path
+planton env create staging --path acme-corp
+planton env create sandbox --no-path
+
+# In a script, a new environment lands on no path; place it afterwards
+# (--yes answers the confirm a script cannot)
+planton promotion-path set acme-corp --stage dev --yes
 
 # List environments
 planton env list
@@ -192,8 +203,8 @@ planton context get
 # List environments
 planton env list
 
-# Create an environment
-planton env create <name> --description "<description>"
+# Create an environment and place it on a Promotion Path (it asks at a terminal)
+planton env create <name> --description "<description>" [--path <existing-path> [--stage <n>] | --no-path]
 
 # Get environment details
 planton env get <name>

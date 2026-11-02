@@ -40,7 +40,7 @@ For self-managed pipelines, the build stage runs your custom Tekton pipeline ins
 
 ### Deploy Stage
 
-The deploy stage rolls out the built artifact to each configured environment. Environments are deployed sequentially, following your organization's promotion policy (for example: dev, then staging, then production).
+The deploy stage rolls out the built artifact to each configured environment. Environments are deployed one at a time along your organization's [Promotion Paths](/docs/ci-cd/deployment-environments#promotion-paths-the-order-a-push-walks) (for example: dev, then staging, then production), stage by stage, stopping on each path where Promotion Only starts. An environment on no path is never guessed into the order: the run skips it and says how to place it.
 
 For each environment, the deploy stage applies the service's Infra Components, each through an Infra Job — an atomic infrastructure operation. Only the resources whose inputs moved since their last successful deploy run a job. The rest read **Unchanged since Run #126**, naming the run whose job last applied them, and run nothing; a resource whose lifecycle events are disabled reads **Unmanaged** and is left alone. The deployment record lists every resource with what happened to it. To apply every resource anyway, deploy, promote, roll back or redeploy with `--reapply-all` (**Re-apply Every Resource** in the console's Promote, Roll Back and Redeploy dialogs).
 
@@ -123,7 +123,7 @@ planton service run my-service --branch main --deploy-env dev
 planton service run my-service --tag v1.4.0
 ```
 
-`--tag` runs a tag release: it builds the tagged commit and walks every environment in promotion order, gates included, just as the tag push would have. It is its own choice — it cannot be combined with `--branch` or `--commit` — and it is refused when the service's tag triggers are off or when the tag matches none of its tag patterns. A service with no trigger branch has no default branch head to fall back on, so a run naming nothing is refused with the command to use instead:
+`--tag` runs a tag release: it builds the tagged commit and walks the service's environments along your Promotion Paths, gates included, just as the tag push would have. It is its own choice — it cannot be combined with `--branch` or `--commit` — and it is refused when the service's tag triggers are off or when the tag matches none of its tag patterns. A service with no trigger branch has no default branch head to fall back on, so a run naming nothing is refused with the command to use instead:
 
 ```text
 service 'my-service' has no trigger branch to build by default, so name what to run: planton service run my-service --tag <tag> (or --branch <branch>)
@@ -150,7 +150,7 @@ Both settings are available on the service's **Configuration** tab in the web co
 
 ## Manual Approval Gates
 
-Deployment targets can require manual approval before the pipeline deploys to that environment. A gate is enforced when you enable manual approval on a deployment target, or when your organization's promotion policy mandates approval for that environment.
+A run pauses for approval before it deploys to a **protected environment**. Protection is a property of the environment, set once on it, so every service that deploys there inherits the gate; a service carries no approval switch of its own. Your Promotion Paths decide only the order a run walks, never who must approve. The person who started the run cannot approve it while another approver exists.
 
 When a pipeline reaches a gated environment:
 

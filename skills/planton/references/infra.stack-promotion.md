@@ -1,9 +1,11 @@
 # Promote, Roll Back, Upgrade, Compare — A Stack Across Its Environments
 
-A stack's name is its lineage: **the same name in every environment is the
-same stack at another stage.** `app-infra` in qa, staging and prod is three
-separate records — each with its own values, revisions, runs and access —
-and one stack moving through its stages. A template moves forward by
+A stack lives on its environment's Promotion Path, and its identity is its
+name on that path: **the same name on the same path is the same stack.**
+`app-infra` in qa, staging and prod on the homes path is three separate
+records — each with its own values, revisions, runs and access — and one
+stack at three stages. `app-infra` in an environment on another path, or on
+no path, is another stack. A template moves between stages of its path by
 **Promote**; each environment keeps the values it set. Every apply is a
 revision you can return to by **Roll Back**. A stack installed from a
 catalog chart follows that chart, and **Upgrade** moves it to the chart's
@@ -24,37 +26,63 @@ planton infra stack status <slug>              # writes nothing
 planton infra stack status <slug> -o json      # the path itself (or -o yaml)
 ```
 
-The stack's environments in promotion order, one line each — what it runs
-and how far it is from the stage before:
+One section per Promotion Path the name lives on, headed by the path's name
+and where Promotion Only starts; one record per environment with its stage
+number (siblings share it): what runs there on the first line, its chart
+version and how far it is from its comparison source on the second, then
+each run moving in. The environments on no path that hold the name follow,
+then the commands that move it on:
 
 ```
-qa       Live r9 · Raise replicas · app-infra v4
-staging  Live r6 · Raise replicas · app-infra v4    Same template as qa
-prod     Live r14 · Pin version · app-infra v3      2 revisions behind staging
+Status · app-infra
+
+homes · Promotion Only from stage 3
+1  qa                   r9 · Raise replicas
+                        app-infra v4
+2  staging              r6 · Raise replicas
+                        app-infra v4 · Same template as qa
+3  prod-eu (protected)  r14 · Pin version · Requested r15
+                        app-infra v3 · 2 revisions behind staging
+                        Promoting from staging · Awaiting Your Approval · r15
+   prod-us (protected)  Not Applied · Promote from staging would create it
+
+On No Promotion Path (no promotion leads here)
+   sandbox              r2 · Try it
+                        app-infra v4
+
+r15 waits for your approval in prod-eu: planton infra stack review app-infra --env prod-eu
+Promote staging to prod-us: planton infra stack promote app-infra --from staging --to prod-us
 ```
 
-- **What runs**: the live revision ("Live r9 · Raise replicas") and the
-  chart version it runs. **Not Applied** when the stage has nothing applied
-  (never applied, or undeployed since); a first request that closed without
-  applying reads "Not Applied · Request Rejected".
-- **The distance** from the stage before, read from the revisions' template
+- **What runs**: the live revision ("r9 · Raise replicas") and the chart
+  version it runs, then a newer revision that failed ("r10 Failed") or a
+  request waiting ("Requested r15"). **Not Applied** when the environment
+  has nothing applied (never applied, or undeployed since); a first request
+  that closed without applying reads "Not Applied · Rejected" (the stack
+  page: "Not Applied · Request Rejected"). Where Promote would create the
+  stack, it says so ("Promote from staging would create it").
+- **The distance** from its comparison source: the earlier-stage environment
+  its live template was promoted from, else the nearest earlier stage's
+  newest — never a sibling, never another path. The first stage holding the
+  stack compares with nothing. It is read from the revisions' template
   digests, never from timestamps — so a roll back is never mistaken for
   being behind:
   - **Same template as qa** — byte-equal templates and `values.yaml`.
-  - **2 revisions behind staging** — the stage before moved past this
-    template; Promote brings it here.
-  - **Ahead of qa** — this stage runs a template the stage before moved
-    away from, or never had yet. Promoting from qa would take this stage
-    back.
+  - **2 revisions behind staging** — staging moved past this template;
+    Promote brings it here.
+  - **Ahead of qa** — this environment runs a template qa moved away from,
+    or never had yet. Promoting from qa would take it back.
   - **Differs from staging** — neither history holds the other's template:
-    this stage was changed on its own.
-- **Update Available** — the chart has a newer version than the stage runs
-  ("app-infra v5 is available"). **customised** ("app-infra v4 ·
-  customised") — the stack's files differ from that chart version's.
+    this environment was changed on its own.
+- **Update Available** — the chart has a newer version than the
+  environment runs ("app-infra v4 · v5 available"). **customised**
+  ("app-infra v4 · customised") — the stack's files differ from that chart
+  version's.
 - **What is moving in** — a run applying, a request previewing or waiting
-  for approval ("Promoting staging r6 · Applying").
-- A stage you cannot read says only that ("You can't read app-infra in
-  prod"). Environments with no rank follow as Other Environments.
+  for approval ("Promoting from staging · Applying · r16").
+- An environment whose stack you cannot read says only that ("You can't
+  read app-infra in prod"). Environments on no path follow under **On No
+  Promotion Path**, each a stack of its own, never measured against another.
 
 The path is the answer to "is prod behind?", "did staging get the latest
 chart version?" and "what's waiting?". Agents read the same answer with
@@ -63,9 +91,14 @@ chart version?" and "what's waiting?". Agents read the same answer with
 ## Promote
 
 ```
-planton infra stack promote <slug> --from <env> --to <env> \
+planton infra stack promote <slug> --from <env> [--to <env>] \
   [--bring <name>]... [--set name=value]... [-m "<message>"]
 ```
+
+`--to` may be left out: it is then the next stage after `--from` on the
+stack's Delivery Path — its one environment, or at a terminal the sibling
+the person chooses; without a terminal, a stage of several is refused with
+the command to rerun with `--to`. Each sibling is promoted on its own.
 
 What travels and what stays:
 
@@ -90,8 +123,13 @@ More of what to know:
 
 - **A first promotion** into an environment with no stack of that name
   creates it there, with every value from the source.
-- **Either direction works**: "make qa like prod" is `--from prod --to qa`.
-  The path draws steps forward only.
+- **Either direction works** along the path: "make qa like prod" is
+  `--from prod --to qa`. The path draws steps forward only.
+- **A promotion stays on its Promotion Path.** Across two paths, or into or
+  out of an environment on no path, it is refused, naming both places and
+  the apply that reaches any environment directly ("A promotion stays on its
+  Promotion Path: 'prod-eu' is on the homes path and 'zm-staging' is on the
+  mortgage path. ...").
 - **The message** defaults to the source revision's message ("Raise
   replicas"); the revision's source line reads **"Promoted from staging
   r6"**, and so do its run's page, the activity feed and notifications.
@@ -103,11 +141,12 @@ More of what to know:
   reads "Promoted from staging r6" above the exact plan, the losses first,
   its cost and added permissions, and what else it affects. `-m` is
   required, as for any request.
-- **In an environment marked "changes only by promotion"**, a template edit
-  that did not come by promotion is cautioned on its plan ("prod changes by
-  promotion from staging. This edit makes prod differ from staging."), and
-  the path reads "Differs from staging". It is never refused; protection
-  decides who may change the environment.
+- **In a Promotion Only stage**, a template edit that did not come by
+  promotion is cautioned on its plan when the stack also lives in an earlier
+  stage of that path ("prod changes by promotion from staging. This edit
+  makes prod differ from staging."), and the path reads "Differs from
+  staging". It is never refused; protection decides who may change the
+  environment.
 - Refused, with the sentence to relay: promoting into the same environment,
   a source environment with no stack of that name, a source with nothing
   live, and an environment being deleted. Promoting needs read access on

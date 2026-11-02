@@ -142,13 +142,13 @@ This visualization makes it easy to understand the deployment topology and diagn
 
 ## One Stack, Many Environments
 
-An Infra Stack lives in exactly one environment, and its name is unique within that environment. The same name in every environment is the same stack at another stage: `app-infra` in qa, staging and prod is three records — each with its own values, its own history and its own runs, and changing one never touches another — and one stack moving through its stages. A template moves forward by [Promote](#promote), and each environment keeps the values it set. Every command that names a stack by name also names its environment with `--env`; a stack's id identifies it on its own. A stack's environment is fixed when it is created.
+An Infra Stack lives in exactly one environment, and its name is unique within that environment. A stack is its name on its [Promotion Path](/docs/ci-cd/deployment-environments#promotion-paths-the-order-a-push-walks): the same name in another environment of the same path is the same stack at another stage. `app-infra` in qa, staging and prod on one path is three records — each with its own values, its own history and its own runs, and changing one never touches another — and one stack moving through its stages. The same name on another path, or in an environment on no path, is another stack. A template moves between stages by [Promote](#promote), and each environment keeps the values it set. The Infra Stacks page shows one card per stack — one per name on each path, and one for each environment on no path that holds the name — with a line for each of its environments in the order a push walks them. Every command that names a stack by name also names its environment with `--env`; a stack's id identifies it on its own. A stack's environment is fixed when it is created.
 
 The environment also decides who may change the stack. Stacks follow the same access rules as the Infra Components they deploy: a permission granted on an environment covers that environment's stacks, and a protected environment stops organization-wide deploy and destroy permissions at its boundary.
 
 ### Where Each Environment Stands
 
-*Did staging update to the latest chart version?* The stack's page opens on its **Delivery Path**: its environments in promotion order, each saying what it runs and how far it is from the stage before.
+*Did staging update to the latest chart version?* The stack's page opens on its **Delivery Path**, headed by its Promotion Path's name: its environments stage by stage, siblings side by side, each saying what it runs and how far it is from the environment it is compared with — the one its template was promoted from when that sits in an earlier stage, otherwise the nearest earlier stage's environment with something applied, the newest first. The first stage holding the stack is compared with nothing, siblings are never compared with each other, and the next stage after the last one holding the stack is drawn too, where Promote would create it.
 
 ```text
 qa       Live r9 · Raise replicas · app-infra v4
@@ -157,7 +157,7 @@ prod     Live r14 · Pin version · app-infra v3      2 revisions behind staging
 ```
 
 - **What runs**: the live revision and the chart version it runs. A stage with nothing applied reads **Not Applied**.
-- **How far from the stage before**, read from the templates' digests, never from timestamps: **Same template as qa**, **2 revisions behind staging** (Promote brings it here), **Ahead of qa** (the stage before moved away from this template), or **Differs from staging** (it was changed on its own). A roll back is never mistaken for being behind.
+- **How far from the environment it is compared with**, read from the templates' digests, never from timestamps: **Same template as qa**, **2 revisions behind staging** (Promote brings it here), **Ahead of qa** (the stage before moved away from this template), or **Differs from staging** (it was changed on its own). A roll back is never mistaken for being behind.
 - **Update Available** when the chart has a newer version than the stage runs, and **customised** when the stack's files differ from the chart version it is on.
 - **What is moving in**, live: a run applying, a request waiting for approval ("Promoting staging r6 · Applying").
 
@@ -165,19 +165,26 @@ The step between two stages offers **Promote**. A stage you can't read says only
 
 ## Promote
 
-Promote carries one environment's live template forward, with its `values.yaml` and its chart version; the target keeps every value it set.
+Promote carries one environment's live template to another stage of its Promotion Path, with its `values.yaml` and its chart version; the target keeps every value it set.
 
 ```bash
+# To the next stage on staging's path
+planton infra stack promote app-infra --from staging -m "Raise replicas"
+
+# Name the target, or pick one sibling of a stage that holds several
 planton infra stack promote app-infra --from staging --to prod -m "Raise replicas"
 ```
 
+Left out, `--to` is the next stage on the source's path: its one environment, or, when that stage holds siblings, the one you choose at a terminal. Each sibling is promoted on its own, as its own plan and run.
+
 - **A value travels only when you bring it**: **Bring This Value** in the dialog, `--bring <name>` on the CLI. A param the travelling `values.yaml` newly requires asks for a value (`--set name=value`); a value for a param it no longer declares is shown as dropped.
 - **What the source keeps, the target keeps.** A resource staging removed from its templates but kept running is offered as Keep in prod too ("kept in staging r6"), never silently destroyed. A Destroy, Adopt or Re-apply chosen in one environment never carries to another.
-- **A first promotion** into an environment with no stack of that name creates it there, with every value from the source. Promotion runs in either direction.
+- **A first promotion** into an environment with no stack of that name creates it there, with every value from the source. Promotion runs in either direction along the path, so "make qa like prod" works.
+- **A promotion stays on its path.** Across two paths, or into or out of an environment on no path, it is refused, naming both places and the apply that reaches the environment directly: "A promotion stays on its Promotion Path: 'prod-eu' is on the homes path and 'zm-staging' is on the mortgage path. ..."
 - **The message** defaults to the source revision's, and the revision, its run, the activity feed and notifications read **"Promoted from staging r6"**.
 - **A template that names its source environment** is a warning on the plan, never a block: "templates/db.yaml names qa (line 12). It reads the same in prod. Use {{ values.env }}."
 - **Into a protected environment** a promotion is a request, and the approver reads "Promoted from staging r6" above the exact plan.
-- **In an environment that changes only by promotion**, a template edit that did not come by promotion is cautioned on its plan and the path reads "Differs from staging"; it is never refused, and protection still decides who may change the environment.
+- **In a Promotion Only stage**, a template edit that did not come by promotion is cautioned on its plan and the path reads "Differs from staging"; it is never refused, and protection still decides who may change the environment.
 
 ## Roll Back
 
@@ -353,10 +360,11 @@ planton chart install my-stack app-infra --env <env> -f values.yaml -m "why"
 # A stack's revisions, newest first, each with where it came from
 planton infra stack history <stack-name> --env <env>
 
-# Where the stack stands in each environment, in promotion order
+# Where the stack stands in each environment along its Promotion Path
 planton infra stack status <stack-name>
 
-# Carry staging's live template to prod; prod keeps its values
+# Carry staging's live template to the next stage on its path (or name it with --to); the target keeps its values
+planton infra stack promote <stack-name> --from staging -m "why"
 planton infra stack promote <stack-name> --from staging --to prod -m "why"
 
 # Return to an earlier revision, planned fresh

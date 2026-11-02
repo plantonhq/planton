@@ -80,7 +80,7 @@ The infrastructure management section. The Infra Hub route activates for Infra C
 
 **Infra Stacks tab** — lists Infra Chart deployments. Each Infra Stack groups multiple related Infra Components deployed as a coordinated unit. The detail view includes a DAG visualization showing resource dependencies and deployment progress.
 
-**Environments tab** — lists environments in the organization with creation details.
+**Environments tab** — lists environments in the organization with creation details, grouped by the Promotion Path each sits on. Its **Promotion** page, **Promotion Paths & Protection**, sets the order each product line's work moves through your environments, in stages, and which environments are protected; every service push and every Promote follows it.
 
 <!-- SCREENSHOT: Infra Hub Infra Components
   Page: /orgs/{org}/infra-components
@@ -103,7 +103,6 @@ The Service Hub route covers several tabs:
 - **Domains** — DNS domains and ingress configuration
 - **Package Repositories** — NPM and Maven registries for build-time resolution
 - **Hosting Providers** — deployment targets for Cloudflare Workers (Wrangler credentials)
-- **Environment Promotion** — promotion policies for moving deployments between environments
 
 <!-- SCREENSHOT: Service Hub
   Page: /orgs/{org}/services

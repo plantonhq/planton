@@ -61,8 +61,12 @@ words:
     means: What an IaC module receives for one InfraComponent (<Kind>IacInput, read under planton:iac-input).
   - name: Outputs
     means: What an IaC module returns for one InfraComponent (<Kind>Outputs, held in status.outputs).
+  - name: Promotion Path
+    means: "One product line's way through its organization's environments: named, ordered stages (dev → {demo, prod}). An organization's Promotion Paths are one record, the PromotionPathSet kind (id ppset_<ulid>). A service follows the paths its environments sit on, a stack its environment's; an environment on no path is never guessed into an order. Never \"promotion order\" or \"deployment order\" for it. planton promotion-path."
+  - name: stage
+    means: "A set of environments at one point in a Promotion Path; each comes after every environment of the stages before it, and the environments inside one stage (siblings) have no order among them. Never one environment's tile: that is an environment on a Delivery Path."
   - name: Promote
-    means: Carry one environment's live template and chart version to the same stack in another environment (the same name is the same stack at another stage); that environment keeps its own values. planton infra stack promote.
+    means: Carry one environment's live template and chart version to the same stack in another environment of its Promotion Path (the same name on the same path is the same stack); that environment keeps its own values. planton infra stack promote.
   - name: Roll Back
     means: Plan an earlier revision's declaration again, fresh against today's cloud, as a new revision; module versions stay current. planton infra stack rollback.
   - name: Upgrade
@@ -99,6 +103,10 @@ retired:
   # helper names say so (platformPresetSlugs, platformPresetSpec).
   - spelling: OfficialPreset
     use: platform preset (platformPresetSlugs, platformPresetSpec)
+  # An environment's order is where the organization's Promotion Paths place
+  # it, never a number on the environment.
+  - spelling: PromotionRank
+    use: the environment's stage on its Promotion Path (planton promotion-path, PromotionPathSet)
 
 phrases:
   # "Component" names one deployed InfraComponent and nothing else. These are

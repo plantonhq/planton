@@ -1,11 +1,12 @@
 # Deployed Infra Stacks — Working Copies, Plans, Fixing Failures
 
 A chart is a blueprint; an **Infra Stack** is one chart declared into one
-environment. A stack is named within its environment, and the same name in
-every environment is the same stack at another stage: `app-infra` in qa and
-in prod are two records — each with its own values, revisions and runs —
-and one stack moving through its stages, so every command that names a
-stack also names its environment (`--env`). A stack carries its OWN
+environment. A stack is named within its environment, and the same name on
+the same Promotion Path is the same stack at another stage: `app-infra` in
+qa and in prod on one path are two records — each with its own values,
+revisions and runs — and one stack moving through its stages, so every
+command that names a stack also names its environment (`--env`). The same
+name on another path, or in an environment on no path, is another stack. A stack carries its OWN
 declaration — the templates, the chart's `values.yaml` (every value
 declared, with its default) and the values set for its environment.
 Editing a chart never changes a deployed stack, and editing a stack never

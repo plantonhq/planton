@@ -47,7 +47,7 @@ questions:
         pattern: 'planton chart install <stackName> \. --env <env>'
       - skill: planton
         file: references/infra.stack-promotion.md
-        pattern: 'planton infra stack promote <slug> --from <env> --to <env>'
+        pattern: 'planton infra stack promote <slug> --from <env> \[--to <env>\]'
       - skill: planton
         file: references/infra.stack-promotion.md
         pattern: '\*\*Stays\*\*: every value the target environment set'

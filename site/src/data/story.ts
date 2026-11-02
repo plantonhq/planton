@@ -159,7 +159,7 @@ export const CHAPTERS: readonly Chapter[] = [
       'Once the infrastructure exists, your services ship onto it straight from Git. Connect a repository; every push is built, containerized, and deployed, with the result written back into GitHub as checks and deployments.',
     proof: [
       'No pipeline YAML and no Dockerfile required.',
-      'Builds can be manual, from a branch, or from an exact commit; promotion follows the order your environments declare; protected environments carry a manual gate.',
+      'Builds can be manual, from a branch, or from an exact commit; promotion follows your Promotion Paths, one per product line; protected environments carry a manual gate.',
       'A rejected environment is never touched, and a service with deployments in a protected environment refuses deletion outright.',
       'Runner minutes are never billed.',
     ],

@@ -100,7 +100,7 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
     steps: [
       { title: 'Connect', text: 'Connect a repository once. From then on every push carries the record.' },
       { title: 'Push', text: 'Every push is built, containerized, and deployed. No pipeline YAML, no Dockerfile required.' },
-      { title: 'Promote', text: 'Promotion follows the order your environments declare; a protected environment carries a manual gate and refuses self-approval.' },
+      { title: 'Promote', text: 'Promotion follows your Promotion Paths, one per product line; a protected environment carries a manual gate and refuses self-approval.' },
       { title: 'Written Back', text: 'The result lands in GitHub as checks and deployments, so the person who pushed learns what happened where they already are.' },
     ],
     points: [
