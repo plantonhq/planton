@@ -32,7 +32,7 @@ The seat door is also where a directory sign-in can be turned away: a federated 
 
 ## Inviting people before mail is set up
 
-`planton invite <email>` creates a personal invitation pinned to that email, seated with the role named (`Developer` by default), and prints the link to share; on an install without email delivery, the link IS the invitation -- hand it to the person over whatever channel the adopter trusts. The console's Members page does the same. The invitation is a mutation (it seats a person when accepted): one clear yes.
+`planton invite <email>` creates a personal invitation pinned to that email, seated with the role named (`Developer` by default) across the organization, or only on the environments `--env dev,staging` names, and prints the link to share; on an install without email delivery, the link IS the invitation -- hand it to the person over whatever channel the adopter trusts. The console's Members page does the same. The invitation is a mutation (it seats a person when accepted): one clear yes.
 
 ## The license
 
