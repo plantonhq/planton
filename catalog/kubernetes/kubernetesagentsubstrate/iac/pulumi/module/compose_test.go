@@ -1059,3 +1059,25 @@ func TestTerraformTwinPinsTheSameRelease(t *testing.T) {
 		}
 	}
 }
+
+// The ClusterTrustBundle API follows the cluster: v1 from Kubernetes 1.37,
+// v1beta1 on the releases before it that serve the pod-certificate APIs.
+func TestTrustBundleAPIFollowsTheCluster(t *testing.T) {
+	for _, c := range []struct {
+		major, minor int
+		want         string
+	}{{1, 36, trustBundleV1beta1}, {1, 37, trustBundleV1}, {1, 38, trustBundleV1}, {2, 0, trustBundleV1}} {
+		if got := trustBundleAPIVersion(c.major, c.minor); got != c.want {
+			t.Errorf("Kubernetes %d.%d: %s, want %s", c.major, c.minor, got, c.want)
+		}
+	}
+	bundles := 0
+	for _, pool := range caPools {
+		if pool.trustBundle != "" {
+			bundles++
+		}
+	}
+	if bundles != 3 {
+		t.Errorf("the three pod-certificate pools publish a bundle each; %d do", bundles)
+	}
+}

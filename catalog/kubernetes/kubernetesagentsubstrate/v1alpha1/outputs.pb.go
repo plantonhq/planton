@@ -32,7 +32,7 @@ type KubernetesAgentSubstrateOutputs struct {
 	// *
 	// The API's gRPC address, "api.ate-system.svc:443". A product dials it
 	// with TLS 1.3, verifying the server as api_server_name against the
-	// ClusterTrustBundle api_trust_bundle_name, and presents a projected
+	// bundle of api_trust_bundle_signer, and presents a projected
 	// service-account token with audience api_token_audience. Its namespace
 	// needs the label api_access_namespace_label, or the API's NetworkPolicy
 	// drops the connection.
@@ -48,12 +48,17 @@ type KubernetesAgentSubstrateOutputs struct {
 	// *
 	// The ClusterTrustBundle holding the CA that signs the API server's (and
 	// every in-cluster Substrate service's) certificate:
-	// "servicedns.podcert.ate.dev:identity:primary-bundle". A pod reads it
-	// through a clusterTrustBundle projected volume by this name.
+	// "servicedns.podcert.ate.dev:identity:primary-bundle". A pod projects
+	// it by api_trust_bundle_signer, not by this name; the name is for
+	// reading the bundle through the Kubernetes API.
 	ApiTrustBundleName string `protobuf:"bytes,5,opt,name=api_trust_bundle_name,json=apiTrustBundleName,proto3" json:"api_trust_bundle_name,omitempty"`
 	// *
-	// The signer of that bundle, "servicedns.podcert.ate.dev/identity", for a
-	// clusterTrustBundle projection by signer name and label selector.
+	// The signer of that bundle, "servicedns.podcert.ate.dev/identity". A pod
+	// trusts it through a clusterTrustBundle projected volume by this signer
+	// name and the label selector podcert.ate.dev/canarying=live, as
+	// Substrate's own workloads do. Never project it by name: a kubelet keeps
+	// serving a by-name projection the first content it read, so after a
+	// reinstall such a pod still trusts the previous install's root.
 	ApiTrustBundleSigner string `protobuf:"bytes,6,opt,name=api_trust_bundle_signer,json=apiTrustBundleSigner,proto3" json:"api_trust_bundle_signer,omitempty"`
 	// *
 	// The label a caller's namespace must carry to reach the API:

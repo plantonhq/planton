@@ -57,6 +57,11 @@ const (
 	agentSubstrateProbeAtespace     = "e2e-ate-probe"
 	agentSubstrateProbeImage        = "busybox:1.36"
 
+	// The label upstream's pod-certificate controller puts on the bundle it
+	// serves; a workload projects a signer's bundle by the signer and this.
+	agentSubstrateTrustBundleLabelKey   = "podcert.ate.dev/canarying"
+	agentSubstrateTrustBundleLabelValue = "live"
+
 	// The upgrade refusal, this kind's own class.
 	failureUpgradeRefused = "upgrade-refused"
 )

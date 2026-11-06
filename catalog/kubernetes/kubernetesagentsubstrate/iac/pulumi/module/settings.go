@@ -12,6 +12,9 @@ import (
 // values and writes a flag or a field only when it differs. Terraform twin:
 // the locals in locals.tf, resolved with the same defaults.
 type settings struct {
+	// trustBundleAPIVersion is the ClusterTrustBundle API the cluster serves
+	// (preflight reads it; certificates.k8s.io/v1 until then).
+	trustBundleAPIVersion string
 	// version is the release installed: spec.version, or vars.Release.
 	version string
 
@@ -243,16 +246,17 @@ const inClusterIssuer = "https://kubernetes.default.svc"
 // held each value to its form, so nothing here re-validates.
 func resolveSettings(spec *kubernetesagentsubstratev1alpha1.KubernetesAgentSubstrateSpec) *settings {
 	s := &settings{
-		version:            stringOr(spec.Version, vars.Release),
-		requestedNamespace: spec.GetNamespace().GetValue(),
-		createNamespace:    spec.GetCreateNamespace(),
-		size10:             spec.GetClusterSize() == kubernetesagentsubstratev1alpha1.KubernetesAgentSubstrateSpec_size10,
-		cordon:             spec.GetCordonSystemInfraComponents(),
-		registry:           spec.GetImageRegistry(),
-		pullSecrets:        spec.GetImagePullSecrets(),
-		preview:            spec.GetPreviewGates(),
-		crdsInstall:        spec.GetCrds() == nil || spec.GetCrds().Install == nil || spec.GetCrds().GetInstall(),
-		crdsKeep:           spec.GetCrds() == nil || spec.GetCrds().KeepOnUninstall == nil || spec.GetCrds().GetKeepOnUninstall(),
+		trustBundleAPIVersion: trustBundleAPIVersion(1, 37),
+		version:               stringOr(spec.Version, vars.Release),
+		requestedNamespace:    spec.GetNamespace().GetValue(),
+		createNamespace:       spec.GetCreateNamespace(),
+		size10:                spec.GetClusterSize() == kubernetesagentsubstratev1alpha1.KubernetesAgentSubstrateSpec_size10,
+		cordon:                spec.GetCordonSystemInfraComponents(),
+		registry:              spec.GetImageRegistry(),
+		pullSecrets:           spec.GetImagePullSecrets(),
+		preview:               spec.GetPreviewGates(),
+		crdsInstall:           spec.GetCrds() == nil || spec.GetCrds().Install == nil || spec.GetCrds().GetInstall(),
+		crdsKeep:              spec.GetCrds() == nil || spec.GetCrds().KeepOnUninstall == nil || spec.GetCrds().GetKeepOnUninstall(),
 	}
 	if g := spec.GetPlatform().GetGke(); g != nil {
 		s.gke = true

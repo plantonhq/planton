@@ -108,7 +108,37 @@ type caPool struct {
 	namespace  string
 	algorithm  string // ED25519 | ECDSA
 	commonName string
+	// trustBundle and signer name the ClusterTrustBundle the pod-certificate
+	// controller publishes this pool's root under (trustBundles); empty for
+	// the pools it does not sign from.
+	trustBundle string
+	signer      string
 }
+
+// The one label the pod-certificate controller gives each ClusterTrustBundle
+// it publishes, which it restores on any bundle that differs.
+const (
+	trustBundleLabelKey   = "podcert.ate.dev/canarying"
+	trustBundleLabelValue = "live"
+)
+
+// trustBundleAPIVersion is the ClusterTrustBundle API a cluster serves: v1
+// from Kubernetes 1.37, v1beta1 on the releases before it that serve the
+// pod-certificate APIs (GKE 1.36). Terraform twin: locals.tf
+// trust_bundle_api_version.
+func trustBundleAPIVersion(major, minor int) string {
+	if major > 1 || minor >= 37 {
+		return trustBundleV1
+	}
+	return trustBundleV1beta1
+}
+
+// The two ClusterTrustBundle API versions a cluster serving the
+// pod-certificate APIs may offer.
+const (
+	trustBundleV1      = "certificates.k8s.io/v1"
+	trustBundleV1beta1 = "certificates.k8s.io/v1beta1"
+)
 
 // caPools are the five CA pools upstream's installer creates
 // (cmd/ate-setup/internal/steps/create.go): Ed25519 for the three in-cluster
@@ -116,9 +146,12 @@ type caPool struct {
 // relying parties trust and P-256 is more broadly accepted by, and the egress
 // interception CA, which Envoy and agentgateway mint leaves from.
 var caPools = []caPool{
-	{secret: "service-dns-ca-pool", namespace: vars.PodCertificatesNamespace, algorithm: "ED25519", commonName: "Agent Substrate service DNS CA"},
-	{secret: "pod-identity-ca-pool", namespace: vars.PodCertificatesNamespace, algorithm: "ED25519", commonName: "Agent Substrate pod identity CA"},
-	{secret: "postgres-ca-pool", namespace: vars.PodCertificatesNamespace, algorithm: "ED25519", commonName: "Agent Substrate PostgreSQL client CA"},
+	{secret: "service-dns-ca-pool", namespace: vars.PodCertificatesNamespace, algorithm: "ED25519", commonName: "Agent Substrate service DNS CA",
+		trustBundle: "servicedns.podcert.ate.dev:identity:primary-bundle", signer: "servicedns.podcert.ate.dev/identity"},
+	{secret: "pod-identity-ca-pool", namespace: vars.PodCertificatesNamespace, algorithm: "ED25519", commonName: "Agent Substrate pod identity CA",
+		trustBundle: "podidentity.podcert.ate.dev:identity:primary-bundle", signer: "podidentity.podcert.ate.dev/identity"},
+	{secret: "postgres-ca-pool", namespace: vars.PodCertificatesNamespace, algorithm: "ED25519", commonName: "Agent Substrate PostgreSQL client CA",
+		trustBundle: "postgres.podcert.ate.dev:identity:primary-bundle", signer: "postgres.podcert.ate.dev/identity"},
 	{secret: "actor-id-ca-pool", namespace: vars.Namespace, algorithm: "ECDSA", commonName: "Agent Substrate actor identity CA"},
 	{secret: "egress-mitm-ca-pool", namespace: vars.Namespace, algorithm: "ECDSA", commonName: "Agent Substrate egress interception CA"},
 }

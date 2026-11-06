@@ -8,6 +8,8 @@ import (
 	tls "github.com/pulumi/pulumi-tls/sdk/v4/go/tls"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 
+	"github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes"
+	"github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/apiextensions"
 	kubernetescorev1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/core/v1"
 	metav1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/meta/v1"
 )
@@ -19,7 +21,22 @@ import (
 // re-apply never replaces them; a destroy does, exactly like an upstream
 // reinstall), the API server's environment Secret, and an external
 // database's server CA. Terraform twin: secrets.tf.
-func applySecrets(ctx *pulumi.Context, s *settings, labels map[string]string, opts ...pulumi.ResourceOption) ([]pulumi.Resource, error) {
+//
+// Beside them, the ClusterTrustBundle each pod-certificate pool's root is
+// published under (trustBundle). The pod-certificate controller publishes
+// the same objects once it runs, but a bundle is cluster-scoped and outlives
+// the namespaces a destroy removes (upstream's installer deletes them,
+// DeleteTrustBundles), so a reinstall would otherwise start its workloads
+// against the previous install's roots: a component reads its bundle at
+// start, and the router refuses every client until it restarts. Applied here,
+// before the controller and every workload, each bundle holds this install's
+// root from the start, and a destroy removes it. The object is the
+// controller's own (its name, signer, its one label and the root in its PEM
+// form), so the controller finds it already in the state it wants. A bundle
+// left by an earlier install is adopted, not refused: bundleProvider upserts
+// (server-side apply, forced), the twin of the Terraform kubectl_manifest.
+func applySecrets(ctx *pulumi.Context, s *settings, labels map[string]string, bundleProvider pulumi.ProviderResource, opts ...pulumi.ResourceOption) ([]pulumi.Resource, error) {
+	bundleOpts := append(append([]pulumi.ResourceOption{}, opts...), pulumi.Provider(bundleProvider))
 	var created []pulumi.Resource
 	secret := func(name, namespace, secretType string, data pulumi.StringMapInput) error {
 		r, err := kubernetescorev1.NewSecret(ctx, namespace+"-"+name, &kubernetescorev1.SecretArgs{
@@ -66,6 +83,32 @@ func applySecrets(ctx *pulumi.Context, s *settings, labels map[string]string, op
 		}).(pulumi.StringMapOutput)
 		if err := secret(pool.secret, pool.namespace, "kubernetes.io/tls", data); err != nil {
 			return nil, err
+		}
+		if pool.trustBundle != "" {
+			meta := &metav1.ObjectMetaArgs{
+				Name:   pulumi.String(pool.trustBundle),
+				Labels: pulumi.StringMap{trustBundleLabelKey: pulumi.String(trustBundleLabelValue)},
+			}
+			spec := kubernetes.UntypedArgs{"spec": pulumi.Map{
+				"signerName":  pulumi.String(pool.signer),
+				"trustBundle": cert.CertPem,
+			}}
+			// One call per served version, each naming its API as a constant,
+			// so the permissions gate reads what the call creates.
+			var bundle *apiextensions.CustomResource
+			if s.trustBundleAPIVersion == trustBundleV1 {
+				bundle, err = apiextensions.NewCustomResource(ctx, pool.trustBundle, &apiextensions.CustomResourceArgs{
+					ApiVersion: pulumi.String(trustBundleV1), Kind: pulumi.String("ClusterTrustBundle"), Metadata: meta, OtherFields: spec,
+				}, bundleOpts...)
+			} else {
+				bundle, err = apiextensions.NewCustomResource(ctx, pool.trustBundle, &apiextensions.CustomResourceArgs{
+					ApiVersion: pulumi.String(trustBundleV1beta1), Kind: pulumi.String("ClusterTrustBundle"), Metadata: meta, OtherFields: spec,
+				}, bundleOpts...)
+			}
+			if err != nil {
+				return nil, errors.Wrapf(err, "failed to register ClusterTrustBundle %s", pool.trustBundle)
+			}
+			created = append(created, bundle)
 		}
 		if pool.secret == actorCAPool {
 			if err := secret(secretActorCACerts, vars.Namespace, "Opaque", pulumi.StringMap{"ca.crt": cert.CertPem}); err != nil {

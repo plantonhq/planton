@@ -3,6 +3,9 @@ package module
 import (
 	"context"
 	"fmt"
+	"os"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/pkg/errors"
@@ -10,9 +13,12 @@ import (
 	"github.com/plantonhq/planton/pkg/failure"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/iacinput"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/workloadowner"
+	"github.com/plantonhq/planton/pkg/kubernetes/execcredential"
+	"github.com/plantonhq/planton/pkg/kubernetes/kubeconfig"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/client-go/discovery"
 	"k8s.io/client-go/dynamic"
 )
 
@@ -42,7 +48,33 @@ func preflight(providerConfig *kubernetesprovider.KubernetesProviderConfig, s *s
 	if err != nil {
 		return err
 	}
+	if s.trustBundleAPIVersion, err = servedTrustBundleAPIVersion(providerConfig); err != nil {
+		return err
+	}
 	return refuseUpgrade(client, s)
+}
+
+// servedTrustBundleAPIVersion reads the cluster's Kubernetes version and
+// names the ClusterTrustBundle API it serves (trustBundleAPIVersion).
+func servedTrustBundleAPIVersion(providerConfig *kubernetesprovider.KubernetesProviderConfig) (string, error) {
+	restConfig, err := kubeconfig.RESTConfig(providerConfig, os.Getenv(execcredential.CommandPathEnvVar))
+	if err != nil {
+		return "", errors.Wrap(err, "failed to resolve the cluster connection for the server version read")
+	}
+	discoveryClient, err := discovery.NewDiscoveryClientForConfig(restConfig)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to create the cluster client for the server version read")
+	}
+	info, err := discoveryClient.ServerVersion()
+	if err != nil {
+		return "", errors.Wrap(err, "failed to read the cluster's Kubernetes version")
+	}
+	major, errMajor := strconv.Atoi(strings.TrimRight(info.Major, "+"))
+	minor, errMinor := strconv.Atoi(strings.TrimRight(info.Minor, "+"))
+	if errMajor != nil || errMinor != nil {
+		return "", errors.Errorf("the cluster reports Kubernetes %s.%s, which the module cannot read as a version", info.Major, info.Minor)
+	}
+	return trustBundleAPIVersion(major, minor), nil
 }
 
 // refuseUpgrade reads the two version stamps.

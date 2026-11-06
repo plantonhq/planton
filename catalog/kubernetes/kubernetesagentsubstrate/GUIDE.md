@@ -27,6 +27,8 @@ Two doors, each closed to anyone the spec does not name:
 - **The API** authorizes every call. A caller authenticates with its service-account token or its pod certificate, and reaches an atespace only through an access policy. `apiServer.authorization.bootstrapOwners` names the principals that always own everything, which is how the first owner gets in: name the service account your product calls the API as. Left empty, it is upstream's `system:serviceaccount:ate-system:ate-client`, which only someone who can create that service account in `ate-system` can act as.
 - **The router** carries requests to agents only from the workloads `router.allowedClientSpiffeIds` names, by the SPIFFE ID of the pod certificate they present (`spiffe://cluster.local/ns/<namespace>/sa/<service-account>`, from the signer the `router_client_signer_name` output names) at the `router_tls_endpoint` output. Either dataplane serves nothing else (agentgateway through upstream's static-mTLS component), so it needs at least one client.
 
+Both doors serve certificates from Substrate's service-DNS signer, so a caller trusts that signer's bundle. Project it into the caller's pod by signer and label, as Substrate's own workloads do: a `clusterTrustBundle` source with `signerName` set to the `api_trust_bundle_signer` output and `labelSelector` `podcert.ate.dev/canarying: live`. Never by its name (`api_trust_bundle_name`): a kubelet keeps serving a by-name projection the first content it read, so after a reinstall a caller projecting it by name still trusts the previous install's root and every call fails verification, while a projection by signer follows the bundle at once.
+
 The identity server publishes the keys agent tokens are signed with at the actor-JWT issuer (`https://idp.ate-system.svc` unless `apiServer.actorJwt.issuer` names your own host), so a service verifies a token an agent presents without calling the API. The issuer is a host, with no path, because the identity server serves the discovery document at its root.
 
 ## The platform
@@ -74,7 +76,7 @@ Upstream's installer creates five certificate authorities, and a signing key for
 | `egress-mitm-ca-pool` | `ate-system` | ECDSA P-256 | the short-lived certificates that intercept agents' https traffic |
 | `actor-id-jwt-pool` | `ate-system` | ES256 or RS256 | agent identity tokens |
 
-The module generates each with the TLS provider, both engines alike, and writes them in upstream's exact pool format. Both engines' pools are parsed by upstream's own parsers in a test. They live in the deployment's state: a re-apply never replaces them, and a destroy does, like an upstream reinstall.
+The module generates each with the TLS provider, both engines alike, and writes them in upstream's exact pool format. It also applies the ClusterTrustBundle each pod-certificate pool's root is published under, before the controller and every workload: a bundle is cluster-scoped and outlives a destroy, so a reinstall would otherwise start its components against the previous install's roots, and the router would refuse every client. The object is the controller's own, so the controller leaves it as it is, and a destroy removes it, as upstream's installer does. Both engines' pools are parsed by upstream's own parsers in a test. They live in the deployment's state: a re-apply never replaces them, and a destroy does, like an upstream reinstall.
 
 Two choices differ from upstream's installer, both on purpose:
 

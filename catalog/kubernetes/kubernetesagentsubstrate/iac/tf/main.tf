@@ -74,6 +74,7 @@ resource "kubectl_manifest" "prerequisites" {
     kubectl_manifest.namespace,
     kubectl_manifest.helm_crds,
     kubernetes_secret_v1.ca_pool,
+    kubectl_manifest.trust_bundle,
     kubernetes_secret_v1.actor_ca_certs,
     kubernetes_secret_v1.actor_jwt_pool,
     kubernetes_secret_v1.api_env,

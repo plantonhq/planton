@@ -39,6 +39,9 @@ var (
 		"get": true, "list": true, "watch": true, "create": true,
 		"update": true, "patch": true, "delete": true, "deletecollection": true,
 		"escalate": true, "bind": true,
+		// attest: the verb Kubernetes checks on a signer before an identity
+		// may write a ClusterTrustBundle for it.
+		"attest": true,
 	}
 	// cloudflareScopePattern is Cloudflare's scope identifier spelling,
 	// e.g. "com.cloudflare.api.account.zone". The spelling is checked

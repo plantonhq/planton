@@ -49,7 +49,15 @@ func agentSubstrateOutputsFromPrerequisite(ctx context.Context) (map[string]inte
 // only an in-cluster workload holding one can call an actor, as a product's
 // does. With outsider set it also creates a namespace without the label,
 // with its own shell, for the network-policy check.
+//
+// It starts from no probe: a lane that failed before its destroy check
+// leaves its probe on a reused cluster, and its router callers hold pod
+// certificates from that install's CA, which this install's router rightly
+// refuses. Every install mints its own CAs, so its probe is created fresh.
 func applySubstrateProbe(ctx context.Context, kubeconfig string, outputs map[string]interface{}, outsider bool) error {
+	if err := removeSubstrateProbe(ctx, kubeconfig); err != nil {
+		return err
+	}
 	accessLabel := fmt.Sprint(outputs["api_access_namespace_label"])
 	key, value, ok := strings.Cut(accessLabel, "=")
 	if !ok {
@@ -90,7 +98,7 @@ metadata:
 `, agentSubstrateProbeNamespace, key, value, agentSubstrateProbeClient, agentSubstrateProbeStranger)
 	manifest += shell(agentSubstrateProbeNamespace)
 	for pod, account := range routerCallers {
-		manifest += routerCaller(pod, account, fmt.Sprint(outputs["router_client_signer_name"]), fmt.Sprint(outputs["api_trust_bundle_name"]))
+		manifest += routerCaller(pod, account, fmt.Sprint(outputs["router_client_signer_name"]), fmt.Sprint(outputs["api_trust_bundle_signer"]))
 	}
 	namespaces := []string{agentSubstrateProbeNamespace}
 	if outsider {
@@ -127,9 +135,12 @@ var routerCallers = map[string]string{
 // actors: a pod certificate from the router's client signer (the
 // router_client_signer_name output), whose SPIFFE ID names its service
 // account, and the trust bundle the router's serving certificate chains to
-// (the api_trust_bundle_name output; every in-cluster Substrate service is
-// signed by that signer).
-func routerCaller(pod, serviceAccount, signer, bundle string) string {
+// (every in-cluster Substrate service is signed by the api_trust_bundle_signer
+// output). The bundle is projected by its signer and upstream's live label, as
+// Substrate's own workloads project it, never by name: a kubelet keeps serving
+// a by-name projection the first content it read, so after a reinstall a pod
+// trusting the bundle by name trusts the previous install's root.
+func routerCaller(pod, serviceAccount, signer, bundleSigner string) string {
 	return fmt.Sprintf(`---
 apiVersion: v1
 kind: Pod
@@ -153,8 +164,8 @@ spec:
     - name: trust
       projected:
         sources:
-          - clusterTrustBundle: {name: %q, path: trust-bundle.pem}
-`, pod, agentSubstrateProbeNamespace, serviceAccount, agentSandboxClientImage, signer, bundle)
+          - clusterTrustBundle: {signerName: %q, labelSelector: {matchLabels: {%q: %q}}, path: trust-bundle.pem}
+`, pod, agentSubstrateProbeNamespace, serviceAccount, agentSandboxClientImage, signer, bundleSigner, agentSubstrateTrustBundleLabelKey, agentSubstrateTrustBundleLabelValue)
 }
 
 // callRouter makes one request a product makes to an actor: a POST to the

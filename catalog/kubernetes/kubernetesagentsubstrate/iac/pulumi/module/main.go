@@ -99,7 +99,13 @@ func Resources(ctx *pulumi.Context, iacInput *kubernetesagentsubstratev1alpha1.K
 	if err := group("namespaces", composed.namespaces); err != nil {
 		return err
 	}
-	secrets, err := applySecrets(ctx, s, locals.IdentityLabels, pulumi.Provider(provider), pulumi.DependsOn(dependsOn))
+	// Scoped to the ClusterTrustBundles alone: a cluster-scoped bundle outlives
+	// a destroy, and the next install adopts it.
+	bundleProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfigUpsert(ctx, iacInput.ProviderConfig, "kubernetes-trust-bundle-upsert")
+	if err != nil {
+		return errors.Wrap(err, "failed to set up the trust-bundle kubernetes provider")
+	}
+	secrets, err := applySecrets(ctx, s, locals.IdentityLabels, bundleProvider, pulumi.Provider(provider), pulumi.DependsOn(dependsOn))
 	if err != nil {
 		return err
 	}

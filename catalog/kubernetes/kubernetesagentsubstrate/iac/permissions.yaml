@@ -207,6 +207,30 @@ spec:
         provenance: derived
         notes: Upstream's atelet-critical-pods ResourceQuota in ate-system (atelet.yaml), which lets the node agent run at system-node-critical priority outside kube-system. list and watch are Pulumi's informers on the awaited rollout or delete (pulumi-kubernetes v4.33.0, await.go:984-1006), which OpenTofu, polling with get, never needs.
       - api_groups:
+          - certificates.k8s.io
+        resources:
+          - clustertrustbundles
+        verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: true
+        provenance: derived
+        notes: The ClusterTrustBundle each pod-certificate pool's root is published under (servicedns, podidentity and postgres primary bundles), applied before the controller and the workloads so a reinstall never starts them against an earlier install's roots, and deleted on destroy. list and watch are Pulumi's informers on the awaited rollout or delete (pulumi-kubernetes v4.33.0, await.go:984-1006), which OpenTofu, polling with get, never needs.
+      - api_groups:
+          - certificates.k8s.io
+        resources:
+          - signers
+        verbs:
+          - attest
+        cluster_scoped: true
+        provenance: derived
+        notes: Writing a ClusterTrustBundle for a signer needs attest on it -- servicedns.podcert.ate.dev/identity, podidentity.podcert.ate.dev/identity and postgres.podcert.ate.dev/identity, the three bundles above.
+      - api_groups:
           - scheduling.k8s.io
         resources:
           - priorityclasses

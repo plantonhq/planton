@@ -18,11 +18,11 @@
 
 locals {
   ca_pools = {
-    "service-dns-ca-pool"  = { namespace = "podcertificate-controller-system", algorithm = "ED25519", common_name = "Agent Substrate service DNS CA" }
-    "pod-identity-ca-pool" = { namespace = "podcertificate-controller-system", algorithm = "ED25519", common_name = "Agent Substrate pod identity CA" }
-    "postgres-ca-pool"     = { namespace = "podcertificate-controller-system", algorithm = "ED25519", common_name = "Agent Substrate PostgreSQL client CA" }
-    "actor-id-ca-pool"     = { namespace = "ate-system", algorithm = "ECDSA", common_name = "Agent Substrate actor identity CA" }
-    "egress-mitm-ca-pool"  = { namespace = "ate-system", algorithm = "ECDSA", common_name = "Agent Substrate egress interception CA" }
+    "service-dns-ca-pool"  = { namespace = "podcertificate-controller-system", algorithm = "ED25519", common_name = "Agent Substrate service DNS CA", trust_bundle = "servicedns.podcert.ate.dev:identity:primary-bundle", signer = "servicedns.podcert.ate.dev/identity" }
+    "pod-identity-ca-pool" = { namespace = "podcertificate-controller-system", algorithm = "ED25519", common_name = "Agent Substrate pod identity CA", trust_bundle = "podidentity.podcert.ate.dev:identity:primary-bundle", signer = "podidentity.podcert.ate.dev/identity" }
+    "postgres-ca-pool"     = { namespace = "podcertificate-controller-system", algorithm = "ED25519", common_name = "Agent Substrate PostgreSQL client CA", trust_bundle = "postgres.podcert.ate.dev:identity:primary-bundle", signer = "postgres.podcert.ate.dev/identity" }
+    "actor-id-ca-pool"     = { namespace = "ate-system", algorithm = "ECDSA", common_name = "Agent Substrate actor identity CA", trust_bundle = "", signer = "" }
+    "egress-mitm-ca-pool"  = { namespace = "ate-system", algorithm = "ECDSA", common_name = "Agent Substrate egress interception CA", trust_bundle = "", signer = "" }
   }
   actor_jwt_algorithm = upper(coalesce(try(var.spec.api_server.actor_jwt.algorithm, ""), "es256"))
 }
