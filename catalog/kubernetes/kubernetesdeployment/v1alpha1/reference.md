@@ -4020,7 +4020,8 @@ engine (set planton.dev/provisioner to pulumi).
 The ClusterTrustBundle to project, by object name. A literal name, or a
 reference to the KubernetesAgentSubstrate whose API trust bundle this is
 (status.outputs.api_trust_bundle_name). Mutually exclusive with
-signer_name.
+signer_name. A by-name projection keeps the content the kubelet first
+read, so for a bundle that a reinstall replaces, use signer_name.
 
 - references: KubernetesAgentSubstrate (`status.outputs.api_trust_bundle_name`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesAgentSubstrate, name: <that resource's name>, fieldPath: status.outputs.api_trust_bundle_name}} -- a bare string does not parse
@@ -7440,7 +7441,8 @@ engine (set planton.dev/provisioner to pulumi).
 The ClusterTrustBundle to project, by object name. A literal name, or a
 reference to the KubernetesAgentSubstrate whose API trust bundle this is
 (status.outputs.api_trust_bundle_name). Mutually exclusive with
-signer_name.
+signer_name. A by-name projection keeps the content the kubelet first
+read, so for a bundle that a reinstall replaces, use signer_name.
 
 - references: KubernetesAgentSubstrate (`status.outputs.api_trust_bundle_name`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesAgentSubstrate, name: <that resource's name>, fieldPath: status.outputs.api_trust_bundle_name}} -- a bare string does not parse
@@ -10979,7 +10981,8 @@ engine (set planton.dev/provisioner to pulumi).
 The ClusterTrustBundle to project, by object name. A literal name, or a
 reference to the KubernetesAgentSubstrate whose API trust bundle this is
 (status.outputs.api_trust_bundle_name). Mutually exclusive with
-signer_name.
+signer_name. A by-name projection keeps the content the kubelet first
+read, so for a bundle that a reinstall replaces, use signer_name.
 
 - references: KubernetesAgentSubstrate (`status.outputs.api_trust_bundle_name`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesAgentSubstrate, name: <that resource's name>, fieldPath: status.outputs.api_trust_bundle_name}} -- a bare string does not parse

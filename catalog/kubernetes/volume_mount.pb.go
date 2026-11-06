@@ -732,26 +732,34 @@ func (x *ServiceAccountTokenVolumeSource) GetPath() string {
 // ClusterTrustBundles into the container as a single PEM file. The volume is
 // always mounted read-only.
 //
-// Select the bundle by name, or every bundle of a signer by signer_name (and
-// optionally a label selector); exactly one of name or signer_name.
+// Select every bundle of a signer by signer_name and a label selector, or
+// one bundle by name; exactly one of name or signer_name. Prefer the signer:
+// a kubelet keeps serving a by-name projection the first content it read, so
+// when the bundle is replaced (a reinstall of what publishes it) a pod
+// mounting it by name keeps the old roots, while a signer projection follows
+// at once.
 //
-// Example - the Agent Substrate API's trust bundle, by reference:
+// Example - the Agent Substrate API's trust bundle, by its signer (the
+// KubernetesAgentSubstrate api_trust_bundle_signer output) and the label
+// upstream's controller puts on the bundle it serves:
 //
 //	volumeMounts:
 //	  - name: substrate-ca
 //	    mountPath: /var/run/substrate
 //	    readOnly: true
 //	    clusterTrustBundle:
-//	      name:
-//	        valueFrom:
-//	          name: agents
+//	      signerName: servicedns.podcert.ate.dev/identity
+//	      labelSelector:
+//	        matchLabels:
+//	          podcert.ate.dev/canarying: live
 //	      path: ca.crt
 type ClusterTrustBundleVolumeSource struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ClusterTrustBundle to project, by object name. A literal name, or a
 	// reference to the KubernetesAgentSubstrate whose API trust bundle this is
 	// (status.outputs.api_trust_bundle_name). Mutually exclusive with
-	// signer_name.
+	// signer_name. A by-name projection keeps the content the kubelet first
+	// read, so for a bundle that a reinstall replaces, use signer_name.
 	Name *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// Project every ClusterTrustBundle of this signer, deduplicated into one
 	// file (e.g. "servicedns.podcert.ate.dev/identity"). Mutually exclusive
