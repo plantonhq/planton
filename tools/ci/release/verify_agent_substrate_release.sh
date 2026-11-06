@@ -56,13 +56,13 @@ fail() {
 # anonymous Docker config sit beside it, so the trap removes everything.
 set_dir="${work}/set"
 mkdir -p "${set_dir}"
-if ! curl -fsSL "${base}/SHA256SUMS" -o "${set_dir}/SHA256SUMS"; then
+if ! curl -fsSL --retry 3 --retry-delay 5 --retry-all-errors "${base}/SHA256SUMS" -o "${set_dir}/SHA256SUMS"; then
   echo "::error::${base}/SHA256SUMS does not download; the version is not published (a published version always carries it, uploaded last)" >&2
   exit 1
 fi
 while read -r _ path; do
   mkdir -p "$(dirname "${set_dir}/${path}")"
-  curl -fsSL "${base}/${path}" -o "${set_dir}/${path}" || fail "${base}/${path} is listed in SHA256SUMS but does not download"
+  curl -fsSL --retry 3 --retry-delay 5 --retry-all-errors "${base}/${path}" -o "${set_dir}/${path}" || fail "${base}/${path} is listed in SHA256SUMS but does not download"
 done < "${set_dir}/SHA256SUMS"
 (cd "${set_dir}" && check_sums) || fail "files under ${base} do not match their SHA256SUMS; an upload was interrupted or replaced"
 
