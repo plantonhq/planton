@@ -34,7 +34,7 @@ spec:
       bucket:
         valueFrom:
           name: agent-snapshots
-  cordonControlPlane: true
+  cordonSystemInfraComponents: true
   apiServer:
     replicas: 3
     resources:

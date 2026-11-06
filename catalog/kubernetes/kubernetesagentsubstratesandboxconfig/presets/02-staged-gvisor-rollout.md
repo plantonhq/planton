@@ -9,7 +9,7 @@ A new gVisor release as the default, with the previous release kept Enabled besi
 
 ## How It Works
 
-`defaultVersion` decides what every new actor on the pools running this config boots, and every node downloads the default ahead of time. To roll back, point `defaultVersion` at `gvisor-2026-10-17` and apply: nodes that ran it as the default still hold its files, so the rollback does not wait on a download there. If the new release proves bad, set its `state` to `Disabled` after rolling back, so no one makes it the default again; once you no longer want the previous release as a rollback target and no actor you care about is suspended on it, remove it: an actor suspended on a removed version resumes from its files without its memory.
+`defaultVersion` decides what every new actor on the pools running this config boots, and every node downloads the default ahead of time. To roll back, point `defaultVersion` at `gvisor-20261102-0` and apply: nodes that ran it as the default still hold its files, so the rollback does not wait on a download there. If the new release proves bad, set its `state` to `Disabled` after rolling back, so no one makes it the default again; once you no longer want the previous release as a rollback target and no actor you care about is suspended on it, remove it: an actor suspended on a removed version resumes from its files without its memory.
 
 ## Key Configuration Choices
 

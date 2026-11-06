@@ -17,8 +17,17 @@ message KubernetesAgentSubstrateWorkerPool {
   // resource-kind
   string kind = 2 [(buf.validate.field).string.const = 'KubernetesAgentSubstrateWorkerPool'];
 
-  // metadata
-  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
+  // metadata. metadata.name is the WorkerPool's own name, which upstream's
+  // definition caps at 63 characters because the pool's worker pods carry it
+  // as a label value.
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "worker_pool_name_length"
+      message: "metadata.name must be at most 63 characters: it names the WorkerPool, and its worker pods carry it as a label value"
+      expression: "size(this.name) <= 63"
+    }
+  ];
 
   // spec
   KubernetesAgentSubstrateWorkerPoolSpec spec = 4 [(buf.validate.field).required = true];

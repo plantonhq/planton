@@ -182,6 +182,9 @@ resource "terraform_data" "preflight" {
         length([for e in local.podcert_container.env : e if e.name == "WORKERS_PER_SIGNER"]) == 1,
         length(local.postgres_hook) == 3,
         length(local.agw) == 6 && length(local.agw_egress) == 3 && length(local.cordon_patches) == 2,
+        length(local.documents_by_file.agentgateway_static_mtls[0].patches) == 1,
+        local.agw_static_mtls_patch.path == "configmap.yaml" && local.agw_static_mtls_patch.target.name == local.agw_router_config_name,
+        length(split(local.agw_allowed_marker, local.agw_static_mtls_config)) == 2,
         local.router_policy_upstream != null,
         alltrue([for role, modes in local.octal_modes : length(modes) <= 4]),
       ])

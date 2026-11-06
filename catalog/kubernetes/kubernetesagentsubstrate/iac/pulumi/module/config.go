@@ -128,10 +128,12 @@ func apiConfigText(s *settings) string {
 	return fmt.Sprintf("logging: {\n  level: %q\n}\n", s.apiServer.logLevel)
 }
 
-// authenticationYAML is authentication.yaml, byte for byte upstream's
-// buildAuthenticationConfig: one JWT provider for Kubernetes tokens with the
-// API's audience, verified against the cluster's own CA and token for the
-// two in-cluster issuer forms.
+// authenticationYAML is authentication.yaml, the document upstream's
+// buildAuthenticationConfig writes, key for key and value for value (upstream
+// marshals it with yaml.Marshal, so its key order and list style differ, and
+// the API server reads both alike): one JWT provider for Kubernetes tokens
+// with the API's audience, verified against the cluster's own CA and token for
+// the two in-cluster issuer forms.
 func authenticationYAML(s *settings) string {
 	issuer := apiIssuer(s)
 	config := fmt.Sprintf("jwtProviders:\n- name: kubernetes\n  issuer: %s\n  audiences: [%s]\n", issuer, vars.APIServerHost)
@@ -265,7 +267,7 @@ func configHash(names []string, configMaps map[string]map[string]string) string 
 // only at start (envFrom or a mounted file the binary never re-reads).
 // A composition test holds each entry to the workload's own references.
 var configReaders = map[string][]string{
-	vars.APIServerName:          {configMapAuthentication, configMapOtel},
+	vars.APIServerName:          {configMapAuthentication, configMapAPIConfig, configMapOtel},
 	vars.ControllerName:         {configMapOtel},
 	vars.NodeAgentName:          {configMapOtel},
 	vars.RouterName:             {configMapOtel},

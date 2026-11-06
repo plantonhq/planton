@@ -34,6 +34,10 @@ type ExistingCRD struct {
 	// pulumi-kubernetes, an operator's name); the fallback when no other mark
 	// says who owns it.
 	Managers []string
+	// StoredVersions is the definition's status.storedVersions: every
+	// version objects of it have been persisted at. Kubernetes refuses a
+	// definition that stops serving one of them.
+	StoredVersions []string
 }
 
 // ExistingFromObject reads an ExistingCRD from an object's metadata as the
@@ -49,6 +53,49 @@ func ExistingFromObject(name string, labels, annotations map[string]string, mana
 		HelmReleaseNamespace: annotations[helmReleaseNamespaceAnnotation],
 		Managers:             managers,
 	}
+}
+
+// CheckStoredVersionsListed refuses a definition that would drop a version
+// the cluster still stores objects at. The API server rejects such an update
+// outright (every status.storedVersions entry must appear in spec.versions,
+// served or not), and the objects were written by an earlier release this one
+// cannot read, so the refusal comes at plan time, by name, with the way
+// forward. A CRD the cluster does not carry yet, or one whose stored versions
+// the new definition still lists, passes.
+func CheckStoredVersionsListed(existing []ExistingCRD, crds []CRD, src Source) error {
+	byName := make(map[string]CRD, len(crds))
+	for _, crd := range crds {
+		byName[crd.Name] = crd
+	}
+	for _, current := range existing {
+		crd, ok := byName[current.Name]
+		if !ok {
+			continue
+		}
+		listed, err := crd.Versions()
+		if err != nil {
+			return err
+		}
+		var dropped []string
+		for _, stored := range current.StoredVersions {
+			if !contains(listed, stored) {
+				dropped = append(dropped, stored)
+			}
+		}
+		if len(dropped) > 0 {
+			return StoredVersionDroppedFailure(src, current.Name, dropped, listed)
+		}
+	}
+	return nil
+}
+
+func contains(list []string, want string) bool {
+	for _, item := range list {
+		if item == want {
+			return true
+		}
+	}
+	return false
 }
 
 // ownedBy reports whether this source stamped the CRD.

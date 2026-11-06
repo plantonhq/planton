@@ -16,8 +16,8 @@ import "shared/options/options.proto";
 // which is how a pool serves more actors than it holds at once.
 //
 // 100% fidelity with the upstream WorkerPool custom resource
-// (ate.dev/v1alpha1), pinned to the definition of the Agent Substrate release
-// KubernetesAgentSubstrate composes (v0.6.0) and held to it by the mirror
+// (ate.dev/v1), pinned to the definition of the Agent Substrate release
+// KubernetesAgentSubstrate composes (v1.0.0) and held to it by the mirror
 // test. The upstream spec follows the Planton envelope directly:
 // the size, the worker image, the worker pods' placement and resources, and
 // the sandbox class the pool runs.

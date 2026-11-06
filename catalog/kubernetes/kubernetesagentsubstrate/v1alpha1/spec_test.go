@@ -384,12 +384,14 @@ var _ = ginkgo.Describe("KubernetesAgentSubstrate Validation Tests", func() {
 	})
 
 	ginkgo.Describe("the router", func() {
-		ginkgo.It("requires a client for the Envoy router, which lets only the clients it names reach actors", func() {
+		ginkgo.It("requires a client with either dataplane, which lets only the clients it names reach actors", func() {
 			input.Spec.Router = nil
-			refusedBy("envoy_router_needs_allowed_clients")
+			refusedBy("router_needs_allowed_clients")
 			input.Spec.Router = &KubernetesAgentSubstrateRouter{}
-			refusedBy("envoy_router_needs_allowed_clients")
+			refusedBy("router_needs_allowed_clients")
 			input.Spec.Router = &KubernetesAgentSubstrateRouter{Dataplane: KubernetesAgentSubstrateRouter_agentgateway}
+			refusedBy("router_needs_allowed_clients")
+			input.Spec.Router.AllowedClientSpiffeIds = []string{"spiffe://cluster.local/ns/app/sa/web"}
 			valid()
 		})
 
@@ -585,13 +587,13 @@ var _ = ginkgo.Describe("KubernetesAgentSubstrate Validation Tests", func() {
 					WorkerMetricsExporters: []string{"otlp"},
 					WorkerLogsExporters:    []string{"otlp"},
 				},
-				ClusterSize:        KubernetesAgentSubstrateSpec_size0, // size10 excludes the bundled database's own resources set above
-				CordonControlPlane: true,
-				ImageRegistry:      "us-central1-docker.pkg.dev",
-				ImagePullSecrets:   []string{"mirror-pull"},
-				Version:            stringPtr("v0.6.0"),
-				PreviewGates:       []string{"ExternalVolumes"},
-				IdentityServer:     &KubernetesAgentSubstrateIdentityServer{Replicas: int32Ptr(3), Resources: resources, LogLevel: LogLevel_debug, DrainGrace: stringPtr("10s")},
+				ClusterSize:                 KubernetesAgentSubstrateSpec_size0, // size10 excludes the bundled database's own resources set above
+				CordonSystemInfraComponents: true,
+				ImageRegistry:               "mirror.example.com",
+				ImagePullSecrets:            []string{"mirror-pull"},
+				Version:                     stringPtr("v1.0.0"),
+				PreviewGates:                []string{"ExternalVolumes"},
+				IdentityServer:              &KubernetesAgentSubstrateIdentityServer{Replicas: int32Ptr(3), Resources: resources, LogLevel: LogLevel_debug, DrainGrace: stringPtr("10s")},
 			}
 			input.Spec.Storage.SnapshotPrefix = "substrate/prod"
 			valid()

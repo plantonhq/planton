@@ -133,6 +133,13 @@ func TestModuleMatricesCoverEveryProvider(t *testing.T) {
 // other lane's parts would be refused for listing modules of another engine.
 func TestEachEngineManifestWaitsOnlyForItsOwnLane(t *testing.T) {
 	root := repoRoot(t)
+	script, err := os.ReadFile(filepath.Join(root, "tools", "ci", "release", "publish_module_manifest.sh"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(script), `modulebuild manifest -engine "${engine}"`) {
+		t.Error("publish_module_manifest.sh does not assemble the manifest of the engine it is given with modulebuild manifest")
+	}
 	release := readWorkflow(t, root, "release.yaml")
 	for _, engine := range modulemanifest.Engines {
 		lane, manifestJob := string(engine)+"-modules", string(engine)+"-module-manifest"
@@ -152,10 +159,10 @@ func TestEachEngineManifestWaitsOnlyForItsOwnLane(t *testing.T) {
 		}
 		assembles := false
 		for _, s := range job.Steps {
-			assembles = assembles || (strings.Contains(s.Run, "modulebuild manifest") && strings.Contains(s.Run, "-engine "+string(engine)))
+			assembles = assembles || (strings.Contains(s.Run, "tools/ci/release/publish_module_manifest.sh") && strings.Contains(s.Run, " "+string(engine)+" "))
 		}
 		if !assembles {
-			t.Errorf("%s does not assemble its manifest with modulebuild manifest -engine %s", manifestJob, engine)
+			t.Errorf("%s does not assemble its manifest with tools/ci/release/publish_module_manifest.sh <tag> %s <parts>", manifestJob, engine)
 		}
 
 		upload, ok := stepUsing(readWorkflow(t, root, "release."+lane+".yaml").Jobs["build"].Steps, "actions/upload-artifact")

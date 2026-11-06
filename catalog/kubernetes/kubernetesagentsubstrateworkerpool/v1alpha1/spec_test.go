@@ -2,6 +2,7 @@ package kubernetesagentsubstrateworkerpoolv1alpha1
 
 import (
 	"errors"
+	"strings"
 	"testing"
 
 	"buf.build/go/protovalidate"
@@ -98,7 +99,7 @@ var _ = ginkgo.Describe("KubernetesAgentSubstrateWorkerPool Validation Tests", f
 
 	ginkgo.It("accepts a pool on the class default, with a literal image and no template", func() {
 		input.Spec.SandboxClasses[0].ConfigRef = nil
-		input.Spec.WorkerImage = literal("ghcr.io/plantonhq/planton/agent-substrate/ateworker-gvisor:v0.6.0@sha256:e3f59217a1e63c280ea1cc4149dfe0686353f9ef583fe2ff1c129d4ad42f8cba")
+		input.Spec.WorkerImage = literal("ghcr.io/agent-substrate/substrate/ateworker-gvisor:v1.0.0@sha256:f8987236c6256f58c4b2625e543b43f4ae4bdded6ee6821c03d966effb7c0f17")
 		input.Spec.Template = nil
 		gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 	})
@@ -107,6 +108,13 @@ var _ = ginkgo.Describe("KubernetesAgentSubstrateWorkerPool Validation Tests", f
 		input.Spec.SandboxClasses[0].Name = "microvm"
 		input.Spec.WorkerImage = valueFrom(catalogkind.CatalogKind_KubernetesAgentSubstrate, "substrate", "status.outputs.microvm_worker_image")
 		gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+	})
+
+	ginkgo.It("refuses a name longer than 63 characters, the label value its worker pods carry", func() {
+		input.Metadata.Name = strings.Repeat("w", 63)
+		gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		input.Metadata.Name = strings.Repeat("w", 64)
+		expectViolation(protovalidate.Validate(input), "worker_pool_name_length")
 	})
 
 	ginkgo.It("requires a namespace", func() {
@@ -228,7 +236,7 @@ var _ = ginkgo.Describe("KubernetesAgentSubstrateWorkerPool Validation Tests", f
 	ginkgo.It("refuses an empty literal wherever a reference or a literal goes", func() {
 		input.Spec.WorkerImage = literal("")
 		expectViolation(protovalidate.Validate(input), "string_value_or_ref.non_empty")
-		input.Spec.WorkerImage = literal("ghcr.io/plantonhq/planton/agent-substrate/ateworker-gvisor:v0.6.0")
+		input.Spec.WorkerImage = literal("ghcr.io/agent-substrate/substrate/ateworker-gvisor:v1.0.0")
 		input.Spec.SandboxClasses[0].ConfigRef.Name = literal("")
 		expectViolation(protovalidate.Validate(input), "string_value_or_ref.non_empty")
 		input.Spec.SandboxClasses[0].ConfigRef = nil

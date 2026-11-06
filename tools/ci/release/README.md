@@ -17,7 +17,7 @@ is upstream's own, declared once in a committed file.
 | `vX.Y.Z` | the catalog: IaC modules, content zips, definitions, InfraCharts (`release.yaml`) | `make release` |
 | `operator/vX.Y.Z` | the operator image and the `planton-operator` Helm chart, one version line (`release.operator.yaml` -> `release.helm.yaml`) | `make release-operator` |
 | `helm/<chart>/vX.Y.Z` | one Helm chart under `helm/` (`release.helm.yaml`) | `make release-helm chart=<chart>` |
-| `agent-substrate/vX.Y.Z` | Agent Substrate's images at `ghcr.io/plantonhq/planton/agent-substrate/<component>` and its install set at `downloads.planton.ai/releases/agent-substrate/vX.Y.Z/`, built from upstream's tag (`release.agent-substrate.yaml`) | `make release-agent-substrate` |
+| `agent-substrate/vX.Y.Z` | Agent Substrate's install set at `downloads.planton.ai/releases/agent-substrate/vX.Y.Z/`, composed from upstream's tag and the images upstream publishes (`release.agent-substrate.yaml`) | `make release-agent-substrate` |
 
 ## Quick Start
 
@@ -39,7 +39,7 @@ make release-operator version=v0.8.0       # an explicit version (the first tag 
 make release-helm chart=planton            # patch bump in the helm/planton/ namespace
 make release-helm chart=planton version=v0.4.0
 
-# Publish Agent Substrate's images and install set (triggers release.agent-substrate.yaml)
+# Publish Agent Substrate's install set (triggers release.agent-substrate.yaml)
 make release-agent-substrate               # tags the version tools/ci/release/agent-substrate.yaml declares
 ```
 
@@ -130,45 +130,77 @@ proto source, the kind reference pack) for the release's R2 upload.
 
 ## Agent Substrate: a third-party line
 
-Agent Substrate publishes no images and no pre-built install, so Planton
-publishes both for the Substrate kinds and for anyone else who installs it.
-The pieces, all read by `release.agent-substrate.yaml`:
+Agent Substrate publishes its release images itself (from v1.0.0, at
+`ghcr.io/agent-substrate/substrate/<image>`) but no pre-built install, so
+Planton publishes the install set the Substrate kinds read, and anyone else
+who installs it can. The lane is one script, `publish_agent_substrate.sh
+[--rehearse] [<version>]`, which `release.agent-substrate.yaml` runs and a
+laptop runs the same way:
 
-- `agent-substrate.yaml` declares the one version the lane builds and the
-  install shape it claims. A pull request that touches the lane, or a dispatch
-  with `dry_run`, rehearses that version end to end (build both
-  architectures, compose, check; nothing is published), `make
-  release-agent-substrate` tags it, and the lane refuses to publish any other
-  version that is not already published. Adopting a new upstream release moves
-  these lines in the change whose rehearsal proves it.
+- `agent-substrate.yaml` declares the one version the lane composes, the
+  install shape it claims, and the repository upstream publishes its images
+  under. A pull request that touches the lane rehearses that version (compose
+  and check; nothing is published), `make release-agent-substrate` tags it,
+  and the lane refuses to publish any other version that is not already
+  published. Adopting a new upstream release moves these lines in the change
+  whose rehearsal proves it.
 - **The install shape.** The control-plane module composes one shape, the
   install of one release, and installs any published release of that shape at
   the version a customer sets. A release that claims an earlier shape is
   published only when its install is that shape's apart from its images: the
   rehearsal compares the composed tree with the shape's published one,
-  upstream's installer and Google Cloud setup at both tags, and the flags,
-  `ATE_*` variables and preview gates the installed binaries accept (the
+  upstream's installer and the binaries' install defaults at both tags, and the
+  flags, `ATE_*` variables and preview gates the installed binaries accept (the
   release may add one, never drop one the module may pass). So an upstream
   patch that changes nothing but its images reaches customers with this lane
   alone; one that changes the install is declared its own shape, and customers
   get it once the module composes it.
-- `compose_agent_substrate_release.py` turns the build into the install set:
-  upstream's `manifests/` tree with every image pinned by digest, the CRD
-  bundle, `images.json` (with the shape), upstream's database setup script,
-  the licenses and `SHA256SUMS`. Its docstring says why the install is
-  upstream's whole tree rather than one file, and how a shape is proven.
-  Tests: `cd tools/ci/release && python3 -m unittest compose_agent_substrate_release_test.py`
-  (the overlay checks need `kustomize` on PATH).
+- `compose_agent_substrate_release.py` turns upstream's tag and its images into
+  the install set: upstream's `manifests/` tree with every image pinned by the
+  digest of the index upstream's registry serves (fetched anonymously, the
+  digest computed from the bytes), less the kustomize components that name an
+  image upstream never releases; the CRD bundle, `images.json` (with the
+  shape), upstream's database setup script, the licenses and `SHA256SUMS`. Its
+  docstring says why the install is upstream's whole tree rather than one file,
+  and how a shape is proven. Tests: `cd tools/ci/release && python3 -m unittest
+  compose_agent_substrate_release_test.py` (the overlay checks need `kustomize`
+  on PATH; `ensure_release_tools.sh` puts the pinned one there).
 - `verify_agent_substrate_release.sh <version> [<composed directory>]` proves a
   published version from an adopter's side, with no credentials: every file
   matches its sum (and, given the directory a run composed, every byte), and
-  every image pulls from ghcr.io and the Artifact Registry mirror by digest and
-  by tag.
+  every image pulls by digest and by tag from the registry `images.json` names.
+- `ensure_release_tools.sh` installs the pinned crane and kustomize for the
+  host, each checked against its release's own checksum.
 
-The lane runs upstream's code in a job that holds no credential, and publishes
-only from jobs that run Planton's own code; its header explains the boundary.
 A version is sealed once its `SHA256SUMS` is uploaded (last): later runs verify
-it and build nothing.
+it and compose nothing. No step runs upstream's code: the composer reads
+upstream's files as text.
+
+## Releasing without GitHub Actions
+
+When Actions cannot run (a billing lock, an outage), a release is still cut by
+its front door, and `make release-without-actions tag=<tag>` runs the lanes
+that tag would have triggered, from any machine with the credentials
+(`release_without_actions.sh`). It clones the pushed tag into a clean scratch
+tree, so it publishes the tag's tree with the tag's own lane scripts, the same
+ones the workflows run:
+
+| Tag | Lanes run, in order |
+|---|---|
+| `vX.Y.Z`, `vX.Y.Z-rc.N` | the GitHub Release (`create_github_release.sh`), the chart catalog (`publish_charts.sh`), the BSR labels (`push_buf_labels.sh`), the content artifacts (`publish_content.sh`), the stub SDKs (`publish_stub_sdks.sh`), the OpenTofu modules one provider at a time in parallel (`publish_terraform_modules.sh`) and their manifest (`publish_module_manifest.sh`) |
+| `agent-substrate/vX.Y.Z` | the install set (`publish_agent_substrate.sh`) |
+
+Those are every lane a platform pin reads. The Pulumi modules and their
+manifest (about 4,200 Go builds), the definitions, the `plantonhq/skills`
+distribution and the Stigmer skills are left to the tag's own release run:
+re-run it once Actions can run, and it keeps everything already published.
+Every per-tag artifact goes through `publish_once.sh` and the stub SDKs are
+sealed by their manifest, so either path, in either order, publishes one set
+of bytes per tag.
+
+It needs the R2 key pair in `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY`, the
+endpoint in `AWS_ENDPOINT_URL`, gh and buf signed in, and Go, git, curl, jq,
+zip, python3 and the aws CLI. The scripts default the region to R2's `auto`.
 
 ## Required GitHub Secrets
 

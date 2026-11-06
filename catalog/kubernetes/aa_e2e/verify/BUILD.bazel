@@ -114,7 +114,7 @@ go_library(
     importpath = "github.com/plantonhq/planton/catalog/kubernetes/aa_e2e/verify",
     visibility = ["//visibility:public"],
     deps = [
-        "//catalog/kubernetes/aa_e2e/verify/internal/ateapipb",
+        "//catalog/kubernetes/aa_e2e/verify/internal/ateapi",
         "//catalog/kubernetes/kubernetesplantonoperator/v1alpha1",
         "//e2e/framework/provider",
         "//internal/manifest",
@@ -165,7 +165,7 @@ go_test(
     ],
     embed = [":verify"],
     deps = [
-        "//catalog/kubernetes/aa_e2e/verify/internal/ateapipb",
+        "//catalog/kubernetes/aa_e2e/verify/internal/ateapi",
         "//e2e/framework/provider",
         "//pkg/failure",
         "@in_gopkg_yaml_v3//:yaml_v3",

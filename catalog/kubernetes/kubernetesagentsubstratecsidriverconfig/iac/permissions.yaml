@@ -22,7 +22,7 @@ spec:
           - delete
         cluster_scoped: true
         provenance: derived
-        notes: Covers the kubectl_manifest.csi_driver_config resource (Terraform) and the apiextensions.CustomResource the manifestcr helper creates (Pulumi) -- each module's only resource, applying one cluster-scoped CSIDriverConfig (ate.dev/v1alpha1).
+        notes: Covers the kubectl_manifest.csi_driver_config resource (Terraform) and the apiextensions.CustomResource the manifestcr helper creates (Pulumi) -- each module's only resource, applying one cluster-scoped CSIDriverConfig (ate.dev/v1).
       - api_groups:
           - ate.dev
         resources:

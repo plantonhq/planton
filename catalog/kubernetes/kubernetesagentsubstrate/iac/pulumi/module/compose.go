@@ -136,6 +136,7 @@ func compose(s *settings, f releaseFileSet) (*composition, error) {
 	}
 	configMaps := map[string]map[string]string{
 		configMapAuthentication: {"authentication.yaml": authenticationYAML(s)},
+		configMapAPIConfig:      {"apiconfig.textproto": apiConfigText(s)},
 	}
 	for _, d := range otelDocs {
 		data := otelData(s, stringMap(d["data"]))
@@ -201,7 +202,7 @@ func compose(s *settings, f releaseFileSet) (*composition, error) {
 		system = append(system, providerDocs...)
 	}
 	if s.router.agentgateway {
-		if system, err = applyAgentgateway(system, f); err != nil {
+		if system, err = applyAgentgateway(system, f, s); err != nil {
 			return nil, err
 		}
 	}

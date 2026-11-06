@@ -17,8 +17,8 @@ suspended actor leaves its worker for storage and gives its share back,
 which is how a pool serves more actors than it holds at once.
 
 100% fidelity with the upstream WorkerPool custom resource
-(ate.dev/v1alpha1), pinned to the definition of the Agent Substrate release
-KubernetesAgentSubstrate composes (v0.6.0) and held to it by the mirror
+(ate.dev/v1), pinned to the definition of the Agent Substrate release
+KubernetesAgentSubstrate composes (v1.0.0) and held to it by the mirror
 test. The upstream spec follows the Planton envelope directly:
 the size, the worker image, the worker pods' placement and resources, and
 the sandbox class the pool runs.
@@ -48,7 +48,7 @@ adds a NetworkPolicy that admits only Substrate's router to the workers.
 # The full surface, for offline proofs (tofu plan, pulumi preview, a server
 # dry run): every field of the pool, with literal values where the lanes
 # reference fixtures (the worker image the control plane publishes for
-# v0.6.0, the ServiceAccount, the PriorityClass and a SandboxConfig).
+# v1.0.0, the ServiceAccount, the PriorityClass and a SandboxConfig).
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesAgentSubstrateWorkerPool
 metadata:
@@ -62,7 +62,7 @@ spec:
     planton.dev/e2e-note: full-surface
   replicas: 2
   workerImage:
-    value: ghcr.io/plantonhq/planton/agent-substrate/ateworker-gvisor:v0.6.0@sha256:e3f59217a1e63c280ea1cc4149dfe0686353f9ef583fe2ff1c129d4ad42f8cba
+    value: ghcr.io/agent-substrate/substrate/ateworker-gvisor:v1.0.0@sha256:f8987236c6256f58c4b2625e543b43f4ae4bdded6ee6821c03d966effb7c0f17
   template:
     labels:
       team: platform

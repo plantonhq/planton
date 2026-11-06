@@ -21,7 +21,7 @@ locals {
   # whose resource definitions the kind applies. Any release Planton publishes
   # with this shape installs with this module (images.json's shape names it).
   # MUST equal the Pulumi module's vars.Release (a test holds them equal).
-  release                    = "v0.6.0"
+  release                    = "v1.0.0"
   bundle_name                = "agent-substrate"
   namespace                  = "ate-system"
   pod_certificates_namespace = "podcertificate-controller-system"
@@ -88,9 +88,12 @@ locals {
     agentgateway        = "manifests/ate-install/components/agentgateway/kustomization.yaml"
     agentgateway_config = "manifests/ate-install/components/agentgateway/configmap.yaml"
     agentgateway_egress = "manifests/ate-install/components/agentgateway-egress/kustomization.yaml"
-    cordon              = "manifests/ate-install/components/cordon-control-plane/kustomization.yaml"
-    credential_provider = "manifests/egress-credential-injection/k8s-credential-provider.yaml"
-    setup_sql           = "setup.sql"
+    # The static-mTLS component patches from the file beside it (`path:`).
+    agentgateway_static_mtls        = "manifests/ate-install/components/agentgateway-static-mtls/kustomization.yaml"
+    agentgateway_static_mtls_config = "manifests/ate-install/components/agentgateway-static-mtls/configmap.yaml"
+    cordon                          = "manifests/ate-install/components/cordon-system-infra-components/kustomization.yaml"
+    credential_provider             = "manifests/egress-credential-injection/k8s-credential-provider.yaml"
+    setup_sql                       = "setup.sql"
   }
 
   # ---- who owns the namespace ---------------------------------------------------
@@ -123,7 +126,7 @@ locals {
 
   preview  = try(var.spec.preview_gates, [])
   size10   = try(var.spec.cluster_size, "") == "size10"
-  cordon   = try(var.spec.cordon_control_plane, false)
+  cordon   = try(var.spec.cordon_system_infra_components, false)
   registry = try(var.spec.image_registry, "")
   pull_secrets = [
     for name in try(var.spec.image_pull_secrets, []) : { name = name }
@@ -379,7 +382,8 @@ locals {
   # level, read live, so it rolls nothing.
   api_config_text = "logging: {\n  level: \"${local.api.log_level}\"\n}\n"
 
-  # authentication.yaml, byte for byte upstream's buildAuthenticationConfig.
+  # authentication.yaml, the document upstream's buildAuthenticationConfig
+  # writes, key for key and value for value (config.go authenticationYAML).
   api_issuer = local.gke ? "https://container.googleapis.com/v1/${local.gke_cluster_id}" : local.service_account_issuer
   authentication_yaml = trimsuffix(join("", concat(
     ["jwtProviders:\n- name: kubernetes\n  issuer: ${local.api_issuer}\n  audiences: [${local.api_server_host}]\n"],
@@ -425,6 +429,7 @@ locals {
   config_maps = merge(
     {
       "ate-api-authentication" = { "authentication.yaml" = local.authentication_yaml }
+      "ate-api-config"         = { "apiconfig.textproto" = local.api_config_text }
       "ate-otel-config"        = local.otel_data
     },
     local.egress.provider == "kubernetes" ? { "k8s-credential-provider-namespace-policy" = { "namespace-policy.yaml" = local.policy_yaml } } : {},
@@ -434,7 +439,7 @@ locals {
     } : {},
   )
   config_readers = {
-    (local.api_server_name)          = ["ate-api-authentication", "ate-otel-config"]
+    (local.api_server_name)          = ["ate-api-authentication", "ate-api-config", "ate-otel-config"]
     (local.controller_name)          = ["ate-otel-config"]
     (local.node_agent_name)          = ["ate-otel-config"]
     (local.router_name)              = ["ate-otel-config"]

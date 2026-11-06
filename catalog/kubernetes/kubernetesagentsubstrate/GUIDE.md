@@ -25,7 +25,7 @@ The network must enforce NetworkPolicy: every pod in `ate-system` is behind a de
 Two doors, each closed to anyone the spec does not name:
 
 - **The API** authorizes every call. A caller authenticates with its service-account token or its pod certificate, and reaches an atespace only through an access policy. `apiServer.authorization.bootstrapOwners` names the principals that always own everything, which is how the first owner gets in: name the service account your product calls the API as. Left empty, it is upstream's `system:serviceaccount:ate-system:ate-client`, which only someone who can create that service account in `ate-system` can act as.
-- **The router** carries requests to agents only from the workloads `router.allowedClientSpiffeIds` names, by the SPIFFE ID of the pod certificate they present (`spiffe://cluster.local/ns/<namespace>/sa/<service-account>`, from the signer the `router_client_signer_name` output names) at the `router_tls_endpoint` output. The Envoy router serves nothing else, so it needs at least one client. agentgateway checks no client certificate yet and still serves plaintext at `router_endpoint` to any caller that reaches it.
+- **The router** carries requests to agents only from the workloads `router.allowedClientSpiffeIds` names, by the SPIFFE ID of the pod certificate they present (`spiffe://cluster.local/ns/<namespace>/sa/<service-account>`, from the signer the `router_client_signer_name` output names) at the `router_tls_endpoint` output. Either dataplane serves nothing else (agentgateway through upstream's static-mTLS component), so it needs at least one client.
 
 The identity server publishes the keys agent tokens are signed with at the actor-JWT issuer (`https://idp.ate-system.svc` unless `apiServer.actorJwt.issuer` names your own host), so a service verifies a token an agent presents without calling the API. The issuer is a host, with no path, because the identity server serves the discovery document at its root.
 
@@ -70,7 +70,7 @@ Upstream's installer creates five certificate authorities, and a signing key for
 | `service-dns-ca-pool` | `podcertificate-controller-system` | Ed25519 | every in-cluster Substrate service's serving certificate |
 | `pod-identity-ca-pool` | `podcertificate-controller-system` | Ed25519 | every component's SPIFFE client certificate |
 | `postgres-ca-pool` | `podcertificate-controller-system` | Ed25519 | the bundled database's client certificates |
-| `actor-id-ca-pool` | `ate-system` | Ed25519 | agent identity certificates |
+| `actor-id-ca-pool` | `ate-system` | ECDSA P-256 | agent identity certificates (P-256 because relying parties outside the cluster trust this root) |
 | `egress-mitm-ca-pool` | `ate-system` | ECDSA P-256 | the short-lived certificates that intercept agents' https traffic |
 | `actor-id-jwt-pool` | `ate-system` | ES256 or RS256 | agent identity tokens |
 
@@ -81,45 +81,47 @@ Two choices differ from upstream's installer, both on purpose:
 - **Ten-year authorities, not one.** Every connection that chains to an expired root fails, so an upstream install stops working on day 366. Worse, the TLS provider would replace an expired root on the next apply, rotating trust out from under every certificate already issued. Ten years is the kubeadm convention for self-managed roots; the certificates under them last 24 hours (pod certificates) or 15 minutes (interception). Rotating an authority with overlap, which the pool format allows, is not offered by upstream yet.
 - **The token key's ID.** Upstream names the key by hashing its public key's DER; Terraform hashes only text, so both engines name it by hashing the public key's PEM, in the same base64url form. Upstream accepts any ID, and the published key set carries whatever ID the pool names. Changing `actorJwt.algorithm` replaces the key, so tokens signed with the old one stop verifying.
 
-Beside the token pool sits its public key set (`jwks` in the same Secret), which the API server's credential exchange verifies agent tokens with. Both engines write it byte for byte as upstream derives it from the pool, which the same test proves.
+The identity server publishes the pool's public key set through OIDC discovery, and the API server's credential exchange fetches it from there to verify agent tokens, so nothing beside the pool is stored. A custom `actorJwt.issuer` must therefore answer OIDC discovery from inside the API server's pod, over a certificate that verifies against the system roots or Substrate's service-DNS trust bundle: one that does not stops the exchange sidecar at start.
 
 ## Settings that take effect
 
-The API server reads its authentication file once, the credential provider reads its namespace policy once, and every component reads the OpenTelemetry settings once. Upstream's installer also writes the authentication file and the policy only on first install, so later edits silently do nothing. This kind reconciles both from the spec, and each workload's pod template carries a digest of the configuration it reads, so a change rolls exactly the workloads that read it. The API server's log level lives in its configuration file (`ate-api-config`), which it reads as it changes, so a new level applies without a restart. Edits made by hand to these ConfigMaps are replaced on the next apply.
+The API server reads its authentication file once, the credential provider reads its namespace policy once, and every component reads the OpenTelemetry settings once. Upstream's installer also writes the authentication file and the policy only on first install, so later edits silently do nothing. This kind reconciles both from the spec, and each workload's pod template carries a digest of the configuration it reads, so a change rolls exactly the workloads that read it. The API server's configuration file (`ate-api-config`, which carries its log level) is read at start too, so a change to it rolls the API server, as upstream's installer does. Edits made by hand to these ConfigMaps are replaced on the next apply.
 
 ## The version
 
-`version` picks the Agent Substrate release to install, from those Planton publishes, and defaults to the release this catalog composes (v0.6.0).
+`version` picks the Agent Substrate release to install, from those Planton publishes, and defaults to the release this catalog composes (v1.0.0).
 
-The modules compose one **install shape**: the files, objects, flags and settings of one release, v0.6.0's. Planton publishes a later upstream release with the shape it shares: one whose install differs from v0.6.0's only in its images keeps v0.6.0's shape, which Planton proves before it publishes (the manifests, the definitions and the database script compared file for file, and upstream's installer code compared at both tags). So an upstream patch that changes only its images reaches you by setting `version`, with no catalog update. A release of another shape is refused at plan time, before anything is applied:
+The modules compose one **install shape**: the files, objects, flags and settings of one release, v1.0.0's. Planton publishes a later upstream release with the shape it shares: one whose install differs from v1.0.0's only in its images keeps v1.0.0's shape, which Planton proves before it publishes (the manifests, the definitions and the database script compared file for file, and upstream's installer code compared at both tags). So an upstream patch that changes only its images reaches you by setting `version`, with no catalog update. A release of another shape is refused at plan time, before anything is applied:
 
-- **Observed:** Agent Substrate v0.7.0 has the install shape of v0.7.0, and this KubernetesAgentSubstrate composes v0.6.0's.
-- **Meaning:** v0.7.0 installs differently from what this Planton catalog release knows how to compose, so nothing was applied.
-- **Next step:** set spec.version to v0.6.0 or a release of its shape, or deploy this resource from a Planton catalog release that composes v0.7.0's shape.
+- **Observed:** Agent Substrate v1.1.0 has the install shape of v1.1.0, and this KubernetesAgentSubstrate composes v1.0.0's.
+- **Meaning:** v1.1.0 installs differently from what this Planton catalog release knows how to compose, so nothing was applied.
+- **Next step:** set spec.version to v1.0.0 or a release of its shape, or deploy this resource from a Planton catalog release that composes v1.1.0's shape.
 
 A release Planton has not published is refused by name, and every file the modules read is checked against the release's checksums. The resource definitions belong to the shape, so they stay the same across its releases, and moving between them never reads as a definition downgrade.
 
 **Adopting a new patch:**
 1. Set `version` and apply: the control plane moves in place, either way between releases of a minor.
-2. Redeploy your worker pools: a pool takes its worker image from this resource's outputs when it deploys, so its workers run the new release's image only after its next deploy. Upstream's order for upgrades (workers before the API server) is a rule from 1.0 on.
-3. If you pull images from your own mirror (`imageRegistry`), copy the new release's images there first. Planton's own mirror (`us-central1-docker.pkg.dev`) carries every release it publishes.
+2. Redeploy your worker pools: a pool takes its worker image from this resource's outputs when it deploys, so its workers run the new release's image only after its next deploy. Upstream's rolling order (`docs/guides/upgrade.md`: the pod-certificate controller, then each node's agent, then the workers, then the system bundle) is what an upgrade of a busy cluster follows.
+3. If you pull images from your own mirror (`imageRegistry`), copy the new release's images there first.
 
 ## Upgrades
 
-Upstream's policy: before 1.0 every minor release is a reinstall, because the API server migrates its database schema irreversibly on its first start; from 1.0, one minor at a time, and a rollback of at most one. Patch releases are always free. Upstream writes no version marker and checks nothing, so the module stamps two:
+Upstream's policy: the API server migrates its database schema irreversibly on its first start, so from 1.0 a release moves one minor at a time, and a rollback goes back at most one; a new major is a reinstall, and so was every minor before 1.0 (upstream squashed its migrations up to v0.6.0, so a v0.x database cannot be upgraded to v1.0). Patch releases are always free. Upstream writes no version marker and checks nothing, so the module stamps two:
 
 - the installed release, on the API server Deployment;
 - the minor that wrote the bundled database, on its volume claim template, so the volume carries it past a destroy.
 
 An apply that breaks the policy stops at plan time, before anything changes:
 
-- **Observed:** Deployment ate-system/ate-api-server records Agent Substrate v0.5.0 on this cluster, and this KubernetesAgentSubstrate installs v0.6.0.
-- **Meaning:** Agent Substrate does not move from v0.5.0 to v0.6.0 in place: before 1.0 every minor release is a reinstall.
-- **Next step:** back up what you need, destroy this resource, clear the database it used (`kubectl -n ate-system delete pvc data-postgres-0` for the bundled one, or drop the schema of an external one), replace every node that ran v0.5.0, and apply again; or set `version` back to the installed release, or deploy from the Planton release that installed it when that release has another install shape.
+- **Observed:** Deployment ate-system/ate-api-server records Agent Substrate v0.6.0 on this cluster, and this KubernetesAgentSubstrate installs v1.0.0.
+- **Meaning:** Agent Substrate does not move from v0.6.0 to v1.0.0 in place: before 1.0 every minor release is a reinstall.
+- **Next step:** back up what you need, destroy this resource, clear the database it used (`kubectl -n ate-system delete pvc data-postgres-0` for the bundled one, or drop the schema of an external one), replace every node that ran v0.6.0, and apply again; or set `version` back to the installed release, or deploy from the Planton release that installed it when that release has another install shape.
 
-When this catalog later composes a new shape, an installation of the old one cannot be re-applied from it until it is reinstalled: the old shape's releases are refused, and the new shape's are another minor.
+When this catalog later composes a new shape, an installation of the old one is re-applied from it only when the upgrade rule allows the move: the next minor from 1.0 moves in place, while a skipped minor, a new major or a release before 1.0 is a reinstall.
 
-**Nodes keep state of their own.** Each node agent keeps its image cache, its sandbox runtime files and its actors' working state under `/var/lib/ate` on the node's disk, and that outlives a destroy. A new minor can change its layout: v0.6.0's node agent refuses v0.5.0's image cache. Clearing `/var/lib/ate` brings the node agent back but is not enough, since the sandbox runtime can still fail to start the template sandbox on that node. So a reinstall across minors replaces every node the old release ran on: cordon it, drain it, and delete it from its node pool, which brings up fresh nodes. A patch keeps the layout, so a patch never needs it.
+**The kept definitions move too.** From v1.0.0 Substrate serves WorkerPool, SandboxConfig and CSIDriverConfig at `ate.dev/v1` only, and Kubernetes refuses a definition that drops a version objects are stored at. So a reinstall from a release before 1.0 also deletes the definitions it kept (`kubectl delete crd workerpools.ate.dev sandboxconfigs.ate.dev csidriverconfigs.ate.dev`, which deletes every worker pool and sandbox config), and redeploys its worker pools, sandbox configs and CSI driver configs after; the deploy refuses with that step, by name, while one is still stored at the old version.
+
+**Nodes keep state of their own.** Each node agent keeps its image cache, its sandbox runtime files and its actors' working state under `/var/lib/ate` on the node's disk, and that outlives a destroy. A new minor can change its layout: v0.6.0's node agent refused v0.5.0's image cache. Clearing `/var/lib/ate` brings the node agent back but is not enough, since the sandbox runtime can still fail to start the template sandbox on that node. So a reinstall across minors replaces every node the old release ran on: cordon it, drain it, and delete it from its node pool, which brings up fresh nodes. A patch keeps the layout, so a patch never needs it.
 
 The volume stamp catches the quieter case: a destroy that left the bundled database's volume behind, followed by an apply of a newer minor. An external or Cloud SQL database's schema version lives inside the database, out of the module's sight; clear it yourself when moving across a minor.
 
@@ -129,11 +131,11 @@ Destroy runs in reverse: the default SandboxConfig first, while the controller t
 
 ## Pulling from a mirror
 
-`imageRegistry` replaces the registry part of every image the install runs, keeping each path, tag and digest, so a mirror must copy images byte for byte. A Docker Hub name without a registry (`postgres:18-alpine`) is read the way container runtimes read it, `docker.io/library/postgres:18-alpine`. `us-central1-docker.pkg.dev` pulls Planton's own mirror of the Substrate images. The worker-image outputs follow the mirror. Upstream's Cloud SQL proxy is its one image pinned by tag alone.
+`imageRegistry` replaces the registry part of every image the install runs, keeping each path, tag and digest, so a mirror must copy images byte for byte. A Docker Hub name without a registry (`postgres:18-alpine`) is read the way container runtimes read it, `docker.io/library/postgres:18-alpine`. Upstream's Substrate images live at `ghcr.io/agent-substrate/substrate/<image>`, so a mirror holds them at `<registry>/agent-substrate/substrate/<image>` (`crane copy` keeps the digest). The worker-image outputs follow the mirror. Upstream's Cloud SQL proxy is its one image pinned by tag alone.
 
 ## Parity accounting
 
-Built for 100% parity with every setting upstream's installer and its components offer at v0.6.0. A setting left unset keeps upstream's value: the module writes a flag only when it differs from upstream's default, except the three upstream's installer always writes (the API server's bootstrap owners, the identity server's issuer, the Envoy router's allowed clients).
+Built for 100% parity with every setting upstream's installer and its components offer at v1.0.0. A setting left unset keeps upstream's value: the module writes a flag only when it differs from upstream's default, except the three upstream's installer always writes (the API server's bootstrap owners, the identity server's issuer, the Envoy router's allowed clients).
 
 ### Installer settings
 
@@ -159,7 +161,7 @@ Built for 100% parity with every setting upstream's installer and its components
 | `atenet.egress.credentialProvider` | `egress.credentialProvider` |
 | `atenet.egress.additionalExtprocService` | `egress.additionalExtProcService` |
 | `clusterSize` | `clusterSize` |
-| `cordonControlPlane` | `cordonControlPlane` |
+| `cordonSystemInfraComponents` | `cordonSystemInfraComponents` |
 | `podcert.workersPerSigner` | `podCertificates.workersPerSigner` |
 | `e2e.envoyConcurrency` | `egress.envoyConcurrency` |
 | `otlpEndpoint` | `telemetry.otlpEndpoint` |
@@ -180,7 +182,7 @@ Built for 100% parity with every setting upstream's installer and its components
 | Node agent | `--snapshot-upload-delay`, `-detach-delay`, `-upload-timeout`, `-upload-est-throughput-mib`, `-upload-workers`, `-detach-workers`, `-report-workers`, `-report-give-up-after` | `nodeAgent.snapshots` |
 | Node agent | `--sandbox-asset-cache-min-age`, `--sandbox-asset-fetch-timeout`, `--sandbox-asset-cache-gc-period`, `-max-bytes`, `-gc-dry-run` | `nodeAgent.sandboxAssetCache` |
 | Node agent | `--snapshot-cache-dir` (empty turns it off), `--snapshot-cache-min-age`, `-fetch-timeout`, `-gc-period`, `-max-bytes`, `-gc-dry-run` | `nodeAgent.snapshotCache` |
-| Node agent | objectstore `--asset-staging-capacity` (and the staging volume), `--upload-memory-budget` | `nodeAgent.assetStagingCapacityGib`, `nodeAgent.snapshots.uploadMemoryBudget` |
+| Node agent | objectstore `--asset-staging-capacity`, `--upload-memory-budget` | `nodeAgent.assetStagingCapacityGib`, `nodeAgent.snapshots.uploadMemoryBudget` |
 | Node agent | node selector, tolerations, resources | `nodeAgent.nodeSelector`, `.tolerations`, `.resources` |
 | Router | `--log-level`, `--ingress-allowed-spiffe-ids`, `--route-timeout` | `router.logLevel`, `.allowedClientSpiffeIds`, `.routeTimeout` |
 | Router | `--parked-request-budget`, `-max`, `-retry-interval`, `-retry-factor`, `-retry-jitter` | `router.parkedRequests` |
@@ -198,7 +200,7 @@ Built for 100% parity with every setting upstream's installer and its components
 | All but Envoy | `--preview` | `previewGates` |
 | All | image pull secrets | `imagePullSecrets` |
 
-With agentgateway, upstream's component replaces the router and egress binaries with agentgateway's static configuration, so their flags above no longer apply; resources still do.
+With agentgateway, upstream's components replace the router and egress binaries with agentgateway's static configuration, so their flags above no longer apply; resources still do. Its static-mTLS component is applied too, as upstream's installer always applies it with agentgateway: the router serves only mutual TLS and admits only the clients `router.allowedClientSpiffeIds` names, so that list is required with either dataplane.
 
 ### What the module adds
 
@@ -218,6 +220,9 @@ With agentgateway, upstream's component replaces the router and egress binaries 
 - **`fakeDataPlane.enabled`, `benchmark.*`, `demo.*`** — upstream's benchmark and demo machinery.
 - **`kubeconfig`, `context`, `ko.*`, `docker.buildFlags`, `record.dir`, `kindCluster.name`** — the installer's own machine settings; the provider connection and Planton's image line take their place.
 - **Worker settings** (`--max-actors` and the like) — a worker pool's, not the control plane's ([KubernetesAgentSubstrateWorkerPool](../kubernetesagentsubstrateworkerpool/README.md)).
+- **More than one egress credential provider** — upstream's installer accepts a list from v1.0.0 (`atenet.egress.credentialProvider` as a JSON array, the egress gateway's provider flags repeated); this kind wires one, the shape every install so far uses.
+- **The default microVM SandboxConfig** — upstream's installer stages the microVM guest assets in a bucket and installs `microvm-default` beside `gvisor-default`; this kind installs the gVisor default, and a microVM runtime is declared with a [KubernetesAgentSubstrateSandboxConfig](../kubernetesagentsubstratesandboxconfig/README.md).
+- **`e2eTuning`** — upstream's end-to-end test tuning of the control plane.
 
 ## Pairs well with
 

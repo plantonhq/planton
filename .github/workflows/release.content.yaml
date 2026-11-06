@@ -106,20 +106,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Package ${{ matrix.zip }}.zip
-        run: bash tools/ci/release/package_content.sh "${GITHUB_REF_NAME}" "${{ matrix.zip }}"
-
-      - name: Upload to R2
+      - name: Package and publish ${{ matrix.zip }}.zip
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
           AWS_ENDPOINT_URL: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
-        run: |
-          R2_KEY="releases/${GITHUB_REF_NAME}/content/${{ matrix.zip }}.zip"
-          aws s3 cp "${{ matrix.zip }}.zip" "s3://${R2_BUCKET}/${R2_KEY}" \
-            --endpoint-url "${AWS_ENDPOINT_URL}" \
-            --cache-control "public, max-age=31536000, immutable"
-          echo "uploaded: https://downloads.planton.ai/${R2_KEY}"
+        run: bash tools/ci/release/publish_content.sh "${GITHUB_REF_NAME}" "${{ matrix.zip }}"
 
   logos:
     if: ${{ !inputs.prerelease }}
@@ -129,65 +121,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Stage kind logos
-        run: |
-          # Stage into build/logos/{provider}/{kind}/logo.svg so the sync
-          # maps 1:1 onto the versionless key shape. The _test refusal and
-          # the empty-selection failure mirror package_content.sh's guards.
-          mkdir -p build/logos
-          count=0
-          for f in catalog/*/*/logo.svg; do
-            case "$f" in
-              catalog/_test/*)
-                echo "ERROR: _test provider content must never ship: $f"
-                exit 1
-                ;;
-            esac
-            dest="build/logos/${f#catalog/}"
-            mkdir -p "$(dirname "$dest")"
-            cp "$f" "$dest"
-            count=$((count + 1))
-          done
-          if [ "$count" -eq 0 ]; then
-            echo "ERROR: no logos selected -- the selector no longer matches the tree"
-            exit 1
-          fi
-          echo "staged ${count} logos"
-
-      - name: Upload to R2 (versionless keys)
+      - name: Publish the kind logos and prove each one serves
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
           AWS_ENDPOINT_URL: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
-        run: |
-          aws s3 sync build/logos "s3://${R2_BUCKET}/catalog/logos" \
-            --content-type image/svg+xml \
-            --cache-control "public, max-age=3600" \
-            --endpoint-url "${AWS_ENDPOINT_URL}"
-          echo "uploaded: https://downloads.planton.ai/catalog/logos/{provider}/{kind}/logo.svg"
-
-      - name: Verify every logo serves through the CDN
-        run: |
-          # HEAD every staged key on the PUBLIC url -- the path users hit,
-          # not the S3 API -- asserting 200 and the svg content type. This
-          # is the release's proof that what it staged is what the world
-          # gets; a sync that silently skipped or a key that serves the
-          # wrong type fails the release here.
-          fails=0
-          checked=0
-          for f in build/logos/*/*/logo.svg; do
-            key="${f#build/logos/}"
-            url="https://downloads.planton.ai/catalog/logos/${key}"
-            read -r code ctype <<<"$(curl -sfI -o /dev/null -w '%{http_code} %{content_type}' \
-              --retry 3 --retry-delay 5 --retry-all-errors "$url")"
-            checked=$((checked + 1))
-            if [ "$code" != "200" ] || [ "${ctype%%;*}" != "image/svg+xml" ]; then
-              echo "FAIL: $url -> $code $ctype"
-              fails=$((fails + 1))
-            fi
-          done
-          echo "verified ${checked} logos serving (${fails} failures)"
-          [ "$fails" -eq 0 ]
+        run: bash tools/ci/release/publish_content.sh "${GITHUB_REF_NAME}" logos
 
   catalog-bundle:
     runs-on: ubuntu-latest
@@ -207,22 +146,12 @@ jobs:
         with:
           setup_only: true
 
-      - name: Build and verify the catalog bundle
-        run: |
-          make build-catalog-bundle tag="${GITHUB_REF_NAME}"
-          make verify-catalog-bundle
-
-      - name: Upload to R2
+      - name: Build, verify and publish the catalog bundle
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
           AWS_ENDPOINT_URL: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
-        run: |
-          R2_KEY="releases/${GITHUB_REF_NAME}/content/catalog-bundle.zip"
-          aws s3 cp "build/catalog-bundle.zip" "s3://${R2_BUCKET}/${R2_KEY}" \
-            --endpoint-url "${AWS_ENDPOINT_URL}" \
-            --cache-control "public, max-age=31536000, immutable"
-          echo "uploaded: https://downloads.planton.ai/${R2_KEY}"
+        run: bash tools/ci/release/publish_content.sh "${GITHUB_REF_NAME}" catalog-bundle
 
   catalog-schemas:
     runs-on: ubuntu-latest
@@ -242,19 +171,9 @@ jobs:
         with:
           setup_only: true
 
-      - name: Build and verify the catalog schemas
-        run: |
-          make build-catalog-schemas
-          make verify-catalog-schemas
-
-      - name: Upload to R2
+      - name: Build, verify and publish the catalog schemas
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
           AWS_ENDPOINT_URL: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
-        run: |
-          R2_KEY="releases/${GITHUB_REF_NAME}/content/catalog-schemas.zip"
-          aws s3 cp "build/catalog-schemas.zip" "s3://${R2_BUCKET}/${R2_KEY}" \
-            --endpoint-url "${AWS_ENDPOINT_URL}" \
-            --cache-control "public, max-age=31536000, immutable"
-          echo "uploaded: https://downloads.planton.ai/${R2_KEY}"
+        run: bash tools/ci/release/publish_content.sh "${GITHUB_REF_NAME}" catalog-schemas

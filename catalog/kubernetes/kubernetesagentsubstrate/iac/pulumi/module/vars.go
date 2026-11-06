@@ -11,8 +11,8 @@ var vars = struct {
 	// is empty, and the release whose resource definitions the kind applies
 	// and the catalog's Substrate resource kinds mirror. Any release Planton
 	// publishes with this shape installs with this module (images.json's
-	// shape names it); moving it is a deliberate catalog update, and before
-	// 1.0 every minor is a reinstall upstream.
+	// shape names it); moving it is a deliberate catalog update, and the
+	// upgrade rule (upgrade.go) says which installed releases it moves from.
 	Release string
 
 	// BundleName is the upstream project's name, the ownership label the
@@ -73,7 +73,7 @@ var vars = struct {
 	PostgresSetupConfigMap string
 	PostgresSetupMountPath string
 }{
-	Release:                  "v0.6.0",
+	Release:                  "v1.0.0",
 	BundleName:               "agent-substrate",
 	Namespace:                "ate-system",
 	PodCertificatesNamespace: "podcertificate-controller-system",
@@ -101,8 +101,9 @@ var vars = struct {
 	PostgresSetupMountPath:   "/etc/postgres-setup",
 }
 
-// releaseBaseURL serves Planton's build of each Substrate release: upstream's
-// whole manifests/ tree with every image digest-pinned, the definitions
+// releaseBaseURL serves Planton's install set of each Substrate release:
+// upstream's whole manifests/ tree with every image pinned by the digest
+// upstream's registry serves, the definitions
 // bundle, the image list with the release's install shape, upstream's
 // database setup script, and SHA256SUMS, uploaded last, which seals the
 // release. Immutable once sealed.
@@ -149,10 +150,13 @@ const (
 	fileAgentgateway       = "manifests/ate-install/components/agentgateway/kustomization.yaml"
 	fileAgentgatewayConfig = "manifests/ate-install/components/agentgateway/configmap.yaml"
 	fileAgentgatewayEgress = "manifests/ate-install/components/agentgateway-egress/kustomization.yaml"
-	fileCordon             = "manifests/ate-install/components/cordon-control-plane/kustomization.yaml"
-	fileCredentialProvider = "manifests/egress-credential-injection/k8s-credential-provider.yaml"
-	fileImages             = "images.json"
-	fileSetupSQL           = "setup.sql"
+	// The static-mTLS component patches from the file beside it (`path:`).
+	fileAgentgatewayStaticMTLS       = "manifests/ate-install/components/agentgateway-static-mtls/kustomization.yaml"
+	fileAgentgatewayStaticMTLSConfig = "manifests/ate-install/components/agentgateway-static-mtls/configmap.yaml"
+	fileCordon                       = "manifests/ate-install/components/cordon-system-infra-components/kustomization.yaml"
+	fileCredentialProvider           = "manifests/egress-credential-injection/k8s-credential-provider.yaml"
+	fileImages                       = "images.json"
+	fileSetupSQL                     = "setup.sql"
 )
 
 // releaseFiles is every release file the module reads.
@@ -161,5 +165,6 @@ var releaseFiles = []string{
 	fileSandboxGvisor, fileOtelConfig, filePostgres, filePostgresSize10, filePodCertSize10,
 	fileAPIServer, fileController, fileIdentityServer, fileNodeAgent, fileRouter, fileRouterMonitoring,
 	fileNetworkPolicies, fileEgress, fileCloudSQLPatch, fileAgentgateway, fileAgentgatewayConfig,
-	fileAgentgatewayEgress, fileCordon, fileCredentialProvider, fileImages, fileSetupSQL,
+	fileAgentgatewayEgress, fileAgentgatewayStaticMTLS, fileAgentgatewayStaticMTLSConfig, fileCordon,
+	fileCredentialProvider, fileImages, fileSetupSQL,
 }

@@ -314,12 +314,13 @@ func (KubernetesAgentSubstrateRouter_Dataplane) EnumDescriptor() ([]byte, []int)
 // NetworkPolicy, because the install's isolation is a default-deny policy.
 // Upstream supports GKE and kind.
 //
-// DISTRIBUTION AND VERSION: Agent Substrate publishes no images and no
-// installable release, so Planton publishes both: each upstream release built
-// by upstream's own publisher, every image digest-pinned, at
+// DISTRIBUTION AND VERSION: Agent Substrate publishes its release images
+// (ghcr.io/agent-substrate/substrate) but no installable release, so Planton
+// publishes one: each upstream release's manifests with every image pinned by
+// the digest upstream's registry serves, at
 // https://downloads.planton.ai/releases/agent-substrate/<version>/. The
 // modules compose that tree the way upstream's installer does and apply the
-// typed settings below onto it. They compose one install shape, v0.6.0's,
+// typed settings below onto it. They compose one install shape, v1.0.0's,
 // and `version` picks any release Planton publishes with that shape: a
 // release whose install differs from it only in its images, which Planton
 // proves before it publishes one. So a new upstream patch reaches this kind
@@ -327,10 +328,10 @@ func (KubernetesAgentSubstrateRouter_Dataplane) EnumDescriptor() ([]byte, []int)
 // is refused at plan time, before anything is applied, and arrives with the
 // catalog update that composes it. The resource definitions belong to the
 // shape, so the catalog's Substrate resource kinds mirror them field for
-// field. Before 1.0 every minor release is a reinstall upstream (its database
-// schema migrates irreversibly), so the kind refuses an apply over an older
-// minor's installation or database, and says how to move across; patch
-// releases of one minor move in place, either way.
+// field. Upstream's database schema migrates forward irreversibly, so the
+// kind refuses an apply that skips a minor release, rolls back more than one,
+// or crosses a major (a release before 1.0 included), and says how to move
+// across; patch releases of one minor move in place, either way.
 //
 // GENERATED SECRETS: the certificate authorities behind every component's
 // mTLS, the actor-identity CA, the egress interception CA and the actor token
@@ -416,22 +417,28 @@ type KubernetesAgentSubstrateSpec struct {
 	// be set with size10.
 	ClusterSize KubernetesAgentSubstrateSpec_ClusterSize `protobuf:"varint,14,opt,name=cluster_size,json=clusterSize,proto3,enum=dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSpec_ClusterSize" json:"cluster_size,omitempty"`
 	// *
-	// Run the control plane on dedicated nodes: every control-plane Deployment
-	// gets the node selector and toleration
-	// `ate.dev/workloadType=ate-control-plane` (spread one per node), and the
-	// bundled database `ate.dev/workloadType=ate-postgres`. Label and taint
-	// those nodes first; the deploy is refused when no node carries the
-	// database label. Upstream's posture for production clusters, where actor
-	// load must not starve the control plane.
-	CordonControlPlane bool `protobuf:"varint,15,opt,name=cordon_control_plane,json=cordonControlPlane,proto3" json:"cordon_control_plane,omitempty"`
+	// Run Substrate's own system components on dedicated nodes, off the
+	// worker nodes: the API server, identity server, controller, router,
+	// egress gateway, pod-certificate controller and credential provider get
+	// the node selector and toleration `ate.dev/workloadType=ate-system-infra`
+	// (a small shared pool; each workload's replicas spread across its nodes
+	// when they can), and the bundled database
+	// `ate.dev/workloadType=ate-postgres` (one node, the database alone; none
+	// with an external database). Label and taint those nodes, each pool with
+	// its label as a NoSchedule taint, before the deploy: a pool that is
+	// missing leaves its pods Pending. Upstream's posture for production
+	// clusters, where actor load must not starve the system.
+	CordonSystemInfraComponents bool `protobuf:"varint,15,opt,name=cordon_system_infra_components,json=cordonSystemInfraComponents,proto3" json:"cordon_system_infra_components,omitempty"`
 	// *
 	// Registry that replaces the registry part of every image the install runs
-	// (Planton's Substrate images on ghcr.io, Envoy's among them, PostgreSQL on
-	// Docker Hub, the Cloud SQL proxy on gcr.io, agentgateway on
+	// (upstream's Substrate images on ghcr.io, Envoy's among them, PostgreSQL
+	// on Docker Hub, the Cloud SQL proxy on gcr.io, agentgateway on
 	// cr.agentgateway.dev): the air-gap and private-mirror path.
 	// Each image keeps its path, tag and digest, so a mirror must copy images
-	// byte for byte. "us-central1-docker.pkg.dev" pulls Planton's own mirror of
-	// the Substrate images. Docker Hub names without a registry are read the
+	// byte for byte (`crane copy` keeps the digest), for instance
+	// ghcr.io/agent-substrate/substrate/ateapi to
+	// <registry>/agent-substrate/substrate/ateapi. Docker Hub names without a
+	// registry are read the
 	// way container runtimes read them ("postgres:18-alpine" is
 	// docker.io/library/postgres:18-alpine). Actor images are your own and
 	// never move. Empty = each image's own registry.
@@ -442,13 +449,14 @@ type KubernetesAgentSubstrateSpec struct {
 	ImagePullSecrets []string `protobuf:"bytes,17,rep,name=image_pull_secrets,json=imagePullSecrets,proto3" json:"image_pull_secrets,omitempty"`
 	// *
 	// The Agent Substrate release to install, from those Planton publishes with
-	// this kind's install shape (v0.6.0's): v0.6.0, or a later release whose
+	// this kind's install shape (v1.0.0's): v1.0.0, or a later release whose
 	// install differs from it only in its images. A release Planton has not
 	// published, or one with another shape, is refused before anything is
-	// applied. A patch release of the installed minor moves in place, up or
-	// down; another minor is a reinstall, refused over an existing
-	// installation. Redeploy worker pools after a move, so their workers run
-	// the new release's worker image.
+	// applied. A patch release moves in place, up or down; the next minor
+	// moves in place too, and a rollback one minor back; a skipped minor, a
+	// new major, or a move from a release before 1.0 is a reinstall, refused
+	// over an existing installation. Redeploy worker pools after a move, so
+	// their workers run the new release's worker image.
 	Version *string `protobuf:"bytes,18,opt,name=version,proto3,oneof" json:"version,omitempty"`
 	// *
 	// Preview features to turn on in every component: each named gate, or
@@ -593,9 +601,9 @@ func (x *KubernetesAgentSubstrateSpec) GetClusterSize() KubernetesAgentSubstrate
 	return KubernetesAgentSubstrateSpec_size0
 }
 
-func (x *KubernetesAgentSubstrateSpec) GetCordonControlPlane() bool {
+func (x *KubernetesAgentSubstrateSpec) GetCordonSystemInfraComponents() bool {
 	if x != nil {
-		return x.CordonControlPlane
+		return x.CordonSystemInfraComponents
 	}
 	return false
 }
@@ -2759,9 +2767,9 @@ type KubernetesAgentSubstrateRouter struct {
 	// "spiffe://cluster.local/ns/<namespace>/sa/<service-account>". A client
 	// calls the router's TLS endpoint with its pod certificate (signer
 	// podidentity.podcert.ate.dev/identity); any listed client may reach any
-	// actor. The Envoy router serves nothing else, so it needs at least one;
-	// agentgateway does not check client certificates yet, and serves
-	// plaintext listeners to any caller.
+	// actor. Either dataplane serves only that TLS endpoint and admits only
+	// the clients listed (agentgateway through upstream's static-mTLS
+	// component), so at least one is needed.
 	AllowedClientSpiffeIds []string `protobuf:"bytes,5,rep,name=allowed_client_spiffe_ids,json=allowedClientSpiffeIds,proto3" json:"allowed_client_spiffe_ids,omitempty"`
 	// *
 	// End-to-end timeout of one request to an actor (Go duration). A model
@@ -3887,7 +3895,7 @@ var File_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto protore
 
 const file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/kubernetes/kubernetesagentsubstrate/v1alpha1/spec.proto\x128dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xb6&\n" +
+	"?catalog/kubernetes/kubernetesagentsubstrate/v1alpha1/spec.proto\x128dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x9c&\n" +
 	"\x1cKubernetesAgentSubstrateSpec\x12\xc4\x02\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xf1\x01\xbaH\xdb\x01\xba\x01\xd4\x01\n" +
 	"\x0fnamespace_fixed\x12\x90\x01namespace must be \"ate-system\": upstream's manifests, the API's server name and its token audience name it, so Agent Substrate runs nowhere else\x1a.!has(this.value) || this.value == 'ate-system'\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
@@ -3908,24 +3916,24 @@ const file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_spec_proto_rawDe
 	"\x06egress\x18\v \x01(\v2X.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateEgressB\x06\xbaH\x03\xc8\x01\x01R\x06egress\x12\x8c\x01\n" +
 	"\x10pod_certificates\x18\f \x01(\v2a.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstratePodCertificatesR\x0fpodCertificates\x12y\n" +
 	"\ttelemetry\x18\r \x01(\v2[.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateTelemetryR\ttelemetry\x12\x85\x01\n" +
-	"\fcluster_size\x18\x0e \x01(\x0e2b.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSpec.ClusterSizeR\vclusterSize\x120\n" +
-	"\x14cordon_control_plane\x18\x0f \x01(\bR\x12cordonControlPlane\x12\xe3\x01\n" +
+	"\fcluster_size\x18\x0e \x01(\x0e2b.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateSpec.ClusterSizeR\vclusterSize\x12C\n" +
+	"\x1ecordon_system_infra_components\x18\x0f \x01(\bR\x1bcordonSystemInfraComponents\x12\xe3\x01\n" +
 	"\x0eimage_registry\x18\x10 \x01(\tB\xbb\x01\xbaH\xb7\x01\xba\x01\xb0\x01\n" +
 	"\x15image_registry_format\x12iimage_registry is a registry root such as \"mirror.example.com/substrate\": no scheme and no trailing slash\x1a,!this.endsWith('/') && !this.contains('://')\xd8\x01\x01R\rimageRegistry\x12x\n" +
 	"\x12image_pull_secrets\x18\x11 \x03(\tBJ\xaa\xa6\x1dFNames of existing Kubernetes Secrets (references), not secret materialR\x10imagePullSecrets\x12I\n" +
-	"\aversion\x18\x12 \x01(\tB*\xbaH\x1dr\x1b2\x19^v[0-9]+\\.[0-9]+\\.[0-9]+$\x8a\xa6\x1d\x06v0.6.0H\x00R\aversion\x88\x01\x01\x12x\n" +
+	"\aversion\x18\x12 \x01(\tB*\xbaH\x1dr\x1b2\x19^v[0-9]+\\.[0-9]+\\.[0-9]+$\x8a\xa6\x1d\x06v1.0.0H\x00R\aversion\x88\x01\x01\x12x\n" +
 	"\rpreview_gates\x18\x13 \x03(\tBS\xbaHP\x92\x01M\x18\x01\"IrGR\x03ALLR\x0fExternalVolumesR\x12GoldenEgressPolicyR\x1bPerTemplateSnapshotLocationR\fpreviewGates\x12\x89\x01\n" +
 	"\x0fidentity_server\x18\x14 \x01(\v2`.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.KubernetesAgentSubstrateIdentityServerR\x0eidentityServer\"$\n" +
 	"\vClusterSize\x12\t\n" +
 	"\x05size0\x10\x00\x12\n" +
 	"\n" +
-	"\x06size10\x10\x01:\xb1\x11\xbaH\xad\x11\x1a\x9e\x03\n" +
+	"\x06size10\x10\x01:\x84\x11\xbaH\x80\x11\x1a\x9e\x03\n" +
 	"!size10_sizes_the_bundled_database\x12\x98\x02database.bundled.resources cannot be set with cluster_size size10: size10 sizes the bundled database for a dedicated node, its postgresql.conf tuned for 140Gi, and a smaller container would run out of memory under load; use size10 with its own sizing, or size0 with your resources\x1a^this.cluster_size != 1 || !has(this.database.bundled) || !has(this.database.bundled.resources)\x1a\xc1\x01\n" +
 	"\rgcs_needs_gke\x12~storage.gcs authenticates keylessly through GKE Workload Identity, so it needs platform.gke; on another cluster use storage.s3\x1a0!has(this.storage.gcs) || has(this.platform.gke)\x1a\xc1\x01\n" +
 	"\x13cloud_sql_needs_gke\x12qdatabase.cloud_sql connects through the Cloud SQL Auth Proxy with GKE Workload Identity, so it needs platform.gke\x1a7!has(this.database.cloud_sql) || has(this.platform.gke)\x1a\xbe\x03\n" +
 	"'cloud_sql_iam_needs_api_server_identity\x12\xbd\x01database.cloud_sql logs in as the API server's Google service account, so set platform.gke.api_server_service_account (or turn cloud_sql.iam_authentication off and give a connection string)\x1a\xd2\x01!has(this.database.cloud_sql) || (has(this.database.cloud_sql.iam_authentication) && !this.database.cloud_sql.iam_authentication) || (has(this.platform.gke) && has(this.platform.gke.api_server_service_account))\x1a\xb4\x02\n" +
-	"+gcs_needs_snapshot_transfer_service_account\x12\x94\x01storage.gcs moves snapshots as a dedicated Google service account the API server impersonates, so set platform.gke.snapshot_transfer_service_account\x1an!has(this.storage.gcs) || (has(this.platform.gke) && has(this.platform.gke.snapshot_transfer_service_account))\x1a\x9b\x03\n" +
-	"\"envoy_router_needs_allowed_clients\x12\x8f\x02router.allowed_client_spiffe_ids needs at least one client: the Envoy router lets only the mutual-TLS callers it names reach actors, and refuses to start with none. Name each workload that calls actors, such as \"spiffe://cluster.local/ns/<namespace>/sa/<service-account>\"\x1achas(this.router) && (this.router.dataplane == 1 || size(this.router.allowed_client_spiffe_ids) > 0)\x1a\xeb\x01\n" +
+	"+gcs_needs_snapshot_transfer_service_account\x12\x94\x01storage.gcs moves snapshots as a dedicated Google service account the API server impersonates, so set platform.gke.snapshot_transfer_service_account\x1an!has(this.storage.gcs) || (has(this.platform.gke) && has(this.platform.gke.snapshot_transfer_service_account))\x1a\xee\x02\n" +
+	"\x1crouter_needs_allowed_clients\x12\x88\x02router.allowed_client_spiffe_ids needs at least one client: the router lets only the mutual-TLS callers it names reach actors, so with none it serves no one. Name each workload that calls actors, such as \"spiffe://cluster.local/ns/<namespace>/sa/<service-account>\"\x1aChas(this.router) && size(this.router.allowed_client_spiffe_ids) > 0\x1a\xeb\x01\n" +
 	"\x13extproc_needs_envoy\x12regress.additional_ext_proc_service splices a filter into Envoy's configuration, so it needs router.dataplane envoy\x1a`!has(this.egress.additional_ext_proc_service) || !has(this.router) || this.router.dataplane != 1B\n" +
 	"\n" +
 	"\b_version\"\xa4\x01\n" +

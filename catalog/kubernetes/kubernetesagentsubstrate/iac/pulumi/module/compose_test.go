@@ -319,7 +319,7 @@ func TestBundledDatabase(t *testing.T) {
 	s, c := composeSpec(t, minimalSpec())
 	postgres := find(c, "StatefulSet", vars.PostgresName)
 	claim := namedItemInMeta(postgres["spec"].(map[string]interface{})["volumeClaimTemplates"].([]interface{}), "data")
-	if str(claim, "metadata", "labels", vars.MinorLabel) != "0.6" {
+	if str(claim, "metadata", "labels", vars.MinorLabel) != "1.0" {
 		t.Error("the volume claim template carries the minor that writes the data, so the claim carries it past a destroy")
 	}
 	if got := lookup(claim, "spec", "resources", "requests", "storage"); got != "500Gi" {
@@ -396,8 +396,8 @@ func TestTypedSettingsLandWhereUpstreamPutsThem(t *testing.T) {
 	}
 	nodeAgent := find(c, "DaemonSet", vars.NodeAgentName)
 	if !contains(args(t, nodeAgent, "objectstore-plugin", true), "--asset-staging-capacity=16Gi") ||
-		lookup(namedItem(podSpec(nodeAgent)["volumes"], "name", "asset-staging"), "emptyDir", "sizeLimit") != "17Gi" {
-		t.Error("the staging capacity and its volume (capacity + 1Gi) move together")
+		lookup(namedItem(podSpec(nodeAgent)["volumes"], "name", "asset-staging"), "emptyDir", "sizeLimit") != nil {
+		t.Error("the staging capacity bounds the staging volume, which keeps upstream's empty emptyDir")
 	}
 	if !contains(args(t, nodeAgent, "objectstore-plugin", true), "--upload-memory-budget=1Gi") {
 		t.Error("the upload memory budget is the node's object-store plugin's")
@@ -419,21 +419,21 @@ func TestTypedSettingsLandWhereUpstreamPutsThem(t *testing.T) {
 func TestUpstreamComponentsApplyAsUpstreamAppliesThem(t *testing.T) {
 	spec := minimalSpec()
 	spec.ClusterSize = v1.KubernetesAgentSubstrateSpec_size10
-	spec.CordonControlPlane = true
+	spec.CordonSystemInfraComponents = true
 	s, c := composeSpec(t, spec)
 	podcert := args(t, find(c, "Deployment", vars.PodCertificatesName), "controller", false)
 	if !contains(podcert, "--kube-api-qps=100") || !contains(podcert, "--kube-api-burst=200") {
 		t.Errorf("size10 raises the pod-certificate controller's rate: %v", podcert)
 	}
-	if !strings.Contains(find(c, "ConfigMap", configMapPostgres)["data"].(map[string]interface{})["postgresql.conf"].(string), "max_connections = 300") {
+	if !strings.Contains(find(c, "ConfigMap", configMapPostgres)["data"].(map[string]interface{})["postgresql.conf"].(string), "max_connections = 500") {
 		t.Error("size10 replaces postgresql.conf with upstream's")
 	}
 	if !strings.HasSuffix(apiEnvSecret(s)["ATE_API_POSTGRES_READ_WRITE_CONNECTION_STRING"], size10PoolParams) {
 		t.Error("size10 widens the read/write pool")
 	}
-	for _, name := range []string{vars.APIServerName, vars.IdentityServerName, vars.ControllerName, vars.RouterName, vars.EgressName} {
-		if lookup(podSpec(find(c, "Deployment", name)), "nodeSelector", "ate.dev/workloadType") != "ate-control-plane" {
-			t.Errorf("cordon pins %s to the control-plane nodes", name)
+	for _, name := range []string{vars.APIServerName, vars.IdentityServerName, vars.ControllerName, vars.RouterName, vars.EgressName, vars.PodCertificatesName} {
+		if lookup(podSpec(find(c, "Deployment", name)), "nodeSelector", "ate.dev/workloadType") != "ate-system-infra" {
+			t.Errorf("cordon pins %s to the system-infra pool", name)
 		}
 	}
 	if lookup(podSpec(find(c, "StatefulSet", vars.PostgresName)), "nodeSelector", "ate.dev/workloadType") != "ate-postgres" {
@@ -443,20 +443,23 @@ func TestUpstreamComponentsApplyAsUpstreamAppliesThem(t *testing.T) {
 
 func TestAgentgatewayDataplane(t *testing.T) {
 	spec := minimalSpec()
-	spec.Router = &v1.KubernetesAgentSubstrateRouter{Dataplane: v1.KubernetesAgentSubstrateRouter_agentgateway}
+	spec.Router = &v1.KubernetesAgentSubstrateRouter{
+		Dataplane:              v1.KubernetesAgentSubstrateRouter_agentgateway,
+		AllowedClientSpiffeIds: []string{"spiffe://cluster.local/ns/agents/sa/orchestrator", "spiffe://cluster.local/ns/agents/sa/reviewer"},
+	}
 	spec.Egress.CredentialProvider = &v1.KubernetesAgentSubstrateCredentialProvider{Kind: &v1.KubernetesAgentSubstrateCredentialProvider_External{
 		External: &v1.KubernetesAgentSubstrateExternalCredentialProvider{Name: "secretmanager.googleapis.com", Address: "gsm.ate-system.svc:50051"},
 	}}
 	s, c := composeSpec(t, spec)
-	ports := map[string]bool{}
-	for _, p := range lookup(find(c, "Service", vars.RouterName), "spec", "ports").([]interface{}) {
-		ports[p.(map[string]interface{})["name"].(string)] = true
+	routerConfig := find(c, "ConfigMap", agentgatewayRouterConfig)["data"].(map[string]interface{})["config.yaml"].(string)
+	if !strings.Contains(routerConfig, `source.spiffeId in ["spiffe://cluster.local/ns/agents/sa/orchestrator","spiffe://cluster.local/ns/agents/sa/reviewer"]`) {
+		t.Errorf("upstream's static-mTLS layer admits exactly the allowed clients: %s", routerConfig)
 	}
-	if !ports["http"] || !ports["connect"] {
-		t.Errorf("agentgateway authenticates no ingress client yet, so its component keeps the plaintext ports: %v", ports)
+	if strings.Contains(routerConfig, agentgatewayAllowedClientsMarker) || strings.Contains(routerConfig, "port: 8080") || !strings.Contains(routerConfig, "port: 8443") {
+		t.Errorf("the router serves only mutual TLS, its placeholder filled: %s", routerConfig)
 	}
-	if outputValues(s, c.images)[OpRouterEndpoint] != "http://atenet-router.ate-system.svc:80" || outputValues(minimalSettings(), c.images)[OpRouterEndpoint] != "" {
-		t.Error("the plaintext endpoint is agentgateway's alone; the Envoy router serves only TLS")
+	if _, ok := outputValues(s, c.images)["router_endpoint"]; ok {
+		t.Error("no dataplane serves plaintext, so there is no plaintext endpoint to output")
 	}
 	router := podSpec(find(c, "Deployment", vars.RouterName))["containers"].([]interface{})
 	if len(router) != 1 || router[0].(map[string]interface{})["name"] != "agentgateway" {
@@ -573,7 +576,7 @@ func TestImagesMoveToTheMirrorKeepingPathAndDigest(t *testing.T) {
 		t.Errorf("a Docker Hub path keeps its namespace: %s", got)
 	}
 	out := outputValues(s, c.images)
-	if !strings.HasPrefix(out[OpGvisorWorkerImage], "mirror.example.com/plantonhq/planton/agent-substrate/ateworker-gvisor:v0.6.0@sha256:") {
+	if !strings.HasPrefix(out[OpGvisorWorkerImage], "mirror.example.com/agent-substrate/substrate/ateworker-gvisor:v1.0.0@sha256:") {
 		t.Errorf("the worker image output follows the mirror: %s", out[OpGvisorWorkerImage])
 	}
 }
@@ -703,17 +706,6 @@ func TestPoolsHaveUpstreamsWireShape(t *testing.T) {
 	if _, err := base64.RawURLEncoding.DecodeString(jwt.ActiveForSigning); err != nil {
 		t.Error("the key ID is base64url without padding")
 	}
-
-	jwks, err := jwksJSON("ES256", publicPEM)
-	if err != nil {
-		t.Fatal(err)
-	}
-	point, _ := ecKey.PublicKey.Bytes()
-	want := `{"keys":[{"kty":"EC","kid":"` + jwtKeyID(publicPEM) + `","use":"sig","alg":"ES256","crv":"P-256","x":"` +
-		base64.RawURLEncoding.EncodeToString(point[1:33]) + `","y":"` + base64.RawURLEncoding.EncodeToString(point[33:65]) + `"}]}`
-	if jwks != want {
-		t.Errorf("the key set is upstream's JWKS of the pool, field for field:\n got %s\nwant %s", jwks, want)
-	}
 }
 
 func TestFixturesArePublishedBytes(t *testing.T) {
@@ -768,8 +760,8 @@ func TestReleaseIsFetchedOnlyWhenPublishedSealedAndOfTheShape(t *testing.T) {
 		return files
 	}
 
-	patch := with(fileImages, strings.Replace(local.files[fileImages], `"version": "`+vars.Release+`"`, `"version": "v0.6.3"`, 1))
-	got, err := fetchReleaseFrom(serve("v0.6.3", patch, patch), "v0.6.3")
+	patch := with(fileImages, strings.Replace(local.files[fileImages], `"version": "`+vars.Release+`"`, `"version": "v1.0.3"`, 1))
+	got, err := fetchReleaseFrom(serve("v1.0.3", patch, patch), "v1.0.3")
 	if err != nil {
 		t.Fatalf("a published release of the module's shape is fetched: %v", err)
 	}
@@ -777,12 +769,12 @@ func TestReleaseIsFetchedOnlyWhenPublishedSealedAndOfTheShape(t *testing.T) {
 		t.Error("the setup script comes from the release itself")
 	}
 
-	if _, err := fetchReleaseFrom(serve("v0.6.9", patch, nil), "v0.6.9"); err == nil || !strings.Contains(err.Error(), "Planton has not published Agent Substrate v0.6.9") {
+	if _, err := fetchReleaseFrom(serve("v1.0.9", patch, nil), "v1.0.9"); err == nil || !strings.Contains(err.Error(), "Planton has not published Agent Substrate v1.0.9") {
 		t.Errorf("an unsealed release is refused by name: %v", err)
 	}
 
-	reshaped := with(fileImages, strings.Replace(local.files[fileImages], `"shape": "`+vars.Release+`"`, `"shape": "v0.7.0"`, 1))
-	if _, err := fetchReleaseFrom(serve("v0.7.0", reshaped, reshaped), "v0.7.0"); err == nil || !strings.Contains(err.Error(), "has the install shape of v0.7.0") {
+	reshaped := with(fileImages, strings.Replace(local.files[fileImages], `"shape": "`+vars.Release+`"`, `"shape": "v1.1.0"`, 1))
+	if _, err := fetchReleaseFrom(serve("v1.1.0", reshaped, reshaped), "v1.1.0"); err == nil || !strings.Contains(err.Error(), "has the install shape of v1.1.0") {
 		t.Errorf("a release of another install shape is refused: %v", err)
 	}
 
@@ -801,16 +793,16 @@ func TestReleaseIsFetchedOnlyWhenPublishedSealedAndOfTheShape(t *testing.T) {
 // name; the definitions and the composed shape stay the module's.
 func TestVersionPicksTheRelease(t *testing.T) {
 	spec := minimalSpec()
-	spec.Version = strPtr("v0.6.3")
+	spec.Version = strPtr("v1.0.3")
 	s, c := composeSpec(t, spec)
-	if str(find(c, "Deployment", vars.APIServerName), "metadata", "annotations", vars.VersionAnnotation) != "v0.6.3" {
+	if str(find(c, "Deployment", vars.APIServerName), "metadata", "annotations", vars.VersionAnnotation) != "v1.0.3" {
 		t.Error("the API server records the release installed")
 	}
 	claim := namedItemInMeta(find(c, "StatefulSet", vars.PostgresName)["spec"].(map[string]interface{})["volumeClaimTemplates"].([]interface{}), "data")
-	if str(claim, "metadata", "labels", vars.MinorLabel) != "0.6" {
+	if str(claim, "metadata", "labels", vars.MinorLabel) != "1.0" {
 		t.Error("the database volume records the minor that writes it")
 	}
-	if outputValues(s, c.images)[OpVersion] != "v0.6.3" || resolveSettings(minimalSpec()).version != vars.Release {
+	if outputValues(s, c.images)[OpVersion] != "v1.0.3" || resolveSettings(minimalSpec()).version != vars.Release {
 		t.Error("the version output is the release installed, the module's own when unset")
 	}
 }
@@ -978,13 +970,13 @@ func fullSurfaceSpec() *v1.KubernetesAgentSubstrateSpec {
 			WorkerMetricsExporters: []string{"otlp"},
 			WorkerLogsExporters:    []string{"otlp"},
 		},
-		IdentityServer:     &v1.KubernetesAgentSubstrateIdentityServer{Replicas: i32(3), Resources: resources("50m"), LogLevel: v1.LogLevel_debug, DrainGrace: str("10s")},
-		Version:            str("v0.6.0"),
-		PreviewGates:       []string{"ExternalVolumes"},
-		ClusterSize:        v1.KubernetesAgentSubstrateSpec_size10,
-		CordonControlPlane: true,
-		ImageRegistry:      "mirror.example.com",
-		ImagePullSecrets:   []string{"mirror-pull"},
+		IdentityServer:              &v1.KubernetesAgentSubstrateIdentityServer{Replicas: i32(3), Resources: resources("50m"), LogLevel: v1.LogLevel_debug, DrainGrace: str("10s")},
+		Version:                     str("v0.6.0"),
+		PreviewGates:                []string{"ExternalVolumes"},
+		ClusterSize:                 v1.KubernetesAgentSubstrateSpec_size10,
+		CordonSystemInfraComponents: true,
+		ImageRegistry:               "mirror.example.com",
+		ImagePullSecrets:            []string{"mirror-pull"},
 	}
 }
 

@@ -18,6 +18,12 @@
 #      pins a release without waiting for Pulumi's build
 #   4. Charts job attaches the InfraChart catalog zip to the GitHub Release
 #
+# One code path: every lane a platform pin reads (the GitHub Release, the
+# charts, the BSR labels, the content, the stub SDKs, the OpenTofu modules and
+# both engines' manifests) is a tools/ci/release script the job runs, and
+# `make release-without-actions tag=<tag>` runs the same scripts from a
+# laptop when Actions cannot (tools/ci/release/README.md).
+#
 # Job visibility: the content and definitions workflows run ONE JOB PER
 # ARTIFACT (content: one per zip; definitions: one per skill/agent, with the
 # manifest + channel pointer as the fan-in) so the Actions job list reads as
@@ -80,38 +86,14 @@ jobs:
         id: channel
         run: |
           set -euo pipefail
-          if [[ "${GITHUB_REF_NAME}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$ ]]; then
-            echo "prerelease=true" >> "$GITHUB_OUTPUT"
-            echo "${GITHUB_REF_NAME} is a release candidate: per-tag artifacts only, no shared channel moves"
-          else
-            echo "prerelease=false" >> "$GITHUB_OUTPUT"
-            echo "${GITHUB_REF_NAME} is a stable release"
-          fi
+          channel="$(bash tools/ci/release/release_channel.sh "${GITHUB_REF_NAME}")"
+          echo "prerelease=$([ "${channel}" = candidate ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+          echo "${GITHUB_REF_NAME} is a ${channel} release"
 
       - name: Create the GitHub Release for the tag
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PRERELEASE: ${{ steps.channel.outputs.prerelease }}
-        run: |
-          set -euo pipefail
-          VERSION="${GITHUB_REF_NAME}"
-          if gh release view "${VERSION}" --repo "${GITHUB_REPOSITORY}" > /dev/null 2>&1; then
-            echo "Release ${VERSION} already exists"
-          elif [ "${PRERELEASE}" = "true" ]; then
-            # A candidate never becomes /releases/latest, which chart and
-            # module consumers resolve.
-            gh release create "${VERSION}" \
-              --repo "${GITHUB_REPOSITORY}" \
-              --title "${VERSION}" \
-              --generate-notes \
-              --prerelease \
-              --latest=false
-          else
-            gh release create "${VERSION}" \
-              --repo "${GITHUB_REPOSITORY}" \
-              --title "${VERSION}" \
-              --generate-notes
-          fi
+        run: bash tools/ci/release/create_github_release.sh "${GITHUB_REF_NAME}"
 
   # ============================================================================
   # Pulumi Modules - All providers (uploads to Cloudflare R2)
@@ -166,35 +148,12 @@ jobs:
           pattern: module-part-terraform-*
           path: ${{ runner.temp }}/parts
 
-      - name: Assemble the OpenTofu module manifest
-        run: |
-          set -euo pipefail
-          go run ./tools/modulebuild manifest \
-            -engine terraform \
-            -tag "${GITHUB_REF_NAME}" \
-            -parts "${RUNNER_TEMP}/parts" \
-            -out "${RUNNER_TEMP}/manifest.json"
-
-      - name: Publish the OpenTofu module manifest
+      - name: Assemble and publish the OpenTofu module manifest
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
           AWS_ENDPOINT_URL: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
-          R2_BUCKET: planton-foundation-downloads
-        run: |
-          set -euo pipefail
-          KEY="releases/${GITHUB_REF_NAME}/modules/terraform/manifest.json"
-          tools/ci/release/publish_once.sh "${RUNNER_TEMP}/manifest.json" "${KEY}" \
-            --content-type application/json \
-            --cache-control "public, max-age=31536000, immutable" > /dev/null
-          PROBE_URL="https://downloads.planton.ai/${KEY}"
-          PROBE_CODE=$(curl -sf -I -o /dev/null -w "%{http_code}" \
-            --retry 3 --retry-delay 5 --retry-all-errors "${PROBE_URL}" || true)
-          if [ "${PROBE_CODE}" != "200" ]; then
-            echo "✗ ERROR: the OpenTofu module manifest does not serve at its public URL (HTTP ${PROBE_CODE}): ${PROBE_URL}"
-            exit 1
-          fi
-          echo "✓ OpenTofu module manifest published: ${PROBE_URL}"
+        run: bash tools/ci/release/publish_module_manifest.sh "${GITHUB_REF_NAME}" terraform "${RUNNER_TEMP}/parts"
 
   pulumi-module-manifest:
     needs: [pulumi-modules]
@@ -216,35 +175,12 @@ jobs:
           pattern: module-part-pulumi-*
           path: ${{ runner.temp }}/parts
 
-      - name: Assemble the Pulumi module manifest
-        run: |
-          set -euo pipefail
-          go run ./tools/modulebuild manifest \
-            -engine pulumi \
-            -tag "${GITHUB_REF_NAME}" \
-            -parts "${RUNNER_TEMP}/parts" \
-            -out "${RUNNER_TEMP}/manifest.json"
-
-      - name: Publish the Pulumi module manifest
+      - name: Assemble and publish the Pulumi module manifest
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
           AWS_ENDPOINT_URL: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
-          R2_BUCKET: planton-foundation-downloads
-        run: |
-          set -euo pipefail
-          KEY="releases/${GITHUB_REF_NAME}/modules/pulumi/manifest.json"
-          tools/ci/release/publish_once.sh "${RUNNER_TEMP}/manifest.json" "${KEY}" \
-            --content-type application/json \
-            --cache-control "public, max-age=31536000, immutable" > /dev/null
-          PROBE_URL="https://downloads.planton.ai/${KEY}"
-          PROBE_CODE=$(curl -sf -I -o /dev/null -w "%{http_code}" \
-            --retry 3 --retry-delay 5 --retry-all-errors "${PROBE_URL}" || true)
-          if [ "${PROBE_CODE}" != "200" ]; then
-            echo "✗ ERROR: the Pulumi module manifest does not serve at its public URL (HTTP ${PROBE_CODE}): ${PROBE_URL}"
-            exit 1
-          fi
-          echo "✓ Pulumi module manifest published: ${PROBE_URL}"
+        run: bash tools/ci/release/publish_module_manifest.sh "${GITHUB_REF_NAME}" pulumi "${RUNNER_TEMP}/parts"
 
   # ============================================================================
   # Content Distribution - one job per zip: presets, IaC source, catalog
@@ -267,8 +203,6 @@ jobs:
   buf-push:
     needs: github-release
     uses: ./.github/workflows/release.buf-push.yaml
-    with:
-      prerelease: ${{ needs.github-release.outputs.prerelease == 'true' }}
     secrets:
       BUF_TOKEN: ${{ secrets.BUF_TOKEN }}
 

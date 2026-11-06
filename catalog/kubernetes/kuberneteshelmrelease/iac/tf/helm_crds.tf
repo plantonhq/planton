@@ -17,7 +17,8 @@
 # off, so Helm never touches the module's CRDs; a bundle kind applies the
 # manifest's other documents itself. Version bumps re-apply the CRDs at the
 # new pin; destroy keeps them (apply_only) unless the spec says otherwise;
-# reinstall re-adopts them (server-side apply); a schema downgrade, and a CRD
+# reinstall re-adopts them (server-side apply); a schema downgrade, a
+# definition that drops a version objects are stored at, and a CRD
 # someone else owns, are refused at plan time, before anything is touched.
 #
 # THE OWNERSHIP RULE (which rendered CRDs the module applies)
@@ -322,6 +323,21 @@ locals {
     && tonumber(regex(local.helm_crds_semver_pattern, version)[0]) * 100000000 + tonumber(regex(local.helm_crds_semver_pattern, version)[1]) * 10000 + tonumber(regex(local.helm_crds_semver_pattern, version)[2]) > local.helm_crds_requested_sortable
   }
 
+  # CRD name -> the versions the cluster stores objects of it at that the
+  # definition about to be written no longer lists. Kubernetes refuses such a
+  # definition (every status.storedVersions entry must appear in
+  # spec.versions, served or not), so the refusal is the third precondition on
+  # that CRD's own apply, by name, before the API server would reject it
+  # mid-apply.
+  helm_crds_dropped_versions = {
+    for name, dropped in {
+      for name, o in local.helm_crds_existing : name => [
+        for stored in try(o.status.storedVersions, []) : stored
+        if !contains([for v in try(local.helm_crds_by_name[name].spec.versions, []) : v.name], stored)
+      ]
+    } : name => dropped if length(dropped) > 0
+  }
+
   # The documents the module owns (THE OWNERSHIP RULE): with an override,
   # both of Helm's surfaces; without one, the crds/ directory only; for a
   # bundle, everything fetched. Split on separator LINES (a bare "---"
@@ -386,6 +402,10 @@ resource "kubectl_manifest" "helm_crds" {
     precondition {
       condition     = !contains(keys(local.helm_crds_foreign), each.key)
       error_message = "observed: CRD ${each.key} already exists on the cluster and was not applied by this module (${try(local.helm_crds_foreign[each.key].owner, "it carries no ownership marks")})\nmeaning: two owners would write one schema, and the module cannot tell whether the existing definition is newer or older than ${local.helm_crds_version_noun} ${local.helm_crds_version}, so it stops before changing it\nnext step: ${local.helm_crds_is_bundle ? "set spec.crds.install to false only when another tool manages these definitions and no other installation of ${local.helm_crds_source_label} runs on this cluster (this kind still installs ${local.helm_crds_source_label} itself)" : "set spec.crds.install to false to leave the definitions with their current owner (the release still installs and uses them)"}; ${try(local.helm_crds_foreign[each.key].helm_release, "") != "" ? "or, to move ownership here, first uninstall Helm release ${try(local.helm_crds_foreign[each.key].helm_release, "")} (or mark the CRD helm.sh/resource-policy: keep in that release) so Helm will not delete it later, then " : "or "}hand them to this module once you know they match ${local.helm_crds_version_noun} ${local.helm_crds_version}: kubectl label crd ${each.key} planton.ai/crd-source=${local.helm_crds_source_label} and kubectl annotate crd ${each.key} planton.ai/crd-source-chart=${local.helm_crds_source_description} planton.ai/crd-source-version=${local.helm_crds_version}, then re-run"
+    }
+    precondition {
+      condition     = !contains(keys(local.helm_crds_dropped_versions), each.key)
+      error_message = "observed: the cluster stores objects of CRD ${each.key} at ${join(", ", try(local.helm_crds_dropped_versions[each.key], []))}, which ${local.helm_crds_version_noun} ${local.helm_crds_version} no longer lists (it lists ${join(", ", [for v in try(local.helm_crds_by_name[each.key].spec.versions, []) : v.name])})\nmeaning: Kubernetes refuses a definition that drops a version objects are stored at, and those objects were written by an earlier release this one cannot read\nnext step: back up what you need, then delete the definition and every object of it (kubectl delete crd ${each.key}) and re-run; or, to keep the objects, migrate each to a served version and remove the old one from the definition's status.storedVersions first"
     }
     precondition {
       condition     = !contains(keys(local.helm_crds_downgraded), each.key)

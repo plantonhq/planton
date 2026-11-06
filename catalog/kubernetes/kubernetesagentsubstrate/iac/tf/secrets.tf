@@ -40,7 +40,6 @@ resource "kubernetes_secret_v1" "actor_jwt_pool" {
   type = "Opaque"
   data = {
     pool = local.actor_jwt_pool
-    jwks = local.actor_jwt_jwks
   }
 
   depends_on = [kubectl_manifest.namespace]

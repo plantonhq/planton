@@ -148,3 +148,24 @@ func stamp(crd CRD, src Source) (CRD, error) {
 func labelSourceValue(src Source) string {
 	return src.Name()
 }
+
+// Versions is the definition's spec.versions names, served or not: every
+// version its objects may be stored at. A version kept with served: false
+// still holds stored objects, which is how a version is retired.
+func (c CRD) Versions() ([]string, error) {
+	var definition struct {
+		Spec struct {
+			Versions []struct {
+				Name string `json:"name"`
+			} `json:"versions"`
+		} `json:"spec"`
+	}
+	if err := yaml.Unmarshal([]byte(c.YAML), &definition); err != nil {
+		return nil, errors.Wrapf(err, "reading the versions CRD %s lists", c.Name)
+	}
+	names := make([]string, 0, len(definition.Spec.Versions))
+	for _, v := range definition.Spec.Versions {
+		names = append(names, v.Name)
+	}
+	return names, nil
+}

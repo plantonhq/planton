@@ -1,9 +1,9 @@
 # THE MINOR-RELEASE REFUSAL, from the API server: an earlier installation of
-# this kind recorded v0.5.0 on the API server (the fixture). Before 1.0
-# every Substrate minor is a reinstall, because the API server migrates the
+# this kind recorded v0.6.0 on the API server (the fixture). A release before
+# 1.0 is a reinstall to reach v1.0.0, because the API server migrates the
 # database irreversibly on its first start, so the deploy must be refused
 # at plan with the back-up, destroy and clear steps; the verifier asserts
-# the three parts and that the stamp still reads v0.5.0.
+# the three parts and that the stamp still reads v0.6.0.
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesAgentSubstrate
 metadata:
@@ -12,7 +12,7 @@ metadata:
     planton.dev/e2e-cluster-profile: "pod-certificates"
     planton.dev/e2e-prerequisites: "catalog/kubernetes/kubernetesagentsubstrate/e2e/fixture-earlier-release.yaml"
     planton.dev/e2e-expect-deploy-failure: upgrade-refused
-    planton.dev/e2e-expect-installed-version: v0.5.0
+    planton.dev/e2e-expect-installed-version: v0.6.0
 spec:
   namespace:
     value: ate-system

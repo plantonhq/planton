@@ -23,4 +23,4 @@ planton tofu apply --manifest sandbox-config.yaml
 
 ## Import
 
-An existing SandboxConfig imports with the ID `ate.dev/v1alpha1//SandboxConfig//<name>` (see `../import-map.yaml`).
+An existing SandboxConfig imports with the ID `ate.dev/v1//SandboxConfig//<name>` (see `../import-map.yaml`).

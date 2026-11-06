@@ -7385,7 +7385,7 @@ enum CatalogKind {
     id_prefix: "k8sasubwp"
     prerequisites: [KubernetesAgentSubstrate]
     kubernetes_manifest_projection: {
-      api_version: "ate.dev/v1alpha1"
+      api_version: "ate.dev/v1"
       kind: "WorkerPool"
     }
     service_group: kubernetes_operators_controllers
@@ -7400,7 +7400,7 @@ enum CatalogKind {
     id_prefix: "k8sasubsc"
     prerequisites: [KubernetesAgentSubstrate]
     kubernetes_manifest_projection: {
-      api_version: "ate.dev/v1alpha1"
+      api_version: "ate.dev/v1"
       kind: "SandboxConfig"
     }
     service_group: kubernetes_operators_controllers
@@ -7414,7 +7414,7 @@ enum CatalogKind {
     id_prefix: "k8sasubcsi"
     prerequisites: [KubernetesAgentSubstrate]
     kubernetes_manifest_projection: {
-      api_version: "ate.dev/v1alpha1"
+      api_version: "ate.dev/v1"
       kind: "CSIDriverConfig"
     }
     service_group: kubernetes_operators_controllers

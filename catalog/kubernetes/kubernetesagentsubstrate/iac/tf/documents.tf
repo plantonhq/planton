@@ -321,9 +321,7 @@ locals {
               args = local.node_sidecar_args
               env  = concat([for e in try(c.env, []) : e if !contains(local.storage_env_names, e.name)], local.storage_env)
             } : k => v if c.name == "objectstore-plugin" })]
-            volumes = [for vol in local.node_spec.volumes : merge(vol, { for k, v in {
-              emptyDir = merge(try(vol.emptyDir, {}), { sizeLimit = "${local.node_agent.staging_gib + 1}Gi" })
-            } : k => v if vol.name == "asset-staging" && local.node_agent.staging_gib != 8 }) if local.gke || !contains(local.credential_volumes, vol.name)]
+            volumes = [for vol in local.node_spec.volumes : vol if local.gke || !contains(local.credential_volumes, vol.name)]
           },
           { for k, v in { nodeSelector = merge(try(local.node_spec.nodeSelector, {}), local.node_agent.node_selector) } : k => v if length(local.node_agent.node_selector) > 0 },
           { for k, v in { tolerations = concat(try(local.node_spec.tolerations, []), local.node_agent.tolerations) } : k => v if length(local.node_agent.tolerations) > 0 },
@@ -509,10 +507,21 @@ locals {
   agw_provider_lines     = local.egress.provider == "disabled" ? [] : split("\n", format(local.agentgateway_providers, jsonencode(local.egress.provider_name), jsonencode(local.egress.provider_address), jsonencode(local.provider_server_name)))
   agw_egress_config_yaml = replace(local.agw_egress_cfg["config.yaml"], "/(?m)^([ \\t]*)#ATE_AGENTGATEWAY_CREDENTIAL_PROVIDERS.*\\n/",
   join("", [for l in local.agw_provider_lines : "$${1}${l}\n"]))
+  # components/agentgateway-static-mtls (applied after the two above, as
+  # upstream's components() orders it): its one patch, from configmap.yaml,
+  # replaces the router configuration with one that serves only mutual TLS
+  # and admits only the client SPIFFE IDs router.allowed_client_spiffe_ids
+  # names, filling its one placeholder as a JSON list (an empty list, never
+  # null: agentgateway's networkAuthorization rule cannot evaluate null).
+  agw_router_config_name = "atenet-router-agentgateway-config"
+  agw_allowed_marker     = "[ATE_INGRESS_ALLOWED_SPIFFE_IDS]"
+  agw_static_mtls_patch  = local.documents_by_file.agentgateway_static_mtls[0].patches[0]
+  agw_static_mtls_config = one(local.documents_by_file.agentgateway_static_mtls_config).data["config.yaml"]
+  agw_router_config_yaml = replace(local.agw_static_mtls_config, local.agw_allowed_marker, jsonencode(local.router.spiffe_ids))
   agw_config_docs = {
     for name, d in local.agw_config_documents : name => merge(d, { for k, v in {
-      data = merge(d.data, { "config.yaml" = local.agw_egress_config_yaml })
-    } : k => v if name == local.agw_egress_config_name })
+      data = merge(d.data, { "config.yaml" = name == local.agw_egress_config_name ? local.agw_egress_config_yaml : local.agw_router_config_yaml })
+    } : k => v if contains([local.agw_egress_config_name, local.agw_router_config_name], name) })
   }
 
   # ---- the Cloud SQL Auth Proxy sidecar (applyCloudSQLSidecar) -----------------
@@ -551,8 +560,8 @@ locals {
     for name, data in merge(
       {
         "ate-api-server-envvars" = local.api_env_config_map
-        "ate-api-config"         = { "apiconfig.textproto" = local.api_config_text }
-        "ate-api-authentication" = { "authentication.yaml" = local.authentication_yaml }
+        "ate-api-config"         = local.config_maps["ate-api-config"]
+        "ate-api-authentication" = local.config_maps["ate-api-authentication"]
       },
       local.egress.provider == "kubernetes" ? { "k8s-credential-provider-namespace-policy" = { "namespace-policy.yaml" = local.policy_yaml } } : {},
     ) : "v1//ConfigMap//${name}//${local.namespace}" => { apiVersion = "v1", kind = "ConfigMap", metadata = { name = name, namespace = local.namespace }, data = data }
@@ -622,9 +631,9 @@ locals {
   runtime_docs_raw = { for i, d in local.documents_by_file.sandbox_gvisor : local.id_of.sandbox_gvisor[i] => d }
 
   # ---- passes over every document (compose.go) ----------------------------------
-  # cordon (upstream's component): the control-plane Deployments and the
-  # database get the node selector, toleration and spread upstream's patches
-  # name.
+  # cordon (upstream's cordon-system-infra-components): the system
+  # components' Deployments and the database get the node selector,
+  # toleration and spread upstream's patches name.
   cordon_patches     = local.documents_by_file.cordon[0].patches
   cordon_deployments = local.cordon_patches[0].target.name
   cordon_deploy      = yamldecode(local.cordon_patches[0].patch).spec.template

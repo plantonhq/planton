@@ -75,88 +75,13 @@ jobs:
           go-version-file: go.mod
           cache: true
 
-      - name: Build modulebuild
-        run: go build -o "${RUNNER_TEMP}/modulebuild" ./tools/modulebuild
-
-      - name: Archive and upload all Terraform modules
+      - name: Archive and publish every OpenTofu module of the provider
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
           AWS_ENDPOINT_URL: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
           PROVIDER: ${{ matrix.provider }}
-        run: |
-          TAG="${GITHUB_REF#refs/tags/}"
-          MB="${RUNNER_TEMP}/modulebuild"
-          PART="${RUNNER_TEMP}/published.tsv"
-          : > "${PART}"
-
-          mapfile -t MODULES < <("${MB}" list -engine terraform -provider "${PROVIDER}")
-          TOTAL=${#MODULES[@]}
-
-          echo "========================================"
-          echo "PROVIDER: ${PROVIDER}"
-          echo "TERRAFORM MODULES: ${TOTAL}"
-          echo "========================================"
-
-          if [ $TOTAL -eq 0 ]; then
-            echo "WARNING: No Terraform modules found for provider ${PROVIDER}"
-            exit 0
-          fi
-
-          COMPLETED=0
-          FAILED=0
-
-          for MODULE_DIR in "${MODULES[@]}"; do
-            COMPLETED=$((COMPLETED + 1))
-            kind="$(echo "${MODULE_DIR}" | cut -d/ -f3)"
-            R2_KEY="releases/${TAG}/modules/terraform/${kind}/module.zip"
-
-            echo "ARCHIVING: ${kind}  ${COMPLETED}/${TOTAL}"
-
-            if "${MB}" terraform -module "${MODULE_DIR}" -out module.zip; then
-              # Upload once (a tag's artifacts never change) and record the
-              # checksum of the bytes the key holds.
-              if SHA=$(tools/ci/release/publish_once.sh module.zip "${R2_KEY}" \
-                --cache-control "public, max-age=31536000, immutable"); then
-                printf '%s\t%s\t%s\n' "${MODULE_DIR}" module.zip "${SHA}" >> "${PART}"
-                LAST_UPLOADED_KEY="${R2_KEY}"
-              else
-                echo "✗ ERROR: Failed to upload the module of ${kind} to R2"
-                FAILED=$((FAILED + 1))
-              fi
-              rm -f module.zip
-            else
-              echo "✗ ERROR: Failed to archive ${kind}"
-              FAILED=$((FAILED + 1))
-            fi
-          done
-
-          # Probe one uploaded artifact through the public URL. The CLI and
-          # runners compose these URLs from a shape pinned in pkg/downloads;
-          # this probe pins the OTHER half of the contract -- that what CI
-          # just uploaded actually serves at that shape.
-          if [ -n "${LAST_UPLOADED_KEY:-}" ]; then
-            PROBE_URL="https://downloads.planton.ai/${LAST_UPLOADED_KEY}"
-            PROBE_CODE=$(curl -sf -I -o /dev/null -w "%{http_code}" \
-              --retry 3 --retry-delay 5 --retry-all-errors "${PROBE_URL}" || true)
-            if [ "${PROBE_CODE}" = "200" ]; then
-              echo "✓ Public URL probe passed: ${PROBE_URL}"
-            else
-              echo "✗ ERROR: uploaded artifact does not serve at its public URL (HTTP ${PROBE_CODE}): ${PROBE_URL}"
-              FAILED=$((FAILED + 1))
-            fi
-          fi
-
-          echo ""
-          echo "========================================"
-          echo "JOB SUMMARY: ${PROVIDER}"
-          echo "Modules: ${TOTAL}  Failed: ${FAILED}"
-          echo "========================================"
-
-          if [ $FAILED -gt 0 ]; then
-            echo "ERROR: ${FAILED} module(s) failed"
-            exit 1
-          fi
+        run: bash tools/ci/release/publish_terraform_modules.sh "${GITHUB_REF_NAME}" "${RUNNER_TEMP}/parts" "${PROVIDER}"
 
       # What this leg published, for the OpenTofu module manifest release.yaml
       # publishes once every leg of this lane has finished. A rerun of the leg
@@ -166,7 +91,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: module-part-terraform-${{ matrix.provider }}
-          path: ${{ runner.temp }}/published.tsv
+          path: ${{ runner.temp }}/parts/${{ matrix.provider }}.tsv
           if-no-files-found: error
           overwrite: true
           retention-days: 7

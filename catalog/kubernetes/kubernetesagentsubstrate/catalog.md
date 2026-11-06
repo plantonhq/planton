@@ -6,7 +6,7 @@ This kind installs the **control plane**, once per cluster. Agents run on worker
 
 ## What Gets Created
 
-When you deploy this Infra Component, the IaC module provisions, from Planton's digest-pinned build of the Agent Substrate release `version` names (v0.6.0 by default):
+When you deploy this Infra Component, the IaC module provisions, from Planton's digest-pinned install set of the Agent Substrate release `version` names (v1.0.0 by default):
 
 - **The `ate-system` namespace** (with `createNamespace: true`) and **`podcertificate-controller-system`** — both names are fixed by upstream. Exactly one installation per cluster.
 - **The resource definitions** — `WorkerPool`, `SandboxConfig` and `CSIDriverConfig`, applied as kept, ownership-checked resources, so destroying the control plane never deletes a worker pool.
@@ -142,9 +142,9 @@ These are the decisions that matter most. Explore the full field reference in th
 
 **Who may call** — the API authorizes every call: a caller in a namespace carrying `ate.dev/api-access=true` reaches an atespace only through an access policy, and `apiServer.authorization.bootstrapOwners` names the first owners (a service account calling with a token is `system:serviceaccount:<namespace>:<name>`). The router carries requests to agents only from the workloads `router.allowedClientSpiffeIds` names, by their pod certificates (`spiffe://cluster.local/ns/<namespace>/sa/<name>`).
 
-**The version** — `version` picks the release, v0.6.0 by default. A later upstream release that changes only its images keeps v0.6.0's install shape, so you adopt it by setting `version`, with no catalog update; then redeploy your worker pools. A release of another shape, or one Planton has not published, is refused before anything is applied. Before 1.0, a new minor is a reinstall, and the deploy refuses one over an existing installation or its database with the steps that move it safely.
+**The version** — `version` picks the release, v1.0.0 by default. A later upstream release that changes only its images keeps v1.0.0's install shape, so you adopt it by setting `version`, with no catalog update; then redeploy your worker pools. A release of another shape, or one Planton has not published, is refused before anything is applied. Upgrades go one minor at a time; a skipped minor, a new major, or a move from a release before 1.0 is a reinstall, and the deploy refuses one over an existing installation or its database with the steps that move it safely.
 
-**Mirrors and air gaps** — `imageRegistry` moves every image the install runs to your registry, keeping each path and digest. `us-central1-docker.pkg.dev` pulls Planton's own mirror.
+**Mirrors and air gaps** — `imageRegistry` moves every image the install runs to your registry, keeping each path and digest; copy upstream's images (`ghcr.io/agent-substrate/substrate/*`) there byte for byte first.
 
 ## Outputs and Dependencies
 
@@ -172,7 +172,6 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 | `api_trust_bundle_name` | The ClusterTrustBundle that verifies the API | A clusterTrustBundle projected volume |
 | `api_access_namespace_label` | `ate.dev/api-access=true` | The label on your product's namespace |
 | `router_tls_endpoint` | Where requests reach an agent, over mutual TLS | Your product's data path |
-| `router_endpoint` | agentgateway's plaintext endpoint (empty with Envoy) | A product on the agentgateway router |
 | `router_client_signer_name` | The signer of the client certificates the TLS endpoint accepts | A client workload's podCertificate volume mount |
 | `storage_location` | Where snapshots are stored: `gs://` or `s3://` with the bucket and prefix | Finding an agent's snapshots |
 | `gvisor_worker_image`, `microvm_worker_image` | The worker images built for this release | A worker pool |

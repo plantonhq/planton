@@ -1,7 +1,7 @@
 # Least-privilege permissions the IaC runner's Kubernetes principal needs to
 # provision, update, and destroy this component with the platform modules.
 # Every entry is `derived` (static analysis of the module sources plus the
-# document census of the v0.6.0 release Planton publishes, the install
+# document census of the v1.0.0 release Planton publishes, the install
 # shape the modules compose, cited in
 # notes) until the live capture lane upgrades it to `proven`. Schema:
 # iac/catalogkindpermissions/v1.
@@ -192,9 +192,9 @@ spec:
         provenance: derived
         notes: The API server's and the identity server's disruption budgets, from upstream's manifests. list and watch are Pulumi's informers on the awaited rollout or delete (pulumi-kubernetes v4.33.0, await.go:984-1006), which OpenTofu, polling with get, never needs.
       - api_groups:
-          - scheduling.k8s.io
+          - ""
         resources:
-          - priorityclasses
+          - resourcequotas
         verbs:
           - get
           - list
@@ -203,9 +203,21 @@ spec:
           - update
           - patch
           - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: Upstream's atelet-critical-pods ResourceQuota in ate-system (atelet.yaml), which lets the node agent run at system-node-critical priority outside kube-system. list and watch are Pulumi's informers on the awaited rollout or delete (pulumi-kubernetes v4.33.0, await.go:984-1006), which OpenTofu, polling with get, never needs.
+      - api_groups:
+          - scheduling.k8s.io
+        resources:
+          - priorityclasses
+        verbs:
+          - get
+          - list
+          - watch
+          - delete
         cluster_scoped: true
         provenance: derived
-        notes: Upstream's ate-node-critical PriorityClass, which keeps the node agent scheduled ahead of the agents it runs. list and watch are Pulumi's informers on the awaited rollout or delete (pulumi-kubernetes v4.33.0, await.go:984-1006), which OpenTofu, polling with get, never needs.
+        notes: Teardown only. Releases before v1.0.0 installed their own ate-node-critical PriorityClass; v1.0.0 runs the node agent at system-node-critical instead, so nothing creates one, but a destroy of an installation an earlier release deployed (the reinstall to reach v1.0.0) deletes it from state. list and watch are Pulumi's informers on the awaited delete (pulumi-kubernetes v4.33.0, await.go:984-1006), which OpenTofu, polling with get, never needs.
       - api_groups:
           - admissionregistration.k8s.io
         resources:

@@ -1,7 +1,8 @@
 # THE AGENTGATEWAY DATAPLANE: the router and the egress gateway run
-# agentgateway in place of Envoy, upstream's agentgateway component applied
-# as written. The verifier asserts both run the agentgateway container, and
-# that the router still answers and the API still serves.
+# agentgateway in place of Envoy, upstream's agentgateway components applied
+# as written, static mTLS included. The verifier asserts both run the
+# agentgateway container, that the router answers the client it allows over
+# mutual TLS and refuses a stranger's certificate, and that the API serves.
 #
 # This lane sorts first on the shared cluster and lets the definitions go
 # on destroy (keepOnUninstall off), so whatever the previous engine's
@@ -35,6 +36,8 @@ spec:
           value: substrate-s3
   router:
     dataplane: agentgateway
+    allowedClientSpiffeIds:
+      - spiffe://cluster.local/ns/e2e-ate-probe/sa/e2e-ate-client
   apiServer:
     authorization:
       bootstrapOwners:

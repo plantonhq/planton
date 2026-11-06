@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/plantonhq/planton/catalog/kubernetes/aa_e2e/verify/internal/ateapipb"
+	"github.com/plantonhq/planton/catalog/kubernetes/aa_e2e/verify/internal/ateapi"
 	"github.com/plantonhq/planton/e2e/framework/provider"
 	"k8s.io/apimachinery/pkg/api/resource"
 )
@@ -124,7 +124,7 @@ func TestCounterTemplateIsUpstreamsCounter(t *testing.T) {
 	if len(c.GetVolumeMounts()) != 1 || c.GetVolumeMounts()[0].GetMountPath() != "/home/counter" || tpl.GetVolumes()[0].GetDurableDir() == nil {
 		t.Errorf("the counter's file counter lives in a durable directory at /home/counter; got mounts %v volumes %v", c.GetVolumeMounts(), tpl.GetVolumes())
 	}
-	if tpl.GetSnapshotConfig().GetPreferredFidelity() != ateapipb.SnapshotFidelity_SNAPSHOT_FIDELITY_VOLUMES {
+	if tpl.GetSnapshotConfig().GetPreferredFidelity() != ateapi.SnapshotFidelity_SNAPSHOT_FIDELITY_VOLUMES {
 		t.Errorf("fidelity = %v, want VOLUMES", tpl.GetSnapshotConfig().GetPreferredFidelity())
 	}
 	if tpl.GetWorkerSelector().GetMatchLabels()["workload"] != "e2e-counter" || tpl.GetSnapshotConfig().GetStorageLocation() != "" {

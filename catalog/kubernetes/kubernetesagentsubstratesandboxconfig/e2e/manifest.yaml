@@ -13,21 +13,21 @@ spec:
   annotations:
     planton.dev/e2e-note: full-surface
   sandboxClass: gvisor
-  defaultVersion: gvisor-2026-10-17
+  defaultVersion: gvisor-20261102-0
   versions:
-    - name: gvisor-2026-10-17
+    - name: gvisor-20261102-0
       state: Enabled
       assets:
         amd64:
           entries:
             gvisor:
-              url: gs://gvisor/releases/nightly/2026-10-17/x86_64/gvisor.tar.zstd
-              sha256: fa72f0d45756c69a30beec21222c78241b0d330c36f4f2185648617cc23415c8
+              url: gs://gvisor/releases/release/20261102.0/x86_64/gvisor.tar.zstd
+              sha256: a1439ffbba7d212e0fde32ea79fa9bb51cbc4c5f6c16af1f047260290b861d42
         arm64:
           entries:
             gvisor:
-              url: gs://gvisor/releases/nightly/2026-10-17/aarch64/gvisor.tar.zstd
-              sha256: 238634978d99f0dd3e631c4f88eae7b19fb36937065428467f0b6d6b10697689
+              url: gs://gvisor/releases/release/20261102.0/aarch64/gvisor.tar.zstd
+              sha256: f702ae92ad7a0c4134be34ca23f52966dbb696db0c0f5b8ec439210ab2cd7c6a
     # Retired, so no sandbox ever boots it and no node downloads its file:
     # the gVisor release before the one Agent Substrate's workers need.
     - name: gvisor-2026-10-10

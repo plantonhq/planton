@@ -14,8 +14,9 @@
 # explicitly): the probe client
 # (system:serviceaccount:e2e-ate-probe:e2e-ate-client, the token subject)
 # creates an atespace as an owner, while a second service account in the
-# same namespace is denied by its principal. cordonControlPlane is left to
-# the offline proofs: it needs labelled nodes the one-node cluster has not.
+# same namespace is denied by its principal. cordonSystemInfraComponents is
+# left to the offline proofs: it needs labelled nodes the one-node cluster
+# has not.
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesAgentSubstrate
 metadata:
@@ -147,7 +148,7 @@ spec:
     tracesSamplerRatio: 0.5
     workerLogsExporters:
       - console
-  version: v0.6.0
+  version: v1.0.0
   previewGates:
     - GoldenEgressPolicy
   identityServer:

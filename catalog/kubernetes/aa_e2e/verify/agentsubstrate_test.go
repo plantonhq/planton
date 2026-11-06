@@ -51,8 +51,8 @@ func TestAgentSubstrateVerifierReadsTheScenarios(t *testing.T) {
 		"crds-owned-elsewhere.yaml": with(func(l *lane) {
 			l.create, l.refused, l.crds = true, true, []string{"workerpools.ate.dev"}
 		}),
-		"upgrade-refused.yaml":        with(func(l *lane) { l.keep, l.refused, l.installed = true, true, "v0.5.0" }),
-		"volume-upgrade-refused.yaml": with(func(l *lane) { l.keep, l.refused, l.installed = true, true, "v0.5" }),
+		"upgrade-refused.yaml":        with(func(l *lane) { l.keep, l.refused, l.installed = true, true, "v0.6.0" }),
+		"volume-upgrade-refused.yaml": with(func(l *lane) { l.keep, l.refused, l.installed = true, true, "v0.6" }),
 	}
 	files, err := filepath.Glob(filepath.Join(agentSubstrateScenarios, "*.yaml"))
 	if err != nil || len(files) != len(cases) {
@@ -96,7 +96,7 @@ func TestEveryInstallingLaneAdmitsTheProbe(t *testing.T) {
 		}
 		router, _ := specField(manifestSpecMap(path), "router").(map[string]interface{})
 		allowed, _ := specField(router, "allowedClientSpiffeIds").([]interface{})
-		if !v.Agentgateway && !containsValue(allowed, client) {
+		if !containsValue(allowed, client) {
 			t.Errorf("%s allows router clients %v; the probe's router caller is %s", filepath.Base(path), allowed, client)
 		}
 	}
@@ -155,11 +155,11 @@ func TestAgentSubstrateRefusalTextsMatchTheModules(t *testing.T) {
 	}
 
 	for installed, record := range map[string]string{
-		"v0.5.0": "Deployment " + agentSubstrateNamespace + "/" + agentSubstrateAPIServer,
-		"v0.5":   "PersistentVolumeClaim " + agentSubstrateNamespace + "/" + agentSubstrateVolumeClaim + ", the bundled database's volume left by an earlier installation,",
+		"v0.6.0": "Deployment " + agentSubstrateNamespace + "/" + agentSubstrateAPIServer,
+		"v0.6":   "PersistentVolumeClaim " + agentSubstrateNamespace + "/" + agentSubstrateVolumeClaim + ", the bundled database's volume left by an earlier installation,",
 	} {
 		remedy := "back up what you need from the database, destroy this resource"
-		if installed == "v0.5" {
+		if installed == "v0.6" {
 			remedy = "delete the volume (`kubectl -n " + agentSubstrateNamespace + " delete pvc " + agentSubstrateVolumeClaim + "`)"
 		}
 		text := failure.KubernetesUpgradeRefused(agentSubstrateKind, "Agent Substrate", record, installed, agentSubstrateRelease, rule[1], remedy).Error()
@@ -179,7 +179,7 @@ func TestAgentSubstrateVerifierPinsTheModulesRelease(t *testing.T) {
 	for path, pattern := range map[string]*regexp.Regexp{
 		"../../kubernetesagentsubstrate/iac/pulumi/module/vars.go": regexp.MustCompile(`Release:\s+"([^"]+)"`),
 		"../../kubernetesagentsubstrate/iac/tf/locals.tf":          regexp.MustCompile(`release\s*=\s*"([^"]+)"`),
-		"internal/ateapipb/upstream_test.go":                       regexp.MustCompile(`upstreamRelease = "([^"]+)"`),
+		"internal/ateapi/upstream_test.go":                         regexp.MustCompile(`upstreamRelease = "([^"]+)"`),
 	} {
 		src, err := os.ReadFile(path)
 		if err != nil {

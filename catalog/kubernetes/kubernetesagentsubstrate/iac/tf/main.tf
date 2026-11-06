@@ -1,6 +1,6 @@
 # KubernetesAgentSubstrate Terraform module.
 #
-# Installs the Agent Substrate control plane from Planton's build of the
+# Installs the Agent Substrate control plane from Planton's install set of the
 # release spec.version names (local.release when empty): upstream's own
 # manifests with every image digest-pinned, composed the way upstream's
 # installer composes them, with the typed settings applied onto upstream's

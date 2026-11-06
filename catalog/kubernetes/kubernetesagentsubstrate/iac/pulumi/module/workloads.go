@@ -376,17 +376,12 @@ func patchNodeAgent(d document, s *settings) error {
 	if err != nil {
 		return err
 	}
+	// The staging capacity bounds the asset-staging volume (upstream's
+	// atelet.yaml sets no size limit on it).
 	var sl flagList
 	sl.add(n.stagingGiB != 8, "asset-staging-capacity", itoa(n.stagingGiB)+"Gi")
 	sl.add(snap.uploadMemory != "512Mi", "upload-memory-budget", snap.uploadMemory)
 	applyFlags(sidecar, sl)
-	if n.stagingGiB != 8 {
-		staging := namedItem(spec["volumes"], "name", "asset-staging")
-		if staging == nil {
-			return errors.Errorf("Agent Substrate %s's node agent has no asset-staging volume; the module's pin needs a catalog fix", vars.Release)
-		}
-		child(staging, "emptyDir")["sizeLimit"] = itoa(n.stagingGiB+1) + "Gi"
-	}
 	storageEnv(sidecar, s.storage)
 
 	if len(n.nodeSelector) > 0 {

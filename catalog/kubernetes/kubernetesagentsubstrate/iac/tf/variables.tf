@@ -381,12 +381,12 @@ variable "spec" {
       worker_metrics_exporters  = optional(list(string), [])
       worker_logs_exporters     = optional(list(string), [])
     }))
-    cluster_size         = optional(string, "")
-    cordon_control_plane = optional(bool, false)
-    image_registry       = optional(string, "")
-    image_pull_secrets   = optional(list(string), [])
-    version              = optional(string)
-    preview_gates        = optional(list(string), [])
+    cluster_size                   = optional(string, "")
+    cordon_system_infra_components = optional(bool, false)
+    image_registry                 = optional(string, "")
+    image_pull_secrets             = optional(list(string), [])
+    version                        = optional(string)
+    preview_gates                  = optional(list(string), [])
     identity_server = optional(object({
       replicas = optional(number)
       resources = optional(object({

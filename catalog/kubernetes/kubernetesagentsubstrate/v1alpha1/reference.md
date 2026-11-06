@@ -46,12 +46,13 @@ gates, or a kind cluster configured as upstream's own. A CNI that enforces
 NetworkPolicy, because the install's isolation is a default-deny policy.
 Upstream supports GKE and kind.
 
-DISTRIBUTION AND VERSION: Agent Substrate publishes no images and no
-installable release, so Planton publishes both: each upstream release built
-by upstream's own publisher, every image digest-pinned, at
+DISTRIBUTION AND VERSION: Agent Substrate publishes its release images
+(ghcr.io/agent-substrate/substrate) but no installable release, so Planton
+publishes one: each upstream release's manifests with every image pinned by
+the digest upstream's registry serves, at
 https://downloads.planton.ai/releases/agent-substrate/<version>/. The
 modules compose that tree the way upstream's installer does and apply the
-typed settings below onto it. They compose one install shape, v0.6.0's,
+typed settings below onto it. They compose one install shape, v1.0.0's,
 and `version` picks any release Planton publishes with that shape: a
 release whose install differs from it only in its images, which Planton
 proves before it publishes one. So a new upstream patch reaches this kind
@@ -59,10 +60,10 @@ by setting `version`, with no catalog update; a release with another shape
 is refused at plan time, before anything is applied, and arrives with the
 catalog update that composes it. The resource definitions belong to the
 shape, so the catalog's Substrate resource kinds mirror them field for
-field. Before 1.0 every minor release is a reinstall upstream (its database
-schema migrates irreversibly), so the kind refuses an apply over an older
-minor's installation or database, and says how to move across; patch
-releases of one minor move in place, either way.
+field. Upstream's database schema migrates forward irreversibly, so the
+kind refuses an apply that skips a minor release, rolls back more than one,
+or crosses a major (a release before 1.0 included), and says how to move
+across; patch releases of one minor move in place, either way.
 
 GENERATED SECRETS: the certificate authorities behind every component's
 mTLS, the actor-identity CA, the egress interception CA and the actor token
@@ -282,11 +283,11 @@ spec:
     workerLogsExporters:
       - otlp
   clusterSize: size10
-  cordonControlPlane: true
+  cordonSystemInfraComponents: true
   imageRegistry: mirror.example.com/substrate
   imagePullSecrets:
     - mirror-pull
-  version: v0.6.0
+  version: v1.0.0
   previewGates:
     - ALL
   identityServer:
@@ -531,10 +532,10 @@ spec:
 | `spec.telemetry.workerMetricsExporters` | `[]string` |  |  |  |
 | `spec.telemetry.workerLogsExporters` | `[]string` |  |  |  |
 | `spec.clusterSize` | `enum` |  |  |  |
-| `spec.cordonControlPlane` | `bool` |  |  |  |
+| `spec.cordonSystemInfraComponents` | `bool` |  |  |  |
 | `spec.imageRegistry` | `string` |  |  |  |
 | `spec.imagePullSecrets` | `[]string` |  |  |  |
-| `spec.version` | `string` |  | `v0.6.0` |  |
+| `spec.version` | `string` |  | `v1.0.0` |  |
 | `spec.previewGates` | `[]string` |  |  |  |
 | `spec.identityServer` | `KubernetesAgentSubstrateIdentityServer` |  |  |  |
 | `spec.identityServer.replicas` | `int32` |  | `2` |  |
@@ -1203,7 +1204,7 @@ Specify the minimum amount of CPU and memory that the container is guaranteed.
 `enum`
 
 Minimum log level. The API server reads it from its configuration file
-as it changes, so a new level applies without a restart.
+at start, so a new level rolls the API server.
 
 Allowed values (use exactly as shown):
 
@@ -1265,7 +1266,12 @@ The iss claim of actor JWTs; relying parties fetch
 identity server publishes the keys there. Empty = upstream's default,
 "https://idp.ate-system.svc", which the identity server serves inside the
 cluster; set your own host when a service outside the cluster must verify
-actor tokens, and route it to the `idp` Service in ate-system.
+actor tokens, and route it to the `idp` Service in ate-system. The API
+server's credential exchange fetches the keys from the issuer too, so
+the issuer must answer from inside the API server's pod, over a
+certificate that verifies against the system roots or Substrate's
+service-DNS trust bundle; one that does not stops the API server's
+exchange sidecar at start.
 
 - rule: actor_jwt.issuer is https://<host>, optionally with a port: no path, userinfo, query or fragment
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE"}
@@ -1566,9 +1572,8 @@ Log what a collection would remove without removing it.
 
 Most GiB of sandbox runtime assets being downloaded and verified at once
 on a node; larger downloads wait, and a single asset larger than this is
-refused. The node's staging volume is sized at this plus 1GiB of
-filesystem headroom, because kubelet evicts the pod when the volume
-overflows.
+refused. This bounds the node's staging volume, which upstream leaves
+without a size limit of its own.
 
 - default: `8`
 - rule: {"int32":{"lte":1024,"gt":0}}
@@ -1882,9 +1887,9 @@ actors through the router, one per client workload:
 "spiffe://cluster.local/ns/<namespace>/sa/<service-account>". A client
 calls the router's TLS endpoint with its pod certificate (signer
 podidentity.podcert.ate.dev/identity); any listed client may reach any
-actor. The Envoy router serves nothing else, so it needs at least one;
-agentgateway does not check client certificates yet, and serves
-plaintext listeners to any caller.
+actor. Either dataplane serves only that TLS endpoint and admits only
+the clients listed (agentgateway through upstream's static-mTLS
+component), so at least one is needed.
 
 - rule: {"repeated":{"unique":true,"items":{"cel":[{"id":"allowed_client_spiffe_id_format","message":"each allowed client SPIFFE ID looks like \"spiffe://cluster.local/ns/<namespace>/sa/<service-account>\"","expression":"this.matches('^spiffe://[^/]+/.+$')"}]}}}
 
@@ -2472,29 +2477,35 @@ Allowed values (use exactly as shown):
 - `size0`
 - `size10`
 
-### spec.cordonControlPlane
+### spec.cordonSystemInfraComponents
 
 `bool`
 
-Run the control plane on dedicated nodes: every control-plane Deployment
-gets the node selector and toleration
-`ate.dev/workloadType=ate-control-plane` (spread one per node), and the
-bundled database `ate.dev/workloadType=ate-postgres`. Label and taint
-those nodes first; the deploy is refused when no node carries the
-database label. Upstream's posture for production clusters, where actor
-load must not starve the control plane.
+Run Substrate's own system components on dedicated nodes, off the
+worker nodes: the API server, identity server, controller, router,
+egress gateway, pod-certificate controller and credential provider get
+the node selector and toleration `ate.dev/workloadType=ate-system-infra`
+(a small shared pool; each workload's replicas spread across its nodes
+when they can), and the bundled database
+`ate.dev/workloadType=ate-postgres` (one node, the database alone; none
+with an external database). Label and taint those nodes, each pool with
+its label as a NoSchedule taint, before the deploy: a pool that is
+missing leaves its pods Pending. Upstream's posture for production
+clusters, where actor load must not starve the system.
 
 ### spec.imageRegistry
 
 `string`
 
 Registry that replaces the registry part of every image the install runs
-(Planton's Substrate images on ghcr.io, Envoy's among them, PostgreSQL on
-Docker Hub, the Cloud SQL proxy on gcr.io, agentgateway on
+(upstream's Substrate images on ghcr.io, Envoy's among them, PostgreSQL
+on Docker Hub, the Cloud SQL proxy on gcr.io, agentgateway on
 cr.agentgateway.dev): the air-gap and private-mirror path.
 Each image keeps its path, tag and digest, so a mirror must copy images
-byte for byte. "us-central1-docker.pkg.dev" pulls Planton's own mirror of
-the Substrate images. Docker Hub names without a registry are read the
+byte for byte (`crane copy` keeps the digest), for instance
+ghcr.io/agent-substrate/substrate/ateapi to
+<registry>/agent-substrate/substrate/ateapi. Docker Hub names without a
+registry are read the
 way container runtimes read them ("postgres:18-alpine" is
 docker.io/library/postgres:18-alpine). Actor images are your own and
 never move. Empty = each image's own registry.
@@ -2514,15 +2525,16 @@ plane's images from a private registry.
 `string` · optional (explicit presence)
 
 The Agent Substrate release to install, from those Planton publishes with
-this kind's install shape (v0.6.0's): v0.6.0, or a later release whose
+this kind's install shape (v1.0.0's): v1.0.0, or a later release whose
 install differs from it only in its images. A release Planton has not
 published, or one with another shape, is refused before anything is
-applied. A patch release of the installed minor moves in place, up or
-down; another minor is a reinstall, refused over an existing
-installation. Redeploy worker pools after a move, so their workers run
-the new release's worker image.
+applied. A patch release moves in place, up or down; the next minor
+moves in place too, and a rollback one minor back; a skipped minor, a
+new major, or a move from a release before 1.0 is a reinstall, refused
+over an existing installation. Redeploy worker pools after a move, so
+their workers run the new release's worker image.
 
-- default: `v0.6.0`
+- default: `v1.0.0`
 - rule: {"string":{"pattern":"^v[0-9]+\\.[0-9]+\\.[0-9]+$"}}
 
 ### spec.previewGates
@@ -2619,7 +2631,7 @@ How long a terminating pod waits for requests in flight (Go duration).
 - `cloud_sql_needs_gke`: database.cloud_sql connects through the Cloud SQL Auth Proxy with GKE Workload Identity, so it needs platform.gke
 - `cloud_sql_iam_needs_api_server_identity`: database.cloud_sql logs in as the API server's Google service account, so set platform.gke.api_server_service_account (or turn cloud_sql.iam_authentication off and give a connection string)
 - `gcs_needs_snapshot_transfer_service_account`: storage.gcs moves snapshots as a dedicated Google service account the API server impersonates, so set platform.gke.snapshot_transfer_service_account
-- `envoy_router_needs_allowed_clients`: router.allowed_client_spiffe_ids needs at least one client: the Envoy router lets only the mutual-TLS callers it names reach actors, and refuses to start with none. Name each workload that calls actors, such as "spiffe://cluster.local/ns/<namespace>/sa/<service-account>"
+- `router_needs_allowed_clients`: router.allowed_client_spiffe_ids needs at least one client: the router lets only the mutual-TLS callers it names reach actors, so with none it serves no one. Name each workload that calls actors, such as "spiffe://cluster.local/ns/<namespace>/sa/<service-account>"
 - `extproc_needs_envoy`: egress.additional_ext_proc_service splices a filter into Envoy's configuration, so it needs router.dataplane envoy
 
 ## Outputs
@@ -2635,13 +2647,12 @@ Reference an output from another manifest as `valueFrom: {kind: KubernetesAgentS
 | `status.outputs.api_trust_bundle_name` | `string` | The ClusterTrustBundle holding the CA that signs the API server's (and every in-cluster Substrate service's) certificate: "servicedns.podcert.ate.dev:identity:primary-bundle". A pod reads it through a clusterTrustBundle projected volume by this name. |
 | `status.outputs.api_trust_bundle_signer` | `string` | The signer of that bundle, "servicedns.podcert.ate.dev/identity", for a clusterTrustBundle projection by signer name and label selector. |
 | `status.outputs.api_access_namespace_label` | `string` | The label a caller's namespace must carry to reach the API: "ate.dev/api-access=true". |
-| `status.outputs.router_endpoint` | `string` | The agentgateway router's plaintext HTTP endpoint, "http://atenet-router.ate-system.svc:80", which accepts any caller. Empty with the Envoy router, which serves only router_tls_endpoint. |
-| `status.outputs.router_tls_endpoint` | `string` | The router's TLS endpoint, "https://atenet-router.ate-system.svc:443". A request reaches an actor with the header `ate-target-actor: <atespace>/<actor>`; the Envoy router accepts it only from a client presenting a certificate whose SPIFFE ID router.allowed_client_spiffe_ids names (router_client_signer_name). |
+| `status.outputs.router_tls_endpoint` | `string` | The router's TLS endpoint, "https://atenet-router.ate-system.svc:443". A request reaches an actor with the header `ate-target-actor: <atespace>/<actor>`; the router, with either dataplane, accepts it only from a client presenting a certificate whose SPIFFE ID router.allowed_client_spiffe_ids names (router_client_signer_name). |
 | `status.outputs.storage_location` | `string` | Where actor snapshots are stored, "gs://<bucket>" or "s3://<bucket>", followed by storage.snapshot_prefix when set: the API server's snapshot location, which an actor template overrides only with the PerTemplateSnapshotLocation preview. |
 | `status.outputs.actor_jwt_issuer` | `string` | The iss claim of the JWTs the API server mints for actors. |
 | `status.outputs.gvisor_worker_image` | `string` | The gVisor worker image built for this control plane's version, digest pinned (with image_registry applied): what a WorkerPool of class gvisor runs. |
 | `status.outputs.microvm_worker_image` | `string` | The microVM worker image built for this control plane's version, digest pinned (with image_registry applied): what a WorkerPool of class microvm runs. |
-| `status.outputs.version` | `string` | The Agent Substrate release installed, such as "v0.6.0": spec.version, or the kind's default. |
+| `status.outputs.version` | `string` | The Agent Substrate release installed, such as "v1.0.0": spec.version, or the kind's default. |
 | `status.outputs.router_client_signer_name` | `string` | The signer of the client certificates the router's TLS endpoint accepts, "podidentity.podcert.ate.dev/identity". A workload gets one through a podCertificate projected volume addressed to this signer; the certificate carries the SPIFFE ID spiffe://cluster.local/ns/<namespace>/sa/<service-account>, which router.allowed_client_spiffe_ids must name. |
 
 ## References

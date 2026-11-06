@@ -429,6 +429,31 @@ func TestCheckNoDowngrade(t *testing.T) {
 	assertFailure(t, CheckNoDowngrade(release, pinned("main")), "the requested agent-sandbox release \"main\" is not a semantic version", "", "correct the module's pin")
 }
 
+// A definition that moves its API to a new version and drops the old one is
+// refused over objects stored at the old one, by name, before Kubernetes
+// would reject it mid-apply (Agent Substrate v0.6.0's v1alpha1 to v1.0.0's
+// v1). A version kept with served: false still lists it, which Kubernetes
+// accepts, and so does the check.
+func TestCheckStoredVersionsListed(t *testing.T) {
+	v1Only := CRD{Name: "workerpools.ate.dev", YAML: "apiVersion: apiextensions.k8s.io/v1\nkind: CustomResourceDefinition\nmetadata:\n  name: workerpools.ate.dev\nspec:\n  versions:\n  - name: v1\n    served: true\n    storage: true\n  - name: v1beta1\n    served: false\n    storage: false\n"}
+	release := Source{Version: "v1.0.0", BundleURL: "https://example.invalid/{{version}}/crds.yaml", BundleName: "agent-substrate"}
+
+	if err := CheckStoredVersionsListed(nil, []CRD{v1Only}, release); err != nil {
+		t.Fatalf("a first install has nothing stored: %v", err)
+	}
+	if err := CheckStoredVersionsListed([]ExistingCRD{{Name: "workerpools.ate.dev", StoredVersions: []string{"v1", "v1beta1"}}}, []CRD{v1Only}, release); err != nil {
+		t.Fatalf("objects stored at a listed version pass, served or not: %v", err)
+	}
+	err := CheckStoredVersionsListed([]ExistingCRD{{Name: "workerpools.ate.dev", StoredVersions: []string{"v1alpha1", "v1beta1"}}}, []CRD{v1Only}, release)
+	assertFailure(t, err,
+		"the cluster stores objects of CRD workerpools.ate.dev at v1alpha1, which agent-substrate release v1.0.0 no longer lists (it lists v1, v1beta1)",
+		"refuses a definition that drops a version",
+		"kubectl delete crd workerpools.ate.dev")
+	if err := CheckStoredVersionsListed([]ExistingCRD{{Name: "other.example", StoredVersions: []string{"v1alpha1"}}}, []CRD{v1Only}, release); err != nil {
+		t.Fatalf("a CRD this deploy does not write is not judged: %v", err)
+	}
+}
+
 func TestCheckOwnership(t *testing.T) {
 	src := Source{Repository: "https://charts.example.com", Chart: "demo", Version: "1.2.0"}
 	ours := ExistingFromObject("a.example",

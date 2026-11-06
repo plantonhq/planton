@@ -55,20 +55,14 @@ message KubernetesAgentSubstrateOutputs {
   string api_access_namespace_label = 7;
 
   /**
-   * The agentgateway router's plaintext HTTP endpoint,
-   * "http://atenet-router.ate-system.svc:80", which accepts any caller.
-   * Empty with the Envoy router, which serves only router_tls_endpoint.
-   */
-  string router_endpoint = 8;
-
-  /**
    * The router's TLS endpoint, "https://atenet-router.ate-system.svc:443". A
    * request reaches an actor with the header
-   * `ate-target-actor: <atespace>/<actor>`; the Envoy router accepts it only
-   * from a client presenting a certificate whose SPIFFE ID
-   * router.allowed_client_spiffe_ids names (router_client_signer_name).
+   * `ate-target-actor: <atespace>/<actor>`; the router, with either
+   * dataplane, accepts it only from a client presenting a certificate whose
+   * SPIFFE ID router.allowed_client_spiffe_ids names
+   * (router_client_signer_name).
    */
-  string router_tls_endpoint = 9;
+  string router_tls_endpoint = 8;
 
   /**
    * Where actor snapshots are stored, "gs://<bucket>" or "s3://<bucket>",
@@ -76,32 +70,32 @@ message KubernetesAgentSubstrateOutputs {
    * location, which an actor template overrides only with the
    * PerTemplateSnapshotLocation preview.
    */
-  string storage_location = 10;
+  string storage_location = 9;
 
   /**
    * The iss claim of the JWTs the API server mints for actors.
    */
-  string actor_jwt_issuer = 11;
+  string actor_jwt_issuer = 10;
 
   /**
    * The gVisor worker image built for this control plane's version, digest
    * pinned (with image_registry applied): what a WorkerPool of class gvisor
    * runs.
    */
-  string gvisor_worker_image = 12;
+  string gvisor_worker_image = 11;
 
   /**
    * The microVM worker image built for this control plane's version, digest
    * pinned (with image_registry applied): what a WorkerPool of class microvm
    * runs.
    */
-  string microvm_worker_image = 13;
+  string microvm_worker_image = 12;
 
   /**
-   * The Agent Substrate release installed, such as "v0.6.0": spec.version,
+   * The Agent Substrate release installed, such as "v1.0.0": spec.version,
    * or the kind's default.
    */
-  string version = 14;
+  string version = 13;
 
   /**
    * The signer of the client certificates the router's TLS endpoint accepts,
@@ -111,5 +105,5 @@ message KubernetesAgentSubstrateOutputs {
    * spiffe://cluster.local/ns/<namespace>/sa/<service-account>, which
    * router.allowed_client_spiffe_ids must name.
    */
-  string router_client_signer_name = 15;
+  string router_client_signer_name = 14;
 }

@@ -23,7 +23,9 @@ import (
 // with `$patch: delete` and null removals. The Terraform twin applies the
 // same edits, one by one, in locals.tf.
 
-// componentPatch is one entry of a kustomization's patches list.
+// componentPatch is one entry of a kustomization's patches list: the patch
+// inline, or the file beside the kustomization that holds it (kustomize's
+// `path:`, which resolvePaths reads in before the patch is applied).
 type componentPatch struct {
 	Target struct {
 		Kind      string `json:"kind"`
@@ -31,6 +33,7 @@ type componentPatch struct {
 		Namespace string `json:"namespace"`
 	} `json:"target"`
 	Patch string `json:"patch"`
+	Path  string `json:"path"`
 }
 
 // kustomization is the part of a kustomization or component the module reads.
@@ -45,6 +48,25 @@ func parseKustomization(text string) (*kustomization, error) {
 		return nil, errors.Wrap(err, "parsing a release kustomization")
 	}
 	return k, nil
+}
+
+// resolvePaths reads every `path:` patch from the release file beside the
+// kustomization at kustomizationPath, so applyComponent sees each patch's
+// text. A path the module does not fetch is a pin that needs a catalog fix.
+func (k *kustomization) resolvePaths(kustomizationPath string, f releaseFileSet) error {
+	dir := kustomizationPath[:strings.LastIndex(kustomizationPath, "/")+1]
+	for i := range k.Patches {
+		p := &k.Patches[i]
+		if p.Path == "" {
+			continue
+		}
+		text, ok := f.files[dir+p.Path]
+		if !ok {
+			return errors.Errorf("Agent Substrate %s's %s patches from %s, which the module does not fetch; the module's pin needs a catalog fix", vars.Release, kustomizationPath, dir+p.Path)
+		}
+		p.Patch = text
+	}
+	return nil
 }
 
 // matches reports whether a patch targets a document: the kind must match,

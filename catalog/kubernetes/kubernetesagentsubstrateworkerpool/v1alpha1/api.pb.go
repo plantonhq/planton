@@ -32,7 +32,9 @@ type KubernetesAgentSubstrateWorkerPool struct {
 	ApiVersion string `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata
+	// metadata. metadata.name is the WorkerPool's own name, which upstream's
+	// definition caps at 63 characters because the pool's worker pods carry it
+	// as a label value.
 	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesAgentSubstrateWorkerPoolSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -157,14 +159,15 @@ var File_catalog_kubernetes_kubernetesagentsubstrateworkerpool_v1alpha1_api_prot
 
 const file_catalog_kubernetes_kubernetesagentsubstrateworkerpool_v1alpha1_api_proto_rawDesc = "" +
 	"\n" +
-	"Hcatalog/kubernetes/kubernetesagentsubstrateworkerpool/v1alpha1/api.proto\x12Bdev.planton.kubernetes.kubernetesagentsubstrateworkerpool.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1aLcatalog/kubernetes/kubernetesagentsubstrateworkerpool/v1alpha1/outputs.proto\x1aIcatalog/kubernetes/kubernetesagentsubstrateworkerpool/v1alpha1/spec.proto\x1a\x15shared/metadata.proto\"\x8b\x04\n" +
+	"Hcatalog/kubernetes/kubernetesagentsubstrateworkerpool/v1alpha1/api.proto\x12Bdev.planton.kubernetes.kubernetesagentsubstrateworkerpool.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1aLcatalog/kubernetes/kubernetesagentsubstrateworkerpool/v1alpha1/outputs.proto\x1aIcatalog/kubernetes/kubernetesagentsubstrateworkerpool/v1alpha1/spec.proto\x1a\x15shared/metadata.proto\"\xb7\x05\n" +
 	"\"KubernetesAgentSubstrateWorkerPool\x12G\n" +
 	"\vapi_version\x18\x01 \x01(\tB&\xbaH#r!\n" +
 	"\x1fkubernetes.planton.dev/v1alpha1R\n" +
 	"apiVersion\x12=\n" +
 	"\x04kind\x18\x02 \x01(\tB)\xbaH&r$\n" +
-	"\"KubernetesAgentSubstrateWorkerPoolR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x86\x01\n" +
+	"\"KubernetesAgentSubstrateWorkerPoolR\x04kind\x12\xf8\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\xb0\x01\xbaH\xac\x01\xba\x01\xa5\x01\n" +
+	"\x17worker_pool_name_length\x12smetadata.name must be at most 63 characters: it names the WorkerPool, and its worker pods carry it as a label value\x1a\x15size(this.name) <= 63\xc8\x01\x01R\bmetadata\x12\x86\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2j.dev.planton.kubernetes.kubernetesagentsubstrateworkerpool.v1alpha1.KubernetesAgentSubstrateWorkerPoolSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x84\x01\n" +
 	"\x06status\x18\x05 \x01(\v2l.dev.planton.kubernetes.kubernetesagentsubstrateworkerpool.v1alpha1.KubernetesAgentSubstrateWorkerPoolStatusR\x06status\"\xb4\x01\n" +
 	"(KubernetesAgentSubstrateWorkerPoolStatus\x12\x87\x01\n" +

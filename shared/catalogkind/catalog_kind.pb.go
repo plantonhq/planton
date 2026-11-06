@@ -5037,7 +5037,7 @@ const file_shared_catalogkind_catalog_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\xae\x9e\x03\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\x9c\x9e\x03\n" +
 	"\vCatalogKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12`\n" +
 	"\x16TestCatalogKindGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tckgJ,\n" +
@@ -5839,15 +5839,18 @@ const file_shared_catalogkind_catalog_kind_proto_rawDesc = "" +
 	"\"extensions.agents.x-k8s.io/v1beta1\x12\x0fSandboxWarmPoolP\x91\x03\x12w\n" +
 	"\x1bKubernetesAgentSandboxClaim\x10\xd8 \x1aU\xa2\xf7\x04Q\b\x13\x12\bv1alpha1\"\bk8sasbcl:\x02\xd4 B2\n" +
 	"\"extensions.agents.x-k8s.io/v1beta1\x12\fSandboxClaimP\x91\x03\x12;\n" +
-	"\x18KubernetesAgentSubstrate\x10\xde \x1a\x1c\xa2\xf7\x04\x18\b\x13\x12\bv1alpha1\"\ak8sasubP\x91\x03\x12k\n" +
-	"\"KubernetesAgentSubstrateWorkerPool\x10\xdf \x1aB\xa2\xf7\x04>\b\x13\x12\bv1alpha1\"\tk8sasubwp:\x02\xde B\x1e\n" +
-	"\x10ate.dev/v1alpha1\x12\n" +
-	"WorkerPoolP\x91\x03\x12q\n" +
-	"%KubernetesAgentSubstrateSandboxConfig\x10\xe0 \x1aE\xa2\xf7\x04A\b\x13\x12\bv1alpha1\"\tk8sasubsc:\x02\xde B!\n" +
-	"\x10ate.dev/v1alpha1\x12\rSandboxConfigP\x91\x03\x12v\n" +
-	"'KubernetesAgentSubstrateCsiDriverConfig\x10\xe1 \x1aH\xa2\xf7\x04D\b\x13\x12\bv1alpha1\"\n" +
-	"k8sasubcsi:\x02\xde B#\n" +
-	"\x10ate.dev/v1alpha1\x12\x0fCSIDriverConfigP\x91\x03\x120\n" +
+	"\x18KubernetesAgentSubstrate\x10\xde \x1a\x1c\xa2\xf7\x04\x18\b\x13\x12\bv1alpha1\"\ak8sasubP\x91\x03\x12e\n" +
+	"\"KubernetesAgentSubstrateWorkerPool\x10\xdf \x1a<\xa2\xf7\x048\b\x13\x12\bv1alpha1\"\tk8sasubwp:\x02\xde B\x18\n" +
+	"\n" +
+	"ate.dev/v1\x12\n" +
+	"WorkerPoolP\x91\x03\x12k\n" +
+	"%KubernetesAgentSubstrateSandboxConfig\x10\xe0 \x1a?\xa2\xf7\x04;\b\x13\x12\bv1alpha1\"\tk8sasubsc:\x02\xde B\x1b\n" +
+	"\n" +
+	"ate.dev/v1\x12\rSandboxConfigP\x91\x03\x12p\n" +
+	"'KubernetesAgentSubstrateCsiDriverConfig\x10\xe1 \x1aB\xa2\xf7\x04>\b\x13\x12\bv1alpha1\"\n" +
+	"k8sasubcsi:\x02\xde B\x1d\n" +
+	"\n" +
+	"ate.dev/v1\x12\x0fCSIDriverConfigP\x91\x03\x120\n" +
 	"\x0fDigitalOceanApp\x10\x88'\x1a\x1a\xa2\xf7\x04\x16\b\x11\x12\bv1alpha1\"\x05doappP\xf6\x03\x123\n" +
 	"\x12DigitalOceanBucket\x10\x89'\x1a\x1a\xa2\xf7\x04\x16\b\x11\x12\bv1alpha1\"\x05dobktP\xf8\x03\x12=\n" +
 	"\x1dDigitalOceanContainerRegistry\x10\x8a'\x1a\x19\xa2\xf7\x04\x15\b\x11\x12\bv1alpha1\"\x04docrP\xfa\x03\x12=\n" +

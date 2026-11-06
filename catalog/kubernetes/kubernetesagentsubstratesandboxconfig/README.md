@@ -1,6 +1,6 @@
 # KubernetesAgentSubstrateSandboxConfig
 
-Declares an Agent Substrate `SandboxConfig`: the exact sandbox runtime an actor boots with, for one sandbox class (gVisor or microVM), in versions a team rolls forward and back. The spec mirrors the upstream `ate.dev/v1alpha1` SandboxConfig field for field (pinned to the definition of the Agent Substrate release `KubernetesAgentSubstrate` composes, v0.6.0), after a small Planton envelope: the object's name, labels and annotations. A SandboxConfig is cluster-scoped.
+Declares an Agent Substrate `SandboxConfig`: the exact sandbox runtime an actor boots with, for one sandbox class (gVisor or microVM), in versions a team rolls forward and back. The spec mirrors the upstream `ate.dev/v1` SandboxConfig field for field (pinned to the definition of the Agent Substrate release `KubernetesAgentSubstrate` composes, v1.0.0), after a small Planton envelope: the object's name, labels and annotations. A SandboxConfig is cluster-scoped.
 
 ## What Gets Created
 

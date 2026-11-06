@@ -10,9 +10,9 @@ spec:
   values:
     - name: api_version
       derivations:
-        - literal: ate.dev/v1alpha1
+        - literal: ate.dev/v1
       where_to_find: >-
-        Always "ate.dev/v1alpha1" — the module pins the served SandboxConfig
+        Always "ate.dev/v1" — the module pins the served SandboxConfig
         version.
     - name: kind
       derivations:

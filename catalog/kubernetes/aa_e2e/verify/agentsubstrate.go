@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/catalog/kubernetes/aa_e2e/verify/internal/ateapipb"
+	"github.com/plantonhq/planton/catalog/kubernetes/aa_e2e/verify/internal/ateapi"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
@@ -24,7 +24,7 @@ import (
 // version a manifest that sets none installs).
 const (
 	agentSubstrateKind               = "KubernetesAgentSubstrate"
-	agentSubstrateRelease            = "v0.6.0"
+	agentSubstrateRelease            = "v1.0.0"
 	agentSubstrateBundle             = "agent-substrate"
 	agentSubstrateNamespace          = "ate-system"
 	agentSubstratePodCertNamespace   = "podcertificate-controller-system"
@@ -532,7 +532,7 @@ func (v *AgentSubstrateVerifier) verifyAPIRoundTrip(ctx context.Context, kubecon
 	api := conn.control
 
 	tokenless, cancel := context.WithTimeout(ctx, 30*time.Second)
-	_, err = api.GetAtespace(tokenless, &ateapipb.GetAtespaceRequest{Atespace: &ateapipb.ObjectRef{Name: agentSubstrateProbeAtespace}})
+	_, err = api.GetAtespace(tokenless, &ateapi.GetAtespaceRequest{Atespace: &ateapi.ObjectRef{Name: agentSubstrateProbeAtespace}})
 	cancel()
 	if status.Code(err) != codes.Unauthenticated {
 		return errors.Errorf("a call without a token returned %v; the API must refuse it as Unauthenticated", err)
@@ -542,7 +542,7 @@ func (v *AgentSubstrateVerifier) verifyAPIRoundTrip(ctx context.Context, kubecon
 	if err != nil {
 		return err
 	}
-	_, err = api.CreateAtespace(c, &ateapipb.CreateAtespaceRequest{Atespace: &ateapipb.Atespace{Metadata: &ateapipb.ResourceMetadata{Name: agentSubstrateProbeAtespace}}})
+	_, err = api.CreateAtespace(c, &ateapi.CreateAtespaceRequest{Atespace: &ateapi.Atespace{Metadata: &ateapi.ResourceMetadata{Name: agentSubstrateProbeAtespace}}})
 	cancel()
 	strangerID := "system:serviceaccount:" + agentSubstrateProbeNamespace + ":" + agentSubstrateProbeStranger
 	if status.Code(err) != codes.PermissionDenied || !strings.Contains(err.Error(), `principal "`+ateAuthorizationUser(strangerID)+`"`) {
@@ -556,7 +556,7 @@ func (v *AgentSubstrateVerifier) verifyAPIRoundTrip(ctx context.Context, kubecon
 		if err != nil {
 			return err
 		}
-		_, err = api.CreateAtespace(c, &ateapipb.CreateAtespaceRequest{Atespace: &ateapipb.Atespace{Metadata: &ateapipb.ResourceMetadata{Name: agentSubstrateProbeAtespace}}})
+		_, err = api.CreateAtespace(c, &ateapi.CreateAtespaceRequest{Atespace: &ateapi.Atespace{Metadata: &ateapi.ResourceMetadata{Name: agentSubstrateProbeAtespace}}})
 		cancel()
 		if err == nil || status.Code(err) == codes.AlreadyExists {
 			break
@@ -570,7 +570,7 @@ func (v *AgentSubstrateVerifier) verifyAPIRoundTrip(ctx context.Context, kubecon
 	if err != nil {
 		return err
 	}
-	got, err := api.GetAtespace(c, &ateapipb.GetAtespaceRequest{Atespace: &ateapipb.ObjectRef{Name: agentSubstrateProbeAtespace}})
+	got, err := api.GetAtespace(c, &ateapi.GetAtespaceRequest{Atespace: &ateapi.ObjectRef{Name: agentSubstrateProbeAtespace}})
 	cancel()
 	if err != nil {
 		return errors.Wrapf(err, "reading back atespace %s", agentSubstrateProbeAtespace)
@@ -582,7 +582,7 @@ func (v *AgentSubstrateVerifier) verifyAPIRoundTrip(ctx context.Context, kubecon
 	if err != nil {
 		return err
 	}
-	_, err = api.DeleteAtespace(c, &ateapipb.DeleteAtespaceRequest{Atespace: &ateapipb.ObjectRef{Name: agentSubstrateProbeAtespace}})
+	_, err = api.DeleteAtespace(c, &ateapi.DeleteAtespaceRequest{Atespace: &ateapi.ObjectRef{Name: agentSubstrateProbeAtespace}})
 	cancel()
 	if err != nil {
 		return errors.Wrapf(err, "deleting atespace %s", agentSubstrateProbeAtespace)
@@ -629,15 +629,13 @@ func (v *AgentSubstrateVerifier) verifyReachability(ctx context.Context, kubecon
 }
 
 // verifyRouter checks the router serves the clients it allows and only them.
-// With no actor behind the request, any HTTP status proves it serves. The
-// Envoy router serves only TLS (router_tls_endpoint), so the allowed client
-// gets an HTTP answer and the stranger is refused before HTTP; agentgateway
-// still serves plaintext at router_endpoint to any caller.
+// With no actor behind the request, any HTTP status proves it serves. Either
+// dataplane serves only mutual TLS (router_tls_endpoint) and admits only the
+// clients router.allowed_client_spiffe_ids names (agentgateway through
+// upstream's static-mTLS component), so the allowed client gets an HTTP
+// answer and the stranger is refused before HTTP.
 func (v *AgentSubstrateVerifier) verifyRouter(ctx context.Context, kubeconfig string, outputs map[string]interface{}) error {
 	endpoint := fmt.Sprint(outputs["router_tls_endpoint"])
-	if v.Agentgateway {
-		endpoint = fmt.Sprint(outputs["router_endpoint"])
-	}
 	target := agentSubstrateProbeAtespace + "/absent"
 	deadline := time.Now().Add(2 * time.Minute)
 	var last string
@@ -651,10 +649,6 @@ func (v *AgentSubstrateVerifier) verifyRouter(ctx context.Context, kubeconfig st
 			return errors.Errorf("the router never answered an allowed client at %s; last: %s", endpoint, last)
 		}
 		time.Sleep(5 * time.Second)
-	}
-	if v.Agentgateway {
-		fmt.Printf("  [verify] the router answered HTTP at %s\n", endpoint)
-		return nil
 	}
 	code, _, _ := callRouter(ctx, kubeconfig, agentSubstrateRouterStranger, endpoint, target)
 	if code != 0 {

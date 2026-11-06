@@ -17,6 +17,15 @@ import (
 // (#ATE_EGRESS_INJECT_FLAGS) is a YAML comment; its flags are appended to
 // the arguments instead (patchEgress).
 
+// agentgatewayRouterConfig is the router's agentgateway configuration, which
+// components/agentgateway-static-mtls replaces, and
+// agentgatewayAllowedClientsMarker the one placeholder in it for the client
+// SPIFFE IDs the router admits.
+const (
+	agentgatewayRouterConfig         = "atenet-router-agentgateway-config"
+	agentgatewayAllowedClientsMarker = "[ATE_INGRESS_ALLOWED_SPIFFE_IDS]"
+)
+
 // agentgatewayEgressConfig is the egress gateway's agentgateway
 // configuration, which carries the credential-provider marker.
 const agentgatewayEgressConfig = "atenet-egress-agentgateway-substrate-config"
@@ -89,12 +98,16 @@ func spliceAgentgatewayProviders(d document, s *settings) error {
 }
 
 // applyAgentgateway swaps both gateways' Envoy dataplane for agentgateway
-// with upstream's own components: components/agentgateway (its two
-// ConfigMaps, and patches to the router and egress Deployments and the
-// router Service), then components/agentgateway-egress (the egress
-// configuration, and dropping Envoy's certificate minter). Upstream applies
-// them in that order.
-func applyAgentgateway(system []document, f releaseFileSet) ([]document, error) {
+// with upstream's own components, in upstream's order:
+// components/agentgateway (its two ConfigMaps, and patches to the router and
+// egress Deployments and the router Service), components/agentgateway-egress
+// (the egress configuration, and dropping Envoy's certificate minter), then
+// components/agentgateway-static-mtls (overlay.go components(): the router
+// configuration that serves only mutual TLS and admits only the client
+// certificates whose SPIFFE IDs router.allowed_client_spiffe_ids names, which
+// fill its one placeholder as a JSON list, as
+// setAgentgatewayIngressAllowedSPIFFEIDs fills it).
+func applyAgentgateway(system []document, f releaseFileSet, s *settings) ([]document, error) {
 	configs, err := splitDocuments(f.files[fileAgentgatewayConfig])
 	if err != nil {
 		return nil, err
@@ -106,16 +119,43 @@ func applyAgentgateway(system []document, f releaseFileSet) ([]document, error) 
 	}{
 		{fileAgentgateway, []string{"Deployment/" + vars.RouterName, "Deployment/" + vars.EgressName}},
 		{fileAgentgatewayEgress, []string{"Deployment/" + vars.EgressName, "ConfigMap/" + agentgatewayEgressConfig}},
+		{fileAgentgatewayStaticMTLS, []string{"ConfigMap/" + agentgatewayRouterConfig}},
 	} {
 		component, err := parseKustomization(f.files[step.path])
 		if err != nil {
+			return nil, err
+		}
+		if err := component.resolvePaths(step.path, f); err != nil {
 			return nil, err
 		}
 		if system, err = applyComponent(component, system, step.required...); err != nil {
 			return nil, err
 		}
 	}
+	for _, d := range system {
+		if str(d, "kind") != "ConfigMap" || str(d, "metadata", "name") != agentgatewayRouterConfig {
+			continue
+		}
+		data := child(d, "data")
+		config, _ := data["config.yaml"].(string)
+		// An empty list, never null: agentgateway's networkAuthorization rule
+		// cannot evaluate null.
+		allowed := "[" + strings.Join(jsonQuoteAll(s.router.spiffeIDs), ",") + "]"
+		if n := strings.Count(config, agentgatewayAllowedClientsMarker); n != 1 {
+			return nil, errors.Errorf("Agent Substrate %s's %s carries %d %s placeholders, not one; the module's pin needs a catalog fix", vars.Release, agentgatewayRouterConfig, n, agentgatewayAllowedClientsMarker)
+		}
+		data["config.yaml"] = strings.Replace(config, agentgatewayAllowedClientsMarker, allowed, 1)
+	}
 	return system, nil
+}
+
+// jsonQuoteAll quotes each string as a JSON string.
+func jsonQuoteAll(values []string) []string {
+	quoted := make([]string, len(values))
+	for i, v := range values {
+		quoted[i] = jsonQuote(v)
+	}
+	return quoted
 }
 
 // applyCloudSQLSidecar adds upstream's Cloud SQL Auth Proxy native sidecar

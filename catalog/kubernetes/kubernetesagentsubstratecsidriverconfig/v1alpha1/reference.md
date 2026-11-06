@@ -29,8 +29,8 @@ a driver already in use only after both restart:
 deployment/ate-api-server daemonset/atelet`.
 
 100% fidelity with the upstream CSIDriverConfig custom resource
-(ate.dev/v1alpha1, cluster-scoped), pinned to the definition of the Agent
-Substrate release KubernetesAgentSubstrate composes (v0.6.0) and held to it
+(ate.dev/v1, cluster-scoped), pinned to the definition of the Agent
+Substrate release KubernetesAgentSubstrate composes (v1.0.0) and held to it
 by the mirror test. The definition's rules are written below,
 with one more: the name must equal `driver_name`, because both the API
 server and the node agent look a driver's config up by its object name, so

@@ -61,54 +61,7 @@ jobs:
           go-version-file: go.mod
           cache: true
 
-      - name: Verify chart structure
-        run: bash ./hack/guards/ensure_chart_structure.sh
-
-      # Validation runs the minimal chart-validator binary, NOT the full CLI:
-      # same command, same engine, same verdicts (pkg/infrachart/validatecmd
-      # is the single implementation all mounts share), but without the
-      # pulumi/cloud SDKs in the build graph. The full-CLI build spent 6-9
-      # minutes here (measured v0.4.1-v0.4.4) and was this job's entire cost
-      # -- packaging is 1 second -- which also made it the long pole of the
-      # release's artifact-ready point that the platform's upgrade gate waits
-      # on. The validator must still be built FROM THIS TAG: its bulk is the
-      # generated contract (kind schemas + CEL rules), which changes every
-      # release -- never swap this for a prebuilt/committed binary.
-      - name: Validate charts against this tag's own contract
-        run: |
-          set -euo pipefail
-          go build -o /tmp/chart-validator ./cmd/chart-validator
-          if find charts -type f -name 'Chart.yaml' -not -path '*/build/*' | grep -q .; then
-            /tmp/chart-validator --all charts/
-          else
-            echo "no charts in the tree; nothing to validate"
-          fi
-
-      - name: Package and attach the chart catalog
+      - name: Validate the charts against this tag's own contract and attach the catalog
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-          VERSION="${GITHUB_REF_NAME}"
-
-          # `git archive` zips exactly the tracked charts/ tree: gitignored
-          # build/ outputs are excluded automatically and the result is
-          # deterministic. The natural charts/ root is fine - the daemon's
-          # seeder walks the whole tree and finds charts by Chart.yaml presence.
-          git archive --format=zip -o infra-charts.zip HEAD charts/
-
-          # Checksum emitted alongside the zip it describes -> stable by construction.
-          sha256sum infra-charts.zip | awk '{print $1}' > infra-charts.sha256
-
-          # The latest pointer consumers read to decide whether to re-download.
-          printf '%s\n' "${VERSION}" > version.txt
-
-          echo "Built infra-charts.zip ($(wc -c < infra-charts.zip) bytes), sha256=$(cat infra-charts.sha256)"
-
-          # Attach to the release the github-release job already created for this tag.
-          # --clobber makes a re-run of the tag idempotent.
-          gh release upload "${VERSION}" \
-            infra-charts.zip \
-            infra-charts.sha256 \
-            version.txt \
-            --clobber
+        run: bash tools/ci/release/publish_charts.sh "${GITHUB_REF_NAME}"

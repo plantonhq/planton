@@ -20,7 +20,7 @@ The control plane already ships `gvisor-default`, gVisor's class default, pinned
 
 ## Versions
 
-- **Names** are DNS labels: name them after what they pin (`gvisor-2026-10-17`) rather than a counter, so the default reads as a fact.
+- **Names** are DNS labels: name them after what they pin (`gvisor-20261102-0`) rather than a counter, so the default reads as a fact.
 - **`default_version`** must name an Enabled version. Moving it changes what every new actor boots; an actor running at the moment keeps its sandbox until it stops.
 - **The other versions** are what actors suspended on them restore their memory on. Keep the previous default listed after a move: its suspended actors keep their memory, and a rollback is one field, moving `default_version` back. Its files stay cached on the nodes that downloaded them while it was the default.
 - **`state: Disabled`** marks a listed version that must not become the default again (the cluster refuses a Disabled default). Disable a version you have found bad; delete it from the list when you no longer want it as a rollback target.
@@ -28,7 +28,7 @@ The control plane already ships `gvisor-default`, gVisor's class default, pinned
 
 ## Assets and where they come from
 
-- **gVisor** needs a `gvisor` asset: the release's `gvisor.tar.zstd` (runsc and its helpers). Upstream publishes them at `gs://gvisor/releases/...`, a public bucket the node agent reads anonymously from any cluster with internet egress. A bare `runsc` binary is refused. Substrate's workers need a gVisor release from 2026-10-17 on, which saves an actor's root filesystem and durable directories as separate checkpoint bundles and runs the sandbox with no pause container.
+- **gVisor** needs a `gvisor` asset: the release's `gvisor.tar.zstd` (runsc and its helpers). Upstream publishes them at `gs://gvisor/releases/...`, a public bucket the node agent reads anonymously from any cluster with internet egress. A bare `runsc` binary is refused. Substrate's workers need a gVisor release from 20261019.0 on, which saves an actor's root filesystem and durable directories as separate checkpoint bundles and runs the sandbox with no pause container.
 - **MicroVM** needs `cloud-hypervisor`, `virtiofsd`, `kata-kernel` and `kata-image` for every architecture. Stage them in a bucket the control plane's object-store plugin serves (gs:// on GCS, s3:// on S3), outside the snapshot location (the plugin refuses runtime files under it).
 - **`sha256`** names the cached copy on every node and verifies every download. A changed file at the same URL is refused rather than booted: publish new bytes under a new URL and a new version.
 
@@ -47,7 +47,7 @@ A config a worker pool runs cannot be deleted until the pool moves off it: Subst
 
 ## Parity accounting
 
-Built for 100% parity with the upstream SandboxConfig (`ate.dev/v1alpha1`) at Agent Substrate v0.6.0, the install shape the control plane composes. Every key of its served schema is modeled under the same name, and the mirror test holds the spec to the pinned definition in both directions.
+Built for 100% parity with the upstream SandboxConfig (`ate.dev/v1`) at Agent Substrate v1.0.0, the install shape the control plane composes. Every key of its served schema is modeled under the same name, and the mirror test holds the spec to the pinned definition in both directions.
 
 | Upstream field | Spec field |
 |----------------|------------|

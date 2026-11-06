@@ -1,6 +1,6 @@
 # KubernetesAgentSubstrate Pulumi Module
 
-Installs the Agent Substrate control plane from Planton's digest-pinned build of the release `spec.version` names (`https://downloads.planton.ai/releases/agent-substrate/<version>/`, v0.6.0 when unset), composed the way upstream's installer composes v0.6.0's install shape, with the typed spec applied onto upstream's own objects. The exact semantic twin of the Terraform module (`../tf/`).
+Installs the Agent Substrate control plane from Planton's digest-pinned install set of the release `spec.version` names (`https://downloads.planton.ai/releases/agent-substrate/<version>/`, v1.0.0 when unset), composed the way upstream's installer composes v1.0.0's install shape, with the typed spec applied onto upstream's own objects. The exact semantic twin of the Terraform module (`../tf/`).
 
 ## Layout
 

@@ -16,9 +16,9 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Resources installs the Agent Substrate control plane from Planton's build
-// of the release spec.version names (vars.Release when empty): upstream's own
-// manifests with every image digest-pinned, composed the way upstream's
+// Resources installs the Agent Substrate control plane from Planton's install
+// set of the release spec.version names (vars.Release when empty): upstream's
+// own manifests with every image digest-pinned, composed the way upstream's
 // installer composes them, with the typed settings applied onto upstream's
 // own objects (compose.go).
 //

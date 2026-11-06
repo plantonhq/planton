@@ -1,6 +1,6 @@
 # MicroVM Runtime
 
-The microVM sandbox class's runtime, as Agent Substrate v0.6.0 defines it: cloud-hypervisor and virtiofsd with Kata's guest kernel and root filesystem, at the checksums upstream pins for each architecture, staged in your own bucket under a prefix per architecture. It is the class default, so a microVM worker pool that names no config resolves it. Each actor then runs in its own lightweight virtual machine, a harder boundary than gVisor's, on nodes that expose KVM.
+The microVM sandbox class's runtime, as Agent Substrate v1.0.0 defines it: Cloud Hypervisor v53.0 and virtiofsd with Kata Containers 4.3.1's guest kernel and root filesystem, at the checksums upstream pins for each architecture, staged in your own bucket under a prefix per architecture. It is the class default, so a microVM worker pool that names no config resolves it. Each actor then runs in its own lightweight virtual machine, a harder boundary than gVisor's, on nodes that expose KVM.
 
 ## When to Use
 
@@ -9,13 +9,13 @@ The microVM sandbox class's runtime, as Agent Substrate v0.6.0 defines it: cloud
 
 ## How It Works
 
-The files are not baked into the worker image: the node agent fetches each one through the control plane's object-store plugin, verifies its SHA-256 and caches it by hash. The checksums here are the asset sets upstream's `hack/microvm-assets/assemble.sh` produces at v0.6.0, one per architecture: run it with `ARCH=amd64` and with `ARCH=arm64` (each on a Linux host of that architecture), and upload each run's four files (`cloud-hypervisor`, `virtiofsd`, `vmlinux`, `rootfs.img`) under `kata-assets/<arch>/`. The prefix per architecture is what lets one bucket serve a cluster with both kinds of nodes; upstream's own manifest puts one architecture's files at a single path per cluster.
+The files are not baked into the worker image: the node agent fetches each one through the control plane's object-store plugin, verifies its SHA-256 and caches it by hash. The checksums here are the asset sets upstream's installer assembles at v1.0.0 (`cmd/ate-setup/internal/steps/microvm.go`), one per architecture. For each architecture, take `opt/kata/share/kata-containers/vmlinux.container` (as `vmlinux`), `opt/kata/share/kata-containers/kata-containers.img` (as `rootfs.img`) and `opt/kata/libexec/virtiofsd` from Kata's `kata-static-4.3.1-<arch>.tar.zst` release, and `cloud-hypervisor-static` (amd64) or `cloud-hypervisor-static-aarch64` (arm64) from Cloud Hypervisor's v53.0 release as `cloud-hypervisor`; check each against its checksum below, and upload the four files under `kata-assets/<arch>/`. The prefix per architecture is what lets one bucket serve a cluster with both kinds of nodes; upstream's own manifest puts one architecture's files at a single path per cluster.
 
 ## Key Configuration Choices
 
 - **Your bucket, outside the snapshot location.** The plugin serves only its own backend's scheme (gs:// on GCS, s3:// on S3) and refuses runtime files under the control plane's snapshot location; use a separate prefix or bucket.
 - **The class default.** The annotation makes this config what microVM pools resolve when they name none. Drop it and name the config in each pool if you run several microVM configs.
-- **Not upstream's install script.** `hack/install-microvm-deps.sh --install` stages one architecture's files at upstream's paths and also applies upstream's own `microvm` SandboxConfig, carrying the same class-default annotation; whichever of the two is created last becomes the default. Stage the files yourself as above, and let this config be the only microVM default.
+- **Not upstream's installer's default.** Upstream's installer (`ate-setup deploy` with the microVM class) stages the files under `microvm-assets/<arch>/` and applies its own `microvm` SandboxConfig, carrying the same class-default annotation; whichever of the two is created last becomes the default. The KubernetesAgentSubstrate control plane installs only the gVisor default, so stage the files yourself as above and let this config be the only microVM default.
 - **Nodes with KVM.** Workers of a microVM pool land only on nodes whose node agent advertises KVM (nested virtualization on cloud VMs).
 
 ## Prerequisites

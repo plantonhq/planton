@@ -42,23 +42,18 @@ func TestBothEnginesPoolsParseWithUpstreamsCode(t *testing.T) {
 		Kind      string `json:"kind"`      // ca | jwt
 		Algorithm string `json:"algorithm"` // ED25519 | ECDSA | ES256 | RS256
 		Pool      string `json:"pool"`
-		JWKS      string `json:"jwks"` // jwt: the key set the engine publishes
 	}
 	var cases []poolCase
 
 	// Pulumi side: the module's builders over each key form the provider
 	// emits (Ed25519 PKCS #8; ECDSA SEC 1 and RSA PKCS #1, re-encoded).
 	ed, edCert := testCA(t, "ED25519")
-	cases = append(cases, poolCase{"pulumi/ed25519-ca", "ca", "ED25519", caPoolJSON(ed, edCert), ""})
+	cases = append(cases, poolCase{"pulumi/ed25519-ca", "ca", "ED25519", caPoolJSON(ed, edCert)})
 	ec, ecCert := testCA(t, "ECDSA")
-	cases = append(cases, poolCase{"pulumi/ecdsa-ca", "ca", "ECDSA", caPoolJSON(ec, ecCert), ""})
+	cases = append(cases, poolCase{"pulumi/ecdsa-ca", "ca", "ECDSA", caPoolJSON(ec, ecCert)})
 	for _, alg := range []string{"ES256", "RS256"} {
 		key, public := testJWTKey(t, alg)
-		jwks, err := jwksJSON(alg, public)
-		if err != nil {
-			t.Fatal(err)
-		}
-		cases = append(cases, poolCase{"pulumi/" + alg, "jwt", alg, jwtPoolJSON(alg, key, public), jwks})
+		cases = append(cases, poolCase{"pulumi/" + alg, "jwt", alg, jwtPoolJSON(alg, key, public)})
 	}
 
 	// Terraform side: pools.tf applied alone, once per signing algorithm.
@@ -85,9 +80,6 @@ output "ca_pools" {
 output "jwt_pool" {
   value     = local.actor_jwt_pool
   sensitive = true
-}
-output "jwks" {
-  value = local.actor_jwt_jwks
 }
 `
 		tfvars := `metadata = { name = "pools" }
@@ -126,19 +118,16 @@ spec = {
 			JWTPool struct {
 				Value string `json:"value"`
 			} `json:"jwt_pool"`
-			JWKS struct {
-				Value string `json:"value"`
-			} `json:"jwks"`
 		}
 		if err := json.Unmarshal(raw, &outputs); err != nil {
 			t.Fatal(err)
 		}
 		if alg == "es256" {
 			for name, pool := range outputs.CAPools.Value {
-				cases = append(cases, poolCase{"terraform/" + name, "ca", pool.Algorithm, pool.Pool, ""})
+				cases = append(cases, poolCase{"terraform/" + name, "ca", pool.Algorithm, pool.Pool})
 			}
 		}
-		cases = append(cases, poolCase{"terraform/" + alg, "jwt", map[string]string{"es256": "ES256", "rs256": "RS256"}[alg], outputs.JWTPool.Value, outputs.JWKS.Value})
+		cases = append(cases, poolCase{"terraform/" + alg, "jwt", map[string]string{"es256": "ES256", "rs256": "RS256"}[alg], outputs.JWTPool.Value})
 	}
 
 	// Upstream's parsers, from a module under upstream's path. Upstream needs
@@ -247,7 +236,7 @@ import (
 )
 
 type poolCase struct {
-	Name, Kind, Algorithm, Pool, JWKS string
+	Name, Kind, Algorithm, Pool string
 }
 
 func publicOf(key crypto.PrivateKey) []byte {
@@ -326,11 +315,8 @@ func main() {
 			default:
 				fail(c, "unexpected key type %T", k)
 			}
-			want, err := localjwtauthority.PublicJWKS([]byte(c.Pool))
-			if err != nil {
+			if _, err := localjwtauthority.PublicJWKS([]byte(c.Pool)); err != nil {
 				fail(c, "localjwtauthority.PublicJWKS: %v", err)
-			} else if c.JWKS != string(want) {
-				fail(c, "the published key set differs from upstream's:\n got %s\nwant %s", c.JWKS, want)
 			}
 		}
 		if !failed {

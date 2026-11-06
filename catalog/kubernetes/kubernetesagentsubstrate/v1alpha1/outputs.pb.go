@@ -60,40 +60,36 @@ type KubernetesAgentSubstrateOutputs struct {
 	// "ate.dev/api-access=true".
 	ApiAccessNamespaceLabel string `protobuf:"bytes,7,opt,name=api_access_namespace_label,json=apiAccessNamespaceLabel,proto3" json:"api_access_namespace_label,omitempty"`
 	// *
-	// The agentgateway router's plaintext HTTP endpoint,
-	// "http://atenet-router.ate-system.svc:80", which accepts any caller.
-	// Empty with the Envoy router, which serves only router_tls_endpoint.
-	RouterEndpoint string `protobuf:"bytes,8,opt,name=router_endpoint,json=routerEndpoint,proto3" json:"router_endpoint,omitempty"`
-	// *
 	// The router's TLS endpoint, "https://atenet-router.ate-system.svc:443". A
 	// request reaches an actor with the header
-	// `ate-target-actor: <atespace>/<actor>`; the Envoy router accepts it only
-	// from a client presenting a certificate whose SPIFFE ID
-	// router.allowed_client_spiffe_ids names (router_client_signer_name).
-	RouterTlsEndpoint string `protobuf:"bytes,9,opt,name=router_tls_endpoint,json=routerTlsEndpoint,proto3" json:"router_tls_endpoint,omitempty"`
+	// `ate-target-actor: <atespace>/<actor>`; the router, with either
+	// dataplane, accepts it only from a client presenting a certificate whose
+	// SPIFFE ID router.allowed_client_spiffe_ids names
+	// (router_client_signer_name).
+	RouterTlsEndpoint string `protobuf:"bytes,8,opt,name=router_tls_endpoint,json=routerTlsEndpoint,proto3" json:"router_tls_endpoint,omitempty"`
 	// *
 	// Where actor snapshots are stored, "gs://<bucket>" or "s3://<bucket>",
 	// followed by storage.snapshot_prefix when set: the API server's snapshot
 	// location, which an actor template overrides only with the
 	// PerTemplateSnapshotLocation preview.
-	StorageLocation string `protobuf:"bytes,10,opt,name=storage_location,json=storageLocation,proto3" json:"storage_location,omitempty"`
+	StorageLocation string `protobuf:"bytes,9,opt,name=storage_location,json=storageLocation,proto3" json:"storage_location,omitempty"`
 	// *
 	// The iss claim of the JWTs the API server mints for actors.
-	ActorJwtIssuer string `protobuf:"bytes,11,opt,name=actor_jwt_issuer,json=actorJwtIssuer,proto3" json:"actor_jwt_issuer,omitempty"`
+	ActorJwtIssuer string `protobuf:"bytes,10,opt,name=actor_jwt_issuer,json=actorJwtIssuer,proto3" json:"actor_jwt_issuer,omitempty"`
 	// *
 	// The gVisor worker image built for this control plane's version, digest
 	// pinned (with image_registry applied): what a WorkerPool of class gvisor
 	// runs.
-	GvisorWorkerImage string `protobuf:"bytes,12,opt,name=gvisor_worker_image,json=gvisorWorkerImage,proto3" json:"gvisor_worker_image,omitempty"`
+	GvisorWorkerImage string `protobuf:"bytes,11,opt,name=gvisor_worker_image,json=gvisorWorkerImage,proto3" json:"gvisor_worker_image,omitempty"`
 	// *
 	// The microVM worker image built for this control plane's version, digest
 	// pinned (with image_registry applied): what a WorkerPool of class microvm
 	// runs.
-	MicrovmWorkerImage string `protobuf:"bytes,13,opt,name=microvm_worker_image,json=microvmWorkerImage,proto3" json:"microvm_worker_image,omitempty"`
+	MicrovmWorkerImage string `protobuf:"bytes,12,opt,name=microvm_worker_image,json=microvmWorkerImage,proto3" json:"microvm_worker_image,omitempty"`
 	// *
-	// The Agent Substrate release installed, such as "v0.6.0": spec.version,
+	// The Agent Substrate release installed, such as "v1.0.0": spec.version,
 	// or the kind's default.
-	Version string `protobuf:"bytes,14,opt,name=version,proto3" json:"version,omitempty"`
+	Version string `protobuf:"bytes,13,opt,name=version,proto3" json:"version,omitempty"`
 	// *
 	// The signer of the client certificates the router's TLS endpoint accepts,
 	// "podidentity.podcert.ate.dev/identity". A workload gets one through a
@@ -101,7 +97,7 @@ type KubernetesAgentSubstrateOutputs struct {
 	// certificate carries the SPIFFE ID
 	// spiffe://cluster.local/ns/<namespace>/sa/<service-account>, which
 	// router.allowed_client_spiffe_ids must name.
-	RouterClientSignerName string `protobuf:"bytes,15,opt,name=router_client_signer_name,json=routerClientSignerName,proto3" json:"router_client_signer_name,omitempty"`
+	RouterClientSignerName string `protobuf:"bytes,14,opt,name=router_client_signer_name,json=routerClientSignerName,proto3" json:"router_client_signer_name,omitempty"`
 	unknownFields          protoimpl.UnknownFields
 	sizeCache              protoimpl.SizeCache
 }
@@ -185,13 +181,6 @@ func (x *KubernetesAgentSubstrateOutputs) GetApiAccessNamespaceLabel() string {
 	return ""
 }
 
-func (x *KubernetesAgentSubstrateOutputs) GetRouterEndpoint() string {
-	if x != nil {
-		return x.RouterEndpoint
-	}
-	return ""
-}
-
 func (x *KubernetesAgentSubstrateOutputs) GetRouterTlsEndpoint() string {
 	if x != nil {
 		return x.RouterTlsEndpoint
@@ -245,7 +234,7 @@ var File_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_outputs_proto prot
 
 const file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/kubernetes/kubernetesagentsubstrate/v1alpha1/outputs.proto\x128dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1\"\xc2\x05\n" +
+	"Bcatalog/kubernetes/kubernetesagentsubstrate/v1alpha1/outputs.proto\x128dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1\"\x99\x05\n" +
 	"\x1fKubernetesAgentSubstrateOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x1f\n" +
 	"\vapi_address\x18\x02 \x01(\tR\n" +
@@ -254,16 +243,15 @@ const file_catalog_kubernetes_kubernetesagentsubstrate_v1alpha1_outputs_proto_ra
 	"\x12api_token_audience\x18\x04 \x01(\tR\x10apiTokenAudience\x121\n" +
 	"\x15api_trust_bundle_name\x18\x05 \x01(\tR\x12apiTrustBundleName\x125\n" +
 	"\x17api_trust_bundle_signer\x18\x06 \x01(\tR\x14apiTrustBundleSigner\x12;\n" +
-	"\x1aapi_access_namespace_label\x18\a \x01(\tR\x17apiAccessNamespaceLabel\x12'\n" +
-	"\x0frouter_endpoint\x18\b \x01(\tR\x0erouterEndpoint\x12.\n" +
-	"\x13router_tls_endpoint\x18\t \x01(\tR\x11routerTlsEndpoint\x12)\n" +
-	"\x10storage_location\x18\n" +
-	" \x01(\tR\x0fstorageLocation\x12(\n" +
-	"\x10actor_jwt_issuer\x18\v \x01(\tR\x0eactorJwtIssuer\x12.\n" +
-	"\x13gvisor_worker_image\x18\f \x01(\tR\x11gvisorWorkerImage\x120\n" +
-	"\x14microvm_worker_image\x18\r \x01(\tR\x12microvmWorkerImage\x12\x18\n" +
-	"\aversion\x18\x0e \x01(\tR\aversion\x129\n" +
-	"\x19router_client_signer_name\x18\x0f \x01(\tR\x16routerClientSignerNameB\xc5\x03\n" +
+	"\x1aapi_access_namespace_label\x18\a \x01(\tR\x17apiAccessNamespaceLabel\x12.\n" +
+	"\x13router_tls_endpoint\x18\b \x01(\tR\x11routerTlsEndpoint\x12)\n" +
+	"\x10storage_location\x18\t \x01(\tR\x0fstorageLocation\x12(\n" +
+	"\x10actor_jwt_issuer\x18\n" +
+	" \x01(\tR\x0eactorJwtIssuer\x12.\n" +
+	"\x13gvisor_worker_image\x18\v \x01(\tR\x11gvisorWorkerImage\x120\n" +
+	"\x14microvm_worker_image\x18\f \x01(\tR\x12microvmWorkerImage\x12\x18\n" +
+	"\aversion\x18\r \x01(\tR\aversion\x129\n" +
+	"\x19router_client_signer_name\x18\x0e \x01(\tR\x16routerClientSignerNameB\xc5\x03\n" +
 	"<com.dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1B\fOutputsProtoP\x01Zrgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesagentsubstrate/v1alpha1;kubernetesagentsubstratev1alpha1\xa2\x02\x04DPKK\xaa\x028Dev.Planton.Kubernetes.Kubernetesagentsubstrate.V1alpha1\xca\x028Dev\\Planton\\Kubernetes\\Kubernetesagentsubstrate\\V1alpha1\xe2\x02DDev\\Planton\\Kubernetes\\Kubernetesagentsubstrate\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Kubernetes::Kubernetesagentsubstrate::V1alpha1b\x06proto3"
 
 var (

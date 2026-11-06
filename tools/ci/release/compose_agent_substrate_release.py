@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-"""Compose a published Agent Substrate release from its built images.
+"""Compose a published Agent Substrate release from upstream's published images.
 
-Agent Substrate publishes no images and no pre-built install of its own.
-Planton builds every image with upstream's own publisher
-(`ate-setup publish release-images`) at the exact upstream tag, and this script
-turns that build into the release set downloads.planton.ai serves under
-releases/agent-substrate/<version>/:
+Agent Substrate publishes its release images itself
+(ghcr.io/agent-substrate/substrate/<image>:<tag>, from v1.0.0) but no
+pre-built install. This script turns upstream's tag and those images into the
+release set downloads.planton.ai serves under releases/agent-substrate/<version>/:
 
     manifests/...                upstream's manifests/ tree, file for file, with
-                                 only the image references filled in
+                                 only the image references filled in, less the
+                                 overlays that name images upstream never
+                                 releases
     crds.yaml                    every CustomResourceDefinition in that tree, in
                                  file order: the bundle the kept-CRD mechanism
                                  fetches (pkg/kubernetes/helmcrds, BundleURL)
@@ -31,20 +32,30 @@ credential provider and extra egress filters). One flattened file would fix
 every one of those choices. The tree keeps them all, and a module fetches the
 files it composes by URL, the way the catalog's release-manifest kinds do.
 
-The rewrite is upstream's own rule (cmd/ate-setup/internal/images/prebuilt.go),
-read from the checkout rather than restated:
+The rewrite is upstream's own rule (cmd/ate-setup/internal/images/prebuilt.go,
+`ate-setup --image-repo`), read from the checkout rather than restated:
 
   - the manifests name images as ko://<module>/<package> references, and the
-    set of packages with a published image is upstream's closed `Components`
-    list; a reference outside it fails rather than being guessed at;
-  - each reference becomes <repository>/<package base name>:<version>@<digest>,
-    the tag-and-digest form upstream's pre-built install writes;
+    packages that have an image are upstream's closed `Components` list; a
+    reference outside it fails rather than being guessed at;
+  - a release publishes only the packages in `released` and the Dockerfile
+    images in `releasedDockerfiles` (Envoy); an overlay that names any other
+    Component (the benchmarking fakes) cannot be installed from a release, so
+    its directory is left out of the set, as upstream's installer would fail
+    it at install time;
+  - each reference becomes <repository>/<image>:<version>@<digest>, the
+    tag-and-digest form upstream's pre-built install writes;
   - ${ENVOY_DATAPLANE_IMAGE} becomes the Dockerfile-built Envoy image, pinned
     the same way.
 
+The digests are never taken on trust: the lane fetches each image's
+multi-platform index from upstream's registry (`crane manifest`), and the
+digest is the sha256 of those bytes, the same value every registry the image
+is copied to answers with. The index must cover both platforms upstream builds.
+
 Every output is a pure function of its inputs (sorted walks, fixed archive
 timestamps), so a re-run of a version composes the same bytes and the publish
-step can prove what it serves equals what this run built.
+step can prove what it serves equals what this run composed.
 
 The install shape. Planton's control-plane module composes one install: the
 files, objects, flags and settings of one release, its shape. A release whose
@@ -56,14 +67,16 @@ A release is its own shape (--shape equal to --version) or claims an earlier
 one, and the claim is proven here, never trusted: the composed tree must equal
 the shape's published tree once image references are reduced to their names,
 file for file, and the upstream code that decides how an install is assembled
-(the installer's steps and settings, the Google Cloud setup) must be the same
-at both tags. Any difference refuses the claim; the release is then its own
-shape and waits for the module to compose it.
+(the installer's steps and settings, the binaries' install defaults) must be
+the same at both tags. Any difference refuses the claim; the release is then
+its own shape and waits for the module to compose it.
 
 Usage:
+    compose_agent_substrate_release.py images --source <upstream checkout at the tag>
+        prints the images a release of the tag publishes, one per line
     compose_agent_substrate_release.py --source <upstream checkout at the tag>
-        --layouts <directory of OCI layouts, one per image name>
-        --repository <registry path the lane publishes under>
+        --index-manifests <directory of <image>.json, each image's index as its registry serves it>
+        --repository <registry path the images are published under>
         --version vX.Y.Z --shape vX.Y.Z --commit <sha> --out <directory>
         [--shape-release <the shape's published tree>
          --shape-source <upstream checkout at the shape's tag>]
@@ -88,12 +101,12 @@ from dataclasses import dataclass
 
 UPSTREAM_REPOSITORY = "https://github.com/agent-substrate/substrate"
 
-# Where upstream keeps the three facts the rewrite needs: its module path
-# (a ko:// reference is it joined with a package), the closed package list,
-# and the Envoy image's name. A release that moves any of them fails
-# composition with the file named, never silently.
+# Where upstream keeps the facts the rewrite needs: its module path (a ko://
+# reference is it joined with a package), the closed package list, the
+# packages and Dockerfile images a release publishes, and the Envoy image's
+# name. A release that moves any of them fails composition with the file
+# named, never silently.
 COMPONENTS_FILE = "cmd/ate-setup/internal/images/images.go"
-ENVOY_IMAGE_FILE = "cmd/ate-setup/internal/steps/overlay.go"
 
 # Upstream's database setup script, published beside the manifests so the
 # seal covers it.
@@ -106,10 +119,15 @@ SETUP_SQL_FILE = "pkg/postgressetup/setup.sql"
 SHAPE_SOURCE_PATHS = (
     "cmd/ate-setup/internal/steps",
     "cmd/ate-setup/internal/config",
-    "tools/setup-gcp",
+    # The namespace and Service names every binary defaults to, matching the
+    # canonical install layout.
+    "internal/installdefaults",
     # Builds the node agent's cache flags from a prefix (--<prefix>-gc-period
     # and its siblings), which FLAG_PREFIX records.
     "cmd/atelet/internal/filecachegc",
+    # The Google Cloud setup (tools/setup-gcp) left upstream's repository at
+    # v1.0.0 for ai-on-gke/substrate-gke, so no shape comparison covers it;
+    # the kind's own GKE keyless wiring is what installs on Google Cloud.
 )
 
 # The settings the module passes by name: every flag an installed binary
@@ -173,131 +191,120 @@ def finding(observed: str, means: str, next_step: str) -> str:
 
 @dataclass(frozen=True)
 class Upstream:
-    """What the upstream checkout says about its published images."""
+    """What the upstream checkout says about its images."""
 
-    # ko:// reference -> image name, for every package in Components.
+    # ko:// reference -> image name, for every package in Components: the
+    # rewrite table, which names unreleased packages too.
     image_by_reference: dict
+    # The image names of the packages a release publishes (`released`).
+    released_images: frozenset
     # The name the Dockerfile-built Envoy image is published under.
     envoy_image: str
-    # The packages in Components, relative to the checkout.
+    # The packages a release publishes, relative to the checkout: the binaries
+    # an install runs.
     packages: tuple
 
     @property
     def image_names(self) -> set:
-        return set(self.image_by_reference.values()) | {self.envoy_image}
+        """Every image a release publishes: the ko-built ones and Envoy."""
+        return set(self.released_images) | {self.envoy_image}
+
+
+def _string_list(text: str, declaration: str) -> list:
+    """The quoted entries of one `var <name> = []string{...}` block, or []."""
+    block = re.search(re.escape(declaration) + r" = \[\]string\{(.*?)\n\}", text, re.DOTALL)
+    return re.findall(r'^\s*"([^"]+)",', block.group(1), re.MULTILINE) if block else []
 
 
 def read_upstream(source: str) -> Upstream:
-    """Read the module path, the closed component list and the Envoy image name from the tag."""
-    components_path = os.path.join(source, COMPONENTS_FILE)
-    envoy_path = os.path.join(source, ENVOY_IMAGE_FILE)
+    """Read the module path, the component lists and the Envoy image name from the tag."""
+    path = os.path.join(source, COMPONENTS_FILE)
     findings = []
-
-    packages = []
-    module_path = ""
     try:
-        with open(components_path, encoding="utf-8") as f:
+        with open(path, encoding="utf-8") as f:
             text = f.read()
-        block = re.search(r"var Components = \[\]string\{(.*?)\n\}", text, re.DOTALL)
-        if block:
-            packages = re.findall(r'^\s*"([^"]+)",', block.group(1), re.MULTILINE)
-        match = re.search(r'^const ModulePath = "([^"]+)"', text, re.MULTILINE)
-        if match:
-            module_path = match.group(1)
     except OSError:
-        pass
+        text = ""
+
+    match = re.search(r'^const ModulePath = "([^"]+)"', text, re.MULTILINE)
+    module_path = match.group(1) if match else ""
+    components = _string_list(text, "var Components")
+    released = _string_list(text, "var released")
+    # The Envoy image is a DockerfileImage, and a release publishes it only
+    # when releasedDockerfiles names the variable that declares it.
+    envoy = re.search(r'^var (\w+) = DockerfileImage\{Name: "([^"]+)"', text, re.MULTILINE)
+    dockerfiles = re.search(r"^var releasedDockerfiles = \[\]DockerfileImage\{([^}]*)\}", text, re.MULTILINE)
+    envoy_image = envoy.group(2) if envoy and dockerfiles and envoy.group(1) in re.findall(r"\w+", dockerfiles.group(1)) else ""
+
     if not module_path:
         findings.append(finding(
             f"no `const ModulePath = \"...\"` in {COMPONENTS_FILE}",
             "upstream moved the module path its ko:// references start with, so no "
-            "reference can be matched to a published image",
+            "reference can be matched to an image",
             f"read {COMPONENTS_FILE} at this tag and update read_upstream to the new shape "
             "in the change that adopts this version",
         ))
-    if not packages:
+    if not components:
         findings.append(finding(
             f"no `var Components = []string{{...}}` package list in {COMPONENTS_FILE}",
-            "upstream moved or reshaped the list of packages it publishes images for, "
-            "so the composer cannot tell a published reference from an unknown one",
+            "upstream moved or reshaped the list of packages that have images, "
+            "so the composer cannot tell a known reference from an unknown one",
             f"read {COMPONENTS_FILE} and images/prebuilt.go at this tag and update "
             "read_upstream to the new shape in the change that adopts this version",
         ))
-
-    envoy_image = ""
-    try:
-        with open(envoy_path, encoding="utf-8") as f:
-            match = re.search(r'envoyDataplaneImage\s*=\s*"([^"]+)"', f.read())
-        if match:
-            envoy_image = match.group(1)
-    except OSError:
-        pass
-    if not envoy_image:
+    if not released or not set(released) <= set(components):
         findings.append(finding(
-            f"no `envoyDataplaneImage = \"...\"` constant in {ENVOY_IMAGE_FILE}",
-            f"upstream moved the name its Dockerfile-built Envoy image is published under, "
-            f"so {ENVOY_PLACEHOLDER} cannot be filled",
-            f"read {ENVOY_IMAGE_FILE} at this tag and update read_upstream in the change "
+            f"no `var released = []string{{...}}` allowlist within Components in {COMPONENTS_FILE}",
+            "upstream moved or reshaped the list of packages a release publishes, "
+            "so the composer cannot tell which images exist in its registry",
+            f"read {COMPONENTS_FILE} at this tag and update read_upstream in the change "
             "that adopts this version",
         ))
-
+    if not envoy_image:
+        findings.append(finding(
+            f"no released `DockerfileImage{{Name: \"...\"}}` in {COMPONENTS_FILE}",
+            f"upstream moved the image its Envoy dataplane is published under, "
+            f"so {ENVOY_PLACEHOLDER} cannot be filled",
+            f"read {COMPONENTS_FILE} at this tag and update read_upstream in the change "
+            "that adopts this version",
+        ))
     if findings:
         raise CompositionError(findings)
     # images.ImageName: the last element of the import path, which is what
     # ko's --base-import-paths publishes it as.
+    image_of = {pkg: pkg.rsplit("/", 1)[-1].lower() for pkg in components}
     return Upstream(
-        image_by_reference={f"ko://{module_path}/{pkg}": pkg.rsplit("/", 1)[-1].lower() for pkg in packages},
+        image_by_reference={f"ko://{module_path}/{pkg}": image_of[pkg] for pkg in components},
+        released_images=frozenset(image_of[pkg] for pkg in released),
         envoy_image=envoy_image,
-        packages=tuple(packages),
+        packages=tuple(released),
     )
 
 
-def read_layout_digests(layouts: str) -> dict:
-    """Map each OCI layout's directory name to the digest of the index it holds.
+def read_index_digests(index_manifests: str) -> dict:
+    """Map each image name to the digest of its multi-platform index.
 
-    Each layout is one image as `crane pull --format=oci` writes it: index.json
-    names exactly one entry, the image's own multi-platform index, whose digest
-    is the image's digest in every registry it is copied to.
+    The directory holds one <image>.json per image: the index exactly as the
+    registry serves it for the release's tag. The digest is the sha256 of those
+    bytes, so it is what the registry, and every registry the image is copied
+    to, answers for the image; the index must name both platforms upstream
+    builds.
     """
     digests = {}
     findings = []
-    for name in sorted(os.listdir(layouts)):
-        root = os.path.join(layouts, name)
-        if not os.path.isdir(root):
+    for name in sorted(os.listdir(index_manifests)):
+        if not name.endswith(".json"):
             continue
+        image = name[: -len(".json")]
+        with open(os.path.join(index_manifests, name), "rb") as f:
+            blob = f.read()
         try:
-            with open(os.path.join(root, "index.json"), encoding="utf-8") as f:
-                entries = json.load(f).get("manifests", [])
-        except (OSError, ValueError) as err:
-            findings.append(finding(
-                f"the layout for {name} has no readable index.json ({err})",
-                "the build job's export of this image is incomplete",
-                "re-run the build job; if it repeats, read its export step's log",
-            ))
-            continue
-        if len(entries) != 1 or not DIGEST.match(str(entries[0].get("digest", ""))):
-            findings.append(finding(
-                f"the layout for {name} names {len(entries)} entries instead of one image",
-                "the export did not pull exactly the tagged image",
-                "check the build job's `crane pull --format=oci` step for this image",
-            ))
-            continue
-        digest = entries[0]["digest"]
-        try:
-            with open(os.path.join(root, "blobs", "sha256", digest.split(":", 1)[1]), "rb") as f:
-                blob = f.read()
             manifest = json.loads(blob)
-        except (OSError, ValueError) as err:
+        except ValueError as err:
             findings.append(finding(
-                f"the layout for {name} does not hold the blob {digest} its index names ({err})",
-                "the export is truncated",
-                "re-run the build job",
-            ))
-            continue
-        if "sha256:" + hashlib.sha256(blob).hexdigest() != digest:
-            findings.append(finding(
-                f"the blob for {name} does not hash to {digest}",
-                "the archive changed after it was exported",
-                "re-run the build job; never compose from an archive that fails this check",
+                f"the index fetched for {image} is not JSON ({err})",
+                "the fetch saved something other than the image's index",
+                f"fetch it again with `crane manifest <repository>/{image}:<version>`",
             ))
             continue
         platforms = {
@@ -307,13 +314,14 @@ def read_layout_digests(layouts: str) -> dict:
         missing = [p for p in REQUIRED_PLATFORMS if p not in platforms]
         if manifest.get("mediaType") not in INDEX_MEDIA_TYPES or missing:
             findings.append(finding(
-                f"{name} is {manifest.get('mediaType')} with platforms {sorted(platforms)}",
+                f"{image} is {manifest.get('mediaType')} with platforms {sorted(platforms)}",
                 f"the image lacks {', '.join(missing) or 'a multi-platform index'}, so it cannot "
                 "run on every node an adopter's cluster may schedule it to",
-                "check that the build job set up QEMU and buildx before upstream's publisher ran",
+                "check upstream's release workflow for this image; Planton publishes no release "
+                "whose images miss a platform",
             ))
             continue
-        digests[name] = digest
+        digests[image] = "sha256:" + hashlib.sha256(blob).hexdigest()
     if findings:
         raise CompositionError(findings)
     return digests
@@ -326,15 +334,15 @@ def pinned_references(upstream: Upstream, digests: dict, repository: str, versio
     findings = []
     if expected - built:
         findings.append(finding(
-            f"no built image for {', '.join(sorted(expected - built))}",
-            "upstream's publisher did not produce every image its installer can deploy",
-            "read the build job's publisher output for these images",
+            f"no index fetched for {', '.join(sorted(expected - built))}",
+            "upstream's release publishes these images, and an install pulls them",
+            "fetch each one's index from the repository at the release's tag",
         ))
     if built - expected:
         findings.append(finding(
-            f"built images {', '.join(sorted(built - expected))} are not in upstream's published set",
-            "the build exported something upstream's installer never references",
-            "check the build job's export step against the publisher's printed references",
+            f"fetched images {', '.join(sorted(built - expected))} are not in upstream's published set",
+            "the fetch read an image a release does not publish, so the set would name it",
+            f"fetch exactly the images {COMPONENTS_FILE} releases (`released` and `releasedDockerfiles`)",
         ))
     if findings:
         raise CompositionError(findings)
@@ -397,33 +405,78 @@ def deterministic_tar_gz(source_dir: str, arcname: str, destination: str) -> Non
             gz.write(buffer.getvalue())
 
 
-def compose(source: str, layouts: str, repository: str, version: str, shape: str, commit: str, out: str) -> dict:
+def unreleased_references(text: str, upstream: Upstream) -> list:
+    """The ko:// references in text that name a Component no release publishes."""
+    return sorted({
+        reference for reference in KO_REFERENCE.findall(text)
+        if reference in upstream.image_by_reference
+        and upstream.image_by_reference[reference] not in upstream.released_images
+    })
+
+
+def compose(source: str, index_manifests: str, repository: str, version: str, shape: str, commit: str, out: str) -> dict:
     """Write the release set to out and return the published image references."""
     upstream = read_upstream(source)
-    references = pinned_references(upstream, read_layout_digests(layouts), repository, version)
+    references = pinned_references(upstream, read_index_digests(index_manifests), repository, version)
 
     manifests_source = os.path.join(source, "manifests")
     manifests_out = os.path.join(out, "manifests")
-    unknown = {}
-    crds = []
+    texts = {}
     for root, dirs, files in os.walk(manifests_source):
         dirs.sort()
         for name in sorted(files):
             source_path = os.path.join(root, name)
-            relative = os.path.relpath(source_path, manifests_source)
-            destination = os.path.join(manifests_out, relative)
-            os.makedirs(os.path.dirname(destination), exist_ok=True)
             with open(source_path, encoding="utf-8") as f:
-                text = rewrite(f.read(), upstream, references, f"manifests/{relative}", unknown)
-            with open(destination, "w", encoding="utf-8") as f:
-                f.write(text)
-            if name.endswith((".yaml", ".yml")):
-                crds.extend(d for d in split_documents(text) if is_crd(d))
+                texts[os.path.relpath(source_path, manifests_source)] = f.read()
+
+    # A kustomize component that names an image no release publishes is left
+    # out whole (in v1.0.0, the benchmarking fakes): none of it installs from a
+    # release, and upstream's installer layers it only when asked. A kept
+    # kustomization that layers one fails the check's build. Any other file
+    # naming such an image is a finding, so an install file is never dropped.
+    def component_of(relative: str) -> str:
+        directory = os.path.dirname(relative)
+        text = texts.get(os.path.join(directory, "kustomization.yaml"), "")
+        return directory if re.search(r"^kind:\s*Component\s*$", text, re.MULTILINE) else ""
+
+    naming_unreleased = {relative: unreleased_references(text, upstream) for relative, text in texts.items()}
+    omitted = sorted({component_of(relative) for relative, refs in naming_unreleased.items() if refs} - {""})
+
+    def kept(relative: str) -> bool:
+        return not any(relative.startswith(d + os.sep) for d in omitted)
+
+    stray = {relative: refs for relative, refs in naming_unreleased.items() if refs and kept(relative)}
+    if stray:
+        raise CompositionError([
+            finding(
+                f"manifests/{relative} names {', '.join(refs)}, which no release publishes",
+                "the file is part of the install, not an optional component, so an install from a "
+                "release would fail to pull these images",
+                "read the file at this tag: if upstream means it as optional, it belongs in a kustomize "
+                "component; otherwise report the reference upstream",
+            )
+            for relative, refs in sorted(stray.items())
+        ])
+
+    unknown = {}
+    crds = []
+    for relative, text in texts.items():
+        if not kept(relative):
+            continue
+        destination = os.path.join(manifests_out, relative)
+        os.makedirs(os.path.dirname(destination), exist_ok=True)
+        text = rewrite(text, upstream, references, f"manifests/{relative}", unknown)
+        with open(destination, "w", encoding="utf-8") as f:
+            f.write(text)
+        if relative.endswith((".yaml", ".yml")):
+            crds.extend(d for d in split_documents(text) if is_crd(d))
+    for directory in omitted:
+        print(f"left out manifests/{directory}: it names images no release publishes", file=sys.stderr)
 
     findings = [
         finding(
             f"{reference} (in {', '.join(paths)}) has no published image",
-            f"upstream's installer publishes images only for the packages in {COMPONENTS_FILE}; "
+            f"upstream has images only for the packages in {COMPONENTS_FILE}'s Components; "
             "this reference names one outside it, so no install could pull it",
             "if the manifest is templated, it is rendered before install and must be left out of "
             "the rewrite; otherwise upstream's tag is broken, so report it upstream",
@@ -569,7 +622,19 @@ def installed_files(tree: str) -> dict:
 
 
 def source_files(source: str) -> dict:
-    """The upstream files under SHAPE_SOURCE_PATHS, by relative path."""
+    """The upstream files under SHAPE_SOURCE_PATHS, by relative path.
+
+    A path the checkout lacks is a finding rather than an empty comparison:
+    an install-deciding directory that moved would otherwise pass unseen.
+    """
+    missing = [top for top in SHAPE_SOURCE_PATHS if not os.path.isdir(os.path.join(source, top))]
+    if missing:
+        raise CompositionError([finding(
+            f"the upstream checkout at {source} has no {', '.join(missing)}",
+            "upstream moved code that decides how an install is assembled, so the shape "
+            "comparison would skip it",
+            "find where it moved at this tag and update SHAPE_SOURCE_PATHS in the change that adopts it",
+        )])
     files = {}
     for top in SHAPE_SOURCE_PATHS:
         for root, dirs, names in os.walk(os.path.join(source, top)):
@@ -661,9 +726,22 @@ def check_shape(out: str, repository: str, version: str, shape: str, shape_relea
 
 
 def main() -> None:
+    if sys.argv[1:2] == ["images"]:
+        # `images --source <checkout>`: the names of the images a release of
+        # this tag publishes, one per line, for the lane to fetch the indexes of.
+        parser = argparse.ArgumentParser(prog="compose_agent_substrate_release.py images")
+        parser.add_argument("--source", required=True, help="upstream checkout at the release tag")
+        args = parser.parse_args(sys.argv[2:])
+        try:
+            print("\n".join(sorted(read_upstream(args.source).image_names)))
+        except CompositionError as err:
+            print(err, file=sys.stderr)
+            sys.exit(1)
+        return
+
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--source", required=True, help="upstream checkout at the release tag")
-    parser.add_argument("--layouts", required=True, help="directory holding one OCI layout per image name")
+    parser.add_argument("--index-manifests", required=True, help="directory holding <image>.json: each image's multi-platform index as its registry serves it")
     parser.add_argument("--repository", required=True, help="registry path the images are published under")
     parser.add_argument("--version", required=True, help="the upstream release tag, vX.Y.Z")
     parser.add_argument("--shape", required=True, help="the release whose install this one shares; equal to --version for a new shape")
@@ -674,6 +752,9 @@ def main() -> None:
     parser.add_argument("--kustomize", help="kustomize binary; when set, the composed tree is checked")
     args = parser.parse_args()
 
+    if args.kustomize is not None and not args.kustomize:
+        print("Error: --kustomize names no binary; pass the kustomize to check the composed tree with, or leave the flag out", file=sys.stderr)
+        sys.exit(2)
     if os.path.exists(args.out) and os.listdir(args.out):
         print(f"Error: --out {args.out} is not empty; compose into a fresh directory", file=sys.stderr)
         sys.exit(2)
@@ -683,7 +764,7 @@ def main() -> None:
         sys.exit(2)
     os.makedirs(args.out, exist_ok=True)
     try:
-        references = compose(args.source, args.layouts, args.repository, args.version, args.shape, args.commit, args.out)
+        references = compose(args.source, args.index_manifests, args.repository, args.version, args.shape, args.commit, args.out)
         if args.kustomize:
             check(args.out, args.repository, references, args.kustomize)
         if claims_earlier_shape:

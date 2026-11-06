@@ -29,12 +29,6 @@ output "api_access_namespace_label" {
   value = "${local.api_access_label_key}=${local.api_access_label_value}"
 }
 
-# Only agentgateway still serves plaintext listeners; the Envoy router serves
-# only TLS (outputs.go plaintextRouterEndpoint).
-output "router_endpoint" {
-  value = local.router.agentgateway ? "http://${local.router_name}.${local.namespace}.svc:80" : ""
-}
-
 output "router_tls_endpoint" {
   value = "https://${local.router_name}.${local.namespace}.svc:443"
 }

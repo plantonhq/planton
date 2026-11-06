@@ -15,7 +15,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	awss3 "github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/catalog/kubernetes/aa_e2e/verify/internal/ateapipb"
+	"github.com/plantonhq/planton/catalog/kubernetes/aa_e2e/verify/internal/ateapi"
 	"github.com/plantonhq/planton/e2e/framework/provider"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -295,12 +295,12 @@ func (v *AgentSubstrateWorkerPoolVerifier) awaitRegistered(ctx context.Context, 
 		if err != nil {
 			return err
 		}
-		resp, err := conn.control.ListWorkers(c, &ateapipb.ListWorkersRequest{Options: &ateapipb.ListOptions{PageSize: 500}})
+		resp, err := conn.control.ListWorkers(c, &ateapi.ListWorkersRequest{Options: &ateapi.ListOptions{PageSize: 500}})
 		cancel()
 		if err == nil {
 			for _, w := range resp.GetWorkers() {
 				if w.GetWorkerPool() == v.Name && w.GetWorkerNamespace() == v.Namespace &&
-					w.GetStatus().GetState() == ateapipb.WorkerState_WORKER_STATE_ACTIVE {
+					w.GetStatus().GetState() == ateapi.WorkerState_WORKER_STATE_ACTIVE {
 					classes := w.GetStatus().GetSandboxClasses()
 					if len(classes) != 1 || classes[0].GetSandboxClass() != v.Class {
 						return errors.Errorf("worker %s of pool %s/%s reports sandbox classes %v, want %s", w.GetWorkerPod(), v.Namespace, v.Name, classes, v.Class)
@@ -341,14 +341,14 @@ func (v *AgentSubstrateWorkerPoolVerifier) proveActorLifecycle(ctx context.Conte
 	// Whatever happens below, the actor, its template and the atespace go
 	// before the verifier returns: a running actor left on a worker would
 	// hold the pool's teardown for the worker's hour-long drain.
-	actor := &ateapipb.ObjectRef{Atespace: atespace, Name: agentSubstrateActorName}
+	actor := &ateapi.ObjectRef{Atespace: atespace, Name: agentSubstrateActorName}
 	defer func() { err = withLaneCleanup(err, cleanUpLaneAtespace(ctx, conn, atespace, actor)) }()
 
 	template := counterTemplate(atespace, agentSubstrateActorTemplate, images[counterImageKey], v.Labels)
 	if err := createTemplate(ctx, conn, template); err != nil {
 		return errors.Wrapf(err, "creating the counter template on pool %s/%s (SandboxConfig %s)", v.Namespace, v.Name, config)
 	}
-	if err := awaitGoldenSnapshot(ctx, conn, &ateapipb.ObjectRef{Atespace: atespace, Name: agentSubstrateActorTemplate}); err != nil {
+	if err := awaitGoldenSnapshot(ctx, conn, &ateapi.ObjectRef{Atespace: atespace, Name: agentSubstrateActorTemplate}); err != nil {
 		return err
 	}
 
@@ -356,9 +356,9 @@ func (v *AgentSubstrateWorkerPoolVerifier) proveActorLifecycle(ctx context.Conte
 	if err != nil {
 		return err
 	}
-	_, err = conn.control.CreateActor(c, &ateapipb.CreateActorRequest{Actor: &ateapipb.Actor{
-		Metadata:      &ateapipb.ResourceMetadata{Atespace: atespace, Name: agentSubstrateActorName},
-		ActorTemplate: &ateapipb.ObjectRef{Atespace: atespace, Name: agentSubstrateActorTemplate},
+	_, err = conn.control.CreateActor(c, &ateapi.CreateActorRequest{Actor: &ateapi.Actor{
+		Metadata:      &ateapi.ResourceMetadata{Atespace: atespace, Name: agentSubstrateActorName},
+		ActorTemplate: &ateapi.ObjectRef{Atespace: atespace, Name: agentSubstrateActorTemplate},
 	}})
 	cancel()
 	if err != nil {
@@ -374,12 +374,12 @@ func (v *AgentSubstrateWorkerPoolVerifier) proveActorLifecycle(ctx context.Conte
 	if err != nil {
 		return err
 	}
-	_, err = conn.control.SuspendActor(c, &ateapipb.SuspendActorRequest{Actor: actor})
+	_, err = conn.control.SuspendActor(c, &ateapi.SuspendActorRequest{Actor: actor})
 	cancel()
 	if err != nil {
 		return errors.Wrap(err, "suspending the counter actor")
 	}
-	suspended, err := awaitActorState(ctx, conn, actor, ateapipb.ActorState_ACTOR_STATE_SUSPENDED, 5*time.Minute)
+	suspended, err := awaitActorState(ctx, conn, actor, ateapi.ActorState_ACTOR_STATE_SUSPENDED, 5*time.Minute)
 	if err != nil {
 		return err
 	}
@@ -387,7 +387,7 @@ func (v *AgentSubstrateWorkerPoolVerifier) proveActorLifecycle(ctx context.Conte
 	if snapshot == nil {
 		return errors.Errorf("the suspended actor reports no completed snapshot in storage; snapshots: %v", suspended.GetStatus().GetSnapshots())
 	}
-	if snapshot.GetFidelity() != ateapipb.SnapshotFidelity_SNAPSHOT_FIDELITY_VOLUMES {
+	if snapshot.GetFidelity() != ateapi.SnapshotFidelity_SNAPSHOT_FIDELITY_VOLUMES {
 		return errors.Errorf("the actor's snapshot has fidelity %v, want VOLUMES (the template's)", snapshot.GetFidelity())
 	}
 	uri := snapshot.GetDurableSnapshot().GetObject().GetSnapshotUri()
@@ -427,27 +427,27 @@ func (v *AgentSubstrateWorkerPoolVerifier) VerifyAbsent(ctx context.Context, kub
 // directory at /home/counter, the limits every actor must declare, and
 // VOLUMES fidelity (see the counter constants). It names no storage
 // location, so its snapshots go under the control plane's own.
-func counterTemplate(atespace, name, image string, selector map[string]string) *ateapipb.ActorTemplate {
-	t := &ateapipb.ActorTemplate{
-		Metadata: &ateapipb.ResourceMetadata{Atespace: atespace, Name: name},
-		Containers: []*ateapipb.Container{{
+func counterTemplate(atespace, name, image string, selector map[string]string) *ateapi.ActorTemplate {
+	t := &ateapi.ActorTemplate{
+		Metadata: &ateapi.ResourceMetadata{Atespace: atespace, Name: name},
+		Containers: []*ateapi.Container{{
 			Name:         "counter",
 			Image:        image,
 			Command:      []string{counterCommand},
-			WakeupProbe:  &ateapipb.WakeupProbe{HttpGet: &ateapipb.HttpGetAction{Path: "/readyz", Port: counterPort}},
-			VolumeMounts: []*ateapipb.VolumeMount{{Name: "data", MountPath: counterDataMount}},
+			WakeupProbe:  &ateapi.WakeupProbe{HttpGet: &ateapi.HttpGetAction{Path: "/readyz", Port: counterPort}},
+			VolumeMounts: []*ateapi.VolumeMount{{Name: "data", MountPath: counterDataMount}},
 		}},
-		Volumes: []*ateapipb.Volume{{Name: "data", DurableDir: &ateapipb.DurableDirVolumeSource{}}},
-		Resources: &ateapipb.ResourceRequirements{Limits: &ateapipb.Resources{
+		Volumes: []*ateapi.Volume{{Name: "data", DurableDir: &ateapi.DurableDirVolumeSource{}}},
+		Resources: &ateapi.ResourceRequirements{Limits: &ateapi.Resources{
 			CpuMillicores: counterActorMillicores,
 			MemoryBytes:   counterActorMemory,
 		}},
-		SnapshotConfig: &ateapipb.SnapshotConfig{
-			PreferredFidelity: ateapipb.SnapshotFidelity_SNAPSHOT_FIDELITY_VOLUMES,
+		SnapshotConfig: &ateapi.SnapshotConfig{
+			PreferredFidelity: ateapi.SnapshotFidelity_SNAPSHOT_FIDELITY_VOLUMES,
 		},
 	}
 	if len(selector) > 0 {
-		t.WorkerSelector = &ateapipb.Selector{MatchLabels: selector}
+		t.WorkerSelector = &ateapi.Selector{MatchLabels: selector}
 	}
 	return t
 }
@@ -486,7 +486,7 @@ func ensureAtespace(ctx context.Context, conn *substrateAPI, name string) error 
 		if err != nil {
 			return err
 		}
-		_, err = conn.control.CreateAtespace(c, &ateapipb.CreateAtespaceRequest{Atespace: &ateapipb.Atespace{Metadata: &ateapipb.ResourceMetadata{Name: name}}})
+		_, err = conn.control.CreateAtespace(c, &ateapi.CreateAtespaceRequest{Atespace: &ateapi.Atespace{Metadata: &ateapi.ResourceMetadata{Name: name}}})
 		cancel()
 		if err == nil || status.Code(err) == codes.AlreadyExists {
 			return nil
@@ -503,7 +503,7 @@ func deleteAtespace(ctx context.Context, conn *substrateAPI, name string) error 
 	if err != nil {
 		return err
 	}
-	_, err = conn.control.DeleteAtespace(c, &ateapipb.DeleteAtespaceRequest{Atespace: &ateapipb.ObjectRef{Name: name}})
+	_, err = conn.control.DeleteAtespace(c, &ateapi.DeleteAtespaceRequest{Atespace: &ateapi.ObjectRef{Name: name}})
 	cancel()
 	if err != nil && status.Code(err) != codes.NotFound {
 		return errors.Wrapf(err, "deleting atespace %s", name)
@@ -511,13 +511,13 @@ func deleteAtespace(ctx context.Context, conn *substrateAPI, name string) error 
 	return nil
 }
 
-func createTemplate(ctx context.Context, conn *substrateAPI, t *ateapipb.ActorTemplate) error {
+func createTemplate(ctx context.Context, conn *substrateAPI, t *ateapi.ActorTemplate) error {
 	c, cancel, err := conn.as(ctx, agentSubstrateProbeClient, 30*time.Second)
 	if err != nil {
 		return err
 	}
 	defer cancel()
-	_, err = conn.control.CreateActorTemplate(c, &ateapipb.CreateActorTemplateRequest{ActorTemplate: t})
+	_, err = conn.control.CreateActorTemplate(c, &ateapi.CreateActorTemplateRequest{ActorTemplate: t})
 	return err
 }
 
@@ -531,7 +531,7 @@ func laneAtespace(purpose string) string {
 // the pool is destroyed), every template, then the atespace itself. It runs
 // on a context the lane's own cancellation cannot end, since it also runs
 // after a lane failed for running out of time.
-func cleanUpLaneAtespace(ctx context.Context, conn *substrateAPI, atespace string, actor *ateapipb.ObjectRef) error {
+func cleanUpLaneAtespace(ctx context.Context, conn *substrateAPI, atespace string, actor *ateapi.ObjectRef) error {
 	ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Minute)
 	defer cancel()
 	if actor != nil {
@@ -539,7 +539,7 @@ func cleanUpLaneAtespace(ctx context.Context, conn *substrateAPI, atespace strin
 		if err != nil {
 			return err
 		}
-		_, err = conn.control.DeleteActor(c, &ateapipb.DeleteActorRequest{Actor: actor})
+		_, err = conn.control.DeleteActor(c, &ateapi.DeleteActorRequest{Actor: actor})
 		cancelCall()
 		if err != nil && status.Code(err) != codes.NotFound {
 			return errors.Wrapf(err, "deleting actor %s/%s", actor.GetAtespace(), actor.GetName())
@@ -549,7 +549,7 @@ func cleanUpLaneAtespace(ctx context.Context, conn *substrateAPI, atespace strin
 			if err != nil {
 				return err
 			}
-			_, err = conn.control.GetActor(c, &ateapipb.GetActorRequest{Actor: actor})
+			_, err = conn.control.GetActor(c, &ateapi.GetActorRequest{Actor: actor})
 			cancelCall()
 			if status.Code(err) == codes.NotFound {
 				break
@@ -564,7 +564,7 @@ func cleanUpLaneAtespace(ctx context.Context, conn *substrateAPI, atespace strin
 	if err != nil {
 		return err
 	}
-	templates, err := conn.control.ListActorTemplates(c, &ateapipb.ListActorTemplatesRequest{Atespace: atespace})
+	templates, err := conn.control.ListActorTemplates(c, &ateapi.ListActorTemplatesRequest{Atespace: atespace})
 	cancelCall()
 	if err != nil {
 		return errors.Wrapf(err, "listing the actor templates in atespace %s", atespace)
@@ -595,7 +595,7 @@ func deleteTemplate(ctx context.Context, conn *substrateAPI, atespace, name stri
 	if err != nil {
 		return err
 	}
-	_, err = conn.control.DeleteActorTemplate(c, &ateapipb.DeleteActorTemplateRequest{ActorTemplate: &ateapipb.ObjectRef{Atespace: atespace, Name: name}})
+	_, err = conn.control.DeleteActorTemplate(c, &ateapi.DeleteActorTemplateRequest{ActorTemplate: &ateapi.ObjectRef{Atespace: atespace, Name: name}})
 	cancel()
 	if err != nil && status.Code(err) != codes.NotFound {
 		return errors.Wrapf(err, "deleting actor template %s", name)
@@ -606,15 +606,15 @@ func deleteTemplate(ctx context.Context, conn *substrateAPI, atespace, name stri
 // awaitGoldenSnapshot waits for the counter template's golden snapshot, the
 // boot image every actor of the template resumes from, the way upstream's
 // WaitForSubstrateTemplateReady does.
-func awaitGoldenSnapshot(ctx context.Context, conn *substrateAPI, ref *ateapipb.ObjectRef) error {
+func awaitGoldenSnapshot(ctx context.Context, conn *substrateAPI, ref *ateapi.ObjectRef) error {
 	deadline := time.Now().Add(10 * time.Minute)
-	var last *ateapipb.GoldenSnapshotStatus
+	var last *ateapi.GoldenSnapshotStatus
 	for {
 		c, cancel, err := conn.as(ctx, agentSubstrateProbeClient, 30*time.Second)
 		if err != nil {
 			return err
 		}
-		t, err := conn.control.GetActorTemplate(c, &ateapipb.GetActorTemplateRequest{ActorTemplate: ref})
+		t, err := conn.control.GetActorTemplate(c, &ateapi.GetActorTemplateRequest{ActorTemplate: ref})
 		cancel()
 		if err == nil {
 			last = t.GetStatus().GetGoldenSnapshotStatus()
@@ -636,14 +636,14 @@ func awaitGoldenSnapshot(ctx context.Context, conn *substrateAPI, ref *ateapipb.
 // resumeAndCall resumes the actor (waiting out a saturated pool, as
 // upstream's ResumeActorAwaitCapacity does), waits for it to run, and calls
 // it through the router, expecting the two counters.
-func resumeAndCall(ctx context.Context, kubeconfig string, conn *substrateAPI, actor *ateapipb.ObjectRef, router string, wantMemory, wantFile int, stage string) error {
+func resumeAndCall(ctx context.Context, kubeconfig string, conn *substrateAPI, actor *ateapi.ObjectRef, router string, wantMemory, wantFile int, stage string) error {
 	deadline := time.Now().Add(5 * time.Minute)
 	for {
 		c, cancel, err := conn.as(ctx, agentSubstrateProbeClient, 2*time.Minute)
 		if err != nil {
 			return err
 		}
-		_, err = conn.control.ResumeActor(c, &ateapipb.ResumeActorRequest{Actor: actor})
+		_, err = conn.control.ResumeActor(c, &ateapi.ResumeActorRequest{Actor: actor})
 		cancel()
 		if err == nil {
 			break
@@ -653,7 +653,7 @@ func resumeAndCall(ctx context.Context, kubeconfig string, conn *substrateAPI, a
 		}
 		time.Sleep(3 * time.Second)
 	}
-	if _, err := awaitActorState(ctx, conn, actor, ateapipb.ActorState_ACTOR_STATE_RUNNING, 5*time.Minute); err != nil {
+	if _, err := awaitActorState(ctx, conn, actor, ateapi.ActorState_ACTOR_STATE_RUNNING, 5*time.Minute); err != nil {
 		return err
 	}
 	body, err := callThroughRouter(ctx, kubeconfig, router, actor)
@@ -667,22 +667,22 @@ func resumeAndCall(ctx context.Context, kubeconfig string, conn *substrateAPI, a
 	return nil
 }
 
-func awaitActorState(ctx context.Context, conn *substrateAPI, actor *ateapipb.ObjectRef, want ateapipb.ActorState, budget time.Duration) (*ateapipb.Actor, error) {
+func awaitActorState(ctx context.Context, conn *substrateAPI, actor *ateapi.ObjectRef, want ateapi.ActorState, budget time.Duration) (*ateapi.Actor, error) {
 	deadline := time.Now().Add(budget)
-	var last *ateapipb.Actor
+	var last *ateapi.Actor
 	for {
 		c, cancel, err := conn.as(ctx, agentSubstrateProbeClient, 30*time.Second)
 		if err != nil {
 			return nil, err
 		}
-		got, err := conn.control.GetActor(c, &ateapipb.GetActorRequest{Actor: actor})
+		got, err := conn.control.GetActor(c, &ateapi.GetActorRequest{Actor: actor})
 		cancel()
 		if err == nil {
 			last = got
 			if got.GetStatus().GetState() == want {
 				return got, nil
 			}
-			if got.GetStatus().GetState() == ateapipb.ActorState_ACTOR_STATE_CRASHED {
+			if got.GetStatus().GetState() == ateapi.ActorState_ACTOR_STATE_CRASHED {
 				return nil, errors.Errorf("the counter actor crashed: %s", got.GetStatus().GetCrash().GetMessage())
 			}
 		}
@@ -695,11 +695,11 @@ func awaitActorState(ctx context.Context, conn *substrateAPI, actor *ateapipb.Ob
 
 // durableSnapshot is the newest completed snapshot in storage, chosen the way
 // upstream's demo suite chooses it.
-func durableSnapshot(s *ateapipb.ActorStatus) *ateapipb.Snapshot {
-	var best *ateapipb.Snapshot
+func durableSnapshot(s *ateapi.ActorStatus) *ateapi.Snapshot {
+	var best *ateapi.Snapshot
 	for _, snap := range s.GetSnapshots() {
 		st := snap.GetDurableSnapshot()
-		if st.GetStatus() == ateapipb.SnapshotStorageStatus_SNAPSHOT_STORAGE_STATUS_COMPLETED && st.GetObject().GetSnapshotUri() != "" {
+		if st.GetState() == ateapi.SnapshotStorageState_SNAPSHOT_STORAGE_STATE_COMPLETED && st.GetObject().GetSnapshotUri() != "" {
 			if best == nil || snap.GetGeneration() > best.GetGeneration() {
 				best = snap
 			}
@@ -713,7 +713,7 @@ func durableSnapshot(s *ateapipb.ActorStatus) *ateapipb.Snapshot {
 // router's TLS endpoint (the router_tls_endpoint output) with
 // `ate-target-actor: <atespace>/<actor>`. A freshly resumed actor can take a
 // moment to accept connections, so the call is retried briefly.
-func callThroughRouter(ctx context.Context, kubeconfig, router string, actor *ateapipb.ObjectRef) (string, error) {
+func callThroughRouter(ctx context.Context, kubeconfig, router string, actor *ateapi.ObjectRef) (string, error) {
 	deadline := time.Now().Add(1 * time.Minute)
 	var last error
 	for time.Now().Before(deadline) {

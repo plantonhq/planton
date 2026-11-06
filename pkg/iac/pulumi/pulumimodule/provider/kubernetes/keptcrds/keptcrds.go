@@ -8,9 +8,10 @@
 // first two for it: derive the CRD set from the pinned version (through
 // pkg/kubernetes/helmcrds, in-process), apply each CRD keyed by its own name
 // as a kept resource that re-adopts on reinstall, refuses a schema downgrade,
-// refuses to take over a CRD someone else owns, and refuses before touching
-// anything when the deploy's identity may not write CRDs; and then install the
-// workloads with CRDs left out (a chart's release with CRDs skipped and its
+// refuses a definition that drops a version the cluster still stores objects
+// at, refuses to take over a CRD someone else owns, and refuses before
+// touching anything when the deploy's identity may not write CRDs; and then
+// install the workloads with CRDs left out (a chart's release with CRDs skipped and its
 // own CRD switch pinned off, or a manifest's other documents). Apply's reads
 // run before it registers anything, so a module that calls it before
 // registering any resource of its own refuses with nothing written. The
@@ -162,10 +163,11 @@ func Apply(ctx *pulumi.Context, args Args) ([]pulumi.Resource, error) {
 		return nil, nil
 	}
 
-	// The checks run during preview too: a foreign owner, a downgrade, and a
-	// missing right are all refused at plan time in both engines, before
-	// anything is touched. Ownership goes first: a CRD another source stamped
-	// at a higher version is an ownership question, not a downgrade.
+	// The checks run during preview too: a foreign owner, a downgrade, a
+	// dropped stored version and a missing right are all refused at plan
+	// time in both engines, before anything is touched. Ownership goes
+	// first: a CRD another source stamped at a higher version is an
+	// ownership question, not a downgrade.
 	existing, err := cluster.readExisting(crds)
 	if err != nil {
 		return nil, err
@@ -174,6 +176,9 @@ func Apply(ctx *pulumi.Context, args Args) ([]pulumi.Resource, error) {
 		return nil, err
 	}
 	if err := helmcrds.CheckNoDowngrade(existing, args.Source); err != nil {
+		return nil, err
+	}
+	if err := helmcrds.CheckStoredVersionsListed(existing, crds, args.Source); err != nil {
 		return nil, err
 	}
 	if err := cluster.refuseIfDenied(args); err != nil {
@@ -284,7 +289,9 @@ func toExisting(object unstructured.Unstructured) helmcrds.ExistingCRD {
 	for _, entry := range object.GetManagedFields() {
 		managers = append(managers, entry.Manager)
 	}
-	return helmcrds.ExistingFromObject(object.GetName(), object.GetLabels(), object.GetAnnotations(), managers)
+	existing := helmcrds.ExistingFromObject(object.GetName(), object.GetLabels(), object.GetAnnotations(), managers)
+	existing.StoredVersions, _, _ = unstructured.NestedStringSlice(object.Object, "status", "storedVersions")
+	return existing
 }
 
 // serverVersion is the cluster's Kubernetes version as the API server

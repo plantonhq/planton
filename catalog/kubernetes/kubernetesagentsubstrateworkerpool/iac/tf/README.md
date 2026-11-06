@@ -24,4 +24,4 @@ planton tofu apply --manifest worker-pool.yaml
 
 ## Import
 
-An existing WorkerPool imports with the ID `ate.dev/v1alpha1//WorkerPool//<name>//<namespace>` (see `../import-map.yaml`).
+An existing WorkerPool imports with the ID `ate.dev/v1//WorkerPool//<name>//<namespace>` (see `../import-map.yaml`).

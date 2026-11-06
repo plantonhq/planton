@@ -4,8 +4,8 @@ metadata:
   name: kubernetesagentsubstrate
 spec:
   tier: 4
-  # The Agent Substrate v0.6.0 control plane from Planton's published build
-  # of upstream's own release, the resource definitions kept and
+  # The Agent Substrate v1.0.0 control plane from Planton's published install
+  # set of upstream's own release, the resource definitions kept and
   # ownership-checked. Every lane proves what a product is promised, from
   # the kind's outputs alone: a service-account token minted for the output
   # audience, trusted through the output ClusterTrustBundle and dialed under
@@ -29,9 +29,9 @@ spec:
   # an API server or a definition another installation holds, and an
   # earlier minor recorded on the API server or on the database volume.
   #
-  # cordonControlPlane needs nodes labelled for the control plane and the
-  # database, which the one-node kind cluster cannot offer; the offline
-  # proofs cover it.
+  # cordonSystemInfraComponents needs node pools labelled for the system
+  # components and the database, which the one-node kind cluster cannot
+  # offer; the offline proofs cover it.
   status: green
   validated_provisioners: [pulumi, terraform]
   timeout_minutes: 40

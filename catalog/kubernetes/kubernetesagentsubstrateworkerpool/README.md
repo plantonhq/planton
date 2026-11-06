@@ -1,6 +1,6 @@
 # KubernetesAgentSubstrateWorkerPool
 
-Declares an Agent Substrate `WorkerPool`: the worker pods actors run in, many actors to a worker, sized, placed and isolated as one pool. A suspended actor leaves its worker for storage and gives its share back, so a pool serves many more actors than it runs at once. The spec mirrors the upstream `ate.dev/v1alpha1` WorkerPool field for field (pinned to the definition of the Agent Substrate release `KubernetesAgentSubstrate` composes, v0.6.0), after a small Planton envelope: the namespace, and the object's own labels and annotations.
+Declares an Agent Substrate `WorkerPool`: the worker pods actors run in, many actors to a worker, sized, placed and isolated as one pool. A suspended actor leaves its worker for storage and gives its share back, so a pool serves many more actors than it runs at once. The spec mirrors the upstream `ate.dev/v1` WorkerPool field for field (pinned to the definition of the Agent Substrate release `KubernetesAgentSubstrate` composes, v1.0.0), after a small Planton envelope: the namespace, and the object's own labels and annotations.
 
 ## What Gets Created
 

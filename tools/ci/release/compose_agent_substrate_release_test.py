@@ -9,6 +9,7 @@ import tempfile
 import unittest
 
 from compose_agent_substrate_release import (
+    ENVOY_PLACEHOLDER,
     CompositionError,
     check,
     check_shape,
@@ -29,15 +30,19 @@ const ModulePath = "go.ate.dev/substrate"
 var Components = []string{
 	"cmd/ateapi",
 	"cmd/atelet",
+	"cmd/benchmarking/isolate/fake-atelet",
 	"demos/multi-template/fspersist",
 }
-"""
 
-OVERLAY_GO = """package steps
+var released = []string{
+	"cmd/ateapi",
+	"cmd/atelet",
+	"demos/multi-template/fspersist",
+}
 
-const (
-	envoyDataplaneImage = "envoy-dataplane"
-)
+var EnvoyDataplane = DockerfileImage{Name: "envoy-dataplane", Context: "cmd/dataplane/envoy"}
+
+var releasedDockerfiles = []DockerfileImage{EnvoyDataplane}
 """
 
 API_MAIN_GO = """package main
@@ -93,6 +98,17 @@ spec:
 
 TEMPLATE = "assets: ${BUCKET_SCHEME}://${BUCKET_NAME}/kata\n"
 
+# An opt-in component naming an image no release publishes, as upstream's
+# benchmarking fakes are.
+FAKE_COMPONENT = f"""apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+patches:
+  - patch: |
+      - op: replace
+        path: /spec/template/spec/containers/0/image
+        value: {MODULE}/cmd/benchmarking/isolate/fake-atelet
+"""
+
 
 def write(path, text):
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -100,7 +116,8 @@ def write(path, text):
         f.write(text)
 
 
-def write_layout(layouts, name, platforms=("linux/amd64", "linux/arm64"), media_type="application/vnd.oci.image.index.v1+json", build=""):
+def write_index(index_manifests, name, platforms=("linux/amd64", "linux/arm64"), media_type="application/vnd.oci.image.index.v1+json", build=""):
+    """Save one image's index as its registry serves it, and return its digest."""
     index = json.dumps({
         "schemaVersion": 2,
         "mediaType": media_type,
@@ -110,28 +127,26 @@ def write_layout(layouts, name, platforms=("linux/amd64", "linux/arm64"), media_
             for p in platforms
         ],
     }).encode()
-    digest = hashlib.sha256(index).hexdigest()
-    blob = os.path.join(layouts, name, "blobs", "sha256", digest)
-    os.makedirs(os.path.dirname(blob))
-    with open(blob, "wb") as f:
+    os.makedirs(index_manifests, exist_ok=True)
+    with open(os.path.join(index_manifests, f"{name}.json"), "wb") as f:
         f.write(index)
-    write(os.path.join(layouts, name, "index.json"), json.dumps({"manifests": [{"digest": "sha256:" + digest}]}))
-    return "sha256:" + digest
+    return "sha256:" + hashlib.sha256(index).hexdigest()
 
 
 class Fixture:
-    """An upstream checkout at a tag and the layouts its build exported."""
+    """An upstream checkout at a tag and the indexes its registry serves."""
 
     def __init__(self, root, version=VERSION):
         self.source = os.path.join(root, "source")
-        self.layouts = os.path.join(root, "layouts")
+        self.indexes = os.path.join(root, "indexes")
         self.root = root
         self.version = version
         write(os.path.join(self.source, "cmd/ate-setup/internal/images/images.go"), COMPONENTS_GO)
         write(os.path.join(self.source, "cmd/ate-setup/internal/config/config.go"), "package config\n")
-        write(os.path.join(self.source, "tools/setup-gcp/README.md"), "# setup-gcp\n")
+        write(os.path.join(self.source, "internal/installdefaults/installdefaults.go"), "package installdefaults\n")
+        write(os.path.join(self.source, "cmd/atelet/internal/filecachegc/flags.go"), "package filecachegc\n")
         write(os.path.join(self.source, "pkg/postgressetup/setup.sql"), "CREATE SCHEMA substrate;\n")
-        write(os.path.join(self.source, "cmd/ate-setup/internal/steps/overlay.go"), OVERLAY_GO)
+        write(os.path.join(self.source, "cmd/ate-setup/internal/steps/overlay.go"), "package steps\n")
         write(os.path.join(self.source, "cmd/ateapi/main.go"), API_MAIN_GO)
         write(os.path.join(self.source, "internal/preview/preview.go"), PREVIEW_GO)
         write(os.path.join(self.source, "manifests/ate-install/app.yaml"), APP_YAML)
@@ -140,18 +155,19 @@ class Fixture:
               "apiVersion: kustomize.config.k8s.io/v1beta1\nkind: Kustomization\nresources:\n  - ../app.yaml\n")
         write(os.path.join(self.source, "manifests/ate-install/components/pin/kustomization.yaml"),
               "apiVersion: kustomize.config.k8s.io/v1alpha1\nkind: Component\n")
+        write(os.path.join(self.source, "manifests/ate-install/components/fake-data-plane/kustomization.yaml"), FAKE_COMPONENT)
         write(os.path.join(self.source, "manifests/microvm/sandboxconfig.yaml.tmpl"), TEMPLATE)
         write(os.path.join(self.source, "LICENSE"), "Apache License 2.0\n")
         write(os.path.join(self.source, "_LICENSES/github.com/x/y/LICENSE"), "MIT\n")
         self.digests = {
-            name: write_layout(self.layouts, name, build=version)
+            name: write_index(self.indexes, name, build=version)
             for name in ("ateapi", "atelet", "fspersist", "envoy-dataplane")
         }
 
     def compose(self, out_name="out", shape=None):
         out = os.path.join(self.root, out_name)
         os.makedirs(out)
-        return out, compose(self.source, self.layouts, REPOSITORY, self.version, shape or self.version, COMMIT, out)
+        return out, compose(self.source, self.indexes, REPOSITORY, self.version, shape or self.version, COMMIT, out)
 
     def pinned(self, name):
         return f"{REPOSITORY}/{name}:{self.version}@{self.digests[name]}"
@@ -189,35 +205,43 @@ class ComposeTest(unittest.TestCase):
         self.assertIn(f"{MODULE}/cmd/atelet-sidecar (in manifests/ate-install/sidecar.yaml) has no published image", str(raised.exception))
 
     def test_an_image_without_both_platforms_fails(self):
-        shutil.rmtree(os.path.join(self.fixture.layouts, "atelet"))
-        write_layout(self.fixture.layouts, "atelet", platforms=("linux/amd64",))
+        write_index(self.fixture.indexes, "atelet", platforms=("linux/amd64",))
         with self.assertRaises(CompositionError) as raised:
             self.fixture.compose()
         self.assertIn("lacks linux/arm64", str(raised.exception))
 
     def test_a_single_platform_image_fails(self):
-        shutil.rmtree(os.path.join(self.fixture.layouts, "atelet"))
-        write_layout(self.fixture.layouts, "atelet", media_type="application/vnd.oci.image.manifest.v1+json")
+        write_index(self.fixture.indexes, "atelet", media_type="application/vnd.oci.image.manifest.v1+json")
         with self.assertRaises(CompositionError):
             self.fixture.compose()
 
-    def test_the_built_set_must_equal_upstreams_published_set(self):
-        shutil.rmtree(os.path.join(self.fixture.layouts, "fspersist"))
-        write_layout(self.fixture.layouts, "fake-extra")
+    def test_the_fetched_set_must_equal_upstreams_published_set(self):
+        os.remove(os.path.join(self.fixture.indexes, "fspersist.json"))
+        write_index(self.fixture.indexes, "fake-atelet")
         with self.assertRaises(CompositionError) as raised:
             self.fixture.compose()
         message = str(raised.exception)
-        self.assertIn("no built image for fspersist", message)
-        self.assertIn("built images fake-extra are not in upstream's published set", message)
+        self.assertIn("no index fetched for fspersist", message)
+        self.assertIn("fetched images fake-atelet are not in upstream's published set", message)
 
-    def test_a_tampered_archive_fails(self):
-        layout = os.path.join(self.fixture.layouts, "ateapi")
-        digest = self.fixture.digests["ateapi"].split(":", 1)[1]
-        with open(os.path.join(layout, "blobs", "sha256", digest), "ab") as f:
-            f.write(b" ")
+    def test_the_digest_is_the_hash_of_the_served_index(self):
+        _, references = self.fixture.compose()
+        with open(os.path.join(self.fixture.indexes, "ateapi.json"), "rb") as f:
+            self.assertEqual(references["ateapi"], f"{REPOSITORY}/ateapi:{VERSION}@sha256:{hashlib.sha256(f.read()).hexdigest()}")
+
+    def test_a_component_naming_an_unreleased_image_is_left_out_whole(self):
+        out, references = self.fixture.compose()
+        self.assertFalse(os.path.exists(os.path.join(out, "manifests/ate-install/components/fake-data-plane")))
+        self.assertTrue(os.path.exists(os.path.join(out, "manifests/ate-install/components/pin/kustomization.yaml")))
+        self.assertNotIn("fake-atelet", references)
+
+    def test_an_install_file_naming_an_unreleased_image_fails(self):
+        write(os.path.join(self.fixture.source, "manifests/ate-install/bench.yaml"),
+              f"image: {MODULE}/cmd/benchmarking/isolate/fake-atelet\n")
         with self.assertRaises(CompositionError) as raised:
             self.fixture.compose()
-        self.assertIn("does not hash to", str(raised.exception))
+        self.assertIn("manifests/ate-install/bench.yaml names", str(raised.exception))
+        self.assertIn("which no release publishes", str(raised.exception))
 
     def test_crds_yaml_holds_only_the_crds(self):
         out, _ = self.fixture.compose()
@@ -357,43 +381,49 @@ class ShapeTest(unittest.TestCase):
             self.claim()
         self.assertIn("preview gate ExternalVolumes", str(raised.exception))
 
+    def test_a_moved_install_deciding_directory_refuses_the_claim(self):
+        shutil.rmtree(os.path.join(self.patch.source, "internal/installdefaults"))
+        with self.assertRaises(CompositionError) as raised:
+            self.claim()
+        self.assertIn("has no internal/installdefaults", str(raised.exception))
+
     def test_an_added_flag_keeps_the_shape(self):
         write(os.path.join(self.patch.source, "cmd/atelet/flags.go"), 'package main\n\nvar budget = pflag.Int("upload-budget", 0, "New.")\n')
         self.claim()
 
 
 class ReadUpstreamTest(unittest.TestCase):
-    def test_a_missing_module_path_fails_with_the_file_named(self):
+    def read(self, images_go):
         tmp = tempfile.mkdtemp()
-        try:
-            write(os.path.join(tmp, "cmd/ate-setup/internal/images/images.go"), COMPONENTS_GO.replace('const ModulePath = "go.ate.dev/substrate"\n', ""))
-            write(os.path.join(tmp, "cmd/ate-setup/internal/steps/overlay.go"), OVERLAY_GO)
-            with self.assertRaises(CompositionError) as raised:
-                read_upstream(tmp)
-            self.assertIn("ModulePath", str(raised.exception))
-        finally:
-            shutil.rmtree(tmp)
+        self.addCleanup(shutil.rmtree, tmp)
+        write(os.path.join(tmp, "cmd/ate-setup/internal/images/images.go"), images_go)
+        return read_upstream(tmp)
+
+    def test_a_missing_module_path_fails_with_the_file_named(self):
+        with self.assertRaises(CompositionError) as raised:
+            self.read(COMPONENTS_GO.replace('const ModulePath = "go.ate.dev/substrate"\n', ""))
+        self.assertIn("ModulePath", str(raised.exception))
 
     def test_a_moved_component_list_fails_with_the_file_named(self):
-        tmp = tempfile.mkdtemp()
-        try:
-            write(os.path.join(tmp, "cmd/ate-setup/internal/steps/overlay.go"), OVERLAY_GO)
-            with self.assertRaises(CompositionError) as raised:
-                read_upstream(tmp)
-            self.assertIn("cmd/ate-setup/internal/images/images.go", str(raised.exception))
-        finally:
-            shutil.rmtree(tmp)
+        with self.assertRaises(CompositionError) as raised:
+            self.read("package images\n")
+        self.assertIn("cmd/ate-setup/internal/images/images.go", str(raised.exception))
 
-    def test_image_names_are_the_package_base_names(self):
-        tmp = tempfile.mkdtemp()
-        try:
-            write(os.path.join(tmp, "cmd/ate-setup/internal/images/images.go"), COMPONENTS_GO)
-            write(os.path.join(tmp, "cmd/ate-setup/internal/steps/overlay.go"), OVERLAY_GO)
-            upstream = read_upstream(tmp)
-            self.assertEqual(upstream.image_names, {"ateapi", "atelet", "fspersist", "envoy-dataplane"})
-            self.assertEqual(upstream.image_by_reference[f"{MODULE}/demos/multi-template/fspersist"], "fspersist")
-        finally:
-            shutil.rmtree(tmp)
+    def test_a_released_package_outside_components_fails(self):
+        with self.assertRaises(CompositionError) as raised:
+            self.read(COMPONENTS_GO.replace('var released = []string{\n', 'var released = []string{\n\t"cmd/elsewhere",\n'))
+        self.assertIn("`var released", str(raised.exception))
+
+    def test_an_envoy_image_no_release_publishes_fails(self):
+        with self.assertRaises(CompositionError) as raised:
+            self.read(COMPONENTS_GO.replace("[]DockerfileImage{EnvoyDataplane}", "[]DockerfileImage{}"))
+        self.assertIn(ENVOY_PLACEHOLDER, str(raised.exception))
+
+    def test_image_names_are_the_released_package_base_names(self):
+        upstream = self.read(COMPONENTS_GO)
+        self.assertEqual(upstream.image_names, {"ateapi", "atelet", "fspersist", "envoy-dataplane"})
+        self.assertEqual(upstream.image_by_reference[f"{MODULE}/demos/multi-template/fspersist"], "fspersist")
+        self.assertEqual(upstream.image_by_reference[f"{MODULE}/cmd/benchmarking/isolate/fake-atelet"], "fake-atelet")
 
 
 if __name__ == "__main__":

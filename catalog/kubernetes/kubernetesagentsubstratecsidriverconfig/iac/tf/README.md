@@ -23,4 +23,4 @@ planton tofu apply --manifest csi-driver-config.yaml
 
 ## Import
 
-An existing CSIDriverConfig imports with the ID `ate.dev/v1alpha1//CSIDriverConfig//<name>` (see `../import-map.yaml`).
+An existing CSIDriverConfig imports with the ID `ate.dev/v1//CSIDriverConfig//<name>` (see `../import-map.yaml`).

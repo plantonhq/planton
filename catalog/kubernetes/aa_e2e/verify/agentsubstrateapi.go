@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/catalog/kubernetes/aa_e2e/verify/internal/ateapipb"
+	"github.com/plantonhq/planton/catalog/kubernetes/aa_e2e/verify/internal/ateapi"
 	"github.com/plantonhq/planton/e2e/framework/provider"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -158,20 +158,16 @@ spec:
 }
 
 // callRouter makes one request a product makes to an actor: a POST to the
-// router with `ate-target-actor: <atespace>/<actor>`, from the given router
-// caller. Over TLS (the Envoy router) the caller presents its pod
-// certificate and trusts only the Substrate bundle; over plaintext
-// (agentgateway's router_endpoint) it sends the request as is. It returns
-// the HTTP status, 0 when the router answered no HTTP at all (a refused TLS
-// handshake), and the body.
+// router's TLS endpoint with `ate-target-actor: <atespace>/<actor>`, from the
+// given router caller, which presents its pod certificate and trusts only the
+// Substrate bundle. It returns the HTTP status, 0 when the router answered no
+// HTTP at all (a refused TLS handshake), and the body.
 func callRouter(ctx context.Context, kubeconfig, caller, endpoint, target string) (int, string, error) {
 	args := []string{"--kubeconfig", kubeconfig, "exec", caller, "-n", agentSubstrateProbeNamespace, "--",
-		"curl", "-sS", "-m", "20", "-X", "POST", "-H", agentSubstrateHeader + ": " + target, "-w", "\n%{http_code}"}
-	if strings.HasPrefix(endpoint, "https://") {
-		args = append(args, "--cert", "/run/router-client/credential-bundle.pem", "--key", "/run/router-client/credential-bundle.pem",
-			"--cacert", "/run/router-trust/trust-bundle.pem")
-	}
-	args = append(args, strings.TrimSuffix(endpoint, "/")+"/")
+		"curl", "-sS", "-m", "20", "-X", "POST", "-H", agentSubstrateHeader + ": " + target, "-w", "\n%{http_code}",
+		"--cert", "/run/router-client/credential-bundle.pem", "--key", "/run/router-client/credential-bundle.pem",
+		"--cacert", "/run/router-trust/trust-bundle.pem",
+		strings.TrimSuffix(endpoint, "/") + "/"}
 	out, err := exec.CommandContext(ctx, "kubectl", args...).CombinedOutput()
 	text := strings.TrimRight(string(out), "\n")
 	cut := strings.LastIndex(text, "\n")
@@ -205,7 +201,7 @@ func removeSubstrateProbe(ctx context.Context, kubeconfig string) error {
 // substrateAPI is a connection to the control plane's API, made from its
 // outputs, with tokens minted per probe service account.
 type substrateAPI struct {
-	control    ateapipb.ControlClient
+	control    ateapi.ControlClient
 	kubeconfig string
 	address    string
 	serverName string
@@ -261,7 +257,7 @@ func dialSubstrateAPI(ctx context.Context, kubeconfig string, outputs map[string
 		stop()
 		return nil, errors.Wrap(err, "dialing the API")
 	}
-	a.control = ateapipb.NewControlClient(conn)
+	a.control = ateapi.NewControlClient(conn)
 	a.close = func() {
 		_ = conn.Close()
 		stop()

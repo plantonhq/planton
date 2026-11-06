@@ -133,6 +133,19 @@ func DowngradeFailure(src Source, crdName, existingVersion string) error {
 	}
 }
 
+// StoredVersionDroppedFailure is the refusal when a CRD the module is about to
+// apply no longer lists a version the cluster stores objects of it at: an
+// upstream release that moved its API to a new version and dropped the old
+// one, over objects an earlier release wrote. Kubernetes refuses that
+// definition, so the primitive stops before touching anything.
+func StoredVersionDroppedFailure(src Source, crdName string, dropped, listed []string) error {
+	return &Failure{
+		Observed: fmt.Sprintf("the cluster stores objects of CRD %s at %s, which %s no longer lists (it lists %s)", crdName, strings.Join(dropped, ", "), src.VersionPhrase(src.Version), strings.Join(listed, ", ")),
+		Meaning:  "Kubernetes refuses a definition that drops a version objects are stored at, and those objects were written by an earlier release this one cannot read",
+		NextStep: fmt.Sprintf("back up what you need, then delete the definition and every object of it (`kubectl delete crd %s`) and re-run; or, to keep the objects, migrate each to a served version and remove the old one from the definition's status.storedVersions first", crdName),
+	}
+}
+
 // OwnedElsewhereFailure is the refusal when a CRD the module is about to apply
 // already exists on the cluster without this source's stamp: a hand-run
 // `helm install`, a colleague's `kubectl apply`, another tool, or a Planton

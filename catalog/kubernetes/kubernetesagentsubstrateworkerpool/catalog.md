@@ -1,6 +1,6 @@
 # Agent Substrate Worker Pool
 
-Declares an Agent Substrate WorkerPool: the worker pods agents run in, many actors to a worker, sized, placed and isolated as one pool. Substrate places each actor a product creates or resumes on a worker with room for it, in the pool its template selects, and takes the actor's share back when it is suspended into storage, so a pool serves many more actors than it runs at once. The spec is faithful to the upstream `ate.dev/v1alpha1` WorkerPool (pinned to Agent Substrate v0.6.0) — this is the capacity and the boundary an agent runtime is built from, one pool per tenant if you want.
+Declares an Agent Substrate WorkerPool: the worker pods agents run in, many actors to a worker, sized, placed and isolated as one pool. Substrate places each actor a product creates or resumes on a worker with room for it, in the pool its template selects, and takes the actor's share back when it is suspended into storage, so a pool serves many more actors than it runs at once. The spec is faithful to the upstream `ate.dev/v1` WorkerPool (pinned to Agent Substrate v1.0.0) — this is the capacity and the boundary an agent runtime is built from, one pool per tenant if you want.
 
 ## What Gets Created
 

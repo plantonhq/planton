@@ -1,6 +1,6 @@
 # Pinned gVisor Release
 
-One gVisor release, pinned to the byte, that your worker pools name explicitly. It is the release Agent Substrate v0.6.0 ships as `gvisor-default` (gVisor nightly 2026-10-17, the first build that checkpoints an actor's root filesystem and durable directories as separate bundles, which Substrate's workers need), so the config starts out equal to the shipped one and stays where you put it when a later control plane ships a newer release.
+One gVisor release, pinned to the byte, that your worker pools name explicitly. It is the release Agent Substrate v1.0.0 ships as `gvisor-default`'s default version (gVisor release 20261102.0; Substrate's workers need a release from 20261019.0 on, the first to checkpoint an actor's root filesystem and durable directories as separate bundles), so the config starts out equal to the shipped one and stays where you put it when a later control plane ships a newer release.
 
 ## When to Use
 
@@ -13,7 +13,7 @@ Every node downloads the tarball for its own architecture ahead of time, verifie
 
 ## Key Configuration Choices
 
-- **A version named after what it pins.** `gvisor-2026-10-17` reads as a fact in a pool's status line; a counter does not.
+- **A version named after what it pins.** `gvisor-20261102-0` reads as a fact in a pool's status line; a counter does not.
 - **Both architectures.** Keep a block for every architecture your workers run on; a version with no files for a node's architecture cannot boot there.
 - **No class-default annotation.** This config is named explicitly; `gvisor-default` stays what pools that name no config resolve.
 

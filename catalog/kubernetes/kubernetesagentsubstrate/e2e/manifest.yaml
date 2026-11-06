@@ -199,11 +199,11 @@ spec:
     workerLogsExporters:
       - otlp
   clusterSize: size10
-  cordonControlPlane: true
+  cordonSystemInfraComponents: true
   imageRegistry: mirror.example.com/substrate
   imagePullSecrets:
     - mirror-pull
-  version: v0.6.0
+  version: v1.0.0
   previewGates:
     - ALL
   identityServer:

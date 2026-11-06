@@ -1,14 +1,14 @@
-# The SandboxConfig custom resource definition (ate.dev/v1alpha1) as Agent
-# Substrate v0.6.0 publishes it -- the release whose install shape
+# The SandboxConfig custom resource definition (ate.dev/v1) as Agent
+# Substrate v1.0.0 publishes it -- the release whose install shape
 # KubernetesAgentSubstrate composes, and the one the
 # KubernetesAgentSubstrateSandboxConfig spec mirrors. It is upstream's own
 # generated definition, byte for byte from its first document (the file's
 # license header and leading separator dropped):
 #
-#   git show v0.6.0:manifests/ate-install/generated/ate.dev_sandboxconfigs.yaml
+#   git show v1.0.0:manifests/ate-install/generated/ate.dev_sandboxconfigs.yaml
 #
 # in github.com/agent-substrate/substrate (the same document Planton's
-# published crds.yaml for v0.6.0 carries). Never edit it by hand; replace it
+# published crds.yaml for v1.0.0 carries). Never edit it by hand; replace it
 # from a newer tag to move the pin.
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
@@ -37,7 +37,7 @@ spec:
     - jsonPath: .metadata.creationTimestamp
       name: Age
       type: date
-    name: v1alpha1
+    name: v1
     schema:
       openAPIV3Schema:
         description: |-

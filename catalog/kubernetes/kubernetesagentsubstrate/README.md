@@ -16,13 +16,13 @@ The five certificate authorities behind Substrate's mTLS, actor identities and e
 
 ## Upgrades refuse what Substrate cannot survive
 
-Before 1.0 every Substrate minor release is a reinstall: the API server migrates its database schema irreversibly on its first start. The module stamps the installed release on the API server and the minor that wrote the bundled database on its volume (which outlives a destroy while another resource owns the namespace), and refuses at plan time an apply that would move across a minor, with the backup, destroy and clear steps that move it safely.
+The API server migrates its database schema forward irreversibly on its first start, so Substrate upgrades one minor release at a time, rolls back at most one, and reinstalls across a major; before 1.0 every minor release was a reinstall, so a v0.x installation reinstalls to reach v1.0. The module stamps the installed release on the API server and the minor that wrote the bundled database on its volume (which outlives a destroy while another resource owns the namespace), and refuses at plan time an apply that breaks that rule, with the backup, destroy and clear steps that move it safely.
 
 ## Distribution and the version
 
-Agent Substrate publishes no images and no installable release. Planton builds both from upstream's own publisher at each release tag and serves them, digest-pinned and immutable, at `https://downloads.planton.ai/releases/agent-substrate/<version>/`, with the images on ghcr.io and mirrored to Artifact Registry. The module composes that tree the way upstream's installer does, applies the typed settings onto upstream's own objects, and takes the resource definitions through the kept-definition path.
+Agent Substrate publishes its release images (`ghcr.io/agent-substrate/substrate`) but no installable release. Planton publishes one for each upstream release: upstream's manifests with every image pinned by the digest upstream's registry serves, immutable, at `https://downloads.planton.ai/releases/agent-substrate/<version>/`. The module composes that tree the way upstream's installer does, applies the typed settings onto upstream's own objects, and takes the resource definitions through the kept-definition path.
 
-The modules compose one install shape, v0.6.0's, and `version` picks any release Planton publishes with that shape: one whose install differs only in its images, which Planton proves before it publishes. So an upstream patch reaches you by setting `version`, with no catalog update. A release of another shape, or one Planton has not published, is refused before anything is applied; every file read is checked against the release's checksums. The catalog's Substrate kinds mirror the shape's definitions.
+The modules compose one install shape, v1.0.0's, and `version` picks any release Planton publishes with that shape: one whose install differs only in its images, which Planton proves before it publishes. So an upstream patch reaches you by setting `version`, with no catalog update. A release of another shape, or one Planton has not published, is refused before anything is applied; every file read is checked against the release's checksums. The catalog's Substrate kinds mirror the shape's definitions.
 
 ---
 

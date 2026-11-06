@@ -40,7 +40,7 @@ func TestEnginesApplyTheSameDocuments(t *testing.T) {
 	pluginCache := t.TempDir()
 
 	agentgateway := minimalSpec()
-	agentgateway.Router = &v1.KubernetesAgentSubstrateRouter{Dataplane: v1.KubernetesAgentSubstrateRouter_agentgateway, Replicas: i32(2)}
+	agentgateway.Router = &v1.KubernetesAgentSubstrateRouter{Dataplane: v1.KubernetesAgentSubstrateRouter_agentgateway, Replicas: i32(2), AllowedClientSpiffeIds: []string{"spiffe://cluster.local/ns/agents/sa/orchestrator"}}
 	agentgateway.Egress.CredentialProvider = &v1.KubernetesAgentSubstrateCredentialProvider{Kind: &v1.KubernetesAgentSubstrateCredentialProvider_External{
 		External: &v1.KubernetesAgentSubstrateExternalCredentialProvider{Name: "secretmanager.googleapis.com", Address: "gsm.ate-system.svc:50051"},
 	}}
@@ -51,7 +51,7 @@ func TestEnginesApplyTheSameDocuments(t *testing.T) {
 
 	envoyEverything := minimalSpec()
 	envoyEverything.ClusterSize = v1.KubernetesAgentSubstrateSpec_size10
-	envoyEverything.CordonControlPlane = true
+	envoyEverything.CordonSystemInfraComponents = true
 	envoyEverything.ImageRegistry = "mirror.example.com"
 	envoyEverything.Egress = &v1.KubernetesAgentSubstrateEgress{
 		CredentialProvider: &v1.KubernetesAgentSubstrateCredentialProvider{Kind: &v1.KubernetesAgentSubstrateCredentialProvider_KubernetesSecrets{

@@ -247,7 +247,7 @@ func resolveSettings(spec *kubernetesagentsubstratev1alpha1.KubernetesAgentSubst
 		requestedNamespace: spec.GetNamespace().GetValue(),
 		createNamespace:    spec.GetCreateNamespace(),
 		size10:             spec.GetClusterSize() == kubernetesagentsubstratev1alpha1.KubernetesAgentSubstrateSpec_size10,
-		cordon:             spec.GetCordonControlPlane(),
+		cordon:             spec.GetCordonSystemInfraComponents(),
 		registry:           spec.GetImageRegistry(),
 		pullSecrets:        spec.GetImagePullSecrets(),
 		preview:            spec.GetPreviewGates(),

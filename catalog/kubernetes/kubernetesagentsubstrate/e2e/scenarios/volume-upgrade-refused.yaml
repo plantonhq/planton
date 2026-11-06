@@ -1,6 +1,6 @@
 # THE MINOR-RELEASE REFUSAL, from the database volume: the bundled
-# database's volume (the fixture) was written by minor 0.5 and outlived its
-# installation. Installing v0.6.0 over it would migrate that data
+# database's volume (the fixture) was written by minor 0.6 and outlived its
+# installation. Installing v1.0.0 over it would misread that data
 # irreversibly, so the deploy must be refused at plan, naming the volume
 # and how to clear it.
 apiVersion: kubernetes.planton.dev/v1alpha1
@@ -11,7 +11,7 @@ metadata:
     planton.dev/e2e-cluster-profile: "pod-certificates"
     planton.dev/e2e-prerequisites: "catalog/kubernetes/kubernetesagentsubstrate/e2e/fixture-earlier-volume.yaml"
     planton.dev/e2e-expect-deploy-failure: upgrade-refused
-    planton.dev/e2e-expect-installed-version: v0.5
+    planton.dev/e2e-expect-installed-version: v0.6
 spec:
   namespace:
     value: ate-system

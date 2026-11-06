@@ -5,7 +5,7 @@
 # equivalent: the typed CR without await annotations.
 resource "kubectl_manifest" "sandbox_config" {
   yaml_body = yamlencode({
-    apiVersion = "ate.dev/v1alpha1"
+    apiVersion = "ate.dev/v1"
     kind       = "SandboxConfig"
     metadata = {
       name        = var.spec.name

@@ -32,8 +32,8 @@ const (
 // resolves, as the config stands at that moment.
 //
 // 100% fidelity with the upstream SandboxConfig custom resource
-// (ate.dev/v1alpha1, cluster-scoped), pinned to the definition of the
-// Agent Substrate release KubernetesAgentSubstrate composes (v0.6.0) and held
+// (ate.dev/v1, cluster-scoped), pinned to the definition of the
+// Agent Substrate release KubernetesAgentSubstrate composes (v1.0.0) and held
 // to it by the mirror test. The definition's two rules and the per-class
 // asset rules of upstream's admission policy (sandboxconfig-assets) are
 // written below, so a config the cluster would refuse fails validation

@@ -1,17 +1,10 @@
 package module
 
 import (
-	"crypto/ecdsa"
-	"crypto/rsa"
 	"crypto/sha256"
-	"crypto/x509"
 	"encoding/base64"
 	"encoding/json"
-	"encoding/pem"
-	"math/big"
 	"strings"
-
-	"github.com/pkg/errors"
 )
 
 // Agent Substrate keeps every certificate authority and the actor token
@@ -118,14 +111,15 @@ type caPool struct {
 }
 
 // caPools are the five CA pools upstream's installer creates
-// (cmd/ate-setup/internal/steps/create.go): Ed25519 for all but the egress
-// interception CA, which is ECDSA P-256 because Envoy and agentgateway mint
-// leaves from it.
+// (cmd/ate-setup/internal/steps/create.go): Ed25519 for the three in-cluster
+// identity CAs, and ECDSA P-256 for the actor identity CA, whose root outside
+// relying parties trust and P-256 is more broadly accepted by, and the egress
+// interception CA, which Envoy and agentgateway mint leaves from.
 var caPools = []caPool{
 	{secret: "service-dns-ca-pool", namespace: vars.PodCertificatesNamespace, algorithm: "ED25519", commonName: "Agent Substrate service DNS CA"},
 	{secret: "pod-identity-ca-pool", namespace: vars.PodCertificatesNamespace, algorithm: "ED25519", commonName: "Agent Substrate pod identity CA"},
 	{secret: "postgres-ca-pool", namespace: vars.PodCertificatesNamespace, algorithm: "ED25519", commonName: "Agent Substrate PostgreSQL client CA"},
-	{secret: "actor-id-ca-pool", namespace: vars.Namespace, algorithm: "ED25519", commonName: "Agent Substrate actor identity CA"},
+	{secret: "actor-id-ca-pool", namespace: vars.Namespace, algorithm: "ECDSA", commonName: "Agent Substrate actor identity CA"},
 	{secret: "egress-mitm-ca-pool", namespace: vars.Namespace, algorithm: "ECDSA", commonName: "Agent Substrate egress interception CA"},
 }
 
@@ -143,58 +137,4 @@ func caPoolSecretData(privateKeyPKCS8PEM, certificatePEM string) map[string]stri
 		"tls.crt": certificatePEM,
 		"tls.key": privateKeyPKCS8PEM,
 	}
-}
-
-// jwk is one published key, in upstream's field order
-// (internal/localjwtauthority jwk), which encoding/json keeps.
-type jwk struct {
-	KeyType   string `json:"kty"`
-	KeyID     string `json:"kid"`
-	Use       string `json:"use"`
-	Algorithm string `json:"alg"`
-	Curve     string `json:"crv,omitempty"`
-	X         string `json:"x,omitempty"`
-	Y         string `json:"y,omitempty"`
-	N         string `json:"n,omitempty"`
-	E         string `json:"e,omitempty"`
-}
-
-// jwksJSON is the public key set of the actor token signing key, byte for
-// byte what upstream's localjwtauthority.PublicJWKS derives from the pool:
-// the API server's credential exchange verifies actor tokens against it, and
-// its Secret key is mounted whatever the storage. A P-256 key's coordinates
-// are padded to 32 bytes; an RSA modulus and exponent are big-endian with no
-// leading zeros. A gated test holds both engines' sets to upstream's own
-// derivation.
-func jwksJSON(algorithm, publicKeyPEM string) (string, error) {
-	block, _ := pem.Decode([]byte(publicKeyPEM))
-	if block == nil {
-		return "", errors.New("the actor token signing key's public key is not PEM")
-	}
-	public, err := x509.ParsePKIXPublicKey(block.Bytes)
-	if err != nil {
-		return "", errors.Wrap(err, "parsing the actor token signing key's public key")
-	}
-	key := jwk{KeyID: jwtKeyID(publicKeyPEM), Use: "sig", Algorithm: algorithm}
-	switch k := public.(type) {
-	case *ecdsa.PublicKey:
-		point, err := k.Bytes()
-		if err != nil {
-			return "", errors.Wrap(err, "encoding the actor token signing key's public point")
-		}
-		key.KeyType, key.Curve = "EC", "P-256"
-		key.X = base64.RawURLEncoding.EncodeToString(point[1:33])
-		key.Y = base64.RawURLEncoding.EncodeToString(point[33:65])
-	case *rsa.PublicKey:
-		key.KeyType = "RSA"
-		key.N = base64.RawURLEncoding.EncodeToString(k.N.Bytes())
-		key.E = base64.RawURLEncoding.EncodeToString(big.NewInt(int64(k.E)).Bytes())
-	default:
-		return "", errors.Errorf("the actor token signing key is a %T, not an ECDSA or RSA key", public)
-	}
-	set := struct {
-		Keys []jwk `json:"keys"`
-	}{Keys: []jwk{key}}
-	raw, err := json.Marshal(set)
-	return string(raw), err
 }

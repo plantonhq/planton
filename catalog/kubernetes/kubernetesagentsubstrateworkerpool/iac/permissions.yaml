@@ -22,7 +22,7 @@ spec:
           - delete
         cluster_scoped: false
         provenance: derived
-        notes: Covers the kubectl_manifest.worker_pool resource (Terraform) and the apiextensions.CustomResource the manifestcr helper creates (Pulumi) -- each module's only resource, applying one namespaced WorkerPool (ate.dev/v1alpha1). The worker Deployment and NetworkPolicy are created by Substrate's controller under its own identity, never by the runner.
+        notes: Covers the kubectl_manifest.worker_pool resource (Terraform) and the apiextensions.CustomResource the manifestcr helper creates (Pulumi) -- each module's only resource, applying one namespaced WorkerPool (ate.dev/v1). The worker Deployment and NetworkPolicy are created by Substrate's controller under its own identity, never by the runner.
       - api_groups:
           - ate.dev
         resources:
