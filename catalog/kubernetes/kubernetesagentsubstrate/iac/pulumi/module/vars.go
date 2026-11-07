@@ -5,13 +5,11 @@ package module
 // upstream's manifests bake in. Every value has an exact twin in the
 // Terraform module's locals.tf, and a test holds the two equal.
 var vars = struct {
-	// Release is the agent-substrate/substrate release this module composes:
-	// its install shape (the files, objects, flags and settings the
-	// composition reads and patches), the version installed when spec.version
-	// is empty, and the release whose resource definitions the kind applies
-	// and the catalog's Substrate resource kinds mirror. Any release Planton
-	// publishes with this shape installs with this module (images.json's
-	// shape names it); moving it is a deliberate catalog update, and the
+	// Release is the agent-substrate/substrate release installed when
+	// spec.version is empty, and the one the composition and its fixtures
+	// (testdata/<Release>) are written against. Any other release installs
+	// with this module as long as upstream keeps what the composition reads
+	// (release.go); moving the default is an optional catalog update, and the
 	// upgrade rule (upgrade.go) says which installed releases it moves from.
 	Release string
 
@@ -101,33 +99,10 @@ var vars = struct {
 	PostgresSetupMountPath:   "/etc/postgres-setup",
 }
 
-// releaseBaseURL serves Planton's install set of each Substrate release:
-// upstream's whole manifests/ tree with every image pinned by the digest
-// upstream's registry serves, the definitions
-// bundle, the image list with the release's install shape, upstream's
-// database setup script, and SHA256SUMS, uploaded last, which seals the
-// release. Immutable once sealed.
-const releaseBaseURL = "https://downloads.planton.ai/releases/agent-substrate/"
-
-// ReleaseFileURL is one file of a published release.
-func ReleaseFileURL(release, path string) string {
-	return releaseBaseURL + release + "/" + path
-}
-
-// CRDBundleURLTemplate is the definitions bundle as a kept-CRD bundle URL,
-// with the version left for the primitive to fill in.
-func CRDBundleURLTemplate() string {
-	return releaseBaseURL + "{{version}}/crds.yaml"
-}
-
-// fileChecksums is the release's seal: every published file's SHA-256, read
-// first, so an unpublished release is refused by name and every file the
-// composition reads is checked against it.
-const fileChecksums = "SHA256SUMS"
-
-// The release files the composition reads, by role. Every one is fetched on
-// every run (about twenty-five small files), so what a setting selects never
-// depends on what an earlier run downloaded.
+// The upstream files the composition reads, by role, at their paths in
+// upstream's tree. Every one is fetched on every run (about twenty-five small
+// files), so what a setting selects never depends on what an earlier run
+// downloaded.
 const (
 	fileNamespace          = "manifests/ate-install/ate-system-namespace.yaml"
 	fileControllerRole     = "manifests/ate-install/generated/role.yaml"
@@ -155,16 +130,16 @@ const (
 	fileAgentgatewayStaticMTLSConfig = "manifests/ate-install/components/agentgateway-static-mtls/configmap.yaml"
 	fileCordon                       = "manifests/ate-install/components/cordon-system-infra-components/kustomization.yaml"
 	fileCredentialProvider           = "manifests/egress-credential-injection/k8s-credential-provider.yaml"
-	fileImages                       = "images.json"
-	fileSetupSQL                     = "setup.sql"
+	fileSetupSQL                     = "pkg/postgressetup/setup.sql"
 )
 
-// releaseFiles is every release file the module reads.
+// releaseFiles is every upstream file the module reads besides the
+// definitions (crdFiles).
 var releaseFiles = []string{
 	fileNamespace, fileControllerRole, filePodCertificates, fileSandboxValidation,
 	fileSandboxGvisor, fileOtelConfig, filePostgres, filePostgresSize10, filePodCertSize10,
 	fileAPIServer, fileController, fileIdentityServer, fileNodeAgent, fileRouter, fileRouterMonitoring,
 	fileNetworkPolicies, fileEgress, fileCloudSQLPatch, fileAgentgateway, fileAgentgatewayConfig,
 	fileAgentgatewayEgress, fileAgentgatewayStaticMTLS, fileAgentgatewayStaticMTLSConfig, fileCordon,
-	fileCredentialProvider, fileImages, fileSetupSQL,
+	fileCredentialProvider, fileSetupSQL,
 }

@@ -84,6 +84,29 @@ func TestOwnershipIsRefusedBeforeVersion(t *testing.T) {
 	}
 }
 
+// A downgrade is refused unless the kind's own upgrade rule judges version
+// moves (Agent Substrate rolls back one minor, restoring the older
+// definitions as upstream's rollback does); ownership is checked either way.
+func TestDowngradeIsRefusedUnlessTheKindJudgesIt(t *testing.T) {
+	src := helmcrds.Source{BundleURLs: []string{"https://example.invalid/{{version}}/crds.yaml"}, BundleName: "agent-substrate", Version: "v1.0.0"}
+	stamped := func(source string) []helmcrds.ExistingCRD {
+		return []helmcrds.ExistingCRD{helmcrds.ExistingFromObject("workerpools.ate.dev",
+			map[string]string{helmcrds.LabelSource: source},
+			map[string]string{helmcrds.AnnotationSourceVersion: "v1.1.0"}, nil)}
+	}
+	var f *helmcrds.Failure
+	if err := refuseExisting(stamped("agent-substrate"), nil, Args{Source: src}); !errors.As(err, &f) || !strings.Contains(f.Meaning, "older CRD schema") {
+		t.Fatalf("a downgrade must be refused by default, got %v", err)
+	}
+	judged := Args{Source: src, Policy: helmcrds.Policy{DowngradeJudgedByKind: true}}
+	if err := refuseExisting(stamped("agent-substrate"), nil, judged); err != nil {
+		t.Fatalf("a kind that judges its own version moves must be let through, got %v", err)
+	}
+	if err := refuseExisting(stamped("other"), nil, judged); !errors.As(err, &f) || !strings.Contains(f.Observed, "another Planton module") {
+		t.Fatalf("ownership must still be checked, got %v", err)
+	}
+}
+
 func answerReview(client *dynamicfake.FakeDynamicClient, allowedVerbs map[string]bool, username string) {
 	client.PrependReactor("create", "selfsubjectaccessreviews", func(action clienttesting.Action) (bool, runtime.Object, error) {
 		review := action.(clienttesting.CreateAction).GetObject().(*unstructured.Unstructured)

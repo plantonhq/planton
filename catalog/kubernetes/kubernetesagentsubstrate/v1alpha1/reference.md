@@ -46,23 +46,20 @@ gates, or a kind cluster configured as upstream's own. A CNI that enforces
 NetworkPolicy, because the install's isolation is a default-deny policy.
 Upstream supports GKE and kind.
 
-DISTRIBUTION AND VERSION: Agent Substrate publishes its release images
-(ghcr.io/agent-substrate/substrate) but no installable release, so Planton
-publishes one: each upstream release's manifests with every image pinned by
-the digest upstream's registry serves, at
-https://downloads.planton.ai/releases/agent-substrate/<version>/. The
-modules compose that tree the way upstream's installer does and apply the
-typed settings below onto it. They compose one install shape, v1.0.0's,
-and `version` picks any release Planton publishes with that shape: a
-release whose install differs from it only in its images, which Planton
-proves before it publishes one. So a new upstream patch reaches this kind
-by setting `version`, with no catalog update; a release with another shape
-is refused at plan time, before anything is applied, and arrives with the
-catalog update that composes it. The resource definitions belong to the
-shape, so the catalog's Substrate resource kinds mirror them field for
-field. Upstream's database schema migrates forward irreversibly, so the
-kind refuses an apply that skips a minor release, rolls back more than one,
-or crosses a major (a release before 1.0 included), and says how to move
+DISTRIBUTION AND VERSION: Agent Substrate publishes a release as a git tag
+and its images (ghcr.io/agent-substrate/substrate), with no chart and no
+install manifest. The modules install straight from that: the tag's own
+manifests and resource definitions, read at deploy time, and every image
+pinned by the digest upstream's registry serves for the tag, exactly as
+upstream's own installer pins them. They compose the manifests the way
+upstream's installer does and apply the typed settings below onto them.
+So `version` takes any upstream release, a new one included, with no
+Planton change; the catalog changes only when upstream changes what the
+modules read or edit (a file moves, an object or setting is renamed), and
+such a release is refused at plan time, before anything is applied.
+Upstream's database schema migrates forward irreversibly, so the kind
+refuses an apply that skips a minor release, rolls back more than one, or
+crosses a major (a release before 1.0 included), and says how to move
 across; patch releases of one minor move in place, either way.
 
 GENERATED SECRETS: the certificate authorities behind every component's
@@ -2500,7 +2497,8 @@ clusters, where actor load must not starve the system.
 Registry that replaces the registry part of every image the install runs
 (upstream's Substrate images on ghcr.io, Envoy's among them, PostgreSQL
 on Docker Hub, the Cloud SQL proxy on gcr.io, agentgateway on
-cr.agentgateway.dev): the air-gap and private-mirror path.
+cr.agentgateway.dev): the private-mirror path. The digests are still
+read from ghcr.io at deploy time, so the deploy needs egress there.
 Each image keeps its path, tag and digest, so a mirror must copy images
 byte for byte (`crane copy` keeps the digest), for instance
 ghcr.io/agent-substrate/substrate/ateapi to
@@ -2524,15 +2522,17 @@ plane's images from a private registry.
 
 `string` · optional (explicit presence)
 
-The Agent Substrate release to install, from those Planton publishes with
-this kind's install shape (v1.0.0's): v1.0.0, or a later release whose
-install differs from it only in its images. A release Planton has not
-published, or one with another shape, is refused before anything is
-applied. A patch release moves in place, up or down; the next minor
-moves in place too, and a rollback one minor back; a skipped minor, a
-new major, or a move from a release before 1.0 is a reinstall, refused
-over an existing installation. Redeploy worker pools after a move, so
-their workers run the new release's worker image.
+The Agent Substrate release to install: any release upstream publishes
+(https://github.com/agent-substrate/substrate/releases), a new one
+included, with its own manifests, resource definitions and images. A
+release upstream did not publish, or one that changed what this kind
+reads, is refused before anything is applied. A patch release moves in
+place, up or down; the next minor moves in place too, and a rollback one
+minor back, restoring that release's definitions as upstream's rollback
+does; a skipped minor, a new major, or a move from a release before 1.0
+is a reinstall, refused over an existing installation. Redeploy worker
+pools after a move, so their workers run the new release's worker
+image.
 
 - default: `v1.0.0`
 - rule: {"string":{"pattern":"^v[0-9]+\\.[0-9]+\\.[0-9]+$"}}

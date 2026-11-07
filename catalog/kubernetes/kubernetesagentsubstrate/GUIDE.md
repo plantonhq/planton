@@ -91,17 +91,19 @@ The API server reads its authentication file once, the credential provider reads
 
 ## The version
 
-`version` picks the Agent Substrate release to install, from those Planton publishes, and defaults to the release this catalog composes (v1.0.0).
+`version` picks the Agent Substrate release to install, any release upstream publishes, and defaults to v1.0.0.
 
-The modules compose one **install shape**: the files, objects, flags and settings of one release, v1.0.0's. Planton publishes a later upstream release with the shape it shares: one whose install differs from v1.0.0's only in its images keeps v1.0.0's shape, which Planton proves before it publishes (the manifests, the definitions and the database script compared file for file, and upstream's installer code compared at both tags). So an upstream patch that changes only its images reaches you by setting `version`, with no catalog update. A release of another shape is refused at plan time, before anything is applied:
+The modules install straight from what upstream publishes: the tag's own manifests (`manifests/ate-install/`), resource definitions (`manifests/ate-install/generated/`) and database setup script (`pkg/postgressetup/setup.sql`), read from `raw.githubusercontent.com` at deploy time, and every image upstream's manifests name pinned by the digest `ghcr.io` serves for the tag, as upstream's own installer pins them. Nothing is copied or republished.
 
-- **Observed:** Agent Substrate v1.1.0 has the install shape of v1.1.0, and this KubernetesAgentSubstrate composes v1.0.0's.
-- **Meaning:** v1.1.0 installs differently from what this Planton catalog release knows how to compose, so nothing was applied.
-- **Next step:** set spec.version to v1.0.0 or a release of its shape, or deploy this resource from a Planton catalog release that composes v1.1.0's shape.
+**A new upstream release needs nothing from Planton:** set `version` to it. The catalog changes only when upstream changes what the modules read or edit: a file moves, an object, container or patch target the modules edit is renamed, or a flag they set is removed. A release that moved a file, named an image by a placeholder the modules do not know, or does not publish an image is refused at plan time, before anything is applied, for example:
 
-A release Planton has not published is refused by name, and every file the modules read is checked against the release's checksums. The resource definitions belong to the shape, so they stay the same across its releases, and moving between them never reads as a definition downgrade.
+- **Observed:** Agent Substrate v1.2.0 has no manifests/ate-install/components/cordon-system-infra-components/kustomization.yaml.
+- **Meaning:** v1.2.0 is not a release upstream published, or upstream moved a file this module's composition reads.
+- **Next step:** set spec.version to a published release, or leave it empty for v1.0.0; a published release that moved this file needs a catalog update.
 
-**Adopting a new patch:**
+A release that removes a flag the modules set fails the component's rollout instead, since nothing short of running it shows that. The resource definitions are the release's own, so a release that changes them installs its changes; a rollback one minor back restores that release's definitions, as upstream's rollback does (`docs/guides/upgrade.md`).
+
+**Adopting a new release:**
 1. Set `version` and apply: the control plane moves in place, either way between releases of a minor.
 2. Redeploy your worker pools: a pool takes its worker image from this resource's outputs when it deploys, so its workers run the new release's image only after its next deploy. Upstream's rolling order (`docs/guides/upgrade.md`: the pod-certificate controller, then each node's agent, then the workers, then the system bundle) is what an upgrade of a busy cluster follows.
 3. If you pull images from your own mirror (`imageRegistry`), copy the new release's images there first.
@@ -117,7 +119,7 @@ An apply that breaks the policy stops at plan time, before anything changes:
 
 - **Observed:** Deployment ate-system/ate-api-server records Agent Substrate v0.6.0 on this cluster, and this KubernetesAgentSubstrate installs v1.0.0.
 - **Meaning:** Agent Substrate does not move from v0.6.0 to v1.0.0 in place: before 1.0 every minor release is a reinstall.
-- **Next step:** back up what you need, destroy this resource, clear the database it used (`kubectl -n ate-system delete pvc data-postgres-0` for the bundled one, or drop the schema of an external one), replace every node that ran v0.6.0, and apply again; or set `version` back to the installed release, or deploy from the Planton release that installed it when that release has another install shape.
+- **Next step:** back up what you need, destroy this resource, clear the database it used (`kubectl -n ate-system delete pvc data-postgres-0` for the bundled one, or drop the schema of an external one), replace every node that ran v0.6.0, and apply again; or set `version` back to the installed release.
 
 When this catalog later composes a new shape, an installation of the old one is re-applied from it only when the upgrade rule allows the move: the next minor from 1.0 moves in place, while a skipped minor, a new major or a release before 1.0 is a reinstall.
 
@@ -167,7 +169,7 @@ Built for 100% parity with every setting upstream's installer and its components
 | `podcert.workersPerSigner` | `podCertificates.workersPerSigner` |
 | `e2e.envoyConcurrency` | `egress.envoyConcurrency` |
 | `otlpEndpoint` | `telemetry.otlpEndpoint` |
-| `images.repo`, `images.tag` | `version` (a published release, its digests pinned) and `imageRegistry` |
+| `images.repo`, `images.tag` | `version` (upstream's release, its digests pinned at deploy) and `imageRegistry` |
 | `rolloutTimeout` | the engines' own rollout waits |
 
 ### Component settings
@@ -210,7 +212,7 @@ With agentgateway, upstream's components replace the router and egress binaries 
 - The database setup in the bundled database's own start hook (above).
 - The rollout digests on each workload's pod template (above).
 - The version stamps and the upgrade refusal (above).
-- The release's seal and install shape, checked before anything is applied (above).
+- A release's files, images and image placeholders, checked before anything is applied (above).
 - On a generic cluster with no OTLP endpoint, traces and logs off and metrics left on each component's Prometheus endpoint, so nothing dials a collector that is not there.
 
 ### Not modeled, and why

@@ -6,7 +6,7 @@ This kind installs the **control plane**, once per cluster. Agents run on worker
 
 ## What Gets Created
 
-When you deploy this Infra Component, the IaC module provisions, from Planton's digest-pinned install set of the Agent Substrate release `version` names (v1.0.0 by default):
+When you deploy this Infra Component, the IaC module provisions, straight from what upstream publishes for the Agent Substrate release `version` names (v1.0.0 by default; its own manifests, definitions and images, each image pinned by the digest upstream's registry serves):
 
 - **The `ate-system` namespace** (with `createNamespace: true`) and **`podcertificate-controller-system`** — both names are fixed by upstream. Exactly one installation per cluster.
 - **The resource definitions** — `WorkerPool`, `SandboxConfig` and `CSIDriverConfig`, applied as kept, ownership-checked resources, so destroying the control plane never deletes a worker pool.
@@ -142,7 +142,7 @@ These are the decisions that matter most. Explore the full field reference in th
 
 **Who may call** — the API authorizes every call: a caller in a namespace carrying `ate.dev/api-access=true` reaches an atespace only through an access policy, and `apiServer.authorization.bootstrapOwners` names the first owners (a service account calling with a token is `system:serviceaccount:<namespace>:<name>`). The router carries requests to agents only from the workloads `router.allowedClientSpiffeIds` names, by their pod certificates (`spiffe://cluster.local/ns/<namespace>/sa/<name>`).
 
-**The version** — `version` picks the release, v1.0.0 by default. A later upstream release that changes only its images keeps v1.0.0's install shape, so you adopt it by setting `version`, with no catalog update; then redeploy your worker pools. A release of another shape, or one Planton has not published, is refused before anything is applied. Upgrades go one minor at a time; a skipped minor, a new major, or a move from a release before 1.0 is a reinstall, and the deploy refuses one over an existing installation or its database with the steps that move it safely.
+**The version** — `version` picks the release, v1.0.0 by default. Any upstream release installs by setting `version`, a new one included, with no catalog update; then redeploy your worker pools. A release upstream never published, or one that changed what the modules read, is refused before anything is applied. Upgrades go one minor at a time; a skipped minor, a new major, or a move from a release before 1.0 is a reinstall, and the deploy refuses one over an existing installation or its database with the steps that move it safely.
 
 **Mirrors and air gaps** — `imageRegistry` moves every image the install runs to your registry, keeping each path and digest; copy upstream's images (`ghcr.io/agent-substrate/substrate/*`) there byte for byte first.
 

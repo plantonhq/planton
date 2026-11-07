@@ -190,7 +190,7 @@ var _ = ginkgo.Describe("KubernetesAgentSubstrate Validation Tests", func() {
 			}
 		})
 
-		ginkgo.It("refuses anything but vMAJOR.MINOR.PATCH, the form Planton publishes releases under", func() {
+		ginkgo.It("refuses anything but vMAJOR.MINOR.PATCH, the form upstream tags its releases with", func() {
 			for _, version := range []string{"0.6.0", "v0.6", "latest", "v0.6.0-rc.1"} {
 				input.Spec.Version = stringPtr(version)
 				refusedOnField("version")

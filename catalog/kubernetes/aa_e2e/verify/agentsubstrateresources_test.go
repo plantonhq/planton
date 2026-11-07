@@ -118,8 +118,17 @@ func TestAgentSubstrateSandboxConfigVerifierReadsTheScenarios(t *testing.T) {
 func TestCounterTemplateIsUpstreamsCounter(t *testing.T) {
 	tpl := counterTemplate("lane", "t", "img@sha256:x", map[string]string{"workload": "e2e-counter"})
 	c := tpl.GetContainers()[0]
-	if c.GetCommand()[0] != "/ko-app/counter" || c.GetWakeupProbe().GetHttpGet().GetPort() != 80 || c.GetWakeupProbe().GetHttpGet().GetPath() != "/readyz" {
-		t.Errorf("container = %v, want upstream's counter: /ko-app/counter, woken on :80/readyz", c)
+	if len(c.GetCommand()) != 3 || c.GetCommand()[0] != "python3" || c.GetCommand()[2] != counterScript || c.GetWakeupProbe().GetHttpGet().GetPort() != 80 || c.GetWakeupProbe().GetHttpGet().GetPath() != "/readyz" {
+		t.Errorf("container = %v, want the counter script, woken on :80/readyz as upstream's counter is", c)
+	}
+	// The script answers in upstream's counter's words, which the lane reads.
+	for _, prefix := range []string{counterMemoryPrefix, counterFilePrefix} {
+		if !strings.Contains(counterScript, strings.TrimSuffix(prefix, " ")) {
+			t.Errorf("the counter script never answers %q", prefix)
+		}
+	}
+	if !strings.Contains(counterImage, "@sha256:") {
+		t.Errorf("an actor image must be pinned by digest: %s", counterImage)
 	}
 	if len(c.GetVolumeMounts()) != 1 || c.GetVolumeMounts()[0].GetMountPath() != "/home/counter" || tpl.GetVolumes()[0].GetDurableDir() == nil {
 		t.Errorf("the counter's file counter lives in a durable directory at /home/counter; got mounts %v volumes %v", c.GetVolumeMounts(), tpl.GetVolumes())

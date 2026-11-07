@@ -43,7 +43,7 @@ spec:
       serviceAccountName: ate-idp-server
       containers:
       - name: ate-idp-server
-        image: ghcr.io/agent-substrate/substrate/ate-idp-server:v1.0.0@sha256:9553c0e60a8ad8bbb1c54c59e59cf0d33a338bf4f883b6f806610dc407f49f7c
+        image: ko://go.ate.dev/substrate/cmd/ate-idp-server
         args:
         - --actor-id-jwt-pool=/run/actor-id-jwt-pool/pool.json
         - --server-cred-bundle=/run/servicedns.podcert.ate.dev/credential-bundle.pem

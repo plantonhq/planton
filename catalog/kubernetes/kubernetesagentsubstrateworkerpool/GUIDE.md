@@ -50,7 +50,7 @@ A change to the pool rolls its workers at most 10% at a time and never starts ex
 
 ## Parity accounting
 
-Built for 100% parity with the upstream WorkerPool (`ate.dev/v1`) at Agent Substrate v1.0.0, the install shape the control plane composes. Every key of its served schema is modeled under the same name, and the mirror test holds the spec to the pinned definition in both directions.
+Built for 100% parity with the upstream WorkerPool (`ate.dev/v1`) at Agent Substrate v1.0.0, the release the control plane installs by default. Every key of its served schema is modeled under the same name, and the mirror test holds the spec to the pinned definition in both directions. A later release that adds a field installs as it is; this kind exposes the field once its spec does.
 
 | Upstream field | Spec field |
 |----------------|------------|

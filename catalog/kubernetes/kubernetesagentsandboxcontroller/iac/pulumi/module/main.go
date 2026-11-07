@@ -62,7 +62,7 @@ func Resources(ctx *pulumi.Context, iacInput *kubernetesagentsandboxcontrollerv1
 	crds := locals.Spec.GetCrds()
 	createdCrds, err := keptcrds.Apply(ctx, keptcrds.Args{
 		Source: helmcrds.Source{
-			BundleURL:  CRDBundleURLTemplate(s.extensions),
+			BundleURLs: []string{CRDBundleURLTemplate(s.extensions)},
 			BundleName: vars.BundleName,
 			Version:    vars.Release,
 		},

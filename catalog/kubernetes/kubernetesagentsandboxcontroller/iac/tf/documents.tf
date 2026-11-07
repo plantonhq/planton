@@ -241,15 +241,16 @@ locals {
   # ownership-checked; the module pins the release, so no spec field chooses
   # the version.
   helm_crds_args = {
-    install           = try(var.spec.crds.install, null) == null ? true : var.spec.crds.install
-    keep_on_uninstall = try(var.spec.crds.keep_on_uninstall, null) == null ? true : var.spec.crds.keep_on_uninstall
-    expect_crds       = true
-    version           = local.release
-    version_field     = ""
-    chart             = null
+    install                  = try(var.spec.crds.install, null) == null ? true : var.spec.crds.install
+    keep_on_uninstall        = try(var.spec.crds.keep_on_uninstall, null) == null ? true : var.spec.crds.keep_on_uninstall
+    expect_crds              = true
+    version                  = local.release
+    version_field            = ""
+    downgrade_judged_by_kind = false
+    chart                    = null
     bundle = {
       name = local.bundle_name
-      url  = "${local.release_asset_base_url}{{version}}/${local.release_asset}"
+      urls = ["${local.release_asset_base_url}{{version}}/${local.release_asset}"]
     }
   }
 }

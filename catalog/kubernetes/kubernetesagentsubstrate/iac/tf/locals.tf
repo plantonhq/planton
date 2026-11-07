@@ -15,11 +15,11 @@
 # differently shaped objects.
 
 locals {
-  # ---- the upstream contract (vars.go) ------------------------------------------
-  # The agent-substrate/substrate release this module composes: its install
-  # shape, the version installed when spec.version is empty, and the release
-  # whose resource definitions the kind applies. Any release Planton publishes
-  # with this shape installs with this module (images.json's shape names it).
+  # ---- the upstream contract (vars.go, release.go) -------------------------------
+  # The agent-substrate/substrate release installed when spec.version is
+  # empty, and the one the composition is written against. Any other release
+  # installs with this module as long as upstream keeps what the composition
+  # reads (release.go says what a new release needs: nothing from Planton).
   # MUST equal the Pulumi module's vars.Release (a test holds them equal).
   release                    = "v1.0.0"
   bundle_name                = "agent-substrate"
@@ -53,19 +53,32 @@ locals {
   postgres_setup_config_map = "postgres-setup"
   postgres_setup_mount_path = "/etc/postgres-setup"
 
-  release_base_url = "https://downloads.planton.ai/releases/agent-substrate/"
+  # What upstream publishes for a release (release.go): its tree raw at the
+  # tag, and its images at the registry, tagged with the release.
+  upstream_files_base = "https://raw.githubusercontent.com/agent-substrate/substrate/"
+  upstream_registry   = "ghcr.io/agent-substrate/substrate"
 
   # The release installed (settings.go version), and where its files are.
   version     = coalesce(try(var.spec.version, null), local.release)
-  version_url = "${local.release_base_url}${local.version}/"
+  version_url = "${local.upstream_files_base}${local.version}/"
 
-  # The release's seal (vars.go fileChecksums), read first.
-  checksums_file = "SHA256SUMS"
+  # The image placeholders upstream's manifests carry (release.go): an image
+  # built from a Go package, named by the path's last element, and the
+  # Envoy dataplane. The worker images no applied manifest names.
+  ko_image_prefix   = "ko://go.ate.dev/substrate/cmd/"
+  envoy_placeholder = "$${ENVOY_DATAPLANE_IMAGE}"
+  envoy_image       = "envoy-dataplane"
+  worker_images     = ["ateworker-gvisor", "ateworker-microvm"]
 
-  # The release files the composition reads, by role (vars.go). images.json
-  # is read on its own, before the rest, because it names the release's
-  # install shape.
-  images_file = "images.json"
+  # Upstream's definitions, one file per kind (release.go crdFiles).
+  crd_files = [
+    "manifests/ate-install/generated/ate.dev_csidriverconfigs.yaml",
+    "manifests/ate-install/generated/ate.dev_sandboxconfigs.yaml",
+    "manifests/ate-install/generated/ate.dev_workerpools.yaml",
+  ]
+
+  # The upstream files the composition reads, by role, at their paths in
+  # upstream's tree (vars.go).
   release_files = {
     namespace           = "manifests/ate-install/ate-system-namespace.yaml"
     controller_role     = "manifests/ate-install/generated/role.yaml"
@@ -93,7 +106,7 @@ locals {
     agentgateway_static_mtls_config = "manifests/ate-install/components/agentgateway-static-mtls/configmap.yaml"
     cordon                          = "manifests/ate-install/components/cordon-system-infra-components/kustomization.yaml"
     credential_provider             = "manifests/egress-credential-injection/k8s-credential-provider.yaml"
-    setup_sql                       = "setup.sql"
+    setup_sql                       = "pkg/postgressetup/setup.sql"
   }
 
   # ---- who owns the namespace ---------------------------------------------------

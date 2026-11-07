@@ -994,10 +994,27 @@ Based on scenario:
   namespace missing while another resource owns it, created by someone
   else while this resource would create it, and created by this resource
   while `create_namespace` is now off (the engines would delete it).
-- **A release published as a TREE of files (Planton's build of upstream's
-  `manifests/`, every image digest-pinned) is COMPOSED, not kustomized**
-  (KubernetesAgentSubstrate is the reference): read every file from the
-  immutable tree at the pin, select files the way upstream's installer
+- **An upstream that publishes only a git tag and images** (no chart, no
+  install manifest, its manifests naming images by placeholder for its own
+  installer to fill) is read straight from what it publishes and never
+  republished by Planton (KubernetesAgentSubstrate is the reference,
+  `iac/pulumi/module/release.go`). The module reads the tag's raw files at
+  the version the spec names, rewrites each image placeholder from a closed
+  rule set to `<registry>/<image>:<tag>@<digest>`, the digest read from the
+  registry at deploy time exactly as upstream's installer pins it (an
+  unknown placeholder refused), and reads the CRDs at the same tag. So
+  `version` is free and a new upstream release needs no catalog change; the
+  catalog changes only when upstream changes what the module reads or edits,
+  which the module refuses before applying (a missing file, image or patch
+  target). The OpenTofu twin reads with `data "http"` and no postconditions:
+  a missing file falls back to the default release's and the preflight
+  refuses the apply, so a destroy of an install of another layout never
+  fails on files it cannot read. A gated test holds the fixtures equal to
+  the tag and resolves every image; the kind's own upgrade rule judges
+  version moves (`helmcrds.Policy.DowngradeJudgedByKind`) where upstream's
+  rollback restores older definitions.
+- **Such a tree is COMPOSED, not kustomized**: read every file the
+  composition needs, select files the way upstream's installer
   does, and apply upstream's own kustomize components as written — JSON
   patches and strategic merges read from the tree, text markers spliced
   at upstream's marker — never retyped. Kustomize merges a keyed list as

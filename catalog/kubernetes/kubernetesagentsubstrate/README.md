@@ -20,9 +20,9 @@ The API server migrates its database schema forward irreversibly on its first st
 
 ## Distribution and the version
 
-Agent Substrate publishes its release images (`ghcr.io/agent-substrate/substrate`) but no installable release. Planton publishes one for each upstream release: upstream's manifests with every image pinned by the digest upstream's registry serves, immutable, at `https://downloads.planton.ai/releases/agent-substrate/<version>/`. The module composes that tree the way upstream's installer does, applies the typed settings onto upstream's own objects, and takes the resource definitions through the kept-definition path.
+Agent Substrate publishes a release as a git tag and its images (`ghcr.io/agent-substrate/substrate`), with no chart and no install manifest. The module installs straight from that: the tag's own manifests and resource definitions, read at deploy time, and every image pinned by the digest upstream's registry serves for the tag, exactly as upstream's own installer pins them. It composes the manifests the way upstream's installer does, applies the typed settings onto upstream's own objects, and takes the resource definitions through the kept-definition path.
 
-The modules compose one install shape, v1.0.0's, and `version` picks any release Planton publishes with that shape: one whose install differs only in its images, which Planton proves before it publishes. So an upstream patch reaches you by setting `version`, with no catalog update. A release of another shape, or one Planton has not published, is refused before anything is applied; every file read is checked against the release's checksums. The catalog's Substrate kinds mirror the shape's definitions.
+`version` takes any upstream release, a new one included, with no Planton change. The catalog changes only when upstream changes what the modules read or edit (a file moves, an object or setting is renamed); such a release, or one upstream never published, is refused before anything is applied.
 
 ---
 

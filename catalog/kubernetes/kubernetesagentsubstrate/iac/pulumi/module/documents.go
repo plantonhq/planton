@@ -31,8 +31,7 @@ const fetchTimeout = 2 * time.Minute
 const fetchAttempts = 4
 
 // absent explains a release file the host does not serve (an HTTP 4xx): what
-// its absence means, and what to do about it. The caller knows which: a
-// release Planton never published, or a published one missing a file.
+// its absence means, and what to do about it.
 type absent struct {
 	meaning string
 	next    string
@@ -64,7 +63,7 @@ func fetchText(url string, missing absent) (string, error) {
 		time.Sleep(wait)
 	}
 	if err != nil {
-		return "", fmt.Errorf("observed: %s could not be fetched after %d attempts (%s)\nmeaning: the host does not resolve, or egress to it is blocked from where this deploy runs\nnext step: confirm DNS and egress to downloads.planton.ai (`curl -I %s`), then re-run", url, fetchAttempts, err.Error(), url)
+		return "", fmt.Errorf("observed: %s could not be fetched after %d attempts (%s)\nmeaning: the host does not resolve, or egress to it is blocked from where this deploy runs\nnext step: confirm DNS and egress to the host (`curl -I %s`), then re-run", url, fetchAttempts, err.Error(), url)
 	}
 	defer func() { _ = response.Body.Close() }()
 	if response.StatusCode != http.StatusOK {

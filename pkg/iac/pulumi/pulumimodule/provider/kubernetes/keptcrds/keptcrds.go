@@ -172,13 +172,7 @@ func Apply(ctx *pulumi.Context, args Args) ([]pulumi.Resource, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err := helmcrds.CheckOwnership(existing, args.Source); err != nil {
-		return nil, err
-	}
-	if err := helmcrds.CheckNoDowngrade(existing, args.Source); err != nil {
-		return nil, err
-	}
-	if err := helmcrds.CheckStoredVersionsListed(existing, crds, args.Source); err != nil {
+	if err := refuseExisting(existing, crds, args); err != nil {
 		return nil, err
 	}
 	if err := cluster.refuseIfDenied(args); err != nil {
@@ -379,4 +373,22 @@ func (c *clusterReads) whoAmI() string {
 		return "the identity in the kubeconfig this deploy uses"
 	}
 	return username
+}
+
+// refuseExisting runs the checks the cluster's existing definitions must
+// pass before anything is written: ownership first (a CRD another source
+// stamped at a higher version is an ownership question, not a downgrade),
+// then the never-downgrade check unless the kind's own upgrade rule judges
+// version moves (helmcrds.Policy.DowngradeJudgedByKind), then the
+// stored-version check.
+func refuseExisting(existing []helmcrds.ExistingCRD, crds []helmcrds.CRD, args Args) error {
+	if err := helmcrds.CheckOwnership(existing, args.Source); err != nil {
+		return err
+	}
+	if !args.Policy.DowngradeJudgedByKind {
+		if err := helmcrds.CheckNoDowngrade(existing, args.Source); err != nil {
+			return err
+		}
+	}
+	return helmcrds.CheckStoredVersionsListed(existing, crds, args.Source)
 }

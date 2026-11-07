@@ -11,15 +11,22 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"encoding/pem"
+	"errors"
 	"math/big"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"reflect"
+	"regexp"
+	"slices"
 	"strings"
 	"testing"
 
+	"github.com/google/go-containerregistry/pkg/authn"
+	"github.com/google/go-containerregistry/pkg/name"
+	"github.com/google/go-containerregistry/pkg/v1/remote"
+	"github.com/google/go-containerregistry/pkg/v1/remote/transport"
 	kubernetesprovider "github.com/plantonhq/planton/catalog/kubernetes"
 	v1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesagentsubstrate/v1alpha1"
 	"github.com/plantonhq/planton/pkg/failure"
@@ -29,17 +36,18 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// The composition is pinned here against the real files Planton publishes
-// for the release the module composes (testdata/<Release>, held equal to the
-// published bytes by a gated test): an empty settings section installs
-// upstream as its installer writes it; every
-// typed setting lands where upstream's installer puts it; upstream's own
-// components (agentgateway, cordon, size10, the Cloud SQL sidecar) and text
-// markers apply as upstream applies them; the rollout hashes cover exactly
-// what each workload reads; the upgrade rule follows upstream's policy; and
-// the generated pools and key set have upstream's wire shape; and a release
-// is fetched only when published, sealed and of the module's install shape.
-// The live lanes prove the behavior on a cluster.
+// The composition is pinned here against upstream's own files of the default
+// release (testdata/<Release>, held equal to upstream's tag by a gated test),
+// with images pinned by a stand-in registry (fakeDigest): an empty settings
+// section installs upstream as its installer writes it; every typed setting
+// lands where upstream's installer puts it; upstream's own components
+// (agentgateway, cordon, size10, the Cloud SQL sidecar) and text markers
+// apply as upstream applies them; every image placeholder is pinned at the
+// release; the rollout hashes cover exactly what each workload reads; the
+// upgrade rule follows upstream's policy; the generated pools and key set
+// have upstream's wire shape; and a release is read from upstream's tag, any
+// file or image it does not carry refused before anything applies. The live
+// lanes prove the behavior on a cluster.
 
 func literal(v string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: v}}
@@ -47,6 +55,8 @@ func literal(v string) *foreignkeyv1.StringValueOrRef {
 
 func i32(v int32) *int32 { return &v }
 
+// fixtures are upstream's own files of vars.Release, verbatim, at their
+// paths in upstream's tree.
 func fixtures(t *testing.T) releaseFileSet {
 	t.Helper()
 	root := filepath.Join("testdata", vars.Release)
@@ -59,6 +69,27 @@ func fixtures(t *testing.T) releaseFileSet {
 		set.files[path] = string(raw)
 	}
 	return set
+}
+
+// fakeDigest stands in for upstream's registry: a stable digest per tagged
+// reference, so every test pins without the network.
+func fakeDigest(reference string) (string, error) {
+	sum := sha256.Sum256([]byte(reference))
+	return "sha256:" + hex.EncodeToString(sum[:]), nil
+}
+
+// pinnedFixtures are the release's images pinned at release by fakeDigest.
+func pinnedFixtures(t *testing.T, files releaseFileSet, release string) map[string]string {
+	t.Helper()
+	images, err := releaseImages(files)
+	if err != nil {
+		t.Fatal(err)
+	}
+	pinned, err := resolveImages(release, images, fakeDigest)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return pinned
 }
 
 func minimalSpec() *v1.KubernetesAgentSubstrateSpec {
@@ -107,7 +138,8 @@ func composeSpec(t *testing.T, spec *v1.KubernetesAgentSubstrateSpec) (*settings
 	t.Helper()
 	s := resolveSettings(spec)
 	s.identityLabels = identityLabels(&shared.CatalogObjectMetadata{Name: "agent-substrate"})
-	c, err := compose(s, fixtures(t))
+	files := fixtures(t)
+	c, err := compose(s, files, pinnedFixtures(t, files, s.version))
 	if err != nil {
 		t.Fatalf("compose: %v", err)
 	}
@@ -708,41 +740,82 @@ func TestPoolsHaveUpstreamsWireShape(t *testing.T) {
 	}
 }
 
-func TestFixturesArePublishedBytes(t *testing.T) {
+func TestFixturesAreTheUpstreamRelease(t *testing.T) {
 	if os.Getenv("AGENT_SUBSTRATE_UPSTREAM_PIN") != "1" {
-		t.Skip("set AGENT_SUBSTRATE_UPSTREAM_PIN=1 to compare the fixtures with what downloads.planton.ai serves")
+		t.Skip("set AGENT_SUBSTRATE_UPSTREAM_PIN=1 to compare the fixtures with upstream's tree at " + vars.Release)
 	}
-	published, err := fetchRelease(vars.Release)
+	upstream, err := fetchRelease(vars.Release)
 	if err != nil {
 		t.Fatal(err)
 	}
 	local := fixtures(t)
 	for _, path := range releaseFiles {
-		if published.files[path] != local.files[path] {
-			t.Errorf("testdata %s differs from the published file", path)
+		if upstream.files[path] != local.files[path] {
+			t.Errorf("testdata %s differs from upstream's file at %s", path, vars.Release)
+		}
+	}
+	for _, path := range crdFiles {
+		raw, err := os.ReadFile(filepath.Join("testdata", vars.Release, path))
+		if err != nil {
+			t.Fatal(err)
+		}
+		served, err := fetchText(UpstreamFileURL(vars.Release, path), absent{meaning: "upstream moved the definitions", next: "update crdFiles"})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if served != string(raw) {
+			t.Errorf("testdata %s differs from upstream's file at %s", path, vars.Release)
 		}
 	}
 }
 
-// A release is fetched from a sealed, published tree of the module's shape,
-// and refused before anything is applied otherwise.
-func TestReleaseIsFetchedOnlyWhenPublishedSealedAndOfTheShape(t *testing.T) {
-	local := fixtures(t)
-	// serve publishes files under release, sealed with the sums of seal (nil
-	// for a release never sealed).
-	serve := func(release string, files, seal map[string]string) string {
-		sums := ""
-		for path, text := range seal {
-			sum := sha256.Sum256([]byte(text))
-			sums += hex.EncodeToString(sum[:]) + "  " + path + "\n"
+// Every image the release names resolves at upstream's registry to a
+// multi-platform index carrying both platforms upstream builds, as a
+// container runtime on either architecture needs.
+func TestDigestsResolveFromUpstream(t *testing.T) {
+	if os.Getenv("AGENT_SUBSTRATE_UPSTREAM_PIN") != "1" {
+		t.Skip("set AGENT_SUBSTRATE_UPSTREAM_PIN=1 to resolve " + vars.Release + "'s images at " + UpstreamRegistry)
+	}
+	images, err := releaseImages(fixtures(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+	pinned, err := resolveImages(vars.Release, images, registryDigest)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for image, reference := range pinned {
+		ref, err := name.ParseReference(reference)
+		if err != nil {
+			t.Fatal(err)
 		}
-		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			path := strings.TrimPrefix(r.URL.Path, "/"+release+"/")
-			if path == fileChecksums && seal != nil {
-				_, _ = w.Write([]byte(sums))
-				return
+		index, err := remote.Index(ref, remote.WithAuth(authn.Anonymous))
+		if err != nil {
+			t.Fatalf("%s: %v", image, err)
+		}
+		manifest, err := index.IndexManifest()
+		if err != nil {
+			t.Fatal(err)
+		}
+		platforms := map[string]bool{}
+		for _, m := range manifest.Manifests {
+			if m.Platform != nil {
+				platforms[m.Platform.OS+"/"+m.Platform.Architecture] = true
 			}
-			if text, ok := files[path]; ok {
+		}
+		if !platforms["linux/amd64"] || !platforms["linux/arm64"] {
+			t.Errorf("%s serves %v; upstream builds linux/amd64 and linux/arm64", reference, platforms)
+		}
+	}
+}
+
+// The release is read from upstream's tag, whatever release spec.version
+// names; a file the tag does not carry is refused before anything applies.
+func TestReleaseIsReadFromUpstreamsTag(t *testing.T) {
+	local := fixtures(t)
+	serve := func(release string, files map[string]string) string {
+		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if text, ok := files[strings.TrimPrefix(r.URL.Path, "/"+release+"/")]; ok {
 				_, _ = w.Write([]byte(text))
 				return
 			}
@@ -751,46 +824,117 @@ func TestReleaseIsFetchedOnlyWhenPublishedSealedAndOfTheShape(t *testing.T) {
 		t.Cleanup(server.Close)
 		return server.URL + "/"
 	}
-	with := func(path, text string) map[string]string {
-		files := map[string]string{}
-		for p, v := range local.files {
-			files[p] = v
-		}
-		files[path] = text
-		return files
-	}
-
-	patch := with(fileImages, strings.Replace(local.files[fileImages], `"version": "`+vars.Release+`"`, `"version": "v1.0.3"`, 1))
-	got, err := fetchReleaseFrom(serve("v1.0.3", patch, patch), "v1.0.3")
+	got, err := fetchReleaseFrom(serve("v1.0.3", local.files), "v1.0.3")
 	if err != nil {
-		t.Fatalf("a published release of the module's shape is fetched: %v", err)
+		t.Fatalf("any release upstream publishes is read: %v", err)
 	}
 	if got.files[fileSetupSQL] != local.files[fileSetupSQL] {
 		t.Error("the setup script comes from the release itself")
 	}
 
-	if _, err := fetchReleaseFrom(serve("v1.0.9", patch, nil), "v1.0.9"); err == nil || !strings.Contains(err.Error(), "Planton has not published Agent Substrate v1.0.9") {
-		t.Errorf("an unsealed release is refused by name: %v", err)
+	moved := map[string]string{}
+	for path, text := range local.files {
+		if path != fileCordon {
+			moved[path] = text
+		}
 	}
-
-	reshaped := with(fileImages, strings.Replace(local.files[fileImages], `"shape": "`+vars.Release+`"`, `"shape": "v1.1.0"`, 1))
-	if _, err := fetchReleaseFrom(serve("v1.1.0", reshaped, reshaped), "v1.1.0"); err == nil || !strings.Contains(err.Error(), "has the install shape of v1.1.0") {
-		t.Errorf("a release of another install shape is refused: %v", err)
-	}
-
-	unshaped := with(fileImages, strings.Replace(local.files[fileImages], `"shape": "`+vars.Release+`",`, "", 1))
-	if _, err := fetchReleaseFrom(serve("v0.5.0", unshaped, unshaped), "v0.5.0"); err == nil || !strings.Contains(err.Error(), "has the install shape of v0.5.0") {
-		t.Errorf("a release published before shapes were recorded is its own shape: %v", err)
-	}
-
-	tampered := with(fileAPIServer, local.files[fileAPIServer]+"# altered\n")
-	if _, err := fetchReleaseFrom(serve(vars.Release, tampered, local.files), vars.Release); err == nil || !strings.Contains(err.Error(), "does not match the release's SHA256SUMS") {
-		t.Errorf("a file that differs from the seal is refused: %v", err)
+	_, err = fetchReleaseFrom(serve("v1.2.0", moved), "v1.2.0")
+	if err == nil || !strings.Contains(err.Error(), "Agent Substrate v1.2.0 has no "+fileCordon) || !strings.Contains(err.Error(), "needs a catalog update") {
+		t.Errorf("a release missing a file the composition reads is refused by name: %v", err)
 	}
 }
 
-// The version picks the release the per-build files, stamps and outputs
-// name; the definitions and the composed shape stay the module's.
+// Every image placeholder is rewritten to upstream's image at the release's
+// tag and digest; other text, the database start script's ${...} included,
+// stays as upstream wrote it.
+func TestImagePlaceholdersArePinnedAtTheRelease(t *testing.T) {
+	spec := minimalSpec()
+	spec.Version = strPtr("v1.0.3")
+	_, c := composeSpec(t, spec)
+	firstParty := 0
+	for _, d := range c.all() {
+		if !isWorkload(d) {
+			continue
+		}
+		for _, field := range []string{"initContainers", "containers"} {
+			items, _ := podSpec(d)[field].([]interface{})
+			for _, item := range items {
+				image := item.(map[string]interface{})["image"].(string)
+				if strings.Contains(image, "ko://") || strings.Contains(image, "${") {
+					t.Errorf("%s runs the unresolved placeholder %s", documentID(d), image)
+				}
+				if strings.HasPrefix(image, UpstreamRegistry+"/") {
+					firstParty++
+					if !regexp.MustCompile(`^` + regexp.QuoteMeta(UpstreamRegistry) + `/[a-z0-9-]+:v1\.0\.3@sha256:[0-9a-f]{64}$`).MatchString(image) {
+						t.Errorf("%s runs %s, not pinned at v1.0.3 by digest", documentID(d), image)
+					}
+				}
+			}
+		}
+	}
+	if firstParty == 0 {
+		t.Fatal("no workload runs one of upstream's own images")
+	}
+	if !strings.Contains(fixtures(t).files[filePostgres], "${") {
+		t.Fatal("the fixture no longer carries shell ${...} text; pick another file for this check")
+	}
+	for _, d := range c.database {
+		if raw, _ := json.Marshal(d); strings.Contains(string(raw), "ko://") {
+			t.Errorf("%s keeps a placeholder", documentID(d))
+		}
+	}
+}
+
+func TestUnknownPlaceholdersAreRefused(t *testing.T) {
+	for value, want := range map[string]string{
+		"ko://go.ate.dev/substrate/cmd/credential-provider/kubernetes-secrets": "kubernetes-secrets",
+		"\"ko://go.ate.dev/substrate/cmd/ateapi\"":                             "ateapi",
+		"${ENVOY_DATAPLANE_IMAGE}":                                             envoyImage,
+		"docker.io/library/postgres:18@sha256:abc":                             "",
+	} {
+		if got, err := placeholderImage("x.yaml", value); err != nil || got != want {
+			t.Errorf("%s: got %q, %v; want %q", value, got, err, want)
+		}
+	}
+	for _, value := range []string{"ko://example.com/other/cmd/x", "${OTHER_IMAGE}"} {
+		if _, err := placeholderImage("x.yaml", value); err == nil || !strings.Contains(err.Error(), "pin needs a catalog fix") {
+			t.Errorf("%s must be refused: %v", value, err)
+		}
+	}
+	text := "      - name: a\n        image: ko://go.ate.dev/substrate/cmd/atelet # the node agent\n        command: [\"${HOME}\"]\n"
+	got, err := rewriteImages(releaseFileSet{files: map[string]string{"x.yaml": text}}, map[string]string{"atelet": "r/atelet:v1@sha256:1"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if want := "      - name: a\n        image: r/atelet:v1@sha256:1 # the node agent\n        command: [\"${HOME}\"]\n"; got.files["x.yaml"] != want {
+		t.Errorf("rewrite touched more than the image value:\n%s", got.files["x.yaml"])
+	}
+}
+
+// An image the registry does not serve is refused as an unpublished release,
+// any other failure as the network's; both before anything applies.
+func TestImageLookupRefusals(t *testing.T) {
+	notFound := func(string) (string, error) { return "", &transport.Error{StatusCode: http.StatusNotFound} }
+	if _, err := resolveImages("v9.9.9", []string{"ateapi"}, notFound); err == nil || !strings.Contains(err.Error(), "v9.9.9 is not an Agent Substrate release") {
+		t.Errorf("an unpublished image names the release: %v", err)
+	}
+	offline := func(string) (string, error) { return "", errors.New("dial tcp: lookup ghcr.io: no such host") }
+	if _, err := resolveImages(vars.Release, []string{"ateapi"}, offline); err == nil || !strings.Contains(err.Error(), "egress to ghcr.io") {
+		t.Errorf("an unreachable registry is explained: %v", err)
+	}
+	images, err := releaseImages(fixtures(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, image := range append([]string{envoyImage, "kubernetes-secrets"}, workerImages...) {
+		if !slices.Contains(images, image) {
+			t.Errorf("the release's images miss %s: %v", image, images)
+		}
+	}
+}
+
+// The version picks the release whose files, images, definitions, stamps and
+// outputs install.
 func TestVersionPicksTheRelease(t *testing.T) {
 	spec := minimalSpec()
 	spec.Version = strPtr("v1.0.3")
@@ -971,7 +1115,7 @@ func fullSurfaceSpec() *v1.KubernetesAgentSubstrateSpec {
 			WorkerLogsExporters:    []string{"otlp"},
 		},
 		IdentityServer:              &v1.KubernetesAgentSubstrateIdentityServer{Replicas: i32(3), Resources: resources("50m"), LogLevel: v1.LogLevel_debug, DrainGrace: str("10s")},
-		Version:                     str("v0.6.0"),
+		Version:                     str("v1.0.0"),
 		PreviewGates:                []string{"ExternalVolumes"},
 		ClusterSize:                 v1.KubernetesAgentSubstrateSpec_size10,
 		CordonSystemInfraComponents: true,
@@ -1039,7 +1183,10 @@ func TestTerraformTwinPinsTheSameRelease(t *testing.T) {
 		"config_hash_annotation":     vars.ConfigHashAnnotation,
 		"postgres_setup_config_map":  vars.PostgresSetupConfigMap,
 		"postgres_setup_mount_path":  vars.PostgresSetupMountPath,
-		"release_base_url":           releaseBaseURL,
+		"upstream_files_base":        upstreamFilesBase,
+		"upstream_registry":          UpstreamRegistry,
+		"ko_image_prefix":            koImagePrefix,
+		"envoy_image":                envoyImage,
 	} {
 		found := false
 		for _, line := range strings.Split(locals, "\n") {
@@ -1053,9 +1200,14 @@ func TestTerraformTwinPinsTheSameRelease(t *testing.T) {
 			t.Errorf("the Terraform module's local %s must equal the Pulumi module's %q", name, value)
 		}
 	}
-	for _, path := range releaseFiles {
+	for _, path := range append(append([]string{}, releaseFiles...), crdFiles...) {
 		if !strings.Contains(locals, `"`+path+`"`) {
 			t.Errorf("the Terraform module does not read %s, which the Pulumi module does", path)
+		}
+	}
+	for _, image := range workerImages {
+		if !strings.Contains(locals, `"`+image+`"`) {
+			t.Errorf("the Terraform module does not resolve the worker image %s", image)
 		}
 	}
 }

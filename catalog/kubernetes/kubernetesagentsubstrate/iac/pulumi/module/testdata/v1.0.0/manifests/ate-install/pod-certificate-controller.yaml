@@ -146,7 +146,7 @@ spec:
     spec:
       containers:
       - name: controller
-        image: ghcr.io/agent-substrate/substrate/podcertcontroller:v1.0.0@sha256:1005579b2142f63412507342f095894eb435fe3736607f32dbad406d0e05c5a5
+        image: ko://go.ate.dev/substrate/cmd/podcertcontroller
         args:
         - --in-cluster=true
         - --sharding-pod-namespace=$(POD_NAMESPACE)

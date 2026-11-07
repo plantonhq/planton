@@ -1,15 +1,16 @@
 # KubernetesAgentSubstrate Terraform module.
 #
-# Installs the Agent Substrate control plane from Planton's install set of the
-# release spec.version names (local.release when empty): upstream's own
-# manifests with every image digest-pinned, composed the way upstream's
+# Installs the Agent Substrate control plane of the release spec.version names
+# (local.release when empty), straight from what upstream publishes: the
+# tag's own manifests (documents.tf), every image pinned by the digest
+# upstream's registry serves (images.tf), composed the way upstream's
 # installer composes them, with the typed settings applied onto upstream's
-# own objects (documents.tf).
+# own objects.
 #
 # ORDER: every refusal fires at plan time, before anything is written
-# (documents.tf for a release Planton has not published, of another install
-# shape, or that does not match its seal; preflight.tf; and helm_crds.tf for
-# a definition someone else owns or a newer one). Then the namespaces; the kept definitions; the generated and
+# (preflight.tf: a file or image the release does not publish, a placeholder
+# this module does not know, a release move upstream cannot make; and
+# helm_crds.tf for a definition someone else owns). Then the namespaces; the kept definitions; the generated and
 # derived Secrets (secrets.tf); and the four document phases, each awaited
 # before the next: prerequisites (the pod-certificate controller every
 # certificate comes from), database, system, runtime.
@@ -23,20 +24,22 @@
 
 locals {
   # The kept-definition contract (the generated helm_crds.tf): the bundle
-  # branch, Planton's published crds.yaml at the release the module composes.
-  # The definitions belong to the install shape, so they stay on it whatever
-  # release spec.version picks, and moving between releases of the shape
-  # never reads as a definition downgrade.
+  # branch, upstream's own definitions, one file per kind, at the tag
+  # spec.version names, so a release that changes them installs its changes.
+  # The upgrade rule (preflight.tf) judges every move between releases, a
+  # rollback included, and upstream's rollback restores the older definitions,
+  # so the never-downgrade refusal defers to it.
   helm_crds_args = {
-    install           = local.crds_install
-    keep_on_uninstall = local.crds_keep
-    expect_crds       = true
-    version           = local.release
-    version_field     = ""
-    chart             = null
+    install                  = local.crds_install
+    keep_on_uninstall        = local.crds_keep
+    expect_crds              = true
+    version                  = local.version
+    version_field            = "spec.version"
+    downgrade_judged_by_kind = true
+    chart                    = null
     bundle = {
       name = local.bundle_name
-      url  = "${local.release_base_url}{{version}}/crds.yaml"
+      urls = [for path in local.crd_files : "${local.upstream_files_base}{{version}}/${path}"]
     }
   }
 }

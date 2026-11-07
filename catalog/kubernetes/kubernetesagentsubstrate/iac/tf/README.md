@@ -1,12 +1,12 @@
 # KubernetesAgentSubstrate Terraform Module
 
-Installs the Agent Substrate control plane from Planton's digest-pinned install set of the release `spec.version` names (`https://downloads.planton.ai/releases/agent-substrate/<version>/`, v1.0.0 when unset), composed the way upstream's installer composes v1.0.0's install shape. The typed spec is applied onto upstream's own objects in `documents.tf`; nothing is rebuilt from scratch, so every setting left unset keeps upstream's value. The exact semantic twin of the Pulumi module (`../pulumi/module/`); a gated test plans this module and holds every document and output equal to the Pulumi composition.
+Installs the Agent Substrate control plane of the release `spec.version` names (v1.0.0 when unset) straight from what upstream publishes: the tag's own files and definitions, and every image pinned by the digest upstream's registry serves (`images.tf`), composed the way upstream's installer composes them. A new upstream release needs nothing from Planton. The typed spec is applied onto upstream's own objects in `documents.tf`; nothing is rebuilt from scratch, so every setting left unset keeps upstream's value. The exact semantic twin of the Pulumi module (`../pulumi/module/`); a gated test plans this module and holds every document and output equal to the Pulumi composition.
 
 ## How the Documents Are Built
 
-1. Three reads, each after the one before: `data "http" "checksums"` the release's seal (a release Planton has not published is refused here by name), `data "http" "images"` its image list (refused unless its install shape is the one this module composes), and `data "http" "release_file"` every other file the composition reads, upstream's database setup script included. Every file is checked against the seal.
+1. `data "http" "release_file"` reads every file the composition reads at the release's tag, upstream's database setup script included. A file the tag does not carry lands in `files_missing`; the composition then reads the module's own release (`default_release_file`) and the preflight refuses the apply, while a destroy, which evaluates no precondition, proceeds. `images.tf` maps each image placeholder to its image and reads each image's digest from the registry (an anonymous pull token, then a `HEAD` on the tag's manifest).
 2. Each file's octal file-mode literals (`defaultMode: 0600`) are rewritten as decimal first, because Kubernetes reads YAML 1.1 octal and `yamldecode` follows YAML 1.2. The text is then split on separator lines, each piece getting back the newline the split consumed, and every document keyed by its composed identity, `apiVersion//kind//name[//namespace]`, which is also what `../import-map.yaml` reads.
-3. The resource definitions go through the catalog's kept-definition block (`helm_crds.tf`, bundle branch, the release's `crds.yaml`).
+3. The resource definitions go through the catalog's kept-definition block (`helm_crds.tf`, bundle branch, upstream's three definition files at the release's tag; the upgrade rule judges a move to an older release's definitions).
 4. Typed settings patch upstream's objects (`locals.tf` resolves them with upstream's defaults). A flag upstream already passes keeps its position and takes the new value; any other flag is appended, only when it differs from upstream's default. Upstream's own components (agentgateway, cordon, size10, the Cloud SQL sidecar) apply as upstream applies them, read from the release; its text markers are filled from `splices.tf`.
 5. Each workload carries the ownership label, and a digest of the spec-derived configuration it reads, so a change rolls it; the API server also carries upstream's environment digest and the installed-version stamp.
 
@@ -22,9 +22,9 @@ Every refusal fires at plan time, before anything is written. The preconditions 
 - **A workload someone else created** — `data "kubernetes_resources" "owned_workload"` reads each Deployment, DaemonSet and StatefulSet by its fixed name; one without the `planton.ai/kind=KubernetesAgentSubstrate` label belongs to another installation.
 - **A namespace's owner** — `ate-system` (its owner is a choice) and `podcertificate-controller-system` (always this resource's).
 - **A minor-release move** — the installed-version stamp on the API server, and the minor stamp on the bundled database's volume, against upstream's upgrade policy.
-- **A definition someone else owns, or a newer one** — `helm_crds.tf`.
-- **A release this module cannot install** — one Planton has not published, one of another install shape, or a file that differs from the release's seal (`documents.tf`, postconditions on the reads).
-- **The release changed shape** — the workloads, containers, start hook and component patches the module patches must be where it expects them.
+- **A definition someone else owns** — `helm_crds.tf`.
+- **A release this module cannot install** — a file or image the release does not publish, or an image placeholder this module does not know (`files_missing`, `images_missing`, `unknown_placeholders`).
+- **A release that changed what the module edits** — the workloads, containers, start hook and component patches the module patches must be where it expects them.
 
 Then the apply order (`main.tf`): the namespaces, the kept definitions, the Secrets, and the four phases, each awaited: prerequisites, database, system, runtime.
 

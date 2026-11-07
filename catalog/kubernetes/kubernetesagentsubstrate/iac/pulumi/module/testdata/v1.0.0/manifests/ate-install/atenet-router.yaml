@@ -201,7 +201,7 @@ spec:
       terminationGracePeriodSeconds: 60
       containers:
       - name: atenet-router
-        image: ghcr.io/agent-substrate/substrate/atenet:v1.0.0@sha256:04f7d93dc3fb3deda688137077226c12ce2da41cd4753adff708e3737dc59e20
+        image: ko://go.ate.dev/substrate/cmd/atenet
         args:
         - "router"
         # Serve the ingress direction only: the ingress ext_proc handler, plus
@@ -318,7 +318,7 @@ spec:
           mountPath: "/var/run/atenet"
       - name: envoy
         # ENVOY_DATAPLANE_IMAGE is substituted for the image URI by ate-setup
-        image: ghcr.io/agent-substrate/substrate/envoy-dataplane:v1.0.0@sha256:fc8e4c3ee9060a01153e4d4af571f3db294e60d536422e8a8c2996fa4a72bf8b
+        image: ${ENVOY_DATAPLANE_IMAGE}
         command:
         - "/usr/local/bin/envoy"
         - "-c"

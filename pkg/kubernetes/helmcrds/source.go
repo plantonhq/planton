@@ -35,7 +35,7 @@ const HelmKeepAnnotation = "helm.sh/resource-policy"
 
 // Source names where a kind's CRD set comes from at a pinned version. Exactly
 // one of the two branches is used: the render branch when Chart is set, the
-// bundle branch when BundleURL is set.
+// bundle branch when BundleURLs is set.
 type Source struct {
 	// Repository is the chart repository: an https:// index URL or an
 	// oci://<registry>/<path> reference. Render branch.
@@ -44,7 +44,7 @@ type Source struct {
 	Chart string
 	// Version is the exact chart version to render, or the upstream release
 	// a bundle is fetched at. Both branches use it for the stamp; the bundle
-	// branch also substitutes it into BundleURL.
+	// branch also substitutes it into each of BundleURLs.
 	Version string
 	// VersionField is the spec field a user sets to choose Version (for
 	// example "spec.chart_version"), so a refusal names the setting that
@@ -80,14 +80,16 @@ type Source struct {
 	// KubeVersion feeds .Capabilities.KubeVersion; empty uses Helm's default.
 	KubeVersion string
 
-	// BundleURL is a manifest upstream publishes its CRDs in: a CRD bundle
-	// beside a chart that ships none, or the install manifest of an upstream
-	// that publishes no chart at all (every non-CRD document in it is
-	// ignored here; the module applies those itself). It may contain
+	// BundleURLs are the manifests upstream publishes its CRDs in, read in
+	// order: a CRD bundle beside a chart that ships none, the install
+	// manifest of an upstream that publishes no chart at all, or one file per
+	// CRD where upstream ships them that way (Agent Substrate's
+	// manifests/ate-install/generated/). Every non-CRD document in them is
+	// ignored here; the module applies those itself. Each may contain
 	// "{{version}}", replaced with Version. Bundle branch. Use the URL form
 	// that survives the next upstream release (Apache's dist tree holds only
 	// the current release; archive.apache.org holds every release).
-	BundleURL string
+	BundleURLs []string
 	// BundleName names the upstream project the bundle belongs to (for
 	// example "agent-sandbox"): the bundle branch's twin of Chart, carried
 	// by LabelSource as the mark that the CRDs are this source's. The URL
@@ -97,7 +99,7 @@ type Source struct {
 }
 
 // IsBundle reports whether the source is the bundle branch.
-func (s Source) IsBundle() bool { return s.BundleURL != "" }
+func (s Source) IsBundle() bool { return len(s.BundleURLs) > 0 }
 
 // Name is what LabelSource carries and what a refusal calls the source: the
 // chart name on the render branch, the bundle's own name on the bundle branch.
@@ -141,27 +143,32 @@ func (s Source) versionRemedy(target string) string {
 func (s Source) validate() error {
 	switch {
 	case s.IsBundle() && s.Chart != "":
-		return errors.New("a CRD source sets Chart or BundleURL, never both")
+		return errors.New("a CRD source sets Chart or BundleURLs, never both")
 	case s.IsBundle() && s.BundleName == "":
 		return errors.New("a bundle CRD source needs a BundleName")
 	case s.IsBundle() && len(validation.IsValidLabelValue(s.BundleName)) > 0:
 		return errors.Errorf("a bundle CRD source's BundleName must be a label value, got %q", s.BundleName)
 	case !s.IsBundle() && s.Chart == "":
-		return errors.New("a CRD source needs a Chart or a BundleURL")
+		return errors.New("a CRD source needs a Chart or BundleURLs")
 	}
 	return nil
 }
 
-// ResolvedBundleURL substitutes the version into the bundle URL template.
-func (s Source) ResolvedBundleURL() string {
-	return strings.ReplaceAll(s.BundleURL, "{{version}}", s.Version)
+// ResolvedBundleURLs substitutes the version into each bundle URL template.
+func (s Source) ResolvedBundleURLs() []string {
+	urls := make([]string, len(s.BundleURLs))
+	for i, url := range s.BundleURLs {
+		urls[i] = strings.ReplaceAll(url, "{{version}}", s.Version)
+	}
+	return urls
 }
 
 // SourceDescription is what AnnotationSourceChart records: the chart's
-// coordinates for the render branch, the URL template for the bundle branch.
+// coordinates for the render branch, the URL templates for the bundle branch
+// (space-separated, so a single-URL bundle reads as it always has).
 func (s Source) SourceDescription() string {
 	if s.IsBundle() {
-		return s.BundleURL
+		return strings.Join(s.BundleURLs, " ")
 	}
 	return strings.TrimSuffix(s.Repository, "/") + "/" + s.Chart
 }
@@ -182,6 +189,14 @@ type Policy struct {
 	// resource built on them. False refuses such a chart with the CRD names
 	// and the remedies.
 	AllowHelmManaged bool
+	// DowngradeJudgedByKind skips the never-downgrade refusal for a kind
+	// whose own upgrade rule judges every move between versions, an older
+	// one included, because upstream's rollback restores the older
+	// definitions and accepts that fields the newer release added are
+	// dropped (Agent Substrate: docs/guides/upgrade.md, "Roll back step 4").
+	// Ownership and the stored-version check still run. False for every
+	// other kind: applying an older schema over a newer one is then refused.
+	DowngradeJudgedByKind bool
 }
 
 // Derived is what one derivation yields.

@@ -314,23 +314,20 @@ func (KubernetesAgentSubstrateRouter_Dataplane) EnumDescriptor() ([]byte, []int)
 // NetworkPolicy, because the install's isolation is a default-deny policy.
 // Upstream supports GKE and kind.
 //
-// DISTRIBUTION AND VERSION: Agent Substrate publishes its release images
-// (ghcr.io/agent-substrate/substrate) but no installable release, so Planton
-// publishes one: each upstream release's manifests with every image pinned by
-// the digest upstream's registry serves, at
-// https://downloads.planton.ai/releases/agent-substrate/<version>/. The
-// modules compose that tree the way upstream's installer does and apply the
-// typed settings below onto it. They compose one install shape, v1.0.0's,
-// and `version` picks any release Planton publishes with that shape: a
-// release whose install differs from it only in its images, which Planton
-// proves before it publishes one. So a new upstream patch reaches this kind
-// by setting `version`, with no catalog update; a release with another shape
-// is refused at plan time, before anything is applied, and arrives with the
-// catalog update that composes it. The resource definitions belong to the
-// shape, so the catalog's Substrate resource kinds mirror them field for
-// field. Upstream's database schema migrates forward irreversibly, so the
-// kind refuses an apply that skips a minor release, rolls back more than one,
-// or crosses a major (a release before 1.0 included), and says how to move
+// DISTRIBUTION AND VERSION: Agent Substrate publishes a release as a git tag
+// and its images (ghcr.io/agent-substrate/substrate), with no chart and no
+// install manifest. The modules install straight from that: the tag's own
+// manifests and resource definitions, read at deploy time, and every image
+// pinned by the digest upstream's registry serves for the tag, exactly as
+// upstream's own installer pins them. They compose the manifests the way
+// upstream's installer does and apply the typed settings below onto them.
+// So `version` takes any upstream release, a new one included, with no
+// Planton change; the catalog changes only when upstream changes what the
+// modules read or edit (a file moves, an object or setting is renamed), and
+// such a release is refused at plan time, before anything is applied.
+// Upstream's database schema migrates forward irreversibly, so the kind
+// refuses an apply that skips a minor release, rolls back more than one, or
+// crosses a major (a release before 1.0 included), and says how to move
 // across; patch releases of one minor move in place, either way.
 //
 // GENERATED SECRETS: the certificate authorities behind every component's
@@ -433,7 +430,8 @@ type KubernetesAgentSubstrateSpec struct {
 	// Registry that replaces the registry part of every image the install runs
 	// (upstream's Substrate images on ghcr.io, Envoy's among them, PostgreSQL
 	// on Docker Hub, the Cloud SQL proxy on gcr.io, agentgateway on
-	// cr.agentgateway.dev): the air-gap and private-mirror path.
+	// cr.agentgateway.dev): the private-mirror path. The digests are still
+	// read from ghcr.io at deploy time, so the deploy needs egress there.
 	// Each image keeps its path, tag and digest, so a mirror must copy images
 	// byte for byte (`crane copy` keeps the digest), for instance
 	// ghcr.io/agent-substrate/substrate/ateapi to
@@ -448,15 +446,17 @@ type KubernetesAgentSubstrateSpec struct {
 	// plane's images from a private registry.
 	ImagePullSecrets []string `protobuf:"bytes,17,rep,name=image_pull_secrets,json=imagePullSecrets,proto3" json:"image_pull_secrets,omitempty"`
 	// *
-	// The Agent Substrate release to install, from those Planton publishes with
-	// this kind's install shape (v1.0.0's): v1.0.0, or a later release whose
-	// install differs from it only in its images. A release Planton has not
-	// published, or one with another shape, is refused before anything is
-	// applied. A patch release moves in place, up or down; the next minor
-	// moves in place too, and a rollback one minor back; a skipped minor, a
-	// new major, or a move from a release before 1.0 is a reinstall, refused
-	// over an existing installation. Redeploy worker pools after a move, so
-	// their workers run the new release's worker image.
+	// The Agent Substrate release to install: any release upstream publishes
+	// (https://github.com/agent-substrate/substrate/releases), a new one
+	// included, with its own manifests, resource definitions and images. A
+	// release upstream did not publish, or one that changed what this kind
+	// reads, is refused before anything is applied. A patch release moves in
+	// place, up or down; the next minor moves in place too, and a rollback one
+	// minor back, restoring that release's definitions as upstream's rollback
+	// does; a skipped minor, a new major, or a move from a release before 1.0
+	// is a reinstall, refused over an existing installation. Redeploy worker
+	// pools after a move, so their workers run the new release's worker
+	// image.
 	Version *string `protobuf:"bytes,18,opt,name=version,proto3,oneof" json:"version,omitempty"`
 	// *
 	// Preview features to turn on in every component: each named gate, or
@@ -1808,7 +1808,7 @@ type KubernetesAgentSubstrateApiServer struct {
 	Resources *kubernetes.ContainerResources `protobuf:"bytes,2,opt,name=resources,proto3" json:"resources,omitempty"`
 	// *
 	// Minimum log level. The API server reads it from its configuration file
-	// as it changes, so a new level applies without a restart.
+	// at start, so a new level rolls the API server.
 	LogLevel LogLevel `protobuf:"varint,3,opt,name=log_level,json=logLevel,proto3,enum=dev.planton.kubernetes.kubernetesagentsubstrate.v1alpha1.LogLevel" json:"log_level,omitempty"`
 	// *
 	// Authorization of API calls, always enforced: a caller reaches an atespace
@@ -1992,7 +1992,12 @@ type KubernetesAgentSubstrateActorJwt struct {
 	// identity server publishes the keys there. Empty = upstream's default,
 	// "https://idp.ate-system.svc", which the identity server serves inside the
 	// cluster; set your own host when a service outside the cluster must verify
-	// actor tokens, and route it to the `idp` Service in ate-system.
+	// actor tokens, and route it to the `idp` Service in ate-system. The API
+	// server's credential exchange fetches the keys from the issuer too, so
+	// the issuer must answer from inside the API server's pod, over a
+	// certificate that verifies against the system roots or Substrate's
+	// service-DNS trust bundle; one that does not stops the API server's
+	// exchange sidecar at start.
 	Issuer        string `protobuf:"bytes,2,opt,name=issuer,proto3" json:"issuer,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -2147,9 +2152,8 @@ type KubernetesAgentSubstrateNodeAgent struct {
 	// *
 	// Most GiB of sandbox runtime assets being downloaded and verified at once
 	// on a node; larger downloads wait, and a single asset larger than this is
-	// refused. The node's staging volume is sized at this plus 1GiB of
-	// filesystem headroom, because kubelet evicts the pod when the volume
-	// overflows.
+	// refused. This bounds the node's staging volume, which upstream leaves
+	// without a size limit of its own.
 	AssetStagingCapacityGib *int32 `protobuf:"varint,9,opt,name=asset_staging_capacity_gib,json=assetStagingCapacityGib,proto3,oneof" json:"asset_staging_capacity_gib,omitempty"`
 	// *
 	// How the node moves suspended actors' snapshots to object storage in the

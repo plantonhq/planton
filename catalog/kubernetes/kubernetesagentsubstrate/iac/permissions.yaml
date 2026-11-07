@@ -1,8 +1,8 @@
 # Least-privilege permissions the IaC runner's Kubernetes principal needs to
 # provision, update, and destroy this component with the platform modules.
 # Every entry is `derived` (static analysis of the module sources plus the
-# document census of the v1.0.0 release Planton publishes, the install
-# shape the modules compose, cited in
+# document census of upstream's v1.0.0 release, the one the modules are
+# written against, cited in
 # notes) until the live capture lane upgrades it to `proven`. Schema:
 # iac/catalogkindpermissions/v1.
 apiVersion: iac.planton.dev/v1

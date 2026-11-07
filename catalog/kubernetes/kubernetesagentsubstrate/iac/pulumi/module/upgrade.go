@@ -75,7 +75,7 @@ func upgradeRule(installed, requested string) string {
 func deploymentUpgradeRefused(installed, requested, rule string) error {
 	return failure.KubernetesUpgradeRefused(kindName, "Agent Substrate",
 		fmt.Sprintf("Deployment %s/%s", vars.Namespace, vars.APIServerName), installed, requested, rule,
-		fmt.Sprintf("to install %s, back up what you need from the database, destroy this resource, then clear the database it used (`kubectl -n %s delete pvc %s` for the bundled one, or drop the %s schema of an external or Cloud SQL one), replace every node that ran %s (its node agent's state outlives the destroy), and apply again; to keep %s, set spec.version back to it, or, for a release of another install shape, deploy this resource from the Planton release that installed it", requested, vars.Namespace, vars.PostgresVolumeClaim, "substrate", installed, installed))
+		fmt.Sprintf("to install %s, back up what you need from the database, destroy this resource, then clear the database it used (`kubectl -n %s delete pvc %s` for the bundled one, or drop the %s schema of an external or Cloud SQL one), replace every node that ran %s (its node agent's state outlives the destroy), and apply again; to keep %s, set spec.version back to it", requested, vars.Namespace, vars.PostgresVolumeClaim, "substrate", installed, installed))
 }
 
 // volumeUpgradeRefused refuses a bundled database whose volume an earlier
@@ -83,5 +83,5 @@ func deploymentUpgradeRefused(installed, requested, rule string) error {
 func volumeUpgradeRefused(installed, requested, rule string) error {
 	return failure.KubernetesUpgradeRefused(kindName, "Agent Substrate",
 		fmt.Sprintf("PersistentVolumeClaim %s/%s, the bundled database's volume left by an earlier installation,", vars.Namespace, vars.PostgresVolumeClaim), installed, requested, rule,
-		fmt.Sprintf("to install %s, back up what you need from that database, delete the volume (`kubectl -n %s delete pvc %s`), and apply again; to keep the data, set spec.version to a release of the minor that wrote it, or, for one of another install shape, deploy this resource from the Planton release that wrote it", requested, vars.Namespace, vars.PostgresVolumeClaim))
+		fmt.Sprintf("to install %s, back up what you need from that database, delete the volume (`kubectl -n %s delete pvc %s`), and apply again; to keep the data, set spec.version to a release of the minor that wrote it", requested, vars.Namespace, vars.PostgresVolumeClaim))
 }

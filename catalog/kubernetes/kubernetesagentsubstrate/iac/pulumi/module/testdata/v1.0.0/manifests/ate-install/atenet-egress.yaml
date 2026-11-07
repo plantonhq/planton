@@ -1204,7 +1204,7 @@ spec:
         # subcommand. Sharing the binary is what keeps the two from drifting;
         # staying two CONTAINERS is what keeps the MITM signing key off the
         # data plane and gives the minter its own memory limit.
-        image: ghcr.io/agent-substrate/substrate/atenet:v1.0.0@sha256:04f7d93dc3fb3deda688137077226c12ce2da41cd4753adff708e3737dc59e20
+        image: ko://go.ate.dev/substrate/cmd/atenet
         restartPolicy: Always
         args:
         - "sdsmint"
@@ -1291,7 +1291,7 @@ spec:
       containers:
       - name: envoy
         # ENVOY_DATAPLANE_IMAGE is substituted for the image URI in renderAtenetEgressManifest
-        image: ghcr.io/agent-substrate/substrate/envoy-dataplane:v1.0.0@sha256:fc8e4c3ee9060a01153e4d4af571f3db294e60d536422e8a8c2996fa4a72bf8b
+        image: ${ENVOY_DATAPLANE_IMAGE}
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -1368,7 +1368,7 @@ spec:
       # Envoy calls it over localhost to
       # authenticate actor identity against the ate API on every CONNECT.
       - name: ext-proc
-        image: ghcr.io/agent-substrate/substrate/atenet:v1.0.0@sha256:04f7d93dc3fb3deda688137077226c12ce2da41cd4753adff708e3737dc59e20
+        image: ko://go.ate.dev/substrate/cmd/atenet
         args:
         - router
         - --mode=egress

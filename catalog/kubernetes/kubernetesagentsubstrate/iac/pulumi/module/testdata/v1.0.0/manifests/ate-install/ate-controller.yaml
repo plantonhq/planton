@@ -101,7 +101,7 @@ spec:
       serviceAccountName: ate-controller
       containers:
       - name: ate-controller
-        image: ghcr.io/agent-substrate/substrate/atecontroller:v1.0.0@sha256:44b3a127048e1da8c15dff35f65defe73f4e54ebb985bc020aa9bb0e6eb029b2
+        image: ko://go.ate.dev/substrate/cmd/atecontroller
         args:
         - --ateapi-ca-file=/run/servicedns-ca/trust-bundle.pem
         - --ateapi-client-cert=/run/podidentity.podcert.ate.dev/credential-bundle.pem

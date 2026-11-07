@@ -68,9 +68,15 @@
 #     name                 string        the upstream project's own name (for example "agent-sandbox"),
 #                                        the ownership label; never derived from the download host,
 #                                        which unrelated projects share
-#     url                  string        the manifest that carries the CRDs, with "{{version}}" where the
-#                                        version goes (use the URL form that survives the next upstream
-#                                        release); every non-CRD document in it is ignored here
+#     urls                 list(string)  the manifests that carry the CRDs, read in order, each with
+#                                        "{{version}}" where the version goes (use the URL form that survives
+#                                        the next upstream release; one URL for an upstream that publishes a
+#                                        single bundle, one per file for one that ships a file per CRD);
+#                                        every non-CRD document in them is ignored here
+#   downgrade_judged_by_kind bool      the kind's own upgrade rule judges every move between versions, an
+#                                        older one included, because upstream's rollback restores the older
+#                                        definitions (Agent Substrate's docs/guides/upgrade.md); the
+#                                        never-downgrade refusal is then skipped. False for every other kind
 #
 # THE NULL BRANCH IS NEVER READ DIRECTLY: validate and plan evaluate a data
 # source's arguments even at count zero, and older Terraform releases (1.5,
@@ -154,13 +160,15 @@ locals {
   }
   helm_crds_bundle = local.helm_crds_is_bundle ? local.helm_crds_args.bundle : {
     name = ""
-    url  = ""
+    urls = []
   }
+  # The bundle's URLs at the version, in the order the module declares them.
+  helm_crds_bundle_urls = [for url in local.helm_crds_bundle.urls : replace(url, "{{version}}", local.helm_crds_version)]
 
   # The source stamp: chart coordinates for the chart branch, the URL
   # template for the bundle branch. The label carries the source's own name
   # (the chart's, or the upstream project's), which a label value can hold.
-  helm_crds_source_description = local.helm_crds_is_bundle ? local.helm_crds_bundle.url : "${trimsuffix(local.helm_crds_chart.repository, "/")}/${local.helm_crds_chart.name}"
+  helm_crds_source_description = local.helm_crds_is_bundle ? join(" ", local.helm_crds_bundle.urls) : "${trimsuffix(local.helm_crds_chart.repository, "/")}/${local.helm_crds_chart.name}"
   helm_crds_source_label       = local.helm_crds_is_bundle ? local.helm_crds_bundle.name : local.helm_crds_chart.name
 
   # How every text names a version of this source, in the Pulumi twin's
@@ -248,9 +256,9 @@ data "helm_template" "helm_crds" {
 # bundle beside a chart that ships none, or the install manifest of an
 # upstream that publishes no chart).
 data "http" "helm_crds_bundle" {
-  count = local.helm_crds_fetch ? 1 : 0
+  for_each = local.helm_crds_fetch ? toset(local.helm_crds_bundle_urls) : toset([])
 
-  url                = replace(local.helm_crds_bundle.url, "{{version}}", local.helm_crds_version)
+  url                = each.value
   request_timeout_ms = 60000
 
   lifecycle {
@@ -342,7 +350,7 @@ locals {
   # both of Helm's surfaces; without one, the crds/ directory only; for a
   # bundle, everything fetched. Split on separator LINES (a bare "---"
   # substring split corrupts CRDs whose descriptions embed ---).
-  helm_crds_stream    = local.helm_crds_render ? join("\n---\n", local.helm_crds_chart.render_override != "" ? concat(values(data.helm_template.helm_crds[0].manifests), data.helm_template.helm_crds[0].crds) : data.helm_template.helm_crds[0].crds) : (local.helm_crds_fetch ? data.http.helm_crds_bundle[0].response_body : "")
+  helm_crds_stream    = local.helm_crds_render ? join("\n---\n", local.helm_crds_chart.render_override != "" ? concat(values(data.helm_template.helm_crds[0].manifests), data.helm_template.helm_crds[0].crds) : data.helm_template.helm_crds[0].crds) : (local.helm_crds_fetch ? join("\n---\n", [for url in local.helm_crds_bundle_urls : data.http.helm_crds_bundle[url].response_body]) : "")
   helm_crds_documents = [for d in split("\n---", "\n${local.helm_crds_stream}") : d if trimspace(d) != "" && can(yamldecode(d))]
 
   # Keyed by each CRD's OWN metadata.name (never a positional index) so state
@@ -408,7 +416,7 @@ resource "kubectl_manifest" "helm_crds" {
       error_message = "observed: the cluster stores objects of CRD ${each.key} at ${join(", ", try(local.helm_crds_dropped_versions[each.key], []))}, which ${local.helm_crds_version_noun} ${local.helm_crds_version} no longer lists (it lists ${join(", ", [for v in try(local.helm_crds_by_name[each.key].spec.versions, []) : v.name])})\nmeaning: Kubernetes refuses a definition that drops a version objects are stored at, and those objects were written by an earlier release this one cannot read\nnext step: back up what you need, then delete the definition and every object of it (kubectl delete crd ${each.key}) and re-run; or, to keep the objects, migrate each to a served version and remove the old one from the definition's status.storedVersions first"
     }
     precondition {
-      condition     = !contains(keys(local.helm_crds_downgraded), each.key)
+      condition     = local.helm_crds_args.downgrade_judged_by_kind || !contains(keys(local.helm_crds_downgraded), each.key)
       error_message = "observed: the cluster carries CRD ${each.key} derived from ${local.helm_crds_version_noun} ${try(local.helm_crds_downgraded[each.key], "?")}; ${local.helm_crds_version_pinned ? "this module pins" : "the manifest asks for"} ${local.helm_crds_version_noun} ${local.helm_crds_version}\nmeaning: applying an older CRD schema over a newer one can strip fields from existing custom resources the next time anything writes them\nnext step: ${local.helm_crds_version_pinned ? "deploy with a Planton release whose module pins ${local.helm_crds_version_noun} ${try(local.helm_crds_downgraded[each.key], "the cluster's version")} or higher (this module pins ${local.helm_crds_version})" : "set ${local.helm_crds_args.version_field} to ${try(local.helm_crds_downgraded[each.key], "the cluster's version")} or higher"}; if you accept the loss and want the older schema, delete the CRD first (kubectl delete crd ${each.key}) and re-run"
     }
   }

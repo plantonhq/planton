@@ -21,8 +21,6 @@
 #     6. the OpenTofu modules          publish_terraform_modules.sh, one
 #                                      provider at a time in parallel
 #     7. the OpenTofu module manifest  publish_module_manifest.sh
-#   agent-substrate/vX.Y.Z (release.agent-substrate.yaml):
-#     publish_agent_substrate.sh
 #
 # Every lane is rerun-safe: per-tag artifacts are published once
 # (publish_once.sh), and the GitHub Release, the BSR push and the chart
@@ -42,7 +40,7 @@
 set -euo pipefail
 
 if [ "$#" -ne 1 ]; then
-  echo "usage: release_without_actions.sh <tag>   (vX.Y.Z, vX.Y.Z-rc.N or agent-substrate/vX.Y.Z)" >&2
+  echo "usage: release_without_actions.sh <tag>   (vX.Y.Z or vX.Y.Z-rc.N)" >&2
   exit 2
 fi
 tag="$1"
@@ -57,7 +55,7 @@ export AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION:-auto}"
 if ! git -C "${repo_root}" ls-remote --exit-code --tags origin "refs/tags/${tag}" > /dev/null; then
   echo "Observed: origin has no tag ${tag}." >&2
   echo "Means:    a release is a pushed tag; this runs the lanes that tag triggers." >&2
-  echo "Next:     cut it with its front door (make release, make release-agent-substrate), then re-run." >&2
+  echo "Next:     cut it with its front door (make release), then re-run." >&2
   exit 1
 fi
 
@@ -79,13 +77,6 @@ lane() {
   echo "=== ${tag}: $1"
 }
 
-case "${tag}" in
-  agent-substrate/v*)
-    lane "the Agent Substrate install set"
-    bash "${lanes}/publish_agent_substrate.sh" "${tag#agent-substrate/}"
-    exit 0
-    ;;
-esac
 bash "${lanes}/release_channel.sh" "${tag}" > /dev/null
 
 lane "the GitHub Release"

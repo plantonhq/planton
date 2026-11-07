@@ -1,13 +1,12 @@
 package module
 
 import (
-	"encoding/json"
 	"strings"
 
 	"github.com/pkg/errors"
 )
 
-// releaseFileSet is every release file the composition reads, by path.
+// releaseFileSet is every upstream file the composition reads, by path.
 type releaseFileSet struct {
 	files map[string]string
 }
@@ -38,8 +37,8 @@ type composition struct {
 	system        []document
 	runtime       []document
 
-	// images is upstream's image list (images.json), for the worker-image
-	// outputs.
+	// images is every image of the release, pinned (release.go,
+	// resolveImages): the --preview targets and the worker-image outputs.
 	images map[string]string
 }
 
@@ -51,8 +50,13 @@ func (c *composition) all() []document {
 	return out
 }
 
-// compose builds the document set from the release's files.
-func compose(s *settings, f releaseFileSet) (*composition, error) {
+// compose builds the document set from the release's files, every image
+// placeholder rewritten to its pinned reference.
+func compose(s *settings, upstream releaseFileSet, images map[string]string) (*composition, error) {
+	f, err := rewriteImages(upstream, images)
+	if err != nil {
+		return nil, err
+	}
 	parse := func(path string) ([]document, error) {
 		text, ok := f.files[path]
 		if !ok {
@@ -60,15 +64,7 @@ func compose(s *settings, f releaseFileSet) (*composition, error) {
 		}
 		return splitDocuments(text)
 	}
-	c := &composition{}
-
-	var imageList struct {
-		Images map[string]string `json:"images"`
-	}
-	if err := json.Unmarshal([]byte(f.files[fileImages]), &imageList); err != nil {
-		return nil, errors.Wrap(err, "parsing the release's images.json")
-	}
-	c.images = imageList.Images
+	c := &composition{images: images}
 
 	// Namespaces. ate-controller.yaml repeats ate-system; one identity is
 	// applied, and only when this resource owns it.
@@ -259,10 +255,6 @@ func compose(s *settings, f releaseFileSet) (*composition, error) {
 	}
 	return c, nil
 }
-
-// envoyImage is the release's Dockerfile-built Envoy dataplane, the one
-// image upstream does not build from its Go packages.
-const envoyImage = "envoy-dataplane"
 
 // componentImages are the release's images built from upstream's Go
 // packages: every one of them takes --preview.

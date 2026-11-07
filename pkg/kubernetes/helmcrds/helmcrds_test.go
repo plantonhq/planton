@@ -277,7 +277,7 @@ func TestDeriveBundle(t *testing.T) {
 	src := Source{
 		Version:      "0.9.1",
 		VersionField: "spec.chart_version",
-		BundleURL:    server.URL + "/solr-operator/v{{version}}/crds/all.yaml",
+		BundleURLs:   []string{server.URL + "/solr-operator/v{{version}}/crds/all.yaml"},
 		BundleName:   "solr-operator",
 	}
 	derived, err := Derive(context.Background(), src, Policy{ExpectCRDs: true}, "solr", "ns")
@@ -317,9 +317,57 @@ func TestDeriveBundle(t *testing.T) {
 // Two upstreams that publish from one host are two owners. A label derived
 // from the download host would read them as one, and the foreign-owner
 // refusal would never fire between their kinds.
+// An upstream that ships one file per CRD (Agent Substrate's generated/)
+// is one bundle of several URLs: every file is read, and a file missing at
+// the version is named by its own URL.
+func TestDeriveBundleOfSeveralFiles(t *testing.T) {
+	crd := func(plural string) string {
+		return "apiVersion: apiextensions.k8s.io/v1\nkind: CustomResourceDefinition\nmetadata:\n  name: " + plural + ".ate.dev\n" +
+			"spec:\n  group: ate.dev\n  names: {kind: X, plural: " + plural + "}\n  scope: Namespaced\n  versions: [{name: v1, served: true, storage: true}]\n"
+	}
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case "/v1.0.0/workerpools.yaml":
+			_, _ = w.Write([]byte(crd("workerpools")))
+		case "/v1.0.0/sandboxconfigs.yaml":
+			_, _ = w.Write([]byte(crd("sandboxconfigs")))
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer server.Close()
+
+	src := Source{
+		Version:      "v1.0.0",
+		VersionField: "spec.version",
+		BundleURLs:   []string{server.URL + "/{{version}}/workerpools.yaml", server.URL + "/{{version}}/sandboxconfigs.yaml"},
+		BundleName:   "agent-substrate",
+	}
+	derived, err := Derive(context.Background(), src, Policy{ExpectCRDs: true}, "substrate", "ate-system")
+	if err != nil {
+		t.Fatal(err)
+	}
+	names := map[string]bool{}
+	for _, crd := range derived.Owned {
+		names[crd.Name] = true
+	}
+	if len(derived.Owned) != 2 || !names["workerpools.ate.dev"] || !names["sandboxconfigs.ate.dev"] {
+		t.Fatalf("expected one CRD from each file, got %+v", derived.Owned)
+	}
+	if got := src.SourceDescription(); got != src.BundleURLs[0]+" "+src.BundleURLs[1] {
+		t.Fatalf("the source description names every URL, got %q", got)
+	}
+
+	src.BundleURLs = append(src.BundleURLs, server.URL+"/{{version}}/csidriverconfigs.yaml")
+	_, err = Derive(context.Background(), src, Policy{ExpectCRDs: true}, "substrate", "ate-system")
+	if err == nil || !strings.Contains(err.Error(), server.URL+"/v1.0.0/csidriverconfigs.yaml answered HTTP 404") {
+		t.Fatalf("a missing file must be named by its own URL, got %v", err)
+	}
+}
+
 func TestBundlesFromOneHostAreDistinctOwners(t *testing.T) {
-	sandbox := Source{Version: "v1.0.7", BundleURL: "https://github.com/kubernetes-sigs/agent-sandbox/releases/download/{{version}}/sandbox.yaml", BundleName: "agent-sandbox"}
-	other := Source{Version: "v2.0.0", BundleURL: "https://github.com/example/other/releases/download/{{version}}/crds.yaml", BundleName: "other"}
+	sandbox := Source{Version: "v1.0.7", BundleURLs: []string{"https://github.com/kubernetes-sigs/agent-sandbox/releases/download/{{version}}/sandbox.yaml"}, BundleName: "agent-sandbox"}
+	other := Source{Version: "v2.0.0", BundleURLs: []string{"https://github.com/example/other/releases/download/{{version}}/crds.yaml"}, BundleName: "other"}
 	stampedByOther := ExistingFromObject("sandboxes.agents.x-k8s.io",
 		map[string]string{LabelSource: labelSourceValue(other)},
 		map[string]string{AnnotationSourceVersion: "v2.0.0"}, nil)
@@ -330,9 +378,9 @@ func TestBundlesFromOneHostAreDistinctOwners(t *testing.T) {
 // fetch or render, so no half-stamped CRD can ever reach a cluster.
 func TestDeriveRefusesAMalformedSource(t *testing.T) {
 	cases := map[string]Source{
-		"bundle without a name":        {Version: "v1.0.0", BundleURL: "https://example.invalid/{{version}}/crds.yaml"},
-		"bundle name not a label":      {Version: "v1.0.0", BundleURL: "https://example.invalid/{{version}}/crds.yaml", BundleName: "kubernetes-sigs/agent-sandbox"},
-		"both a chart and a bundle":    {Version: "v1.0.0", BundleURL: "https://example.invalid/{{version}}/crds.yaml", BundleName: "x", Chart: "x"},
+		"bundle without a name":        {Version: "v1.0.0", BundleURLs: []string{"https://example.invalid/{{version}}/crds.yaml"}},
+		"bundle name not a label":      {Version: "v1.0.0", BundleURLs: []string{"https://example.invalid/{{version}}/crds.yaml"}, BundleName: "kubernetes-sigs/agent-sandbox"},
+		"both a chart and a bundle":    {Version: "v1.0.0", BundleURLs: []string{"https://example.invalid/{{version}}/crds.yaml"}, BundleName: "x", Chart: "x"},
 		"neither a chart nor a bundle": {Version: "1.0.0"},
 	}
 	for name, src := range cases {
@@ -413,7 +461,7 @@ func TestCheckNoDowngrade(t *testing.T) {
 	// orders like any version, and the remedy is a Planton release.
 	release := []ExistingCRD{{Name: "sandboxes.agents.x-k8s.io", Version: "v1.0.8"}}
 	pinned := func(version string) Source {
-		return Source{Version: version, BundleURL: "https://example.invalid/{{version}}/sandbox.yaml", BundleName: "agent-sandbox"}
+		return Source{Version: version, BundleURLs: []string{"https://example.invalid/{{version}}/sandbox.yaml"}, BundleName: "agent-sandbox"}
 	}
 	if err := CheckNoDowngrade(release, pinned("v1.0.8")); err != nil {
 		t.Fatalf("same release must pass: %v", err)
@@ -436,7 +484,7 @@ func TestCheckNoDowngrade(t *testing.T) {
 // accepts, and so does the check.
 func TestCheckStoredVersionsListed(t *testing.T) {
 	v1Only := CRD{Name: "workerpools.ate.dev", YAML: "apiVersion: apiextensions.k8s.io/v1\nkind: CustomResourceDefinition\nmetadata:\n  name: workerpools.ate.dev\nspec:\n  versions:\n  - name: v1\n    served: true\n    storage: true\n  - name: v1beta1\n    served: false\n    storage: false\n"}
-	release := Source{Version: "v1.0.0", BundleURL: "https://example.invalid/{{version}}/crds.yaml", BundleName: "agent-substrate"}
+	release := Source{Version: "v1.0.0", BundleURLs: []string{"https://example.invalid/{{version}}/crds.yaml"}, BundleName: "agent-substrate"}
 
 	if err := CheckStoredVersionsListed(nil, []CRD{v1Only}, release); err != nil {
 		t.Fatalf("a first install has nothing stored: %v", err)
@@ -499,7 +547,7 @@ func TestCheckOwnership(t *testing.T) {
 	// A bundle kind installs the upstream's own workloads, so leaving the
 	// definitions with their owner is right only when no other installation
 	// of that upstream runs; the remedy says so and speaks of the release.
-	bundle := Source{Version: "v1.0.7", BundleURL: "https://example.invalid/{{version}}/sandbox.yaml", BundleName: "agent-sandbox"}
+	bundle := Source{Version: "v1.0.7", BundleURLs: []string{"https://example.invalid/{{version}}/sandbox.yaml"}, BundleName: "agent-sandbox"}
 	err = CheckOwnership([]ExistingCRD{byHand}, bundle)
 	assertFailure(t, err, "was not applied by this module", "newer or older than agent-sandbox release v1.0.7",
 		"set spec.crds.install to false only when another tool manages these definitions and no other installation of agent-sandbox runs on this cluster")

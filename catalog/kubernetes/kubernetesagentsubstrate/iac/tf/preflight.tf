@@ -148,6 +148,18 @@ resource "terraform_data" "preflight" {
       error_message = local.foreign_workload == null ? "" : "observed: ${local.foreign_workload.kind} ${local.foreign_workload.namespace}/${local.foreign_workload.name} already runs on the cluster and was not created by this ${local.kind_name} (${local.foreign_workload.owner})\nmeaning: another installation of the same software runs here, such as a managed add-on or a kubectl apply of the upstream release; installing over it would take over its workloads, and destroying this resource later would delete them\nnext step: remove the other installation first, or keep it and do not install ${local.kind_name} on this cluster; to hand over an installation you made yourself, import it, then mark it as this kind's (`kubectl -n ${local.foreign_workload.namespace} label ${lower(local.foreign_workload.kind)} ${local.foreign_workload.name} ${local.owner_label}=${local.kind_name}`) and re-run"
     }
     precondition {
+      condition     = length(local.files_missing) == 0
+      error_message = length(local.files_missing) == 0 ? "" : "observed: Agent Substrate ${local.version} has no ${join(", ", local.files_missing)} at ${local.version_url}\nmeaning: ${local.version} is not a release upstream published, or upstream moved a file this module's composition reads\nnext step: set spec.version to a published release (https://github.com/agent-substrate/substrate/releases), or leave it empty for ${local.release}; a published release that moved this file needs a catalog update"
+    }
+    precondition {
+      condition     = length(local.unknown_placeholders) == 0
+      error_message = length(local.unknown_placeholders) == 0 ? "" : "observed: Agent Substrate ${local.version}'s manifests name the image ${local.unknown_placeholders[0]}, a placeholder this module does not know how to resolve\nmeaning: upstream changed how its manifests name an image, so the release cannot be installed as this module composes it\nnext step: set spec.version to a release this module installs (${local.release} installs), or update the module to the new placeholder (pin needs a catalog fix)"
+    }
+    precondition {
+      condition     = length(local.images_missing) == 0
+      error_message = length(local.images_missing) == 0 ? "" : "observed: ${join(", ", local.images_missing)}: the registry would not resolve ${length(local.images_missing) == 1 ? "this image" : "these images"}\nmeaning: ${local.version} is not an Agent Substrate release or does not publish ${length(local.images_missing) == 1 ? "it" : "them"} (HTTP 401, 403 or 404), or the registry is unreachable from where this deploy runs; the module pins every image by the digest upstream's registry serves, as upstream's installer does\nnext step: set spec.version to a published release (https://github.com/agent-substrate/substrate/releases), or leave it empty for ${local.release}; for any other answer, confirm DNS and egress to ghcr.io and re-run"
+    }
+    precondition {
       condition     = length(local.namespace_missing) == 0
       error_message = length(local.namespace_missing) == 0 ? "" : "observed: namespace ${local.namespace_missing[0].name} does not exist on the cluster, and this ${local.kind_name} does not create it (spec.create_namespace is false)\nmeaning: everything installs into ${local.namespace_missing[0].name}, so its owner must create it first; nothing could start without it\nnext step: deploy the KubernetesNamespace named ${local.namespace_missing[0].name} first and reference it from spec.namespace so the two deploy in order, or set spec.create_namespace to true to let this resource create and own it"
     }
@@ -161,11 +173,11 @@ resource "terraform_data" "preflight" {
     }
     precondition {
       condition     = local.upgrade_rules.deployment == ""
-      error_message = local.upgrade_rules.deployment == "" ? "" : "observed: Deployment ${local.namespace}/${local.api_server_name} records Agent Substrate ${local.installed_version} on this cluster, and this ${local.kind_name} installs ${local.version}\nmeaning: Agent Substrate does not move from ${local.installed_version} to ${local.version} in place: ${local.upgrade_rules.deployment}\nnext step: to install ${local.version}, back up what you need from the database, destroy this resource, then clear the database it used (`kubectl -n ${local.namespace} delete pvc ${local.postgres_volume_claim}` for the bundled one, or drop the substrate schema of an external or Cloud SQL one), replace every node that ran ${local.installed_version} (its node agent's state outlives the destroy), and apply again; to keep ${local.installed_version}, set spec.version back to it, or, for a release of another install shape, deploy this resource from the Planton release that installed it"
+      error_message = local.upgrade_rules.deployment == "" ? "" : "observed: Deployment ${local.namespace}/${local.api_server_name} records Agent Substrate ${local.installed_version} on this cluster, and this ${local.kind_name} installs ${local.version}\nmeaning: Agent Substrate does not move from ${local.installed_version} to ${local.version} in place: ${local.upgrade_rules.deployment}\nnext step: to install ${local.version}, back up what you need from the database, destroy this resource, then clear the database it used (`kubectl -n ${local.namespace} delete pvc ${local.postgres_volume_claim}` for the bundled one, or drop the substrate schema of an external or Cloud SQL one), replace every node that ran ${local.installed_version} (its node agent's state outlives the destroy), and apply again; to keep ${local.installed_version}, set spec.version back to it"
     }
     precondition {
       condition     = local.upgrade_rules.volume == ""
-      error_message = local.upgrade_rules.volume == "" ? "" : "observed: PersistentVolumeClaim ${local.namespace}/${local.postgres_volume_claim}, the bundled database's volume left by an earlier installation, records Agent Substrate ${local.volume_version} on this cluster, and this ${local.kind_name} installs ${local.version}\nmeaning: Agent Substrate does not move from ${local.volume_version} to ${local.version} in place: ${local.upgrade_rules.volume}\nnext step: to install ${local.version}, back up what you need from that database, delete the volume (`kubectl -n ${local.namespace} delete pvc ${local.postgres_volume_claim}`), and apply again; to keep the data, set spec.version to a release of the minor that wrote it, or, for one of another install shape, deploy this resource from the Planton release that wrote it"
+      error_message = local.upgrade_rules.volume == "" ? "" : "observed: PersistentVolumeClaim ${local.namespace}/${local.postgres_volume_claim}, the bundled database's volume left by an earlier installation, records Agent Substrate ${local.volume_version} on this cluster, and this ${local.kind_name} installs ${local.version}\nmeaning: Agent Substrate does not move from ${local.volume_version} to ${local.version} in place: ${local.upgrade_rules.volume}\nnext step: to install ${local.version}, back up what you need from that database, delete the volume (`kubectl -n ${local.namespace} delete pvc ${local.postgres_volume_claim}`), and apply again; to keep the data, set spec.version to a release of the minor that wrote it"
     }
     precondition {
       condition = alltrue([
@@ -188,7 +200,7 @@ resource "terraform_data" "preflight" {
         local.router_policy_upstream != null,
         alltrue([for role, modes in local.octal_modes : length(modes) <= 4]),
       ])
-      error_message = "observed: Agent Substrate ${local.release}'s manifests no longer carry the workloads, containers, start hook and component patches the module patches, where it expects them\nmeaning: the published release changed shape\nnext step: the module's pin needs a catalog fix"
+      error_message = "observed: Agent Substrate ${local.version}'s manifests no longer carry the workloads, containers, start hook and component patches the module patches, where it expects them\nmeaning: upstream changed what this module's composition reads, so the release cannot be installed as this module composes it\nnext step: set spec.version to a release this module installs (${local.release} installs), or update the module (pin needs a catalog fix)"
     }
   }
 }

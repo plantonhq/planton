@@ -3,6 +3,7 @@ package module
 import (
 	"encoding/json"
 	"fmt"
+	"google.golang.org/protobuf/proto"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -89,7 +90,15 @@ func TestEnginesApplyTheSameDocuments(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			composed, err := compose(s, files)
+			images, err := releaseImages(files)
+			if err != nil {
+				t.Fatal(err)
+			}
+			pinned, err := resolveImages(s.version, images, registryDigest)
+			if err != nil {
+				t.Fatal(err)
+			}
+			composed, err := compose(s, files, pinned)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -142,27 +151,38 @@ func TestTerraformRefusesAMissingNamespace(t *testing.T) {
 
 var parityMetadata = &shared.CatalogObjectMetadata{Name: "parity"}
 
+// TestTerraformDestroysAnEarlierRelease pins #648: a destroy plan of an
+// install of a release this module cannot compose (v0.6.0, whose images
+// upstream never published) still plans, because the refusals are
+// preconditions on the preflight, which a destroy skips; a plan to install
+// that release is refused. Same gate as the parity test.
+func TestTerraformDestroysAnEarlierRelease(t *testing.T) {
+	if os.Getenv("AGENT_SUBSTRATE_TF_PARITY") != "1" {
+		t.Skip("set AGENT_SUBSTRATE_TF_PARITY=1 (with KUBE_CONFIG_PATH and tofu on PATH) to plan the Terraform module")
+	}
+	spec := minimalSpec()
+	spec.Version = proto.String("v0.6.0")
+	spec.CreateNamespace = true
+	pluginCache := t.TempDir()
+	dir := terraformWorkspace(t, spec, pluginCache)
+	if _, err := tofu(dir, pluginCache, "plan", "-destroy", "-input=false"); err != nil {
+		t.Fatalf("a destroy plan of a v0.6.0 install must plan: %v", err)
+	}
+	_, err := tofu(dir, pluginCache, "plan", "-input=false")
+	if err == nil {
+		t.Fatal("a plan to install v0.6.0 must be refused: upstream published no images for it")
+	}
+	if text := err.Error(); !strings.Contains(text, "v0.6.0") || !strings.Contains(text, "preflight") {
+		t.Errorf("the refusal must come from the preflight and name the release:\n%s", text)
+	}
+}
+
 // terraformPlan plans iac/tf for the spec and returns each kubectl_manifest
 // document by its composed identity, and the planned outputs; a refused plan
 // returns its output as the error.
 func terraformPlan(t *testing.T, spec *v1.KubernetesAgentSubstrateSpec, pluginCache string) (map[string]string, map[string]interface{}, error) {
 	t.Helper()
-	dir := t.TempDir()
-	if err := copyTerraformModule(dir); err != nil {
-		t.Fatal(err)
-	}
-	manifest := &v1.KubernetesAgentSubstrate{
-		ApiVersion: "kubernetes.planton.dev/v1alpha1",
-		Kind:       "KubernetesAgentSubstrate",
-		Metadata:   parityMetadata,
-		Spec:       spec,
-	}
-	if err := generators.WriteVarFile(manifest, filepath.Join(dir, "terraform.tfvars")); err != nil {
-		t.Fatal(err)
-	}
-	if _, err := tofu(dir, pluginCache, "init", "-input=false", "-backend=false", "-lockfile=readonly"); err != nil {
-		t.Fatal(err)
-	}
+	dir := terraformWorkspace(t, spec, pluginCache)
 	if _, err := tofu(dir, pluginCache, "plan", "-input=false", "-out=plan.bin"); err != nil {
 		return nil, nil, err
 	}
@@ -210,6 +230,28 @@ func terraformPlan(t *testing.T, spec *v1.KubernetesAgentSubstrateSpec, pluginCa
 
 // copyTerraformModule copies iac/tf (its .tf files and provider lock) into
 // dir.
+// terraformWorkspace is iac/tf, initialized, with the spec as its variables.
+func terraformWorkspace(t *testing.T, spec *v1.KubernetesAgentSubstrateSpec, pluginCache string) string {
+	t.Helper()
+	dir := t.TempDir()
+	if err := copyTerraformModule(dir); err != nil {
+		t.Fatal(err)
+	}
+	manifest := &v1.KubernetesAgentSubstrate{
+		ApiVersion: "kubernetes.planton.dev/v1alpha1",
+		Kind:       "KubernetesAgentSubstrate",
+		Metadata:   parityMetadata,
+		Spec:       spec,
+	}
+	if err := generators.WriteVarFile(manifest, filepath.Join(dir, "terraform.tfvars")); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := tofu(dir, pluginCache, "init", "-input=false", "-backend=false", "-lockfile=readonly"); err != nil {
+		t.Fatal(err)
+	}
+	return dir
+}
+
 func copyTerraformModule(dir string) error {
 	sources, err := filepath.Glob(filepath.Join("..", "..", "tf", "*.tf"))
 	if err != nil || len(sources) == 0 {

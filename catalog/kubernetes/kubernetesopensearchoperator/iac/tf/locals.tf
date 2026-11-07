@@ -68,8 +68,9 @@ locals {
     # that yields none is a failure, and nothing is ever left to Helm.
     expect_crds = true
 
-    version       = local.chart_version
-    version_field = "spec.chart_version"
+    version                  = local.chart_version
+    version_field            = "spec.chart_version"
+    downgrade_judged_by_kind = false
 
     chart = {
       repository   = local.helm_chart_repo

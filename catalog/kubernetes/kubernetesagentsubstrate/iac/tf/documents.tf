@@ -1,5 +1,5 @@
 # The composition (compose.go, workloads.go, splice.go, patch.go): the
-# published release files, the typed settings applied onto upstream's own
+# release's own files, the typed settings applied onto upstream's own
 # objects, upstream's own components applied where a setting selects them,
 # and the documents grouped into the four phases main.tf applies in order.
 #
@@ -11,91 +11,52 @@
 
 # A dropped connection, HTTP 429 or a 5xx is retried (honoring Retry-After),
 # as the Pulumi twin's fetchText does: a plan fetches every release file, so
-# a host limiting a burst of plans slows the deploy down. The three reads run
-# in the Go module's order, each depending on the one before: the seal, then
-# the image list and its install shape, then every other file, so a release
-# Planton never published, or one of another shape, is refused by name
-# before anything else is read.
-data "http" "checksums" {
-  url                = "${local.version_url}${local.checksums_file}"
-  request_timeout_ms = 120000
-
-  retry {
-    attempts     = 3
-    min_delay_ms = 1000
-    max_delay_ms = 8000
-  }
-
-  lifecycle {
-    postcondition {
-      condition     = self.status_code == 200
-      error_message = self.status_code == 429 ? "observed: ${self.url} answered HTTP 429 on every attempt\nmeaning: the host is limiting how often this address may download; a burst of plans from one address can reach the limit\nnext step: wait a minute and re-run" : self.status_code >= 500 ? "observed: ${self.url} answered HTTP ${self.status_code} on every attempt\nmeaning: the host is failing, not the release\nnext step: re-run once it answers 200 (`curl -I ${self.url}`)" : "observed: ${self.url} answered HTTP ${self.status_code}\nmeaning: Planton has not published Agent Substrate ${local.version}: every published release carries SHA256SUMS, uploaded last\nnext step: set spec.version to a release Planton publishes (its ${local.release_base_url}<version>/${local.checksums_file} answers 200), or leave it empty for ${local.release}"
-    }
-  }
-}
-
-data "http" "images" {
-  url                = "${local.version_url}${local.images_file}"
-  request_timeout_ms = 120000
-  depends_on         = [data.http.checksums]
-
-  retry {
-    attempts     = 3
-    min_delay_ms = 1000
-    max_delay_ms = 8000
-  }
-
-  lifecycle {
-    postcondition {
-      condition     = self.status_code == 200
-      error_message = self.status_code == 429 ? "observed: ${self.url} answered HTTP 429 on every attempt\nmeaning: the host is limiting how often this address may download; a burst of plans from one address can reach the limit\nnext step: wait a minute and re-run" : self.status_code >= 500 ? "observed: ${self.url} answered HTTP ${self.status_code} on every attempt\nmeaning: the host is failing, not the release\nnext step: re-run once it answers 200 (`curl -I ${self.url}`)" : "observed: ${self.url} answered HTTP ${self.status_code}\nmeaning: Agent Substrate ${local.version} is published without ${local.images_file}, which every release of its install shape carries\nnext step: report it to Planton; a published release never changes, so re-running will not help"
-    }
-    postcondition {
-      condition     = sha256(self.response_body) == try(local.seal[local.images_file], "")
-      error_message = "observed: ${self.url} does not match the release's SHA256SUMS\nmeaning: the download was altered on its way, or the file changed after the release was sealed\nnext step: re-run; if it repeats, report it to Planton"
-    }
-    postcondition {
-      condition     = coalesce(try(jsondecode(self.response_body).shape, ""), local.version) == local.release
-      error_message = "observed: Agent Substrate ${local.version} has the install shape of ${coalesce(try(jsondecode(self.response_body).shape, ""), local.version)}, and this ${local.kind_name} composes ${local.release}'s\nmeaning: ${local.version} installs differently from what this Planton catalog release knows how to compose, so nothing was applied\nnext step: set spec.version to ${local.release} or a release of its shape, or deploy this resource from a Planton catalog release that composes ${coalesce(try(jsondecode(self.response_body).shape, ""), local.version)}'s shape"
-    }
-  }
-}
-
+# a host limiting a burst of plans slows the deploy down.
+#
+# Every file is read at the tag spec.version names, with no postcondition:
+# a file the tag does not carry (a version upstream never released, or a
+# release that moved a file this composition reads) lands in files_missing,
+# the composition reads the module's own release instead, and the preflight
+# refuses the apply by name (preflight.tf). A precondition is skipped on
+# destroy, so destroying an install of another layout never fails on files
+# it cannot read.
 data "http" "release_file" {
   for_each = local.release_files
 
   url                = "${local.version_url}${each.value}"
   request_timeout_ms = 120000
-  depends_on         = [data.http.images]
 
   retry {
     attempts     = 3
     min_delay_ms = 1000
     max_delay_ms = 8000
   }
+}
 
-  lifecycle {
-    postcondition {
-      condition     = self.status_code == 200
-      error_message = self.status_code == 429 ? "observed: ${self.url} answered HTTP 429 on every attempt\nmeaning: the host is limiting how often this address may download; a burst of plans from one address can reach the limit\nnext step: wait a minute and re-run" : self.status_code >= 500 ? "observed: ${self.url} answered HTTP ${self.status_code} on every attempt\nmeaning: the host is failing, not the release\nnext step: re-run once it answers 200 (`curl -I ${self.url}`)" : "observed: ${self.url} answered HTTP ${self.status_code}\nmeaning: Agent Substrate ${local.version} is published without ${each.value}, which every release of its install shape carries\nnext step: report it to Planton; a published release never changes, so re-running will not help"
-    }
-    postcondition {
-      condition     = sha256(self.response_body) == try(local.seal[each.value], "")
-      error_message = "observed: ${self.url} does not match the release's SHA256SUMS\nmeaning: the download was altered on its way, or the file changed after the release was sealed\nnext step: re-run; if it repeats, report it to Planton"
-    }
+# The module's own release, read only when the requested one lacks a file.
+data "http" "default_release_file" {
+  for_each = length(local.files_missing) > 0 ? local.release_files : {}
+
+  url                = "${local.upstream_files_base}${local.release}/${each.value}"
+  request_timeout_ms = 120000
+
+  retry {
+    attempts     = 3
+    min_delay_ms = 1000
+    max_delay_ms = 8000
   }
 }
 
 locals {
-  # The release's seal: path -> SHA-256, from SHA256SUMS (parseChecksums).
-  seal = {
-    for line in split("\n", data.http.checksums.response_body) : split("  ", line)[1] => split("  ", line)[0]
-    if length(split("  ", line)) == 2
-  }
+  # The files the requested release does not serve, with the answer it gave.
+  files_missing = [
+    for role, path in local.release_files : "${path} (HTTP ${data.http.release_file[role].status_code})"
+    if data.http.release_file[role].status_code != 200
+  ]
 }
 
 locals {
-  # ---- the published files, parsed --------------------------------------------
+  # ---- the release's files, parsed ---------------------------------------------
   # Split on separator lines; each piece gets back the newline the split
   # consumed, so a block scalar that ends a document keeps its final newline
   # (the Go module splits before the separator and keeps it).
@@ -105,7 +66,7 @@ locals {
   # would read 600 decimal, a mode the API server refuses. So each file's
   # octal mode literals are rewritten as their decimal value before decoding
   # (up to four distinct ones per file; the preflight refuses more).
-  release_bodies = { for role, path in local.release_files : role => data.http.release_file[role].response_body }
+  release_bodies = { for role, path in local.release_files : role => length(local.files_missing) == 0 ? data.http.release_file[role].response_body : data.http.default_release_file[role].response_body }
   octal_modes = {
     for role, body in local.release_bodies : role => distinct([
       for m in regexall("(?m)^[ \\t]*(?:defaultMode|mode):[ \\t]+(0[0-7]+)[ \\t]*$", body) : m[0]
@@ -124,7 +85,6 @@ locals {
       if trimspace(doc) != "" && can(yamldecode("${doc}\n").kind)
     ] if role != "setup_sql"
   }
-  images = jsondecode(data.http.images.response_body).images
 
   # ---- the pod-certificate controller ------------------------------------------
   podcert_upstream  = one([for d in local.documents_by_file.pod_certificates : d if d.kind == "Deployment" && d.metadata.name == local.pod_certificates_name])
@@ -223,7 +183,9 @@ locals {
     { name = "ATE_API_POSTGRES_READ_WRITE_CONNECTION_STRING", valueFrom = { secretKeyRef = { name = try(local.db_read_write_secret.name, ""), key = try(local.db_read_write_secret.key, "") } } },
     { name = "ATE_API_POSTGRES_OWNER_CONNECTION_STRING", valueFrom = { secretKeyRef = { name = local.db_owner_secret.name, key = local.db_owner_secret.key } } },
   ] : e if local.db_external_passwords]
-  storage_env_names = [for e in local.storage_env : e.name]
+  # setEnv's shape: a variable upstream already sets keeps its position and
+  # takes the new value; every other one is appended in order.
+  storage_env_by_name = { for e in local.storage_env : e.name => e }
   api_doc = merge(local.api_upstream, {
     spec = merge(local.api_upstream.spec, {
       replicas = local.api.replicas
@@ -235,7 +197,7 @@ locals {
             { for k2, v2 in { env = concat(try(c.env, []), local.api_password_env) } : k2 => v2 if local.db_external_passwords },
           ) : k => v if c.name == local.api_server_name })]
           initContainers = [for c in local.api_upstream.spec.template.spec.initContainers : merge(c, { for k, v in {
-            env = concat([for e in try(c.env, []) : e if !contains(local.storage_env_names, e.name)], local.storage_env)
+            env = concat([for e in try(c.env, []) : lookup(local.storage_env_by_name, e.name, e)], [for e in local.storage_env : e if !contains([for u in try(c.env, []) : u.name], e.name)])
           } : k => v if c.name == "objectstore-plugin" })]
         })
       })
@@ -319,7 +281,7 @@ locals {
             ) : k => v if c.name == local.node_agent_name })]
             initContainers = [for c in local.node_spec.initContainers : merge(c, { for k, v in {
               args = local.node_sidecar_args
-              env  = concat([for e in try(c.env, []) : e if !contains(local.storage_env_names, e.name)], local.storage_env)
+              env  = concat([for e in try(c.env, []) : lookup(local.storage_env_by_name, e.name, e)], [for e in local.storage_env : e if !contains([for u in try(c.env, []) : u.name], e.name)])
             } : k => v if c.name == "objectstore-plugin" })]
             volumes = [for vol in local.node_spec.volumes : vol if local.gke || !contains(local.credential_volumes, vol.name)]
           },
@@ -641,10 +603,12 @@ locals {
 
   workload_kinds = ["Deployment", "DaemonSet", "StatefulSet"]
 
-  # The mirror registry over every image a document runs (mirrorImages).
+  # The mirror registry over every image a document runs (mirrorImages),
+  # each placeholder first pinned at the release (images.tf), and the
+  # release's own images, the workers' included, for the outputs.
   all_images = distinct(compact(flatten(concat(
     [for d in values(merge(local.prerequisite_docs_raw, local.database_docs_raw, local.system_docs_raw)) : [
-      for c in concat(try(d.spec.template.spec.initContainers, []), try(d.spec.template.spec.containers, [])) : try(c.image, "")
+      for c in concat(try(d.spec.template.spec.initContainers, []), try(d.spec.template.spec.containers, [])) : lookup(local.pinned_image, try(c.image, ""), try(c.image, ""))
     ] if contains(local.workload_kinds, d.kind)],
     values(local.images),
   ))))
@@ -652,7 +616,7 @@ locals {
   # The preview gates (applyPreview): every container that runs one of
   # upstream's components, the release's images bar the Envoy dataplane,
   # takes them; none leaves the binaries' default.
-  component_images = [for name, image in local.images : image if name != "envoy-dataplane"]
+  component_images = [for name, image in local.images : image if name != local.envoy_image]
   preview_args     = length(local.preview) > 0 ? ["--preview=${join(",", local.preview)}"] : []
   mirrored = {
     for image in local.all_images : image => local.registry == "" ? image : "${local.registry}/${(
@@ -700,13 +664,13 @@ locals {
               spec = merge(d.spec.template.spec,
                 {
                   containers = [for c in d.spec.template.spec.containers : merge(c,
-                    { for k, v in { args = concat(try(c.args, []), local.preview_args) } : k => v if length(local.preview_args) > 0 && contains(local.component_images, c.image) },
-                    { image = local.mirrored[c.image] },
+                    { for k, v in { args = concat(try(c.args, []), local.preview_args) } : k => v if length(local.preview_args) > 0 && contains(local.component_images, lookup(local.pinned_image, c.image, c.image)) },
+                    { image = local.mirrored[lookup(local.pinned_image, c.image, c.image)] },
                   )]
                 },
                 { for k, v in { initContainers = [for c in try(d.spec.template.spec.initContainers, []) : merge(c,
-                  { for k2, v2 in { args = concat(try(c.args, []), local.preview_args) } : k2 => v2 if length(local.preview_args) > 0 && contains(local.component_images, c.image) },
-                  { image = local.mirrored[c.image] },
+                  { for k2, v2 in { args = concat(try(c.args, []), local.preview_args) } : k2 => v2 if length(local.preview_args) > 0 && contains(local.component_images, lookup(local.pinned_image, c.image, c.image)) },
+                  { image = local.mirrored[lookup(local.pinned_image, c.image, c.image)] },
                 )] } : k => v if length(try(d.spec.template.spec.initContainers, [])) > 0 },
                 { for k, v in { imagePullSecrets = local.pull_secrets } : k => v if length(local.pull_secrets) > 0 },
                 { for k, v in {

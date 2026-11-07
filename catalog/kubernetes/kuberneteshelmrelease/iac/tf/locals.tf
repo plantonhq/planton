@@ -90,8 +90,9 @@ locals {
     keep_on_uninstall = try(var.spec.crds.keep_on_uninstall, null) == null ? true : var.spec.crds.keep_on_uninstall
     expect_crds       = false
 
-    version       = local.chart_version
-    version_field = "spec.version"
+    version                  = local.chart_version
+    version_field            = "spec.version"
+    downgrade_judged_by_kind = false
 
     chart = {
       repository   = local.helm_chart_repo

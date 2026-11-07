@@ -760,33 +760,14 @@ release-operator:  ## Release the operator image + chart: auto-bump (bump=major|
 	git tag -a "$(OPERATOR_TAG_PREFIX)$$rel_version" -m "operator $$rel_version"; \
 	git push origin "$(OPERATOR_TAG_PREFIX)$$rel_version"
 
-# ── Agent Substrate install set (release.agent-substrate.yaml) ────────────────
-# Upstream publishes Agent Substrate's images; Planton publishes the install set
-# composed from upstream's tag and those images: a git tag
-# `agent-substrate/vX.Y.Z` publishes downloads.planton.ai/releases/agent-substrate/vX.Y.Z/.
-# The version is upstream's, never bumped: the target tags the one version the
-# committed tools/ci/release/agent-substrate.yaml declares, after a rehearsal of
-# the lane (`bash tools/ci/release/publish_agent_substrate.sh --rehearse`, which
-# a pull request touching the lane also runs) has composed it.
-.PHONY: release-agent-substrate
-release-agent-substrate:  ## Publish Agent Substrate's install set at the version tools/ci/release/agent-substrate.yaml declares
-	@rel_version=$$(git show HEAD:tools/ci/release/agent-substrate.yaml | sed -n 's/^version: *//p'); \
-	case "$$rel_version" in v[0-9]*.[0-9]*.[0-9]*) ;; *) echo "tools/ci/release/agent-substrate.yaml at HEAD declares no vX.Y.Z version (got '$$rel_version')"; exit 1;; esac; \
-	if ! git ls-remote --exit-code --tags https://github.com/agent-substrate/substrate "refs/tags/$$rel_version" >/dev/null; then \
-		echo "agent-substrate/substrate has no tag $$rel_version; Planton publishes only upstream's own releases (https://github.com/agent-substrate/substrate/tags)"; exit 1; \
-	fi; \
-	echo "Publishing Agent Substrate $$rel_version"; \
-	git tag -a "agent-substrate/$$rel_version" -m "Agent Substrate $$rel_version install set"; \
-	git push origin "agent-substrate/$$rel_version"
-
 # ── Releasing without GitHub Actions ──────────────────────────────────────────
 # Runs the lanes a pushed release tag triggers, from this machine, when Actions
 # cannot (tools/ci/release/README.md, "Releasing without GitHub Actions"): the
 # tag's own lane scripts, from a clean clone of the tag. Needs the R2 key pair
 # and endpoint in the environment, and gh and buf signed in.
 .PHONY: release-without-actions
-release-without-actions:  ## Run a pushed tag's release lanes from this machine when Actions cannot (tag=vX.Y.Z | agent-substrate/vX.Y.Z)
-	@test -n "$(tag)" || { echo "usage: make release-without-actions tag=<vX.Y.Z | vX.Y.Z-rc.N | agent-substrate/vX.Y.Z>"; exit 2; }
+release-without-actions:  ## Run a pushed tag's release lanes from this machine when Actions cannot (tag=vX.Y.Z)
+	@test -n "$(tag)" || { echo "usage: make release-without-actions tag=<vX.Y.Z | vX.Y.Z-rc.N>"; exit 2; }
 	bash tools/ci/release/release_without_actions.sh "$(tag)"
 
 # ── Helm charts (helm/) ───────────────────────────────────────────────────────

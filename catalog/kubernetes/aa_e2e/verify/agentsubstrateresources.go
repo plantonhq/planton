@@ -3,7 +3,6 @@ package verify
 import (
 	"context"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"math/rand/v2"
 	"net/http"
@@ -53,24 +52,49 @@ const (
 	// secret_namespace outputs), under the two keys its S3 credentials
 	// contract names. The actor lane lists the snapshot with the very key the
 	// control plane writes it with.
-	agentSubstrateStoreAccessKeyID   = "access_key_id"
-	agentSubstrateStoreSecretKey     = "secret_access_key"
-	agentSubstrateStoreKind          = "KubernetesSeaweedFs"
-	agentSubstrateStoreSecretKind    = "KubernetesSecret"
-	agentSubstrateReleaseImagesIndex = "https://downloads.planton.ai/releases/agent-substrate/%s/images.json"
+	agentSubstrateStoreAccessKeyID = "access_key_id"
+	agentSubstrateStoreSecretKey   = "secret_access_key"
+	agentSubstrateStoreKind        = "KubernetesSeaweedFs"
+	agentSubstrateStoreSecretKind  = "KubernetesSecret"
 )
 
-// The counter workload, upstream's own demo (demos/counter at the pinned
-// release): an HTTP server on port 80 whose every request bumps a counter in
-// memory and a counter in a file under its durable directory, and answers
-// with both. Under VOLUMES fidelity a suspend keeps the durable directory and
-// drops memory, so after a resume the file counter continues and the memory
-// counter starts over: the two numbers together prove the actor really left
-// memory and really came back from storage. Planton publishes the image with
-// the release (images.json, key "counter").
+// The counter workload, the behavior of upstream's own demo (demos/counter),
+// whose image upstream does not release: an HTTP server on port 80 whose
+// every request bumps a counter in memory and a counter in a file under its
+// durable directory, and answers with both in the demo's words. Under
+// VOLUMES fidelity a suspend keeps the durable directory and drops memory, so
+// after a resume the file counter continues and the memory counter starts
+// over: the two numbers together prove the actor really left memory and
+// really came back from storage. It runs as a short script on a public
+// Python image, pinned by digest as every actor image must be.
 const (
-	counterImageKey        = "counter"
-	counterCommand         = "/ko-app/counter"
+	counterImage  = "docker.io/library/python:3.13-alpine@sha256:1e1f6334529d1fb26a2ef619d7cffb30a7c7d7cc1cc7338ebee283a58d1aeaca"
+	counterScript = `import http.server, os
+memory = 0
+class Counter(http.server.BaseHTTPRequestHandler):
+    def do_GET(self):
+        global memory
+        if self.path == "/readyz":
+            body = b"ok"
+        else:
+            path = os.path.join("/home/counter", "a.txt")
+            try:
+                count = int(open(path).read())
+            except Exception:
+                count = 0
+            count += 1
+            open(path, "w").write(str(count))
+            memory += 1
+            body = ("preserved memory count: %d | preserved file counter: %d\n" % (memory, count)).encode()
+        self.send_response(200)
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+    do_POST = do_GET
+    def log_message(self, *args):
+        pass
+http.server.ThreadingHTTPServer(("", 80), Counter).serve_forever()
+`
 	counterPort            = 80
 	counterDataMount       = "/home/counter"
 	counterMemoryPrefix    = "preserved memory count: "
@@ -330,10 +354,6 @@ func (v *AgentSubstrateWorkerPoolVerifier) proveActorLifecycle(ctx context.Conte
 	if len(v.Labels) == 0 {
 		return errors.New("the actor lane's pool must carry labels: an actor template selects its pool by them")
 	}
-	images, err := releaseImages(ctx, fmt.Sprint(outputs["version"]))
-	if err != nil {
-		return err
-	}
 	atespace := laneAtespace("actors")
 	if err := ensureAtespace(ctx, conn, atespace); err != nil {
 		return err
@@ -344,7 +364,7 @@ func (v *AgentSubstrateWorkerPoolVerifier) proveActorLifecycle(ctx context.Conte
 	actor := &ateapi.ObjectRef{Atespace: atespace, Name: agentSubstrateActorName}
 	defer func() { err = withLaneCleanup(err, cleanUpLaneAtespace(ctx, conn, atespace, actor)) }()
 
-	template := counterTemplate(atespace, agentSubstrateActorTemplate, images[counterImageKey], v.Labels)
+	template := counterTemplate(atespace, agentSubstrateActorTemplate, counterImage, v.Labels)
 	if err := createTemplate(ctx, conn, template); err != nil {
 		return errors.Wrapf(err, "creating the counter template on pool %s/%s (SandboxConfig %s)", v.Namespace, v.Name, config)
 	}
@@ -423,7 +443,7 @@ func (v *AgentSubstrateWorkerPoolVerifier) VerifyAbsent(ctx context.Context, kub
 // ---------------------------------------------------------------------------
 
 // counterTemplate is upstream's counter template (demos/counter) with the
-// lane's image and pool selector: one container serving port 80, a durable
+// lane's counter (counterScript) and pool selector: one container serving port 80, a durable
 // directory at /home/counter, the limits every actor must declare, and
 // VOLUMES fidelity (see the counter constants). It names no storage
 // location, so its snapshots go under the control plane's own.
@@ -433,7 +453,7 @@ func counterTemplate(atespace, name, image string, selector map[string]string) *
 		Containers: []*ateapi.Container{{
 			Name:         "counter",
 			Image:        image,
-			Command:      []string{counterCommand},
+			Command:      []string{"python3", "-c", counterScript},
 			WakeupProbe:  &ateapi.WakeupProbe{HttpGet: &ateapi.HttpGetAction{Path: "/readyz", Port: counterPort}},
 			VolumeMounts: []*ateapi.VolumeMount{{Name: "data", MountPath: counterDataMount}},
 		}},
@@ -450,33 +470,6 @@ func counterTemplate(atespace, name, image string, selector map[string]string) *
 		t.WorkerSelector = &ateapi.Selector{MatchLabels: selector}
 	}
 	return t
-}
-
-// releaseImages reads the image index Planton publishes with the release the
-// control plane reports in its version output.
-func releaseImages(ctx context.Context, version string) (map[string]string, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf(agentSubstrateReleaseImagesIndex, version), nil)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, errors.Wrapf(err, "fetching the image index of Agent Substrate %s", version)
-	}
-	defer func() { _ = resp.Body.Close() }()
-	if resp.StatusCode != http.StatusOK {
-		return nil, errors.Errorf("the image index of Agent Substrate %s answered HTTP %d", version, resp.StatusCode)
-	}
-	var index struct {
-		Images map[string]string `json:"images"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&index); err != nil {
-		return nil, errors.Wrapf(err, "reading the image index of Agent Substrate %s", version)
-	}
-	if index.Images[counterImageKey] == "" {
-		return nil, errors.Errorf("the image index of Agent Substrate %s names no %q image", version, counterImageKey)
-	}
-	return index.Images, nil
 }
 
 func ensureAtespace(ctx context.Context, conn *substrateAPI, name string) error {

@@ -99,4 +99,4 @@ spec:
       status: enforced_by_default
       evidence:
         type: module_default
-        reference: spec.version picks a release Planton publishes (its digest-pinned build of upstream's release, checked against its checksums), defaulting to the release the modules compose; a patch of that install shape is adopted by setting it, and a release of another shape is refused before anything is applied. Moves are guarded by the upgrade refusal, and the definitions follow the install shape, never lowered.
+        reference: spec.version picks any release upstream publishes, installed from upstream's own tag and images with every image pinned by the digest upstream's registry serves, defaulting to v1.0.0; a release upstream never published, or one that changed what the modules read, is refused before anything is applied. Moves are guarded by the upgrade refusal, which also bounds a rollback of the release's definitions to one minor.

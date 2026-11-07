@@ -179,7 +179,7 @@ spec:
       # atelet starts only once the startup probe sees the plugin serving.
       initContainers:
       - name: objectstore-plugin
-        image: ghcr.io/agent-substrate/substrate/objectstore-plugin:v1.0.0@sha256:485cf92b31fed761c53f478d17ed69bf552a2cd8e8cf3b24b98a3e06789ee274
+        image: ko://go.ate.dev/substrate/cmd/objectstore-plugin
         restartPolicy: Always
         args:
         - node
@@ -253,7 +253,7 @@ spec:
           mountPath: /var/lib/objectstore-plugin/asset-staging
       containers:
       - name: atelet
-        image: ghcr.io/agent-substrate/substrate/atelet:v1.0.0@sha256:79abc69f982392adbcbc3332cd8191cf74ac3cd1f4a43c44e9c8a3ce16488b6e
+        image: ko://go.ate.dev/substrate/cmd/atelet
         args:
         # Pull credentials come from the node's own kubelet credential provider
         # plugin (mounted read-only below) rather than a cloud SDK compiled into

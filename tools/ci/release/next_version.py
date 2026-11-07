@@ -6,8 +6,7 @@ version: the bare `vX.Y.Z` releases the repository (the catalog),
 `operator/vX.Y.Z` the operator, `helm/<chart>/vX.Y.Z` a Helm chart. This
 script finds the newest strict-semver tag under one such prefix and bumps it,
 so each `make release-*` front door for Planton's own lines computes its next
-version the same way. A third-party line (`agent-substrate/vX.Y.Z`) carries
-upstream's version and is never bumped here.
+version the same way.
 
 Usage:
     next_version.py [patch|minor|major] [--prefix operator/]

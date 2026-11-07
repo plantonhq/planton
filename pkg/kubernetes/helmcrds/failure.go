@@ -61,7 +61,7 @@ func renderFailure(src Source, err error) error {
 func zeroCRDsFailure(src Source) error {
 	if src.IsBundle() {
 		return &Failure{
-			Observed: fmt.Sprintf("the CRD bundle at %s contained no CustomResourceDefinition documents", src.ResolvedBundleURL()),
+			Observed: fmt.Sprintf("the CRD bundle at %s contained no CustomResourceDefinition documents", strings.Join(src.ResolvedBundleURLs(), " ")),
 			Meaning:  "upstream changed what that URL serves, or the version has no CRD bundle",
 			NextStep: "open the URL, confirm it is the CRD bundle for this version, and correct the module's bundle URL template if upstream moved it",
 		}
@@ -73,8 +73,7 @@ func zeroCRDsFailure(src Source) error {
 	}
 }
 
-func bundleFetchFailure(src Source, status int, err error) error {
-	url := src.ResolvedBundleURL()
+func bundleFetchFailure(src Source, url string, status int, err error) error {
 	if err != nil {
 		return &Failure{
 			Observed: fmt.Sprintf("the CRD bundle at %s could not be fetched (%s)", url, err.Error()),

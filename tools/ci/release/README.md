@@ -17,7 +17,6 @@ is upstream's own, declared once in a committed file.
 | `vX.Y.Z` | the catalog: IaC modules, content zips, definitions, InfraCharts (`release.yaml`) | `make release` |
 | `operator/vX.Y.Z` | the operator image and the `planton-operator` Helm chart, one version line (`release.operator.yaml` -> `release.helm.yaml`) | `make release-operator` |
 | `helm/<chart>/vX.Y.Z` | one Helm chart under `helm/` (`release.helm.yaml`) | `make release-helm chart=<chart>` |
-| `agent-substrate/vX.Y.Z` | Agent Substrate's install set at `downloads.planton.ai/releases/agent-substrate/vX.Y.Z/`, composed from upstream's tag and the images upstream publishes (`release.agent-substrate.yaml`) | `make release-agent-substrate` |
 
 ## Quick Start
 
@@ -38,9 +37,6 @@ make release-operator version=v0.8.0       # an explicit version (the first tag 
 # Release one Helm chart (triggers release.helm.yaml)
 make release-helm chart=planton            # patch bump in the helm/planton/ namespace
 make release-helm chart=planton version=v0.4.0
-
-# Publish Agent Substrate's install set (triggers release.agent-substrate.yaml)
-make release-agent-substrate               # tags the version tools/ci/release/agent-substrate.yaml declares
 ```
 
 A namespace with no tag yet auto-bumps to `v0.0.1`, so a line that must start
@@ -128,54 +124,6 @@ The reproducibility gate above, runnable by hand: `bash tools/ci/release/check_r
 Packages the content distribution zips (presets, IaC source, catalog pages,
 proto source, the kind reference pack) for the release's R2 upload.
 
-## Agent Substrate: a third-party line
-
-Agent Substrate publishes its release images itself (from v1.0.0, at
-`ghcr.io/agent-substrate/substrate/<image>`) but no pre-built install, so
-Planton publishes the install set the Substrate kinds read, and anyone else
-who installs it can. The lane is one script, `publish_agent_substrate.sh
-[--rehearse] [<version>]`, which `release.agent-substrate.yaml` runs and a
-laptop runs the same way:
-
-- `agent-substrate.yaml` declares the one version the lane composes, the
-  install shape it claims, and the repository upstream publishes its images
-  under. A pull request that touches the lane rehearses that version (compose
-  and check; nothing is published), `make release-agent-substrate` tags it,
-  and the lane refuses to publish any other version that is not already
-  published. Adopting a new upstream release moves these lines in the change
-  whose rehearsal proves it.
-- **The install shape.** The control-plane module composes one shape, the
-  install of one release, and installs any published release of that shape at
-  the version a customer sets. A release that claims an earlier shape is
-  published only when its install is that shape's apart from its images: the
-  rehearsal compares the composed tree with the shape's published one,
-  upstream's installer and the binaries' install defaults at both tags, and the
-  flags, `ATE_*` variables and preview gates the installed binaries accept (the
-  release may add one, never drop one the module may pass). So an upstream
-  patch that changes nothing but its images reaches customers with this lane
-  alone; one that changes the install is declared its own shape, and customers
-  get it once the module composes it.
-- `compose_agent_substrate_release.py` turns upstream's tag and its images into
-  the install set: upstream's `manifests/` tree with every image pinned by the
-  digest of the index upstream's registry serves (fetched anonymously, the
-  digest computed from the bytes), less the kustomize components that name an
-  image upstream never releases; the CRD bundle, `images.json` (with the
-  shape), upstream's database setup script, the licenses and `SHA256SUMS`. Its
-  docstring says why the install is upstream's whole tree rather than one file,
-  and how a shape is proven. Tests: `cd tools/ci/release && python3 -m unittest
-  compose_agent_substrate_release_test.py` (the overlay checks need `kustomize`
-  on PATH; `ensure_release_tools.sh` puts the pinned one there).
-- `verify_agent_substrate_release.sh <version> [<composed directory>]` proves a
-  published version from an adopter's side, with no credentials: every file
-  matches its sum (and, given the directory a run composed, every byte), and
-  every image pulls by digest and by tag from the registry `images.json` names.
-- `ensure_release_tools.sh` installs the pinned crane and kustomize for the
-  host, each checked against its release's own checksum.
-
-A version is sealed once its `SHA256SUMS` is uploaded (last): later runs verify
-it and compose nothing. No step runs upstream's code: the composer reads
-upstream's files as text.
-
 ## Releasing without GitHub Actions
 
 When Actions cannot run (a billing lock, an outage), a release is still cut by
@@ -188,7 +136,6 @@ ones the workflows run:
 | Tag | Lanes run, in order |
 |---|---|
 | `vX.Y.Z`, `vX.Y.Z-rc.N` | the GitHub Release (`create_github_release.sh`), the chart catalog (`publish_charts.sh`), the BSR labels (`push_buf_labels.sh`), the content artifacts (`publish_content.sh`), the stub SDKs (`publish_stub_sdks.sh`), the OpenTofu modules one provider at a time in parallel (`publish_terraform_modules.sh`) and their manifest (`publish_module_manifest.sh`) |
-| `agent-substrate/vX.Y.Z` | the install set (`publish_agent_substrate.sh`) |
 
 Those are every lane a platform pin reads. The Pulumi modules and their
 manifest (about 4,200 Go builds), the definitions, the `plantonhq/skills`
@@ -204,8 +151,7 @@ zip, python3 and the aws CLI. The scripts default the region to R2's `auto`.
 
 ## Required GitHub Secrets
 
-The module/content/definitions release workflows and the Agent Substrate lane
-upload to Cloudflare R2 and need `CLOUDFLARE_R2_ACCESS_KEY_ID`,
+The module/content/definitions release workflows upload to Cloudflare R2 and need `CLOUDFLARE_R2_ACCESS_KEY_ID`,
 `CLOUDFLARE_R2_SECRET_ACCESS_KEY`, and `CLOUDFLARE_R2_ENDPOINT`. The GitHub
 Release itself, the chart-catalog attachment and every ghcr.io push need only
 the automatically provided `GITHUB_TOKEN`.
