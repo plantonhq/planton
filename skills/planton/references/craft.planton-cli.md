@@ -522,7 +522,7 @@ planton custom-domain get                       # the organization's domain and 
 planton custom-domain set <name> --no-wait      # set it; prints the one record to add
 planton custom-domain prompt -o json            # the setup guide: the record, the DNS host, its command
 planton custom-domain verify --wait --timeout 8m -o json  # Check Now until Live (exit 0) or a diagnosis (exit 2)
-planton custom-domain delete --force            # remove it
+planton custom-domain delete --yes              # remove it
 ```
 
 Team plan, hosted Planton only; `--org` names the organization. `set` and
