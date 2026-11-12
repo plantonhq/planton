@@ -16,49 +16,87 @@ excerpt: "Grant Planton secure access to deploy and manage resources in your AWS
 
 # How to Connect Your AWS Account to Planton
 
-Before Planton can deploy infrastructure in your AWS account -- VPCs, ECS clusters, RDS databases, S3 buckets, or anything else -- it needs a secure way to authenticate with AWS on your behalf. This tutorial walks you through creating that connection using three different approaches, so you can choose the one that fits your security requirements.
+Before Planton can deploy infrastructure in your AWS account -- VPCs, ECS clusters, RDS databases, S3 buckets, or anything else -- it needs a secure way to authenticate with AWS on your behalf. This tutorial walks you through creating that connection using three different approaches, keyless first, so you can choose the one that fits your security requirements.
 
 ## What You Will Learn
 
 - What a provider connection is and why Planton needs one
+- How to create a keyless AWS Provider Connection in the web console, with no stored credential (recommended)
 - How to store AWS credentials as organization-level secrets in Planton
-- How to create an AWS Provider Connection with inline credentials (quickest path)
-- How to create an AWS Provider Connection with cross-account trust via CloudFormation (recommended for production)
-- How to create an AWS Provider Connection with runner-delegated authentication (maximum security)
+- How to create an AWS Provider Connection with a stored access key
+- How to create an AWS Provider Connection with a runner's own identity (maximum isolation)
 - How to set a default provider connection so your deployments use it automatically
 
 ## Prerequisites
 
-- [ ] An AWS account where you have permission to create IAM users, CloudFormation stacks, or IAM roles for service accounts
+- [ ] An AWS account where you have permission to create IAM identity providers, roles and policies (or CloudFormation stacks), IAM users, or IAM roles for service accounts
 - [ ] A Planton account with an organization already created
-- [ ] The `planton` CLI installed and authenticated (run `planton auth login` if you have not done this yet)
+- [ ] The `planton` CLI installed and authenticated (run `planton auth login` if you have not done this yet) for Paths B and C
 
 ## Understanding Provider Connections
 
-A provider connection tells Planton how to authenticate when deploying infrastructure in your cloud account. Credentials are stored as secrets in Planton's secrets manager and referenced by slug in the connection manifest -- the actual values never appear in the spec. For more on provider connections, see the [connections documentation](/docs/connections/cloud-providers).
+A provider connection tells Planton how to authenticate when deploying infrastructure in your cloud account, and what Planton may deploy there. Credentials, when a connection holds any, are stored as secrets in Planton's secrets manager and referenced by slug in the connection manifest -- the actual values never appear in the spec. For more on provider connections, see the [connections documentation](/docs/connections/cloud-providers).
+
+Every connection records a **grant**: what Planton may deploy through it. **Everything Planton Can Deploy** covers every AWS kind in Planton's catalog; **Only What I Pick** covers the kinds you choose. The permissions come from the catalog, so the identity Planton uses holds exactly what those kinds need, never a broad policy like `AdministratorAccess`.
 
 ### Three Authentication Approaches for AWS
 
 This tutorial covers three approaches. Choose the one that matches your needs:
 
-| | Inline Credentials | Cross-Account Trust | Runner-Delegated |
+| | Keyless | Stored Key | Runner Identity |
 |---|---|---|---|
-| **How it works** | You create an IAM user, store its access key as a Planton secret, and the connection references that secret | A CloudFormation stack creates an IAM role with a trust policy; Planton assumes the role via STS for temporary credentials | A self-hosted Planton Runner uses its own environment credentials (IRSA, instance profile, ECS task role) |
-| **Security** | Access key is long-lived; you manage rotation | No long-lived credentials; temporary tokens auto-rotate via STS | Credentials never leave your infrastructure; nothing stored in Planton |
-| **Setup time** | 5-10 minutes | 10-15 minutes | 30+ minutes (requires deploying a runner) |
-| **Best for** | Getting started, development environments | Production, compliance-sensitive environments | Maximum security, air-gapped environments, regulated industries |
+| **How it works** | An IAM role in your account trusts Planton's identity issuer; Planton exchanges a short-lived token for that role's credentials on each operation | You create an IAM user, store its access key as a Planton secret, and the connection references that secret | A self-hosted Planton Runner uses its own environment credentials (IRSA, instance profile, ECS task role) |
+| **Security** | Nothing stored in Planton; credentials last at most an hour; the trust admits only this connection | Access key is long-lived; you manage rotation | Credentials never leave your infrastructure; nothing stored in Planton |
+| **Setup time** | About five minutes (one script or one CloudFormation stack) | 5-10 minutes | 30+ minutes (requires deploying a runner) |
+| **Best for** | Production and every account where you can create an IAM role | Quick evaluation, accounts where you cannot create an identity provider | Air-gapped environments, regulated industries, teams that already run a runner |
 
 All three approaches result in the same outcome: a provider connection that Planton can use to deploy AWS infrastructure on your behalf.
 
-## Path A: Inline Credentials
+## Path A: Keyless, in the Web Console
 
-This is the quickest way to connect your AWS account. You create an IAM user with programmatic access, store its credentials as Planton secrets, and create a connection that references them.
+This approach stores nothing in Planton. You create an IAM role in your account that trusts Planton's identity issuer for this one connection, and Planton asks AWS for short-lived credentials whenever it works in your account. The console fills in every value for you; the connection is created only once AWS confirms the role trusts it.
+
+### Step 1: Start the Connection
+
+In the Planton web console, open **Connections** and click the **AWS** card under Infrastructure. **Name** the connection, for example `prod-aws`, then choose **Keyless** (listed first, and recommended).
+
+### Step 2: Say Where It Deploys
+
+On the **Account** step, enter your 12-digit **AWS Account ID** and the **Default Region**.
+
+### Step 3: Choose What Planton May Deploy
+
+On the **Permissions** step, keep **Everything Planton Can Deploy** (recommended), or choose **Only What I Pick** and tick the kinds you use, shelved by AWS's own service groups. **Organization Access** (AWS Organizations: its accounts and organizational units) and **Access Granting** (IAM users, roles, policies and keys across the account) stay off unless you turn them on. Click **Show the Policies** to read exactly what the role will hold.
+
+### Step 4: Set Up the Trust in Your Account
+
+The **Set Up** step shows a setup script with every value filled in. Run it with the AWS CLI signed in to the account you entered (AWS CloudShell works). It runs three steps, announcing each as it starts:
+
+1. Registers Planton's issuer, `planton.ai`, as an IAM OIDC identity provider in your account, or keeps it when another Planton connection already did.
+2. Creates this connection's own role, `planton-<your organization>-prod-aws`, whose trust policy accepts only the tokens Planton signs for this connection.
+3. Writes the policies rendered from your grant onto the role.
+
+If your changes go through CloudFormation, click **Prefer CloudFormation? Show the Template** instead, download the template, and in the CloudFormation console choose **Create stack**, **Upload a template file**. It creates exactly what the script does; run one of the two.
+
+Then click **Check the Trust**. Planton asks AWS whether the role trusts this connection, and waits while AWS accepts the new role. Once AWS says yes, click **Next**.
+
+If someone else administers the account, click **Create It Now, Finish the Trust Later** and hand them the script: the connection's page keeps the same setup and its check until the trust works.
+
+### Step 5: Review, Create, and Read the Verdict
+
+On **Review & Create**, click **Create**. The next screen runs the connection's first Verify and says what it can deploy, as **"N of M AWS Kinds Can Deploy"** counted against your grant. The connection stores only the role's ARN, `arn:aws:iam::123456789012:role/planton-<your organization>-prod-aws`; there is no key, no external ID, and nothing to rotate.
+
+For what the script does in detail, running it again, and a second connection in the same account, see [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections#aws).
+
+## Path B: Stored Key
+
+This approach stores a long-lived credential. You create an IAM user with programmatic access, store its credentials as Planton secrets, and create a connection that references them.
 
 ### Step 1: Create an IAM User in AWS
 
 Sign in to the AWS Console and navigate to **IAM > Users > Create user**.
 
-Create a user with programmatic access (access key, no console access). Attach policies that grant the permissions Planton needs for the AWS services you plan to use. For a broad starting point, `AdministratorAccess` works, though you should scope this down for production use.
+Create a user with programmatic access (access key, no console access). Attach the policies Planton's catalog renders for what you want it to deploy: in the console's AWS connection wizard, choose **Stored Key**, and on its **Permissions** step choose **Everything Planton Can Deploy** or **Only What I Pick** and click **Show the Policies**. They hold exactly what those kinds need; you do not need `AdministratorAccess`.
 
 After creating the user, note the **Access Key ID** and **Secret Access Key**. You will need both in the next steps.
 
@@ -91,6 +129,8 @@ metadata:
   name: my-aws-connection
   org: your-org
 spec:
+  grant:
+    coverage: everything
   auth_mode: inline
   account_id:
     value: "123456789012"
@@ -110,6 +150,7 @@ Replace these values with your own:
 - **`spec.region.value`**: The AWS region you want as the default for this connection.
 - **`spec.access_key_id.secret`**: The slug of the secret you created in Step 2.
 - **`spec.secret_access_key.secret`**: The slug of the secret you created in Step 3.
+- **`spec.grant`**: What Planton may deploy through the connection: `coverage: everything` for every kind Planton's catalog offers, or `coverage: chosen` with the `kinds` you pick. Every cloud connection records one, and the policies you attached in Step 1 should match it.
 
 A few things to note about the field structure:
 
@@ -123,7 +164,7 @@ A few things to note about the field structure:
 planton apply -f aws-connection.yaml
 ```
 
-Planton validates that the referenced secrets exist in your organization's config-manager and creates the connection.
+Planton validates that the referenced secrets exist in your organization's config-manager and creates the connection. A manifest without `grant` is refused with a message that says how to add it.
 
 ### Step 6: Verify the Connection
 
@@ -135,65 +176,7 @@ planton get AwsProviderConnection my-aws-connection
 
 You should see the connection metadata and spec. The `access_key_id` and `secret_access_key` fields will display only the secret slug, not the actual credential values -- confirming that no sensitive data is stored in the connection resource itself.
 
-## Path B: Cross-Account Trust via CloudFormation
-
-This approach creates an IAM role in your AWS account with a trust policy that allows Planton to assume it via STS `AssumeRole`. No long-lived credentials are stored anywhere -- Planton obtains temporary security tokens that automatically expire and rotate.
-
-The `planton connect aws` command automates the entire setup through a CloudFormation Quick Create flow.
-
-### Step 1: Run the Connect Command
-
-```bash
-planton connect aws \
-  --name prod-aws \
-  --org your-org \
-  --account-id 123456789012
-```
-
-This command generates a CloudFormation Quick Create URL and opens it in your browser. It also generates a unique external ID (stored automatically as a config-manager secret) that is embedded in the IAM role's trust policy for confused-deputy prevention.
-
-To scope the IAM role's permissions to specific AWS services, use the `--capabilities` flag:
-
-```bash
-planton connect aws \
-  --name prod-aws \
-  --org your-org \
-  --account-id 123456789012 \
-  --capabilities eks,vpc_networking,s3_storage,ecr_registry
-```
-
-Available capabilities: `eks`, `ecs`, `vpc_networking`, `s3_storage`, `rds_database`, `lambda_compute`, `route53_dns`, `cloudwatch_monitoring`, `ecr_registry`, `kms_encryption`. Each capability maps to a conditional IAM policy in the CloudFormation template, so the role only has permissions for the services you select.
-
-### Step 2: Review and Create the CloudFormation Stack
-
-Your browser opens to the AWS CloudFormation console with the stack parameters pre-filled. Review the IAM role that will be created, then click **Create stack**.
-
-The CloudFormation stack creates:
-
-- An IAM role with a trust policy scoped to Planton's runner identity
-- An external ID condition on the trust policy for additional security
-- Conditional IAM policies based on the capabilities you selected
-- A Lambda function that notifies Planton when the stack completes
-
-### Step 3: Wait for Completion
-
-The CLI polls for the CloudFormation callback. When the Lambda function in the stack notifies Planton that the stack is complete, the CLI reports success and displays the connection details.
-
-The resulting connection has:
-
-- **`iam_role_arn`**: The ARN of the IAM role, stored as a plain string on the connection spec (role ARNs are not sensitive).
-- **`external_id`**: A secret reference to the config-manager secret that was auto-generated during initiation.
-- **`capabilities`**: The list of AWS service capabilities you selected.
-
-### Step 4: Verify the Connection
-
-```bash
-planton get AwsProviderConnection prod-aws
-```
-
-The connection is ready to use. Planton's runner will assume this IAM role via STS whenever it needs to perform operations in your AWS account.
-
-## Path C: Runner-Delegated Authentication
+## Path C: Runner Identity
 
 This approach provides the highest security posture. Instead of storing any credentials in Planton -- even as secret references -- you deploy a Planton Runner in your own infrastructure and let it authenticate using the AWS SDK's default credential chain. The runner can use IAM Roles for Service Accounts (IRSA) on EKS, an EC2 instance profile, an ECS task role, or environment variables. No sensitive values are ever transmitted to or stored in the Planton control plane.
 
@@ -205,7 +188,7 @@ Create a runner token from the console's Runners area. The token is a named, rev
 
 ### Step 2: Deploy the Runner with AWS IAM Bindings
 
-Deploy the runner binary or container in your AWS environment. The runner needs IAM permissions for the AWS services you plan to manage through Planton.
+Deploy the runner binary or container in your AWS environment. The runner's identity needs the policies Planton's catalog renders for what you want it to deploy: in the console's AWS connection wizard, choose **Runner Identity**, and on its **Permissions** step click **Show the Policies**.
 
 How you bind IAM permissions depends on where the runner runs:
 
@@ -230,6 +213,8 @@ metadata:
   name: aws-runner
   org: your-org
 spec:
+  grant:
+    coverage: everything
   auth_mode: runner
   runner: my-aws-runner
   account_id:
@@ -238,11 +223,12 @@ spec:
     value: us-west-2
 ```
 
-The key differences from the inline manifest:
+The key differences from the stored-key manifest:
 
 - **`auth_mode: runner`** tells Planton to delegate authentication entirely to the runner's environment.
 - **`runner: my-aws-runner`** is the name the runner enrolled under in Step 3. This tells Planton which runner to route operations to.
 - There are no `access_key_id` or `secret_access_key` fields. In runner mode, these fields are ignored even if provided.
+- **`grant`** says what Planton may deploy through the connection, as in Path B.
 
 ### Step 5: Apply the Manifest
 
@@ -266,7 +252,7 @@ Once you have a connection, set it as the default for your organization so that 
 planton connection default set --provider aws --connection my-aws-connection
 ```
 
-To set a different default for a specific environment (for example, using the cross-account trust connection for production):
+To set a different default for a specific environment (for example, using the keyless connection for production):
 
 ```bash
 planton connection default set --provider aws --connection prod-aws --env production

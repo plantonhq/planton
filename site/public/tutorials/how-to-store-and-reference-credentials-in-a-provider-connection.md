@@ -91,6 +91,8 @@ metadata:
   name: my-aws-connection
   org: your-org
 spec:
+  grant:
+    coverage: everything
   auth_mode: inline
   account_id:
     value: "123456789012"
@@ -107,6 +109,8 @@ Three reference patterns appear in this manifest:
 - **`account_id.value`**: A literal string. The AWS account ID is not sensitive and does not change across environments, so a direct value is appropriate.
 - **`region.variable`**: A variable reference. The platform resolves the slug `default-aws-region` to the value you stored in Step 2 (`us-west-2`). This is useful when multiple connections or resources share the same region. A variable field can also name one entry of a [variable group](/docs/variables/variable-groups) as `<group>/<entry>` (for example `region: {variable: aws-defaults/region}`), the same names a service reads as `$var/aws-defaults/region`, so a fact both a connection and your services use is declared once.
 - **`access_key_id.secret` / `secret_access_key.secret`**: Secret references. The platform resolves these slugs to the encrypted values you stored in Step 1. The actual credentials never appear in the YAML.
+
+**`grant`** says what Planton may deploy through the connection: `coverage: everything` for every kind Planton's catalog offers, or `coverage: chosen` with the `kinds` you pick. Every cloud connection records one.
 
 ## Step 4: Apply and Verify
 

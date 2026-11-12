@@ -110,18 +110,20 @@ Before deploying infrastructure, connect your cloud provider account. This gives
 1. Click **Connections** in the sidebar
 2. Find your cloud provider card (AWS, GCP, Azure, or others) under the **Infrastructure** section
 3. Click **Connect** on the provider card
-4. Choose how Planton authenticates. For AWS, GCP, and Azure, the wizard lists **OIDC (Keyless)** first: your account trusts Planton's identity issuer, and Planton stores no credential. The wizard creates the connection, gives you a setup script with every value filled in, and verifies the trust once you have run it. See [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections) for each cloud's steps. To store a credential instead, choose the inline method and provide:
+4. Choose how Planton authenticates. For AWS, GCP, and Azure, the wizard lists **Keyless** first: your account trusts Planton's identity issuer, and Planton stores no credential. You say where the connection deploys and what Planton may deploy there, then build the trust in your account with one click (Google Cloud and Azure) or a setup script the wizard fills in; the wizard checks it with your cloud, and the connection is created once the trust works. See [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections) for each cloud's steps. To store a credential instead, choose **Stored Key** and provide:
    - **AWS**: Access Key ID and Secret Access Key
    - **GCP**: A service account key
    - **Azure**: Subscription ID, Tenant ID, Client ID, and Client Secret
-5. **Authorize for your environment** — select which environments can use this connection. Check the box next to your `dev` environment.
-6. Click **Submit**
 
-<!-- SCREENSHOT: AWS connection form
-  Page: /orgs/{org}/connections (AWS connect wizard)
-  Action: Show the AWS credential form with environment authorization checkboxes
-  Focus: The credential fields and environment authorization section
-  Alt: AWS connection form showing access key fields and environment authorization checkboxes
+   Every method has a **Permissions** step: keep **Everything Planton Can Deploy**, or pick the kinds you use.
+5. **Review & Create** — click **Create**. The next screen runs the connection's first Verify and says what it can deploy.
+6. Click **Set Up Organization Access**, keep **Authorize for all environments** and **Set as organization default** checked, and click **Complete Setup**.
+
+<!-- SCREENSHOT: AWS connection wizard - Permissions step
+  Page: /orgs/{org}/connections (AWS connect wizard, Permissions step)
+  Action: Choose Keyless, enter the account ID and region, open the Permissions step
+  Focus: Everything Planton Can Deploy (Recommended) and Only What I Pick, the Organization Access and Access Granting switches, and Show the Policies
+  Alt: AWS connection wizard Permissions step showing what Planton may deploy and the two kinds of access that stay off unless turned on
 -->
 
 The connection now appears in the **Connected Providers** list and is ready for use.

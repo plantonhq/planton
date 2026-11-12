@@ -3,7 +3,7 @@
 # Placement: After "### Check What the Script Created" heading
 # Duration target: 30 seconds
 # Prerequisites: An AWS test account with a keyless Planton connection created in the console,
-#   its setup script saved as keyless-aws.sh (copied from the console's Set Up Trust step),
+#   its setup script saved as keyless-aws.sh (copied from the console's Set Up step),
 #   and the AWS CLI signed in to that account. Use a test organization and account whose
 #   IDs are safe to show; do not record a customer's account.
 
@@ -11,7 +11,7 @@
 # 1. Clear terminal: clear
 # 2. Resize terminal to 80x24
 # 3. Set prompt to simple "$ " if possible
-# 4. Replace <connection name> below with the connection's name from the console
+# 4. Replace <org> and <connection> below with the organization's and the connection's slugs
 
 ## Recording command:
 # asciinema rec keyless-cloud-connections.cast --cols 80 --rows 24
@@ -20,7 +20,7 @@
 
 bash keyless-aws.sh
 aws iam list-open-id-connect-providers
-aws iam get-role --role-name planton-aws-connection-<connection name>-role --query Role.AssumeRolePolicyDocument
+aws iam get-role --role-name planton-<org>-<connection> --query Role.AssumeRolePolicyDocument
 curl -s https://planton.ai/.well-known/openid-configuration
 
 ## End recording:
@@ -28,6 +28,6 @@ curl -s https://planton.ai/.well-known/openid-configuration
 # Or press Ctrl+D
 
 ## Post-recording:
-# Then click Verify Connection in the console wizard (not part of the recording).
+# Then click Check the Trust in the console wizard (not part of the recording).
 # Convert to SVG: svg-term --in keyless-cloud-connections.cast --out keyless-cloud-connections.svg --window
 # Upload: run `make sync-assets` in planton/site

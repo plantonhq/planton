@@ -15,7 +15,7 @@ tags:
 
 # Keyless Cloud Connections
 
-A keyless connection lets Planton work in your AWS account, Google Cloud project, or Azure subscription without storing a credential for it. For each operation, Planton signs a short-lived token that names exactly one connection. Your cloud checks the token against Planton's published signing keys and against a trust you create once in your own account, then exchanges it for short-lived credentials. In the console this method is called **OIDC (Keyless)**, and on planton.ai it is the first method listed for AWS, Google Cloud, and Azure.
+A keyless connection lets Planton work in your AWS account, Google Cloud project, or Azure subscription without storing a credential for it. For each operation, Planton signs a short-lived token that names exactly one connection. Your cloud checks the token against Planton's published signing keys and against a trust you create once in your own account, then exchanges it for short-lived credentials. In the console this method is called **Keyless**, and on planton.ai it is the first method listed, and the recommended one, for AWS, Google Cloud, and Azure.
 
 ## Why Keyless
 
@@ -23,7 +23,7 @@ An access key, a service account key file, or a client secret is a long-lived cr
 
 - **Nothing to leak.** The connection stores no access key, no key file, and no client secret. It holds only pointers: the role ARN on AWS, the workload identity provider and service account on Google Cloud, and the app registration's tenant, subscription, and client ID on Azure.
 - **Nothing to rotate.** Each token Planton signs is valid for 15 minutes, and the credentials your cloud exchanges it for are short-lived too.
-- **The trust lives in your account.** You decide what the role, service account, or app registration may do, and you can read every line of the setup before it runs. Deleting that trust in your cloud ends Planton's access, with no key to revoke.
+- **The trust lives in your account.** You decide what Planton may deploy, the connection's own role holds exactly that, and you can read every line of the setup before it runs. Deleting that trust in your cloud ends Planton's access, with no key to revoke.
 - **One trust per connection.** The trust pins the connection's exact subject, so a token for any other connection, in your organization or anyone else's, is refused.
 - **No Planton cloud account is involved.** Your cloud trusts Planton's issuer URL, `https://planton.ai`. No Planton-owned AWS account, Google project, or Azure tenant appears in your trust, and no shared secret such as an external ID exists.
 
@@ -59,396 +59,163 @@ What you create in each cloud:
 
 | Cloud | What trusts Planton's issuer | What Planton acts as |
 |-------|------------------------------|----------------------|
-| AWS | An IAM OIDC identity provider for `planton.ai`, one per account, shared by every Planton connection in it | An IAM role named `planton-aws-connection-<connection name>-role`, whose trust policy accepts only this connection's subject |
-| Google Cloud | A workload identity pool (`planton` by default), shared by every Planton connection in the project, holding one OIDC provider per connection | A service account that only this connection's subject may impersonate |
-| Azure | A federated identity credential on an app registration, one per connection | The app registration's service principal, with a role on your subscription |
+| AWS | An IAM OIDC identity provider for `planton.ai`, one per account, shared by every Planton connection in it | The connection's own IAM role, `planton-<organization>-<connection>`, whose trust policy accepts only this connection's subject, with the policies of what you chose to deploy |
+| Google Cloud | A workload identity pool (`planton` by default), shared by every Planton connection in the project, holding one OIDC provider per connection | A service account that only this connection's subject may impersonate, holding the connection's own custom role, `planton_<organization>_<connection>` |
+| Azure | A federated identity credential on an app registration, one per connection | The app registration's service principal, assigned the connection's own role on your subscription, `Planton Deployer (<organization>/<connection>)` |
 
 ## Setting Up a Keyless Connection
 
-The steps are the same on every cloud:
+The journey is the same on every cloud, and the connection is created last, once your cloud trusts it:
 
-1. **Create the connection in the console.** On AWS and Azure the subject is assigned when the connection is created, so the connection comes first; it stores no credential and can do nothing until your cloud trusts it. On Google Cloud the console builds the trust first and creates the connection once the trust admits it.
-2. **Copy the script the console shows.** Every Planton value is already filled in: the issuer and the subject come from the connection you just created.
-3. **Run it in your cloud's shell**, or let Planton run the same setup for you with a one-click consent where the console offers one (Google Cloud and Azure).
-4. **Click Verify.** The console runs the real token exchange and shows what Planton presented next to what your cloud granted.
+1. **Name the connection and choose Keyless.** The connection's subject is built from your organization and the connection's name, so the trust can pin it before the connection exists.
+2. **Say where it deploys**: the account, project, or subscription.
+3. **Permissions**: choose what Planton may deploy. The setup gives the connection's own role exactly those permissions (see [What Planton May Deploy](/docs/connections/cloud-providers#what-planton-may-deploy)).
+4. **Set Up**: build the trust in your cloud, with the setup script the console fills in, or, on Google Cloud and Azure, with **Set It Up for Me**, one consent after which Planton builds it for you and discards its access. Every way ends in **Check the Trust**: Planton asks your cloud itself whether it now trusts the connection, and waits while the cloud spreads a new trust. **Next** opens once it does.
+5. **Review & Create**: click **Create**. The screen after it runs the connection's first Verify and says what it can deploy.
 
-The scripts on this page are what the console renders for an example connection: organization `acme`, connections `acme-aws-prod`, `acme-gcp-prod`, and `acme-azure-prod`, AWS account `123456789012`, Google Cloud project `acme-prod` (project number `123456789012`), and placeholder Azure IDs. Copy your script from the console, not from this page. Your subject, account, and names differ, and your cloud matches them as exact strings.
+The setups on this page are described for an example connection: organization `acme`, connections `acme-aws-prod`, `acme-gcp-prod`, and `acme-azure-prod`, AWS account `123456789012`, Google Cloud project `acme-prod`, and placeholder Azure IDs, each with **Everything Planton Can Deploy**. Copy your script from the console, not from this page. Your subject, account, names, and permissions differ, and your cloud matches the trust's values as exact strings. Each script prints every step as it starts (`Step 1 of 3: …`), in the same words the console shows beside it.
 
 ## AWS
 
 ### What You Need
 
 - Your 12-digit AWS account ID and a region.
-- A shell with the AWS CLI signed in to that account, with permission to manage IAM OIDC identity providers, roles, and role policies. The console notes that AWS CloudShell works. The script also uses `openssl` when it registers the identity provider for the first time.
+- A shell with the AWS CLI signed in to that account, with permission to manage IAM OIDC identity providers, roles, and managed policies. The console notes that AWS CloudShell works. The script also uses `openssl` when it registers the identity provider for the first time. Or, instead of the script, permission to create a CloudFormation stack that creates the same.
 
 ### Steps in the Console
 
 1. Open **Connections** and click the **AWS** card under Infrastructure.
-2. **Name** the connection, for example `acme-aws-prod`. The role's name is derived from it.
-3. Choose **OIDC (Keyless)**.
-4. **AWS Account**: enter the account ID and the region.
-5. **Permissions**: select at least one capability (Amazon EKS, Amazon ECS, AWS Lambda, Amazon S3, Amazon ECR, Amazon RDS, VPC Networking, Amazon Route 53, AWS KMS, Amazon CloudWatch). Each capability becomes one inline policy on the role.
-6. **Set Up Trust**: choose **Run an AWS CLI Script**. Because planton.ai does not offer a one-click setup for AWS, this option is already selected. Click **Create Connection**. Planton creates the connection with the role's ARN, for example `arn:aws:iam::123456789012:role/planton-aws-connection-acme-aws-prod-role`, before the role exists.
-7. The console shows the connection's trusted subject, the role and identity provider the script will create, and the script itself. Copy the script and run it.
-8. Click **Verify Connection**. Until the script has run, Verify reports that the connection can't assume credentials yet. That is the expected starting state. Once Verify passes, click **Next**, then **Open Connection**.
+2. **Name** the connection, for example `acme-aws-prod`. The role's name is derived from it and your organization: `planton-acme-acme-aws-prod`.
+3. Choose **Keyless**.
+4. **Account**: enter the **AWS Account ID** and the **Default Region**.
+5. **Permissions**: choose what Planton may deploy. **Everything Planton Can Deploy** (recommended) covers every AWS kind in Planton's catalog and what Planton itself uses the connection for; **Only What I Pick** shelves the kinds by AWS's own service groups for you to tick. **Organization Access** (AWS Organizations: its accounts and organizational units) and **Access Granting** (IAM users, roles, policies and keys across the account) stay off unless you turn them on; each says how many kinds need it. **Show the Policies** shows exactly what the role will hold.
+6. **Set Up**: build the role in your account in one of two ways:
+   - **Run the Setup Script** the step shows, with the AWS CLI signed in to that account.
+   - **Prefer CloudFormation? Show the Template**: download the template, then in the CloudFormation console choose **Create stack**, **Upload a template file**. It creates exactly what the script does; run one of the two.
 
-> **Note:** Keep the wizard open until Verify passes. The AWS script is shown only in the wizard, and **Next** stays disabled until Planton has assumed the role.
+   Then click **Check the Trust**. Planton asks AWS whether the role trusts this connection; AWS takes a few seconds to accept a new role and its identity provider, and the step waits for it. Once AWS says yes, **Next** opens. If you need to hand the setup to someone who administers the account, **Create It Now, Finish the Trust Later** creates the connection, and its page keeps the same setup and its check until the trust works.
+7. **Review & Create**: click **Create**. The connection is created with the role the trust admits, and the next screen runs its first Verify and says what it can deploy.
 
-<!-- SCREENSHOT: AWS keyless setup - script door after the connection is created
-  Page: /orgs/{org}/connections (AWS connect wizard, Set Up Trust step)
-  Action: Choose OIDC (Keyless), complete the account and permissions steps, click Create Connection on the Run an AWS CLI Script card
-  Focus: The Connection Created notice with the trusted subject, the setup script block with its copy button, and the Verify Connection panel
-  Alt: AWS keyless connection wizard showing the trusted subject, the AWS CLI setup script, and the Verify Connection button
+<!-- SCREENSHOT: AWS keyless setup - the Set Up step
+  Page: /orgs/{org}/connections (AWS connect wizard, Set Up step)
+  Action: Choose Keyless, enter the account ID and region, keep Everything Planton Can Deploy, open the Set Up step
+  Focus: The "Set Up With the Script" notice, the Run the Setup Script block with its copy button, Prefer CloudFormation? Show the Template, Check the Trust in the footer, and Create It Now, Finish the Trust Later
+  Alt: AWS keyless connection wizard showing the setup script, the CloudFormation template option, and the Check the Trust button
 -->
 
-### The Script the Console Gives You
+### What the Script Does
 
-For `acme-aws-prod` with the Amazon S3 capability selected:
+For `acme-aws-prod` with **Everything Planton Can Deploy**, the script runs three steps:
 
-```bash
-#!/usr/bin/env bash
-# Keyless trust for your Planton AWS connection.
-# Values from the connection are baked in verbatim -- do not edit them;
-# AWS matches the issuer, audience, and subject as exact strings.
-# Safe to run again: it adopts what exists and updates what changed.
-set -euo pipefail
+1. **Registers `planton.ai` as an identity provider in account `123456789012`**, which every Planton connection in the account shares, or keeps it when it exists (adding the `sts.amazonaws.com` audience when it lacks it). AWS allows one provider per issuer URL in an account. The script never deletes it.
+2. **Creates this connection's own role `planton-acme-acme-aws-prod`**, which only the tokens `planton.ai` signs for this connection can assume, or rewrites its trust policy to that when it exists. The trust policy accepts a token only when `planton.ai:aud` is `sts.amazonaws.com` and `planton.ai:sub` is this connection's subject. Sessions last at most one hour.
+3. **Writes the policies rendered from this connection's grant onto the role**, replacing the ones a previous grant put there: the managed policies `planton-acme-acme-aws-prod-1`, `-2` and so on, and an inline policy when they need one, rendered from your choice and Planton's catalog. An existing policy gets a new default version (the oldest kept version is removed when AWS's five are in use), and any of the connection's own policies a narrower choice no longer needs is detached and deleted, so the role holds exactly what you chose.
 
-ACCOUNT_ID="123456789012"
-ISSUER_URL="https://planton.ai"
-ISSUER_HOST="planton.ai"
-ROLE_NAME="planton-aws-connection-acme-aws-prod-role"
-PROVIDER_ARN="arn:aws:iam::${ACCOUNT_ID}:oidc-provider/${ISSUER_HOST}"
-
-# 1/3 The identity provider for this Planton instance's issuer -- shared by every
-# Planton connection in this account, so it is adopted when it already exists
-# and never deleted with a connection. IAM pins the certificate authority
-# that issued the issuer's TLS certificate: for a public CA it uses its own
-# trust store and ignores the thumbprint, for a private CA the thumbprint is
-# what makes the trust work -- so it is read from the certificate chain the
-# issuer actually presents (the last certificate is the CA).
-if aws iam get-open-id-connect-provider --open-id-connect-provider-arn "$PROVIDER_ARN" >/dev/null 2>&1; then
-  echo "Identity provider already registered: $PROVIDER_ARN"
-  # A provider registered for another audience still needs STS's, or AWS
-  # rejects this connection's tokens; adding it leaves the others in place.
-  if [ "$(aws iam get-open-id-connect-provider --open-id-connect-provider-arn "$PROVIDER_ARN" --query "contains(ClientIDList, 'sts.amazonaws.com')" --output json)" != "true" ]; then
-    aws iam add-client-id-to-open-id-connect-provider --open-id-connect-provider-arn "$PROVIDER_ARN" --client-id "sts.amazonaws.com"
-  fi
-else
-  TLS_ENDPOINT="${ISSUER_HOST%%/*}"; case "$TLS_ENDPOINT" in *:*) ;; *) TLS_ENDPOINT="$TLS_ENDPOINT:443";; esac
-  THUMBPRINT="$(openssl s_client -servername "${TLS_ENDPOINT%%:*}" -connect "$TLS_ENDPOINT" -showcerts </dev/null 2>/dev/null \
-    | awk '/-----BEGIN CERTIFICATE-----/{cert=""} {cert=cert $0 "\n"} /-----END CERTIFICATE-----/{last=cert} END{printf "%s", last}' \
-    | openssl x509 -fingerprint -sha1 -noout | cut -d= -f2 | tr -d ':')"
-  aws iam create-open-id-connect-provider \
-    --url "$ISSUER_URL" \
-    --client-id-list "sts.amazonaws.com" \
-    --thumbprint-list "$THUMBPRINT" \
-    --tags Key=planton:managed,Value=true
-fi
-
-# 2/3 The role only this connection can assume: the trust policy accepts a
-# token from this issuer, for the STS audience, with exactly this subject.
-TRUST_POLICY="$(cat <<JSON
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Federated": "${PROVIDER_ARN}"
-      },
-      "Action": "sts:AssumeRoleWithWebIdentity",
-      "Condition": {
-        "StringEquals": {
-          "planton.ai:aud": "sts.amazonaws.com",
-          "planton.ai:sub": "planton:v1:org:acme:conn:acme-aws-prod:provider:aws"
-        }
-      }
-    }
-  ]
-}
-JSON
-)"
-if aws iam get-role --role-name "$ROLE_NAME" >/dev/null 2>&1; then
-  aws iam update-assume-role-policy --role-name "$ROLE_NAME" --policy-document "$TRUST_POLICY"
-else
-  aws iam create-role \
-    --role-name "$ROLE_NAME" \
-    --description "Keyless OIDC role for Planton Platform (acme-aws-prod), issuer planton.ai" \
-    --max-session-duration 3600 \
-    --assume-role-policy-document "$TRUST_POLICY" \
-    --tags Key=planton:managed,Value=true Key=planton:connection-name,Value=acme-aws-prod
-fi
-
-# 3/3 One inline policy per capability -- the same statements the quick-create
-# attaches; these are the only actions Planton can perform in your account.
-aws iam put-role-policy --role-name "$ROLE_NAME" --policy-name "planton-s3-access" --policy-document '{"Version":"2012-10-17","Statement":[{"Sid":"S3FullAccess","Effect":"Allow","Action":"s3:*","Resource":"*"}]}'
-
-# Done. This is the role the connection was created with; Verify in the
-# wizard proves the exchange end to end.
-echo "arn:aws:iam::${ACCOUNT_ID}:role/${ROLE_NAME}"
-```
-
-The script does three things:
-
-1. **Registers Planton's issuer** as an IAM OIDC identity provider, `arn:aws:iam::123456789012:oidc-provider/planton.ai`. AWS allows one provider per issuer URL in an account, and every Planton connection in the account shares it. If it already exists, the script adopts it and adds the `sts.amazonaws.com` audience when that is missing. The script never deletes it.
-2. **Creates the role**, or updates its trust policy if the role already exists. The trust policy accepts a token only when `planton.ai:aud` is `sts.amazonaws.com` and `planton.ai:sub` is this connection's subject. Sessions last at most one hour.
-3. **Attaches one inline policy per capability** you selected. `put-role-policy` replaces a policy of the same name, so the role's permissions are exactly the ones in the script.
+It ends by printing the role's ARN, `arn:aws:iam::123456789012:role/planton-acme-acme-aws-prod`.
 
 ### Running It Again, and a Second Connection
 
-Running the script again ends in the same state: it adopts the identity provider, rewrites the role's trust policy, and replaces each policy by name. Run it again after a failed Verify, or after reviewing a change.
+Running the script again ends in the same state: it adopts the identity provider, rewrites the role's trust policy, and writes each policy to exactly your current choice. Run it again after a failed check, or after reviewing a change.
 
-A second connection in the same account, for example `acme-aws-staging`, gets its own script. That script adopts the identity provider the first one registered and creates a second role, `planton-aws-connection-acme-aws-staging-role`, whose trust policy pins the second connection's subject. Neither role accepts the other connection's tokens.
+A second connection in the same account, for example `acme-aws-staging`, gets its own script. That script adopts the identity provider the first one registered and creates a second role, `planton-acme-acme-aws-staging`, whose trust policy pins the second connection's subject. Neither role accepts the other connection's tokens.
 
 ## Google Cloud
 
 ### What You Need
 
 - Your project's ID, for example `acme-prod`. Planton looks up the project number itself.
-- A shell with `gcloud` signed in, with permission to turn on APIs, create workload identity pools and providers, service accounts, and IAM bindings in the project (Cloud Shell works). For the one-click option, a Google account that administers the project.
+- For **Set It Up for Me**, a Google account that administers the project (Role Administrator, Project IAM Admin, Workload Identity Pool Admin and Service Account Admin, or Owner). Planton checks that the account may make every change before it changes anything. With Organization Access, the organization's Organization Role Administrator and Organization Administrator roles too.
+- For the script, a shell with `gcloud` signed in with the same permissions in the project (Cloud Shell works).
 
 ### Steps in the Console
 
 1. Open **Connections** and click the **GCP** card under Infrastructure.
 2. **Name** the connection, for example `acme-gcp-prod`.
-3. Choose **OIDC (Keyless)**.
+3. Choose **Keyless**.
 4. **Project**: enter the **Project ID** (`acme-prod`). The console suggests the **Service Account** `planton-provisioner@acme-prod.iam.gserviceaccount.com`, which the setup creates if it does not exist; you can name an existing one instead. If you already run a workload identity pool, click **Already have a Workload Identity provider?** and paste its full resource name.
-5. **Deployment Roles**: select the services you deploy. Each one adds roles the setup grants to the service account; Cloud Storage, for example, grants `roles/storage.admin`.
+5. **Permissions**: choose what Planton may deploy, as on AWS: **Everything Planton Can Deploy** (recommended) or **Only What I Pick**, with **Organization Access** (folders, the organization and billing accounts) and **Access Granting** off unless you turn them on. **Show the Role** shows the custom role the setup creates.
 6. **Set Up**: build the trust in your project in one of two ways:
-   - **Set It Up for Me**: sign in with a Google account that administers the project. Planton uses the one-time consent to turn on the APIs the trust needs and create the pool, the provider, the service account, the binding and the role grants, then discards the token. No refresh token is minted and nothing about your Google access is stored.
-   - **Prefer to review and run it yourself? Show the script**: run the script below, then paste the line it prints into **The Line the Script Printed**.
+   - **Set It Up for Me**: sign in with a Google account that administers the project. Planton uses the one-time consent to turn on the APIs the trust and Planton need, create the pool, the provider, the service account and the binding, and create this connection's own custom role and grant it to the service account, then discards the token. No refresh token is minted and nothing about your Google access is stored.
+   - **Prefer to Run It Yourself? Show the Setup Script**: run the script, then paste the line it prints into **The Line the Script Printed** and click **Check the Trust**.
 
-   If a Google Cloud connection with the same name already exists, the console says so here, before anything is built, and offers **Change the Name**.
-7. **Review & Create**: click **Create**. The connection is created with the provider the trust admits.
-8. The next screen runs the connection's first **Verify**. New trust can take a couple of minutes to propagate inside Google; if Verify reports the trust is not accepted yet, wait and verify again.
+   Either way, Planton then asks Google whether it trusts this connection. A new provider can take a minute or two to spread inside Google, and the step waits for it. If a GCP connection with the same name already exists, the step says so before anything is built and offers **Change the Name**.
+7. **Review & Create**: click **Create**. The connection is created with the provider the trust admits, and the next screen runs its first Verify and says what it can deploy.
 
 <!-- SCREENSHOT: Google Cloud keyless setup - the Set Up step
   Page: /orgs/{org}/connections (GCP connect wizard, Set Up step)
-  Action: Choose OIDC (Keyless), enter the project ID, choose Deployment Roles, open Show the script
-  Focus: Set It Up for Me in the footer, the expanded gcloud script, and the paste-back field
-  Alt: Google Cloud keyless connection wizard showing the one-click setup in the footer and the gcloud setup script with its paste-back field
+  Action: Choose Keyless, enter the project ID, keep Everything Planton Can Deploy, open Prefer to Run It Yourself? Show the Setup Script
+  Focus: What the setup builds (APIs Turned On, Identity Pool, Provider, Service Account, Roles), the expanded gcloud script, and The Line the Script Printed field
+  Alt: Google Cloud keyless connection wizard showing what the setup builds, the gcloud setup script, and its paste-back field
 -->
 
-### The Script the Console Gives You
+### What the Script Does
 
-For `acme-gcp-prod` in project `acme-prod` with Cloud Storage selected. Every value is filled in; run it as it is.
+For `acme-gcp-prod` in project `acme-prod` with **Everything Planton Can Deploy**, the script runs six steps:
 
-```bash
-#!/usr/bin/env bash
-# Workload Identity Federation trust for your Planton GCP connection.
-# Every value is filled in from Planton -- do not edit them; the subject
-# and the issuer must match byte-for-byte.
-# Safe to run again: it adopts what exists and creates what is missing.
-set -euo pipefail
-
-PROJECT_ID="acme-prod"
-PROJECT_NUMBER="$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')"
-SA_EMAIL="planton-provisioner@acme-prod.iam.gserviceaccount.com"
-AUDIENCE="//iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/planton/providers/planton-acme-gcp-prod"
-
-# 1/5 The APIs the trust needs: IAM, IAM Service Account Credentials and
-# Security Token Service (turning on an API that is on changes nothing)
-gcloud services enable iam.googleapis.com iamcredentials.googleapis.com sts.googleapis.com --project="$PROJECT_ID"
-
-# 2/5 Workload Identity Pool -- shared by every Planton connection in this
-# project, so it is adopted when it already exists.
-if POOL_STATE="$(gcloud iam workload-identity-pools describe planton \
-    --project="$PROJECT_ID" --location=global --format='value(state)' 2>/dev/null)"; then
-  if [ "$POOL_STATE" != "ACTIVE" ]; then
-    echo "Workload Identity Pool planton already exists but is $POOL_STATE -- undelete it first." >&2
-    exit 1
-  fi
-  echo "Workload Identity Pool already exists: planton"
-else
-  gcloud iam workload-identity-pools create planton \
-    --project="$PROJECT_ID" --location=global \
-    --display-name="Planton" \
-    --description="External identities minted by the Planton OIDC issuer."
-fi
-
-# 3/5 This connection's own OIDC provider, trusting the Planton issuer; the
-# attribute condition pins this exact connection's subject -- no other token
-# is accepted. An existing provider is kept only when it already trusts
-# exactly this connection.
-if PROVIDER_TRUST="$(gcloud iam workload-identity-pools providers describe planton-acme-gcp-prod \
-    --project="$PROJECT_ID" --location=global --workload-identity-pool=planton \
-    --format='value(state,oidc.issuerUri,attributeCondition)' 2>/dev/null)"; then
-  if [ "$PROVIDER_TRUST" != "$(printf 'ACTIVE\t%s\t%s' "https://planton.ai" "assertion.sub == 'planton:v1:org:acme:conn:acme-gcp-prod:provider:gcp'")" ]; then
-    echo "OIDC provider planton-acme-gcp-prod already exists but trusts a different issuer or subject, or is deleted. Each connection needs its own provider." >&2
-    exit 1
-  fi
-  echo "OIDC provider already trusts this connection: planton-acme-gcp-prod"
-else
-  gcloud iam workload-identity-pools providers create-oidc planton-acme-gcp-prod \
-    --project="$PROJECT_ID" --location=global \
-    --workload-identity-pool=planton \
-    --display-name="Planton OIDC" \
-    --issuer-uri="https://planton.ai" \
-    --allowed-audiences="$AUDIENCE" \
-    --attribute-mapping="google.subject=assertion.sub" \
-    --attribute-condition="assertion.sub == 'planton:v1:org:acme:conn:acme-gcp-prod:provider:gcp'"
-fi
-
-# 4/5 Provisioner service account (adopted when it already exists)
-if gcloud iam service-accounts describe "$SA_EMAIL" --project="$PROJECT_ID" >/dev/null 2>&1; then
-  echo "Service account already exists: $SA_EMAIL"
-else
-  gcloud iam service-accounts create planton-provisioner \
-    --project="$PROJECT_ID" \
-    --display-name="Planton Provisioner"
-fi
-
-# 5/5 Let this connection's federated identity impersonate the service account
-# (adding a binding that already exists changes nothing)
-gcloud iam service-accounts add-iam-policy-binding "$SA_EMAIL" \
-  --project="$PROJECT_ID" \
-  --member="principal://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/planton/subject/planton:v1:org:acme:conn:acme-gcp-prod:provider:gcp" \
-  --role="roles/iam.workloadIdentityUser"
-
-# Grant deployment roles (from the capabilities you chose; the one-click
-# setup grants exactly the same set)
-gcloud projects add-iam-policy-binding "$PROJECT_ID" \
-  --member="serviceAccount:$SA_EMAIL" --role="roles/storage.admin" --condition=None >/dev/null
-
-echo
-echo "Trust ready. Paste this line into Planton:"
-echo "$AUDIENCE"
-```
-
-The script turns on the APIs the trust needs, then ensures each part of the trust:
-
-1. **Turns on IAM, IAM Service Account Credentials and Security Token Service** in the project. Every token exchange at deploy time needs the last two.
-2. **Ensures the workload identity pool** `planton`. If the pool exists and is active, the script reuses it. If it exists in any other state (for example, deleted), the script stops and says so.
-3. **Creates this connection's own OIDC provider** in the pool. The provider trusts `https://planton.ai`, accepts only this connection's audience, and its attribute condition accepts only this connection's subject.
-4. **Ensures the service account**, creating it only if it does not exist. If you named a service account whose email is not in the standard `<name>@<project-id>.iam.gserviceaccount.com` form, the script uses your existing account.
-5. **Lets this connection's subject impersonate the service account** by granting `roles/iam.workloadIdentityUser` to that one subject.
+1. **Turns on the Google APIs the trust and Planton need in project `acme-prod`**: IAM, IAM Service Account Credentials, Security Token Service, Cloud Resource Manager and Service Usage. An API already on is left as it is. Every other API is turned on by the kind that needs it, when it first deploys. With Organization Access, the APIs the organization's and billing account's kinds call are turned on here too.
+2. **Creates the Workload Identity Pool `planton`**, which every Planton connection in the project shares, or keeps it when it exists. If it exists in any other state (for example, deleted), the script stops and says so.
+3. **Creates this connection's own OIDC provider `planton-acme-gcp-prod`** in that pool, accepting only the tokens `https://planton.ai` signs for this connection, or keeps it when it already trusts exactly that.
+4. **Creates the service account** `planton-provisioner@acme-prod.iam.gserviceaccount.com`, or keeps it when it exists. If you named a service account whose email is not in the standard `<name>@<project-id>.iam.gserviceaccount.com` form, the script uses your existing account and creates nothing for it.
+5. **Lets this connection act as the service account**: the role `roles/iam.workloadIdentityUser` on that account, for this connection's identity only.
+6. **Writes this connection's own role `planton_acme_acme_gcp_prod`** in the project from this connection's grant, holding exactly the permissions of what you chose, and grants it to the service account, with the few predefined roles Google keeps permissions in that a custom role cannot hold beside it. Run again after you change your choice, it updates the role to the new set. With Organization Access, the same role is created in the project's organization, and the billing roles are granted on the project's billing account.
 
 It ends by printing the provider's full name, the line you paste back into the console.
 
 ### Running It Again, and a Second Connection
 
-Running the script again ends in the same state: the APIs, the pool, the provider and the service account are kept when they already match, and adding an IAM binding that already exists changes nothing.
+Running the script again ends in the same state: the APIs, the pool, the provider and the service account are kept when they already match, adding an IAM binding that already exists changes nothing, and the role is written to exactly your current choice.
 
-A second connection in the same project, for example `acme-gcp-staging`, reuses the `planton` pool and gets its own provider, `planton-acme-gcp-staging`, named by Planton from the connection's name. If a provider with that name already exists and trusts a different issuer or subject, or was deleted, the script stops instead of changing it.
+A second connection in the same project, for example `acme-gcp-staging`, reuses the `planton` pool and gets its own provider, `planton-acme-gcp-staging`, and its own role, both named by Planton from the connection's name. If a provider with that name already exists and trusts a different issuer or subject, or was deleted, the script stops instead of changing it.
 
 Google limits provider IDs to 32 characters. For a long connection name, Planton shortens the provider ID and appends a short hash of the name, so two long names still get two different providers.
 
 ## Azure
 
-Azure's setup has two parts. The connection needs the app registration's client ID before it can be created, and the federated identity credential needs the connection's subject, which exists only after the connection is created.
-
 ### What You Need
 
-- Your tenant ID and subscription ID.
-- An app registration for Planton to act as. If you don't have one, the console creates it for you or gives you a script that does, named `planton-provisioner` by default. One app registration can carry the federated credentials of several connections.
-- A shell with `az` signed in to your tenant, with permission to create app registrations and role assignments on the subscription. The console suggests Cloud Shell. For the one-click option, a Microsoft Entra admin who also holds Owner or User Access Administrator on the subscription.
+- Your subscription ID. The tenant comes from the account that sets it up.
+- For **Set It Up for Me**, a Microsoft account that can grant admin consent in your Entra tenant and holds Owner (or User Access Administrator) on the subscription.
+- For the scripts, a shell with `az` signed in to your tenant, with permission to create app registrations, role definitions and role assignments on the subscription. The console suggests Cloud Shell.
 
 ### Steps in the Console
 
 1. Open **Connections** and click the **Azure** card under Infrastructure.
 2. **Name** the connection, for example `acme-azure-prod`.
-3. Choose **OIDC (Keyless)**.
-4. **App Registration**: enter the **Subscription ID**. If you don't have an app registration yet, expand **Need an App Registration?** and either click **Set It Up for Me** (one Microsoft consent; Planton creates the app registration, its service principal, and the role assignment, and fills in the fields) or click **Prefer to Run It Yourself? Show the Script**, run the first script below, and paste the values it prints. Then enter the **Tenant ID** and the **Client ID**. **Client ID** is a secret picker: pick the secret that holds the app's client ID, or create one with the client ID as its value. No client secret is collected.
-5. **Create & Trust**: click **Create Connection**. The console confirms **Connection Created** and shows the connection's **Trusted Subject**. If an Azure connection with the same name already exists, the console says so here and offers **Change the Name**.
-6. Add the federated credential in one of two ways:
-   - **Add the Credential for Me**: Planton adds the credential through a brief Microsoft sign-in, then discards its access. If you used **Set It Up for Me** in the previous step, the sign-in can close by itself, with no second consent screen.
-   - **Prefer to Run It Yourself? Show the Command**: run the second script below.
-7. Click **Verify Connection**. A new federated credential takes a few minutes to propagate. If Verify reports no matching credential right after you add it, wait and verify again. Once Verify passes, click **Next**, then **Open Connection** on **Review & Finish**.
+3. Choose **Keyless**.
+4. **Subscription**: enter the **Subscription ID**. **App Registration** names the app Planton signs in as, `planton-provisioner` by default; the setup creates it, or adopts it when it exists. Keep the default unless you bring your own app.
+5. **Permissions**: choose what Planton may deploy, as on AWS. **Show the Role** shows the role definition the setup creates.
+6. **Set Up**: build the trust in one of two ways:
+   - **Set It Up for Me**: one Microsoft consent. Planton creates or adopts the app registration, its service principal, the federated credential that trusts exactly this connection, and this connection's own role and its assignment on the subscription, then discards its access. No refresh token is ever issued, and no client secret exists.
+   - **Prefer to Run It Yourself? Show the Setup Scripts**: run both scripts below, then paste the **Tenant ID** and **Client ID** they print and click **Check the Trust**.
 
-<!-- SCREENSHOT: Azure keyless setup - after the connection is created
-  Page: /orgs/{org}/connections (Azure connect wizard, Create & Trust step)
-  Action: Choose OIDC (Keyless), fill App Registration, click Create Connection, expand Show the Command
-  Focus: The Connection Created notice with the trusted subject, the Add the Credential for Me action, the expanded az command, and the Verify Connection panel
-  Alt: Azure keyless connection wizard showing the trusted subject, the one-click credential action, the federated credential command, and the Verify Connection button
+   Either way, Planton then asks Azure whether it trusts this connection. A new federated credential and role take a minute or two to spread, and the step waits for it. If an Azure connection with the same name already exists, the step says so before anything is built and offers **Change the Name**.
+7. **Review & Create**: click **Create**. The next screen runs the connection's first Verify and says what it can deploy.
+
+<!-- SCREENSHOT: Azure keyless setup - the Set Up step
+  Page: /orgs/{org}/connections (Azure connect wizard, Set Up step)
+  Action: Choose Keyless, enter the subscription ID, keep Everything Planton Can Deploy, open Prefer to Run It Yourself? Show the Setup Scripts
+  Focus: Set It Up for Me in the footer with the sentence above it, the two script tabs (1. Set Up the App and Role, 2. Trust This Connection), and the Tenant ID and Client ID fields
+  Alt: Azure keyless connection wizard showing the one-consent setup, the two setup scripts, and the tenant and client ID fields
 -->
 
-### The Scripts the Console Gives You
+### What the Scripts Do
 
-The first script creates the app registration, its service principal, and a role assignment on the subscription. The console fills in the subscription ID you entered (shown here as all zeros) and the app registration's display name:
+The first script, **Set Up the App and Role**, runs four steps:
 
-```bash
-#!/usr/bin/env bash
-# App registration + service principal + RBAC for your Planton Azure
-# connection (keyless). Safe to re-run: existing objects are reused.
-set -euo pipefail
+1. **Creates the app registration `planton-provisioner`**, the identity this connection signs in as, or keeps it when it exists.
+2. **Creates the app's service principal**, which the role is assigned to, or keeps it when it exists.
+3. **Writes this connection's own role `Planton Deployer (acme/acme-azure-prod)`** in the subscription from this connection's grant, holding exactly the actions of what you chose, never Contributor. It also holds the right to register the resource providers your kinds use: Planton registers each one when a kind that needs it first deploys.
+4. **Assigns that role to the app's service principal** across the subscription.
 
-SUBSCRIPTION_ID="00000000-0000-0000-0000-000000000000"
-APP_DISPLAY_NAME="planton-provisioner"
-ROLE="Contributor"  # narrow to what you provision through Planton (least privilege)
+It ends by printing the tenant ID and client ID to paste into the console. No secret is created; keyless connections never need one.
 
-# 1/3 App registration -- the identity Planton authenticates as
-APP_CLIENT_ID="$(az ad app list --display-name "$APP_DISPLAY_NAME" --query '[0].appId' --output tsv)"
-if [ -z "$APP_CLIENT_ID" ]; then
-  APP_CLIENT_ID="$(az ad app create --display-name "$APP_DISPLAY_NAME" --query appId --output tsv)"
-fi
-
-# 2/3 Service principal -- RBAC attaches here, never to the app object
-SP_OBJECT_ID="$(az ad sp list --filter "appId eq '${APP_CLIENT_ID}'" --query '[0].id' --output tsv)"
-if [ -z "$SP_OBJECT_ID" ]; then
-  SP_OBJECT_ID="$(az ad sp create --id "$APP_CLIENT_ID" --query id --output tsv)"
-fi
-
-# 3/3 Role assignment (new grants take ~2 minutes to propagate)
-az role assignment create \
-  --assignee-object-id "$SP_OBJECT_ID" \
-  --assignee-principal-type ServicePrincipal \
-  --role "$ROLE" \
-  --scope "/subscriptions/${SUBSCRIPTION_ID}" \
-  --output none
-
-echo "Paste these into the Planton connection:"
-echo "  client_id:       ${APP_CLIENT_ID}"
-echo "  tenant_id:       $(az account show --query tenantId --output tsv)"
-echo "  subscription_id: ${SUBSCRIPTION_ID}"
-```
-
-The role defaults to Contributor. Narrow it to what you deploy through Planton before you run the script.
-
-The second script, shown after the connection is created, adds the federated identity credential for `acme-azure-prod`:
-
-```bash
-#!/usr/bin/env bash
-# Federated Identity Credential for your Planton Azure connection.
-# The subject is baked in verbatim -- do not edit it; Microsoft Entra
-# matches issuer + subject + audience as exact strings.
-# Safe to run again: a credential that already trusts this connection is kept.
-set -euo pipefail
-
-APP_DISPLAY_NAME="planton-provisioner"
-FIC_NAME="planton-conn-acme-azure-prod"
-
-APP_OBJECT_ID="$(az ad app list --display-name "$APP_DISPLAY_NAME" --query '[0].id' --output tsv)"
-
-# The credential is named after the connection: a rerun keeps it, and one
-# with this name that trusts a different issuer or subject is never repointed.
-if FIC_TRUST="$(az ad app federated-credential show --id "$APP_OBJECT_ID" --federated-credential-id "$FIC_NAME" \
-    --query "join(' ', [issuer, subject])" --output tsv 2>/dev/null)"; then
-  if [ "$FIC_TRUST" != "https://planton.ai planton:v1:org:acme:conn:acme-azure-prod:provider:azure" ]; then
-    echo "Federated credential $FIC_NAME already exists but pins a different issuer or subject; remove or rename it, then run this again." >&2
-    exit 1
-  fi
-  echo "Federated credential already trusts this connection: $FIC_NAME"
-else
-  az ad app federated-credential create --id "$APP_OBJECT_ID" --parameters '{
-    "name": "planton-conn-acme-azure-prod",
-    "issuer": "https://planton.ai",
-    "subject": "planton:v1:org:acme:conn:acme-azure-prod:provider:azure",
-    "audiences": ["api://AzureADTokenExchange"],
-    "description": "Planton connection (keyless OIDC federation)."
-  }'
-fi
-
-# New FICs take a few minutes to propagate -- if the first Verify reports
-# "no matching federated identity credential", wait and re-verify.
-```
-
-Both scripts find the app registration by its display name. If you bring your own app registration, change `APP_DISPLAY_NAME` to its name in both.
+The second script, **Trust This Connection**, adds the federated credential `planton-conn-acme-azure-prod` to the app registration `planton-provisioner`, accepting only the tokens `https://planton.ai` signs for this connection, or keeps it when it already does. Microsoft Entra matches the issuer, the subject and the audience `api://AzureADTokenExchange` as exact strings.
 
 ### Running It Again, and a Second Connection
 
-The first script reuses an app registration and service principal that already exist. The second script names the credential after the connection, `planton-conn-<connection slug>`. Running it again keeps a credential that already trusts this connection. If a credential with that name pins a different issuer or subject, the script stops and asks you to remove or rename it, rather than taking that trust away from whatever it belongs to.
+The first script reuses an app registration and service principal that already exist, and writes the role to exactly your current choice. The second script names the credential after the connection, `planton-conn-<connection slug>`. Running it again keeps a credential that already trusts this connection. If a credential with that name pins a different issuer or subject, the script stops and asks you to remove or rename it, rather than taking that trust away from whatever it belongs to.
 
-A second connection, for example `acme-azure-staging`, can use the same app registration: enter the same client ID and, under **Need an App Registration?**, set **App Registration Display Name** to that app's name (the credential script finds the app by it), skip the first script, and run the second connection's credential script, which adds `planton-conn-acme-azure-staging` beside the first credential.
+A second connection, for example `acme-azure-staging`, can use the same app registration: keep the same **App Registration** name, and its scripts add `planton-conn-acme-azure-staging` beside the first credential and give it its own role, `Planton Deployer (acme/acme-azure-staging)`.
 
 ## Details
 
@@ -458,7 +225,7 @@ Each cloud's own CLI shows the trust exactly as your cloud will evaluate it:
 
 ```bash
 # AWS: the role's trust policy (issuer host, audience, and subject)
-aws iam get-role --role-name planton-aws-connection-acme-aws-prod-role --query Role.AssumeRolePolicyDocument
+aws iam get-role --role-name planton-acme-acme-aws-prod --query Role.AssumeRolePolicyDocument
 
 # Google Cloud: the provider's issuer, allowed audience, and attribute condition
 gcloud iam workload-identity-pools providers describe planton-acme-gcp-prod \
@@ -468,30 +235,32 @@ gcloud iam workload-identity-pools providers describe planton-acme-gcp-prod \
 az ad app federated-credential list --id "$(az ad app list --display-name planton-provisioner --query '[0].id' --output tsv)"
 ```
 
-### When Verify Fails
+### When the Check Fails
 
-Verify shows the subject and issuer Planton presented. Compare them with your cloud's trust; a single different character is enough to fail.
+**Check the Trust** shows what your cloud answered, and **Show AWS's Reason** (or GCP's, or Azure's) opens your cloud's own words. Compare the subject and issuer with your cloud's trust; a single different character is enough to fail.
 
 | Cloud | What you see | Most likely cause |
 |-------|-------------|-------------------|
-| AWS | This Connection Can't Assume Credentials Yet: AWS denied the assume-role request | The script has not run yet, or the role's trust policy names a different subject or issuer host |
-| Google Cloud | Google denied service-account impersonation | The `roles/iam.workloadIdentityUser` binding is still propagating (wait a couple of minutes and verify again), or it names a different subject |
-| Google Cloud | The audience does not match, or the issuer is not trusted | The provider trusts a different issuer, or the connection names a different provider |
-| Azure | `AADSTS70021` (no matching federated identity record) | The credential is still propagating (wait a few minutes), or its issuer, subject, or audience differs |
+| AWS | AWS refused the role | The script or stack has not finished yet, or the role's trust policy names a different subject or issuer host |
+| Google Cloud | Google denied service-account impersonation | The `roles/iam.workloadIdentityUser` binding is still spreading (the step keeps asking), or it names a different subject |
+| Google Cloud | The audience does not match, or the issuer is not trusted | The provider trusts a different issuer, or the line pasted back names a different provider |
+| Azure | `AADSTS70021` (no matching federated identity record) | The credential is still spreading (the step keeps asking), or its issuer, subject, or audience differs |
 
 Run the script again after you fix the cause. Every script is safe to rerun.
 
 ### Self-Hosted Planton
 
-A self-hosted Planton instance signs tokens as its own issuer, its own public address, instead of `https://planton.ai`. The console reports that issuer after the connection is created and puts it in the script. Keyless connections need the issuer to be reachable from the public internet; where it is not, the console shows the method as unavailable and says why.
+A self-hosted Planton instance signs tokens as its own issuer, its own public address, instead of `https://planton.ai`, and puts it in the script. Keyless connections need the issuer to be reachable from the public internet; where it is not, the console shows the method as unavailable and says why.
 
 ### Removing Access
 
-To end a keyless connection's access, delete its trust in your cloud: the IAM role on AWS, the OIDC provider (or the service account binding) on Google Cloud, or the federated identity credential on Azure. Your cloud then refuses Planton's tokens for that connection. Deleting the connection in Planton also stops Planton from signing tokens for it. On AWS, leave the identity provider in place while other Planton connections in the account still use it.
+To end a keyless connection's access, delete its trust in your cloud: the IAM role on AWS, the OIDC provider (or the service account binding) on Google Cloud, or the federated identity credential on Azure. Your cloud then refuses Planton's tokens for that connection. Deleting the connection in Planton also stops Planton from signing tokens for it, and its delete dialog lists **What Stays in Your Cloud** with a script that removes exactly that. On AWS, leave the identity provider in place while other Planton connections in the account still use it.
+
+On Google Cloud and AWS you can also delete the connection's own role and policies (`planton_<org>_<slug>`; `planton-<org>-<slug>` and its `-1..N` policies); on Azure, its role assignment and role definition.
 
 ## Related Documentation
 
-- [Cloud Providers](/docs/connections/cloud-providers) — Every authentication method for AWS, Google Cloud, Azure, DigitalOcean, and Cloudflare
+- [Cloud Providers](/docs/connections/cloud-providers) — Every authentication method for AWS, Google Cloud, Azure, DigitalOcean, and Cloudflare, and what Planton may deploy
 - [What Your Cloud Trusts](/docs/security/what-your-cloud-trusts) — The three pinned values, Planton's published keys, and how to revoke
 - [Environment Mappings](/docs/connections/environment-mappings) — Authorize a connection for specific environments
 - [Default Connections](/docs/connections/default-connections) — Configure automatic credential selection

@@ -40,7 +40,7 @@ Your organization's default runner carries deploys and live cloud operations for
 Add a runner inside your environment when:
 
 - **Your resources are private.** A Kubernetes API server, a database, or a Vault that is reachable only from inside your network needs a runner inside that network.
-- **Your credentials must stay in your cloud.** With the Self-Hosted Runner connection mode, the runner discovers credentials from its own environment (an IAM role, a workload identity), and nothing is stored in Planton.
+- **Your credentials must stay in your cloud.** With the Runner Identity connection method, the runner discovers credentials from its own environment (an IAM role, a workload identity), and nothing is stored in Planton.
 - **Your policies require it.** Some compliance regimes require every change to originate from infrastructure you operate.
 
 See [Deployment](/docs/runner/deployment) to start one.

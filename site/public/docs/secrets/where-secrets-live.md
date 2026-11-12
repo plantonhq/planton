@@ -94,13 +94,13 @@ With a [keyless connection](/docs/connections/keyless-cloud-connections), **noth
 - **Google Cloud** — the token is exchanged at Google's token service and the connection's service account is impersonated.
 - **Azure** — the token is the client assertion of the connection's app registration.
 
-Each token lives minutes and is never written down. A stored-key connection works too: the backend reads the key from the connection's own secret, and the key exists only there. Connections that sign in on a runner, through a Vault broker, or as a person through the browser cannot serve a secret backend, because Planton's control plane reads and writes your secrets itself, on your organization's behalf.
+Each token lives minutes and is never written down. A stored-key connection works too: the backend reads the key from the connection's own secret, and the key exists only there. Connections that sign in on a runner or through a Vault broker cannot serve a secret backend, because Planton's control plane reads and writes your secrets itself, on your organization's behalf.
 
-The connection's identity needs permission to manage secrets. Choose the **Secrets Manager** capability on an AWS connection or the **Secret Manager** capability on a Google Cloud connection; on Azure, give the app registration a role that manages secrets on the vault, such as Key Vault Secrets Officer.
+The connection's identity needs permission to manage secrets, and the connection's grant says so: **Everything Planton Can Deploy** includes it, and with **Only What I Pick**, tick **Secret Backend** under **Used by Planton Itself** on the connection's **Permissions** step. A keyless setup gives the connection's own role those permissions; for a stored key, grant the role or policies the step shows to the key's identity.
 
 Three guarantees come with it:
 
-- **One hop, never two.** A connection's own secrets — a stored key, or an Azure app registration's client ID — must live in a backend that does not itself sign in through a connection. Planton refuses the link where you make it, and checks again at every read, so reaching a secret never needs a second sign-in.
+- **One hop, never two.** A connection's own secrets — a stored key, or a client secret — must live in a backend that does not itself sign in through a connection. Planton refuses the link where you make it, and checks again at every read, so reaching a secret never needs a second sign-in.
 - **The connection cannot disappear under your secrets.** Its page lists the **Backends Signing In** through it (`planton connection get aws prod-aws`), and deleting it is refused while any does, naming each backend.
 - **Switching keeps every secret where it is.** A backend can move from a stored key to a connection in place; secret names depend only on the backend's type and prefix, and the stored key is deleted once the change is saved.
 

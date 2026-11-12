@@ -16,49 +16,79 @@ excerpt: "Grant Planton secure access to deploy and manage resources in your Goo
 
 # How to Connect Your GCP Project to Planton
 
-Before Planton can deploy infrastructure in your Google Cloud project -- GKE clusters, Cloud SQL databases, GCS buckets, Cloud Run services, or anything else -- it needs a secure way to authenticate with GCP on your behalf. This tutorial walks you through creating that connection using three different approaches, so you can choose the one that fits your security requirements and workflow.
+Before Planton can deploy infrastructure in your Google Cloud project -- GKE clusters, Cloud SQL databases, GCS buckets, Cloud Run services, or anything else -- it needs a secure way to authenticate with GCP on your behalf. This tutorial walks you through creating that connection using three different approaches, keyless first, so you can choose the one that fits your security requirements and workflow.
 
-> **Note**: The Planton web console provides a guided wizard for this workflow.
-> This tutorial uses the CLI/YAML approach where possible for stability and
-> reproducibility. The browser OAuth path (Path B) is initiated through the
-> web console. The console UI evolves frequently — always check it for the
-> latest experience.
+> **Note**: The keyless path (Path A) runs in the Planton web console, which
+> builds the trust in your project with you. The other two paths use the
+> CLI/YAML approach for stability and reproducibility. The console UI evolves
+> frequently — always check it for the latest experience.
 
 ## What You Will Learn
 
 - What a provider connection is and why Planton needs one for GCP
-- How to create a GCP Provider Connection with a service account key (most common for teams and automation)
-- How to create a GCP Provider Connection with browser OAuth through the web console (quickest path for individual developers)
-- How to create a GCP Provider Connection with runner-delegated authentication via Workload Identity or Application Default Credentials (maximum security)
+- How to create a keyless GCP Provider Connection in the web console, with no key stored anywhere (recommended)
+- How to create a GCP Provider Connection with a stored service account key
+- How to create a GCP Provider Connection with a runner's own identity via Workload Identity or Application Default Credentials (maximum isolation)
 - How to set a default provider connection so your GCP deployments use it automatically
 
 ## Prerequisites
 
-- [ ] A Google Cloud project where you have permission to create service accounts and manage IAM roles
+- [ ] A Google Cloud project where you administer IAM: a project Owner, or Role Administrator, Project IAM Admin, Workload Identity Pool Admin and Service Account Admin
 - [ ] A Planton account with an organization already created
-- [ ] The `planton` CLI installed and authenticated (run `planton auth login` if you have not done this yet)
-- [ ] The `gcloud` CLI installed and authenticated (Path A and Path C use `gcloud` commands)
+- [ ] The `planton` CLI installed and authenticated (run `planton auth login` if you have not done this yet) for Paths B and C
+- [ ] The `gcloud` CLI installed and authenticated, or Cloud Shell (Path A's script, Paths B and C)
 
 ## Understanding Provider Connections
 
-A provider connection tells Planton how to authenticate when deploying infrastructure in your cloud account. Credentials are stored as secrets in Planton's secrets manager and referenced by slug in the connection manifest -- the actual values never appear in the spec. For more on provider connections, see the [connections documentation](/docs/connections/cloud-providers).
+A provider connection tells Planton how to authenticate when deploying infrastructure in your cloud account, and what Planton may deploy there. Credentials, when a connection holds any, are stored as secrets in Planton's secrets manager and referenced by slug in the connection manifest -- the actual values never appear in the spec. For more on provider connections, see the [connections documentation](/docs/connections/cloud-providers).
+
+Every connection records a **grant**: what Planton may deploy through it. **Everything Planton Can Deploy** covers every GCP kind in Planton's catalog; **Only What I Pick** covers the kinds you choose. The permissions come from the catalog, so the service account Planton uses holds a custom role with exactly what those kinds need, never a broad role like Owner or Editor.
 
 ### Three Authentication Approaches for GCP
 
-GCP supports a different set of authentication options compared to AWS. Where AWS offers cross-account trust via CloudFormation, GCP offers browser OAuth via Google's consent flow. Here is how the three approaches compare:
-
-| | Service Account Key | Browser OAuth | Runner-Delegated |
+| | Keyless | Stored Key | Runner Identity |
 |---|---|---|---|
-| **How it works** | You create a GCP service account, download its JSON key, store the key as a Planton secret, and the connection references that secret | You sign in with your Google account through the Planton web console; Planton stores a refresh token automatically | A self-hosted Planton Runner uses its environment credentials (GKE Workload Identity, Compute Engine metadata, Application Default Credentials) |
-| **Security** | Service account key is long-lived; you manage rotation | Refresh token stored as a secret; access tokens are short-lived (~1 hour) | Credentials never leave your infrastructure; nothing stored in Planton |
-| **Setup time** | 10-15 minutes | 2 minutes (web console only) | 30+ minutes (requires deploying a runner) |
-| **Best for** | Teams, CI/CD automation, multi-user environments | Individual developers, quick evaluation, getting started | Maximum security, air-gapped environments, regulated industries |
+| **How it works** | Your project trusts Planton's identity issuer through Workload Identity Federation; Planton exchanges a short-lived token to act as a service account in your project | You create a GCP service account, download its JSON key, store the key as a Planton secret, and the connection references that secret | A self-hosted Planton Runner uses its environment credentials (GKE Workload Identity, Compute Engine metadata, Application Default Credentials) |
+| **Security** | Nothing stored in Planton: no key, no Google token; the trust admits only this connection | Service account key is long-lived; you manage rotation | Credentials never leave your infrastructure; nothing stored in Planton |
+| **Setup time** | About two minutes (one consent in your project, or one script) | 10-15 minutes | 30+ minutes (requires deploying a runner) |
+| **Best for** | Everyone who can consent once in their project, or run one script there | Projects where you cannot create a workload identity pool | Air-gapped environments, regulated industries, teams that already run a runner |
 
 All three approaches result in the same outcome: a provider connection that Planton can use to deploy GCP infrastructure on your behalf.
 
-## Path A: Service Account Key (Inline Credentials)
+## Path A: Keyless, in the Web Console
 
-This is the most common approach for teams and automation. You create a GCP service account with the IAM roles Planton needs, download the JSON key file, store it as a Planton secret, and create a connection that references it.
+This approach stores nothing in Planton. Your project gets a workload identity pool and an OIDC provider that trust Planton's identity issuer for this one connection, and a service account that only this connection may act as, holding the connection's own custom role. The console builds the trust with you before the connection exists, and creates the connection once Google confirms the trust.
+
+### Step 1: Start the Connection
+
+In the Planton web console, open **Connections** and click the **GCP** card under Infrastructure. **Name** the connection, for example `prod-gcp`, then choose **Keyless** (listed first, and recommended).
+
+### Step 2: Say Where It Deploys
+
+On the **Project** step, enter the **Project ID**, as the Google Cloud console's project picker shows it; Planton looks up the project number itself. The console suggests the **Service Account** `planton-provisioner@<project-id>.iam.gserviceaccount.com`, which the setup creates if it does not exist.
+
+### Step 3: Choose What Planton May Deploy
+
+On the **Permissions** step, keep **Everything Planton Can Deploy** (recommended), or choose **Only What I Pick** and tick the kinds you use. **Organization Access** (folders, the organization and billing accounts) and **Access Granting** (giving people and identities access across the project) stay off unless you turn them on. Click **Show the Role** to read exactly what the setup will create.
+
+### Step 4: Set Up the Trust in Your Project
+
+The **Set Up** step names everything it will build: the APIs it turns on, the identity pool, the provider, the service account and its roles. Build it in one of two ways:
+
+- **Set It Up for Me** (the step's main button): sign in with a Google account that administers the project and approve Google's consent screen once. Planton checks that your account may make every change, turns on the APIs the trust and Planton need, creates the pool, the provider, the service account and the binding, and creates this connection's own custom role and grants it to the service account. It uses your approval only for this setup and then discards it: Google issues no refresh token, and nothing about your Google access is stored.
+- **Prefer to Run It Yourself? Show the Setup Script**: run the script in Cloud Shell, or any shell with `gcloud` signed in to your project. It builds the same trust and prints one line; paste it into **The Line the Script Printed** and click **Check the Trust**.
+
+Either way, Planton then asks Google whether it trusts this connection. A new provider can take a minute or two to spread inside Google, and the step waits for it. When **GCP Trusts This Connection** appears, click **Next**.
+
+### Step 5: Review, Create, and Read the Verdict
+
+On **Review & Create**, click **Create**. The next screen runs the connection's first Verify and says what it can deploy, as **"N of M GCP Kinds Can Deploy"** counted against your grant. The connection stores only the provider's name and the service account's email: no key, no Google token, nothing to rotate.
+
+For what the setup creates in detail, running it again, and a second connection in the same project, see [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections#google-cloud).
+
+## Path B: Stored Key (a Service Account Key)
+
+This approach stores a long-lived credential. You create a GCP service account with the role Planton's catalog renders for what you want it to deploy, download the JSON key file, store it as a Planton secret, and create a connection that references it.
 
 ### Step 1: Create a GCP Service Account
 
@@ -72,27 +102,19 @@ gcloud iam service-accounts create planton-deployer \
 
 Replace `your-project-id` with your actual GCP project ID.
 
-### Step 2: Grant IAM Roles
+### Step 2: Grant the Connection's Role
 
-The service account needs IAM roles for the GCP services you plan to manage through Planton. For a broad starting point, the `Editor` role works, though you should scope this down for production use.
-
-```bash
-gcloud projects add-iam-policy-binding your-project-id \
-  --member="serviceAccount:planton-deployer@your-project-id.iam.gserviceaccount.com" \
-  --role="roles/editor"
-```
-
-For more granular control, grant only the roles required for your specific use case. For example, if you plan to manage Cloud SQL databases and GKE clusters:
+The service account needs the permissions of what you want Planton to deploy, and nothing broader. In the console's GCP connection wizard, choose **Stored Key**, and on its **Permissions** step choose **Everything Planton Can Deploy** or **Only What I Pick**, then click **Show the Role**. The role is written in the form `gcloud iam roles create --file` takes: save it as `planton-role.yaml`, then create it in your project and grant it to the service account:
 
 ```bash
-gcloud projects add-iam-policy-binding your-project-id \
-  --member="serviceAccount:planton-deployer@your-project-id.iam.gserviceaccount.com" \
-  --role="roles/cloudsql.admin"
+gcloud iam roles create planton_deployer --project=your-project-id --file=planton-role.yaml
 
 gcloud projects add-iam-policy-binding your-project-id \
   --member="serviceAccount:planton-deployer@your-project-id.iam.gserviceaccount.com" \
-  --role="roles/container.admin"
+  --role="projects/your-project-id/roles/planton_deployer"
 ```
+
+When the step also names predefined roles (a few permissions Google keeps out of custom roles), grant those to the service account the same way.
 
 ### Step 3: Create and Download a JSON Key
 
@@ -128,6 +150,8 @@ metadata:
   name: my-gcp-connection
   org: your-org
 spec:
+  grant:
+    coverage: everything
   service_account_key:
     secret: gcp-sa-key
 ```
@@ -137,10 +161,11 @@ Replace these values with your own:
 - **`metadata.name`**: A human-readable name for this connection. Planton generates a URL-safe slug from it.
 - **`metadata.org`**: Your Planton organization slug.
 - **`spec.service_account_key.secret`**: The slug of the secret you created in Step 4.
+- **`spec.grant`**: What Planton may deploy through the connection: `coverage: everything` for every kind Planton's catalog offers, or `coverage: chosen` with the `kinds` you pick. Every cloud connection records one, and the role you granted in Step 2 should match it.
 
 A few things to note about the GCP connection spec:
 
-- GCP's inline mode requires only **one secret reference** (`service_account_key`). The service account JSON key bundles the project ID, client email, and private key into a single file, so there are no separate fields for project, region, or individual credentials.
+- GCP's stored-key mode requires only **one secret reference** (`service_account_key`). The service account JSON key bundles the project ID, client email, and private key into a single file, so there are no separate fields for project, region, or individual credentials.
 - **`auth_mode`** defaults to `inline` when omitted. Including it explicitly (`auth_mode: inline`) is also fine, but not required.
 - The IaC provider extracts everything it needs (project ID, credentials) from the key at execution time.
 
@@ -150,7 +175,7 @@ A few things to note about the GCP connection spec:
 planton apply -f gcp-connection.yaml
 ```
 
-Planton validates that the referenced secret exists in your organization's config-manager and creates the connection.
+Planton validates that the referenced secret exists in your organization's config-manager and creates the connection. A manifest without `grant` is refused with a message that says how to add it.
 
 ### Step 7: Verify the Connection
 
@@ -162,56 +187,7 @@ planton get GcpProviderConnection my-gcp-connection
 
 The connection metadata and spec will display. The `service_account_key` field will show only the secret slug, not the actual key contents -- confirming that no sensitive data is stored in the connection resource itself.
 
-## Path B: Browser OAuth (Sign in with Google)
-
-This is the quickest way to connect your GCP project. You sign in with your Google account through the Planton web console, and Planton handles everything else -- no service accounts, no key files, no manual secret creation. The platform stores a refresh token automatically and exchanges it for short-lived access tokens when running operations.
-
-Browser OAuth is initiated through the web console. Unlike the service account key and runner paths, this flow cannot be completed via CLI/YAML alone.
-
-### When to Use Browser OAuth
-
-Browser OAuth is ideal for individual developers evaluating Planton or working in development environments. For production workloads shared across a team, a service account key (Path A) or runner-delegated authentication (Path C) provides better operational characteristics -- service account connections do not depend on any individual user's Google account.
-
-### How the Flow Works
-
-1. In the Planton web console, navigate to your organization's **Connections** page and choose to create a new GCP connection.
-2. Select **Sign in with Google** as the connection method.
-3. A popup opens to Google's consent screen. Sign in with a Google account that has access to the GCP projects you want to manage.
-4. After you authorize access, Planton exchanges the authorization code for tokens, stores the refresh token as a config-manager secret, and creates the connection. The console shows a list of GCP projects accessible to your account for confirmation.
-
-### What Gets Created
-
-The OAuth flow produces a connection resource equivalent to this:
-
-```yaml
-apiVersion: connect.planton.ai/v1
-kind: GcpProviderConnection
-metadata:
-  name: my-gcp-oauth
-  org: your-org
-spec:
-  auth_mode: browser_oauth
-  oauth_user_email: you@example.com
-  refresh_token:
-    secret: my-gcp-oauth-oauth-refresh-token
-```
-
-- **`oauth_user_email`** is a display-only field showing which Google account authorized the connection. It is populated from the Google ID token during the OAuth callback.
-- **`refresh_token.secret`** points to a config-manager secret that was created automatically. The secret slug follows the pattern `{connection-slug}-oauth-refresh-token`.
-
-At execution time, Planton exchanges the refresh token for a short-lived access token (approximately one hour lifetime) and sends only the access token to the runner. The long-lived refresh token never leaves config-manager. If Google returns a rotated refresh token during the exchange, Planton updates the config-manager secret automatically.
-
-### Verifying a Browser OAuth Connection
-
-After the console flow completes, verify the connection via the CLI:
-
-```bash
-planton get GcpProviderConnection my-gcp-oauth
-```
-
-The spec will show `auth_mode: browser_oauth`, the `oauth_user_email` of the authorizing account, and the refresh token secret slug.
-
-## Path C: Runner-Delegated Authentication (Workload Identity)
+## Path C: Runner Identity (Workload Identity)
 
 This approach provides the highest security posture. Instead of storing any credentials in Planton -- even as secret references -- you deploy a Planton Runner in your own GCP infrastructure and let it authenticate using Application Default Credentials (ADC). No sensitive values are ever transmitted to or stored in the Planton control plane.
 
@@ -225,7 +201,7 @@ Create a runner token from the console's Runners area. The token is a named, rev
 
 ### Step 2: Deploy the Runner with GCP IAM Bindings
 
-Deploy the runner binary or container in your GCP environment. The runner needs IAM permissions for the GCP services you plan to manage through Planton.
+Deploy the runner binary or container in your GCP environment. The runner's identity needs the role Planton's catalog renders for what you want it to deploy: in the console's GCP connection wizard, choose **Runner Identity**, and on its **Permissions** step click **Show the Role**.
 
 How you bind IAM permissions depends on where the runner runs:
 
@@ -250,6 +226,8 @@ metadata:
   name: gcp-runner
   org: your-org
 spec:
+  grant:
+    coverage: everything
   auth_mode: runner
   runner: my-gcp-runner
 ```
@@ -259,6 +237,7 @@ The key differences from the service account key manifest:
 - **`auth_mode: runner`** tells Planton to delegate authentication entirely to the runner's environment.
 - **`runner: my-gcp-runner`** is the name the runner enrolled under in Step 3. This tells Planton which runner to route operations to.
 - There is no `service_account_key` field. In runner mode, secret reference fields are ignored even if provided.
+- **`grant`** says what Planton may deploy through the connection, as in Path B.
 
 ### Step 5: Apply the Manifest
 
@@ -282,7 +261,7 @@ Once you have a connection, set it as the default for your organization so that 
 planton connection default set --provider gcp --connection my-gcp-connection
 ```
 
-To set a different default for a specific environment (for example, using the runner-delegated connection for production):
+To set a different default for a specific environment (for example, using the runner connection for production):
 
 ```bash
 planton connection default set --provider gcp --connection gcp-runner --env production

@@ -93,7 +93,7 @@ Instead of storing credentials in Planton, you deploy a [Runner](/docs/runner) i
 
 ### Keyless (OIDC)
 
-Your AWS account, Google Cloud project, or Azure subscription trusts Planton's identity issuer directly. For each operation, Planton signs a short-lived token for one connection, and your cloud exchanges it for short-lived credentials. You create the trust once in your own account, with a script the console fills in, and Planton stores no credential at all. See [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections).
+Your AWS account, Google Cloud project, or Azure subscription trusts Planton's identity issuer directly. For each operation, Planton signs a short-lived token for one connection, and your cloud exchanges it for short-lived credentials. You create the trust once in your own account, with a script the console fills in or, on Google Cloud and Azure, with one consent, and Planton stores no credential at all. See [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections).
 
 **Best for**: Production cloud accounts, organizations that want no stored cloud credential and a trust they can read and revoke themselves.
 
@@ -109,7 +109,7 @@ Some connections need no credential of their own because another connection alre
 
 **Best for**: Every registry a connection you already have can reach.
 
-Not every provider supports every mode. Cloud infrastructure providers (AWS, GCP, Azure) support keyless (OIDC), inline, runner-delegated, a Vault broker, and the sign-in on this machine, and GCP and Azure also offer a browser sign-in with Google or Microsoft; DigitalOcean and Cloudflare support inline and an exported API token. GitHub signs in as an App or as the sign-in on this machine. Container registries sign in through a connection you already trust or with stored keys. GitLab, state backends, and managed services use inline credentials.
+Not every provider supports every mode. Cloud infrastructure providers (AWS, GCP, Azure) support keyless (OIDC), inline, runner-delegated, a Vault broker, and the sign-in on this machine; in the console the four cloud methods are named **Keyless**, **Stored Key**, **Runner Identity**, and **Vault Broker**, and every cloud connection also records what Planton may deploy through it (see [Cloud Providers](/docs/connections/cloud-providers#what-planton-may-deploy)). DigitalOcean and Cloudflare support inline and an exported API token. GitHub signs in as an App or as the sign-in on this machine. Container registries sign in through a connection you already trust or with stored keys. GitLab, state backends, and managed services use inline credentials.
 
 ## Authorization and Defaults
 

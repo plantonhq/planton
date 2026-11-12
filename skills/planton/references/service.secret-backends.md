@@ -60,7 +60,7 @@ A secret is stored in the backend it names when it is created, or in the organiz
 
 ## The one-hop rule
 
-A connection's own secrets — a stored key, or an Azure app registration's client ID (Azure reads it even when keyless) — must live in a backend that does **not** itself sign in through a connection. It is checked when a backend is created or updated, when a connection is edited, and again at every read. If an organization's default backend signs in through a connection, the connection's secrets must be created in another backend, named explicitly (a secret with no backend lands in the default).
+A connection's own secrets — a stored key, or a client secret — must live in a backend that does **not** itself sign in through a connection. It is checked when a backend is created or updated, when a connection is edited, and again at every read. If an organization's default backend signs in through a connection, the connection's secrets must be created in another backend, named explicitly (a secret with no backend lands in the default).
 
 ## Commands
 

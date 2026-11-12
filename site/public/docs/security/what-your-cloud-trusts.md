@@ -94,9 +94,9 @@ Each token Planton signs is valid for 15 minutes. Planton signs a new one when a
 
 Read the trust in your cloud and compare it with the values above:
 
-- **AWS**: the IAM identity provider for `planton.ai`, and the trust policy of the connection's role (`planton-aws-connection-<connection name>-role` when the console's script created it).
+- **AWS**: the IAM identity provider for `planton.ai`, and the trust policy of the connection's role (`planton-<organization>-<connection>` when the console's setup created it).
 - **Google Cloud**: the OIDC provider in the workload identity pool (`planton` by default), and the `roles/iam.workloadIdentityUser` binding on the service account.
-- **Azure**: the federated identity credentials of the app registration (`planton-conn-<connection slug>` when the console's script created it).
+- **Azure**: the federated identity credentials of the app registration (`planton-conn-<connection slug>` when the console's setup created it).
 
 [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections#check-what-the-script-created) has the exact commands for each cloud. In the console, **Verify** on a connection shows the subject and issuer Planton presented next to what your cloud granted.
 
