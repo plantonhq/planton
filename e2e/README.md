@@ -828,6 +828,14 @@ profile and `t.Skip` any non-green kind (with the profile's
 `deferred_reason` in the skip message) -- so a full-provider suite run
 never fails on a documented deferral.
 
+Live lanes run on the quota the test account already holds; no lane ever
+requests a quota increase. A scenario whose shape needs more than a fresh
+account's default quota moves to a default-quota shape that proves the same
+thing (an authoring fix, as the SageMaker lesson below explains). When no
+such shape exists, the kind is `deferred` and its `deferred_reason` opens
+with `not performed: quota` and names the metric, the region and the limit
+the test account holds.
+
 ## Discovering Kinds
 
 The `planton e2e discover` CLI command scans profiles and displays kind
