@@ -38,7 +38,7 @@ The app owns the instance. When the person opens Planton Desktop, it starts a su
 | `daemon status`: a part "exited again after 3 restarts within the hour, so it stays down" | That part keeps dying | `planton daemon logs <part>`, name the cause to the person, then `planton local restart` once it is fixed |
 | An apply, destroy, deploy or rerun: "This instance's workflow engine isn't running, so nothing was started" | `temporal` is down: past its restart budget, or hung. Nothing was written, so there is nothing to clean up | `planton daemon status`; if `temporal` is not ready, `planton daemon logs temporal`, then `planton local restart`, then run the command again |
 | `degraded` for more than a few minutes with no restart count rising | A part is up but not ready | `planton daemon logs <part>`, then `planton local restart` |
-| `planton local start` says Planton Desktop is not installed | The app runs the instance, and it is not here | Ask the person to install it: `brew install --cask planton`, or download it from planton.ai |
+| `planton local start` says Planton Desktop is not installed | The app runs the instance, and it is not here | Ask the person to install it. On macOS: `brew tap plantonhq/tap`, `brew trust --tap plantonhq/tap`, `brew install --cask planton-desktop` (Homebrew loads a third-party tap only once it is trusted). Anywhere, the download at https://planton.ai/desktop |
 
 ## What was verified
 

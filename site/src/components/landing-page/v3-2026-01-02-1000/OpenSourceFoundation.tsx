@@ -4,6 +4,7 @@ import { Box, Stack, Typography } from '@mui/material';
 import { FC } from 'react';
 import { Section, SectionTitle, SectionSubtitle, Card, BodyText, CheckIcon, Badge } from './shared';
 import { PLATFORM_STATS } from '@/data/platform-stats';
+import { CLI_INSTALL_COMMAND } from '@/data/product';
 
 const openSourceItems = [
   'All Terraform/Pulumi deployment modules',
@@ -21,7 +22,7 @@ const exitSteps = [
     number: '2',
     title: 'Use the Planton CLI',
     description: 'Run planton pulumi up from your own CI/CD.',
-    code: 'brew install plantonhq/tap/planton',
+    code: CLI_INSTALL_COMMAND,
   },
 ];
 

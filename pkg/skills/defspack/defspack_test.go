@@ -93,6 +93,20 @@ func TestValidateCatchesBrokenTrees(t *testing.T) {
 			wantErr: "is not a vX.Y.Z version",
 		},
 		{
+			name: "the daemon floor is never a CLI release tag",
+			mutate: func(files map[string]string) {
+				files["skills/compat.yaml"] = "minimum_daemon_version: v0.0.165-cli.20261118.0\nminimum_cli_version: v0.0.0\n"
+			},
+			wantErr: "minimum_daemon_version \"v0.0.165-cli.20261118.0\" is not a vX.Y.Z version",
+		},
+		{
+			name: "the CLI floor is a release version or a CLI release tag, nothing else",
+			mutate: func(files map[string]string) {
+				files["skills/compat.yaml"] = "minimum_daemon_version: v0.0.0\nminimum_cli_version: v0.0.165-rc.1\n"
+			},
+			wantErr: "is not a vX.Y.Z version or a CLI release tag",
+		},
+		{
 			name: "automation document slug does not match its file name",
 			mutate: func(files map[string]string) {
 				files["automations/investigate.yaml"] = "slug: other\ndisplayName: Investigate\n"
@@ -189,6 +203,20 @@ func TestValidateCatchesBrokenTrees(t *testing.T) {
 			t.Fatalf("no violation mentions %q; got: %v", tc.wantErr, errs)
 		})
 	}
+
+	// A capability that ships between platform releases ships in a CLI release tag, so the CLI
+	// floor may name one.
+	t.Run("the CLI floor may name a CLI release tag", func(t *testing.T) {
+		files := validFixtureTree()
+		files["skills/compat.yaml"] = "minimum_daemon_version: v0.0.0\nminimum_cli_version: v0.0.165-cli.20261118.0\n"
+		tree, err := LoadTree(writeTree(t, files))
+		if err != nil {
+			t.Fatalf("loading fixture tree: %v", err)
+		}
+		if errs := Validate(tree); len(errs) > 0 {
+			t.Fatalf("a CLI release tag floor should be valid, got: %v", errs)
+		}
+	})
 
 	// The unmutated fixture must be clean, or the cases above prove nothing.
 	t.Run("unmutated fixture is valid", func(t *testing.T) {

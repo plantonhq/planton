@@ -61,13 +61,13 @@ planton context get
 
 The sidebar contains seven sections. Here is what each one does.
 
-### Dashboard
+### Home
 
-The landing page after login. For new users, it shows the getting-started checklist (8 tasks across 4 groups — Foundation, Infrastructure, Applications, Team and Operations). For active organizations, it shows resource summaries, recent deployments, and notifications.
+The landing page after login. While your organization's setup is unfinished, Home leads with the setup section: **Copy Setup Prompt**, which hands the setup to your coding agent, and the next unfinished step. **Getting Started** lists every step and ticks each one as it is done, by you or by your agent. On Planton Desktop and a console at your organization's own address, Getting Started is the list alone. For active organizations, Home shows what changed in the organization, what is waiting on you, and recent deployments.
 
-<!-- SCREENSHOT: Dashboard
+<!-- SCREENSHOT: Home
   Page: /dashboard
-  Action: Show the dashboard for an active organization
+  Action: Show Home for an active organization
   Focus: The main content area with summary cards
   Alt: Planton dashboard showing resource summaries and recent deployment activity
 -->

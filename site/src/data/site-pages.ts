@@ -83,6 +83,19 @@ export const SITE = {
   defaultOgImage: `${SITE_URL}/_site/images/og/desktop.png`,
 } as const;
 
+/**
+ * The playbook a coding agent reads when a person hands it their Setup Prompt
+ * (every Planton's Getting Started writes one): a Markdown file at the root,
+ * served beside llms.txt, and listed in llms.txt's Start section so an agent
+ * that begins from the index finds it.
+ */
+export const AGENT_PLAYBOOK = {
+  path: '/agents.md',
+  title: 'Set Up Planton (for coding agents)',
+  description:
+    'A coding agent given a Planton Setup Prompt follows this: install the CLI and the planton skill, sign in with the prompt\'s code, and take the repository to its first deployment.',
+} as const;
+
 export const SITE_PAGES: readonly SitePage[] = [
   // Home
   {

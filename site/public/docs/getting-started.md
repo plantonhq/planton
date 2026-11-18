@@ -10,7 +10,7 @@ tags:
 
 # Getting Started
 
-New to Planton? Start with the [Platform Getting Started Guide](/docs/platform/getting-started) to create your account, set up an organization, connect a cloud provider, and deploy your first resource.
+New to Planton? Create your organization, then copy the **Setup Prompt** from Getting Started and paste it into Claude Code, Codex or Cursor in your app's repository. Your agent installs the CLI, signs in as you, connects your cloud and ships your first deployment, asking before anything changes your cloud or costs money. The [Platform Getting Started Guide](/docs/platform/getting-started) walks through it, and through the same setup in the console.
 
 Already set up? Choose a path based on what you want to do.
 
@@ -30,8 +30,8 @@ Already set up? Choose a path based on what you want to do.
 
 ## Work From Your Coding Agent
 
-1. [Install the Planton skills](/docs/coding-agents) — one command for Cursor, Claude Code, Codex, and any Agent Skills host
-2. [Install the CLI](/docs/cli) — validation and schema lookups offline, deploys after one sign-in
+1. [Copy the Setup Prompt](/docs/platform/getting-started#set-up-with-your-coding-agent) from Getting Started and paste it into your agent — it installs the CLI and the Planton skill, signs in as you with a one-time code, and takes your repository to its first deployment
+2. Already set up? [Install the Planton skills](/docs/coding-agents) and [the CLI](/docs/cli) by hand on another machine
 3. Ask your agent for what you need — it composes under `infrastructure/`, validates, and asks before applying
 
 ## Understand the Platform

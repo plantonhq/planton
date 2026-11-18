@@ -15,6 +15,17 @@ tags:
 
 Planton ships its assistant's knowledge as **agent skills**: instruction files in the open [Agent Skills](https://agentskills.io) format that Cursor, Claude Code, Codex, Gemini CLI, and dozens of other coding agents load on demand. Install them once and your agent knows how to compose cloud infrastructure, validate it, wire resources together, register and deploy services, and where the lines are that it never crosses.
 
+## Start with the Setup Prompt
+
+The fastest way in is the one your organization hands you. In the console, Getting Started (and Home, while setup is unfinished) leads with **Copy Setup Prompt**. Paste it into Claude Code, Codex or Cursor from your app's repository, and your agent:
+
+1. Installs the `planton` CLI and signs in as you with the prompt's one-time code (`planton login --grant <code>`). The code works once, within 15 minutes, and becomes a 30-day personal API key named for the agent, which you can revoke on your API Keys page.
+2. Reads the playbook at [planton.ai/agents.md](https://planton.ai/agents.md) and installs the skills below for itself, outside your repository.
+3. Follows the `planton` skill's first-deployment guide: it connects the cloud your machine is signed in to, creates an environment, connects GitHub and deploys your service, asking before anything that changes your cloud or costs money.
+4. Ticks each Getting Started step it finished (`planton setup done <step>`) and tells you what it set up, with links.
+
+The rest of this page is the same setup by hand, for a machine where you want the skills and the CLI without a Setup Prompt.
+
 ## Why install the skills
 
 Without them, a coding agent writes infrastructure from memory: field names it half-remembers, resources it forgets to wire together, no idea what anything costs. With them, the agent reads every schema fact from a reference page at answer time, wires resources by reference instead of pasting IDs, validates before it hands anything over, tells you the monthly cost, and asks before it applies. The same skills power the Planton Assistant in Planton Desktop and the web console, so your agent and the platform's own assistant share one craft.
@@ -58,15 +69,17 @@ Clone [github.com/plantonhq/skills](https://github.com/plantonhq/skills) and cop
 
 ## Install and sign in to the CLI
 
-The skills do their best work with the `planton` CLI on your PATH. Schema lookups (`planton explain`) and manifest validation (`planton validate`) run fully offline with no account; one sign-in unlocks the compile loop, lookups against your organization, and deploys.
+The skills do their best work with the `planton` CLI. Schema lookups (`planton explain`) and manifest validation (`planton validate`) run fully offline with no account; one sign-in unlocks the compile loop, lookups against your organization, and deploys.
+
+On macOS or Linux, the installer puts the CLI at `~/.planton/bin/planton` and prints how to add it to your PATH:
 
 ```bash
-brew install plantonhq/tap/planton
+curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh
 planton login
 planton context set --org your-org -e dev
 ```
 
-Other platforms: see [CLI Installation](/docs/cli).
+Homebrew and Windows: see [CLI Installation](/docs/cli).
 
 ## Your first request
 

@@ -73,8 +73,10 @@ The desktop app is the product; the CLI is its companion — the same deploys,
 from your shell, driving the same engine.
 
 ```bash
-brew install plantonhq/tap/planton
+curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh
 ```
+
+The installer puts the CLI at `~/.planton/bin/planton` on macOS or Linux and prints how to add it to your PATH. Homebrew, Windows and direct downloads are in [the CLI docs](https://planton.ai/docs/cli).
 
 Write a manifest in the shape you already know:
 
@@ -104,6 +106,8 @@ and the deploy streams live output from the underlying IaC module. See the
 [CLI reference](https://planton.ai/docs/cli).
 
 ## From your coding agent
+
+In the Planton console (planton.ai, or your own self-hosted Planton), your organization's Getting Started hands you a **Setup Prompt**: paste it into your coding agent from your app's repository, and the agent installs the CLI and the skills, signs in as you with a one-time code, and takes the repository to its first deployment, asking before anything changes your cloud or costs money.
 
 Planton ships its assistant's knowledge as agent skills in the open Agent
 Skills format, so Cursor, Claude Code, Codex, and any other coding agent can

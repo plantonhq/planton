@@ -153,12 +153,12 @@ The default modules are intentionally designed to be **Terraform-like** even whe
 
 #### 3. CLI: The Orchestration Layer
 
-**Distribution:** Homebrew  
+**Distribution:** the installer (macOS and Linux) and Homebrew  
 **Role:** The "conductor" that brings everything together
 
 Installation:
 ```bash
-brew install plantonhq/tap/planton
+curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh
 ```
 
 **What the CLI does:**
@@ -1307,7 +1307,8 @@ jobs:
       
       - name: Install Planton
         run: |
-          brew install plantonhq/tap/planton
+          curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh
+          echo "$HOME/.planton/bin" >> "$GITHUB_PATH"
       
       - name: Validate Manifests
         run: |
@@ -1598,8 +1599,8 @@ Planton is a multi-cloud deployment framework that provides **consistency withou
 
 **Getting Started:**
 ```bash
-brew install plantonhq/tap/planton
-planton version
+curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh
+~/.planton/bin/planton version
 ```
 
 **Next Steps:**

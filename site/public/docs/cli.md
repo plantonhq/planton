@@ -26,26 +26,50 @@ Choose your platform:
 
 | Platform | Command |
 |----------|---------|
-| **macOS** | `brew install plantonhq/tap/planton` |
+| **macOS and Linux** | `curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh` |
 | **Windows** | See [Windows installation](#install-on-windows) |
-| **Linux** | See [Linux installation](#install-on-linux) |
+
+Setting Planton up from your coding agent? The Setup Prompt in your organization's Getting Started runs this same installer for you. See [Coding Agents](/docs/coding-agents).
+
+---
+
+## The installer (macOS and Linux)
+
+One command installs the latest CLI on macOS or Linux, Intel or Arm, with no `sudo`:
+
+```bash
+curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh
+```
+
+The installer:
+- Picks the binary for your system and processor
+- Checks it against the release's published checksums before installing it
+- Puts it at `~/.planton/bin/planton`, and never touches another `planton` on your machine
+- Prints how to add `~/.planton/bin` to your PATH if it is not there yet
+
+Run it again any time to update to the latest release. `planton upgrade` updates the same file.
+
+To verify the installation:
+
+```bash
+~/.planton/bin/planton version
+```
 
 ---
 
 ## Install on macOS
 
-### Homebrew (recommended)
+### Homebrew
 
-The recommended way to install on macOS is via Homebrew:
+Homebrew loads a third-party tap only after you trust it, so the install is three commands:
 
 ```bash
+brew tap plantonhq/tap
+brew trust --tap plantonhq/tap
 brew install plantonhq/tap/planton
 ```
 
-Homebrew automatically:
-- Downloads the correct binary for your Mac (Intel or Apple Silicon)
-- Places it in your PATH
-- Removes the macOS quarantine attribute (no Gatekeeper warnings)
+Homebrew picks the binary for your Mac (Intel or Apple Silicon), puts it on your PATH, and owns its updates from then on.
 
 To verify the installation:
 
@@ -55,7 +79,7 @@ planton version
 
 ### Direct download
 
-If you prefer not to use Homebrew, download the binary directly:
+To download the binary yourself:
 
 **Apple Silicon (M1/M2/M3):**
 
@@ -91,7 +115,13 @@ xattr -dr com.apple.quarantine /usr/local/bin/planton
 
 ### Windows Subsystem for Linux (WSL)
 
-If you use WSL, install the Linux binary using curl:
+Inside WSL, [the installer](#the-installer-macos-and-linux) works as on Linux:
+
+```bash
+curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh
+```
+
+Or download the Linux binary yourself:
 
 **x86_64 (most systems):**
 
@@ -174,7 +204,7 @@ Get-Content checksums.txt | Select-String "windows-amd64"
 
 ## Install on Linux
 
-Download the binary directly for your architecture.
+[The installer](#the-installer-macos-and-linux) is the quickest way. To download the binary yourself, pick your architecture.
 
 ### x86_64 (amd64)
 
@@ -234,7 +264,7 @@ If you get a "command not found" error, ensure the binary location is in your PA
 
 ## Authentication
 
-Before using the CLI, authenticate with your Planton account:
+Before using the CLI, authenticate with your Planton account. A coding agent working from a Setup Prompt signs in with the prompt's code instead (below).
 
 ### Step 1: Log in
 
@@ -263,8 +293,34 @@ Setting an environment makes it the default for resource operations, so you don'
 ### Verify context
 
 ```bash
-planton context show
+planton context get
 ```
+
+### Sign in from a Setup Prompt
+
+The Setup Prompt you copy from Getting Started carries a sign-in code that works once, within 15 minutes. Your coding agent runs the line the prompt gives it:
+
+```bash
+~/.planton/bin/planton login --grant <code> --instance planton.ai
+```
+
+The code becomes a personal API key, named for the agent and the machine. It lasts 30 days, reaches every organization you belong to, and is listed (and revocable) on your API Keys page. The command also sets the organization the prompt named as your context. When this CLI is already signed in as you, it keeps that sign-in and leaves the code unused. When it is signed in as someone else, it changes nothing and says how to sign in beside them with `--account`.
+
+---
+
+## Getting Started from the terminal
+
+Your organization's Getting Started steps can be ticked from the CLI, which is how a coding agent records each step it finished:
+
+```bash
+# The steps, and which are done
+planton setup done
+
+# Tick two steps
+planton setup done connect_cloud create_environment
+```
+
+Ticking needs the Owner or Infrastructure Admin role in the organization.
 
 ---
 
@@ -340,9 +396,8 @@ planton upgrade
 
 This automatically:
 - Checks for the latest version
-- Downloads and installs the update
-- On macOS with Homebrew: runs `brew upgrade planton`
-- On other platforms: downloads the binary directly
+- Downloads and installs the update over the binary you ran, when it can write there (the installer's `~/.planton/bin/planton`, or a binary you downloaded)
+- For a Homebrew install: runs `brew upgrade planton`
 
 **Additional options:**
 
@@ -362,9 +417,9 @@ planton upgrade --force
 brew update && brew upgrade planton
 ```
 
-#### Linux and Windows (direct download)
+#### The installer, or a direct download
 
-Download the latest version using the same installation steps above. Check the current version:
+Run [the installer](#the-installer-macos-and-linux) again, or download the latest version using the same steps above. Check the current version:
 
 ```bash
 planton version

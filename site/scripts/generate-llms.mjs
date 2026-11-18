@@ -473,6 +473,7 @@ async function main() {
     '',
     `- Hosted free tier: ${pricing.FREE_TIER_SEATS} seats, no card. Team plan per seat. Self-hosted community edition free for up to ${pricing.COMMUNITY_SEAT_LIMIT} seats; ${pricing.EVALUATION_DAYS}-day evaluation key. Planton Desktop free for individuals, including commercial use.`,
     `- Pricing: ${site.url}/pricing`,
+    `- [${registry.AGENT_PLAYBOOK.title}](${site.url}${registry.AGENT_PLAYBOOK.path}): ${registry.AGENT_PLAYBOOK.description}`,
     ''
   );
   index.push('## Pages', '');
