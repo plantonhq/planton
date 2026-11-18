@@ -15,6 +15,7 @@ metadata:
     managed-by: planton-e2e
     e2e-catalog-kind: gcpdialogflowcxagent
   annotations:
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e: "true"
   tags:
     - planton-e2e

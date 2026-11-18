@@ -20,6 +20,6 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  serviceAccountId: planton-oss-e2e-sa-pre
+  serviceAccountId: oss-e2e-sa-${E2E_RUN_ID} # per kind and engine (21 of Google's 30 characters), so kinds composing this identity side by side never share one
   displayName: Planton OSS E2E prerequisite identity
   description: Ephemeral identity deployed as an E2E prerequisite; safe to delete

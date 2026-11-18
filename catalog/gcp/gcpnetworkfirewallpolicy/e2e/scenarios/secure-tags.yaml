@@ -16,12 +16,13 @@ metadata:
     managed-by: planton-e2e
     e2e-catalog-kind: gcpnetworkfirewallpolicy
   annotations:
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpnetworkfirewallpolicy/e2e/prerequisites/gcptagkey-firewall.yaml,catalog/gcp/gcpnetworkfirewallpolicy/e2e/prerequisites/gcptagvalue-tier.yaml"
   tags:
     - planton-e2e
 spec:
-  policyName: planton-oss-e2e-gcpnfwp-tags
+  policyName: planton-oss-e2e-gcpnfwp-tags-${E2E_RUN_ID} # per engine, so both engines' lanes can run at once in one project
   description: Planton E2E secure-tag firewall policy; safe to delete
   rules:
     - priority: 1000

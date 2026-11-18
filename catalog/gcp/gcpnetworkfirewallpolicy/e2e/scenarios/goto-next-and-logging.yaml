@@ -16,6 +16,7 @@ metadata:
     managed-by: planton-e2e
     e2e-catalog-kind: gcpnetworkfirewallpolicy
   annotations:
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e: "true"
     # The target service account is the GcpServiceAccount install profile,
     # deployed as an extra fixture through the kind-name entry.
@@ -23,7 +24,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  policyName: planton-oss-e2e-gcpnfwp-knobs
+  policyName: planton-oss-e2e-gcpnfwp-knobs-${E2E_RUN_ID} # per engine, so both engines' lanes can run at once in one project
   description: Planton E2E network firewall policy knobs; safe to delete
   rules:
     - priority: 100

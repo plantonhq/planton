@@ -28,4 +28,4 @@ spec:
   description: Planton E2E secure-tag key for firewall policy rules; safe to delete
   purpose: GCE_FIREWALL
   purposeData:
-    network: ${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}/planton-oss-e2e-vpc-prereq
+    network: ${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}/planton-oss-e2e-vpc-${E2E_RUN_ID} # the VPC prerequisite's network in this lane

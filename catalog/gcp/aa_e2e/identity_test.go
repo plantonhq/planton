@@ -129,3 +129,35 @@ func TestPolicyMemberEdits(t *testing.T) {
 		t.Fatal("leftover member classification is wrong")
 	}
 }
+
+// Every GCP scenario that declares the identity has a grant the harness can
+// mint: no group above the project, no permission Google keeps out of custom
+// roles. A lane would refuse either at its IDENTITY phase; this finds it
+// before any lane runs.
+func TestEveryDeclaredScenarioHasAMintableGrant(t *testing.T) {
+	root := repoRoot(t)
+	t.Setenv("PLANTON_E2E_GCP_PROJECT_ID", "planton-e2e-unit")
+	scenarios, err := filepath.Glob(filepath.Join(root, "catalog", "gcp", "*", "e2e", "scenarios", "*.yaml"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	declared := 0
+	for _, scenario := range scenarios {
+		raw, err := os.ReadFile(scenario)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !strings.Contains(string(raw), "planton.dev/e2e-identity: declared") {
+			continue
+		}
+		declared++
+		kindDir := filepath.Base(filepath.Dir(filepath.Dir(filepath.Dir(scenario))))
+		if _, err := declaredGrant(root, kindDir, scenario); err != nil {
+			rel, _ := filepath.Rel(root, scenario)
+			t.Errorf("%s: %v", rel, err)
+		}
+	}
+	if declared == 0 {
+		t.Fatal("no GCP scenario declares the identity; the net checks nothing")
+	}
+}

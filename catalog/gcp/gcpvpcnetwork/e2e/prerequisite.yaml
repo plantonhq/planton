@@ -18,5 +18,5 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  networkName: planton-oss-e2e-vpc-prereq
+  networkName: planton-oss-e2e-vpc-${E2E_RUN_ID} # per kind and engine, so kinds composing this network side by side never share one
   autoCreateSubnetworks: false

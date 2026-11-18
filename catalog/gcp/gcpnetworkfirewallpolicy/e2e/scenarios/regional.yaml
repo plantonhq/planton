@@ -15,11 +15,12 @@ metadata:
     managed-by: planton-e2e
     e2e-catalog-kind: gcpnetworkfirewallpolicy
   annotations:
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e: "true"
   tags:
     - planton-e2e
 spec:
-  policyName: planton-oss-e2e-gcpnfwp-regional
+  policyName: planton-oss-e2e-gcpnfwp-regional-${E2E_RUN_ID} # per engine, so both engines' lanes can run at once in one project
   region: us-central1
   description: Planton E2E regional network firewall policy; safe to delete
   policyType: VPC_POLICY

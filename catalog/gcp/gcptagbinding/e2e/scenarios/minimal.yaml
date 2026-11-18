@@ -7,14 +7,16 @@
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpTagBinding
 metadata:
-  name: planton-oss-e2e-gcptagb-minimal
-  id: planton-oss-e2e-gcptagb-minimal
+  # A binding has no name of its own in Google; the run id here keeps the record per lane.
+  name: planton-oss-e2e-gcptagb-minimal-${E2E_RUN_ID}
+  id: planton-oss-e2e-gcptagb-minimal-${E2E_RUN_ID}
   org: planton-oss
   env: e2e
   labels:
     managed-by: planton-e2e
     e2e-catalog-kind: gcptagbinding
   annotations:
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e: "true"
   tags:
     - planton-e2e

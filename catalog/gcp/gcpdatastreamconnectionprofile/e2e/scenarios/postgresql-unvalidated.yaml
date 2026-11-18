@@ -14,6 +14,7 @@ metadata:
     managed-by: planton-e2e
     e2e-catalog-kind: gcpdatastreamconnectionprofile
   annotations:
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "GcpSecretManagerSecret"
   tags:
