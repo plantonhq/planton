@@ -1,7 +1,6 @@
 package runner
 
 import (
-	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -97,7 +96,7 @@ func TerraformBinary() string {
 func BuildTerratestOptions(t testing.TB, workDir, tfvarsPath string, envVars map[string]string) *terraform.Options {
 	binary := TerraformBinary()
 
-	fmt.Printf("  [terraform] binary=%s workDir=%s\n", binary, workDir)
+	lanef(t, "  [terraform] binary=%s workDir=%s", binary, workDir)
 
 	opts := &terraform.Options{
 		TerraformDir:    workDir,

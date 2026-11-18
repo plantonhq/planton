@@ -54,7 +54,7 @@ func importRoundTripEnabled(tc *provider.KindTestContext) bool {
 		return false
 	}
 	if reason, err := ManifestAnnotation(tc.ManifestPath, ImportRoundTripSkipAnnotation); err == nil && reason != "" {
-		fmt.Printf("  [import-rt] SKIP (scenario-declared): %s\n", reason)
+		lanef(tc.T, "  [import-rt] SKIP (scenario-declared): %s", reason)
 		return false
 	}
 	return true
@@ -192,7 +192,7 @@ func runImportRoundTrip(tc *provider.KindTestContext) error {
 		// because the catalog admits the reason solely for upsert-convergent
 		// create paths.
 		if reason, declared := notImportableReasons[resourceType]; declared {
-			fmt.Printf("  [import-rt] skipping %s: %s not importable upstream (%s)\n", address, resourceType, reason)
+			lanef(tc.T, "  [import-rt] skipping %s: %s not importable upstream (%s)", address, resourceType, reason)
 			skippedNotImportable++
 			continue
 		}
@@ -239,7 +239,7 @@ func runImportRoundTrip(tc *provider.KindTestContext) error {
 			silenced.Logger = logger.Discard
 			importOpts = &silenced
 		}
-		fmt.Printf("  [import-rt] tofu import %s %s\n", address, displayID)
+		lanef(tc.T, "  [import-rt] tofu import %s %s", address, displayID)
 		args := []string{"import", "-input=false"}
 		for _, varFile := range opts.VarFiles {
 			args = append(args, "-var-file="+varFile)
@@ -279,7 +279,7 @@ func runImportRoundTrip(tc *provider.KindTestContext) error {
 		// re-puts the resource). Anything else on such an address -- and a
 		// create on any other type -- still fails.
 		if _, declared := notImportableReasons[rc.Type]; declared && rc.Change.Actions.Create() {
-			fmt.Printf("  [import-rt] tolerating re-create of %s: %s not importable upstream; the reconcile-apply takes ownership\n",
+			lanef(tc.T, "  [import-rt] tolerating re-create of %s: %s not importable upstream; the reconcile-apply takes ownership",
 				address, rc.Type)
 			recreated++
 			continue
@@ -321,12 +321,12 @@ func runImportRoundTrip(tc *provider.KindTestContext) error {
 				"plan after blind re-import updates %s.%s (changed: %v) -- not a declared config-only/write-normalized attribute of %s nor an import-normalized sub-path of the kind map; deployed state kept at %s",
 				address, attribute, changed, rc.Type, asidePath)
 		}
-		fmt.Printf("  [import-rt] tolerating declared update on %s: %v (config-only/write-normalized in the %s catalog, or import-normalized in the kind map)\n",
+		lanef(tc.T, "  [import-rt] tolerating declared update on %s: %v (config-only/write-normalized in the %s catalog, or import-normalized in the kind map)",
 			address, changed, tc.Provider)
 		tolerated++
 	}
 
-	fmt.Printf("  [import-rt] %d resources re-imported blind; plan proposes no real change (%d config-only updates tolerated, %d not-importable-upstream re-creates via reconcile-apply)\n",
+	lanef(tc.T, "  [import-rt] %d resources re-imported blind; plan proposes no real change (%d config-only updates tolerated, %d not-importable-upstream re-creates via reconcile-apply)",
 		len(addresses)-skippedNotImportable, tolerated, recreated)
 
 	// 5. Reconcile the imported state the way a real adopter does: import →

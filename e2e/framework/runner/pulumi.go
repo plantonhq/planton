@@ -23,7 +23,9 @@ type PulumiResult struct {
 }
 
 // PulumiDeploy runs `pulumi up` for the given module directory and stack.
-func PulumiDeploy(moduleDir, stackName, backendURL, iacInputFilePath string) (*PulumiResult, error) {
+// laneEnv, when given, is the lane identity's credential environment (see
+// laneEngineEnv): it is appended after the process environment, so it wins.
+func PulumiDeploy(moduleDir, stackName, backendURL, iacInputFilePath string, laneEnv ...string) (*PulumiResult, error) {
 	if err := pulumiEnsureStack(moduleDir, stackName, backendURL); err != nil {
 		return nil, errors.Wrap(err, "failed to ensure pulumi stack exists")
 	}
@@ -34,16 +36,16 @@ func PulumiDeploy(moduleDir, stackName, backendURL, iacInputFilePath string) (*P
 	// the stale state would otherwise make this up a silent no-op while the
 	// actual provider resource is gone.
 	args := []string{"up", "--stack", stackName, "--yes", "--skip-preview", "--non-interactive", "--refresh"}
-	return runPulumi(moduleDir, backendURL, iacInputFilePath, "", args)
+	return runPulumi(moduleDir, backendURL, iacInputFilePath, "", args, laneEnv...)
 }
 
 // PulumiPreviewExpectNoChanges re-plans the just-applied stack and fails if
 // any change is still pending — the Pulumi arm of the IDEMPOTENCY phase. No
 // --refresh here: the point is whether the program's desired state matches
 // what the apply recorded, not whether the cloud drifted in the seconds since.
-func PulumiPreviewExpectNoChanges(moduleDir, stackName, backendURL, iacInputFilePath string) (*PulumiResult, error) {
+func PulumiPreviewExpectNoChanges(moduleDir, stackName, backendURL, iacInputFilePath string, laneEnv ...string) (*PulumiResult, error) {
 	args := []string{"preview", "--stack", stackName, "--expect-no-changes", "--non-interactive"}
-	result, err := runPulumi(moduleDir, backendURL, iacInputFilePath, "", args)
+	result, err := runPulumi(moduleDir, backendURL, iacInputFilePath, "", args, laneEnv...)
 	if err != nil {
 		return result, errors.Wrap(err, "pulumi preview reported pending changes after apply (idempotency violation)")
 	}
@@ -55,9 +57,9 @@ func PulumiPreviewExpectNoChanges(moduleDir, stackName, backendURL, iacInputFile
 // resource hooks fire (e.g. Kyverno's webhook-GC sentinel). Without it,
 // delete hooks are silently skipped and destroy can leave cluster-scoped
 // residue the module intended to clean up.
-func PulumiDestroy(moduleDir, stackName, backendURL, iacInputFilePath string) (*PulumiResult, error) {
+func PulumiDestroy(moduleDir, stackName, backendURL, iacInputFilePath string, laneEnv ...string) (*PulumiResult, error) {
 	args := []string{"destroy", "--stack", stackName, "--yes", "--non-interactive", "--run-program"}
-	return runPulumi(moduleDir, backendURL, iacInputFilePath, "", args)
+	return runPulumi(moduleDir, backendURL, iacInputFilePath, "", args, laneEnv...)
 }
 
 // PulumiRemoveStack removes the stack entirely after destroy.
@@ -90,24 +92,24 @@ func PulumiOutputs(moduleDir, stackName, backendURL string) (string, error) {
 	return result.Stdout, nil
 }
 
+// pulumiEnsureStack creates the stack if it does not exist, and never selects
+// it. Selecting writes the module folder's current-stack record in Pulumi's
+// home, one file shared by every lane deploying from that folder, so lanes
+// running side by side would race on it; every other command here names its
+// stack with --stack, so nothing needs a selected stack.
 func pulumiEnsureStack(moduleDir, stackName, backendURL string) error {
-	// Try selecting the stack first
-	selectArgs := []string{"stack", "select", stackName, "--non-interactive"}
-	_, err := runPulumi(moduleDir, backendURL, "", "", selectArgs)
+	initArgs := []string{"stack", "init", stackName, "--no-select", "--non-interactive"}
+	result, err := runPulumi(moduleDir, backendURL, "", "", initArgs)
 	if err == nil {
 		return nil
 	}
-
-	// Stack doesn't exist -- create it
-	initArgs := []string{"stack", "init", stackName, "--non-interactive"}
-	_, err = runPulumi(moduleDir, backendURL, "", "", initArgs)
-	if err != nil {
-		return errors.Wrapf(err, "failed to create stack %s", stackName)
+	if result != nil && strings.Contains(result.Stdout+result.Stderr, "already exists") {
+		return nil
 	}
-	return nil
+	return errors.Wrapf(err, "failed to create stack %s", stackName)
 }
 
-func runPulumi(moduleDir, backendURL, iacInputFilePath, kubeContext string, args []string) (*PulumiResult, error) {
+func runPulumi(moduleDir, backendURL, iacInputFilePath, kubeContext string, args []string, laneEnv ...string) (*PulumiResult, error) {
 	cmd := exec.Command("pulumi", args...)
 	cmd.Dir = moduleDir
 
@@ -129,6 +131,9 @@ func runPulumi(moduleDir, backendURL, iacInputFilePath, kubeContext string, args
 	if len(args) > 0 && args[0] == "destroy" {
 		env = append(env, iacinput.OperationEnvVar+"="+iacinput.OperationDestroy)
 	}
+	// Last, so a lane identity's credential outranks anything ambient: exec
+	// keeps the last value of a repeated variable.
+	env = append(env, laneEnv...)
 	cmd.Env = env
 
 	var stdout, stderr bytes.Buffer
@@ -178,7 +183,11 @@ func PulumiLogin(backendURL string) error {
 const maxStackNameLen = 50
 
 // GenerateStackName creates a unique, deterministic stack name for an E2E
-// test run. Format: e2e-{label}-{shortID}, capped at maxStackNameLen.
+// test run. Format: e2e-{label}-{runID}, capped at maxStackNameLen.
+//
+// The run id is used whole: an engine-scoped id ends in its engine suffix
+// ("-p"/"-t"), and a dependency stack is named from it, so cutting it would
+// give a kind's Pulumi and Terraform lanes one shared fixture stack.
 //
 // The cap is enforced by replacing the tail with a short hash of the FULL
 // composed name -- never by blind truncation. Labels carry uniquifying
@@ -191,11 +200,7 @@ const maxStackNameLen = 50
 // The hash keeps distinct full names distinct, and the derivation stays
 // deterministic, so per-run stack reuse across scenarios is unaffected.
 func GenerateStackName(label string, runID string) string {
-	short := runID
-	if len(short) > 8 {
-		short = short[:8]
-	}
-	name := fmt.Sprintf("e2e-%s-%s", label, short)
+	name := fmt.Sprintf("e2e-%s-%s", label, runID)
 	if len(name) <= maxStackNameLen {
 		return name
 	}

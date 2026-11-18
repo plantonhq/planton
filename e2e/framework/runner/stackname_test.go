@@ -15,12 +15,13 @@ func TestGenerateStackNameShortPassthrough(t *testing.T) {
 	}
 }
 
-// The run id contributes at most 8 characters regardless of its length.
-func TestGenerateStackNameRunIDShortened(t *testing.T) {
-	got := GenerateStackName("dep-x", "0123456789abcdef")
-	want := "e2e-dep-x-01234567"
-	if got != want {
-		t.Fatalf("run id not shortened: got %q want %q", got, want)
+// The run id is kept whole: an engine-scoped id's engine suffix is what keeps
+// a kind's Pulumi and Terraform lanes on separate fixture stacks.
+func TestGenerateStackNameKeepsTheEngineSuffix(t *testing.T) {
+	pulumi := GenerateStackName("dep-x", EngineScopedRunID("0a1b2c3d", "pulumi"))
+	terraform := GenerateStackName("dep-x", EngineScopedRunID("0a1b2c3d", "terraform"))
+	if pulumi != "e2e-dep-x-0a1b2c3d-p" || terraform != "e2e-dep-x-0a1b2c3d-t" {
+		t.Fatalf("engine suffix lost: pulumi %q, terraform %q", pulumi, terraform)
 	}
 }
 

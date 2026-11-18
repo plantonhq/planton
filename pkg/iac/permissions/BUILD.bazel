@@ -3,6 +3,7 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "permissions",
     srcs = [
+        "conditions.go",
         "permissions.go",
         "pulumikubernetes.go",
     ],
@@ -18,9 +19,11 @@ go_library(
 go_test(
     name = "permissions_test",
     srcs = [
+        "conditions_test.go",
         "conformance_test.go",
         "pulumisource_test.go",
     ],
+    data = glob(["testdata/**"]),
     embed = [":permissions"],
     deps = [
         "//iac/catalogkindpermissions/v1:catalogkindpermissions",

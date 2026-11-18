@@ -512,7 +512,7 @@ func DeployDependencies(ctx context.Context, t testing.TB, repoRoot, kindProvide
 		return nil, nil
 	}
 
-	fmt.Printf("  [deps] Deploying %d dependencies for %s\n", len(deps), kindDir)
+	lanef(t, "  [deps] Deploying %d dependencies for %s", len(deps), kindDir)
 
 	// accumulated holds each deployed prerequisite's outputs keyed by kind and
 	// manifest name. A later prerequisite that references an earlier one (e.g. an
@@ -644,7 +644,7 @@ func deployDependency(ctx context.Context, t testing.TB, repoRoot, kindProvider 
 	// distinct.
 	stackName := boundStackName(GenerateStackName(stackLabel, runID))
 
-	fmt.Printf("  [deps] Deploying dependency %s (%s) on %s...\n", dep.KindSlug, manifestName, engine)
+	lanef(t, "  [deps] Deploying dependency %s (%s) on %s...", dep.KindSlug, manifestName, engine)
 	start := time.Now()
 
 	var state DependencyState
@@ -653,6 +653,9 @@ func deployDependency(ctx context.Context, t testing.TB, repoRoot, kindProvider 
 	} else {
 		state, err = deployPulumiDependency(moduleDir, dep, stackName, backendURL, manifestName)
 	}
+	// The lane's test handle travels with the state, so the teardown's
+	// progress lines land in the lane's own log (see lanef).
+	state.t = t
 	if err != nil {
 		return state, err
 	}
@@ -666,7 +669,7 @@ func deployDependency(ctx context.Context, t testing.TB, repoRoot, kindProvider 
 		return state, errors.Wrapf(err, "dependency %q deployed but verification failed", dep.KindSlug)
 	}
 
-	fmt.Printf("  [deps] Dependency %s deployed and verified in %s\n", dep.KindSlug, time.Since(start).Round(time.Second))
+	lanef(t, "  [deps] Dependency %s deployed and verified in %s", dep.KindSlug, time.Since(start).Round(time.Second))
 	return state, nil
 }
 
@@ -797,7 +800,7 @@ func TeardownDependencies(deployed []DependencyState) error {
 	for i := len(deployed) - 1; i >= 0; i-- {
 		dep := deployed[i]
 		attempts := teardownAttempts(dep.Dependency.ManifestPath)
-		fmt.Printf("  [deps] Destroying dependency %s...\n", dep.Dependency.KindSlug)
+		lanef(dep.t, "  [deps] Destroying dependency %s...", dep.Dependency.KindSlug)
 
 		var destroyErr error
 		for attempt := 1; attempt <= attempts; attempt++ {
@@ -810,7 +813,7 @@ func TeardownDependencies(deployed []DependencyState) error {
 				break
 			}
 			if attempt < attempts {
-				fmt.Printf("  [deps] dependency %s destroy attempt %d/%d failed (waiting %s): %v\n",
+				lanef(dep.t, "  [deps] dependency %s destroy attempt %d/%d failed (waiting %s): %v",
 					dep.Dependency.KindSlug, attempt, attempts, dependencyDestroyBackoff, destroyErr)
 				time.Sleep(dependencyDestroyBackoff)
 			}

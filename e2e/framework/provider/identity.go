@@ -16,8 +16,12 @@ import "context"
 // The identity reaches the engines the way a real deploy's connection does:
 // as a provider configuration file the runner binds instead of the kind's
 // fixture, so both engines receive it through the same iac-input path a
-// console deploy uses. Nothing about the process environment changes; the
-// fixture chain keeps the harness's own posture.
+// console deploy uses. The engine subprocesses that deploy, re-plan and
+// destroy the kind also get the identity's credential as environment
+// variables, after everything they inherit: a Terraform run reads them, and a
+// Pulumi program's default provider would otherwise fall back to the
+// harness's own credential. The test process's environment never changes,
+// and the fixture chain keeps the harness's own posture.
 type IdentityProvisioner interface {
 	// ProvisionIdentity creates the identity the spec describes for this lane
 	// and returns the path of a provider configuration file that authenticates

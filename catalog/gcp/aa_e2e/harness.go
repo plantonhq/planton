@@ -3,11 +3,16 @@
 // Credentials chain can reach the test project, and resource verification runs
 // through the Google Cloud REST APIs.
 //
-// Credentials are intentionally NOT plumbed through the IaC input. The E2E
-// framework builds every IaC input with a nil provider config, so the IaC
-// modules resolve credentials from the ambient ADC chain (locally:
-// `gcloud auth application-default login`; in CI: workload identity
-// federation). No static secret is ever stored on disk or in CI.
+// The harness's own credential is the ambient ADC chain: whatever
+// GOOGLE_APPLICATION_CREDENTIALS names (a service-account key file kept
+// outside every repository), else `gcloud auth application-default login`,
+// else workload identity federation in CI. The fixtures, the verifiers and
+// every lane that declares no identity run as it, with a nil provider config,
+// so the IaC modules read the same ambient chain. A scenario that declares
+// planton.dev/e2e-identity: declared runs the kind under test as a service
+// account holding exactly what the kind's permissions manifest grants,
+// created for that lane and deleted after it; its key reaches both engines
+// through the lane's own provider configuration (identity.go).
 //
 // The test project is resolved once at Setup (E2E_GCP_PROJECT, then
 // GOOGLE_PROJECT, then the ADC credential's project) and exported as

@@ -2,11 +2,14 @@ package runner
 
 import (
 	"context"
-	"fmt"
+	"os"
+	"path/filepath"
+	"sort"
 
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/e2e/framework/provider"
 	"github.com/plantonhq/planton/pkg/iac/iacinput/iacinputproviderconfig"
+	"github.com/plantonhq/planton/pkg/iac/iacinput/providerenvvars"
 )
 
 // IdentityAnnotation makes a scenario deploy as an identity the harness
@@ -37,7 +40,7 @@ func provisionIdentity(ctx context.Context, tc *provider.KindTestContext, harnes
 		return func() {}, errors.Errorf("scenario declares %s: %q but the %s harness does not implement provider.IdentityProvisioner",
 			IdentityAnnotation, spec, tc.Provider)
 	}
-	fmt.Printf("  [identity] deploying as %q\n", spec)
+	lanef(tc.T, "  [identity] deploying as %q", spec)
 	path, cleanup, err := provisioner.ProvisionIdentity(ctx, tc, spec)
 	if err != nil {
 		return func() {}, errors.Wrapf(err, "provisioning the lane's identity (%s)", spec)
@@ -68,4 +71,38 @@ func laneProviderConfig(tc *provider.KindTestContext, manifestPath string) (*iac
 	}
 	config.Provider = detection
 	return config, nil
+}
+
+// laneEngineEnv is the lane identity's credential as environment variables,
+// for the Pulumi calls that deploy, re-plan and destroy the kind under test.
+// The identity's provider configuration already reaches the program through
+// the iac-input, and the modules build their providers from it; this closes
+// the one path it does not cover. A Pulumi program inherits the test
+// process's environment, so a resource or lookup that rides the default
+// provider would otherwise authenticate as the harness's own administrative
+// credential and the lane would prove nothing. The variables are the ones the
+// Terraform arm already receives (BuildTerraformInput derives them from the
+// same iac-input), so both engines see the same single identity. Empty when
+// the scenario declares no identity: the lane keeps the harness's posture.
+func laneEngineEnv(tc *provider.KindTestContext) ([]string, error) {
+	if tc.IdentityProviderConfig == "" {
+		return nil, nil
+	}
+	iacInput, err := os.ReadFile(tc.IacInputFilePath)
+	if err != nil {
+		return nil, errors.Wrap(err, "reading the lane's iac-input to derive its identity's credential environment")
+	}
+	vars, err := providerenvvars.GetEnvVarsWithOptions(string(iacInput), providerenvvars.Options{
+		FileCacheLoc: filepath.Dir(tc.IacInputFilePath),
+		Engine:       providerenvvars.EngineReadsEnvironment,
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, "deriving the lane identity's credential environment")
+	}
+	env := make([]string, 0, len(vars))
+	for name, value := range vars {
+		env = append(env, name+"="+value)
+	}
+	sort.Strings(env)
+	return env, nil
 }

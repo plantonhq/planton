@@ -2,10 +2,15 @@
 
 // Package gcp contains end-to-end tests that provision real GCP resources via
 // Planton IaC modules and verify them through the Google Cloud APIs.
-// Credentials come from the ambient ADC chain (local
-// `gcloud auth application-default login` or workload identity federation in
-// CI -- never a stored secret); see the aa_e2e harness package. The test
-// project resolves from E2E_GCP_PROJECT / GOOGLE_PROJECT / the ADC credential.
+// The harness's credential is the ambient ADC chain (a service-account key
+// file GOOGLE_APPLICATION_CREDENTIALS names, a local
+// `gcloud auth application-default login`, or workload identity federation in
+// CI); a scenario that declares planton.dev/e2e-identity runs the kind under
+// test as its own exact identity instead (see the aa_e2e harness package).
+// The test project resolves from E2E_GCP_PROJECT / GOOGLE_PROJECT / the ADC
+// credential. Kinds run side by side up to the provider profile's
+// max_concurrent_tests (runner.LaneScheduler); TestSweep, run when asked,
+// proves the project holds nothing a lane left behind.
 //
 // Run with: go test -tags=e2e -timeout=120m -v ./e2e/gcp/...
 package gcp
@@ -40,6 +45,9 @@ var (
 	// assert_apply_idempotency field: when armed, every scenario lifecycle
 	// gains the IDEMPOTENCY phase (re-plan after apply must be empty).
 	assertApplyIdempotency bool
+	// lanes admits kinds to run side by side, bounded by the provider
+	// profile's max_concurrent_tests (runner.LaneScheduler).
+	lanes *runner.LaneScheduler
 )
 
 func TestMain(m *testing.M) {
@@ -71,12 +79,23 @@ func TestMain(m *testing.M) {
 		os.Exit(1)
 	}
 	assertApplyIdempotency = providerProfile.GetSpec().GetAssertApplyIdempotency()
+	lanes = runner.NewLaneScheduler(int(providerProfile.GetSpec().GetMaxConcurrentTests()))
 
 	testHarness = gcpe2e.NewHarness()
 	ctx := context.Background()
 	if err := testHarness.Setup(ctx); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to setup GCP harness: %v\n", err)
 		os.Exit(1)
+	}
+	// One test process per provider account (the e2e README), so every lane
+	// identity already in the project is a crashed process's leftover.
+	removed, err := testHarness.CleanLaneIdentities(ctx)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to remove leftover lane identities: %v\n", err)
+		os.Exit(1)
+	}
+	for _, email := range removed {
+		fmt.Printf("  [gcp] removed a leftover lane identity: %s\n", email)
 	}
 
 	code := m.Run()
@@ -1557,6 +1576,17 @@ func runAllScenariosForKind(t *testing.T, kindDir, engine string) {
 
 	t.Logf("Discovered %d scenarios for %s [%s]", len(scenarios), kindDir, engine)
 
+	scenarioPaths := make([]string, 0, len(scenarios))
+	for _, scenario := range scenarios {
+		scenarioPaths = append(scenarioPaths, scenario.ManifestPath)
+	}
+	admission, err := runner.LaneAdmissionFor(repoRoot, "gcp", kindDir, scenarioPaths)
+	if err != nil {
+		t.Fatalf("deciding whether %s may run beside other kinds: %v", kindDir, err)
+	}
+	release := lanes.Admit(t, admission)
+	defer release()
+
 	for _, scenario := range scenarios {
 		scenario := scenario
 		t.Run(scenario.Name, func(t *testing.T) {
@@ -1587,8 +1617,10 @@ func runSingleScenario(t *testing.T, kindDir, moduleDir, engine string, scenario
 		ModuleDir:    moduleDir,
 		ManifestPath: scenario.ManifestPath,
 		RepoRoot:     repoRoot,
-		RunID:        runID,
-		T:            t,
+		// Each kind its own run id, so kinds running side by side never
+		// expand a shared fixture file to the same names (runner.LaneRunID).
+		RunID: runner.LaneRunID(runID, kindDir),
+		T:     t,
 		// A prerequisite deploys on Pulumi whenever its kind has a Pulumi
 		// module, as these kinds do — even for Terraform scenarios — so the
 		// backend URL must be set unconditionally.
@@ -1602,7 +1634,7 @@ func runSingleScenario(t *testing.T, kindDir, moduleDir, engine string, scenario
 	if engine == "pulumi" {
 		// GenerateStackName enforces the length cap uniqueness-preservingly
 		// (blind truncation here would collide long kind names' scenarios).
-		tc.StackName = runner.GenerateStackName(kindDir+"-"+scenario.Name, runID)
+		tc.StackName = runner.GenerateStackName(kindDir+"-"+scenario.Name, tc.RunID)
 	}
 
 	ctx := context.Background()
@@ -1644,7 +1676,7 @@ func stageCloudFunctionSource(t *testing.T, engine string) {
 	ctx := context.Background()
 
 	// Must mirror the values in gcpcloudfunction's e2e/scenarios/*.yaml.
-	bucketName := "planton-oss-e2e-cldfunc-src-" + runner.EngineScopedRunID(runID, engine)
+	bucketName := "planton-oss-e2e-cldfunc-src-" + runner.EngineScopedRunID(runner.LaneRunID(runID, "gcpcloudfunction"), engine)
 	const objectName = "functions/hello.zip"
 
 	// GOOGLE_PROJECT is exported by the harness Setup (which TestMain runs

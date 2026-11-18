@@ -177,7 +177,7 @@ func TestTeardownDependencies_MixedEngines(t *testing.T) {
 	stubTerraformSeams(t)
 
 	var order []string
-	pulumiDestroyFn = func(moduleDir, stackName, backendURL, iacInputFilePath string) (*PulumiResult, error) {
+	pulumiDestroyFn = func(moduleDir, stackName, backendURL, iacInputFilePath string, laneEnv ...string) (*PulumiResult, error) {
 		order = append(order, "pulumi:"+stackName)
 		return &PulumiResult{}, nil
 	}

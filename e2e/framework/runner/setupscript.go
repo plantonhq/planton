@@ -2,7 +2,6 @@ package runner
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -86,7 +85,7 @@ func runSetupScript(tc *provider.KindTestContext, scriptRel, engineScopedRunID s
 	}
 	defer os.Remove(outputPath)
 
-	fmt.Printf("  [setup] running %s\n", scriptRel)
+	lanef(tc.T, "  [setup] running %s", scriptRel)
 	cmd := exec.Command("bash", scriptPath)
 	cmd.Dir = tc.RepoRoot
 	cmd.Env = append(os.Environ(),
@@ -99,7 +98,7 @@ func runSetupScript(tc *provider.KindTestContext, scriptRel, engineScopedRunID s
 	if err := cmd.Run(); err != nil {
 		return "", errors.Wrapf(err, "setup script %s failed", scriptRel)
 	}
-	fmt.Printf("  [setup] %s completed\n", scriptRel)
+	lanef(tc.T, "  [setup] %s completed", scriptRel)
 
 	published, err := readSetupOutputs(outputPath)
 	if err != nil {

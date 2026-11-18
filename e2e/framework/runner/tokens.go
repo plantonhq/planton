@@ -1,6 +1,8 @@
 package runner
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -280,4 +282,20 @@ func EngineScopedRunID(runID, engine string) string {
 		return runID
 	}
 	return runID + "-" + engine[:1]
+}
+
+// LaneRunID derives a kind's own run id from the test process's run id, for
+// processes that run several kinds side by side. Fixtures are shared: a
+// prerequisite resolves from the producing kind's prerequisite.yaml or
+// scenarios/minimal.yaml whichever kind consumes it, so with one run id per
+// process two kinds composing the same fixture expand its ${E2E_RUN_ID} to the
+// same value and build the same cloud name at the same moment. Hashing the
+// kind in gives every kind its own expansion of every shared file. It keeps
+// the process run id's length (eight hex characters), because the identifier
+// budgets EngineScopedRunID describes were written against that length.
+// Scenarios of one kind still share it: they run one after another, each
+// destroying its own resources before the next starts.
+func LaneRunID(runID, kind string) string {
+	sum := sha256.Sum256([]byte(runID + "/" + kind))
+	return hex.EncodeToString(sum[:])[:8]
 }

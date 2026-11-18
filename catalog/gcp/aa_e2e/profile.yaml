@@ -12,7 +12,11 @@ spec:
     - tofu
     - gcloud
   github_environment: e2e-gcp
-  max_concurrent_tests: 4
+  # How many kinds the GCP test process runs side by side
+  # (runner.LaneScheduler). Three, because each kind's lane runs Pulumi or
+  # OpenTofu subprocesses and the machines the lanes run on have 32 GB;
+  # raise it only when memory holds under a full session.
+  max_concurrent_tests: 3
   # Every lane re-plans after apply and fails on any pending change (the
   # IDEMPOTENCY phase): the GCP catalog wires Optional+Computed arguments
   # explicit-send precisely so re-applies are no-ops, and this gate holds

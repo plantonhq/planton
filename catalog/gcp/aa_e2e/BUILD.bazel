@@ -1,13 +1,23 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "aa_e2e",
-    srcs = ["harness.go"],
+    srcs = [
+        "harness.go",
+        "identity.go",
+    ],
     importpath = "github.com/plantonhq/planton/catalog/gcp/aa_e2e",
     visibility = ["//visibility:public"],
     deps = [
+        "//catalog/gcp",
         "//catalog/gcp/aa_e2e/verify",
         "//e2e/framework/provider",
+        "//e2e/framework/runner",
+        "//iac/catalogkindpermissions/v1:catalogkindpermissions",
+        "//pkg/iac/actioninventory",
+        "//pkg/iac/iacinput/iacinputproviderconfig",
+        "//pkg/iac/permissions",
+        "//shared/catalogkind",
         "@com_github_pkg_errors//:errors",
         "@io_k8s_sigs_yaml//:yaml",
         "@org_golang_google_api//alloydb/v1:alloydb",
@@ -36,6 +46,7 @@ go_library(
         "@org_golang_google_api//firebase/v1beta1",
         "@org_golang_google_api//firestore/v1:firestore",
         "@org_golang_google_api//gkehub/v1:gkehub",
+        "@org_golang_google_api//googleapi",
         "@org_golang_google_api//iam/v1:iam",
         "@org_golang_google_api//iam/v2:iam",
         "@org_golang_google_api//identitytoolkit/v2:identitytoolkit",
@@ -56,5 +67,15 @@ go_library(
         "@org_golang_google_api//vpcaccess/v1:vpcaccess",
         "@org_golang_google_api//workflows/v1:workflows",
         "@org_golang_x_oauth2//google",
+    ],
+)
+
+go_test(
+    name = "aa_e2e_test",
+    srcs = ["identity_test.go"],
+    embed = [":aa_e2e"],
+    deps = [
+        "//e2e/framework/provider",
+        "@org_golang_google_api//cloudresourcemanager/v1:cloudresourcemanager",
     ],
 )

@@ -224,7 +224,7 @@ func TestTeardownDependencies_AggregatesFailures(t *testing.T) {
 	})
 
 	var destroyed []string
-	pulumiDestroyFn = func(moduleDir, stackName, backendURL, iacInputFilePath string) (*PulumiResult, error) {
+	pulumiDestroyFn = func(moduleDir, stackName, backendURL, iacInputFilePath string, laneEnv ...string) (*PulumiResult, error) {
 		destroyed = append(destroyed, stackName)
 		if stackName == "stack-b" {
 			return nil, errors.New("no stack named 'stack-b' found")
@@ -312,7 +312,7 @@ spec: {}
 	}
 
 	counts := map[string]int{}
-	pulumiDestroyFn = func(moduleDir, stackName, backendURL, iacInputFilePath string) (*PulumiResult, error) {
+	pulumiDestroyFn = func(moduleDir, stackName, backendURL, iacInputFilePath string, laneEnv ...string) (*PulumiResult, error) {
 		counts[stackName]++
 		return nil, errors.New("producer services are still using this connection")
 	}
@@ -338,7 +338,7 @@ func TestTeardownDependencies_AllCleanReturnsNil(t *testing.T) {
 	origDestroy, origRemove := pulumiDestroyFn, pulumiRemoveStackFn
 	t.Cleanup(func() { pulumiDestroyFn, pulumiRemoveStackFn = origDestroy, origRemove })
 
-	pulumiDestroyFn = func(moduleDir, stackName, backendURL, iacInputFilePath string) (*PulumiResult, error) {
+	pulumiDestroyFn = func(moduleDir, stackName, backendURL, iacInputFilePath string, laneEnv ...string) (*PulumiResult, error) {
 		return &PulumiResult{}, nil
 	}
 	pulumiRemoveStackFn = func(moduleDir, stackName, backendURL string) error { return nil }

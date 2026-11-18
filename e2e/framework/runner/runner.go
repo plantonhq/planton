@@ -3,7 +3,6 @@ package runner
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"time"
 
 	tt "github.com/gruntwork-io/terratest/modules/terraform"
@@ -429,7 +428,7 @@ func RunKindTest(ctx context.Context, tc *provider.KindTestContext, harness prov
 				// and a failed post-mortem leaves the tainted partial stack.
 				cleanupErr := runDestroyMaybeRetry(tc)
 				if cleanupErr != nil {
-					fmt.Printf("  [WARN] cleanup destroy also failed: %v\n", cleanupErr)
+					lanef(tc.T, "  [WARN] cleanup destroy also failed: %v", cleanupErr)
 				}
 			}
 			break
@@ -494,7 +493,11 @@ func runValidate(tc *provider.KindTestContext) error {
 func runDeploy(tc *provider.KindTestContext) error {
 	switch tc.Engine {
 	case "pulumi":
-		_, err := PulumiDeploy(tc.ModuleDir, tc.StackName, tc.BackendURL, tc.IacInputFilePath)
+		laneEnv, err := laneEngineEnv(tc)
+		if err != nil {
+			return err
+		}
+		_, err = PulumiDeploy(tc.ModuleDir, tc.StackName, tc.BackendURL, tc.IacInputFilePath, laneEnv...)
 		return err
 	case "terraform":
 		opts, ok := tc.TerraformOpts.(*tt.Options)
@@ -514,7 +517,11 @@ func runDeploy(tc *provider.KindTestContext) error {
 func runIdempotency(tc *provider.KindTestContext) error {
 	switch tc.Engine {
 	case "pulumi":
-		_, err := PulumiPreviewExpectNoChanges(tc.ModuleDir, tc.StackName, tc.BackendURL, tc.IacInputFilePath)
+		laneEnv, err := laneEngineEnv(tc)
+		if err != nil {
+			return err
+		}
+		_, err = PulumiPreviewExpectNoChanges(tc.ModuleDir, tc.StackName, tc.BackendURL, tc.IacInputFilePath, laneEnv...)
 		return err
 	case "terraform":
 		opts, ok := tc.TerraformOpts.(*tt.Options)
@@ -557,7 +564,7 @@ func runVerifyOutputs(tc *provider.KindTestContext) error {
 	}
 
 	if len(tc.Outputs) == 0 {
-		fmt.Printf("  [outputs] %s: no outputs captured, skipping transformation validation\n", tc.Kind)
+		lanef(tc.T, "  [outputs] %s: no outputs captured, skipping transformation validation", tc.Kind)
 		return nil
 	}
 
@@ -610,7 +617,7 @@ func runDestroyMaybeRetry(tc *provider.KindTestContext) error {
 	}
 	deadline := time.Now().Add(destroyRetryBudget)
 	for attempt := 2; time.Now().Before(deadline); attempt++ {
-		fmt.Printf("  [destroy-retry] attempt %d in %s (scenario-declared: %s); last error: %v\n",
+		lanef(tc.T, "  [destroy-retry] attempt %d in %s (scenario-declared: %s); last error: %v",
 			attempt, destroyRetryInterval, reason, err)
 		time.Sleep(destroyRetryInterval)
 		if err = runDestroy(tc); err == nil {
@@ -623,8 +630,11 @@ func runDestroyMaybeRetry(tc *provider.KindTestContext) error {
 func runDestroy(tc *provider.KindTestContext) error {
 	switch tc.Engine {
 	case "pulumi":
-		_, err := PulumiDestroy(tc.ModuleDir, tc.StackName, tc.BackendURL, tc.IacInputFilePath)
+		laneEnv, err := laneEngineEnv(tc)
 		if err != nil {
+			return err
+		}
+		if _, err := PulumiDestroy(tc.ModuleDir, tc.StackName, tc.BackendURL, tc.IacInputFilePath, laneEnv...); err != nil {
 			return err
 		}
 		return PulumiRemoveStack(tc.ModuleDir, tc.StackName, tc.BackendURL)

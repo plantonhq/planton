@@ -1,0 +1,25 @@
+{
+  "about": "When a catalog permission entry's condition is met: one table read by the console's permission-conditions.test.ts and the platform's PermissionConditionsTest, so a chart's runner policy and a stack plan's added permissions decide every entry the same way. Each case names the condition's spec_field_set (null for an entry with none), the specs of every manifest of the kind, and whether the entry is needed.",
+  "cases": [
+    { "name": "an entry without a condition is always needed", "condition": null, "specs": [], "needed": true },
+    { "name": "no manifest of the kind needs nothing", "condition": "roles", "specs": [], "needed": false },
+    { "name": "the JSON spelling a rendered manifest uses meets a snake_case condition", "condition": "enabled_clients", "specs": [{ "enabledClients": ["abc"] }], "needed": true },
+    { "name": "the proto spelling meets it too", "condition": "enabled_clients", "specs": [{ "enabled_clients": ["abc"] }], "needed": true },
+    { "name": "an empty list is not set", "condition": "roles", "specs": [{ "roles": [] }], "needed": false },
+    { "name": "an empty string is not set", "condition": "name", "specs": [{ "name": "" }], "needed": false },
+    { "name": "zero is not set", "condition": "size", "specs": [{ "size": 0 }], "needed": false },
+    { "name": "false is not set", "condition": "enabled", "specs": [{ "enabled": false }], "needed": false },
+    { "name": "null is not set", "condition": "roles", "specs": [{ "roles": null }], "needed": false },
+    { "name": "true is set", "condition": "enabled", "specs": [{ "enabled": true }], "needed": true },
+    { "name": "a non-zero number is set", "condition": "size", "specs": [{ "size": 3 }], "needed": true },
+    { "name": "a field the manifest leaves out is not set", "condition": "roles", "specs": [{ "email": "a@b.c" }], "needed": false },
+    { "name": "any one manifest of the kind setting the field needs the entry", "condition": "roles", "specs": [{ "email": "a@b.c" }, { "roles": ["admin"] }], "needed": true },
+    { "name": "a nested path reads the JSON spelling at every level", "condition": "options.password_policy", "specs": [{ "options": { "passwordPolicy": "good" } }], "needed": true },
+    { "name": "a present object is set, even an empty one", "condition": "options", "specs": [{ "options": {} }], "needed": true },
+    { "name": "a nested field under an empty object is not set", "condition": "options.password_policy", "specs": [{ "options": {} }], "needed": false },
+    { "name": "a path that ends inside a scalar is not set", "condition": "name.first", "specs": [{ "name": "x" }], "needed": false },
+    { "name": "a path through a list is set when any element sets the rest", "condition": "containers.env.secret_value", "specs": [{ "containers": [{ "env": [{ "name": "A", "value": "x" }] }, { "env": [{ "name": "B", "secretValue": "$secret/b" }] }] }], "needed": true },
+    { "name": "a path through a list is not set when no element sets the rest", "condition": "containers.env.secret_value", "specs": [{ "containers": [{ "env": [{ "name": "A", "value": "x" }] }] }], "needed": false },
+    { "name": "a map inside a list element is set when it has entries", "condition": "containers.secret_environment", "specs": [{ "containers": [{ "secretEnvironment": { "K": "$secret/k" } }] }], "needed": true }
+  ]
+}

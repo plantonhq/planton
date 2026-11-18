@@ -214,8 +214,42 @@ server-side but the client sees a transient error, the automatic retry POSTs
 again, and a non-idempotent create answers "already exists" (Cloudflare zone
 error 1061, live-caught 2026-08-26 when two engine lanes ran as parallel
 processes) — the lane then fails its OWN fixture create against its own
-run-scoped name, which looks impossible from the log. Engine lanes within one
-process are already sequential; keep processes sequential too.
+run-scoped name, which looks impossible from the log. Keep processes
+sequential.
+
+Inside one process, a provider's test may run kinds side by side; GCP does
+(`runner.LaneScheduler`, bounded by the provider profile's
+`max_concurrent_tests`). Three things make that safe, and a new provider that
+adopts it needs all three:
+
+- **Each kind gets its own run id** (`runner.LaneRunID`, the same eight
+  characters as the process's). A fixture file is shared: a prerequisite
+  resolves from the producing kind's `prerequisite.yaml` or
+  `scenarios/minimal.yaml` whichever kind composes it, so with one id per
+  process two kinds expand its `${E2E_RUN_ID}` to the same name at the same
+  moment. A test that stages something under a run-id name before the runner
+  starts (GCP's Cloud Function source bucket) names it with the kind's id.
+- **A kind whose files fix a name runs alone.** `runner.LaneAdmissionFor`
+  reads every document a kind's lanes deploy -- its scenarios and their
+  prerequisite chains -- and a document with no `${E2E_RUN_ID}` sends the
+  kind to run with nothing else running, naming the file. The check is
+  textual and per document; a document that tokenizes one name but fixes
+  another passes it, so tokenize by reading the file.
+- **Singletons and scarce quota take a class.** A scenario annotated
+  `planton.dev/e2e-exclusive: <class>` never runs beside another kind naming
+  the same class: a location's RAG Engine configuration, a project's Model
+  Armor floor, a project too small in vCPUs for two clusters at once.
+
+Pulumi stacks are created with `--no-select` and never selected (every
+command names its stack), because selecting writes one record per module
+folder that every lane deploying from it shares; stack names carry the whole
+engine-scoped run id. Each lane's progress lines go through its own test log,
+so `go test -v` labels them by lane.
+
+The concurrency inside the process meets the same API retry class the rule
+above describes: an "already exists" on a lane's OWN run-scoped name is that
+signature, not a module defect. Re-run the lane alone before concluding
+anything from it.
 
 Verifiers that read a resource through a *different* API than the one that
 created it should poll briefly before declaring it absent (see the
@@ -710,9 +744,12 @@ to exactly the rules the kind's `iac/permissions.yaml` declares
 `self_managed` provider configuration that authenticates as it. The
 configuration reaches both engines through the same iac-input path a
 console deploy uses (Pulumi through the IaC input; Terraform as
-`KUBECONFIG`/`KUBE_CONFIG_PATH` written into the lane's working directory),
-so nothing about the process environment changes and the fixture chain
-keeps the harness's posture. The IDENTITY phase runs after SETUP and before
+`KUBECONFIG`/`KUBE_CONFIG_PATH` written into the lane's working directory).
+The Pulumi subprocesses that deploy, re-plan and destroy the kind also get
+the same `KUBECONFIG`, after everything they inherit, so a resource on the
+program's default provider runs as the lane's identity too. The test
+process's environment never changes, and the fixture chain keeps the
+harness's posture. The IDENTITY phase runs after SETUP and before
 VALIDATE; the identity's objects are removed after the lane, whatever its
 verdict. Rules bind cluster-wide whether the permissions file marks them
 cluster scoped or not (the lane's namespace does not exist before the
@@ -734,6 +771,48 @@ kind that reads R2 objects through the S3 API (the Worker's r2 bundle)
 is proven on the product path rather than on whatever `AWS_*` credentials the
 machine holds. A scenario declaring it lists those variables in
 `planton.dev/e2e-required-env`.
+
+The GCP harness accepts `declared`: the kind under test runs as a service
+account holding exactly what its `iac/permissions.yaml` grants for the
+scenario, which is what the catalog means by `proven` ("an identity holding
+exactly these permissions -- nothing more -- deployed, updated and destroyed
+this kind"). For each lane it
+
+- picks every group with no condition, plus each conditional group whose
+  spec field the scenario's manifest sets (`permissions.ConditionNeeded`,
+  the rule the platform's runner policy reads from one shared case table) --
+  tighter than a customer's connection, which is granted the conditional
+  groups too, so a passing lane also proves where each condition is drawn;
+- refuses, before anything is created, a group that reaches above the
+  project (the test project holds no grant above itself) and a permission
+  Google keeps out of custom roles (the group must name its predefined role);
+- writes the kind's standing custom role, `plantonE2eDeclared<Kind>` (plus
+  `C` and a short hash when the scenario turns conditional groups on), to
+  exactly those permissions -- rewritten before every lane, never deleted, so
+  a manifest fix takes effect on the next lane and Google's per-project role
+  cap and deleted-id hold never bite;
+- creates a lane account `pe2e-<hash>` (the full lane in its display name),
+  binds the role and any named predefined roles on the project, mints a key,
+  and waits until Google answers every granted permission for the account
+  itself (`testIamPermissions`, up to five minutes);
+- hands the key to both engines as the lane's `GcpProviderConfig`, and to
+  the Pulumi subprocesses that deploy, re-plan and destroy the kind as
+  `GOOGLE_CREDENTIALS` after everything inherited, so a default provider in a
+  program cannot fall back to the harness's credential (Terraform already
+  receives it that way). A `GOOGLE_OAUTH_ACCESS_TOKEN` in the test process
+  would outrank the key in both engines, so the lane refuses to start with
+  one set;
+- removes the binding and deletes the account after the lane, whatever the
+  verdict. `TestMain` removes what a killed process left (every `pe2e-`
+  account and any binding naming one or a deleted principal) before the
+  first lane, since one test process per account means anything already
+  there is a leftover.
+
+A 403 for a permission the lane's role holds is propagation until shown
+otherwise: Dialogflow, Datastream, Discovery Engine and Cloud Deploy check
+grants through their own caches and can lag Resource Manager by a minute or
+more. Re-run the lane after a wait before concluding anything; only a 403
+for a permission the role does not hold is a manifest question.
 
 Two cluster facts the lanes must respect. Kept CRDs are cluster-scoped and
 outlive their lane, so a lane that leaves CRDs at a HIGHER version than a
@@ -3240,14 +3319,24 @@ remains, sweep BY RUN ID — list each fixture family and delete objects
 whose names carry a run-id suffix that matches no logged lane (creation
 timestamps from the audit log date the dead spawn precisely).
 
-**Run GCP e2e batches SEQUENTIALLY — never two `go test` processes at once:**
-the GCP dependency deploys write each prerequisite's iac-input into the
-SHARED module source directories under `apis/.../iac/pulumi`, so a second
-concurrent `go test` process picks up the first's on-disk manifests and
-collides on the other run's names (409 already-exists / cross-contaminated
-stacks). Run one kind's batch to completion (or one scenario at a time)
-before starting the next; parallelism within a single process is bounded by
-the framework, but two processes are not isolated from each other.
+**Run GCP e2e batches in ONE `go test` process at a time.** Two processes
+share every Pulumi module folder and each one's run ids are blind to the
+other's, so a second process collides on names and stacks the first holds
+(409 already-exists, cross-contaminated stacks). Inside one process the
+framework runs kinds side by side safely (the concurrency notes above).
+
+**Sweep a dedicated test project by its inventory.** In a project only the
+lanes use, an orphan is anything that is not standing, whatever its name.
+`PLANTON_E2E_GCP_SWEEP=1 go test -tags e2e ./e2e/gcp -run '^TestSweep$'`
+(under the harness's key) lists every resource Cloud Asset Inventory finds in
+the project, and in `PLANTON_E2E_GCP_SECOND_PROJECT_ID` when set, minus what
+stands there on purpose (the project and its services, the harness's account
+and key, the declared roles, Google's default accounts, the two log routes,
+Cloud Build's bucket), plus every IAM binding naming a lane account or a
+deleted principal, and fails on any line. Asset Inventory lags writes by
+minutes and does not index every type; a type it misses relies on the lane's
+own VERIFY-CLEAN phase. Delete a leftover through its kind's module, or with
+`gcloud` for the special classes below.
 
 **Intra-cluster firewall is part of a multi-node cluster's minimum
 composition on a custom VPC:** custom-mode VPCs have no default firewall
