@@ -34,14 +34,11 @@ These are law, not craft. Craft rules -- the ones that prevent build-failure cla
 
 ## Choose the work
 
-For activity, unread failures, pending reviews, or "what changed", read
-`references/craft.organization-activity.md` first. Follow its read-only
-workflow and capability checks; do not enter chart composition or probe with
-a chart build. A request to review a saved edit is not permission to deploy it.
+A person's Setup Prompt (or `planton.ai/agents.md`) sent you to take their repository to its first deployment: read `references/setup.first-deployment.md` and walk it, step by step.
 
-To put the organization's console at its own address ("set up planton.acme.com as
-our custom domain"), read `references/organization.custom-domain.md` and follow
-its loop; it writes no files, so the chart workflow below does not apply.
+For activity, unread failures, pending reviews, or "what changed", read `references/craft.organization-activity.md` first. Follow its read-only workflow and capability checks; do not enter chart composition or probe with a chart build. A request to review a saved edit is not permission to deploy it.
+
+To put the organization's console at its own address ("set up planton.acme.com as our custom domain"), read `references/organization.custom-domain.md` and follow its loop; it writes no files, so the chart workflow below does not apply.
 
 ## Know your instruments (check once, first)
 
@@ -479,10 +476,11 @@ Read the file whose "Read when" matches the moment; never answer from memory wha
 | `references/self-hosted.identity-offboarding.md` | How fast a departed person is out, per arm; the sync's laws; the email-less refusal; invited directory users; alert email |
 | `references/self-hosted.branding.md` | Putting the company's logo on a self-hosted Planton (`planton branding show\|set-logo\|clear-logo`); the version for the dark theme; why the sign-in page still shows Planton's mark; an organization's own logo on planton.ai |
 
-### Organization (`organization.*`)
+### Organization (`organization.*`, `setup.*`)
 
 | File | Read when |
 |---|---|
+| `references/setup.first-deployment.md` | A Setup Prompt or `planton.ai/agents.md` sent you; taking a repository to its first deployment: the cloud, an environment, GitHub, the service, its address, and ticking Getting Started (`planton setup done`) |
 | `references/organization.custom-domain.md` | The organization's console at its own address (planton.acme.com): setting, checking, fixing or removing its custom domain (`planton custom-domain`, the MCP twins), a pending or needs-attention cause and its fix, adding the record through a Planton-managed DNS zone first, the key scope. Not this: a service's own hostname → `service.serving-domains-custom.md` |
 
 ### Working craft (`craft.*`, `catalog.*`)

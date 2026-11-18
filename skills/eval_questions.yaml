@@ -842,3 +842,51 @@ questions:
       - skill: planton
         file: references/infra.chart-format.md
         pattern: 'a\s+chart\s+is\s+\*\*v1\*\*\s+when\s+first\s+published'
+
+  - id: first-deployment-which-cli
+    persona: developer
+    question: >
+      I pasted my Planton Setup Prompt into Claude Code. There's already a
+      planton on my PATH from months ago. Which one should the agent run?
+    answer: >
+      The one the prompt's installer put at ~/.planton/bin/planton, by that
+      full path, in every command. Another planton on the machine may be an
+      older install or a different program with the same name.
+    checks:
+      - skill: planton
+        file: references/setup.first-deployment.md
+        pattern: 'Every `planton` command in this skill means `~/\.planton/bin/planton`'
+
+  - id: first-deployment-ticks-only-what-it-did
+    persona: developer
+    question: >
+      I connected my AWS account in the console before I pasted the prompt.
+      Will the agent tick Connect a Cloud Account on Getting Started?
+    answer: >
+      No. The agent ticks only the steps it finished itself, with planton
+      setup done <step>; never one the person did, one already done, or one
+      it guesses is done.
+    checks:
+      - skill: planton
+        file: references/setup.first-deployment.md
+        pattern: 'Never tick a step the person did themselves'
+
+  - id: first-deployment-wary-of-access
+    persona: security lead, wary of granting access
+    question: >
+      Before my developer lets their coding agent run the Planton setup, I need
+      to know: does Planton keep our AWS credentials, and how do we take the
+      access back?
+    answer: >
+      It keeps none. A keyless connection stores no key; each deploy gets
+      credentials that last about an hour, and the developer's own sign-in
+      never leaves their machine. Deleting the role or the trust in your own
+      account refuses every new token at once, and the key the agent signed in
+      with is revoked on the person's API Keys page.
+    checks:
+      - skill: planton
+        file: references/setup.first-deployment.md
+        pattern: 'A keyless connection stores no key'
+      - skill: planton
+        file: references/setup.first-deployment.md
+        pattern: 'revoked at `/user/api-keys`'

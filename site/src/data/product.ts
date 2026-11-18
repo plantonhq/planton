@@ -55,6 +55,14 @@ const runs = chapter('runs-where-you-decide');
 const proof = chapter('proof-it-works');
 
 
+/**
+ * How a person installs the platform's `planton` CLI on macOS or Linux: the
+ * installer every Planton surface teaches (the console's Setup Prompt, the
+ * docs, the README). It puts the CLI at ~/.planton/bin/planton.
+ */
+export const CLI_INSTALL_COMMAND =
+  'curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh';
+
 export const PRODUCT_PAGES: readonly ProductPage[] = [
   {
     path: '/product/infra-hub',
@@ -149,7 +157,7 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
         name: '.cursor/mcp.json',
         body: '{\n  "mcpServers": {\n    "planton": {\n      "type": "http",\n      "url": "https://mcp.planton.ai/",\n      "headers": { "Authorization": "Bearer ${env:PLANTON_API_KEY}" }\n    }\n  }\n}',
       },
-      commands: ['npx skills add plantonhq/skills', 'brew install plantonhq/tap/planton'],
+      commands: ['npx skills add plantonhq/skills', CLI_INSTALL_COMMAND],
       label: 'Copy the install commands',
       caption: 'The first line installs the two skills into every agent on the machine; the second is the CLI they drive; the file above is the optional MCP door. All three are from',
       source: { label: 'the Coding Agents guide', href: '/docs/coding-agents' },
@@ -164,7 +172,7 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
     lede: 'Everything Planton does, from your terminal: validate a manifest before it touches your cloud, deploy one component or a whole directory in dependency order, stream the Infra Job as it runs, install an Infra Chart, and bring in what already exists.',
     forWhom: 'For the engineer who lives in a shell, and the pipeline that runs without one.',
     steps: [
-      { title: 'Install', text: 'One Homebrew line on macOS; direct downloads for Linux and Windows.' },
+      { title: 'Install', text: 'One installer line on macOS and Linux; Homebrew and direct downloads too, Windows included.' },
       { title: 'Write the Manifest', text: 'The shape you already know: apiVersion, kind, metadata, spec. Validation catches a wrong field in seconds, before anything is created.' },
       { title: 'Apply', text: 'Deploy one manifest or a directory of them in dependency order, the way you already apply Kubernetes manifests, on every cloud.' },
       { title: 'Watch the Record', text: 'The Infra Job streams as it runs. The same event stream drives the console and the audit log, so every surface tells one story.' },
@@ -182,7 +190,7 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
         name: 'postgres.yaml',
         body: 'apiVersion: kubernetes.planton.dev/v1alpha1\nkind: KubernetesPostgres\nmetadata:\n  name: my-first-postgres\nspec:\n  namespace:\n    value: my-first-postgres\n  createNamespace: true\n  container:\n    replicas: 1\n    diskSize: 1Gi',
       },
-      commands: ['brew install plantonhq/tap/planton', 'planton apply -f postgres.yaml'],
+      commands: [CLI_INSTALL_COMMAND, 'planton apply -f postgres.yaml'],
       label: 'Copy the CLI commands',
       caption: 'Install, write the manifest above, apply. Validation fails a wrong field before anything touches your cloud. The manifest and the command are from',
       source: { label: 'the repository README', href: 'https://github.com/plantonhq/planton#the-cli' },

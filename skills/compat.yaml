@@ -9,5 +9,8 @@
 # which capability in the commit message.
 #
 # v0.0.0 means "no floor": the content works with every released consumer.
+# The CLI floor may name a tag from the CLI's own release lane
+# (vX.Y.Z-cli.YYYYMMDD.N), the way a CLI capability ships between platform
+# releases.
 minimum_daemon_version: v0.0.160
-minimum_cli_version: v0.0.163
+minimum_cli_version: v0.0.165-cli.20261118.0

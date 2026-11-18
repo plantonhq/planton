@@ -87,6 +87,13 @@ var citationPattern = regexp.MustCompile(`references/([A-Za-z0-9._-]+\.md)`)
 
 var semverPattern = regexp.MustCompile(`^v\d+\.\d+\.\d+$`)
 
+// cliVersionPattern is the CLI floor's shape: a release version, or a tag cut
+// by the CLI's own release lane (v0.0.165-cli.20261118.0), which is how a CLI
+// capability ships between platform releases. Semver orders that tag below
+// v0.0.165 and above v0.0.164, so a floor naming it admits exactly the CLIs
+// that carry the capability.
+var cliVersionPattern = regexp.MustCompile(`^v\d+\.\d+\.\d+(-cli\.\d{8}\.\d+)?$`)
+
 // The Agent Skills specification (agentskills.io) is this tree's binding
 // standard: skills authored here must load correctly in any conforming
 // runtime, and the spec's sizing guidance exists because the always-loaded
@@ -435,8 +442,8 @@ func Validate(tree *Tree) []error {
 	if !semverPattern.MatchString(tree.Floor.MinimumDaemonVersion) {
 		report("skills/compat.yaml: minimum_daemon_version %q is not a vX.Y.Z version", tree.Floor.MinimumDaemonVersion)
 	}
-	if !semverPattern.MatchString(tree.Floor.MinimumCliVersion) {
-		report("skills/compat.yaml: minimum_cli_version %q is not a vX.Y.Z version", tree.Floor.MinimumCliVersion)
+	if !cliVersionPattern.MatchString(tree.Floor.MinimumCliVersion) {
+		report("skills/compat.yaml: minimum_cli_version %q is not a vX.Y.Z version or a CLI release tag (vX.Y.Z-cli.YYYYMMDD.N)", tree.Floor.MinimumCliVersion)
 	}
 
 	return errs

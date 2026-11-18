@@ -44,7 +44,7 @@ const ROUTER_PARAMS = 'infrastructure/desktop/Infra.foundation.InfraStack.founda
 const HANDLES = 'product/libs/java/domain/reserved-handles/src/main/java/ai/planton/reservedhandles/PlatformReservedHandles.java';
 
 /** Root files the export ships that the router must hand to the site exactly. */
-const ROOT_FILES = ['/sitemap.xml', '/robots.txt', '/llms.txt', '/llms-full.txt', '/favicon.ico'];
+const ROOT_FILES = ['/sitemap.xml', '/robots.txt', '/llms.txt', '/llms-full.txt', '/agents.md', '/favicon.ico'];
 
 /**
  * Segments that are console routes by design and never website pages; a

@@ -1,6 +1,6 @@
 ---
 title: "Getting Started"
-description: "Create your account, set up an organization, connect a cloud provider, and deploy your first resource."
+description: "Create your account and organization, then hand the setup to your coding agent with one Setup Prompt, or walk it in the console: connect a cloud, create an environment, and deploy your first resource."
 icon: getting-started
 order: 30
 tags:
@@ -11,7 +11,45 @@ tags:
 
 # Getting Started
 
-This guide walks through the first steps on Planton: creating an account, setting up an organization and environment, connecting a cloud provider, and deploying an Infra Component. By the end, you will have working infrastructure deployed to your own cloud account.
+This guide walks through the first steps on Planton: creating an account and an organization, then connecting your cloud, creating an environment and deploying to it. There are two ways through, and they end in the same place:
+
+- **With your coding agent.** Copy the Setup Prompt from Getting Started and paste it into Claude Code, Codex or Cursor in your app's repository. Your agent does the setup and asks you before anything changes your cloud or costs money.
+- **In the console.** Walk the same steps yourself, screen by screen.
+
+By the end, you have a deployment running in your own cloud account.
+
+## Set Up with Your Coding Agent
+
+Create your account and your organization first ([Step 1](#step-1-create-your-account) and [Step 2](#step-2-create-your-organization) below). Your organization's Getting Started page, and Home while setup is unfinished, then lead with **Copy Setup Prompt**.
+
+1. Open your app's repository in Claude Code, Codex or Cursor.
+2. In Getting Started, click **Copy Setup Prompt**. The prompt names your organization and your Planton, and carries a sign-in code that works once, within 15 minutes.
+3. Paste it into your agent.
+
+```mermaid
+flowchart LR
+    A[Paste the Setup Prompt] --> B[Install the CLI and sign in]
+    B --> C{Connect your cloud?}
+    C -->|You say yes| D[Create an environment]
+    D --> E[Connect GitHub]
+    E --> F[Register and deploy the service]
+    F --> G[Check its address answers]
+    G --> H[Tick Getting Started]
+```
+
+What your agent does:
+
+- **Installs the Planton CLI and signs in as you.** It runs the installer, which puts the CLI at `~/.planton/bin/planton`, then `planton login --grant <code>` with the prompt's code. The code becomes a personal API key named for the agent and the machine (for example, "Claude Code on Priyas-MacBook-Pro"). It lasts 30 days and reaches every organization you belong to. You can see and revoke it on your API Keys page (`/user/api-keys`).
+- **Reads the playbook and installs the Planton skill.** It fetches [planton.ai/agents.md](https://planton.ai/agents.md), checks the sign-in names you and your organization, and installs the skill for itself, outside your repository.
+- **Connects the cloud your machine is signed in to.** It shows you the plan first: what the connection creates in your account and what Planton will be able to deploy. Nothing runs until you say yes. See [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections).
+- **Creates an environment, connects GitHub, and deploys your service.** On planton.ai, installing Planton's GitHub App is the one step you take in the browser; the agent sends you there and waits. It asks before anything that costs money.
+- **Checks the result and ticks your progress.** It reads the deployment's rollout verdict and address, ticks each Getting Started step it finished with `planton setup done <step>`, and tells you what it set up, with a link to each thing.
+
+Getting Started shows the ticks as they happen. The agent ticks only the steps it finished; you tick the rest yourself.
+
+## Set Up in the Console
+
+The same setup, screen by screen.
 
 ## Prerequisites
 
@@ -28,7 +66,7 @@ The authentication page handles both login and registration. Click **Sign up** t
 - **Email and password** — enter your email and create a password
 - **Continue with Google** — authenticate with your Google account
 
-After completing signup, you land on the dashboard.
+After completing signup, the console asks you to create your organization.
 
 <!-- SCREENSHOT: Authentication page
   Page: /auth/signup
@@ -41,7 +79,7 @@ After completing signup, you land on the dashboard.
 
 An organization is the top-level container for everything in Planton — environments, connections, team members, and billing. It is similar to a Google Cloud organization or an AWS account.
 
-As a new user without an organization, the dashboard prompts you to create one.
+As a new user without an organization, the console prompts you to create one.
 
 1. Click **Create Organization**
 2. Enter the organization name (human-readable, e.g., "Acme Corp")
@@ -159,27 +197,26 @@ An Infra Job is created automatically. Infra Jobs are the execution units that r
 
 Once the Infra Job completes, your Infra Component is live. Navigate to **Infra Hub** in the sidebar and click **Infra Components** to see it listed with its current status.
 
-## Step 6: Complete the Onboarding Checklist
+## Step 6: Follow Getting Started
 
-The dashboard includes a getting-started checklist that tracks your progress through the initial setup. The eight tasks are organized into four groups:
+Your organization's Getting Started page lists the setup steps and ticks each one as it is done, whether you did it in the console or your coding agent did it with `planton setup done`. While setup is unfinished, Home leads with the same Setup Prompt and the next step.
 
-**Foundation**
-- Connect a cloud account
-- Create an environment
+The steps:
 
-**Infrastructure**
-- Deploy your first Infra Component
-- Deploy an Infra Chart stack
+| Step | What It Means |
+|------|---------------|
+| Connect a Cloud Account | A connection to AWS, Google Cloud, Azure or another provider |
+| Create an Environment | Somewhere to deploy, such as `dev` |
+| Deploy Your First Infra Component | One resource in your cloud |
+| Build Your First Chart | Your organization's own Infra Chart, written by your coding agent from one prompt |
+| Start a Runner | The secure agent that runs deployments inside your infrastructure |
+| Connect a Git Provider | GitHub or GitLab, so services build from your repositories |
+| Deploy Your First Service | Your app, built from its repository and running in an environment |
+| Invite Team Members | The people you work with |
 
-**Applications**
-- Connect a Git provider (GitHub or GitLab)
-- Deploy your first service
+A self-hosted Planton also lists **Set Up Email Delivery**. Planton Desktop and a console at your organization's own address show the same list without the Setup Prompt. You can dismiss Getting Started at any time.
 
-**Team and Operations**
-- Invite team members
-- Set up billing
-
-You can complete these tasks in any order, and dismiss the checklist at any time from the dashboard.
+From a terminal, `planton setup done` with no step lists the steps and which are done. Ticking a step needs the Owner or Infrastructure Admin role in the organization.
 
 ## What to Explore Next
 

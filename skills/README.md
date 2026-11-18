@@ -108,6 +108,7 @@ skill's domains:
 | `service.*` | Service delivery: registration doors, briefing a service from its page, reading a service's repository and writing a fix back as a pull request, delivery verbs, runs and build failures, fixing a failed run from its page (including the repository's own CI run, read through Planton), managed pipelines and their authoring, organization publishing of pipelines and tasks, serving domains, previews, local env vars, kustomize authoring, the offline/GitHub-Actions lane, the delete cascade |
 | `self-hosted.*` | Administering a Planton the person runs themselves, including the local instance on Planton Desktop (start, stop, restart, logs, what heals by itself): reading the platform the operator converges, front doors and the CLI, upgrading, the first admin and seats, connecting a company directory, primary sign-in and the break-glass, mapping groups to roles, offboarding and sync |
 | `organization.*` | An organization's own settings on planton.ai: its console at its own address (the custom domain), set up, checked and fixed, with the record added through Planton when Planton manages the DNS zone |
+| `setup.*` | A person's first run with Planton from their coding agent: the road from a Setup Prompt to a repository's first deployment, ticking Getting Started as it goes |
 | `catalog.*` | The research layer's doors: kind grounding, catalog availability |
 | `craft.*` | Working method and the person: discovery, personalization, the profile vocabulary, the CLI command map, cost transparency, gap filing |
 
