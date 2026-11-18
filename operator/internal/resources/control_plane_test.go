@@ -932,21 +932,6 @@ func TestControlPlaneDeployment_IacModulesVersionRenderedOnlyAsOverride(t *testi
 	if _, ok := overridden["PLANTON_INFRAHUB_IACMODULES_VERSION"]; ok {
 		t.Error("PLANTON_INFRAHUB_IACMODULES_VERSION must not be rendered beside the underscored name: two spellings of one property leave which value wins to Spring's lookup order")
 	}
-	// The chart bundle's location is the control plane's to derive from its own
-	// catalog pin; the operator only switches the seed on, under one spelling
-	// (the glued one binds the same property, and two would leave which value
-	// wins to Spring's lookup order).
-	if envMap["PLANTON_BOOTSTRAP_INFRA_CHARTS_ENABLED"] != "true" {
-		t.Errorf("PLANTON_BOOTSTRAP_INFRA_CHARTS_ENABLED = %q, want true", envMap["PLANTON_BOOTSTRAP_INFRA_CHARTS_ENABLED"])
-	}
-	for _, stale := range []string{
-		"PLANTON_BOOTSTRAP_INFRACHARTS_SOURCEURL", "PLANTON_BOOTSTRAP_INFRA_CHARTS_SOURCE_URL",
-		"PLANTON_BOOTSTRAP_INFRACHARTS_ENABLED",
-	} {
-		if _, ok := envMap[stale]; ok {
-			t.Errorf("%s must not be set", stale)
-		}
-	}
 }
 
 // The platform vault is present or absent -- never a placeholder. Without the

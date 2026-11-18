@@ -40,7 +40,7 @@ Rules:
   (`status.outputs.vpc_id`) and camelCase (`status.outputs.vpcId`) are
   accepted: the validator tries the exact proto field name first, then
   converts camelCase to snake_case. The schema report's `outputs[]` lists
-  the camelCase names; the fleet mostly writes snake_case. Either resolves
+  the camelCase names; presets mostly write snake_case. Either resolves
   to the same output — pick one style per chart and stay consistent.
 
 Fields typed `string | valueFrom` in the schema report accept either a plain
@@ -120,11 +120,10 @@ When no catalog pack is reachable, or to drill one leaf's exact contract:
 1. Run `planton explain <ProducerKind> -o json`.
 2. Read the `outputs` array — each entry's `name` is the leaf under
    `status.outputs.`.
-3. When a charts fleet is reachable inside your filesystem boundary (a
-   checkout or workspace you were given carries a `charts/` tree),
-   cross-check by grepping its `valueFrom` blocks for that kind. Never go
-   looking for a fleet beyond the boundary — the explain report alone is
-   sufficient.
+3. When the organization's own charts are reachable inside your filesystem
+   boundary (a checkout or workspace you were given carries them),
+   cross-check by grepping their `valueFrom` blocks for that kind. Never go
+   looking beyond the boundary — the explain report alone is sufficient.
 
 Build errors for bad references are explicit: `Invalid valueFrom references:
 Field 'no_such_output' not found in …Outputs for kind: …` — fix the
@@ -192,18 +191,18 @@ name that infrastructure produces, run this check in order:
 
 ### Worked example — the shared gateway
 
-A platform chart deploys the shared cluster and its gateway; an app chart
+A shared-infrastructure chart deploys the cluster and its gateway; an app chart
 routes `api.example.com` through that gateway. The app chart never asks the
 user for the gateway's identity — its route references it:
 
 ```yaml
-# app chart, templates/route.yaml — the Gateway lives in the PLATFORM chart
+# app chart, templates/route.yaml — the Gateway lives in the SHARED-INFRASTRUCTURE chart
 spec:
   parentRefs:
     - name:
         valueFrom:
           kind: KubernetesGateway
-          name: "{{ values.env }}-gateway"   # the platform chart's exact name expression
+          name: "{{ values.env }}-gateway"   # the shared chart's exact name expression
           fieldPath: status.outputs.gateway_name
 ```
 
@@ -279,5 +278,5 @@ inside its target; the others draw a line (`infra.diagrams.md`).
 | Hardcoded VPC ID, or any ID a resource in the boundary creates | valueFrom to the creating resource. An ID nothing in the boundary creates -- the AWS account, Google Cloud project, or Azure subscription a connection opens -- stays a literal or a param |
 | A param collecting another resource's output (`vpc_id`, `gateway_host`) | The references-before-params check above — wire it, in-chart or cross-chart |
 | Mismatched name between producer and consumer | Same template expression on both sides |
-| Wrong output leaf (`vpc_id` vs `vpcId`) | Schema report (fleet grep only when a fleet is in your boundary) |
+| Wrong output leaf (`vpc_id` vs `vpcId`) | Schema report (a grep of the organization's charts only when they are in your boundary) |
 | Referencing a conditionally omitted resource | Wrap the consumer in the same `{% if %}` or ensure the producer always renders |

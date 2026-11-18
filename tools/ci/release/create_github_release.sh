@@ -4,10 +4,10 @@
 #
 #   create_github_release.sh <tag>
 #
-# The release object is what the chart catalog's assets attach to and what
-# /releases/latest/download resolves to. A release that already exists is
-# kept (a rerun changes nothing); a release candidate is a pre-release that is
-# never "latest", so chart and module consumers never resolve to it.
+# The release object carries the tag's notes and is what /releases/latest
+# resolves to. A release that already exists is kept (a rerun changes
+# nothing); a release candidate is a pre-release that is never "latest", so
+# module consumers never resolve to it.
 #
 # Reads GITHUB_REPOSITORY (default plantonhq/planton) and authenticates as gh
 # does: GH_TOKEN in a workflow, the signed-in account on a laptop.

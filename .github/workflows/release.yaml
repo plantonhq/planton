@@ -4,8 +4,7 @@
 # Single entry point for all release workflows. Triggers on semantic version
 # tags (v*) and orchestrates the release of all Pulumi module binaries, all
 # Terraform module zips, content distribution zips (presets, IaC source,
-# catalog pages, proto source, the kind reference pack), and the
-# InfraChart catalog zip.
+# catalog pages, proto source, the kind reference pack).
 #
 # Architecture:
 #   1. The github-release job creates the GitHub Release for the tag
@@ -16,10 +15,9 @@
 #      within minutes of the tag, Pulumi's once its binaries are built.
 #      Neither waits for the other, so a platform that runs OpenTofu modules
 #      pins a release without waiting for Pulumi's build
-#   4. Charts job attaches the InfraChart catalog zip to the GitHub Release
 #
 # One code path: every lane a platform pin reads (the GitHub Release, the
-# charts, the BSR labels, the content, the stub SDKs, the OpenTofu modules and
+# BSR labels, the content, the stub SDKs, the OpenTofu modules and
 # both engines' manifests) is a tools/ci/release script the job runs, and
 # `make release-without-actions tag=<tag>` runs the same scripts from a
 # laptop when Actions cannot (tools/ci/release/README.md).
@@ -36,7 +34,6 @@
 #   - Content zips   -> Cloudflare R2 (downloads.planton.ai/releases/{tag}/content/)
 #   - Stub SDKs      -> Cloudflare R2 (downloads.planton.ai/releases/{tag}/stubs/)
 #   - Buf module     -> BSR (buf.build/planton/planton, labeled with the tag)
-#   - Chart catalog  -> GitHub Release (infra-charts.zip + .sha256 + version.txt)
 #   - Definitions    -> Cloudflare R2 (downloads.planton.ai/releases/{tag}/definitions/)
 #
 # Trigger: git tag v0.1.0 && git push origin v0.1.0
@@ -70,8 +67,8 @@ permissions:
 
 jobs:
   # ============================================================================
-  # GitHub Release - creates the release object the chart assets attach to
-  # and that /releases/latest/download resolves to
+  # GitHub Release - creates the release object for the tag, the one
+  # /releases/latest resolves to
   # ============================================================================
   github-release:
     runs-on: ubuntu-latest
@@ -217,13 +214,6 @@ jobs:
       CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
       CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
       CLOUDFLARE_R2_ENDPOINT: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
-
-  # ============================================================================
-  # Infra Charts - attach the chart catalog zip to the GitHub Release
-  # ============================================================================
-  charts:
-    needs: github-release
-    uses: ./.github/workflows/release.charts.yaml
 
   # ============================================================================
   # Definitions - one job per skill/agent definition, manifest + channel

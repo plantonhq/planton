@@ -162,9 +162,9 @@ protos: buf-lint buf-fmt proto-tools
 	# protovalidate-java (the platform control plane's engine, and the
 	# strictest of the consumer engines). Walks every message descriptor --
 	# rules compile lazily per validated type, so anything narrower silently
-	# skips nested types (a rule the Java engine could not evaluate once
-	# shipped in a release and emptied every fresh local instance's chart
-	# catalog). See hack/javagate/ProtovalidateConformanceGate.java.
+	# skips nested types (a rule the Java engine cannot evaluate makes the
+	# control plane refuse every record of its type). See
+	# hack/javagate/ProtovalidateConformanceGate.java.
 	@echo "Verifying every CEL rule compiles on protovalidate-java..."
 	${BAZEL} test ${BAZEL_REMOTE_FLAGS} //hack/javagate:protovalidate_conformance_gate
 	${BAZEL} run //:gazelle

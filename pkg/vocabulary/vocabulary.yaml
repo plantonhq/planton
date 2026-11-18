@@ -138,15 +138,15 @@ phrases:
   - pattern: '(?i)lego[ _-]?blocks?'
     anchors: ['lego block']
     use: catalog kinds
-  # What Planton itself provides -- its modules, charts and presets -- is
+  # What Planton itself provides -- its modules and presets -- is
   # "platform". "Official" stays only as another company's word: a vendor's
   # official Helm chart, image or icon.
   - pattern: '(?i)\bofficial[ _-]?((iac|pulumi|opentofu|terraform|tofu)[ _-]?)?modules?\b'
     anchors: ['official module', 'official iac', 'official pulumi', 'official opentofu', 'official terraform', 'official tofu', 'officialmodule']
     use: platform module (the IaC modules Planton ships in its release)
-  - pattern: '(?i)\bofficial[ _-]?(presets?|chart[ _-]?fleet|catalog)\b|org \+ official'
-    anchors: ['official preset', 'official chart', 'official catalog', 'org + official']
-    use: platform preset / platform chart / platform catalog
+  - pattern: '(?i)\bofficial[ _-]?(presets?|catalog)\b|org \+ official'
+    anchors: ['official preset', 'official catalog', 'org + official']
+    use: platform preset / platform catalog
   # ...including with a kind named between ("every official AwsVpc preset",
   # "the official kubernetestrino modules").
   - pattern: '(?i)\bofficial [a-z0-9]+ (presets?|modules?)\b'

@@ -817,3 +817,28 @@ questions:
       - skill: planton
         file: references/infra.connecting-clouds.md
         pattern: 'no other connection, organization or Planton can present it'
+
+  - id: first-chart-for-an-empty-organization
+    persona: platform engineer whose organization has no charts yet
+    question: >
+      Our organization has no Infra Charts yet. Build me one for our app's
+      environment and publish it to my org. Is there one from Planton I
+      should start from?
+    answer: >
+      No: every chart belongs to an organization and Planton ships none, so
+      the agent writes this one with you -- Chart.yaml, values.yaml and
+      templates/ -- grounding each kind in its reference page. It runs
+      `planton chart build` until the chart builds clean, shows you the
+      components and the cost, and on your yes runs `planton chart publish`,
+      which records the organization in your CLI context in the chart's
+      metadata.org and prints the version it made (v1 the first time).
+    checks:
+      - skill: planton
+        file: references/infra.chart-format.md
+        pattern: 'Planton\s+ships\s+none'
+      - skill: planton
+        file: references/infra.chart-format.md
+        pattern: 'A\s+chart\s+belongs\s+to\s+the\s+organization\s+that\s+publishes\s+it:\s+`planton\s+chart\s+publish`\s+records\s+the\s+organization'
+      - skill: planton
+        file: references/infra.chart-format.md
+        pattern: 'a\s+chart\s+is\s+\*\*v1\*\*\s+when\s+first\s+published'

@@ -1,8 +1,7 @@
 # Template Language
 
 Chart templates are rendered with Jinjava -- a Java implementation of Jinja2.
-The practical subset below is everything the platform chart fleet uses; stay
-inside it.
+The practical subset below is everything a chart needs; stay inside it.
 
 ## Context: what variables exist
 
@@ -55,8 +54,8 @@ Compound conditions and string comparison:
 {% if values.service_port|trim not in ["80", "443"] %} … {% endif %}
 ```
 
-(Older fleet charts use camelCase param names; the platform accepts both, but
-new charts follow the snake_case convention from `infra.chart-format.md`.)
+(The platform accepts camelCase param names too, but charts follow the
+snake_case convention from `infra.chart-format.md`.)
 
 A conditional can also gate a single field or list item, not just whole
 documents -- but whole-document toggles are the common, legible case.
@@ -75,7 +74,7 @@ spec:
 {% endfor %}
 ```
 
-Loops are rare in the fleet -- most charts write each subnet/AZ explicitly
+Loops are rarely needed -- most charts write each subnet/AZ explicitly
 because they need distinct CIDR params anyway. Prefer explicit resources
 unless the count itself is a parameter.
 
@@ -95,7 +94,7 @@ reference resolves inside the deployment runner, never at render time.
 
 ## Filters
 
-The ones the fleet actually uses: `| bool`, `| trim`, `| upper`, `| lower`.
+The ones charts need: `| bool`, `| trim`, `| upper`, `| lower`.
 Do not reach for exotic filters; if logic gets complex, reshape the params
 instead.
 

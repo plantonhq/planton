@@ -13,18 +13,17 @@
 #
 #   vX.Y.Z, vX.Y.Z-rc.N (release.yaml), the lanes a platform pin reads:
 #     1. the GitHub Release            create_github_release.sh
-#     2. the InfraChart catalog        publish_charts.sh
-#     3. the BSR labels                push_buf_labels.sh
-#     4. the content artifacts         publish_content.sh (six zips, the
+#     2. the BSR labels                push_buf_labels.sh
+#     3. the content artifacts         publish_content.sh (six zips, the
 #                                      catalog bundle and schemas, the logos)
-#     5. the Java and TypeScript stubs publish_stub_sdks.sh
-#     6. the OpenTofu modules          publish_terraform_modules.sh, one
+#     4. the Java and TypeScript stubs publish_stub_sdks.sh
+#     5. the OpenTofu modules          publish_terraform_modules.sh, one
 #                                      provider at a time in parallel
-#     7. the OpenTofu module manifest  publish_module_manifest.sh
+#     6. the OpenTofu module manifest  publish_module_manifest.sh
 #
 # Every lane is rerun-safe: per-tag artifacts are published once
-# (publish_once.sh), and the GitHub Release, the BSR push and the chart
-# assets are idempotent. So a failed run is re-run as it is.
+# (publish_once.sh), and the GitHub Release and the BSR push are
+# idempotent. So a failed run is re-run as it is.
 #
 # Not run here, and left to the tag's own release run once Actions can run it
 # (re-run that run; the lanes above then keep what this published): the
@@ -81,9 +80,6 @@ bash "${lanes}/release_channel.sh" "${tag}" > /dev/null
 
 lane "the GitHub Release"
 bash "${lanes}/create_github_release.sh" "${tag}"
-
-lane "the InfraChart catalog"
-bash "${lanes}/publish_charts.sh" "${tag}"
 
 lane "the BSR labels"
 bash "${lanes}/push_buf_labels.sh" "${tag}"

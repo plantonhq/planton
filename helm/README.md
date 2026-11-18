@@ -8,10 +8,9 @@ Registry and are publicly pullable — no registry login, no repo to add:
 oci://ghcr.io/plantonhq/charts/<chart>
 ```
 
-> Not to be confused with the repository's [`charts/`](../charts) directory —
-> that is the **InfraChart catalog**, Planton's own blueprint format for
-> deploying infrastructure *through* Planton. The charts here deploy Planton
-> itself.
+> Not to be confused with Infra Charts, the blueprint format an organization
+> publishes to its Planton to deploy infrastructure *through* Planton. The
+> charts here deploy Planton itself.
 
 ## Which chart do I want?
 

@@ -243,7 +243,6 @@ planton/
 │   └── _docs/                   # Catalog-wide guides and conventions
 ├── shared/                      # Shared types and enums
 │   └── catalogkind/       # Registry of all kinds (catalog_kind.proto)
-├── charts/                      # Ready-made Infra Charts composed from kinds
 ├── cmd/planton/                 # The open-source CLI and IaC engine (Go)
 ├── pkg/                         # Go libraries (generators, gates, engines)
 ├── operator/                    # The Planton Kubernetes operator (own Go module; self-hosted installs)

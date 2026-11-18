@@ -28,7 +28,7 @@ func TestRenderVariableBindings(t *testing.T) {
 	}
 }
 
-// These cases pin the render semantics for every Jinja construct the chart fleet uses.
+// These cases pin the render semantics for every Jinja construct a chart uses.
 // The control plane renders with a different engine implementation, so any drift between
 // engines must surface here as a red test, never as a chart that validates offline but
 // renders differently when published.

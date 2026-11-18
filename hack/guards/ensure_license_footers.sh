@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Guard: every kind README (catalog/<provider>/<kind>/README.md),
-# every infra chart README (the README.md beside a chart's Chart.yaml, at any
-# nesting depth), and every helm chart README (helm/<chart>/README.md) must end
-# with the canonical license footer.
+# Guard: every kind README (catalog/<provider>/<kind>/README.md) and every
+# helm chart README (helm/<chart>/README.md) must end with the canonical
+# license footer.
 #
 # WHY THIS EXISTS
 # The realistic unit of copying for this catalog is one kind directory,
@@ -17,7 +16,7 @@ set -euo pipefail
 # SCOPE
 # A last-line PRESENCE check (mirroring the sibling grep-based guards, no
 # toolchain beyond find + awk): README files that are the DIRECT child of a
-# kind root, plus infra chart READMEs. Deeper READMEs (iac/**) are inner
+# kind root, plus helm chart READMEs. Deeper READMEs (iac/**) are inner
 # documentation whose shipped artifacts carry LICENSE and NOTICE files instead
 # of footers; provider-infrastructure dirs (aa_*) are not kinds.
 
@@ -46,25 +45,6 @@ done < <(
   find helm -mindepth 2 -maxdepth 2 -name README.md 2>/dev/null
 )
 
-# Infra chart READMEs: the README beside each Chart.yaml, wherever the chart
-# nests in the tree (charts/<provider>/<name>/, charts/<cloud>/kubernetes/<name>/,
-# ...). Discovery keys off Chart.yaml presence exactly like the structure guard
-# and every chart loader, so nesting depth is never a blind spot. A chart with
-# no README at all fails too: the README is part of the chart's anatomy and the
-# footer is the attribution that travels with a copied chart directory.
-while IFS= read -r chart_yaml; do
-  [[ -z "$chart_yaml" ]] && continue
-  readme="$(dirname "$chart_yaml")/README.md"
-  if [[ ! -f "$readme" ]]; then
-    missing+=("$readme (README.md missing entirely)")
-    continue
-  fi
-  last_line="$(awk 'NF {line=$0} END {print line}' "$readme")"
-  if [[ "$last_line" != "$footer" ]]; then
-    missing+=("$readme")
-  fi
-done < <(find charts -type f -name 'Chart.yaml' -not -path '*/build/*' 2>/dev/null)
-
 if (( ${#missing[@]} > 0 )); then
   {
     echo "License-footer guard FAILED: ${#missing[@]} README(s) missing the canonical footer."
@@ -79,4 +59,4 @@ if (( ${#missing[@]} > 0 )); then
   exit 1
 fi
 
-echo "License-footer guard passed: every kind and chart README carries the canonical footer."
+echo "License-footer guard passed: every kind and helm chart README carries the canonical footer."

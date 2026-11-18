@@ -7,9 +7,8 @@
 #   oci://ghcr.io/plantonhq/charts/<chart>
 #
 # These are real Helm charts that deploy Planton's Kubernetes artifacts (the
-# operator, the platform declaration, the runner). They are distinct from the
-# InfraChart catalog under charts/, which is Planton's own blueprint format
-# published via release.charts.yaml.
+# operator, the platform declaration, the runner). They are distinct from Infra
+# Charts, the blueprint format an organization publishes to its Planton.
 #
 # Versioning model (every release is a tag; the tag stamps the version):
 #   - A chart releases from a git tag named by its directory and version,

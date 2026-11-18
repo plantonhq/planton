@@ -1,0 +1,44 @@
+# =============================================================================
+# Infra Chart Engine Guard
+# =============================================================================
+# Fails the PR when the offline Infra Chart engine (pkg/infrachart: load,
+# render, validate, and the `chart validate` command both CLIs mount) stops
+# behaving as its tests pin it. Organizations write and publish their own
+# charts, and `planton chart validate` and `planton chart build` judge them
+# with this engine before anything is published, so a regression here reaches
+# every organization's chart. The engine's own testdata holds a valid and a
+# broken chart; the tests need no chart tree of Planton's own.
+# =============================================================================
+
+name: lint.infrachart
+
+on:
+  pull_request:
+    paths:
+      - 'pkg/infrachart/**'
+      - '.github/workflows/lint.infrachart.yaml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'pkg/infrachart/**'
+      - '.github/workflows/lint.infrachart.yaml'
+
+permissions:
+  contents: read
+
+jobs:
+  infrachart:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+          cache: true
+
+      - name: Run the chart engine's tests
+        run: go test ./pkg/infrachart/...

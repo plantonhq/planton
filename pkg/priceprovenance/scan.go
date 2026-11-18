@@ -22,8 +22,7 @@
 //     backreference like "/v2/$1" in a rewrite example).
 //
 // The scanned surfaces are every markdown file under catalog/ EXCEPT
-// catalog/_pricing/ (the one legitimate dollar home), plus every markdown
-// file under charts/. Generated reference.md pages are deliberately IN scope:
+// catalog/_pricing/ (the one legitimate dollar home). Generated reference.md pages are deliberately IN scope:
 // their dollar figures originate in proto comments, and the fix belongs at
 // the proto source followed by `make generate-reference`.
 //
@@ -75,7 +74,7 @@ func (f Finding) ID() string {
 // scanRoots are the surfaces this gate holds, relative to the repo root.
 // catalog/_pricing/ is excluded by scan(), not omitted here, so the
 // exclusion is visible in one place beside its reason.
-var scanRoots = []string{"catalog", "charts"}
+var scanRoots = []string{"catalog"}
 
 // Scan walks the scanned surfaces under repoRoot and returns every dollar
 // token in every markdown file, sorted by path then token.

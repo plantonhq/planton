@@ -147,15 +147,12 @@ no network? The explain report alone is sufficient for correct composition.
    `catalog/<provider>/<kind>/catalog.md`. Good for topology context
    ("this resource usually sits behind a VPC") but the explain report is
    the field-name authority.
-4. **Chart fleet** — production charts that wire many kinds together:
-   `charts/<provider>/<chart-name>/` in the same repo.
-   Copy wiring patterns from a chart that already solves a similar topology.
-5. **Proto source** — when you need edge cases beyond the rendered report:
+4. **Proto source** — when you need edge cases beyond the rendered report:
    `catalog/<provider>/<kind>/v1alpha1/spec.proto` and
    `…/v1alpha1/outputs.proto`. Same field names and the same comments — the
    explain report is generated from these files, so the report normally
    suffices.
-6. **The module that applies it** — the last rung, and the only absolute
+5. **The module that applies it** — the last rung, and the only absolute
    truth: the Terraform module at `catalog/<provider>/<kind>/iac/tf/`
    and the Pulumi module at `…/iac/pulumi/module/` are the code that turns
    the manifest into provider resources. Read them when the question is what a
@@ -186,8 +183,8 @@ You do **not** install hundreds of kind skills — one workflow skill
 catalog. Kind facts and per-kind wisdom live in the catalog
 skill's pack and are READ AT ANSWER TIME, never recalled from memory —
 whatever you remember about a kind's schema is stale by construction.
-When no pack is reachable, the explain report plus a preset and a fleet
-example for the kind is the complete degradation path.
+When no pack is reachable, the explain report plus a preset for the kind
+is the complete degradation path.
 
 ## What not to use
 

@@ -1,8 +1,7 @@
 # Release Tooling
 
 Scripts and utilities for managing Planton releases (IaC modules, content
-distribution zips, the InfraChart catalog, definitions, the operator, the
-Helm charts, and the third-party images Planton publishes).
+distribution zips, definitions, the operator, the Helm charts, and the third-party images Planton publishes).
 
 ## One rule for every release
 
@@ -14,7 +13,7 @@ is upstream's own, declared once in a committed file.
 
 | Tag | Releases | Front door |
 |---|---|---|
-| `vX.Y.Z` | the catalog: IaC modules, content zips, definitions, InfraCharts (`release.yaml`) | `make release` |
+| `vX.Y.Z` | the catalog: IaC modules, content zips, definitions (`release.yaml`) | `make release` |
 | `operator/vX.Y.Z` | the operator image and the `planton-operator` Helm chart, one version line (`release.operator.yaml` -> `release.helm.yaml`) | `make release-operator` |
 | `helm/<chart>/vX.Y.Z` | one Helm chart under `helm/` (`release.helm.yaml`) | `make release-helm chart=<chart>` |
 
@@ -63,8 +62,7 @@ When you run `make release`, here's what happens:
 │  ├── Terraform module zips     -> Cloudflare R2 (downloads.planton.ai)      │
 │  ├── Module manifest per engine (after its lane) -> Cloudflare R2           │
 │  ├── Content distribution zips -> Cloudflare R2 (downloads.planton.ai)      │
-│  ├── Definitions               -> Cloudflare R2 (downloads.planton.ai)      │
-│  └── InfraChart catalog zip    -> attached to the GitHub Release            │
+│  └── Definitions               -> Cloudflare R2 (downloads.planton.ai)      │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -135,7 +133,7 @@ ones the workflows run:
 
 | Tag | Lanes run, in order |
 |---|---|
-| `vX.Y.Z`, `vX.Y.Z-rc.N` | the GitHub Release (`create_github_release.sh`), the chart catalog (`publish_charts.sh`), the BSR labels (`push_buf_labels.sh`), the content artifacts (`publish_content.sh`), the stub SDKs (`publish_stub_sdks.sh`), the OpenTofu modules one provider at a time in parallel (`publish_terraform_modules.sh`) and their manifest (`publish_module_manifest.sh`) |
+| `vX.Y.Z`, `vX.Y.Z-rc.N` | the GitHub Release (`create_github_release.sh`), the BSR labels (`push_buf_labels.sh`), the content artifacts (`publish_content.sh`), the stub SDKs (`publish_stub_sdks.sh`), the OpenTofu modules one provider at a time in parallel (`publish_terraform_modules.sh`) and their manifest (`publish_module_manifest.sh`) |
 
 Those are every lane a platform pin reads. The Pulumi modules and their
 manifest (about 4,200 Go builds), the definitions, the `plantonhq/skills`
@@ -153,7 +151,7 @@ zip, python3 and the aws CLI. The scripts default the region to R2's `auto`.
 
 The module/content/definitions release workflows upload to Cloudflare R2 and need `CLOUDFLARE_R2_ACCESS_KEY_ID`,
 `CLOUDFLARE_R2_SECRET_ACCESS_KEY`, and `CLOUDFLARE_R2_ENDPOINT`. The GitHub
-Release itself, the chart-catalog attachment and every ghcr.io push need only
+Release itself and every ghcr.io push need only
 the automatically provided `GITHUB_TOKEN`.
 
 ## Troubleshooting

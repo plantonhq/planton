@@ -117,7 +117,6 @@ kind name AND its catalog slug (the `/docs/catalog/<provider>/<kind>`
 form) across:
 - sibling kinds' `presets/*.md`, `catalog.md`, `README.md`, and
   `GUIDE.md` under `catalog/` — prose like "pair this with X" outlives X
-- `charts/**` templates and READMEs
 
 Fix each hit: remove the dead link, or repoint the prose to the replacing
 kind(s). Prose that names the cloud provider's own product/feature

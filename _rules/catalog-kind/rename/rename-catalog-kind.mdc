@@ -96,7 +96,7 @@ whose only hard requirement is registry uniqueness (cf. `gcpsnw`, `gcprnat`,
 
 - [ ] Manual registry: enum rename, id_prefix, all `prerequisites:` arrays
 - [ ] Sibling `spec.proto` files: every `default_kind = OldKind`
-- [ ] Explicit `valueFrom.kind` YAML blocks + chart templates
+- [ ] Explicit `valueFrom.kind` YAML blocks
 - [ ] Sibling catalog cross-links (`/docs/catalog/gcp/<slug>`)
 - [ ] E2E harness: `gcp_test.go`, `dependencies_test.go`, `aa_e2e/verify/verifier.go`
 - [ ] Prerequisite file renames under consumer `e2e/prerequisites/`
@@ -701,7 +701,7 @@ After rename completion:
 ✅ Kind folder renamed
 ✅ Registry updated manually (enum name, id_prefix, prerequisite arrays)
 ✅ High-fan-in sweep complete (see checklist above; grep gate zero outside `_changelog/`)
-✅ All naming patterns replaced in kind tree; sibling protos + charts + E2E updated
+✅ All naming patterns replaced in kind tree; sibling protos + E2E updated
 ✅ Documentation + catalog cross-links updated
 ✅ `make protos` passed
 ✅ `make generate-catalog-kind-map` + `make reset-gazelle` passed

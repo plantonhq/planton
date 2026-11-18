@@ -6,8 +6,6 @@ generated/
 # A test snapshot of an upstream release tree is test input, never build
 # output: keep the release's own generated/ directories.
 !**/testdata/**/generated/
-# Rendered InfraChart output from `planton chart build` (chart-root artifact)
-charts/*/*/template.yaml
 # Helm dependency archives vendored by `helm dependency build` (Chart.lock IS committed)
 helm/*/charts/
 build/

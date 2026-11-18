@@ -81,7 +81,7 @@ and are re-verified by machine.
 
 Always pair the number with the lever. The classics that fit chart params:
 
-- Single NAT gateway for non-production (the fleet's charts expose this) —
+- Single NAT gateway for non-production (a chart exposes this as a param) —
   read the NAT kind's estimate to state what each extra gateway adds.
 - Right-size nodes and start with fewer; scaling up later is a param change.
 - Public EKS endpoint for dev (private needs a standing runner — itself a

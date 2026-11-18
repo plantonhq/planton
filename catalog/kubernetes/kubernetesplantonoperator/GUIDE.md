@@ -52,5 +52,5 @@ requirement.
 The operator draws one explicit `depends_on` edge FROM each
 KubernetesPlantonPlatform — no spec field consumes an operator output
 (the coupling is the cluster-global schema contract), so composed charts
-declare the edge in metadata. The `planton-on-kubernetes` infra-chart
+declare the edge in metadata. An Infra Chart that installs Planton
 carries namespace + operator + platform as one deployable arm.

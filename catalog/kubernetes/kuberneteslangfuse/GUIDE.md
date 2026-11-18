@@ -51,4 +51,4 @@ A Langfuse install renders as five nodes: Langfuse and its four stores, with edg
 - **KubernetesValkey** with `noeviction`: the queue store.
 - **KubernetesSeaweedFs** in-cluster, or a cloud bucket kind with workload identity: event, media and export storage. A lifecycle rule that expires the `events/` prefix after about 30 days is safe once events are in ClickHouse; never expire `media/`.
 - **KubernetesHttpRoute** or **KubernetesIngress** over the `service` output, at the host `externalUrl` names.
-- The `self-hosted-langfuse` InfraChart, which composes all of the above in one deployment.
+- An Infra Chart of your own that composes all of the above in one deployment.

@@ -26,7 +26,7 @@ When you deploy this Infra Component, the IaC module provisions:
 ### Kubernetes Cluster
 
 - **Kubernetes 1.28 or newer** — the floor chart 2.x declares.
-- **The four stores, in Langfuse's namespace** — a Kubernetes Secret reference cannot cross namespaces, and every store password reaches the pods through one. Compose the stores into the same namespace (the `self-hosted-langfuse` InfraChart does), or copy their Secrets there.
+- **The four stores, in Langfuse's namespace** — a Kubernetes Secret reference cannot cross namespaces, and every store password reaches the pods through one. Compose the stores into the same namespace (an Infra Chart that installs Langfuse with its stores does), or copy their Secrets there.
 - **A Postgres database Langfuse owns** — PostgreSQL 15 or newer in UTC. On a composed PostgreSQL, declare the `langfuse` database at bootstrap (`initdb.database`) with the Langfuse user as owner: migrations run as that user on every start.
 - **A ClickHouse user that can reach the server** — ClickHouse 25.12 or newer. On a composed ClickHouse, declare the user's `networks` (for example `0.0.0.0/0` and `::/0`): without them the user is fenced to ClickHouse's own pods and Langfuse is refused with what looks like a wrong-password error. Cluster mode (`clickhouse.cluster.enabled`, on by default) needs ClickHouse Keeper.
 - **A Redis-protocol store with `maxmemory-policy noeviction`** — under any eviction policy, queued ingestion jobs are silently dropped.
@@ -229,7 +229,7 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 
 **Evaluation against in-cluster stores.** One web replica, one worker, a single ClickHouse server with cluster mode off, and every secret generated. It is the fastest way to see traces in Langfuse, and nothing in it is shaped for keeping data. Start from the **Evaluation** preset.
 
-**Production on in-cluster stores.** Two replicas of each workload with disruption budgets, a replicated ClickHouse with Keeper, the salt and encryption key declared as managed secrets, a seeded admin, sign-up closed and an `externalUrl` that a route serves. The `self-hosted-langfuse` InfraChart composes this shape with its stores. Start from the **Production In-Cluster** preset.
+**Production on in-cluster stores.** Two replicas of each workload with disruption budgets, a replicated ClickHouse with Keeper, the salt and encryption key declared as managed secrets, a seeded admin, sign-up closed and an `externalUrl` that a route serves. An Infra Chart composes this shape with its stores. Start from the **Production In-Cluster** preset.
 
 **Langfuse on a managed cloud.** Keep Langfuse on the cluster and move events, media and exports to the cloud's object storage with keyless access: S3 with an IAM role on EKS, Google Cloud Storage with a Google service account on GKE, or Azure Blob Storage with an account key on AKS. Postgres and ClickHouse can be managed services too, by literal host. Start from the **AWS**, **Google Cloud** or **Azure** preset.
 

@@ -1,5 +1,6 @@
 // Package infrachart loads, renders, and validates InfraCharts offline — the
-// parameterized bundles of catalog object manifests that live under charts/.
+// parameterized bundles of catalog object manifests an organization writes in a
+// chart folder and publishes to its Planton.
 //
 // The package mirrors the platform's server-side chart pipeline closely enough
 // to be a trustworthy pre-publish gate: templates are rendered with the

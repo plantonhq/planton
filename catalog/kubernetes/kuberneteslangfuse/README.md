@@ -13,7 +13,7 @@ Planton already has a first-class kind for each store, so this kind composes the
 - **`KubernetesValkey`** for the queues and caches, wired to its Service, its ACL user and its password Secret.
 - **`KubernetesSeaweedFs`** (or an S3-compatible store, AWS S3, Cloudflare R2, Google Cloud Storage or Azure Blob Storage) for blob storage.
 
-The `self-hosted-langfuse` InfraChart composes the whole set in one deployment.
+An Infra Chart of your own composes the whole set in one deployment.
 
 ## Key Features
 

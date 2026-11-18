@@ -66,7 +66,7 @@ spec:
   version: v0.0.140
 ```
 
-The InfraPipeline creates the namespace first, then declares the platform into it. The operator itself is a `depends_on` edge declared through `metadata.relationships` — no spec field consumes an operator output. The `planton-on-kubernetes` InfraChart carries namespace + operator + platform as one deployable arm.
+The InfraPipeline creates the namespace first, then declares the platform into it. The operator itself is a `depends_on` edge declared through `metadata.relationships` — no spec field consumes an operator output. An Infra Chart that installs Planton carries namespace + operator + platform as one deployable arm.
 
 ## Key Configuration
 

@@ -2,9 +2,8 @@
 # License Footer Guard
 # =============================================================================
 # Fails the PR if any kind README (catalog/<provider>/<kind>/
-# README.md), infra chart README (charts/<provider>/<name>/README.md), or helm
-# chart README (helm/<chart>/README.md) does not end with the canonical
-# license footer:
+# README.md) or helm chart README (helm/<chart>/README.md) does not end with
+# the canonical license footer:
 #
 #   © Planton. Licensed under [Apache-2.0](<absolute URL to LICENSE>).
 #
@@ -22,7 +21,6 @@ on:
   pull_request:
     paths:
       - 'catalog/**'
-      - 'charts/**'
       - 'helm/**'
       - 'hack/guards/ensure_license_footers.sh'
       - '.github/workflows/lint.license-footers.yaml'
@@ -31,7 +29,6 @@ on:
       - main
     paths:
       - 'catalog/**'
-      - 'charts/**'
       - 'helm/**'
       - 'hack/guards/ensure_license_footers.sh'
       - '.github/workflows/lint.license-footers.yaml'

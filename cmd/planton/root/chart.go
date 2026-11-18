@@ -30,10 +30,9 @@ type ChartValidateOptions = validatecmd.Options
 //
 // This path (cmd/planton/root) is a CROSS-REPO import contract: the Planton
 // Platform CLI mounts the command through it -- keep the re-export even
-// though the implementation lives in pkg/infrachart/validatecmd. It moved to
-// that leaf package so the CI chart-validator binary can link the identical
-// command without this package's full CLI world (pulumi/cloud SDKs) entering
-// its build graph; see the validatecmd package comment for the three mounts.
+// though the implementation lives in pkg/infrachart/validatecmd, a leaf
+// package whose dependency set stays the chart engine alone; see the
+// validatecmd package comment for its two mounts.
 // A host passes its own rules: document checks (the Planton Platform CLI
 // passes where secrets may go) and the reference tokens it resolves before
 // anything deploys (the Planton Platform CLI passes its $secret/ and $var/

@@ -719,6 +719,6 @@ the platform) until an operator release adds the janitor.
 The platform draws an explicit `depends_on` edge TO its
 KubernetesPlantonOperator — no spec field consumes an operator output
 (the coupling is the cluster-global CRD contract), so composed charts
-declare the edge in metadata. The `planton-on-kubernetes` infra-chart
-carries namespace + operator + platform as one deployable arm; its
-multi-platform variant is one operator plus N namespace+platform pairs.
+declare the edge in metadata. An Infra Chart that installs Planton
+carries namespace + operator + platform as one deployable arm; a chart
+for several platforms is one operator plus N namespace+platform pairs.

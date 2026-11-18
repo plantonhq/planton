@@ -995,17 +995,8 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 
 		// ── misc ──
 		// No module version here: the control plane downloads the platform IaC
-		// modules at its own catalog release, exactly as it seeds charts from
-		// it (below). The per-install override is appended after this block,
-		// by presence.
-		// The control plane seeds the InfraChart catalog from the bundle of its
-		// OWN catalog release: the charts are validated against its protos at
-		// apply, so only the release those protos came from can ever be right,
-		// and the control plane carries that pin itself. The operator only
-		// switches the seed on. Relaxed-binding form of
-		// planton.bootstrap.infra-charts.enabled, each hyphen an underscore
-		// (see "Relaxed-binding spelling" above ControlPlaneConfig).
-		{Name: "PLANTON_BOOTSTRAP_INFRA_CHARTS_ENABLED", Value: "true"},
+		// modules at its own catalog release, a pin it carries itself. The
+		// per-install override is appended after this block, by presence.
 		{Name: "PULUMI_ORG", Value: "local"},
 		{Name: "STIGMER_API_KEY", Value: "local"},
 		{Name: "STIGMER_ORG_ID", Value: "local"},

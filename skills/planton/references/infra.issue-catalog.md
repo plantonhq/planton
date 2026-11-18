@@ -202,5 +202,5 @@ CLI instead of guessing.
 ## When to stop fixing
 
 - **Exit 2** — environment problem. Do not patch templates.
-- Same error after two schema-grounded attempts — re-read the preset or fleet
-  example for that kind; you may be modeling the wrong shape entirely.
+- Same error after two schema-grounded attempts — re-read the preset for
+  that kind; you may be modeling the wrong shape entirely.

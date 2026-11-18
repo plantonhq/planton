@@ -310,8 +310,9 @@ nothing: "No changes".
 
 `planton chart install <stackName> . --env <env>` takes the same path (plan,
 show, ask, apply), and creates the stack when the name is new; `--dry-run`
-stops at the plan. Installed from a catalog chart (`planton chart install
-<stackName> app-infra --env <env>`, or `org/<slug>`), the platform copies
+stops at the plan. Installed from one of the organization's charts by its
+slug (`planton chart install <stackName> app-infra --env <env>`), the
+platform copies
 the chart's files itself and records the chart and its version; onto a
 stack already following that chart it is an upgrade
 (`infra.stack-promotion.md`). A local chart folder records no chart. `planton apply -f <stack manifest>` applies a plan only

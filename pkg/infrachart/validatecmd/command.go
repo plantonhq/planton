@@ -1,23 +1,17 @@
 // Package validatecmd is the single home of the `chart validate` cobra
-// command. It lives as a leaf package -- NOT in cmd/planton/root -- because
-// the command mounts in THREE binaries and one of them must stay small:
+// command. It mounts in two binaries:
 //
 //  1. the standalone planton CLI's `chart` tree (via cmd/planton/root, which
-//     re-exports the constructor for compatibility),
+//     re-exports the constructor),
 //  2. the Planton Platform CLI's `chart` tree (cross-repo, through the
-//     cmd/planton/root re-export -- an import-path contract; do not move it),
-//  3. cmd/chart-validator, the CI validation binary: the charts release and
-//     PR lanes used to `go build .` the ENTIRE CLI -- pulumi provider SDKs,
-//     cloud SDKs, the whole command forest -- spending 6-9 minutes of compile
-//     for a 1-second packaging job (measured across v0.4.1-v0.4.4). This
-//     package's dependency set is only the chart engine, the generated kind
-//     registry, and protovalidate, so a binary linking just this compiles in
-//     a fraction of the time.
+//     cmd/planton/root re-export -- an import-path contract; do not move it).
 //
-// One implementation, three mounts: validation must run the exact consumer
+// It stays a leaf package whose dependency set is only the chart engine, the
+// generated kind registry, and protovalidate, so anything that links the
+// command links that and nothing of the CLI's world (pulumi and cloud SDKs).
+// One implementation, two mounts: validation must run the exact consumer
 // engine at the exact ref (the protovalidate-java conformance gate exists
-// because engines drift), so the CI binary is a smaller LINK of the same
-// command, never a second implementation.
+// because engines drift), never a second implementation.
 package validatecmd
 
 import (
@@ -91,20 +85,20 @@ Platform CLI names $secret/ and $var/): a rule written about a field's value, su
 base64 or CIDR format, then waits for the referenced value rather than judging the
 reference itself.`,
 		Example: `
-	# Validate one chart
-	planton chart validate charts/gcp/cloud-run-service
+	# Validate one chart folder
+	planton chart validate ./app-infra
 
 	# Validate several charts
-	planton chart validate charts/gcp/postgres-production charts/gcp/gke-environment
+	planton chart validate ./app-infra ./edge-network
 
 	# Validate every chart under a directory tree
-	planton chart validate --all charts/
+	planton chart validate --all ./charts
 
 	# Exercise a specific parameter combination beyond the automatic toggle flips
-	planton chart validate charts/gcp/static-website-cdn --set dnsEnabled=false
+	planton chart validate ./edge-network --set dnsEnabled=false
 
 	# Render for a specific environment (catches names that break on a hyphenated slug)
-	planton chart validate charts/gcp/cloud-run-service --set env=production-eu`,
+	planton chart validate ./app-infra --set env=production-eu`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return chartValidateHandler(cmd, args, opts)
 		},

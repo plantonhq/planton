@@ -1,8 +1,10 @@
 # Chart Format
 
-The exact shape of the three chart components. The public chart catalog at
-[github.com/plantonhq/planton/tree/main/charts](https://github.com/plantonhq/planton/tree/main/charts)
-is the reference fleet -- when in doubt, read how a platform chart does it.
+The exact shape of the three chart components. A chart is the
+organization's own architecture, written for its clouds and its
+environments: Planton ships none. Ground every kind in its reference page
+(`catalog.kind-grounding.md`), and let `planton chart build` judge the
+chart before it is published.
 
 ## Chart.yaml
 
@@ -28,9 +30,8 @@ Required for composition: `apiVersion`, `kind`, `metadata.name`,
 
 Chart.yaml names no owner. A chart belongs to the organization that
 publishes it: `planton chart publish` records the organization in your CLI
-context (or the one `--org <org>` names) in the chart's `metadata.org`. The
-platform charts are the ones with no organization; they come only from
-Planton's open-source release.
+context (or the one `--org <org>` names) in the chart's `metadata.org`.
+Every chart has an organization; a chart without one is refused.
 
 `planton explain infra-chart` renders the InfraChart schema itself —
 including which spec fields the tooling assembles from the chart directory
@@ -47,8 +48,7 @@ and becomes the next version (v2, v3, …) each time its templates or
 version always means the same files; each version carries a digest the
 platform computes from them. `planton chart publish` prints the version it
 made, and `planton chart list` shows each
-chart's version. Platform charts are versioned the same way, counted on
-each instance.
+chart's version.
 
 A stack installed from a catalog chart records the chart and the version
 it took ("app-infra v3"). When the chart publishes a newer version, the
@@ -116,7 +116,7 @@ Design guidance:
   meaningful behavior change -- and the chart must build validly with the
   toggle in BOTH positions.
 - Group related params with comment headers (`# ─── Network ───`) in larger
-  charts; the fleet does this consistently.
+  charts.
 
 ## templates/
 
@@ -144,8 +144,7 @@ spec:
 - `metadata.org` and `metadata.env` are injected by the platform at
   deployment -- never write them in templates.
 - A comment header at the top of each template file explaining what it
-  provisions and any non-obvious topology decision is fleet convention and
-  pays for itself.
+  provisions and any non-obvious topology decision pays for itself.
 
 ## Naming conventions
 

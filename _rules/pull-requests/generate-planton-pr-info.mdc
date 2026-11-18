@@ -37,13 +37,6 @@ Usage: In Ask mode, invoke explicitly as `@pr-info`.
 
 ### Examples of valid scopes (Planton)
 - `catalog/aws/awsvpc`
-- `charts/aws/eks-platform`
-- `charts/aws/terraform-backend`
-- `charts/gcp/gke-environment`
-- `charts/gcp/cloud-run`
-- `charts/azure/aks-environment`
-- `charts/digital-ocean/doks-environment`
-- `charts/digital-ocean/app-platform-environment`
 - `cmd/planton`
 - `internal/manifest`
 - `internal/cli/flag`
@@ -76,12 +69,6 @@ Determine the `<scope-path>` from the changed files. Use the most impacted area 
   - Multiple kinds under the same provider → `catalog/<provider>`
   - Shared proto surfaces (`shared/**`, `qa/**`, `iac/**`) → `shared`, `qa`, or `iac`
 
-- Charts (multi-kind compositions)
-  - `charts/<provider>/<chart>/**` → `charts/<provider>/<chart>`
-    - Examples: `charts/aws/eks-platform`, `charts/gcp/gke-environment`, `charts/azure/aks-environment`, `charts/digital-ocean/doks-environment`
-  - Multiple charts under the same provider → `charts/<provider>`
-  - Charts across multiple providers → `charts`
-
 - CLI
   - `cmd/planton/**` → `cmd/planton`
 
@@ -106,7 +93,7 @@ Determine the `<scope-path>` from the changed files. Use the most impacted area 
 
 ### Multi-area changes
 - If changes span multiple areas within the same parent, use the shared parent:
-  - Multiple charts under `charts/aws/*` → `charts/aws`
+  - Multiple kinds under `catalog/aws/*` → `catalog/aws`
   - Multiple libraries under `pkg/*` → `pkg`
 - If changes are broadly cross-cutting (≥3 unrelated parents), use `repo`.
 

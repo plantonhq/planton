@@ -19,7 +19,7 @@ func repoRoot(t *testing.T) string {
 }
 
 // TestPriceProvenanceGate is the CI guardrail. The live scan over the
-// catalog's and charts' markdown must not carry a dollar token outside the
+// catalog's markdown must not carry a dollar token outside the
 // baseline's two lists, and neither list may hold a stale entry. On failure:
 // rewrite the price to driver-teaching copy (prices live only in
 // catalog/_pricing/), or -- ONLY for a user-chosen dollar-typed config

@@ -139,7 +139,7 @@ unless `--show` prints the rendered documents. Agents should always use `-o json
 
 - `--show` + `-o json` → exit 2 (conflicting outputs).
 - `--set unknown_name=x`, or a `-f` file naming an unknown param → exit 2, stderr lists the params values.yaml declares. Fix the flag or the file, never the chart.
-- `--no-browser`, `--copy` → deprecated no-ops; fleet Makefiles may still pass them.
+- `--no-browser`, `--copy` → deprecated no-ops; older scripts may still pass them.
 - `--output-dir <dir>` → writes `template.yaml` (the combined templates) and `rendered.yaml` (the render); optional for agents.
 
 ## Offline gates (no control plane)

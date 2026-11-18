@@ -168,10 +168,9 @@ jobs:
             echo "Release ${TAG} already exists"
           else
             echo "Creating release ${TAG}..."
-            # --latest=false: kind point releases carry no infra-charts/version.txt
-            # assets, so they must never move the /releases/latest pointer that chart
-            # consumers (e.g. the desktop daemon's chart seeder) resolve. Only the
-            # strict-semver orchestrated release marks latest.
+            # --latest=false: a kind point release carries one kind's module, not the
+            # whole catalog, so it must never move the /releases/latest pointer. Only
+            # the strict-semver orchestrated release marks latest.
             gh release create "${TAG}" \
               --title "${TAG}" \
               --notes-file release-notes.md \

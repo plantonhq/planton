@@ -45,8 +45,7 @@ yourself.
 
 <!-- AI-AGENT NOTE: The kind and provider counts below MUST be verified against
      the authoritative source: shared/catalogkind/catalog_kind.proto
-     (count non-test `(kind_meta)` annotations and distinct providers). The chart
-     count MUST be verified against `charts/*/*/Chart.yaml`. Never re-type a stale number. -->
+     (count non-test `(kind_meta)` annotations and distinct providers). Never re-type a stale number. -->
 
 - **[`catalog/`](catalog)** — **700+ catalog kinds**
   across **8 cloud providers** (AWS, GCP, Azure, Kubernetes, DigitalOcean,
@@ -59,12 +58,10 @@ yourself.
   control posture with framework crosswalks (`catalog/_compliance/`), and
   least-privilege provisioning-permission manifests validated against the
   providers' own published inventories.
-- **[`charts/`](charts)** — **18 ready-made infra charts**: whole environments
-  (network + compute + data + DNS) composed from the kinds above and
-  installed in one command — the Helm-chart idea, for cloud infrastructure.
 - **[`cmd/planton`](cmd/planton)** — the open-source CLI and IaC engine that
   validates manifests and executes the Pulumi and OpenTofu/Terraform modules
-  that ship with every kind.
+  that ship with every kind, and validates your own Infra Charts offline with
+  `planton chart validate`.
 - **[`site/`](site)** — the source of [planton.ai](https://planton.ai):
   website, docs, and blog (Next.js static export, deployed to GitHub Pages on
   every `site/` change). Run it locally with `make run-site`, or build and
@@ -140,7 +137,7 @@ cluster. See [Self-Hosting](https://planton.ai/docs/self-hosting).
 ## Licensing
 
 Planton the app is **free**, including for commercial use. The building blocks
-that power it — the infrastructure kinds, the charts, and the CLI — are
+that power it — the infrastructure kinds and the CLI — are
 **open source under [Apache-2.0](LICENSE)**: audit them, fork them, or take
 your configuration and run it yourself. No lock-in.
 The Planton name and logo are trademarks of Planton Cloud, Inc. — the code is

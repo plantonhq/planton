@@ -35,7 +35,7 @@ inline for one-off scoping.
 ## Grounding lookups (session start, before proposing architecture)
 
 ```
-planton chart list                        # charts in the catalog (org + platform), each with its version
+planton chart list                        # the organization's charts, each with its version
 planton infra stack list -o json        # the org's Infra Stacks (what has been deployed)
 planton infra stack get <id-or-name> --env <env>  # one stack, full record (its declaration and live revision);
                                                  # a name needs --env, an id does not
@@ -170,9 +170,8 @@ removals and drift; `references/service.reading-a-run.md` the gates.
 What already exists on the platform is checked out, never re-typed:
 
 ```
-planton chart checkout <slug> --output-dir <dir>            # a published chart, ready to
-                                                            # build/customize (org/<slug>
-                                                            # scopes to the org's charts)
+planton chart checkout <slug> --output-dir <dir>            # one of the organization's
+                                                            # charts, ready to build/customize
 planton infra stack checkout <id-or-name> --env <env> --output-dir <dir>
                                                             # a deployed stack's WORKING COPY,
                                                             # binding included
