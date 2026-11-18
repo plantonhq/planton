@@ -1,13 +1,17 @@
 package aa_e2e
 
 import (
+	"fmt"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
+	"cloud.google.com/go/auth"
 	"github.com/plantonhq/planton/e2e/framework/provider"
 	"google.golang.org/api/cloudresourcemanager/v1"
+	"google.golang.org/api/googleapi"
 )
 
 // repoRoot is the repository root these tests read the catalog from. Under
@@ -159,5 +163,27 @@ func TestEveryDeclaredScenarioHasAMintableGrant(t *testing.T) {
 	}
 	if declared == 0 {
 		t.Fatal("no GCP scenario declares the identity; the net checks nothing")
+	}
+}
+
+// A key minted seconds ago is refused by Google's token endpoint with
+// invalid_grant until it propagates; the readiness wait must read that, as it
+// reads a 401 or 403, as "not yet", and nothing else.
+func TestReadinessReadsAFreshKeysRefusalsAsNotYet(t *testing.T) {
+	cases := []struct {
+		name string
+		err  error
+		want bool
+	}{
+		{"token endpoint invalid_grant, as the client wraps it", fmt.Errorf("Post %q: %w", "https://cloudresourcemanager.googleapis.com/v1/projects/p:testIamPermissions", &auth.Error{Response: &http.Response{StatusCode: 400}, Body: []byte(`{"error":"invalid_grant","error_description":"Invalid JWT Signature."}`)}), true},
+		{"token endpoint invalid_client", &auth.Error{Response: &http.Response{StatusCode: 401}, Body: []byte(`{"error":"invalid_client"}`)}, false},
+		{"API 401", &googleapi.Error{Code: 401}, true},
+		{"API 403", &googleapi.Error{Code: 403}, true},
+		{"API 404", &googleapi.Error{Code: 404}, false},
+	}
+	for _, c := range cases {
+		if got := keyNotYetAccepted(c.err); got != c.want {
+			t.Errorf("%s: keyNotYetAccepted = %v, want %v", c.name, got, c.want)
+		}
 	}
 }

@@ -19,6 +19,7 @@ go_library(
         "//pkg/iac/permissions",
         "//shared/catalogkind",
         "@com_github_pkg_errors//:errors",
+        "@com_google_cloud_go_auth//:auth",
         "@io_k8s_sigs_yaml//:yaml",
         "@org_golang_google_api//alloydb/v1:alloydb",
         "@org_golang_google_api//apikeys/v2:apikeys",
@@ -77,5 +78,7 @@ go_test(
     deps = [
         "//e2e/framework/provider",
         "@org_golang_google_api//cloudresourcemanager/v1:cloudresourcemanager",
+        "@com_google_cloud_go_auth//:auth",
+        "@org_golang_google_api//googleapi",
     ],
 )

@@ -1,8 +1,6 @@
 package module
 
 import (
-	"strings"
-
 	"github.com/pkg/errors"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/tags"
@@ -44,13 +42,12 @@ func tagKey(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) erro
 		return errors.Wrap(err, "failed to create tag key")
 	}
 
-	// The provider's `name` is tagKeys/{numeric_id}; the bare numeric id
-	// is derived from it so both engines export the same three handles.
-	ctx.Export(OpName, created.Name)
+	// The resource's ID is tagKeys/{numeric_id}, the resource name every
+	// reference takes; the provider's `name` is the bare number Google
+	// generated. Both engines export these same three handles.
+	ctx.Export(OpName, created.ID().ToStringOutput())
 	ctx.Export(OpNamespacedName, created.NamespacedName)
-	ctx.Export(OpTagKeyId, created.Name.ApplyT(func(name string) string {
-		return strings.TrimPrefix(name, "tagKeys/")
-	}).(pulumi.StringOutput))
+	ctx.Export(OpTagKeyId, created.Name)
 	ctx.Export(OpCreateTime, created.CreateTime)
 
 	return nil

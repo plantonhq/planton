@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"math/rand"
 	"os"
@@ -13,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"cloud.google.com/go/auth"
 	"github.com/pkg/errors"
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	"github.com/plantonhq/planton/e2e/framework/provider"
@@ -336,7 +338,7 @@ func (h *Harness) awaitGrants(ctx context.Context, project string, keyJSON []byt
 			}).Context(ctx).Do()
 			if err != nil {
 				// A key minted a moment ago can be refused until it propagates.
-				if isStatus(err, 401) || isStatus(err, 403) {
+				if keyNotYetAccepted(err) {
 					missing = append(missing, wanted[start:end]...)
 					continue
 				}
@@ -503,6 +505,22 @@ func retryUntil(ctx context.Context, budget time.Duration, attempt func() (bool,
 		case <-time.After(3*time.Second + time.Duration(rand.Intn(3000))*time.Millisecond):
 		}
 	}
+}
+
+// keyNotYetAccepted reports the refusals Google gives a service account key in
+// the first seconds after it is minted, before the key has propagated: the
+// token endpoint's OAuth error invalid_grant ("Invalid JWT Signature"), and a
+// 401 or 403 from the API once a token is issued. Only the readiness wait reads
+// these as "not yet"; anywhere else they are real refusals.
+func keyNotYetAccepted(err error) bool {
+	var refused *auth.Error
+	if errors.As(err, &refused) {
+		var body struct {
+			Error string `json:"error"`
+		}
+		return json.Unmarshal(refused.Body, &body) == nil && body.Error == "invalid_grant"
+	}
+	return isStatus(err, 401) || isStatus(err, 403)
 }
 
 func isStatus(err error, code int) bool {

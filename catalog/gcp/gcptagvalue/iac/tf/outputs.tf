@@ -2,7 +2,7 @@
 # tag_value references and what a create-time tags map uses as its value.
 output "name" {
   description = "The tag value's resource name (tagValues/{id})"
-  value       = google_tags_tag_value.this.name
+  value       = google_tags_tag_value.this.id # the provider's id is tagValues/{numeric_id}; its name is the bare number
 }
 
 # {parent}/{key_short_name}/{short_name} -- the human-readable handle.
@@ -11,11 +11,11 @@ output "namespaced_name" {
   value       = google_tags_tag_value.this.namespaced_name
 }
 
-# The bare numeric id, derived from the name so both engines export the same
-# three handles.
+# The bare numeric id: the provider's `name` attribute (Google's generated
+# number), which both engines export as this handle.
 output "tag_value_id" {
   description = "The tag value's numeric ID"
-  value       = trimprefix(google_tags_tag_value.this.name, "tagValues/")
+  value       = google_tags_tag_value.this.name
 }
 
 output "create_time" {

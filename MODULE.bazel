@@ -162,6 +162,7 @@ use_repo(
     "com_github_stretchr_testify",
     "com_github_zclconf_go_cty",
     "com_github_zyedidia_clipboard",
+    "com_google_cloud_go_auth",
     "in_gopkg_yaml_v3",
     "io_k8s_apiextensions_apiserver",
     "io_k8s_apimachinery",
