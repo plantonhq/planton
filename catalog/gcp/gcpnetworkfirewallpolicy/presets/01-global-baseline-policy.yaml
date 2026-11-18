@@ -30,6 +30,7 @@ spec:
       ruleName: allow-internal
       description: The VPC may talk to itself
       match:
+        srcIpRanges: ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"] # the private ranges; Google refuses a network context as a rule's only source
         srcNetworkContext: INTRA_VPC
         layer4Configs:
           - ipProtocol: all

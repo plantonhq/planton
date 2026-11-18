@@ -238,6 +238,7 @@ created) while every other rule is left alone; change a rule's content
 in place and it is updated in place. An empty list is a valid policy
 that decides nothing.
 
+- rule: an INGRESS rule must name where its traffic comes from: set src_ip_ranges, src_fqdns, src_region_codes, src_threat_intelligences, src_address_groups, src_secure_tags or src_networks (src_network_context alone is not a source)
 - rule: security_profile_group is required when action is apply_security_profile_group and must be empty for every other action
 - rule: tls_inspect can be true only when action is apply_security_profile_group
 - rule: enable_logging cannot be set on a goto_next rule -- Google logs only the rule that decides
@@ -494,7 +495,10 @@ Where the traffic comes from, as a class rather than an address:
 INTERNET (outside Google Cloud), INTRA_VPC (inside this network),
 NON_INTERNET (any non-internet source), VPC_NETWORKS (the networks in
 src_networks), or UNSPECIFIED. Unset means the rule does not narrow on
-context (Google's default); both engines send it only when set.
+context (Google's default); both engines send it only when set. It
+narrows a source and is never one: Google refuses an INGRESS rule whose
+only source is a network context, so pair INTRA_VPC with the network's
+ranges in src_ip_ranges.
 
 - rule: src_network_context must be one of: UNSPECIFIED, INTERNET, INTRA_VPC, NON_INTERNET, VPC_NETWORKS
 
@@ -650,7 +654,6 @@ Reference an output from another manifest as `valueFrom: {kind: GcpNetworkFirewa
 | `status.outputs.policy_id` | `string` | The policy's server-assigned numeric ID. |
 | `status.outputs.self_link` | `string` | The policy's self-link URL: `.../global/firewallPolicies/{name}` for a global policy, `.../regions/{region}/firewallPolicies/{name}` for a regional one. |
 | `status.outputs.region` | `string` | The region the policy lives in, or empty for a global policy -- the value that tells a consumer which resource family the policy is. |
-| `status.outputs.rule_tuple_count` | `int64` | Google's complexity measure for the whole rule set -- the sum of each rule's tuple count (protocols x ports x sources x targets). A project has a quota of tuples per policy; watch this before adding wide rules. |
 | `status.outputs.association_names` | `[]string` | The association names, in the order declared -- what `gcloud compute network-firewall-policies associations list` shows and what a detach targets. |
 
 ## References

@@ -17,6 +17,7 @@ metadata:
   annotations:
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e: "true"
+    planton.dev/e2e-upgrade-manifest: not-started-postgresql-to-bigquery.to.yaml # the in-place update act
     planton.dev/e2e-prerequisites: "GcpSecretManagerSecret,catalog/gcp/gcpdatastreamstream/e2e/prerequisites/postgresql-source-profile.yaml"
   tags:
     - planton-e2e

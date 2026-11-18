@@ -51,7 +51,12 @@ On an `INGRESS` rule the `src*` fields describe where traffic comes from and
 tags and networks exist only on the VPC side, so `srcSecureTags` and
 `srcNetworks` carry meaning on ingress rules only. `srcNetworkContext` /
 `destNetworkContext` express the same idea as a class (`INTERNET`,
-`INTRA_VPC`, ...) without listing addresses.
+`INTRA_VPC`, ...). A context narrows a source and is never one: Google
+refuses an ingress rule that names no source, or only a network context
+("Must specify at least one other source match apart from network
+context"), so an "allow inside the VPC" rule pairs `INTRA_VPC` with the
+network's ranges in `srcIpRanges`. The spec refuses both shapes before
+Google sees them.
 
 ## Targets narrow the rule
 

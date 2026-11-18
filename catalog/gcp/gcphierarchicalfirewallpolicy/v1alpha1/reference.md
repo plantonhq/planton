@@ -634,7 +634,6 @@ Reference an output from another manifest as `valueFrom: {kind: GcpHierarchicalF
 | `status.outputs.short_name` | `string` | The policy's user-facing short name, as declared (or defaulted from metadata.name). |
 | `status.outputs.self_link` | `string` | The policy's self-link URL, `https://www.googleapis.com/compute/v1/locations/global/firewallPolicies/{policy_id}`. |
 | `status.outputs.parent` | `string` | The node the policy lives under, `organizations/{id}` or `folders/{id}`. |
-| `status.outputs.rule_tuple_count` | `int64` | Google's complexity measure for the whole rule set -- the sum of each rule's tuple count (protocols x ports x sources x targets). An organization has a quota of tuples across its hierarchical policies; watch this before adding wide rules. |
 | `status.outputs.association_names` | `[]string` | The association names, in the order declared -- what `gcloud compute firewall-policies associations list` shows and what a detach targets. |
 
 ## References

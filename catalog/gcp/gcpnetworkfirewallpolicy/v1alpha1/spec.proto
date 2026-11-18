@@ -172,6 +172,15 @@ message GcpNetworkFirewallPolicyAssociation {
 // balancer handling it (`target_*`), DO `action`. A rule is its own Google
 // resource keyed by `priority`.
 message GcpNetworkFirewallPolicyRule {
+  // Google refuses an INGRESS rule that names no source, and one whose only
+  // source is a network context: "Must specify at least one other source
+  // match apart from network context" (measured live). src_network_context
+  // narrows a source; it is not one.
+  option (buf.validate.message).cel = {
+    id: "ingress_rule_names_a_source"
+    message: "an INGRESS rule must name where its traffic comes from: set src_ip_ranges, src_fqdns, src_region_codes, src_threat_intelligences, src_address_groups, src_secure_tags or src_networks (src_network_context alone is not a source)"
+    expression: "this.direction != 'INGRESS' || (has(this.match) && size(this.match.src_ip_ranges) + size(this.match.src_fqdns) + size(this.match.src_region_codes) + size(this.match.src_threat_intelligences) + size(this.match.src_address_groups) + size(this.match.src_secure_tags) + size(this.match.src_networks) > 0)"
+  };
   option (buf.validate.message).cel = {
     id: "security_profile_group_matches_action"
     message: "security_profile_group is required when action is apply_security_profile_group and must be empty for every other action"
@@ -437,7 +446,10 @@ message GcpNetworkFirewallPolicyRuleMatch {
   // INTERNET (outside Google Cloud), INTRA_VPC (inside this network),
   // NON_INTERNET (any non-internet source), VPC_NETWORKS (the networks in
   // src_networks), or UNSPECIFIED. Unset means the rule does not narrow on
-  // context (Google's default); both engines send it only when set.
+  // context (Google's default); both engines send it only when set. It
+  // narrows a source and is never one: Google refuses an INGRESS rule whose
+  // only source is a network context, so pair INTRA_VPC with the network's
+  // ranges in src_ip_ranges.
   optional string src_network_context = 14 [(buf.validate.field).cel = {
     id: "valid_src_network_context"
     message: "src_network_context must be one of: UNSPECIFIED, INTERNET, INTRA_VPC, NON_INTERNET, VPC_NETWORKS"

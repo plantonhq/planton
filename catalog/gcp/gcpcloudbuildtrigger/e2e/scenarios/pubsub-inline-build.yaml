@@ -16,6 +16,7 @@ metadata:
   annotations:
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e: "true"
+    planton.dev/e2e-upgrade-manifest: pubsub-inline-build.to.yaml # the in-place update act
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpcloudbuildtrigger/e2e/prerequisites/serviceaccount.yaml,catalog/gcp/gcpcloudbuildtrigger/e2e/prerequisites/topic.yaml"
   tags:
     - planton-e2e

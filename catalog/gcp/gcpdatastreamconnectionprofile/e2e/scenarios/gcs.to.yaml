@@ -1,0 +1,36 @@
+# The second act of gcs.yaml: the same profile renamed and its root path
+# moved, in-place updates a connection profile takes (its id, location and
+# profile type replace it).
+# Not a scenario of its own (the second-act annotation keeps discovery from
+# running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDatastreamConnectionProfile
+metadata:
+  name: planton-oss-e2e-gcpdscp-gcs
+  id: planton-oss-e2e-gcpdscp-gcs
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpdatastreamconnectionprofile
+  annotations:
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e: "true"
+    planton.dev/e2e-second-act: gcs.yaml
+    planton.dev/e2e-prerequisites: "GcpGcsBucket"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  connectionProfileId: e2e-gcpdscp-gcs-${E2E_RUN_ID}
+  displayName: E2E Cloud Storage destination, updated in place
+  gcsProfile:
+    bucket:
+      valueFrom:
+        kind: GcpGcsBucket
+        name: planton-oss-e2e-gcsb-prereq
+        fieldPath: status.outputs.bucket_name
+    rootPath: /datastream-updated
+  labels:
+    e2e-arm: gcs
+  deletionPolicy: DELETE

@@ -15,10 +15,11 @@ spec:
           - serviceusage.services.enable
           - serviceusage.services.get
           - serviceusage.services.list
+          - resourcemanager.projects.get
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling run.googleapis.com on the target project so a fresh project works on the first deploy. disable_on_destroy is false in both modules -- tearing down one runner must never disable the API for everything else -- so the disable permission is never needed.
+        notes: Covers google_project_service enabling run.googleapis.com on the target project so a fresh project works on the first deploy. disable_on_destroy is false in both modules -- tearing down one runner must never disable the API for everything else -- so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
       - purpose: ManageRuntimeServiceAccount
         permissions:
           - iam.serviceAccounts.create

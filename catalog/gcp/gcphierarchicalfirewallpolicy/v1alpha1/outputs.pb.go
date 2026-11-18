@@ -38,11 +38,6 @@ type GcpHierarchicalFirewallPolicyOutputs struct {
 	// The node the policy lives under, `organizations/{id}` or
 	// `folders/{id}`.
 	Parent string `protobuf:"bytes,4,opt,name=parent,proto3" json:"parent,omitempty"`
-	// Google's complexity measure for the whole rule set -- the sum of each
-	// rule's tuple count (protocols x ports x sources x targets). An
-	// organization has a quota of tuples across its hierarchical policies;
-	// watch this before adding wide rules.
-	RuleTupleCount int64 `protobuf:"varint,5,opt,name=rule_tuple_count,json=ruleTupleCount,proto3" json:"rule_tuple_count,omitempty"`
 	// The association names, in the order declared -- what
 	// `gcloud compute firewall-policies associations list` shows and what a
 	// detach targets.
@@ -109,13 +104,6 @@ func (x *GcpHierarchicalFirewallPolicyOutputs) GetParent() string {
 	return ""
 }
 
-func (x *GcpHierarchicalFirewallPolicyOutputs) GetRuleTupleCount() int64 {
-	if x != nil {
-		return x.RuleTupleCount
-	}
-	return 0
-}
-
 func (x *GcpHierarchicalFirewallPolicyOutputs) GetAssociationNames() []string {
 	if x != nil {
 		return x.AssociationNames
@@ -127,15 +115,14 @@ var File_catalog_gcp_gcphierarchicalfirewallpolicy_v1alpha1_outputs_proto protor
 
 const file_catalog_gcp_gcphierarchicalfirewallpolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/gcp/gcphierarchicalfirewallpolicy/v1alpha1/outputs.proto\x126dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1\"\xee\x01\n" +
+	"@catalog/gcp/gcphierarchicalfirewallpolicy/v1alpha1/outputs.proto\x126dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1\"\xdc\x01\n" +
 	"$GcpHierarchicalFirewallPolicyOutputs\x12\x1b\n" +
 	"\tpolicy_id\x18\x01 \x01(\tR\bpolicyId\x12\x1d\n" +
 	"\n" +
 	"short_name\x18\x02 \x01(\tR\tshortName\x12\x1b\n" +
 	"\tself_link\x18\x03 \x01(\tR\bselfLink\x12\x16\n" +
-	"\x06parent\x18\x04 \x01(\tR\x06parent\x12(\n" +
-	"\x10rule_tuple_count\x18\x05 \x01(\x03R\x0eruleTupleCount\x12+\n" +
-	"\x11association_names\x18\x06 \x03(\tR\x10associationNamesB\xbe\x03\n" +
+	"\x06parent\x18\x04 \x01(\tR\x06parent\x12+\n" +
+	"\x11association_names\x18\x06 \x03(\tR\x10associationNamesJ\x04\b\x05\x10\x06R\x10rule_tuple_countB\xbe\x03\n" +
 	":com.dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1B\fOutputsProtoP\x01Zugithub.com/plantonhq/planton/catalog/gcp/gcphierarchicalfirewallpolicy/v1alpha1;gcphierarchicalfirewallpolicyv1alpha1\xa2\x02\x04DPGG\xaa\x026Dev.Planton.Gcp.Gcphierarchicalfirewallpolicy.V1alpha1\xca\x026Dev\\Planton\\Gcp\\Gcphierarchicalfirewallpolicy\\V1alpha1\xe2\x02BDev\\Planton\\Gcp\\Gcphierarchicalfirewallpolicy\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Gcp::Gcphierarchicalfirewallpolicy::V1alpha1b\x06proto3"
 
 var (

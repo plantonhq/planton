@@ -1,0 +1,27 @@
+# The second act of minimal.yaml: the same agent with a description added and
+# its time zone changed, in-place updates an agent takes (its location and
+# default language replace it).
+# Not a scenario of its own (the second-act annotation keeps discovery from
+# running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDialogflowCxAgent
+metadata:
+  name: planton-oss-e2e-gcpdfcx-minimal
+  id: planton-oss-e2e-gcpdfcx-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpdialogflowcxagent
+  annotations:
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e: "true"
+    planton.dev/e2e-second-act: minimal.yaml
+  tags:
+    - planton-e2e
+spec:
+  location: global
+  displayName: planton-oss-e2e-dfcx-minimal-${E2E_RUN_ID}
+  defaultLanguageCode: en
+  timeZone: America/New_York
+  description: Planton E2E minimal agent, updated in place; safe to delete

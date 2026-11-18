@@ -25,34 +25,37 @@ spec:
           - serviceusage.services.enable
           - serviceusage.services.get
           - serviceusage.services.list
+          - resourcemanager.projects.get
         provenance: derived
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: app_check.recaptcha_v3
-        notes: Covers google_project_service (Terraform) / projects.Service (Pulumi) enabling firebaseappcheck.googleapis.com, which the modules enable whenever the spec composes any App Check resource. Both modules pin disable_on_destroy=false, so neither engine ever calls the disable path and serviceusage.services.disable is deliberately not granted. The Firebase Management API itself is enabled by the GcpFirebaseProject the app lives in.
+        notes: Covers google_project_service (Terraform) / projects.Service (Pulumi) enabling firebaseappcheck.googleapis.com, which the modules enable whenever the spec composes any App Check resource. Both modules pin disable_on_destroy=false, so neither engine ever calls the disable path and serviceusage.services.disable is deliberately not granted. The Firebase Management API itself is enabled by the GcpFirebaseProject the app lives in. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
       - purpose: EnableAppCheckApiForRecaptchaEnterprise
         permissions:
           - serviceusage.services.enable
           - serviceusage.services.get
           - serviceusage.services.list
+          - resourcemanager.projects.get
         provenance: derived
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: app_check.recaptcha_enterprise
-        notes: Covers google_project_service (Terraform) / projects.Service (Pulumi) enabling firebaseappcheck.googleapis.com, which the modules enable whenever the spec composes any App Check resource. Both modules pin disable_on_destroy=false, so neither engine ever calls the disable path and serviceusage.services.disable is deliberately not granted. The Firebase Management API itself is enabled by the GcpFirebaseProject the app lives in.
+        notes: Covers google_project_service (Terraform) / projects.Service (Pulumi) enabling firebaseappcheck.googleapis.com, which the modules enable whenever the spec composes any App Check resource. Both modules pin disable_on_destroy=false, so neither engine ever calls the disable path and serviceusage.services.disable is deliberately not granted. The Firebase Management API itself is enabled by the GcpFirebaseProject the app lives in. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
       - purpose: EnableAppCheckApiForDebugTokens
         permissions:
           - serviceusage.services.enable
           - serviceusage.services.get
           - serviceusage.services.list
+          - resourcemanager.projects.get
         provenance: derived
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: app_check.debug_tokens
-        notes: Covers google_project_service (Terraform) / projects.Service (Pulumi) enabling firebaseappcheck.googleapis.com, which the modules enable whenever the spec composes any App Check resource. Both modules pin disable_on_destroy=false, so neither engine ever calls the disable path and serviceusage.services.disable is deliberately not granted. The Firebase Management API itself is enabled by the GcpFirebaseProject the app lives in.
+        notes: Covers google_project_service (Terraform) / projects.Service (Pulumi) enabling firebaseappcheck.googleapis.com, which the modules enable whenever the spec composes any App Check resource. Both modules pin disable_on_destroy=false, so neither engine ever calls the disable path and serviceusage.services.disable is deliberately not granted. The Firebase Management API itself is enabled by the GcpFirebaseProject the app lives in. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
       - purpose: ManageRecaptchaV3Config
         permissions:
           - firebaseappcheck.recaptchaV3Config.get

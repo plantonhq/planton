@@ -15,10 +15,11 @@ spec:
           - serviceusage.services.enable
           - serviceusage.services.get
           - serviceusage.services.list
+          - resourcemanager.projects.get
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service (Terraform) / projects.Service (Pulumi) enabling logging.googleapis.com -- created only on the PROJECT-scope path; folder/organization/billing buckets are not project resources, so no API enablement happens there. The Terraform module pins disable_on_destroy=false and the Pulumi module leaves the field unset -- the provider's own reference states false OR UNSET leaves the service enabled on destroy (at the pinned release), so neither engine calls the disable path and no disable permission is needed.
+        notes: Covers google_project_service (Terraform) / projects.Service (Pulumi) enabling logging.googleapis.com -- created only on the PROJECT-scope path; folder/organization/billing buckets are not project resources, so no API enablement happens there. The Terraform module pins disable_on_destroy=false and the Pulumi module leaves the field unset -- the provider's own reference states false OR UNSET leaves the service enabled on destroy (at the pinned release), so neither engine calls the disable path and no disable permission is needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
       - purpose: ManageLogBucket
         permissions:
           - logging.buckets.create

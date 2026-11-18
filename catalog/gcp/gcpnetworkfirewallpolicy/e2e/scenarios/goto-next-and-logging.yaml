@@ -18,6 +18,7 @@ metadata:
   annotations:
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e: "true"
+    planton.dev/e2e-upgrade-manifest: goto-next-and-logging.to.yaml # the in-place update act
     # The target service account is the GcpServiceAccount install profile,
     # deployed as an extra fixture through the kind-name entry.
     planton.dev/e2e-prerequisites: "GcpServiceAccount"
@@ -61,6 +62,7 @@ spec:
       direction: INGRESS
       ruleName: allow-intra-vpc
       match:
+        srcIpRanges: ["10.0.0.0/8"] # Google refuses a network context as an ingress rule's only source
         srcNetworkContext: INTRA_VPC
         layer4Configs:
           - ipProtocol: all
@@ -74,6 +76,7 @@ spec:
       direction: INGRESS
       ruleName: delegate
       match:
+        srcIpRanges: ["0.0.0.0/0"] # every ingress rule names a source; goto_next hands the rest down
         layer4Configs:
           - ipProtocol: all
   associations:

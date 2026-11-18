@@ -15,10 +15,11 @@ spec:
           - serviceusage.services.enable
           - serviceusage.services.get
           - serviceusage.services.list
+          - resourcemanager.projects.get
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: Covers TWO google_project_service resources -- the module enables both memorystore.googleapis.com and networkconnectivity.googleapis.com (PSC service connectivity automation rides the latter). disable_on_destroy is false on both, so the disable permission is never needed.
+        notes: Covers TWO google_project_service resources -- the module enables both memorystore.googleapis.com and networkconnectivity.googleapis.com (PSC service connectivity automation rides the latter). disable_on_destroy is false on both, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
       - purpose: ReadProject
         permissions:
           - resourcemanager.projects.get

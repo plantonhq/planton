@@ -797,7 +797,7 @@ const file_catalog_gcp_gcpnetworkfirewallpolicy_v1alpha1_spec_proto_rawDesc = ""
 	"#GcpNetworkFirewallPolicyAssociation\x12\xfd\x01\n" +
 	"\x04name\x18\x01 \x01(\tB\xe8\x01\xbaH\xe4\x01\xba\x01\xe0\x01\n" +
 	"\x16valid_association_name\x12\x84\x01name must be 1-63 characters: lowercase letters, digits, and hyphens, starting with a letter and not ending with a hyphen (RFC 1035)\x1a?this == '' || this.matches('^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$')R\x04name\x12\x81\x01\n" +
-	"\anetwork\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB3\xbaH\x03\xc8\x01\x01\x88\xd4a\xc2\x17\x92\xd4a status.outputs.network_self_link\x98\xd4a\x01R\anetwork\"\xe3\x11\n" +
+	"\anetwork\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB3\xbaH\x03\xc8\x01\x01\x88\xd4a\xc2\x17\x92\xd4a status.outputs.network_self_link\x98\xd4a\x01R\anetwork\"\x96\x16\n" +
 	"\x1cGcpNetworkFirewallPolicyRule\x121\n" +
 	"\bpriority\x18\x01 \x01(\x05B\x10\xbaH\r\xc8\x01\x01\x1a\b\x18\xff\xff\xff\xff\a(\x00H\x00R\bpriority\x88\x01\x01\x12\xc7\x01\n" +
 	"\x06action\x18\x02 \x01(\tB\xae\x01\xbaH\xaa\x01\xba\x01\xa3\x01\n" +
@@ -818,7 +818,8 @@ const file_catalog_gcp_gcpnetworkfirewallpolicy_v1alpha1_spec_proto_rawDesc = ""
 	"\x17target_service_accounts\x18\f \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1d\x88\xd4a\xc6\x17\x92\xd4a\x14status.outputs.emailR\x15targetServiceAccounts\x124\n" +
 	"\x16security_profile_group\x18\r \x01(\tR\x14securityProfileGroup\x12\x1f\n" +
 	"\vtls_inspect\x18\x0e \x01(\bR\n" +
-	"tlsInspect:\xed\x06\xbaH\xe9\x06\x1a\xf8\x01\n" +
+	"tlsInspect:\xa0\v\xbaH\x9c\v\x1a\xb0\x04\n" +
+	"\x1bingress_rule_names_a_source\x12\xe1\x01an INGRESS rule must name where its traffic comes from: set src_ip_ranges, src_fqdns, src_region_codes, src_threat_intelligences, src_address_groups, src_secure_tags or src_networks (src_network_context alone is not a source)\x1a\xac\x02this.direction != 'INGRESS' || (has(this.match) && size(this.match.src_ip_ranges) + size(this.match.src_fqdns) + size(this.match.src_region_codes) + size(this.match.src_threat_intelligences) + size(this.match.src_address_groups) + size(this.match.src_secure_tags) + size(this.match.src_networks) > 0)\x1a\xf8\x01\n" +
 	"%security_profile_group_matches_action\x12wsecurity_profile_group is required when action is apply_security_profile_group and must be empty for every other action\x1aV(this.action == 'apply_security_profile_group') == (this.security_profile_group != '')\x1a\xbc\x01\n" +
 	",tls_inspect_only_with_security_profile_group\x12Htls_inspect can be true only when action is apply_security_profile_group\x1aB!this.tls_inspect || this.action == 'apply_security_profile_group'\x1a\xa9\x01\n" +
 	"\x17no_logging_on_goto_next\x12Zenable_logging cannot be set on a goto_next rule -- Google logs only the rule that decides\x1a2!this.enable_logging || this.action != 'goto_next'\x1a\x80\x02\n" +

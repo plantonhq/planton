@@ -15,10 +15,11 @@ spec:
           - serviceusage.services.enable
           - serviceusage.services.get
           - serviceusage.services.list
+          - resourcemanager.projects.get
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: "Covers google_project_service (Pulumi projects.Service) for compute.googleapis.com -- enable on first apply, get on every refresh. disable_on_destroy is false, so no disable permission is ever exercised."
+        notes: "Covers google_project_service (Pulumi projects.Service) for compute.googleapis.com -- enable on first apply, get on every refresh. disable_on_destroy is false, so no disable permission is ever exercised. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live)."
       - purpose: ManageHaVpnGateway
         permissions:
           - compute.vpnGateways.create

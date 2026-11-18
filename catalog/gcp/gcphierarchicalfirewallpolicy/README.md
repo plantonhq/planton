@@ -113,7 +113,6 @@ planton apply -f org-baseline.yaml
 | `short_name` | `string` | The short name |
 | `self_link` | `string` | Self-link URL |
 | `parent` | `string` | `organizations/{id}` or `folders/{id}` |
-| `rule_tuple_count` | `int64` | Google's complexity measure for the rule set |
 | `association_names` | `list` | Association names in declaration order |
 
 ## Deployment Methods

@@ -100,7 +100,6 @@ func globalPolicy(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider
 	ctx.Export(OpPolicyId, createdPolicy.NetworkFirewallPolicyId)
 	ctx.Export(OpSelfLink, createdPolicy.SelfLink)
 	ctx.Export(OpRegion, pulumi.String(""))
-	ctx.Export(OpRuleTupleCount, createdPolicy.RuleTupleCount)
 	ctx.Export(OpAssociationNames, pulumi.ToStringArray(locals.AssociationNames))
 
 	return nil

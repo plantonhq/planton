@@ -151,7 +151,6 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 | `short_name` | The short name | Tooling |
 | `self_link` | Self-link URL | Tooling |
 | `parent` | `organizations/{id}` or `folders/{id}` | Audit |
-| `rule_tuple_count` | Google's complexity measure | Quota watch before adding wide rules |
 | `association_names` | Association names in declaration order | A detach targets one |
 
 ## Common Patterns

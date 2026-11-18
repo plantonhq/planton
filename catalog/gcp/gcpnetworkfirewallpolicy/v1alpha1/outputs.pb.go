@@ -38,10 +38,6 @@ type GcpNetworkFirewallPolicyOutputs struct {
 	// The region the policy lives in, or empty for a global policy -- the
 	// value that tells a consumer which resource family the policy is.
 	Region string `protobuf:"bytes,4,opt,name=region,proto3" json:"region,omitempty"`
-	// Google's complexity measure for the whole rule set -- the sum of each
-	// rule's tuple count (protocols x ports x sources x targets). A project
-	// has a quota of tuples per policy; watch this before adding wide rules.
-	RuleTupleCount int64 `protobuf:"varint,5,opt,name=rule_tuple_count,json=ruleTupleCount,proto3" json:"rule_tuple_count,omitempty"`
 	// The association names, in the order declared -- what
 	// `gcloud compute network-firewall-policies associations list` shows
 	// and what a detach targets.
@@ -108,13 +104,6 @@ func (x *GcpNetworkFirewallPolicyOutputs) GetRegion() string {
 	return ""
 }
 
-func (x *GcpNetworkFirewallPolicyOutputs) GetRuleTupleCount() int64 {
-	if x != nil {
-		return x.RuleTupleCount
-	}
-	return 0
-}
-
 func (x *GcpNetworkFirewallPolicyOutputs) GetAssociationNames() []string {
 	if x != nil {
 		return x.AssociationNames
@@ -126,15 +115,14 @@ var File_catalog_gcp_gcpnetworkfirewallpolicy_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_gcp_gcpnetworkfirewallpolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/gcp/gcpnetworkfirewallpolicy/v1alpha1/outputs.proto\x121dev.planton.gcp.gcpnetworkfirewallpolicy.v1alpha1\"\xeb\x01\n" +
+	";catalog/gcp/gcpnetworkfirewallpolicy/v1alpha1/outputs.proto\x121dev.planton.gcp.gcpnetworkfirewallpolicy.v1alpha1\"\xd9\x01\n" +
 	"\x1fGcpNetworkFirewallPolicyOutputs\x12\x1f\n" +
 	"\vpolicy_name\x18\x01 \x01(\tR\n" +
 	"policyName\x12\x1b\n" +
 	"\tpolicy_id\x18\x02 \x01(\tR\bpolicyId\x12\x1b\n" +
 	"\tself_link\x18\x03 \x01(\tR\bselfLink\x12\x16\n" +
-	"\x06region\x18\x04 \x01(\tR\x06region\x12(\n" +
-	"\x10rule_tuple_count\x18\x05 \x01(\x03R\x0eruleTupleCount\x12+\n" +
-	"\x11association_names\x18\x06 \x03(\tR\x10associationNamesB\x9b\x03\n" +
+	"\x06region\x18\x04 \x01(\tR\x06region\x12+\n" +
+	"\x11association_names\x18\x06 \x03(\tR\x10associationNamesJ\x04\b\x05\x10\x06R\x10rule_tuple_countB\x9b\x03\n" +
 	"5com.dev.planton.gcp.gcpnetworkfirewallpolicy.v1alpha1B\fOutputsProtoP\x01Zkgithub.com/plantonhq/planton/catalog/gcp/gcpnetworkfirewallpolicy/v1alpha1;gcpnetworkfirewallpolicyv1alpha1\xa2\x02\x04DPGG\xaa\x021Dev.Planton.Gcp.Gcpnetworkfirewallpolicy.V1alpha1\xca\x021Dev\\Planton\\Gcp\\Gcpnetworkfirewallpolicy\\V1alpha1\xe2\x02=Dev\\Planton\\Gcp\\Gcpnetworkfirewallpolicy\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Gcp::Gcpnetworkfirewallpolicy::V1alpha1b\x06proto3"
 
 var (

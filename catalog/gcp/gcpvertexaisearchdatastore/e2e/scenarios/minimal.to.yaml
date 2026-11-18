@@ -1,0 +1,29 @@
+# The second act of minimal.yaml: the same store with a display name set,
+# one of the two in-place updates a data store takes (everything else but its
+# KMS key replaces it, documents included).
+# Not a scenario of its own (the second-act annotation keeps discovery from
+# running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchDataStore
+metadata:
+  name: planton-oss-e2e-gcpvsds-minimal
+  id: planton-oss-e2e-gcpvsds-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpvertexaisearchdatastore
+  annotations:
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e: "true"
+    planton.dev/e2e-second-act: minimal.yaml
+  tags:
+    - planton-e2e
+spec:
+  location: global
+  dataStoreId: planton-oss-e2e-vsds-minimal-${E2E_RUN_ID}
+  displayName: Planton E2E minimal data store, renamed in place
+  industryVertical: GENERIC
+  contentConfig: NO_CONTENT
+  solutionTypes:
+    - SOLUTION_TYPE_SEARCH

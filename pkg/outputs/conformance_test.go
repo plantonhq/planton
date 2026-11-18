@@ -4078,9 +4078,8 @@ func TestOutputsConformance(t *testing.T) {
 		{
 			// GcpHierarchicalFirewallPolicy: the server-assigned numeric policy
 			// ID (a string on the wire, Google's `name`), the short name, self
-			// link, parent, the rule tuple count as a JSON number, and the
-			// declaration-order association names -- the E2E verifier keys on
-			// policy_id.
+			// link, parent, and the declaration-order association names -- the
+			// E2E verifier keys on policy_id.
 			name: "GcpHierarchicalFirewallPolicy",
 			kind: catalogkind.CatalogKind_GcpHierarchicalFirewallPolicy,
 			rawOutputs: map[string]interface{}{
@@ -4088,18 +4087,16 @@ func TestOutputsConformance(t *testing.T) {
 				"short_name":        "org-baseline",
 				"self_link":         "https://www.googleapis.com/compute/v1/locations/global/firewallPolicies/1234567890123456789",
 				"parent":            "organizations/123456789012",
-				"rule_tuple_count":  float64(12),
 				"association_names": []interface{}{"org-baseline-org", "org-baseline-prod"},
 			},
 			mustPopulate: []string{
-				"policy_id", "short_name", "self_link", "parent", "rule_tuple_count", "association_names",
+				"policy_id", "short_name", "self_link", "parent", "association_names",
 			},
 		},
 		{
 			// GcpNetworkFirewallPolicy: the user-facing policy name (the E2E
 			// verifier's key), the numeric ID, self link, the region (empty
-			// for the global family), the rule tuple count as a JSON number,
-			// and the association names.
+			// for the global family), and the association names.
 			name: "GcpNetworkFirewallPolicy",
 			kind: catalogkind.CatalogKind_GcpNetworkFirewallPolicy,
 			rawOutputs: map[string]interface{}{
@@ -4107,11 +4104,10 @@ func TestOutputsConformance(t *testing.T) {
 				"policy_id":         "9876543210987654321",
 				"self_link":         "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/firewallPolicies/baseline",
 				"region":            "us-central1",
-				"rule_tuple_count":  float64(4),
 				"association_names": []interface{}{"baseline-main"},
 			},
 			mustPopulate: []string{
-				"policy_name", "policy_id", "self_link", "region", "rule_tuple_count", "association_names",
+				"policy_name", "policy_id", "self_link", "region", "association_names",
 			},
 		},
 		{

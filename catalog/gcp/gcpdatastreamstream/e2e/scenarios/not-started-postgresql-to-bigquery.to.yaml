@@ -1,0 +1,58 @@
+# The second act of not-started-postgresql-to-bigquery.yaml: the same stream
+# renamed, an in-place update a stream takes (its id, location and profiles
+# replace it).
+# Not a scenario of its own (the second-act annotation keeps discovery from
+# running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDatastreamStream
+metadata:
+  name: planton-oss-e2e-gcpdstrm-orders
+  id: planton-oss-e2e-gcpdstrm-orders
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpdatastreamstream
+  annotations:
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e: "true"
+    planton.dev/e2e-second-act: not-started-postgresql-to-bigquery.yaml
+    planton.dev/e2e-prerequisites: "GcpSecretManagerSecret,catalog/gcp/gcpdatastreamstream/e2e/prerequisites/postgresql-source-profile.yaml"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  streamId: e2e-gcpdstrm-${E2E_RUN_ID}
+  displayName: E2E orders CDC (not started), renamed in place
+  sourceConfig:
+    sourceConnectionProfile:
+      valueFrom:
+        kind: GcpDatastreamConnectionProfile
+        name: planton-oss-e2e-gcpdstrm-source
+        fieldPath: status.outputs.name
+    postgresqlSourceConfig:
+      replicationSlot: datastream_slot
+      publication: datastream_pub
+      includeObjects:
+        postgresqlSchemas:
+          - schema: public
+            postgresqlTables:
+              - table: orders
+  destinationConfig:
+    destinationConnectionProfile:
+      valueFrom:
+        kind: GcpDatastreamConnectionProfile
+        name: planton-oss-e2e-gcpdstrm-bigquery
+        fieldPath: status.outputs.name
+    bigqueryDestinationConfig:
+      sourceHierarchyDatasets:
+        datasetTemplate:
+          location: US
+          datasetIdPrefix: e2e_gcpdstrm
+      writeMode: MERGE
+  backfillNone: true
+  desiredState: NOT_STARTED
+  createWithoutValidation: true
+  labels:
+    e2e-arm: not-started
+  deletionPolicy: DELETE

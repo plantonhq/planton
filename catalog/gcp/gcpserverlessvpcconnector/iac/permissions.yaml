@@ -15,10 +15,11 @@ spec:
           - serviceusage.services.enable
           - serviceusage.services.get
           - serviceusage.services.list
+          - resourcemanager.projects.get
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling vpcaccess.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed.
+        notes: Covers google_project_service enabling vpcaccess.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
       - purpose: ManageConnector
         permissions:
           - vpcaccess.connectors.create

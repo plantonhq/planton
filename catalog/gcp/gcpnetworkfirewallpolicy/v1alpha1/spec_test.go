@@ -264,6 +264,24 @@ var _ = ginkgo.Describe("GcpNetworkFirewallPolicySpec", func() {
 		expectError(target, "enable_logging cannot be set on a goto_next")
 	})
 
+	ginkgo.It("should reject an INGRESS rule with no source, or with a network context as its only source", func() {
+		target := globalBaseline()
+		target.Spec.Rules[0].Match.SrcIpRanges = nil
+		expectError(target, "an INGRESS rule must name where its traffic comes from")
+		target = globalBaseline()
+		target.Spec.Rules[0].Match.SrcIpRanges = nil
+		target.Spec.Rules[0].Match.SrcNetworkContext = proto.String("INTRA_VPC")
+		expectError(target, "an INGRESS rule must name where its traffic comes from")
+		target = globalBaseline()
+		target.Spec.Rules[0].Match.SrcNetworkContext = proto.String("INTRA_VPC")
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+		target = globalBaseline()
+		target.Spec.Rules[0].Direction = "EGRESS"
+		target.Spec.Rules[0].Match.SrcIpRanges = nil
+		target.Spec.Rules[0].Match.DestIpRanges = []string{"0.0.0.0/0"}
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+	})
+
 	ginkgo.It("should reject forwarding rules without the load balancer target type, and the type without rules", func() {
 		target := globalBaseline()
 		target.Spec.Rules[0].TargetForwardingRules = []*foreignkeyv1.StringValueOrRef{nameRef("ilb")}

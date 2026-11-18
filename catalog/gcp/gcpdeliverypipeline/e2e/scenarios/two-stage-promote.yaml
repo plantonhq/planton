@@ -15,6 +15,7 @@ metadata:
   annotations:
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e: "true"
+    planton.dev/e2e-upgrade-manifest: two-stage-promote.to.yaml # the in-place update act
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpdeliverypipeline/e2e/prerequisites/target-dev.yaml,catalog/gcp/gcpdeliverypipeline/e2e/prerequisites/target-prod.yaml,catalog/gcp/gcpdeliverypipeline/e2e/prerequisites/service-account.yaml"
   tags:
     - planton-e2e

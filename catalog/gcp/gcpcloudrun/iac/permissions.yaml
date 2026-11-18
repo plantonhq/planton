@@ -15,10 +15,11 @@ spec:
           - serviceusage.services.enable
           - serviceusage.services.get
           - serviceusage.services.list
+          - resourcemanager.projects.get
         provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Covers google_project_service enabling run.googleapis.com on the target project so a fresh project works on the first deploy. disable_on_destroy is false in both modules -- tearing down one service must never disable the API for everything else -- so the disable permission is never needed. Proven 2026-10-20 on dev by the least-privilege lane: an identity holding exactly the kind's rendered permissions deployed, updated and destroyed it."
+        notes: "Covers google_project_service enabling run.googleapis.com on the target project so a fresh project works on the first deploy. disable_on_destroy is false in both modules -- tearing down one service must never disable the API for everything else -- so the disable permission is never needed. Proven 2026-10-20 on dev by the least-privilege lane: an identity holding exactly the kind's rendered permissions deployed, updated and destroyed it. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live)."
       - purpose: ManageService
         permissions:
           - run.services.create
@@ -62,6 +63,7 @@ spec:
           - serviceusage.services.enable
           - serviceusage.services.get
           - serviceusage.services.list
+          - resourcemanager.projects.get
           - secretmanager.secrets.create
           - secretmanager.secrets.get
           - secretmanager.secrets.update
@@ -79,7 +81,7 @@ spec:
         privilege: ordinary
         condition:
           spec_field_set: containers.env.secret_value
-        notes: Covers the secret the modules keep per env[].secret_value -- google_project_service enabling secretmanager.googleapis.com (disable_on_destroy false), google_secret_manager_secret (user-managed replication in the service's region(s), attribution labels), google_secret_manager_secret_version holding the value (a new value creates the new version before destroying the old; versions.access is the provider's read of the payload on refresh), and google_secret_manager_secret_iam_member granting roles/secretmanager.secretAccessor on that one secret to the runtime identity (IAM member resources read the policy before modifying it). Teardown deletes the secret, which destroys its versions.
+        notes: Covers the secret the modules keep per env[].secret_value -- google_project_service enabling secretmanager.googleapis.com (disable_on_destroy false), google_secret_manager_secret (user-managed replication in the service's region(s), attribution labels), google_secret_manager_secret_version holding the value (a new value creates the new version before destroying the old; versions.access is the provider's read of the payload on refresh), and google_secret_manager_secret_iam_member granting roles/secretmanager.secretAccessor on that one secret to the runtime identity (IAM member resources read the policy before modifying it). Teardown deletes the secret, which destroys its versions. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
       - purpose: ResolveDefaultRuntimeIdentity
         permissions:
           - resourcemanager.projects.get

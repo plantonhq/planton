@@ -26,13 +26,6 @@ output "region" {
   value       = local.is_regional ? var.spec.region : ""
 }
 
-# Google's complexity measure for the whole rule set; a project has a quota
-# of tuples per policy.
-output "rule_tuple_count" {
-  description = "Total rule tuple count of the policy"
-  value       = one(concat(google_compute_network_firewall_policy.this[*].rule_tuple_count, google_compute_region_network_firewall_policy.this[*].rule_tuple_count))
-}
-
 # Declaration-order association names -- what a detach targets.
 output "association_names" {
   description = "Names of the policy's associations, in declaration order"

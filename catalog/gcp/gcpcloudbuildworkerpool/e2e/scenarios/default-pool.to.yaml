@@ -1,0 +1,30 @@
+# The second act of default-pool.yaml: the same pool renamed and its workers'
+# disk grown, in-place updates a worker pool takes (its id and location
+# replace it).
+# Not a scenario of its own (the second-act annotation keeps discovery from
+# running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudBuildWorkerPool
+metadata:
+  name: planton-oss-e2e-gcpcbwp-default
+  id: planton-oss-e2e-gcpcbwp-default
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpcloudbuildworkerpool
+  annotations:
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e: "true"
+    planton.dev/e2e-second-act: default-pool.yaml
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  workerPoolId: planton-e2e-cbwp-${E2E_RUN_ID}
+  displayName: Planton E2E pool, updated in place
+  annotations:
+    purpose: e2e
+  workerConfig:
+    machineType: e2-standard-2
+    diskSizeGb: 120

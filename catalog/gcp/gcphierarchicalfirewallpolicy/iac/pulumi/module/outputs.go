@@ -11,8 +11,6 @@ const (
 	OpSelfLink = "self_link"
 	// OpParent is the node the policy lives under.
 	OpParent = "parent"
-	// OpRuleTupleCount is Google's complexity measure for the rule set.
-	OpRuleTupleCount = "rule_tuple_count"
 	// OpAssociationNames lists the association names in declaration order.
 	OpAssociationNames = "association_names"
 )

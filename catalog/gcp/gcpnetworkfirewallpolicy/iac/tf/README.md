@@ -45,7 +45,6 @@ The `spec` object includes: `project_id` (empty = the provider's default project
 | `policy_id` | The server-assigned numeric ID |
 | `self_link` | Self-link URL of the policy (global or regional form) |
 | `region` | The region, or empty for a global policy |
-| `rule_tuple_count` | Google's complexity measure for the rule set |
 | `association_names` | Association names in declaration order |
 
 Each output selects whichever family was created with `one(concat(...))`.

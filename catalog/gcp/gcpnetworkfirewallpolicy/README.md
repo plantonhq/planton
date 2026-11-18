@@ -118,7 +118,6 @@ planton apply -f baseline.yaml
 | `policy_id` | `string` | The server-assigned numeric ID |
 | `self_link` | `string` | Self-link URL (global or regional form) |
 | `region` | `string` | The region, or empty for global |
-| `rule_tuple_count` | `int64` | Google's complexity measure for the rule set |
 | `association_names` | `list` | Association names in declaration order |
 
 ## Deployment Methods

@@ -15,10 +15,11 @@ spec:
           - serviceusage.services.enable
           - serviceusage.services.get
           - serviceusage.services.list
+          - resourcemanager.projects.get
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: Covers the google_project_service resource that enables compute.googleapis.com on the target project before the health check is created (disable_on_destroy is false, so teardown never disables the API).
+        notes: Covers the google_project_service resource that enables compute.googleapis.com on the target project before the health check is created (disable_on_destroy is false, so teardown never disables the API). The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
       - purpose: ManageGlobalHealthCheck
         permissions:
           - compute.healthChecks.create

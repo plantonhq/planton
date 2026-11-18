@@ -34,7 +34,6 @@ Credentials are provided via IaC input (by the CLI), not in the manifest `spec`.
 | `short_name` | The policy's short name |
 | `self_link` | Self-link URL of the policy |
 | `parent` | `organizations/{id}` or `folders/{id}` |
-| `rule_tuple_count` | Google's complexity measure for the rule set |
 | `association_names` | Association names in declaration order |
 
 ## Send Posture

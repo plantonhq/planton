@@ -11,8 +11,6 @@ const (
 	OpSelfLink = "self_link"
 	// OpRegion is the policy's region, or empty for a global policy.
 	OpRegion = "region"
-	// OpRuleTupleCount is Google's complexity measure for the rule set.
-	OpRuleTupleCount = "rule_tuple_count"
 	// OpAssociationNames lists the association names in declaration order.
 	OpAssociationNames = "association_names"
 )

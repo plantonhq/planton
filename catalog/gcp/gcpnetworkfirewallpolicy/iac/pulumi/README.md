@@ -34,7 +34,6 @@ Credentials are provided via IaC input (by the CLI), not in the manifest `spec`.
 | `policy_id` | The server-assigned numeric ID |
 | `self_link` | Self-link URL of the policy (global or regional form) |
 | `region` | The region, or empty for a global policy |
-| `rule_tuple_count` | Google's complexity measure for the rule set |
 | `association_names` | Association names in declaration order |
 
 ## Send Posture

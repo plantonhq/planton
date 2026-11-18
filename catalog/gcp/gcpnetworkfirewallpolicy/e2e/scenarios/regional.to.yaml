@@ -1,0 +1,63 @@
+# The second act of regional.yaml: the regional policy's description changed
+# and its parked rule enforced, the two in-place updates a policy takes (the
+# policy patched, one rule patched).
+# Not a scenario of its own (the second-act annotation keeps discovery from
+# running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpNetworkFirewallPolicy
+metadata:
+  name: planton-oss-e2e-gcpnfwp-regional
+  id: planton-oss-e2e-gcpnfwp-regional
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpnetworkfirewallpolicy
+  annotations:
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e: "true"
+    planton.dev/e2e-second-act: regional.yaml
+  tags:
+    - planton-e2e
+spec:
+  policyName: planton-oss-e2e-gcpnfwp-regional-${E2E_RUN_ID} # per engine, so both engines' lanes can run at once in one project
+  region: us-central1
+  description: Planton E2E regional network firewall policy, updated in place; safe to delete
+  policyType: VPC_POLICY
+  rules:
+    - priority: 1000
+      action: allow
+      direction: INGRESS
+      ruleName: allow-health-checks
+      match:
+        srcIpRanges: ["35.191.0.0/16", "130.211.0.0/22"]
+        layer4Configs:
+          - ipProtocol: tcp
+    - priority: 1100
+      action: allow
+      direction: EGRESS
+      ruleName: allow-dns-out
+      match:
+        destIpRanges: ["0.0.0.0/0"]
+        layer4Configs:
+          - ipProtocol: udp
+            ports: ["53"]
+          - ipProtocol: tcp
+            ports: ["53"]
+    - priority: 1200
+      action: deny
+      direction: INGRESS
+      ruleName: parked-rule
+      description: Enforced by the update act
+      match:
+        srcIpRanges: ["192.0.2.0/24"]
+        layer4Configs:
+          - ipProtocol: icmp
+  associations:
+    - name: planton-oss-e2e-gcpnfwp-regional-prereq
+      network:
+        valueFrom:
+          kind: GcpVpcNetwork
+          name: planton-oss-e2e-gcpvpcnetwork-prereq
+          fieldPath: status.outputs.network_self_link
+  deletionPolicy: DELETE

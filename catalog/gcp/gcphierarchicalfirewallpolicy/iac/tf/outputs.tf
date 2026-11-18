@@ -22,13 +22,6 @@ output "parent" {
   value       = google_compute_firewall_policy.this.parent
 }
 
-# Google's complexity measure for the whole rule set; an organization has a
-# quota of tuples across its hierarchical policies.
-output "rule_tuple_count" {
-  description = "Total rule tuple count of the policy"
-  value       = google_compute_firewall_policy.this.rule_tuple_count
-}
-
 # Declaration-order association names -- what a detach targets.
 output "association_names" {
   description = "Names of the policy's associations, in declaration order"

@@ -40,7 +40,6 @@ func firewallPolicy(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provid
 	ctx.Export(OpShortName, createdPolicy.ShortName)
 	ctx.Export(OpSelfLink, createdPolicy.SelfLink)
 	ctx.Export(OpParent, createdPolicy.Parent)
-	ctx.Export(OpRuleTupleCount, createdPolicy.RuleTupleCount)
 	ctx.Export(OpAssociationNames, pulumi.ToStringArray(locals.AssociationNames))
 
 	return createdPolicy, nil

@@ -3,27 +3,23 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpnetworkfirewallpolicy
 spec:
-  # Awaiting the live proof lane. Both resource families prove in the
-  # harness project with project-level roles/compute.securityAdmin: the
-  # global reference manifest and the `regional` scenario, attached to the
-  # registry's prerequisite network; the `secure-tags` scenario adds a
-  # GCE_FIREWALL tag key and value as fixtures (tagAdmin on the project);
-  # the `goto-next-and-logging` scenario adds a GcpServiceAccount fixture.
-  # Offline bar met: both modules build and validate, offline plans for the
-  # reference manifest and every scenario are clean on the pinned provider,
-  # and the accounting is total. Live facts the proof lane confirms: (1)
-  # policy_type, target_type, and the network-context enums left unset show
-  # no re-plan diff under the apply-idempotency gate on both engines, and
-  # an explicit VPC_POLICY round-trips; (2) every rule renders one resource
-  # keyed by priority and rule_tuple_count is populated on both engines;
-  # (3) the tagValues/{id} handles render identically on both engines and
-  # the harness destroys the policy before the tag value and key; (4) the
+  # Proven live on both engines (2026-11-18): the global and regional
+  # families, secure tags, threat lists, region codes, FQDNs and network
+  # contexts, each scenario deployed and destroyed by an identity holding only
+  # this kind's permissions manifest, and the global and regional policies
+  # updated in place (a description and one rule patched). Measured: (1)
+  # policy_type, target_type and the network-context enums left unset re-plan
+  # clean, and an explicit VPC_POLICY round-trips; (2) Google refuses an
+  # INGRESS rule that names no source or only a network context, which the
+  # spec now refuses first; (3) rule_tuple_count is not an output -- Google
+  # recounts it as the rules land after the policy, so an apply records the
+  # policy's own figure; (4) the tagValues/{id} handles render identically and
+  # the policy is destroyed before the tag value and key; (5) reading
+  # google_project_service back needs resourcemanager.projects.get. The
   # INTERNAL_MANAGED_LB arm stays offline-only: it needs a regional
-  # INTERNAL_MANAGED forwarding rule (a regional internal ALB chain with a
-  # proxy-only subnet) as its target, a fixture chain this kind's lane does
-  # not carry; GcpGlobalForwardingRule's regional arm makes it buildable
-  # the day a scenario wants it.
+  # INTERNAL_MANAGED forwarding rule as its target, a fixture chain this
+  # kind's lane does not carry.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 20

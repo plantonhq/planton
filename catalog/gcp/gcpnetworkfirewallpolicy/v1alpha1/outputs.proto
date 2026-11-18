@@ -22,10 +22,12 @@ message GcpNetworkFirewallPolicyOutputs {
   // value that tells a consumer which resource family the policy is.
   string region = 4;
 
-  // Google's complexity measure for the whole rule set -- the sum of each
-  // rule's tuple count (protocols x ports x sources x targets). A project
-  // has a quota of tuples per policy; watch this before adding wide rules.
-  int64 rule_tuple_count = 5;
+  // rule_tuple_count (5) is not an output: Google recounts it as the rules
+  // land after the policy is created, so the value read at apply time is the
+  // policy's alone and moves on the next refresh. Read the live count from
+  // the policy (gcloud compute network-firewall-policies describe).
+  reserved 5;
+  reserved "rule_tuple_count";
 
   // The association names, in the order declared -- what
   // `gcloud compute network-firewall-policies associations list` shows

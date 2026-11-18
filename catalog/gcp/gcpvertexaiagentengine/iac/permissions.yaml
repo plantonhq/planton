@@ -15,10 +15,11 @@ spec:
           - serviceusage.services.enable
           - serviceusage.services.get
           - serviceusage.services.list
+          - resourcemanager.projects.get
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed.
+        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
       - purpose: ManageAgentEngine
         permissions:
           - aiplatform.reasoningEngines.create
@@ -43,6 +44,7 @@ spec:
           - serviceusage.services.enable
           - serviceusage.services.get
           - serviceusage.services.list
+          - resourcemanager.projects.get
           - secretmanager.secrets.create
           - secretmanager.secrets.get
           - secretmanager.secrets.update
@@ -60,7 +62,7 @@ spec:
         privilege: ordinary
         condition:
           spec_field_set: agent.deployment_spec.secret_env.value
-        notes: Covers the secret the modules keep per agent.deployment_spec.secret_env[].value -- google_project_service enabling secretmanager.googleapis.com (disable_on_destroy false), google_secret_manager_secret (user-managed replication in the agent's location, attribution labels), google_secret_manager_secret_version holding the value (a new value creates the new version before destroying the old; versions.access is the provider's read of the payload on refresh), and google_secret_manager_secret_iam_member granting roles/secretmanager.secretAccessor on that one secret to the agent's identity (IAM member resources read the policy before modifying it). Teardown deletes the secret, which destroys its versions.
+        notes: Covers the secret the modules keep per agent.deployment_spec.secret_env[].value -- google_project_service enabling secretmanager.googleapis.com (disable_on_destroy false), google_secret_manager_secret (user-managed replication in the agent's location, attribution labels), google_secret_manager_secret_version holding the value (a new value creates the new version before destroying the old; versions.access is the provider's read of the payload on refresh), and google_secret_manager_secret_iam_member granting roles/secretmanager.secretAccessor on that one secret to the agent's identity (IAM member resources read the policy before modifying it). Teardown deletes the secret, which destroys its versions. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
       - purpose: ResolveDefaultRuntimeIdentity
         permissions:
           - resourcemanager.projects.get
@@ -75,6 +77,7 @@ spec:
           - serviceusage.services.enable
           - serviceusage.services.get
           - serviceusage.services.list
+          - resourcemanager.projects.get
           - secretmanager.secrets.create
           - secretmanager.secrets.get
           - secretmanager.secrets.update
@@ -92,7 +95,7 @@ spec:
         privilege: ordinary
         condition:
           spec_field_set: agent.deployment_spec.secret_env.value
-        notes: Covers the secret the modules keep per agent.deployment_spec.secret_env[].value -- google_project_service enabling secretmanager.googleapis.com (disable_on_destroy false), google_secret_manager_secret (user-managed replication in the agent's location, attribution labels), google_secret_manager_secret_version holding the value (a new value creates the new version before destroying the old; versions.access is the provider's read of the payload on refresh), and google_secret_manager_secret_iam_member granting roles/secretmanager.secretAccessor on that one secret to the agent's identity (IAM member resources read the policy before modifying it). Teardown deletes the secret, which destroys its versions.
+        notes: Covers the secret the modules keep per agent.deployment_spec.secret_env[].value -- google_project_service enabling secretmanager.googleapis.com (disable_on_destroy false), google_secret_manager_secret (user-managed replication in the agent's location, attribution labels), google_secret_manager_secret_version holding the value (a new value creates the new version before destroying the old; versions.access is the provider's read of the payload on refresh), and google_secret_manager_secret_iam_member granting roles/secretmanager.secretAccessor on that one secret to the agent's identity (IAM member resources read the policy before modifying it). Teardown deletes the secret, which destroys its versions. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
       - purpose: ResolveDefaultRuntimeIdentity
         permissions:
           - resourcemanager.projects.get

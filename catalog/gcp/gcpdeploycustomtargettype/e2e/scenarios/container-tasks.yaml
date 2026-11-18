@@ -14,6 +14,7 @@ metadata:
   annotations:
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e: "true"
+    planton.dev/e2e-upgrade-manifest: container-tasks.to.yaml # the in-place update act
   tags:
     - planton-e2e
 spec:

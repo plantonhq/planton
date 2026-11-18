@@ -1,0 +1,29 @@
+# The second act of search-minimal.yaml: the same engine with a display name
+# set, an in-place update an engine takes.
+# Not a scenario of its own (the second-act annotation keeps discovery from
+# running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchEngine
+metadata:
+  name: planton-oss-e2e-gcpvseng-minimal
+  id: planton-oss-e2e-gcpvseng-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpvertexaisearchengine
+  annotations:
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e: "true"
+    planton.dev/e2e-second-act: search-minimal.yaml
+  tags:
+    - planton-e2e
+spec:
+  location: global
+  engineId: planton-oss-e2e-vseng-minimal-${E2E_RUN_ID}
+  displayName: Planton E2E minimal search engine, renamed in place
+  dataStoreIds:
+    - valueFrom:
+        kind: GcpVertexAiSearchDataStore
+        name: planton-oss-e2e-gcpvsds-prereq
+        fieldPath: status.outputs.data_store_id

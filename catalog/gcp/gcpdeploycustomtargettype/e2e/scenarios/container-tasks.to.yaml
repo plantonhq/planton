@@ -1,0 +1,43 @@
+# The second act of container-tasks.yaml: the same custom target type with
+# its description changed, an in-place update it takes.
+# Not a scenario of its own (the second-act annotation keeps discovery from
+# running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeployCustomTargetType
+metadata:
+  name: planton-oss-e2e-gcpcdctt-tasks
+  id: planton-oss-e2e-gcpcdctt-tasks
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpdeploycustomtargettype
+  annotations:
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e: "true"
+    planton.dev/e2e-second-act: container-tasks.yaml
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  customTargetTypeId: planton-e2e-cdctt-tasks-${E2E_RUN_ID}
+  description: Ephemeral custom target type for an E2E lane, updated in place; safe to delete
+  tasks:
+    render:
+      container:
+        image: gcr.io/google.com/cloudsdktool/google-cloud-cli:slim
+        command:
+          - /bin/bash
+        args:
+          - -c
+          - echo render
+    deploy:
+      container:
+        image: gcr.io/google.com/cloudsdktool/google-cloud-cli:slim
+        command:
+          - /bin/bash
+        args:
+          - -c
+          - echo deploy
+        env:
+          PLANTON_E2E: "true"

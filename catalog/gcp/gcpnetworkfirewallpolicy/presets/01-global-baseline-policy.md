@@ -15,8 +15,10 @@ with, in one ordered list.
   forwarding), so SSH works without a public address.
 - Priority `1100` — `allow` tcp from `35.191.0.0/16` and `130.211.0.0/22`,
   Google's health-check probers.
-- Priority `1200` — `allow` all with `srcNetworkContext: INTRA_VPC`, the
-  VPC talking to itself without listing its ranges.
+- Priority `1200` — `allow` all from the private ranges with
+  `srcNetworkContext: INTRA_VPC`, the VPC talking to itself. The context
+  narrows the source and is never the only one: Google refuses an ingress
+  rule whose only source is a network context.
 - Priority `65000` — `deny` all from `0.0.0.0/0`, logged, so a blocked
   connection is explainable.
 - One association referencing the `GcpVpcNetwork` named `main`.

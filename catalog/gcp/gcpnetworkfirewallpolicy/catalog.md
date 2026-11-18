@@ -152,7 +152,6 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 | `policy_id` | The server-assigned numeric ID | Firewall log correlation |
 | `self_link` | Self-link URL (global or regional form) | Tooling |
 | `region` | The region, or empty for global | A consumer confirming scope |
-| `rule_tuple_count` | Google's complexity measure | Quota watch before adding wide rules |
 | `association_names` | Association names in declaration order | A detach targets one |
 
 ## Common Patterns

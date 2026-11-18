@@ -101,7 +101,6 @@ func regionalPolicy(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provid
 	ctx.Export(OpPolicyId, createdPolicy.RegionNetworkFirewallPolicyId)
 	ctx.Export(OpSelfLink, createdPolicy.SelfLink)
 	ctx.Export(OpRegion, createdPolicy.Region)
-	ctx.Export(OpRuleTupleCount, createdPolicy.RuleTupleCount)
 	ctx.Export(OpAssociationNames, pulumi.ToStringArray(locals.AssociationNames))
 
 	return nil

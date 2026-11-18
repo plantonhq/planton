@@ -1,0 +1,67 @@
+# The second act of suspended-freeze.yaml: the same policy with its
+# description changed, an in-place update a deploy policy takes.
+# Not a scenario of its own (the second-act annotation keeps discovery from
+# running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeployPolicy
+metadata:
+  name: planton-oss-e2e-gcpcdpol-freeze
+  id: planton-oss-e2e-gcpcdpol-freeze
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpdeploypolicy
+  annotations:
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e: "true"
+    planton.dev/e2e-second-act: suspended-freeze.yaml
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  deployPolicyId: planton-e2e-cdpol-${E2E_RUN_ID}
+  description: Ephemeral deploy policy for an E2E lane, updated in place; safe to delete
+  suspended: true
+  rules:
+    - rolloutRestriction:
+        id: weekend-freeze
+        actions:
+          - CREATE
+        invokers:
+          - USER
+        timeWindows:
+          timeZone: America/New_York
+          weeklyWindows:
+            - daysOfWeek:
+                - SATURDAY
+                - SUNDAY
+            - daysOfWeek:
+                - FRIDAY
+              startTime:
+                hours: 15
+              endTime:
+                hours: 24
+    - rolloutRestriction:
+        id: year-end
+        timeWindows:
+          timeZone: America/New_York
+          oneTimeWindows:
+            - startDate:
+                year: 2030
+                month: 12
+                day: 20
+              startTime:
+                hours: 17
+              endDate:
+                year: 2031
+                month: 1
+                day: 3
+              endTime:
+                hours: 9
+  selectors:
+    - target:
+        id:
+          value: "*"
+        labels:
+          planton-e2e: "true"
