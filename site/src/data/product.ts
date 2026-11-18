@@ -260,7 +260,6 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
     forWhom: 'For the engineer who wants to read what will run in their account before it runs, and the one planning the exit before the entry.',
     points: [
       { label: 'The Catalog', text: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} catalog kinds across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} providers, each with its Pulumi and Terraform module, its cost fact sheet, its control posture with evidence, and its least-privilege permissions, all in one repository.` },
-      { label: 'The Charts', text: `${PLATFORM_STATS.INFRA_CHART_COUNT} Infra Charts: whole environments composed from those kinds and installed in one command.` },
       { label: 'The CLI and the Engine', text: 'The open-source CLI validates manifests and runs the modules that ship with every kind. It is the same engine the platform drives.' },
       { label: 'Machine-Checked Facts', text: 'The cost data is priced from pinned price books, the control posture carries framework crosswalks, and the permission manifests are validated against the providers\u2019 own published inventories.' },
       { label: 'Counted, Not Claimed', text: proof.proof[0] },
@@ -271,12 +270,11 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
       rows: [
         { label: 'license', value: 'Apache 2.0 \u00b7 the name and logo are trademarks' },
         { label: 'catalog kinds', value: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} providers` },
-        { label: 'infra charts', value: PLATFORM_STATS.INFRA_CHART_COUNT },
         { label: 'controls', value: `${PLATFORM_STATS.CONTROL_COUNT} in ${PLATFORM_STATS.CONTROL_CATEGORY_COUNT} categories \u00b7 ${PLATFORM_STATS.FRAMEWORK_CROSSWALK_COUNT} framework crosswalks` },
         { label: 'engines', value: 'Pulumi \u00b7 OpenTofu and Terraform' },
         { label: 'in production since', value: PLATFORM_STATS.IN_PRODUCTION_SINCE },
       ],
-      footer: `Kinds, charts, controls, and crosswalks counted from the open-source repository on ${PLATFORM_COUNTS.countedOn}.`,
+      footer: `Kinds, providers, controls, and crosswalks counted from the open-source repository on ${PLATFORM_COUNTS.countedOn}.`,
     },
     provenAt: ['/trust/your-cloud-your-keys'],
     next: ['/product/catalog', '/product/cli'],

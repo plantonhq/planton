@@ -7,7 +7,6 @@
  * Counted 2026-09-17 against plantonhq/planton:
  *   catalog kinds   = folders under catalog/<provider>/ carrying a spec.proto (719)
  *   providers         = the provider folders under catalog/ (aws, azure, gcp, kubernetes, cloudflare, digitalocean, auth0, openfga)
- *   Infra Charts      = Chart.yaml files under charts/ (18; the earlier "50+" was wrong)
  *   control profiles  = kinds carrying a controls.yaml (718)
  *   controls          = the control catalog's entries (17, in 6 categories)
  *   crosswalks        = framework files (HIPAA Security Rule, SOC 2 TSC, FedRAMP Moderate, CIS AWS Foundations)
@@ -19,8 +18,6 @@ export const PLATFORM_STATS = {
   /** Printed. Catalog kinds in the catalog, rounded down to the hundred. */
   DEPLOYMENT_MODULE_COUNT: '700+',
   CLOUD_PROVIDER_COUNT: '8',
-  /** Printed exactly; the number is small enough to be honest about. */
-  INFRA_CHART_COUNT: '18',
   CONTROL_COUNT: '17',
   CONTROL_CATEGORY_COUNT: '6',
   FRAMEWORK_CROSSWALK_COUNT: '4',
@@ -49,7 +46,6 @@ export const CLOUD_PROVIDERS = [
 export const PLATFORM_COUNTS = {
   catalogKinds: 719,
   providers: 8,
-  infraCharts: 18,
   controlProfiles: 718,
   controls: 17,
   controlCategories: 6,

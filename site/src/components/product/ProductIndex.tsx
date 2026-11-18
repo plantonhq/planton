@@ -19,13 +19,12 @@ export const ProductIndex: FC = () => {
     <main className="overflow-x-hidden">
       <PageHero eyebrow={{ label: 'Product' }} title={what.title} lede={what.claim} forWhom="For the platform engineer deciding what to hand their team, and the developer who wants to see what their agent gets.">
         <Doors {...START_DOORS} className="justify-center mt-2" />
-        <Box className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-10 w-full">
+        <Box className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-10 w-full">
           <Metric value={PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} label="Catalog Kinds" />
           <Metric value={PLATFORM_STATS.CLOUD_PROVIDER_COUNT} label="Providers" />
-          <Metric value={PLATFORM_STATS.INFRA_CHART_COUNT} label="Infra Charts" />
           <Metric value={PLATFORM_STATS.IN_PRODUCTION_SINCE} label="In Production Since" />
         </Box>
-        <Typography className="text-xs text-fg-muted">Kinds, providers, and charts counted from the open-source repository on {PLATFORM_COUNTS.countedOn}.</Typography>
+        <Typography className="text-xs text-fg-muted">Kinds and providers counted from the open-source repository on {PLATFORM_COUNTS.countedOn}.</Typography>
       </PageHero>
       <Section>
         <CenteredCards className="max-w-6xl mx-auto">

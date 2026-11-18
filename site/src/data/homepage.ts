@@ -74,7 +74,6 @@ export const HOMEPAGE = {
     sources: [
       'product.infra-hub.infra-chart.rendering-pipeline.md',
       'product.infra-hub.infra-chart.one-run-cluster-composition.md',
-      'product.infra-hub.infra-chart.platform-catalog.md',
     ],
     chapter: 'what-planton-is' as ChapterId,
   },

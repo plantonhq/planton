@@ -216,7 +216,7 @@ export const CHAPTERS: readonly Chapter[] = [
     claim:
       'Teams have run production on Planton since 2023. Here is what the people running it say, in their own words.',
     proof: [
-      'Catalog kinds, providers, Infra Charts, controls, and crosswalks are counted from the open-source tree, and the date of the count is printed beside the numbers.',
+      'Catalog kinds, providers, controls, and crosswalks are counted from the open-source tree, and the date of the count is printed beside the numbers.',
       'Every testimonial is verbatim and attributed to the person who said it.',
       'Planton runs on Planton: its own infrastructure and the pipelines that ship it go through the platform.',
     ],

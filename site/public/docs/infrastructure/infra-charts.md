@@ -106,9 +106,9 @@ spec:
 
 These references create a directed acyclic graph (DAG). The platform deploys resources in topological order — VPC first, then security groups and subnets in parallel, then the ALB that depends on both. You never need to manually coordinate deployment ordering.
 
-## Real-World Example: AWS ECS Environment
+## Example: An ECS Environment Chart
 
-The AWS ECS Environment chart demonstrates how charts work in practice. It deploys a complete container hosting environment:
+An organization's chart for an AWS ECS environment shows how charts work in practice. It might compose a complete container hosting environment:
 
 | Resource | Purpose |
 |----------|---------|
@@ -122,7 +122,7 @@ The AWS ECS Environment chart demonstrates how charts work in practice. It deplo
 | IAM Role | Task execution permissions |
 | ECS Service | Running container with ALB integration |
 
-The chart takes about ten parameters (availability zones, domain name, service name, service port, feature toggles for DNS and HTTPS) and produces all nine resources with correct dependency ordering. Deployment takes roughly 15-20 minutes — compared to 4-8 hours of manual setup.
+Such a chart takes a handful of parameters (availability zones, domain name, service name, service port, toggles for DNS and HTTPS) and produces every resource above in dependency order.
 
 <!-- SCREENSHOT: Infra Chart detail page
   Page: /resource/infra-hub/infra-chart/[infraChartId]
@@ -131,25 +131,25 @@ The chart takes about ten parameters (availability zones, domain name, service n
   Alt: Infra Chart detail page showing template YAML files and a list of configurable parameters
 -->
 
-## Platform Charts and Custom Charts
+## Your Organization's Charts
 
-Planton provides a set of curated charts for common infrastructure patterns, shipped with every [plantonhq/planton](https://github.com/plantonhq/planton) release. These include AWS ECS environments and EKS clusters, among others; browse them in the console's chart catalog.
+Every chart belongs to an organization. Planton ships none of its own: a chart is your architecture, written for your clouds and your environments. The fastest way to your first one is the prompt on the Charts tab: paste it into Claude Code, Codex or Cursor, and your agent asks what the chart should stand up, builds it until `planton chart build` is clean, and publishes it with `planton chart publish`.
 
-Organizations can also create custom charts tailored to their specific standards. The process is straightforward: follow the same directory structure (Chart.yaml, values.yaml, templates/), encode your organization's best practices into the templates, and publish the chart to Planton. Custom charts appear alongside platform charts in the catalog.
+You can also write a chart by hand: follow the directory structure above (Chart.yaml, values.yaml, templates/), encode your organization's standards into the templates, and publish it to your organization.
 
 Common customizations include enforcing tagging policies, requiring HTTPS in production environments, setting minimum replica counts, and restricting VPC CIDR ranges to organizational standards.
 
 ## Chart Versions
 
-Planton counts a chart's versions; you never write one. A chart is **v1** when first published and becomes the next version each time its templates or `values.yaml` change, so a version always means the same files — each carries a digest Planton computes from them. Publishing unchanged files keeps the version, and `planton chart publish` prints the version it made. Chart.yaml has no `version:` line. Platform charts are versioned the same way, counted on each Planton instance.
+Planton counts a chart's versions; you never write one. A chart is **v1** when first published and becomes the next version each time its templates or `values.yaml` change, so a version always means the same files — each carries a digest Planton computes from them. Publishing unchanged files keeps the version, and `planton chart publish` prints the version it made. Chart.yaml has no `version:` line.
 
 A stack installed from a catalog chart records the chart and the version it took ("app-infra v3"). When the chart publishes a newer version, that stack reads **Update Available**, and **Upgrade** moves it there, keeping its values and any file it customised: a file both you and the chart changed asks **Keep Mine** or **Take v5**. Publishing never changes a deployed stack on its own. See [Infra Stacks](/docs/infrastructure/infra-stacks#upgrade).
 
 <!-- SCREENSHOT: Infra Chart list
   Page: /resource/infra-hub/infra-chart
-  Action: Show the list of available charts with platform and custom charts visible
-  Focus: The chart list with names, descriptions, and ownership indicators
-  Alt: Infra Chart list showing platform-provided and custom charts with descriptions
+  Action: Show the organization's charts
+  Focus: The chart list with names, descriptions, and versions
+  Alt: Infra Chart list showing an organization's charts with their descriptions and versions
 -->
 
 ## Charts vs. Direct Infra Components
@@ -213,7 +213,7 @@ planton chart install my-stack ./my-chart --env prod -f values-prod.yaml --dry-r
 planton chart install my-stack ./my-chart --env prod -f values-prod.yaml -m "why"
 ```
 
-The `chart install` command is the primary entry point for deploying a chart. Like `planton infra stack apply`, it plans first — what installing creates, or changes in the stack of that name — shows the plan, asks, and applies exactly that plan as the stack's next revision, starting an Infra Pipeline. The stack keeps the chart's `values.yaml` and only the values you set. The chart is a local folder, a catalog chart by name, or `org/<name>` for your organization's own. From the catalog, Planton copies the chart's files itself and records the chart and its version; installing onto a stack that already follows that chart is an upgrade, and a file both changed is settled with `planton infra stack upgrade`.
+The `chart install` command is the primary entry point for deploying a chart. Like `planton infra stack apply`, it plans first — what installing creates, or changes in the stack of that name — shows the plan, asks, and applies exactly that plan as the stack's next revision, starting an Infra Pipeline. The stack keeps the chart's `values.yaml` and only the values you set. The chart is a local folder or one of your organization's charts by name. From a published chart, Planton copies the chart's files itself and records the chart and its version; installing onto a stack that already follows that chart is an upgrade, and a file both changed is settled with `planton infra stack upgrade`.
 
 ### How parameter values resolve
 

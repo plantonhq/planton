@@ -200,7 +200,7 @@ export const SITE_PAGES: readonly SitePage[] = [
   {
     path: '/product/catalog',
     title: 'Catalog',
-    description: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} catalog kinds across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} providers, each with a cost fact sheet, a control posture with evidence, and least-privilege permissions; ${PLATFORM_STATS.INFRA_CHART_COUNT} Infra Charts.`,
+    description: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} catalog kinds across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} providers, each with a cost fact sheet, a control posture with evidence, and least-privilege permissions.`,
     group: 'product',
     chapters: ['proof-it-works', 'verified-before-it-exists', 'your-rules-hold'],
   },
@@ -216,7 +216,7 @@ export const SITE_PAGES: readonly SitePage[] = [
     path: '/product/open-source',
     title: 'Open Source',
     description:
-      'Every infrastructure module is Apache 2.0: the catalog, the Infra Charts, the CLI and its engine. If you leave, you take your manifests and keep deploying them.',
+      'Every infrastructure module is Apache 2.0: the catalog, the CLI and its engine. If you leave, you take your manifests and keep deploying them.',
     group: 'product',
     chapters: ['runs-where-you-decide', 'proof-it-works'],
   },

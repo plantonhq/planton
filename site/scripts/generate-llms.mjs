@@ -362,7 +362,6 @@ function pageMarkdown(
       '## By the numbers',
       '',
       `- ${stats.PLATFORM_COUNTS.catalogKinds} catalog kinds across ${stats.PLATFORM_COUNTS.providers} providers`,
-      `- ${stats.PLATFORM_COUNTS.infraCharts} Infra Charts`,
       `- ${stats.PLATFORM_COUNTS.controls} technical controls in ${stats.PLATFORM_COUNTS.controlCategories} categories, ${stats.PLATFORM_COUNTS.frameworkCrosswalks} framework crosswalks`,
       `- Counted from the open-source repository on ${stats.PLATFORM_COUNTS.countedOn}`,
       ''

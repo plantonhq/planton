@@ -160,7 +160,6 @@ export const footerGroups: FooterGroup[] = [
     items: [
       { label: 'Planton on GitHub', href: 'https://github.com/plantonhq/planton' },
       { label: 'The Catalog', href: 'https://github.com/plantonhq/planton/tree/main/catalog' },
-      { label: 'Infra Charts', href: 'https://github.com/plantonhq/planton/tree/main/charts' },
     ],
   },
   {
