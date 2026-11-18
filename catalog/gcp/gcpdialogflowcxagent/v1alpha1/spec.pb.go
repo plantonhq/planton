@@ -1857,7 +1857,8 @@ func (x *GcpDialogflowCxAgentToolFunctionSpec) GetOutputSchema() string {
 // tool version -- the tool's own shape, written out in full.
 type GcpDialogflowCxAgentToolSnapshot struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The tool's display name at the time of the snapshot.
+	// The tool's display name at the time of the snapshot; "escalate" is
+	// refused here too (a system operation Google keeps from tools).
 	DisplayName string `protobuf:"bytes,1,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
 	// What the tool does and when to use it -- the model reads this.
 	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
@@ -2009,7 +2010,9 @@ func (x *GcpDialogflowCxAgentToolVersion) GetTool() *GcpDialogflowCxAgentToolSna
 // name.
 type GcpDialogflowCxAgentTool struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The tool's human-readable name, unique within the agent.
+	// The tool's human-readable name, unique within the agent. "escalate" is
+	// taken: Google refuses it as "a system operation and cannot be used by
+	// tools" (measured live), so a hand-off tool needs another name.
 	DisplayName string `protobuf:"bytes,1,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
 	// What the tool does and when to use it -- the model reads this to decide
 	// when to call the tool, so write it for the model.
@@ -3278,9 +3281,10 @@ const file_catalog_gcp_gcpdialogflowcxagent_v1alpha1_spec_proto_rawDesc = "" +
 	"\x16data_store_connections\x18\x01 \x03(\v2Z.dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolDataStoreConnectionB\b\xbaH\x05\x92\x01\x02\b\x01R\x14dataStoreConnections\"n\n" +
 	"$GcpDialogflowCxAgentToolFunctionSpec\x12!\n" +
 	"\finput_schema\x18\x01 \x01(\tR\vinputSchema\x12#\n" +
-	"\routput_schema\x18\x02 \x01(\tR\foutputSchema\"\xd6\x05\n" +
-	" GcpDialogflowCxAgentToolSnapshot\x12*\n" +
-	"\fdisplay_name\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\vdisplayName\x12)\n" +
+	"\routput_schema\x18\x02 \x01(\tR\foutputSchema\"\x96\a\n" +
+	" GcpDialogflowCxAgentToolSnapshot\x12\xe9\x01\n" +
+	"\fdisplay_name\x18\x01 \x01(\tB\xc5\x01\xbaH\xc1\x01\xba\x01\xb9\x01\n" +
+	"1tool_snapshot.display_name_not_a_system_operation\x12pa tool cannot be named escalate -- Google reserves it as a system operation; name a hand-off tool something else\x1a\x12this != 'escalate'r\x02\x10\x01R\vdisplayName\x12)\n" +
 	"\vdescription\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\vdescription\x12v\n" +
 	"\ropen_api_spec\x18\x03 \x01(\v2R.dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolOpenApiSpecR\vopenApiSpec\x12|\n" +
 	"\x0fdata_store_spec\x18\x04 \x01(\v2T.dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolDataStoreSpecR\rdataStoreSpec\x12x\n" +
@@ -3288,9 +3292,10 @@ const file_catalog_gcp_gcpdialogflowcxagent_v1alpha1_spec_proto_rawDesc = "" +
 	"'tool_snapshot.exactly_one_specification\x12Fa tool is exactly one of open_api_spec, data_store_spec, function_spec\x1ap(has(this.open_api_spec) ? 1 : 0) + (has(this.data_store_spec) ? 1 : 0) + (has(this.function_spec) ? 1 : 0) == 1\"\xba\x01\n" +
 	"\x1fGcpDialogflowCxAgentToolVersion\x12*\n" +
 	"\fdisplay_name\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\vdisplayName\x12k\n" +
-	"\x04tool\x18\x02 \x01(\v2O.dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolSnapshotB\x06\xbaH\x03\xc8\x01\x01R\x04tool\"\xe3\a\n" +
-	"\x18GcpDialogflowCxAgentTool\x12*\n" +
-	"\fdisplay_name\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\vdisplayName\x12)\n" +
+	"\x04tool\x18\x02 \x01(\v2O.dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolSnapshotB\x06\xbaH\x03\xc8\x01\x01R\x04tool\"\x9a\t\n" +
+	"\x18GcpDialogflowCxAgentTool\x12\xe0\x01\n" +
+	"\fdisplay_name\x18\x01 \x01(\tB\xbc\x01\xbaH\xb8\x01\xba\x01\xb0\x01\n" +
+	"(tool.display_name_not_a_system_operation\x12pa tool cannot be named escalate -- Google reserves it as a system operation; name a hand-off tool something else\x1a\x12this != 'escalate'r\x02\x10\x01R\vdisplayName\x12)\n" +
 	"\vdescription\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\vdescription\x12v\n" +
 	"\ropen_api_spec\x18\x03 \x01(\v2R.dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolOpenApiSpecR\vopenApiSpec\x12|\n" +
 	"\x0fdata_store_spec\x18\x04 \x01(\v2T.dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolDataStoreSpecR\rdataStoreSpec\x12x\n" +

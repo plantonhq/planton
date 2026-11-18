@@ -40,8 +40,20 @@ resource "google_clouddeploy_delivery_pipeline" "this" {
             }
           }
 
+          # A standard strategy with nothing set is Google's default rollout,
+          # which it stores as no strategy at all; sending an empty one would
+          # re-plan forever (measured), so only a strategy that carries
+          # something is sent.
           dynamic "strategy" {
-            for_each = stages.value.strategy != null ? [stages.value.strategy] : []
+            for_each = stages.value.strategy != null && (
+              try(stages.value.strategy.canary, null) != null ||
+              (try(stages.value.strategy.standard, null) != null && (
+                try(stages.value.strategy.standard.verify, false) ||
+                try(stages.value.strategy.standard.predeploy, null) != null ||
+                try(stages.value.strategy.standard.postdeploy, null) != null ||
+                try(stages.value.strategy.standard.verify_config, null) != null
+              ))
+            ) ? [stages.value.strategy] : []
             content {
               # The standard strategy: one deploy, with optional jobs around
               # it. predeploy and postdeploy take actions or tasks.

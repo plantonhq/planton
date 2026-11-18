@@ -249,8 +249,16 @@ message GcpDeliveryPipelineCanaryDeployment {
   // A job that runs before the first phase.
   GcpDeliveryPipelineCanaryDeployHook predeploy = 3;
 
-  // A job that runs after the last phase.
-  GcpDeliveryPipelineCanaryDeployHook postdeploy = 4;
+  // A job that runs after the last phase. Not deployable today: the google
+  // provider cannot store it in Terraform state ("Invalid address to set:
+  // ... canary_deployment.0.postdeploy.0.tasks", measured live), so the spec
+  // refuses it until the provider is fixed; run the job from a following
+  // stage's predeploy instead.
+  GcpDeliveryPipelineCanaryDeployHook postdeploy = 4 [(buf.validate.field).cel = {
+    id: "canary_deployment.postdeploy_not_deployable"
+    expression: "false"
+    message: "a canary deployment's postdeploy cannot be deployed: the google provider cannot store it on Terraform; run the job from a following stage's predeploy"
+  }];
 
   // Container tasks that run as the verify job.
   GcpDeliveryPipelineVerifyConfig verify_config = 5;

@@ -663,6 +663,7 @@ Serving controls on the engine, each keyed by control_id. A control
 takes effect only when serving_config lists it.
 
 - rule: a control is exactly one of boost_action, filter_action, promote_action, redirect_action, or synonyms_action
+- rule: query_regex conditions are accepted only on a promote_action (and only for Basic Site Search) -- use query_terms for every other action
 
 ### spec.controls[].controlId
 
@@ -685,10 +686,12 @@ Human-readable name (up to 128 characters).
 
 `[]string`
 
-Where the control applies: SEARCH_USE_CASE_SEARCH (queries) and/or
-SEARCH_USE_CASE_BROWSE (empty-query browsing).
+Where the control applies: SEARCH_USE_CASE_SEARCH (queries) or
+SEARCH_USE_CASE_BROWSE (empty-query browsing). One value: Google refuses
+a control with both ("control.useCase can only have 1 value", measured
+live), so a control for both makes two controls.
 
-- rule: {"repeated":{"items":{"string":{"in":["SEARCH_USE_CASE_SEARCH","SEARCH_USE_CASE_BROWSE"]}}}}
+- rule: {"repeated":{"maxItems":"1","items":{"string":{"in":["SEARCH_USE_CASE_SEARCH","SEARCH_USE_CASE_BROWSE"]}}}}
 
 ### spec.controls[].conditions
 
@@ -740,7 +743,10 @@ End of the window.
 
 `string`
 
-A regular expression the whole query must match.
+A regular expression the whole query must match. Google accepts it only
+on a promote action, and only for Basic Site Search ("only Basic Site
+Search promote action can have query regex condition", measured live);
+use query_terms for every other action.
 
 ### spec.controls[].boostAction
 
@@ -812,7 +818,12 @@ LINEAR is the only interpolation Google offers. Sent only when set.
 
 `GcpVertexAiSearchEngineControlPoint`
 
-The curve's control point.
+The curve's control point. Not deployable today: the google provider
+sends it as "controlPoint", which the Discovery Engine API refuses as an
+unknown field on both engines (measured live), so the spec refuses it
+until the provider sends the name the API takes.
+
+- rule: control_point cannot be deployed: the google provider sends it under a name the Discovery Engine API refuses (controlPoint); use fixed_boost until the provider is fixed
 
 ### spec.controls[].boostAction.interpolationBoostSpec.controlPoint.attributeValue
 

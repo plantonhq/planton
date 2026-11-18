@@ -598,8 +598,16 @@ message GcpDialogflowCxAgentToolSnapshot {
     message: "a tool is exactly one of open_api_spec, data_store_spec, function_spec"
   };
 
-  // The tool's display name at the time of the snapshot.
-  string display_name = 1 [(buf.validate.field).string.min_len = 1];
+  // The tool's display name at the time of the snapshot; "escalate" is
+  // refused here too (a system operation Google keeps from tools).
+  string display_name = 1 [
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).cel = {
+      id: "tool_snapshot.display_name_not_a_system_operation"
+      expression: "this != 'escalate'"
+      message: "a tool cannot be named escalate -- Google reserves it as a system operation; name a hand-off tool something else"
+    }
+  ];
 
   // What the tool does and when to use it -- the model reads this.
   string description = 2 [(buf.validate.field).string.min_len = 1];
@@ -651,8 +659,17 @@ message GcpDialogflowCxAgentTool {
     message: "tool version display names must be unique within the tool -- the kind keys versions by them"
   };
 
-  // The tool's human-readable name, unique within the agent.
-  string display_name = 1 [(buf.validate.field).string.min_len = 1];
+  // The tool's human-readable name, unique within the agent. "escalate" is
+  // taken: Google refuses it as "a system operation and cannot be used by
+  // tools" (measured live), so a hand-off tool needs another name.
+  string display_name = 1 [
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).cel = {
+      id: "tool.display_name_not_a_system_operation"
+      expression: "this != 'escalate'"
+      message: "a tool cannot be named escalate -- Google reserves it as a system operation; name a hand-off tool something else"
+    }
+  ];
 
   // What the tool does and when to use it -- the model reads this to decide
   // when to call the tool, so write it for the model.

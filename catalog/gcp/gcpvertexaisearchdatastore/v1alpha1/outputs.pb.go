@@ -33,8 +33,9 @@ type GcpVertexAiSearchDataStoreOutputs struct {
 	DataStoreId string `protobuf:"bytes,2,opt,name=data_store_id,json=dataStoreId,proto3" json:"data_store_id,omitempty"`
 	// The store's location (global, us, or eu); an engine must match it.
 	Location string `protobuf:"bytes,3,opt,name=location,proto3" json:"location,omitempty"`
-	// The id of the default schema Google created (empty when the default
-	// schema was skipped).
+	// The id of the store's default schema: the declared schema's id when one
+	// is declared (Google makes it the default once it exists), otherwise the
+	// schema Google created with the store.
 	DefaultSchemaId string `protobuf:"bytes,4,opt,name=default_schema_id,json=defaultSchemaId,proto3" json:"default_schema_id,omitempty"`
 	// Full resource name of the declared schema (empty when none was
 	// declared).

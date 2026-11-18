@@ -303,7 +303,9 @@ func RunKindTest(ctx context.Context, tc *provider.KindTestContext, harness prov
 	} else {
 		phases = []lifecyclePhase{
 			{PhaseValidate, func() error { return runValidate(tc) }},
-			{PhaseDeploy, func() error { return runDeploy(tc) }},
+			{PhaseDeploy, func() error {
+				return deployWhileGrantsPropagate(tc, harness, func() error { return runDeploy(tc) })
+			}},
 		}
 		// The idempotency gate re-plans the configuration DEPLOY just applied and
 		// fails on any pending change: a dirty second plan means the module and
@@ -370,7 +372,7 @@ func RunKindTest(ctx context.Context, tc *provider.KindTestContext, harness prov
 				upgradedCtx = context.WithValue(upgradedCtx, provider.FirstActManifestPathKey{}, originalManifest)
 				cleanupCtx = upgradedCtx
 				phases = append(phases,
-					lifecyclePhase{PhaseUpgrade, func() error { return runUpgrade(tc, upgradeManifest) }},
+					lifecyclePhase{PhaseUpgrade, func() error { return runUpgrade(tc, harness, upgradeManifest) }},
 					lifecyclePhase{PhaseVerifyUpgraded, func() error {
 						if err := runVerifyOutputs(tc); err != nil {
 							return err

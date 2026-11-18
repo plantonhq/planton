@@ -48,8 +48,7 @@ spec:
     - controlId: hide-archive
       displayName: Hide archived pages
       useCases:
-        - SEARCH_USE_CASE_SEARCH
-        - SEARCH_USE_CASE_BROWSE
+        - SEARCH_USE_CASE_SEARCH # one use case per control; browsing needs a second control
       filterAction:
         dataStore:
           valueFrom:
@@ -80,7 +79,13 @@ spec:
       useCases:
         - SEARCH_USE_CASE_SEARCH
       conditions:
-        - queryRegex: "^(status|outage|incident)$"
+        - queryTerms: # a regex condition is accepted only on a Basic Site Search promote action
+            - value: status
+              fullMatch: true
+            - value: outage
+              fullMatch: true
+            - value: incident
+              fullMatch: true
       redirectAction:
         redirectUri: https://status.example.com
   servingConfig:

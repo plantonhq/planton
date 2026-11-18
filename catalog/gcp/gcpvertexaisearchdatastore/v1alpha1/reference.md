@@ -611,7 +611,7 @@ Reference an output from another manifest as `valueFrom: {kind: GcpVertexAiSearc
 | `status.outputs.name` | `string` | Full resource name of the store: projects/{project}/locations/{location}/collections/default_collection/dataStores/{data_store_id}. Control actions and widget configs on an engine name a store this way. |
 | `status.outputs.data_store_id` | `string` | The store's id -- what an engine's data_store_ids lists. |
 | `status.outputs.location` | `string` | The store's location (global, us, or eu); an engine must match it. |
-| `status.outputs.default_schema_id` | `string` | The id of the default schema Google created (empty when the default schema was skipped). |
+| `status.outputs.default_schema_id` | `string` | The id of the store's default schema: the declared schema's id when one is declared (Google makes it the default once it exists), otherwise the schema Google created with the store. |
 | `status.outputs.schema_name` | `string` | Full resource name of the declared schema (empty when none was declared). |
 | `status.outputs.target_site_names` | `[]string` | Full resource names of the target sites declared on a website store, in manifest order. |
 | `status.outputs.sitemap_names` | `[]string` | Full resource names of the sitemaps declared on an advanced site search store, in manifest order. |

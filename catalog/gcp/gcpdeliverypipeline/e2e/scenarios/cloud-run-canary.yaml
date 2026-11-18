@@ -1,6 +1,7 @@
 # GcpDeliveryPipeline scenario: a single Cloud Run stage on the canary
 # strategy -- 25% then 50% with automatic traffic control and verify on
-# each phase -- plus predeploy and postdeploy actions. Free: no release is
+# each phase -- plus a predeploy action (a canary deployment's postdeploy
+# cannot be stored by the provider on Terraform). Free: no release is
 # created, so no canary ever runs.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpDeliveryPipeline
@@ -47,7 +48,4 @@ spec:
               predeploy:
                 actions:
                   - migrate-db
-              postdeploy:
-                actions:
-                  - notify
   deletionPolicy: DELETE

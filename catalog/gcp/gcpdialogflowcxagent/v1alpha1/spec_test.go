@@ -106,6 +106,15 @@ var _ = ginkgo.Describe("GcpDialogflowCxAgentSpec", func() {
 		return msg
 	}
 
+	ginkgo.It("should reject a tool or a tool version named escalate", func() {
+		msg := full()
+		msg.Spec.Tools[0].DisplayName = "escalate"
+		gomega.Expect(validator.Validate(msg).Error()).To(gomega.ContainSubstring("a tool cannot be named escalate"))
+		msg = full()
+		msg.Spec.Tools[0].Versions[0].Tool.DisplayName = "escalate"
+		gomega.Expect(validator.Validate(msg).Error()).To(gomega.ContainSubstring("a tool cannot be named escalate"))
+	})
+
 	ginkgo.It("should accept an agent alone", func() {
 		gomega.Expect(validator.Validate(minimal())).To(gomega.Succeed())
 	})

@@ -1089,8 +1089,11 @@ Tools, keyed by display name.
 
 `string` · required
 
-The tool's human-readable name, unique within the agent.
+The tool's human-readable name, unique within the agent. "escalate" is
+taken: Google refuses it as "a system operation and cannot be used by
+tools" (measured live), so a hand-off tool needs another name.
 
+- rule: a tool cannot be named escalate -- Google reserves it as a system operation; name a hand-off tool something else
 - rule: {"string":{"minLen":"1"}}
 
 ### spec.tools[].description
@@ -1400,8 +1403,10 @@ The frozen definition.
 
 `string` · required
 
-The tool's display name at the time of the snapshot.
+The tool's display name at the time of the snapshot; "escalate" is
+refused here too (a system operation Google keeps from tools).
 
+- rule: a tool cannot be named escalate -- Google reserves it as a system operation; name a hand-off tool something else
 - rule: {"string":{"minLen":"1"}}
 
 ### spec.tools[].versions[].tool.description

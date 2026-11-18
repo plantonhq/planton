@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/e2e/framework/provider"
@@ -105,4 +106,38 @@ func laneEngineEnv(tc *provider.KindTestContext) ([]string, error) {
 	}
 	sort.Strings(env)
 	return env, nil
+}
+
+// Bounds on retrying a deploy refused for a permission the lane's identity
+// holds (provider.GrantPropagationJudge): measured on Discovery Engine,
+// Dialogflow and Cloud Deploy, whose caches lagged a minute past the
+// identity's own acceptance.
+var (
+	propagationRetryInterval = 60 * time.Second
+	propagationRetryBudget   = 6 * time.Minute
+)
+
+// deployWhileGrantsPropagate runs deploy and, when the harness judges its
+// failure a refusal of a permission the lane's identity holds, waits and runs
+// it again until it succeeds, fails another way, or the budget is spent.
+// Lanes without a declared identity, and harnesses without the capability,
+// deploy once.
+func deployWhileGrantsPropagate(tc *provider.KindTestContext, harness provider.Harness, deploy func() error) error {
+	judge, ok := harness.(provider.GrantPropagationJudge)
+	err := deploy()
+	if err == nil || !ok || tc.IdentityProviderConfig == "" {
+		return err
+	}
+	deadline := time.Now().Add(propagationRetryBudget)
+	for attempt := 1; err != nil && time.Now().Before(deadline); attempt++ {
+		permission, held := judge.HeldPermissionRefused(tc, err)
+		if !held {
+			return err
+		}
+		lanef(tc.T, "  [identity] refused %s, which the lane's identity holds: the grant is still propagating; deploying again in %s (retry %d)",
+			permission, propagationRetryInterval, attempt)
+		time.Sleep(propagationRetryInterval)
+		err = deploy()
+	}
+	return err
 }

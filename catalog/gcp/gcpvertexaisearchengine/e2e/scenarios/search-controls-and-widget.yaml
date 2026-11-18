@@ -1,11 +1,11 @@
 # GcpVertexAiSearchEngine scenario: a search engine with all five control
-# actions (synonyms, boost with a fixed amount, boost with a freshness
-# curve, filter, promote, redirect) wired through the default serving
-# config, and the embeddable widget configured with public access, an
-# allowlisted domain, a snippet under each result, and autocomplete. The
-# data store is the registry-installed prerequisite; the boost, filter,
-# and promote actions name it by its full name. Creating controls, the
-# serving config PATCH, and the widget config PATCH are free.
+# actions (synonyms, two fixed boosts, filter, promote, redirect) wired
+# through the default serving config, and the embeddable widget configured
+# with public access, an allowlisted domain, a snippet under each result,
+# and autocomplete. The data store is this kind's own controls fixture,
+# whose schema indexes the fields the filters name; the boost, filter, and
+# promote actions name it by its full name. Creating controls, the serving
+# config PATCH, and the widget config PATCH are free.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpVertexAiSearchEngine
 metadata:
@@ -19,6 +19,7 @@ metadata:
   annotations:
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpvertexaisearchengine/e2e/prerequisites/gcpvsds-controls.yaml"
   tags:
     - planton-e2e
 spec:
@@ -31,7 +32,7 @@ spec:
   dataStoreIds:
     - valueFrom:
         kind: GcpVertexAiSearchDataStore
-        name: planton-oss-e2e-gcpvsds-prereq
+        name: planton-oss-e2e-gcpvseng-controls-store
         fieldPath: status.outputs.data_store_id
   searchEngineConfig:
     searchTier: SEARCH_TIER_STANDARD
@@ -56,38 +57,31 @@ spec:
         dataStore:
           valueFrom:
             kind: GcpVertexAiSearchDataStore
-            name: planton-oss-e2e-gcpvsds-prereq
+            name: planton-oss-e2e-gcpvseng-controls-store
             fieldPath: status.outputs.name
         filter: '(category: ANY("docs"))'
         fixedBoost: 0.5
     - controlId: boost-fresh
-      displayName: Fresh content first
+      displayName: Bury news
       useCases:
         - SEARCH_USE_CASE_SEARCH
       boostAction:
         dataStore:
           valueFrom:
             kind: GcpVertexAiSearchDataStore
-            name: planton-oss-e2e-gcpvsds-prereq
+            name: planton-oss-e2e-gcpvseng-controls-store
             fieldPath: status.outputs.name
         filter: '(category: ANY("news"))'
-        interpolationBoostSpec:
-          fieldName: published
-          attributeType: FRESHNESS
-          interpolationType: LINEAR
-          controlPoint:
-            attributeValue: 7d
-            boostAmount: 0.8
+        fixedBoost: -0.3 # an interpolation curve's control point cannot be deployed (the provider sends a name the API refuses)
     - controlId: only-public
       displayName: Only public content
       useCases:
-        - SEARCH_USE_CASE_SEARCH
-        - SEARCH_USE_CASE_BROWSE
+        - SEARCH_USE_CASE_SEARCH # one use case per control: Google refuses two
       filterAction:
         dataStore:
           valueFrom:
             kind: GcpVertexAiSearchDataStore
-            name: planton-oss-e2e-gcpvsds-prereq
+            name: planton-oss-e2e-gcpvseng-controls-store
             fieldPath: status.outputs.name
         filter: '(visibility: ANY("public"))'
     - controlId: promote-start
@@ -102,7 +96,7 @@ spec:
         dataStore:
           valueFrom:
             kind: GcpVertexAiSearchDataStore
-            name: planton-oss-e2e-gcpvsds-prereq
+            name: planton-oss-e2e-gcpvseng-controls-store
             fieldPath: status.outputs.name
         searchLinkPromotion:
           title: Getting started
@@ -114,7 +108,9 @@ spec:
       useCases:
         - SEARCH_USE_CASE_SEARCH
       conditions:
-        - queryRegex: "^pricing$"
+        - queryTerms: # query_regex is accepted only on a Basic Site Search promote action
+            - value: pricing
+              fullMatch: true
       redirectAction:
         redirectUri: https://www.example.com/pricing
   servingConfig:

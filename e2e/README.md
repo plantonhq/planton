@@ -825,8 +825,13 @@ scenario granted stays `derived`.
 A 403 for a permission the lane's role holds is propagation until shown
 otherwise: Dialogflow, Datastream, Discovery Engine and Cloud Deploy check
 grants through their own caches and can lag Resource Manager by a minute or
-more. Re-run the lane after a wait before concluding anything; only a 403
-for a permission the role does not hold is a manifest question.
+more past the key's settle (measured on all of them). The runner retries
+such a deploy, or update act, every minute for up to six
+(`provider.GrantPropagationJudge`; the GCP harness reads both of Google's
+wordings, "Permission 'p' denied" and "IAM permission 'p' on '...' denied",
+against the lane's granted set), and says so on the lane's log. Only a 403
+for a permission the role does not hold fails at once: that is a manifest
+question.
 
 Two cluster facts the lanes must respect. Kept CRDs are cluster-scoped and
 outlive their lane, so a lane that leaves CRDs at a HIGHER version than a

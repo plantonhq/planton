@@ -193,6 +193,12 @@ var _ = ginkgo.Describe("GcpDeliveryPipelineSpec", func() {
 		})
 	})
 
+	ginkgo.It("should refuse a canary deployment's postdeploy job, which the provider cannot store on Terraform", func() {
+		expectInvalid(func(s *GcpDeliveryPipelineSpec) {
+			stage(s, 1).Strategy.Canary.CanaryDeployment.Postdeploy = &GcpDeliveryPipelineCanaryDeployHook{Actions: []string{"notify"}}
+		})
+	})
+
 	ginkgo.It("should require automatic traffic control for a Cloud Run canary_deployment only", func() {
 		expectInvalid(func(s *GcpDeliveryPipelineSpec) {
 			stage(s, 1).Strategy.Canary.RuntimeConfig.CloudRun.AutomaticTrafficControl = false

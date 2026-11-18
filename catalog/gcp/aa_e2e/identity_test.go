@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"cloud.google.com/go/auth"
+	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/e2e/framework/provider"
 	"google.golang.org/api/cloudresourcemanager/v1"
 	"google.golang.org/api/googleapi"
@@ -185,5 +186,32 @@ func TestReadinessReadsAFreshKeysRefusalsAsNotYet(t *testing.T) {
 		if got := keyNotYetAccepted(c.err); got != c.want {
 			t.Errorf("%s: keyNotYetAccepted = %v, want %v", c.name, got, c.want)
 		}
+	}
+}
+
+// A refusal of a permission the lane's role holds is a grant still
+// propagating; a refusal of one it lacks, or an error naming none, is not.
+func TestHeldPermissionRefusedReadsGooglesTwoWordings(t *testing.T) {
+	h := NewHarness()
+	tc := &provider.KindTestContext{}
+	h.laneGrants[tc] = map[string]bool{"discoveryengine.engines.create": true, "dialogflow.tools.get": true}
+	cases := []struct {
+		err        string
+		permission string
+		held       bool
+	}{
+		{"googleapi: Error 403: Permission 'discoveryengine.engines.create' denied on resource '//discoveryengine.googleapis.com/projects/p/locations/global/collections/default_collection' (or it may not exist).", "discoveryengine.engines.create", true},
+		{"googleapi: Error 403: IAM permission 'dialogflow.tools.get' on 'projects/p/locations/global/agents/a/tools/t' denied.", "dialogflow.tools.get", true},
+		{"googleapi: Error 403: IAM permission 'dialogflow.agents.create' on 'projects/p/locations/global' denied.", "dialogflow.agents.create", false},
+		{"googleapi: Error 400: control.useCase can only have 1 value but 2 were found.", "", false},
+	}
+	for _, c := range cases {
+		permission, held := h.HeldPermissionRefused(tc, errors.New(c.err))
+		if permission != c.permission || held != c.held {
+			t.Errorf("%q: got (%q, %v), want (%q, %v)", c.err, permission, held, c.permission, c.held)
+		}
+	}
+	if _, held := h.HeldPermissionRefused(&provider.KindTestContext{}, errors.New(cases[0].err)); held {
+		t.Error("a lane with no recorded grant must not read a refusal as propagation")
 	}
 }

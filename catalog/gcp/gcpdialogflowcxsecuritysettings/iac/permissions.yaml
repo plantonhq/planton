@@ -32,6 +32,7 @@ spec:
         notes: Covers google_dialogflow_cx_security_settings (Pulumi diagflow.CxSecuritySettings) -- created, patched with a field mask, read on every refresh, deleted. roles/dialogflow.admin contains all four.
       - purpose: GrantAudioBucketToDialogflow
         permissions:
+          - storage.buckets.getIamPolicy
           - storage.buckets.setIamPolicy
         provenance: derived
         reach: target

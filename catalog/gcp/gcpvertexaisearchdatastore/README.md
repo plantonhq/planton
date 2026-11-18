@@ -93,7 +93,7 @@ planton apply -f vertex-ai-search-data-store.yaml
 | `name` | `string` | `projects/{project}/locations/{location}/collections/default_collection/dataStores/{id}` |
 | `data_store_id` | `string` | The store's id -- what an engine's `dataStoreIds` lists |
 | `location` | `string` | The store's location |
-| `default_schema_id` | `string` | The default schema's id (empty when skipped) |
+| `default_schema_id` | `string` | The default schema's id: the declared schema's when one is declared, else the one Google created |
 | `schema_name` | `string` | The declared schema's full name (empty when none) |
 | `target_site_names` | `[]string` | The target sites' full names, in manifest order |
 | `sitemap_names` | `[]string` | The sitemaps' full names, in manifest order |

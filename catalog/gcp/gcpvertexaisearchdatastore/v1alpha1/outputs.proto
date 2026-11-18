@@ -16,8 +16,9 @@ message GcpVertexAiSearchDataStoreOutputs {
   // The store's location (global, us, or eu); an engine must match it.
   string location = 3;
 
-  // The id of the default schema Google created (empty when the default
-  // schema was skipped).
+  // The id of the store's default schema: the declared schema's id when one
+  // is declared (Google makes it the default once it exists), otherwise the
+  // schema Google created with the store.
   string default_schema_id = 4;
 
   // Full resource name of the declared schema (empty when none was

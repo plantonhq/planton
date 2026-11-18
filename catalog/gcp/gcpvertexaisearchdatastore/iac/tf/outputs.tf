@@ -13,9 +13,13 @@ output "location" {
   value       = google_discovery_engine_data_store.this.location
 }
 
+# The store's default schema: the declared schema's id when one is declared
+# (Google makes it the default once it exists, after the store is created,
+# so the store's own attribute reads empty at apply and flips on the first
+# refresh -- measured), otherwise the schema Google created with the store.
 output "default_schema_id" {
-  description = "The id of the default schema Google created (empty when skipped)"
-  value       = google_discovery_engine_data_store.this.default_schema_id
+  description = "The id of the store's default schema"
+  value       = var.spec.schema != null ? var.spec.schema.schema_id : google_discovery_engine_data_store.this.default_schema_id
 }
 
 output "schema_name" {

@@ -69,6 +69,7 @@ go_test(
         "failuremode_test.go",
         "fixture_integrity_test.go",
         "identity_env_test.go",
+        "propagation_test.go",
         "import_roundtrip_test.go",
         "lane_engine_test.go",
         "lifecycle_test.go",

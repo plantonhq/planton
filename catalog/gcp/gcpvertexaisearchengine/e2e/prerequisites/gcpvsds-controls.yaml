@@ -1,0 +1,34 @@
+# The data store the search-controls-and-widget scenario's controls act on:
+# an extra GcpVertexAiSearchDataStore instance with a schema whose category
+# and visibility fields are indexable. A control's filter can only name a
+# field the store's schema indexes -- Google refuses any other ("Unsupported
+# field ... on ':' operator"), so the registry prerequisite, which has no
+# schema, cannot carry a boost or filter control. The store id carries the
+# run id; metadata.name stays fixed.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchDataStore
+metadata:
+  name: planton-oss-e2e-gcpvseng-controls-store
+  id: planton-oss-e2e-gcpvseng-controls-store
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpvertexaisearchengine
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: global
+  dataStoreId: planton-oss-e2e-vseng-controls-store-${E2E_RUN_ID}
+  displayName: Planton OSS E2E controls store
+  industryVertical: GENERIC
+  contentConfig: NO_CONTENT
+  solutionTypes:
+    - SOLUTION_TYPE_SEARCH
+  skipDefaultSchemaCreation: true
+  schema:
+    schemaId: planton-controls-schema
+    # Compact JSON: Google normalizes it, so a compact string re-plans clean.
+    jsonSchema: '{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","properties":{"title":{"type":"string","keyPropertyMapping":"title","retrievable":true},"category":{"type":"string","indexable":true,"searchable":true,"retrievable":true},"visibility":{"type":"string","indexable":true,"retrievable":true}}}'

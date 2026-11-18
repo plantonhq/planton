@@ -864,7 +864,10 @@ type GcpVertexAiSearchEngineControlCondition struct {
 	// Time windows the control is active in (any one holding satisfies the
 	// condition).
 	ActiveTimeRanges []*GcpVertexAiSearchEngineActiveTimeRange `protobuf:"bytes,2,rep,name=active_time_ranges,json=activeTimeRanges,proto3" json:"active_time_ranges,omitempty"`
-	// A regular expression the whole query must match.
+	// A regular expression the whole query must match. Google accepts it only
+	// on a promote action, and only for Basic Site Search ("only Basic Site
+	// Search promote action can have query regex condition", measured live);
+	// use query_terms for every other action.
 	QueryRegex    string `protobuf:"bytes,3,opt,name=query_regex,json=queryRegex,proto3" json:"query_regex,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -989,7 +992,10 @@ type GcpVertexAiSearchEngineInterpolationBoostSpec struct {
 	AttributeType string `protobuf:"bytes,2,opt,name=attribute_type,json=attributeType,proto3" json:"attribute_type,omitempty"`
 	// LINEAR is the only interpolation Google offers. Sent only when set.
 	InterpolationType string `protobuf:"bytes,3,opt,name=interpolation_type,json=interpolationType,proto3" json:"interpolation_type,omitempty"`
-	// The curve's control point.
+	// The curve's control point. Not deployable today: the google provider
+	// sends it as "controlPoint", which the Discovery Engine API refuses as an
+	// unknown field on both engines (measured live), so the spec refuses it
+	// until the provider sends the name the API takes.
 	ControlPoint  *GcpVertexAiSearchEngineControlPoint `protobuf:"bytes,4,opt,name=control_point,json=controlPoint,proto3" json:"control_point,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -1442,8 +1448,10 @@ type GcpVertexAiSearchEngineControl struct {
 	ControlId string `protobuf:"bytes,1,opt,name=control_id,json=controlId,proto3" json:"control_id,omitempty"`
 	// Human-readable name (up to 128 characters).
 	DisplayName string `protobuf:"bytes,2,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
-	// Where the control applies: SEARCH_USE_CASE_SEARCH (queries) and/or
-	// SEARCH_USE_CASE_BROWSE (empty-query browsing).
+	// Where the control applies: SEARCH_USE_CASE_SEARCH (queries) or
+	// SEARCH_USE_CASE_BROWSE (empty-query browsing). One value: Google refuses
+	// a control with both ("control.useCase can only have 1 value", measured
+	// live), so a control for both makes two controls.
 	UseCases []string `protobuf:"bytes,3,rep,name=use_cases,json=useCases,proto3" json:"use_cases,omitempty"`
 	// When the control is active; empty means always.
 	Conditions []*GcpVertexAiSearchEngineControlCondition `protobuf:"bytes,4,rep,name=conditions,proto3" json:"conditions,omitempty"`
@@ -3152,13 +3160,14 @@ const file_catalog_gcp_gcpvertexaisearchengine_v1alpha1_spec_proto_rawDesc = "" 
 	"\fboost_amount\x18\x02 \x01(\x02B\x0f\xbaH\f\n" +
 	"\n" +
 	"\x1d\x00\x00\x80?-\x00\x00\x80\xbfH\x00R\vboostAmount\x88\x01\x01B\x0f\n" +
-	"\r_boost_amount\"\xd2\x02\n" +
+	"\r_boost_amount\"\xc7\x04\n" +
 	"-GcpVertexAiSearchEngineInterpolationBoostSpec\x12\x1d\n" +
 	"\n" +
 	"field_name\x18\x01 \x01(\tR\tfieldName\x12E\n" +
 	"\x0eattribute_type\x18\x02 \x01(\tB\x1e\xbaH\x1b\xd8\x01\x01r\x16R\tNUMERICALR\tFRESHNESSR\rattributeType\x12?\n" +
-	"\x12interpolation_type\x18\x03 \x01(\tB\x10\xbaH\r\xd8\x01\x01r\bR\x06LINEARR\x11interpolationType\x12z\n" +
-	"\rcontrol_point\x18\x04 \x01(\v2U.dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineControlPointR\fcontrolPoint\"\xd3\x04\n" +
+	"\x12interpolation_type\x18\x03 \x01(\tB\x10\xbaH\r\xd8\x01\x01r\bR\x06LINEARR\x11interpolationType\x12\xee\x02\n" +
+	"\rcontrol_point\x18\x04 \x01(\v2U.dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineControlPointB\xf1\x01\xbaH\xed\x01\xba\x01\xe9\x01\n" +
+	"5interpolation_boost_spec.control_point_not_deployable\x12\xa8\x01control_point cannot be deployed: the google provider sends it under a name the Discovery Engine API refuses (controlPoint); use fixed_boost until the provider is fixed\x1a\x05falseR\fcontrolPoint\"\xd3\x04\n" +
 	"\"GcpVertexAiSearchEngineBoostAction\x12u\n" +
 	"\n" +
 	"data_store\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\xbaH\x03\xc8\x01\x01\x88\xd4a\x85\x19\x92\xd4a\x13status.outputs.nameR\tdataStore\x12\"\n" +
@@ -3192,14 +3201,13 @@ const file_catalog_gcp_gcpvertexaisearchengine_v1alpha1_spec_proto_rawDesc = "" 
 	"\fredirect_uri\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\vredirectUri\"S\n" +
 	"%GcpVertexAiSearchEngineSynonymsAction\x12*\n" +
-	"\bsynonyms\x18\x01 \x03(\tB\x0e\xbaH\v\x92\x01\b\b\x02\"\x04r\x02\x10\x01R\bsynonyms\"\xbf\n" +
-	"\n" +
+	"\bsynonyms\x18\x01 \x03(\tB\x0e\xbaH\v\x92\x01\b\b\x02\"\x04r\x02\x10\x01R\bsynonyms\"\xc0\f\n" +
 	"\x1eGcpVertexAiSearchEngineControl\x12L\n" +
 	"\n" +
 	"control_id\x18\x01 \x01(\tB-\xbaH*\xc8\x01\x01r%2#^[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?$R\tcontrolId\x120\n" +
 	"\fdisplay_name\x18\x02 \x01(\tB\r\xbaH\n" +
-	"\xc8\x01\x01r\x05\x10\x01\x18\x80\x01R\vdisplayName\x12W\n" +
-	"\tuse_cases\x18\x03 \x03(\tB:\xbaH7\x92\x014\"2r0R\x16SEARCH_USE_CASE_SEARCHR\x16SEARCH_USE_CASE_BROWSER\buseCases\x12y\n" +
+	"\xc8\x01\x01r\x05\x10\x01\x18\x80\x01R\vdisplayName\x12Y\n" +
+	"\tuse_cases\x18\x03 \x03(\tB<\xbaH9\x92\x016\x10\x01\"2r0R\x16SEARCH_USE_CASE_SEARCHR\x16SEARCH_USE_CASE_BROWSER\buseCases\x12y\n" +
 	"\n" +
 	"conditions\x18\x04 \x03(\v2Y.dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineControlConditionR\n" +
 	"conditions\x12w\n" +
@@ -3207,8 +3215,9 @@ const file_catalog_gcp_gcpvertexaisearchengine_v1alpha1_spec_proto_rawDesc = "" 
 	"\rfilter_action\x18\x06 \x01(\v2U.dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineFilterActionR\ffilterAction\x12}\n" +
 	"\x0epromote_action\x18\a \x01(\v2V.dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEnginePromoteActionR\rpromoteAction\x12\x80\x01\n" +
 	"\x0fredirect_action\x18\b \x01(\v2W.dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineRedirectActionR\x0eredirectAction\x12\x80\x01\n" +
-	"\x0fsynonyms_action\x18\t \x01(\v2W.dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSynonymsActionR\x0esynonymsAction:\xce\x02\xbaH\xca\x02\x1a\xc7\x02\n" +
-	"\x1acontrol.exactly_one_action\x12la control is exactly one of boost_action, filter_action, promote_action, redirect_action, or synonyms_action\x1a\xba\x01(has(this.boost_action) ? 1 : 0) + (has(this.filter_action) ? 1 : 0) + (has(this.promote_action) ? 1 : 0) + (has(this.redirect_action) ? 1 : 0) + (has(this.synonyms_action) ? 1 : 0) == 1\"\xda\x02\n" +
+	"\x0fsynonyms_action\x18\t \x01(\v2W.dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSynonymsActionR\x0esynonymsAction:\xcd\x04\xbaH\xc9\x04\x1a\xc7\x02\n" +
+	"\x1acontrol.exactly_one_action\x12la control is exactly one of boost_action, filter_action, promote_action, redirect_action, or synonyms_action\x1a\xba\x01(has(this.boost_action) ? 1 : 0) + (has(this.filter_action) ? 1 : 0) + (has(this.promote_action) ? 1 : 0) + (has(this.redirect_action) ? 1 : 0) + (has(this.synonyms_action) ? 1 : 0) == 1\x1a\xfc\x01\n" +
+	"#control.query_regex_only_on_promote\x12\x87\x01query_regex conditions are accepted only on a promote_action (and only for Basic Site Search) -- use query_terms for every other action\x1aKhas(this.promote_action) || !this.conditions.exists(c, c.query_regex != '')\"\xda\x02\n" +
 	"$GcpVertexAiSearchEngineServingConfig\x128\n" +
 	"\x11boost_control_ids\x18\x01 \x03(\tB\f\xbaH\t\x92\x01\x06\"\x04r\x02\x10\x01R\x0fboostControlIds\x12:\n" +
 	"\x12filter_control_ids\x18\x02 \x03(\tB\f\xbaH\t\x92\x01\x06\"\x04r\x02\x10\x01R\x10filterControlIds\x12<\n" +

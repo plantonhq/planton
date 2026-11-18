@@ -61,3 +61,12 @@ spec:
         reach: target
         privilege: ordinary
         notes: Covers google_discovery_engine_assistant (Pulumi discoveryengine.Assistant), one per spec.assistants[] entry -- create, read/refresh, the in-place PATCH, destroy.
+      - purpose: CreateTheChatEnginesDialogflowAgent
+        permissions:
+          - dialogflow.agents.create
+        provenance: derived
+        reach: target
+        privilege: ordinary
+        condition:
+          spec_field_set: chat_engine_config.agent_creation_config
+        notes: A CHAT engine with agent_creation_config makes Google create a Dialogflow CX agent for it as the caller, so the caller needs dialogflow.agents.create (measured live -- the engine create was refused with that permission named). A chat engine that links an existing agent (dialogflow_agent_to_link) creates none.

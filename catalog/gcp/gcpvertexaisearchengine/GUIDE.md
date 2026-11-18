@@ -22,7 +22,11 @@ Rules the spec enforces are the provider's: the chat block is required on CHAT a
 
 ## Controls, and the serving config that applies them
 
-A control is one rule that shapes results: `synonymsAction` treats terms as equivalent, `boostAction` reorders documents matching a filter (by a fixed amount or a curve over a numeric or freshness field), `filterAction` drops non-matching documents, `promoteAction` pins a link, `redirectAction` sends a query elsewhere. Each has exactly one action, an optional set of conditions (query terms, a regex, time windows), and an id.
+A control is one rule that shapes results: `synonymsAction` treats terms as equivalent, `boostAction` reorders documents matching a filter (by a fixed amount or a curve over a numeric or freshness field), `filterAction` drops non-matching documents, `promoteAction` pins a link, `redirectAction` sends a query elsewhere. Each has exactly one action, an optional set of conditions (query terms, a regex, time windows), and an id. Four limits Google enforces at create, all refused by the spec first:
+- **One use case per control.** A control applies to search or to browse, never both: a control for both is two controls.
+- **A regex condition only on a promote action, and only for Basic Site Search.** Every other action takes query terms.
+- **A filter names fields the data store's schema indexes.** Google refuses a filter on any other field ("Unsupported field ... on ':' operator"), so a boost or filter control needs a store whose schema marks the field `indexable`.
+- **A curve boost's control point can't be deployed today.** The provider sends it under a name the API refuses, on both engines, so a boost uses `fixedBoost` until the provider is fixed.
 
 Controls belong to one engine and nothing else references them, so they are folded as `controls[]`. A control takes effect only when the engine's **serving config** lists it: `servingConfig` carries five id lists, one per action, and the spec checks that every id names a declared control with that action -- the mistake of listing a boost control under filters is caught before Google sees it. Google creates the default serving config (`default_search`) with the engine; the provider PATCHes it and never deletes it, so `servingConfig` configures rather than owns. `solutionType` on every control is derived from the arm, because the provider hard-codes each engine's.
 
@@ -36,4 +40,4 @@ Controls belong to one engine and nothing else references them, so they are fold
 
 ## Encryption, the chat agent, and destroy
 
-`kmsKeyName` encrypts a search engine under a Cloud KMS key in its location (the chat and recommendation resources offer none). A chat engine that creates its agent does so through Google's service agent; the module enables the Dialogflow API so a fresh project works. `deletionPolicy` is fanned to the controls and assistants: `DELETE` (default), `PREVENT`, or `ABANDON`. Destroy the engine before its data stores -- Google refuses to delete a store an engine still uses -- and expect Google to reserve a deleted engine's id for a while.
+`kmsKeyName` encrypts a search engine under a Cloud KMS key in its location (the chat and recommendation resources offer none). A chat engine that creates its agent makes Google create a Dialogflow CX agent as the caller, so the identity that applies needs `dialogflow.agents.create`; the module enables the Dialogflow API so a fresh project works. `deletionPolicy` is fanned to the controls and assistants: `DELETE` (default), `PREVENT`, or `ABANDON`. Destroy the engine before its data stores -- Google refuses to delete a store an engine still uses -- and expect Google to reserve a deleted engine's id for a while.

@@ -304,7 +304,10 @@ message GcpVertexAiSearchEngineControlCondition {
   // condition).
   repeated GcpVertexAiSearchEngineActiveTimeRange active_time_ranges = 2;
 
-  // A regular expression the whole query must match.
+  // A regular expression the whole query must match. Google accepts it only
+  // on a promote action, and only for Basic Site Search ("only Basic Site
+  // Search promote action can have query regex condition", measured live);
+  // use query_terms for every other action.
   string query_regex = 3;
 }
 
@@ -348,8 +351,15 @@ message GcpVertexAiSearchEngineInterpolationBoostSpec {
     }
   ];
 
-  // The curve's control point.
-  GcpVertexAiSearchEngineControlPoint control_point = 4;
+  // The curve's control point. Not deployable today: the google provider
+  // sends it as "controlPoint", which the Discovery Engine API refuses as an
+  // unknown field on both engines (measured live), so the spec refuses it
+  // until the provider sends the name the API takes.
+  GcpVertexAiSearchEngineControlPoint control_point = 4 [(buf.validate.field).cel = {
+    id: "interpolation_boost_spec.control_point_not_deployable"
+    expression: "false"
+    message: "control_point cannot be deployed: the google provider sends it under a name the Discovery Engine API refuses (controlPoint); use fixed_boost until the provider is fixed"
+  }];
 }
 
 // GcpVertexAiSearchEngineBoostAction changes the order of results that
@@ -476,6 +486,11 @@ message GcpVertexAiSearchEngineControl {
     expression: "(has(this.boost_action) ? 1 : 0) + (has(this.filter_action) ? 1 : 0) + (has(this.promote_action) ? 1 : 0) + (has(this.redirect_action) ? 1 : 0) + (has(this.synonyms_action) ? 1 : 0) == 1"
     message: "a control is exactly one of boost_action, filter_action, promote_action, redirect_action, or synonyms_action"
   };
+  option (buf.validate.message).cel = {
+    id: "control.query_regex_only_on_promote"
+    expression: "has(this.promote_action) || !this.conditions.exists(c, c.query_regex != '')"
+    message: "query_regex conditions are accepted only on a promote_action (and only for Basic Site Search) -- use query_terms for every other action"
+  };
 
   // The control's id within the engine -- 1-63 characters, RFC 1034.
   // Immutable.
@@ -493,13 +508,20 @@ message GcpVertexAiSearchEngineControl {
     }
   ];
 
-  // Where the control applies: SEARCH_USE_CASE_SEARCH (queries) and/or
-  // SEARCH_USE_CASE_BROWSE (empty-query browsing).
-  repeated string use_cases = 3 [(buf.validate.field).repeated.items.string = {
-    in: [
-      "SEARCH_USE_CASE_SEARCH",
-      "SEARCH_USE_CASE_BROWSE"
-    ]
+  // Where the control applies: SEARCH_USE_CASE_SEARCH (queries) or
+  // SEARCH_USE_CASE_BROWSE (empty-query browsing). One value: Google refuses
+  // a control with both ("control.useCase can only have 1 value", measured
+  // live), so a control for both makes two controls.
+  repeated string use_cases = 3 [(buf.validate.field).repeated = {
+    max_items: 1
+    items: {
+      string: {
+        in: [
+          "SEARCH_USE_CASE_SEARCH",
+          "SEARCH_USE_CASE_BROWSE"
+        ]
+      }
+    }
   }];
 
   // When the control is active; empty means always.

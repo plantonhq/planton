@@ -144,12 +144,15 @@ func prepareSecondAct(path, runID, firstActScenario string, clock time.Time, dep
 	return resolved, errors.Wrap(err, "resolving the second act's references from the prerequisites' outputs")
 }
 
-// runUpgrade deploys the second manifest against the same stack.
-func runUpgrade(tc *provider.KindTestContext, upgradeManifest string) error {
+// runUpgrade deploys the second manifest against the same stack. An update
+// can be the first call of a permission (a rule patched, a description
+// changed), so it waits out a grant still propagating as the first deploy
+// does.
+func runUpgrade(tc *provider.KindTestContext, harness provider.Harness, upgradeManifest string) error {
 	if err := bindManifest(tc, upgradeManifest); err != nil {
 		return errors.Wrap(err, "binding the upgrade manifest")
 	}
-	return errors.Wrap(runDeploy(tc), "the upgrade deploy failed")
+	return errors.Wrap(deployWhileGrantsPropagate(tc, harness, func() error { return runDeploy(tc) }), "the upgrade deploy failed")
 }
 
 // runUpgradeExpectFailure deploys the second manifest expecting the engine to

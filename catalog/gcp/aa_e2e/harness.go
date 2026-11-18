@@ -84,15 +84,21 @@ import (
 type Harness struct {
 	services *verify.Services
 
-	// mu guards deployed, written by VerifyDeployed and read by VerifyDestroyed.
-	mu       sync.Mutex
-	deployed map[string]map[string]string
+	// mu guards deployed, written by VerifyDeployed and read by VerifyDestroyed,
+	// and laneGrants, the permissions each running lane's identity holds
+	// (written by ProvisionIdentity, read by HeldPermissionRefused).
+	mu         sync.Mutex
+	deployed   map[string]map[string]string
+	laneGrants map[*provider.KindTestContext]map[string]bool
 }
 
 // NewHarness creates a GCP test harness. Credentials come from the ambient ADC
 // chain (see the package doc); none are passed here.
 func NewHarness() *Harness {
-	return &Harness{deployed: make(map[string]map[string]string)}
+	return &Harness{
+		deployed:   make(map[string]map[string]string),
+		laneGrants: make(map[*provider.KindTestContext]map[string]bool),
+	}
 }
 
 // Setup resolves the test project, exports GOOGLE_PROJECT for the IaC

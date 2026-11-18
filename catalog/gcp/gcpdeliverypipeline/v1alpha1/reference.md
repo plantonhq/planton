@@ -723,7 +723,13 @@ in order.
 
 `GcpDeliveryPipelineCanaryDeployHook`
 
-A job that runs after the last phase.
+A job that runs after the last phase. Not deployable today: the google
+provider cannot store it in Terraform state ("Invalid address to set:
+... canary_deployment.0.postdeploy.0.tasks", measured live), so the spec
+refuses it until the provider is fixed; run the job from a following
+stage's predeploy instead.
+
+- rule: a canary deployment's postdeploy cannot be deployed: the google provider cannot store it on Terraform; run the job from a following stage's predeploy
 
 ### spec.serialPipeline.stages[].strategy.canary.canaryDeployment.postdeploy.actions
 

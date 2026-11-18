@@ -28,3 +28,17 @@ type IdentityProvisioner interface {
 	// as it, plus the cleanup that removes the identity after the lane.
 	ProvisionIdentity(ctx context.Context, tc *KindTestContext, spec string) (providerConfigPath string, cleanup func(), err error)
 }
+
+// GrantPropagationJudge is the optional capability that tells a grant still
+// on its way from a missing one. Some services check permissions through
+// their own caches, which can lag the provider's IAM by minutes after an
+// identity is created, so a lane can be refused a permission its identity
+// already holds. The runner retries a declared lane's deploy, after a wait,
+// while the harness says the refusal names a held permission; any other
+// failure fails the phase at once, so a permission the identity lacks is
+// still a manifest finding.
+type GrantPropagationJudge interface {
+	// HeldPermissionRefused returns the permission a deploy failure names
+	// and whether the lane's identity was granted it.
+	HeldPermissionRefused(tc *KindTestContext, deployErr error) (permission string, held bool)
+}

@@ -38,7 +38,15 @@ func Resources(ctx *pulumi.Context, iacInput *gcpvertexaisearchdatastorev1alpha1
 	ctx.Export(OpName, createdDataStore.Name)
 	ctx.Export(OpDataStoreId, createdDataStore.DataStoreId)
 	ctx.Export(OpLocation, createdDataStore.Location)
-	ctx.Export(OpDefaultSchemaId, createdDataStore.DefaultSchemaId)
+	// The declared schema becomes the store's default once it exists, after
+	// the store is created, so the store's own attribute reads empty at
+	// apply; the declared id is the value Google settles on, as the Terraform
+	// module exports.
+	if schema := iacInput.Target.GetSpec().GetSchema(); schema != nil {
+		ctx.Export(OpDefaultSchemaId, pulumi.String(schema.GetSchemaId()))
+	} else {
+		ctx.Export(OpDefaultSchemaId, createdDataStore.DefaultSchemaId)
+	}
 	if createdSchema != nil {
 		ctx.Export(OpSchemaName, createdSchema.Name)
 	} else {

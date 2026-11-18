@@ -133,8 +133,15 @@ func serialPipelineArgs(serial *v1.GcpDeliveryPipelineSerialPipeline) cd.Deliver
 	return pipeline
 }
 
+// strategyArgs sends a stage's strategy only when it carries something: a
+// standard strategy with nothing set is Google's default rollout, which it
+// stores as no strategy at all, so sending an empty one re-plans forever
+// (measured), as the Terraform module also skips it.
 func strategyArgs(strategy *v1.GcpDeliveryPipelineStrategy) cd.DeliveryPipelineSerialPipelineStageStrategyPtrInput {
 	if strategy == nil {
+		return nil
+	}
+	if s := strategy.Standard; strategy.Canary == nil && (s == nil || (!s.Verify && s.Predeploy == nil && s.Postdeploy == nil && s.VerifyConfig == nil)) {
 		return nil
 	}
 	return &cd.DeliveryPipelineSerialPipelineStageStrategyArgs{

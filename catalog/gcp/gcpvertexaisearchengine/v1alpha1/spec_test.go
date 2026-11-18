@@ -141,7 +141,6 @@ var _ = ginkgo.Describe("GcpVertexAiSearchEngineSpec", func() {
 						FieldName:         "published",
 						AttributeType:     "FRESHNESS",
 						InterpolationType: "LINEAR",
-						ControlPoint:      &GcpVertexAiSearchEngineControlPoint{AttributeValue: "7d", BoostAmount: proto.Float32(0.8)},
 					},
 				},
 			},
@@ -161,7 +160,7 @@ var _ = ginkgo.Describe("GcpVertexAiSearchEngineSpec", func() {
 			{
 				ControlId:      "redirect-pricing",
 				DisplayName:    "Redirect pricing",
-				Conditions:     []*GcpVertexAiSearchEngineControlCondition{{QueryRegex: "^pricing$"}},
+				Conditions:     []*GcpVertexAiSearchEngineControlCondition{{QueryTerms: []*GcpVertexAiSearchEngineQueryTerm{{Value: "pricing", FullMatch: true}}}},
 				RedirectAction: &GcpVertexAiSearchEngineRedirectAction{RedirectUri: "https://example.com/pricing"},
 			},
 		}
@@ -343,6 +342,29 @@ var _ = ginkgo.Describe("GcpVertexAiSearchEngineSpec", func() {
 		msg.Spec.Controls[0].BoostAction.FixedBoost = proto.Float32(0.2)
 		msg.Spec.Controls[0].BoostAction.InterpolationBoostSpec = &GcpVertexAiSearchEngineInterpolationBoostSpec{FieldName: "f"}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should refuse what Google refuses on a control: two use cases, a control point, a regex off a promote action", func() {
+		msg := search()
+		ctl := synonyms("syn")
+		ctl.UseCases = []string{"SEARCH_USE_CASE_SEARCH", "SEARCH_USE_CASE_BROWSE"}
+		msg.Spec.Controls = []*GcpVertexAiSearchEngineControl{ctl}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg = search()
+		msg.Spec.Controls = []*GcpVertexAiSearchEngineControl{{
+			ControlId: "b", DisplayName: "B",
+			BoostAction: &GcpVertexAiSearchEngineBoostAction{DataStore: litRef(storeName), Filter: "x",
+				InterpolationBoostSpec: &GcpVertexAiSearchEngineInterpolationBoostSpec{FieldName: "f",
+					ControlPoint: &GcpVertexAiSearchEngineControlPoint{AttributeValue: "7d"}}},
+		}}
+		gomega.Expect(validator.Validate(msg).Error()).To(gomega.ContainSubstring("control_point cannot be deployed"))
+		msg = search()
+		msg.Spec.Controls = []*GcpVertexAiSearchEngineControl{{
+			ControlId: "r", DisplayName: "R",
+			Conditions:     []*GcpVertexAiSearchEngineControlCondition{{QueryRegex: "^pricing$"}},
+			RedirectAction: &GcpVertexAiSearchEngineRedirectAction{RedirectUri: "https://example.com/pricing"},
+		}}
+		gomega.Expect(validator.Validate(msg).Error()).To(gomega.ContainSubstring("query_regex conditions are accepted only on a promote_action"))
 	})
 
 	ginkgo.It("should require every serving config id to name a declared control with the matching action", func() {

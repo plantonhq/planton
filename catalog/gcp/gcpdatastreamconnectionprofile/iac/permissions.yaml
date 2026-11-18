@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling datastream.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling datastream.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-18 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageConnectionProfile
         permissions:
           - datastream.connectionProfiles.create
@@ -27,10 +27,10 @@ spec:
           - datastream.connectionProfiles.update
           - datastream.connectionProfiles.delete
           - datastream.operations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_datastream_connection_profile (Pulumi datastream.ConnectionProfile) -- created (with Google's connectivity test unless create_without_validation), patched, read on every refresh, deleted, and its long-running operations polled. Names grounded in Google's Datastream roles page; roles/datastream.admin contains all five.
+        notes: Covers google_datastream_connection_profile (Pulumi datastream.ConnectionProfile) -- created (with Google's connectivity test unless create_without_validation), patched, read on every refresh, deleted, and its long-running operations polled. Names grounded in Google's Datastream roles page; roles/datastream.admin contains all five. Proven 2026-11-18 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: UsePrivateConnection
         permissions:
           - datastream.privateConnections.get

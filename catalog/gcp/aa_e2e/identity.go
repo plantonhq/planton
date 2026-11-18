@@ -10,6 +10,7 @@ import (
 	"math/rand"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 	"time"
@@ -175,10 +176,41 @@ func (h *Harness) ProvisionIdentity(ctx context.Context, tc *provider.KindTestCo
 	}
 	lanef(tc, "  [identity] %s holds %s (%d permission(s) from permissions.yaml%s)",
 		account.Email, strings.Join(roles, ", "), len(grant.permissions), grant.conditionalNote())
+	held := make(map[string]bool, len(grant.permissions))
+	for _, permission := range grant.permissions {
+		held[permission] = true
+	}
+	h.mu.Lock()
+	h.laneGrants[tc] = held
+	h.mu.Unlock()
 	return config.Path, func() {
+		h.mu.Lock()
+		delete(h.laneGrants, tc)
+		h.mu.Unlock()
 		cleanup()
 		removeConfig()
 	}, nil
+}
+
+// refusedPermission matches Google's two wordings of a refusal that names a
+// permission: "Permission 'p' denied on ..." and "IAM permission 'p' on '...'
+// denied".
+var refusedPermission = regexp.MustCompile(`[Pp]ermission '([A-Za-z0-9_.]+)'(?: on '[^']*')? denied`)
+
+// HeldPermissionRefused implements provider.GrantPropagationJudge: a deploy
+// refused for a permission the lane's custom role holds is a grant still
+// reaching the service's own permission cache (Discovery Engine, Dialogflow
+// and Cloud Deploy were measured lagging a minute past the key's settle).
+// Permissions granted through a named predefined role are not in the set, so
+// their refusals fail the lane at once.
+func (h *Harness) HeldPermissionRefused(tc *provider.KindTestContext, deployErr error) (string, bool) {
+	match := refusedPermission.FindStringSubmatch(deployErr.Error())
+	if match == nil {
+		return "", false
+	}
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	return match[1], h.laneGrants[tc][match[1]]
 }
 
 // declaredGrantSet is what a lane's identity is granted.

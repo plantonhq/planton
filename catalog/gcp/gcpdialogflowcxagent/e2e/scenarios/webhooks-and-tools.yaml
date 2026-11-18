@@ -27,6 +27,7 @@ spec:
   defaultLanguageCode: en
   timeZone: America/Los_Angeles
   startWithDefaultPlaybook: true
+  deleteChatEngineOnDestroy: true # the data-store tool makes Google create chat engines that would outlive the agent and hold the data store
   webhooks:
     - displayName: order-lookup
       timeout: 5s
@@ -60,14 +61,14 @@ spec:
                 responses:
                   "200":
                     description: The order
-    - displayName: escalate
+    - displayName: human-handoff # "escalate" is a system operation Google keeps from tools
       description: Hands the conversation to a human; the client runs it.
       functionSpec:
         inputSchema: '{"type": "object", "properties": {"reason": {"type": "string"}}}'
       versions:
         - displayName: v1
           tool:
-            displayName: escalate
+            displayName: human-handoff # "escalate" is a system operation Google keeps from tools
             description: Hands the conversation to a human; the client runs it.
             functionSpec:
               inputSchema: '{"type": "object", "properties": {"reason": {"type": "string"}}}'
