@@ -16,34 +16,34 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling cloudbuild.googleapis.com on the trigger's project. disable_on_destroy is false, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling cloudbuild.googleapis.com on the trigger's project. disable_on_destroy is false, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-18 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageTrigger
         permissions:
           - cloudbuild.builds.create
           - cloudbuild.builds.get
           - cloudbuild.builds.update
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_cloudbuild_trigger (Pulumi cloudbuild.Trigger) -- Cloud Build authorizes triggers with its builds permissions (roles/cloudbuild.builds.editor) -- create on triggers.create, get on every refresh, and update on triggers.patch and triggers.delete (Cloud Build has no separate delete permission; ABANDON and PREVENT call no delete API). The calls are synchronous; no operation polling.
+        notes: Covers google_cloudbuild_trigger (Pulumi cloudbuild.Trigger) -- Cloud Build authorizes triggers with its builds permissions (roles/cloudbuild.builds.editor) -- create on triggers.create, get on every refresh, and update on triggers.patch and triggers.delete (Cloud Build has no separate delete permission; ABANDON and PREVENT call no delete API). The calls are synchronous; no operation polling. Proven 2026-11-18 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ActAsBuildServiceAccount
         permissions:
           - iam.serviceAccounts.actAs
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: uses_identity
         condition:
           spec_field_set: service_account
-        notes: Only when service_account is set -- Google requires the caller creating or updating a trigger to be able to act as the service account its builds run as (roles/iam.serviceAccountUser on that account).
+        notes: Only when service_account is set -- Google requires the caller creating or updating a trigger to be able to act as the service account its builds run as (roles/iam.serviceAccountUser on that account). Proven 2026-11-18 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: AttachPubSubSubscription
         permissions:
           - pubsub.topics.attachSubscription
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: pubsub_config
-        notes: Only when pubsub_config is set -- creating a Pub/Sub trigger makes Cloud Build attach a push subscription to pubsub_config.topic (roles/pubsub.editor on the topic carries it). The live capture lane confirms whether Google checks it against the caller or the Cloud Build service agent.
+        notes: Only when pubsub_config is set -- creating a Pub/Sub trigger makes Cloud Build attach a push subscription to pubsub_config.topic (roles/pubsub.editor on the topic carries it). The live capture lane confirms whether Google checks it against the caller or the Cloud Build service agent. Proven 2026-11-18 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

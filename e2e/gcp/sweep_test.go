@@ -13,8 +13,11 @@ import (
 
 	"golang.org/x/oauth2/google"
 	cloudasset "google.golang.org/api/cloudasset/v1"
+	"google.golang.org/api/clouddeploy/v1"
 	"google.golang.org/api/cloudresourcemanager/v1"
 	crmv3 "google.golang.org/api/cloudresourcemanager/v3"
+	"google.golang.org/api/compute/v1"
+	"google.golang.org/api/discoveryengine/v1"
 	"google.golang.org/api/googleapi"
 	iam "google.golang.org/api/iam/v1"
 	"google.golang.org/api/option"
@@ -190,7 +193,45 @@ func newLiveReaders(ctx context.Context, t *testing.T, opts []option.ClientOptio
 	if err != nil {
 		t.Fatal(err)
 	}
+	computeService, err := compute.NewService(ctx, opts...)
+	if err != nil {
+		t.Fatal(err)
+	}
+	deploy, err := clouddeploy.NewService(ctx, opts...)
+	if err != nil {
+		t.Fatal(err)
+	}
+	search, err := discoveryengine.NewService(ctx, opts...)
+	if err != nil {
+		t.Fatal(err)
+	}
 	return map[string]liveReader{
+		// projects/{p}/global/firewallPolicies/{n} or
+		// projects/{p}/regions/{r}/firewallPolicies/{n}.
+		"compute.googleapis.com/FirewallPolicy": func(ctx context.Context, name string) (bool, error) {
+			parts := strings.Split(name, "/")
+			if len(parts) == 6 && parts[2] == "regions" {
+				_, err := computeService.RegionNetworkFirewallPolicies.Get(parts[1], parts[3], parts[5]).Context(ctx).Do()
+				return stillThere(err)
+			}
+			if len(parts) == 5 && parts[2] == "global" {
+				_, err := computeService.NetworkFirewallPolicies.Get(parts[1], parts[4]).Context(ctx).Do()
+				return stillThere(err)
+			}
+			return true, nil // a shape this reader does not know is reported as found
+		},
+		"clouddeploy.googleapis.com/DeliveryPipeline": func(ctx context.Context, name string) (bool, error) {
+			_, err := deploy.Projects.Locations.DeliveryPipelines.Get(name).Context(ctx).Do()
+			return stillThere(err)
+		},
+		"discoveryengine.googleapis.com/DataStore": func(ctx context.Context, name string) (bool, error) {
+			_, err := search.Projects.Locations.Collections.DataStores.Get(name).Context(ctx).Do()
+			return stillThere(err)
+		},
+		"discoveryengine.googleapis.com/Engine": func(ctx context.Context, name string) (bool, error) {
+			_, err := search.Projects.Locations.Collections.Engines.Get(name).Context(ctx).Do()
+			return stillThere(err)
+		},
 		"iam.googleapis.com/ServiceAccount": func(ctx context.Context, name string) (bool, error) {
 			_, err := iamService.Projects.ServiceAccounts.Get(name).Context(ctx).Do()
 			return stillThere(err)

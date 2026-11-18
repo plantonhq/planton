@@ -90,7 +90,6 @@ var _ = ginkgo.Describe("GcpDeliveryPipelineSpec", func() {
 					CanaryDeployment: &GcpDeliveryPipelineCanaryDeployment{
 						Percentages:  []int32{25, 50},
 						Verify:       true,
-						Predeploy:    &GcpDeliveryPipelineCanaryDeployHook{Actions: []string{"warm"}},
 						VerifyConfig: &GcpDeliveryPipelineVerifyConfig{Tasks: []*GcpDeliveryPipelineTask{smokeTask()}},
 						Analysis:     analysis(),
 					},
@@ -193,9 +192,12 @@ var _ = ginkgo.Describe("GcpDeliveryPipelineSpec", func() {
 		})
 	})
 
-	ginkgo.It("should refuse a canary deployment's postdeploy job, which the provider cannot store on Terraform", func() {
+	ginkgo.It("should refuse a canary deployment's predeploy and postdeploy jobs, which the provider cannot store on Terraform", func() {
 		expectInvalid(func(s *GcpDeliveryPipelineSpec) {
 			stage(s, 1).Strategy.Canary.CanaryDeployment.Postdeploy = &GcpDeliveryPipelineCanaryDeployHook{Actions: []string{"notify"}}
+		})
+		expectInvalid(func(s *GcpDeliveryPipelineSpec) {
+			stage(s, 1).Strategy.Canary.CanaryDeployment.Predeploy = &GcpDeliveryPipelineCanaryDeployHook{Actions: []string{"warm"}}
 		})
 	})
 

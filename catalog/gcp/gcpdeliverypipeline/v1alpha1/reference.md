@@ -710,7 +710,13 @@ Run verify tests after each percentage deployment.
 
 `GcpDeliveryPipelineCanaryDeployHook`
 
-A job that runs before the first phase.
+A job that runs before the first phase. Not deployable today: the
+google provider cannot store it in Terraform state ("Invalid address to
+set: ... canary_deployment.0.predeploy.0.tasks", measured live), so the
+spec refuses it until the provider is fixed; run the job from the
+previous stage's postdeploy instead.
+
+- rule: a canary deployment's predeploy cannot be deployed: the google provider cannot store it on Terraform; run the job from the previous stage's postdeploy
 
 ### spec.serialPipeline.stages[].strategy.canary.canaryDeployment.predeploy.actions
 
@@ -727,7 +733,7 @@ A job that runs after the last phase. Not deployable today: the google
 provider cannot store it in Terraform state ("Invalid address to set:
 ... canary_deployment.0.postdeploy.0.tasks", measured live), so the spec
 refuses it until the provider is fixed; run the job from a following
-stage's predeploy instead.
+stage's predeploy instead (or a custom canary's phase jobs).
 
 - rule: a canary deployment's postdeploy cannot be deployed: the google provider cannot store it on Terraform; run the job from a following stage's predeploy
 

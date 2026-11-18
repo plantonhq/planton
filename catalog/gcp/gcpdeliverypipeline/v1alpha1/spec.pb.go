@@ -662,13 +662,17 @@ type GcpDeliveryPipelineCanaryDeployment struct {
 	Percentages []int32 `protobuf:"varint,1,rep,packed,name=percentages,proto3" json:"percentages,omitempty"`
 	// Run verify tests after each percentage deployment.
 	Verify bool `protobuf:"varint,2,opt,name=verify,proto3" json:"verify,omitempty"`
-	// A job that runs before the first phase.
+	// A job that runs before the first phase. Not deployable today: the
+	// google provider cannot store it in Terraform state ("Invalid address to
+	// set: ... canary_deployment.0.predeploy.0.tasks", measured live), so the
+	// spec refuses it until the provider is fixed; run the job from the
+	// previous stage's postdeploy instead.
 	Predeploy *GcpDeliveryPipelineCanaryDeployHook `protobuf:"bytes,3,opt,name=predeploy,proto3" json:"predeploy,omitempty"`
 	// A job that runs after the last phase. Not deployable today: the google
 	// provider cannot store it in Terraform state ("Invalid address to set:
 	// ... canary_deployment.0.postdeploy.0.tasks", measured live), so the spec
 	// refuses it until the provider is fixed; run the job from a following
-	// stage's predeploy instead.
+	// stage's predeploy instead (or a custom canary's phase jobs).
 	Postdeploy *GcpDeliveryPipelineCanaryDeployHook `protobuf:"bytes,4,opt,name=postdeploy,proto3" json:"postdeploy,omitempty"`
 	// Container tasks that run as the verify job.
 	VerifyConfig *GcpDeliveryPipelineVerifyConfig `protobuf:"bytes,5,opt,name=verify_config,json=verifyConfig,proto3" json:"verify_config,omitempty"`
@@ -2646,12 +2650,13 @@ const file_catalog_gcp_gcpdeliverypipeline_v1alpha1_spec_proto_rawDesc = "" +
 	"\x18custom_canary_deployment\x18\x02 \x01(\v2W.dev.planton.gcp.gcpdeliverypipeline.v1alpha1.GcpDeliveryPipelineCustomCanaryDeploymentR\x16customCanaryDeployment\x12u\n" +
 	"\x0eruntime_config\x18\x03 \x01(\v2N.dev.planton.gcp.gcpdeliverypipeline.v1alpha1.GcpDeliveryPipelineRuntimeConfigR\rruntimeConfig:\xdc\x03\xbaH\xd8\x03\x1a\x9f\x01\n" +
 	"\x15canary.one_deployment\x12@set at most one of canary_deployment or custom_canary_deployment\x1aD!(has(this.canary_deployment) && has(this.custom_canary_deployment))\x1a\xb3\x02\n" +
-	"*canary.cloud_run_automatic_traffic_control\x12ga canary_deployment on Cloud Run requires runtime_config.cloud_run.automatic_traffic_control to be true\x1a\x9b\x01!(has(this.canary_deployment) && has(this.runtime_config) && has(this.runtime_config.cloud_run)) || this.runtime_config.cloud_run.automatic_traffic_control\"\x88\x06\n" +
+	"*canary.cloud_run_automatic_traffic_control\x12ga canary_deployment on Cloud Run requires runtime_config.cloud_run.automatic_traffic_control to be true\x1a\x9b\x01!(has(this.canary_deployment) && has(this.runtime_config) && has(this.runtime_config.cloud_run)) || this.runtime_config.cloud_run.automatic_traffic_control\"\xe0\a\n" +
 	"#GcpDeliveryPipelineCanaryDeployment\x122\n" +
 	"\vpercentages\x18\x01 \x03(\x05B\x10\xbaH\r\x92\x01\n" +
 	"\b\x01\"\x06\x1a\x04\x18d(\x00R\vpercentages\x12\x16\n" +
-	"\x06verify\x18\x02 \x01(\bR\x06verify\x12o\n" +
-	"\tpredeploy\x18\x03 \x01(\v2Q.dev.planton.gcp.gcpdeliverypipeline.v1alpha1.GcpDeliveryPipelineCanaryDeployHookR\tpredeploy\x12\xc8\x02\n" +
+	"\x06verify\x18\x02 \x01(\bR\x06verify\x12\xc6\x02\n" +
+	"\tpredeploy\x18\x03 \x01(\v2Q.dev.planton.gcp.gcpdeliverypipeline.v1alpha1.GcpDeliveryPipelineCanaryDeployHookB\xd4\x01\xbaH\xd0\x01\xba\x01\xcc\x01\n" +
+	"*canary_deployment.predeploy_not_deployable\x12\x96\x01a canary deployment's predeploy cannot be deployed: the google provider cannot store it on Terraform; run the job from the previous stage's postdeploy\x1a\x05falseR\tpredeploy\x12\xc8\x02\n" +
 	"\n" +
 	"postdeploy\x18\x04 \x01(\v2Q.dev.planton.gcp.gcpdeliverypipeline.v1alpha1.GcpDeliveryPipelineCanaryDeployHookB\xd4\x01\xbaH\xd0\x01\xba\x01\xcc\x01\n" +
 	"+canary_deployment.postdeploy_not_deployable\x12\x95\x01a canary deployment's postdeploy cannot be deployed: the google provider cannot store it on Terraform; run the job from a following stage's predeploy\x1a\x05falseR\n" +

@@ -3,18 +3,17 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpcloudbuildworkerpool
 spec:
-  # Awaiting the live proof lane. The scenario creates a default (no
-  # network) pool in the harness project: free to hold, no builds run.
-  # Offline bar met: both modules build and validate, offline plans for
-  # the reference manifest and every scenario are clean on the pinned
-  # provider, and the accounting is total. Live facts the proof lane
-  # confirms: (1) the pool creates, reaches a running state, and re-plans
-  # clean on both engines with worker_config's computed fields unset; (2)
-  # an in-place worker_config change does not replace the pool; (3)
-  # destroy removes it (the verifier accepts 404). The peered and PSC arms
-  # are proven offline only (they need a network with private services
-  # access or a network attachment).
+  # Proven live on both engines (2026-11-18): a default (no network) pool
+  # deployed, updated in place (renamed, its workers' disk grown) and destroyed
+  # by an identity holding only this kind's permissions manifest, re-planning
+  # clean with worker_config's computed fields unset. On a project whose Cloud
+  # Build API was just turned on, the first create can fail while the Cloud
+  # Build service agent is still getting its access (measured: "not_found:
+  # service-<number>@gcp-sa-cloudbuild...: could not get machine type"); a
+  # retry minutes later succeeds. The peered and
+  # PSC arms stay offline-only (they need private services access or a
+  # network attachment).
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 30

@@ -13,3 +13,5 @@ Builds pick a pool by its full name, the `name` output. A trigger's inline build
 ## Lifecycle
 
 `workerConfig` (machine type, disk size, nested virtualization, public IPs), `displayName`, and `annotations` update in place. The pool has no standing charge, so an idle pool is free; a busy pool bills build minutes at its machine type's rate.
+
+On a project whose Cloud Build API the deploy has just turned on, the first create can fail while the project's Cloud Build service agent is still getting its access: the operation returns `not_found` with `service-<project number>@gcp-sa-cloudbuild.iam.gserviceaccount.com: could not get machine type ...` (measured). Apply again a few minutes later; nothing was created.

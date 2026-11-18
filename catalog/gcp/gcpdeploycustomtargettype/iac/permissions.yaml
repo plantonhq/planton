@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling clouddeploy.googleapis.com on the custom target type's project. disable_on_destroy is false, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling clouddeploy.googleapis.com on the custom target type's project. disable_on_destroy is false, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-18 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageCustomTargetType
         permissions:
           - clouddeploy.customTargetTypes.create
@@ -27,7 +27,7 @@ spec:
           - clouddeploy.customTargetTypes.update
           - clouddeploy.customTargetTypes.delete
           - clouddeploy.operations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_clouddeploy_custom_target_type (Pulumi clouddeploy.CustomTargetType) -- create, read on every refresh, in-place PATCH updates, and delete under deletion_policy DELETE (ABANDON and PREVENT call no delete API). Create, update, and delete return long-running operations the provider polls with clouddeploy.operations.get. roles/clouddeploy.admin contains every permission listed.
+        notes: Covers google_clouddeploy_custom_target_type (Pulumi clouddeploy.CustomTargetType) -- create, read on every refresh, in-place PATCH updates, and delete under deletion_policy DELETE (ABANDON and PREVENT call no delete API). Create, update, and delete return long-running operations the provider polls with clouddeploy.operations.get. roles/clouddeploy.admin contains every permission listed. Proven 2026-11-18 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

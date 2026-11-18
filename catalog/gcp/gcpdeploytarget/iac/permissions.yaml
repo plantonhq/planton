@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling clouddeploy.googleapis.com on the target's project. disable_on_destroy is false, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling clouddeploy.googleapis.com on the target's project. disable_on_destroy is false, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-18 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageTarget
         permissions:
           - clouddeploy.targets.create
@@ -27,7 +27,7 @@ spec:
           - clouddeploy.targets.update
           - clouddeploy.targets.delete
           - clouddeploy.operations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_clouddeploy_target (Pulumi clouddeploy.Target) -- create, read on every refresh, in-place updates (the target type, approval, parameters, labels, annotations, associated entities, execution configurations), and delete under deletion_policy DELETE (ABANDON and PREVENT call no delete API). Create, update, and delete return long-running operations the provider polls with clouddeploy.operations.get. All five appear in roles/clouddeploy.admin. Naming an execution service account, bucket, worker pool, cluster, or custom target type on the target reads none of them at apply time; the execution service account uses them when jobs run.
+        notes: Covers google_clouddeploy_target (Pulumi clouddeploy.Target) -- create, read on every refresh, in-place updates (the target type, approval, parameters, labels, annotations, associated entities, execution configurations), and delete under deletion_policy DELETE (ABANDON and PREVENT call no delete API). Create, update, and delete return long-running operations the provider polls with clouddeploy.operations.get. All five appear in roles/clouddeploy.admin. Naming an execution service account, bucket, worker pool, cluster, or custom target type on the target reads none of them at apply time; the execution service account uses them when jobs run. Proven 2026-11-18 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
