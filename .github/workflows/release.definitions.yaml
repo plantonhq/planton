@@ -111,6 +111,10 @@ permissions:
 
 env:
   R2_BUCKET: planton-foundation-downloads
+  # R2 takes "auto" as its region. Unset, the CLI falls back to the runner's
+  # default (us-west-2), which R2 refuses on every multipart upload -- the one a
+  # large skill zip needs. The release scripts set the same default.
+  AWS_DEFAULT_REGION: auto
 
 jobs:
   package:
