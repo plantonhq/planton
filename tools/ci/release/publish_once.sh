@@ -28,6 +28,10 @@
 # =============================================================================
 set -euo pipefail
 
+# R2 takes "auto" as its region; the runner's default (us-west-2) is refused on
+# every multipart upload, which a large module needs.
+export AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION:-auto}"
+
 file="$1"
 key="$2"
 shift 2
