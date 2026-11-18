@@ -66,6 +66,12 @@ const (
 	// readinessBudget bounds the wait for Google to answer a new account's
 	// grants. IAM propagation is usually seconds and occasionally minutes.
 	readinessBudget = 5 * time.Minute
+	// keySettleWindow is how long a new key must be accepted without a single
+	// refusal before the lane uses it. Google says a key may need 60 seconds or
+	// more before every operation accepts it, and acceptance is not monotonic:
+	// measured, a key that had just answered testIamPermissions was refused by
+	// the engine's next token fetch with invalid_grant.
+	keySettleWindow = 60 * time.Second
 )
 
 // ProvisionIdentity implements provider.IdentityProvisioner (see the
@@ -312,21 +318,24 @@ func (h *Harness) ensureDeclaredRole(ctx context.Context, project string, grant 
 }
 
 // awaitGrants waits until Google answers, for the new account itself, that it
-// holds every permission of its custom role. Some services check permissions
-// through their own caches and can lag even this; a 403 in the lane for a
-// permission the role holds is therefore re-run after a wait before anything
-// is concluded (the e2e README's triage section).
+// holds every permission of its custom role, and has kept accepting its key
+// for keySettleWindow: each attempt builds a fresh client, so each fetches a
+// fresh token, and any refusal starts the window again. Some services check
+// permissions through their own caches and can lag even this; a 403 in the
+// lane for a permission the role holds is therefore re-run after a wait before
+// anything is concluded (the e2e README's triage section).
 func (h *Harness) awaitGrants(ctx context.Context, project string, keyJSON []byte, wanted []string) error {
 	if len(wanted) == 0 {
 		return nil
 	}
-	asLane, err := cloudresourcemanager.NewService(ctx,
-		option.WithCredentialsJSON(keyJSON), option.WithQuotaProject(project))
-	if err != nil {
-		return errors.Wrap(err, "building a client that authenticates as the lane identity")
-	}
 	var missing []string
-	err = retryUntil(ctx, readinessBudget, func() (bool, error) {
+	var acceptedSince time.Time
+	err := retryUntil(ctx, readinessBudget, func() (bool, error) {
+		asLane, err := cloudresourcemanager.NewService(ctx,
+			option.WithCredentialsJSON(keyJSON), option.WithQuotaProject(project))
+		if err != nil {
+			return false, errors.Wrap(err, "building a client that authenticates as the lane identity")
+		}
 		missing = missing[:0]
 		for start := 0; start < len(wanted); start += 100 {
 			end := start + 100
@@ -354,7 +363,14 @@ func (h *Harness) awaitGrants(ctx context.Context, project string, keyJSON []byt
 				}
 			}
 		}
-		return len(missing) == 0, nil
+		if len(missing) > 0 {
+			acceptedSince = time.Time{}
+			return false, nil
+		}
+		if acceptedSince.IsZero() {
+			acceptedSince = time.Now()
+		}
+		return time.Since(acceptedSince) >= keySettleWindow, nil
 	})
 	if err != nil && len(missing) > 0 {
 		return errors.Wrapf(err, "Google still does not answer %d granted permission(s) for it after %s (first: %s)",

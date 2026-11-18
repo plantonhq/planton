@@ -1,6 +1,8 @@
 package module
 
 import (
+	"strings"
+
 	"github.com/pkg/errors"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/organizations"
@@ -71,7 +73,12 @@ func tagBinding(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) 
 		name, boundParent, tagValue = created.Name, created.Parent, created.TagValue
 	}
 
-	ctx.Export(OpName, name)
+	// The provider's `name` arrives without the tagBindings/ prefix its
+	// documentation shows; the resource name puts it back once, as the
+	// Terraform module does.
+	ctx.Export(OpName, name.ApplyT(func(n string) string {
+		return "tagBindings/" + strings.TrimPrefix(n, "tagBindings/")
+	}).(pulumi.StringOutput))
 	ctx.Export(OpParent, boundParent)
 	ctx.Export(OpTagValue, tagValue)
 

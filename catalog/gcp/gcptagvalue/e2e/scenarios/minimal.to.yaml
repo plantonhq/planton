@@ -1,0 +1,28 @@
+# The second act of minimal.yaml: the same value with its description
+# changed, the one in-place update a value takes (its key and short name
+# recreate it). Not a scenario of its own (the second-act annotation keeps
+# discovery from running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTagValue
+metadata:
+  name: planton-oss-e2e-gcptagv-minimal
+  id: planton-oss-e2e-gcptagv-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcptagvalue
+  annotations:
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e: "true"
+    planton.dev/e2e-second-act: minimal.yaml
+  tags:
+    - planton-e2e
+spec:
+  tagKey:
+    valueFrom:
+      kind: GcpTagKey
+      name: planton-oss-e2e-gcptagk-prereq
+      fieldPath: status.outputs.name
+  shortName: planton-e2e-min-${E2E_RUN_ID}
+  description: Planton E2E minimal value, updated in place; safe to delete

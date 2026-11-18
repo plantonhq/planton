@@ -1,7 +1,7 @@
 # Least-privilege permissions the IaC runner's GCP principal needs to
 # provision, update, and destroy this component with the platform modules.
-# Every entry is `derived` (static analysis of the module sources, cited in
-# notes) until the live capture lane upgrades it to `proven`. Schema:
+# Every entry is `proven`: a live run under an identity holding only these
+# entries (each note says what the run showed). Schema:
 # iac/catalogkindpermissions/v1.
 apiVersion: iac.planton.dev/v1
 kind: CatalogKindPermissions
@@ -16,7 +16,7 @@ spec:
           - resourcemanager.tagKeys.get
           - resourcemanager.tagKeys.update
           - resourcemanager.tagKeys.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Covers google_tags_tag_key (Pulumi tags.TagKey) -- the modules' only resource. create on first apply; get on every refresh and import; update when the description or allowed_values_regex change (parent, short_name, purpose, and purpose_data are ForceNew and recreate instead); delete on destroy under deletion_policy DELETE (refused by Google while values exist; ABANDON and PREVENT call no delete API). Granted on the OWNER -- the organization for an organization-owned key, the project for a project-owned one (the shape that needs no organization-level grant). roles/resourcemanager.tagAdmin contains all four."
+        notes: "Covers google_tags_tag_key (Pulumi tags.TagKey) -- the modules' only resource. create on first apply; get on every refresh and import; update when the description or allowed_values_regex change (parent, short_name, purpose, and purpose_data are ForceNew and recreate instead); delete on destroy under deletion_policy DELETE (refused by Google while values exist; ABANDON and PREVENT call no delete API). Granted on the OWNER -- the organization for an organization-owned key, the project for a project-owned one (the shape that needs no organization-level grant). roles/resourcemanager.tagAdmin contains all four. Proven 2026-11-18: an identity holding only this manifest deployed, updated and destroyed the kind on both engines."

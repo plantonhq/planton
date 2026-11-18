@@ -1,0 +1,26 @@
+# The second act of minimal.yaml: the same key with a description added, the
+# one in-place update a project-owned key takes (parent, short name, purpose
+# and purpose data recreate it). Not a scenario of its own (the second-act
+# annotation keeps discovery from running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTagKey
+metadata:
+  name: planton-oss-e2e-gcptagk-minimal
+  id: planton-oss-e2e-gcptagk-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcptagkey
+  annotations:
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e: "true"
+    planton.dev/e2e-second-act: minimal.yaml
+  tags:
+    - planton-e2e
+spec:
+  parent:
+    projectId:
+      value: ${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}
+  shortName: planton-e2e-min-${E2E_RUN_ID}
+  description: Planton E2E minimal key, updated in place; safe to delete

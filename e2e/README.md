@@ -794,7 +794,12 @@ this kind"). For each lane it
 - creates a lane account `pe2e-<hash>` (the full lane in its display name),
   binds the role and any named predefined roles on the project, mints a key,
   and waits until Google answers every granted permission for the account
-  itself (`testIamPermissions`, up to five minutes);
+  itself (`testIamPermissions`, up to five minutes) and has accepted the key
+  for a full minute without one refusal, each check with a fresh token. A
+  key minted seconds ago is refused at the token endpoint with
+  `invalid_grant` ("Invalid JWT Signature"), and acceptance is not
+  monotonic: measured, a key that had just answered was refused by the
+  engine's next token fetch, so one success is not enough;
 - hands the key to both engines as the lane's `GcpProviderConfig`, and to
   the Pulumi subprocesses that deploy, re-plan and destroy the kind as
   `GOOGLE_CREDENTIALS` after everything inherited, so a default provider in a
@@ -807,6 +812,15 @@ this kind"). For each lane it
   account and any binding naming one or a deleted principal) before the
   first lane, since one test process per account means anything already
   there is a leftover.
+
+A kind's manifest flips from `derived` to `proven` only for what a passing
+declared run showed: every group the lanes granted, on both engines, with the
+kind deployed, updated and destroyed. The update is an
+`e2e-upgrade-manifest` act (above) for each in-place update the kind takes
+(a description, a label), so the manifest's update permissions are exercised.
+A kind with nothing to update in place (every field replaces it) proves by
+deploy and destroy, and its notes say so. A conditional group no passing
+scenario granted stays `derived`.
 
 A 403 for a permission the lane's role holds is propagation until shown
 otherwise: Dialogflow, Datastream, Discovery Engine and Cloud Deploy check
@@ -3330,12 +3344,17 @@ lanes use, an orphan is anything that is not standing, whatever its name.
 `PLANTON_E2E_GCP_SWEEP=1 go test -tags e2e ./e2e/gcp -run '^TestSweep$'`
 (under the harness's key) lists every resource Cloud Asset Inventory finds in
 the project, and in `PLANTON_E2E_GCP_SECOND_PROJECT_ID` when set, minus what
-stands there on purpose (the project and its services, the harness's account
-and key, the declared roles, Google's default accounts, the two log routes,
-Cloud Build's bucket), plus every IAM binding naming a lane account or a
-deleted principal, and fails on any line. Asset Inventory lags writes by
-minutes and does not index every type; a type it misses relies on the lane's
-own VERIFY-CLEAN phase. Delete a leftover through its kind's module, or with
+stands there on purpose (the project, its services and billing link, the
+harness's account and key, the declared roles, Google's default accounts, the
+two log routes, Cloud Build's bucket), plus every IAM binding naming a lane
+account or a deleted principal, and fails on any line. Asset Inventory keeps a
+deleted resource in its index for minutes to hours (measured: lane accounts,
+their keys and tag keys and values deleted ten minutes earlier were all still
+listed), so a candidate whose type the sweep reads live (`liveReaders` in
+`sweep_test.go`) is read through its own API and reported only if it is still
+there; a type that first shows up stale is added there. Asset Inventory names
+a service account key by its account's unique id, not its email. A type it
+does not index relies on the lane's own VERIFY-CLEAN phase. Delete a leftover through its kind's module, or with
 `gcloud` for the special classes below.
 
 **Intra-cluster firewall is part of a multi-node cluster's minimum

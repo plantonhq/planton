@@ -3,15 +3,13 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcptagvalue
 spec:
-  # Awaiting the live proof lane. Offline bar met: both modules build and
-  # validate, offline plans for the reference manifest and the scenario are
-  # clean on the pinned provider, and the accounting is total. Live facts
-  # the proof lane confirms: (1) the reference to the prerequisite GcpTagKey
-  # resolves to tagKeys/{id} on both engines; (2) the derived tag_value_id
-  # matches the name; (3) the harness destroys the value before the key
-  # (Google refuses the other order). Project-owned chain; needs only
-  # roles/resourcemanager.tagAdmin on the harness project.
+  # Proven live on both engines (2026-11-18), deployed, updated in place
+  # (description) and destroyed by an identity holding only this kind's
+  # permissions manifest, under a project-owned prerequisite key. Measured: the
+  # key reference resolves to tagKeys/{id} once the key exports its id as
+  # `name`; the provider's `name` attribute is the bare number, which the
+  # modules export as tag_value_id; the value is destroyed before the key.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15
