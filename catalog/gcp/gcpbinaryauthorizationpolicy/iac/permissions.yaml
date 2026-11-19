@@ -16,18 +16,18 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling binaryauthorization.googleapis.com on the policy's project. disable_on_destroy is false, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling binaryauthorization.googleapis.com on the policy's project. disable_on_destroy is false, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManagePolicy
         permissions:
           - binaryauthorization.policy.get
           - binaryauthorization.policy.update
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_binary_authorization_policy (Pulumi binaryauthorization.Policy) -- create, update, and the DELETE destroy (which writes Google's default policy) are all a PUT of the project's one policy, read on every refresh. Held on the project (roles/binaryauthorization.policyEditor). The provider-default project lookup reads provider configuration only and needs no permission.
+        notes: Covers google_binary_authorization_policy (Pulumi binaryauthorization.Policy) -- create, update, and the DELETE destroy (which writes Google's default policy) are all a PUT of the project's one policy, read on every refresh. Held on the project (roles/binaryauthorization.policyEditor). The provider-default project lookup reads provider configuration only and needs no permission. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ReadRequiredAttestors
         permissions:
           - binaryauthorization.attestors.get
@@ -40,9 +40,9 @@ spec:
       - purpose: ReadClusterRuleAttestors
         permissions:
           - binaryauthorization.attestors.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: cluster_admission_rules.require_attestations_by
-        notes: The same read for the attestors a cluster rule requires -- Google refuses a policy naming an attestor the caller cannot read, whichever rule names it. A condition names one field, so the default rule and the cluster rules each carry the group.
+        notes: The same read for the attestors a cluster rule requires -- Google refuses a policy naming an attestor the caller cannot read, whichever rule names it. A condition names one field, so the default rule and the cluster rules each carry the group. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

@@ -22,6 +22,7 @@ metadata:
     e2e-catalog-kind: gcphavpnconnection
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-exclusive: gcp-network-pairs # two networks per lane against the project five: never beside the other two-network kind
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e-upgrade-manifest: bfd-md5-custom-advertisement.to.yaml # the in-place update: the first session advertised at a lower priority
     planton.dev/e2e-prerequisites: "catalog/gcp/gcphavpnconnection/e2e/prerequisites/gcpvpcnetwork-spoke.yaml,catalog/gcp/gcphavpnconnection/e2e/prerequisites/gcphavpngateway-spoke.yaml,catalog/gcp/gcphavpnconnection/e2e/prerequisites/gcphavpnconnection-spoke-to-hub.yaml"

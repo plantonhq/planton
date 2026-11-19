@@ -3,25 +3,13 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcphavpngateway
 spec:
-  # Awaiting the live proof lane. Offline bar met: both modules build and
-  # validate, offline plans for the reference manifest, the scenario, and the
-  # install profile are clean on the pinned provider, and the accounting is
-  # total. Live facts the proof lane confirms: (1) the gateway's two
-  # interfaces receive public IPv4 addresses and both interface_*_ip_address
-  # outputs are populated on both engines (picked by interface id, not
-  # position); (2) the router's bgp block -- including CUSTOM advertisement,
-  # keepalive 30, and an explicit identifier range -- round-trips and RE-PLANS
-  # CLEAN under the apply-idempotency gate (identifier_range is
-  # Optional+Computed and must not diff when unset); (3) router_asn matches
-  # the spec on both engines. Project-scoped; needs roles/compute.networkAdmin
-  # on the harness project. The gateway is free; nothing with a meter is
-  # created.
-  #
-  # Offline-proven-only arm: HA VPN over Cloud Interconnect (vpn_interfaces +
-  # encrypted_interconnect_router) needs encrypted VLAN attachments the
-  # harness cannot create; proven by the offline plan of the
-  # 03-interconnect-backed-gateway preset.
+  # Proven live on both engines (2026-11-19): an HA VPN gateway with its Cloud
+  # Router, custom BGP advertisement and an identifier range, deployed, given
+  # a longer keepalive and a label in place, and destroyed by an identity
+  # holding only this kind's permissions manifest, with the re-plan clean.
+  # Google checks compute.networks.updatePolicy when the gateway or router is
+  # created on a network. The Interconnect arm stays offline-only.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15

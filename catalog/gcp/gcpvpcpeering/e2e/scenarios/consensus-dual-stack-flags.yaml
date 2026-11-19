@@ -16,6 +16,7 @@ metadata:
     e2e-catalog-kind: gcpvpcpeering
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-exclusive: gcp-network-pairs # two networks per lane against the project five: never beside the other two-network kind
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e-upgrade-manifest: consensus-dual-stack-flags.to.yaml # the in-place update: custom routes no longer exported
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpvpcpeering/e2e/prerequisites/gcpvpcnetwork-peer.yaml,catalog/gcp/gcpvpcpeering/e2e/prerequisites/gcpvpcpeering-side-b.yaml"

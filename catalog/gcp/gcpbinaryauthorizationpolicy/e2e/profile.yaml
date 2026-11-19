@@ -3,21 +3,14 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpbinaryauthorizationpolicy
 spec:
-  # Awaiting the live proof lane. The scenario owns the second test
-  # project's policy (PLANTON_E2E_GCP_SECOND_PROJECT_ID), never the harness
-  # project's, so neither a rule nor the destroy-time reset reaches other
-  # GKE lanes; its cluster rule requires an attestor fixture in the harness
-  # project across projects. Offline bar met: both modules build and
-  # validate, offline plans for the reference manifest and the scenario
-  # are clean on the pinned provider, and the accounting is total. Live
-  # facts the proof lane confirms: (1) the PUT takes over the project's
-  # policy and re-plans clean on both engines; (2) the cross-project
-  # attestor reference is accepted with the harness identity's read
-  # access; (3) destroy writes Google's default (ALWAYS_ALLOW, no cluster
-  # rules) -- the verifier asserts it; (4) the first apply after enabling
-  # the API may race its readiness (Google's own tests wait a minute) --
-  # watch for it.
+  # Proven live on both engines (2026-11-19): the second test project's one
+  # policy, dry-run with a cluster rule requiring an attestor in the same
+  # project, deployed, re-described and destroyed (reset to Google's default)
+  # by an identity granted only this kind's permissions manifest in that
+  # project, with the re-plan clean. Create, update and destroy are one PUT,
+  # so the update is in place by construction. The cross-project attestor is
+  # taught, not run.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15

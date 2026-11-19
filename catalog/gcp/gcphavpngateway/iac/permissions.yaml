@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Covers google_project_service (Pulumi projects.Service) for compute.googleapis.com -- enable on first apply, get on every refresh. disable_on_destroy is false, so no disable permission is ever exercised. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live)."
+        notes: "Covers google_project_service (Pulumi projects.Service) for compute.googleapis.com -- enable on first apply, get on every refresh. disable_on_destroy is false, so no disable permission is ever exercised. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: ManageHaVpnGateway
         permissions:
           - compute.vpnGateways.create
@@ -28,10 +28,10 @@ spec:
           - compute.vpnGateways.setLabels
           - compute.networks.get
           - compute.networks.updatePolicy
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Covers google_compute_ha_vpn_gateway (Pulumi compute.HaVpnGateway). create on first apply; get on every refresh and import; setLabels when labels change (every other argument is ForceNew and recreates instead); delete on destroy under deletion_policy DELETE (refused by Google while tunnels reference the gateway; ABANDON and PREVENT call no delete API); networks.get to resolve the network reference. roles/compute.networkAdmin contains all of these. Google checks compute.networks.updatePolicy on the network when a gateway or a router is created on it (measured live -- refused without it on both engines)."
+        notes: "Covers google_compute_ha_vpn_gateway (Pulumi compute.HaVpnGateway). create on first apply; get on every refresh and import; setLabels when labels change (every other argument is ForceNew and recreates instead); delete on destroy under deletion_policy DELETE (refused by Google while tunnels reference the gateway; ABANDON and PREVENT call no delete API); networks.get to resolve the network reference. roles/compute.networkAdmin contains all of these. Google checks compute.networks.updatePolicy on the network when a gateway or a router is created on it (measured live -- refused without it on both engines). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: ManageCloudRouter
         permissions:
           - compute.routers.create
@@ -39,10 +39,10 @@ spec:
           - compute.routers.update
           - compute.routers.delete
           - compute.networks.updatePolicy
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Covers google_compute_router (Pulumi compute.Router). create on first apply; get on refresh and import; update when the description or BGP advertisement changes (the ASN and encrypted_interconnect_router are ForceNew); delete on destroy under deletion_policy DELETE. roles/compute.networkAdmin contains all four. Google checks compute.networks.updatePolicy on the network when a gateway or a router is created on it (measured live -- refused without it on both engines)."
+        notes: "Covers google_compute_router (Pulumi compute.Router). create on first apply; get on refresh and import; update when the description or BGP advertisement changes (the ASN and encrypted_interconnect_router are ForceNew); delete on destroy under deletion_policy DELETE. roles/compute.networkAdmin contains all four. Google checks compute.networks.updatePolicy on the network when a gateway or a router is created on it (measured live -- refused without it on both engines). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: ReadInterconnectAttachments
         permissions:
           - compute.interconnectAttachments.get
