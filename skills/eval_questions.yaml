@@ -880,6 +880,8 @@ questions:
       No. It asks first, then creates the registry through Planton, as a
       GcpArtifactRegistryRepo deployed through the cloud connection, never
       with your cloud CLI, so you can see, change and destroy it in Planton.
+      Once it is deployed it ticks Deploy Your First Infra Component, because
+      it finished that step.
     checks:
       - skill: planton
         file: references/setup.first-deployment.md
