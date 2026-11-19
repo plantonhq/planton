@@ -475,7 +475,7 @@ questions:
         pattern: 'planton branding set-logo logo\.png --dark-theme light\.png'
       - skill: planton
         file: references/self-hosted.branding.md
-        pattern: '(?s)version\s+for\s+the\s+dark\s+theme,\s+else\s+the\s+logo,\s+else\s+Planton''s\s+mark'
+        pattern: '(?s)\*\*logo\s+itself,\s+else\s+Planton''s\s+mark\*\*'
 
   - id: owner-puts-the-console-at-planton-acme-com
     persona: platform engineer
@@ -890,3 +890,21 @@ questions:
       - skill: planton
         file: references/setup.first-deployment.md
         pattern: 'revoked at `/user/api-keys`'
+
+  - id: first-deployment-the-person-ticks-what-they-connected
+    persona: developer
+    question: >
+      Your guide sent me to install the GitHub App, and I did. Will you tick
+      Connect a Git Provider on Getting Started for me?
+    answer: >
+      No. You connected GitHub, so that step is yours to tick on Getting
+      Started; the agent ticks only what it finished. On a local instance,
+      where the agent makes the connection itself with planton connect
+      github detect, it ticks the step.
+    checks:
+      - skill: planton
+        file: references/setup.first-deployment.md
+        pattern: 'so `connect_git` is theirs to tick: don''t tick it, and say so in the hand-back'
+      - skill: planton
+        file: references/setup.first-deployment.md
+        pattern: 'and then tick `connect_git`, because you made the connection'

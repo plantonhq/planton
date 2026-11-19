@@ -45,10 +45,8 @@ Check the result with `planton env get dev`. Then tick `create_environment`.
 
 The service is registered from its repository, so the organization needs a GitHub connection that reaches it. See what exists with `planton search connections`. If none reaches this repository, which GitHub family the instance offers decides the next move (`references/service.connecting-github-and-registries.md`, "GitHub: two identities"):
 
-- **On planton.ai, or a self-hosted Planton with its own GitHub App:** installing the App happens in the browser, and only the person can do it. Send them to Connections in their console (`https://<their Planton>/orgs/<org>/connections`), tell them to choose GitHub and install the App on this repository, and wait for them. When they say it's done, run `planton search connections` again: a GitHub connection is there when the App is installed. If it still isn't, ask them to finish the install page, and keep waiting; everything after this step needs it.
-- **On a local instance, or a self-hosted server whose environment carries `GITHUB_TOKEN`:** the machine's `gh` sign-in is the connection. Run `planton connect github detect`.
-
-Then tick `connect_git`.
+- **On planton.ai, or a self-hosted Planton with its own GitHub App:** installing the App happens in the browser, and only the person can do it. Send them to Connections in their console (`https://<their Planton>/orgs/<org>/connections`), tell them to choose GitHub and install the App on this repository, and wait for them. When they say it's done, run `planton search connections` again: a GitHub connection is there when the App is installed. If it still isn't, ask them to finish the install page, and keep waiting; everything after this step needs it. The person connected GitHub here, so `connect_git` is theirs to tick: don't tick it, and say so in the hand-back.
+- **On a local instance, or a self-hosted server whose environment carries `GITHUB_TOKEN`:** the machine's `gh` sign-in is the connection. Run `planton connect github detect`, and then tick `connect_git`, because you made the connection.
 
 ## 5. Register the service and deploy it
 
@@ -73,7 +71,7 @@ A run that ended green is not proof the service works. Run `planton service urls
 
 ## 7. Hand back
 
-Tell the person what you set up, with a link to each thing in their console (`https://<their Planton>/orgs/<org>/...`; `planton get <Kind> <name>` prints each record, and Connections, Environments and Services are where the console lists them): the cloud connection, the environment, the service and its address. Then say what is still theirs to do, if anything, and what to ask you next ("deploy my latest commit", "add a staging environment", "what changed this week").
+Tell the person what you set up, with a link to each thing in their console (`https://<their Planton>/orgs/<org>/...`; `planton get <Kind> <name>` prints each record, and Connections, Environments and Services are where the console lists them): the cloud connection, the environment, the service and its address. Then say what is still theirs to do: when they installed the GitHub App, Connect a Git Provider is theirs to tick on Getting Started. Then say what to ask you next ("deploy my latest commit", "add a staging environment", "what changed this week").
 
 ## What people worry about, answered truthfully
 
