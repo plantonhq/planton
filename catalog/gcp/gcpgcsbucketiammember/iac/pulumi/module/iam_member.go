@@ -1,6 +1,8 @@
 package module
 
 import (
+	"strings"
+
 	"github.com/pkg/errors"
 	gcpgcsbucketiammemberv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgcsbucketiammember/v1alpha1"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
@@ -42,7 +44,11 @@ func iamMember(ctx *pulumi.Context, target *gcpgcsbucketiammemberv1alpha1.GcpGcs
 		return errors.Wrap(err, "failed to create gcs bucket IAM member")
 	}
 
-	ctx.Export(OpBucket, createdMember.Bucket)
+	// The provider reads the bucket back as "b/<name>" after a refresh; the
+	// output is the bucket's name, what every IAM method and reader takes.
+	ctx.Export(OpBucket, createdMember.Bucket.ApplyT(func(bucket string) string {
+		return strings.TrimPrefix(bucket, "b/")
+	}).(pulumi.StringOutput))
 	ctx.Export(OpRole, createdMember.Role)
 	ctx.Export(OpMember, createdMember.Member)
 	ctx.Export(OpEtag, createdMember.Etag)

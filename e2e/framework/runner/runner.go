@@ -622,9 +622,8 @@ const DestroyRetryAnnotation = "planton.dev/e2e-destroy-retry"
 // with no state the module could wait on, so the deploy succeeds verbatim on
 // a re-apply -- exactly what the kind's GUIDE tells a person to do. First
 // user: a Vertex AI Search filter or boost control, which Google refuses with
-// "Unsupported field" for a field its data store's new schema indexes (seen
-// in one of three runs of the same lane on 2026-11-19, accepted on the next
-// apply). The retry is as dumb as the destroy one, for the same reason, and
+// "Unsupported field" for a field its data store's new schema indexes (four
+// first applies in six on 2026-11-19, each accepted a minute later). The retry is as dumb as the destroy one, for the same reason, and
 // scenarios without the annotation keep one attempt, so a real deploy bug
 // still fails at once.
 const DeployRetryAnnotation = "planton.dev/e2e-deploy-retry"

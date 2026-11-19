@@ -46,6 +46,7 @@ spec:
         notes: Covers google_container_analysis_note and its google_container_analysis_note_iam_member grant (Pulumi containeranalysis.Note / NoteIamMember) -- the note the block creates and the occurrences-viewer grant for the attestor's service account. Held on the project (roles/containeranalysis.notes.editor plus note IAM administration). Not exercised for a referenced note.
       - purpose: ReadKmsPublicKey
         permissions:
+          - cloudkms.cryptoKeys.get
           - cloudkms.cryptoKeyVersions.get
           - cloudkms.cryptoKeyVersions.viewPublicKey
         provenance: derived
@@ -53,4 +54,4 @@ spec:
         privilege: ordinary
         condition:
           spec_field_set: attestation_authority_note.public_keys.pkix_public_key.kms_key_version
-        notes: Covers data.google_kms_crypto_key_version (Pulumi kms.GetKMSCryptoKeyVersion), which reads each named key version and its public key at plan time. Held on the key (roles/cloudkms.publicKeyViewer). Not exercised for PEM or PGP keys.
+        notes: Covers data.google_kms_crypto_key_version (Pulumi kms.GetKMSCryptoKeyVersion), which reads each named key version and its public key at plan time. Held on the key (roles/cloudkms.publicKeyViewer). Not exercised for PEM or PGP keys. The provider's key-version lookup reads the key itself first (cloudkms.cryptoKeys.get), measured live -- without it Terraform is refused before the version is read.

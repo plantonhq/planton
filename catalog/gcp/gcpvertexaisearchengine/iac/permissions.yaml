@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling discoveryengine.googleapis.com on the target project, and dialogflow.googleapis.com on the CHAT arm. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling discoveryengine.googleapis.com on the target project, and dialogflow.googleapis.com on the CHAT arm. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageEngine
         permissions:
           - discoveryengine.engines.create
@@ -27,46 +27,46 @@ spec:
           - discoveryengine.engines.update
           - discoveryengine.engines.delete
           - discoveryengine.operations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers whichever of google_discovery_engine_search_engine, google_discovery_engine_chat_engine, and google_discovery_engine_recommendation_engine (Pulumi discoveryengine.SearchEngine / ChatEngine / RecommendationEngine) the engine_type selects -- create, read/refresh, the in-place PATCHes (display_name, data_store_ids, the search config, features, the knowledge graph, the media config), destroy under deletion_policy DELETE, and the long-running operations the provider polls. A CHAT engine that creates its agent does so through the Discovery Engine service agent, which holds the Dialogflow permissions itself.
+        notes: Covers whichever of google_discovery_engine_search_engine, google_discovery_engine_chat_engine, and google_discovery_engine_recommendation_engine (Pulumi discoveryengine.SearchEngine / ChatEngine / RecommendationEngine) the engine_type selects -- create, read/refresh, the in-place PATCHes (display_name, data_store_ids, the search config, features, the knowledge graph, the media config), destroy under deletion_policy DELETE, and the long-running operations the provider polls. A CHAT engine that creates its agent does so through the Discovery Engine service agent, which holds the Dialogflow permissions itself. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageControls
         permissions:
           - discoveryengine.controls.create
           - discoveryengine.controls.get
           - discoveryengine.controls.update
           - discoveryengine.controls.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_discovery_engine_control (Pulumi discoveryengine.Control), one per spec.controls[] entry -- create, read/refresh, the in-place PATCH of the action and conditions, destroy.
+        notes: Covers google_discovery_engine_control (Pulumi discoveryengine.Control), one per spec.controls[] entry -- create, read/refresh, the in-place PATCH of the action and conditions, destroy. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ConfigureServingAndWidget
         permissions:
           - discoveryengine.servingConfigs.get
           - discoveryengine.servingConfigs.update
           - discoveryengine.widgetConfigs.get
           - discoveryengine.widgetConfigs.update
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_discovery_engine_serving_config and google_discovery_engine_widget_config (Pulumi discoveryengine.ServingConfig / WidgetConfig) -- both are PATCHes on the engine's own default serving config and widget config, which Google creates with the engine and the modules never create or delete.
+        notes: Covers google_discovery_engine_serving_config and google_discovery_engine_widget_config (Pulumi discoveryengine.ServingConfig / WidgetConfig) -- both are PATCHes on the engine's own default serving config and widget config, which Google creates with the engine and the modules never create or delete. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageAssistants
         permissions:
           - discoveryengine.assistants.create
           - discoveryengine.assistants.get
           - discoveryengine.assistants.update
           - discoveryengine.assistants.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_discovery_engine_assistant (Pulumi discoveryengine.Assistant), one per spec.assistants[] entry -- create, read/refresh, the in-place PATCH, destroy.
+        notes: Covers google_discovery_engine_assistant (Pulumi discoveryengine.Assistant), one per spec.assistants[] entry -- create, read/refresh, the in-place PATCH, destroy. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: CreateTheChatEnginesDialogflowAgent
         permissions:
           - dialogflow.agents.create
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: chat_engine_config.agent_creation_config
-        notes: A CHAT engine with agent_creation_config makes Google create a Dialogflow CX agent for it as the caller, so the caller needs dialogflow.agents.create (measured live -- the engine create was refused with that permission named). A chat engine that links an existing agent (dialogflow_agent_to_link) creates none.
+        notes: A CHAT engine with agent_creation_config makes Google create a Dialogflow CX agent for it as the caller, so the caller needs dialogflow.agents.create (measured live -- the engine create was refused with that permission named). A chat engine that links an existing agent (dialogflow_agent_to_link) creates none. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

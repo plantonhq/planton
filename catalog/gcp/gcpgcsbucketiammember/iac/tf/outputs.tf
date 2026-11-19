@@ -1,8 +1,10 @@
 # The grant, resolved (after reference resolution) -- echoed so audits see
 # exactly what was applied without re-resolving references.
+# The provider reads the bucket back as "b/<name>" after a refresh; the
+# output is the bucket's name, so it never changes between plans.
 output "bucket" {
   description = "The bucket whose IAM policy received the grant"
-  value       = google_storage_bucket_iam_member.this.bucket
+  value       = trimprefix(google_storage_bucket_iam_member.this.bucket, "b/")
 }
 
 output "role" {

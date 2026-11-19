@@ -30,3 +30,12 @@ spec:
         reach: target
         privilege: ordinary
         notes: Covers the project, folder, and organization notification-config resources (Pulumi securitycenter.V2*NotificationConfig) -- create, read on every refresh, PATCH updates of description, topic, and filter, delete on destroy. Held at the scope (roles/securitycenter.notificationConfigEditor there). The provider-default project lookup reads provider configuration only and needs no permission.
+      - purpose: LetSecurityCenterPublishToTheTopic
+        permissions:
+          - pubsub.topics.get
+          - pubsub.topics.getIamPolicy
+          - pubsub.topics.setIamPolicy
+        provenance: derived
+        reach: target
+        privilege: ordinary
+        notes: Creating a notification config makes Security Command Center grant its own service account roles/pubsub.publisher on the topic, as the caller -- so the caller must read and set the topic's IAM policy (roles/pubsub.admin on the topic carries all three). Measured live -- without them Google refuses the create with "User does not have permission to access PubSub topic".

@@ -213,7 +213,8 @@ created, with no state a module could wait on, and which the kind's GUIDE
 already tells a person to re-apply (a full deploy re-runs 60s apart under a
 6-minute budget). First user: a Vertex AI Search filter or boost control,
 which Google refuses with "Unsupported field" for a field its data store's
-new schema indexes in about one run in three, and accepts on the next apply.
+new schema indexes on four first applies in six, and accepts the same apply a
+minute later.
 
 **Run ONE live-lane process at a time per provider account.** Two `go test`
 processes hammering the same provider API concurrently can push a create into

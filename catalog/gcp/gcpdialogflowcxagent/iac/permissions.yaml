@@ -16,44 +16,44 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling dialogflow.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling dialogflow.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageAgent
         permissions:
           - dialogflow.agents.create
           - dialogflow.agents.get
           - dialogflow.agents.update
           - dialogflow.agents.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_dialogflow_cx_agent (Pulumi diagflow.CxAgent) -- created, patched with a field mask, read on every refresh, deleted. Also covers the folded generative settings (google_dialogflow_cx_generative_settings / diagflow.CxGenerativeSettings), which Google serves as the agent methods getGenerativeSettings and updateGenerativeSettings; Dialogflow defines no separate generative-settings permission.
+        notes: Covers google_dialogflow_cx_agent (Pulumi diagflow.CxAgent) -- created, patched with a field mask, read on every refresh, deleted. Also covers the folded generative settings (google_dialogflow_cx_generative_settings / diagflow.CxGenerativeSettings), which Google serves as the agent methods getGenerativeSettings and updateGenerativeSettings; Dialogflow defines no separate generative-settings permission. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageWebhooks
         permissions:
           - dialogflow.webhooks.create
           - dialogflow.webhooks.get
           - dialogflow.webhooks.update
           - dialogflow.webhooks.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: webhooks
-        notes: Covers google_dialogflow_cx_webhook (Pulumi diagflow.CxWebhook) for every declared webhook. A webhook that authenticates with a service account also needs roles/iam.serviceAccountTokenCreator granted to the Dialogflow service agent on that account -- a grant on the account, not a permission of the runner.
+        notes: Covers google_dialogflow_cx_webhook (Pulumi diagflow.CxWebhook) for every declared webhook. A webhook that authenticates with a service account also needs roles/iam.serviceAccountTokenCreator granted to the Dialogflow service agent on that account -- a grant on the account, not a permission of the runner. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageToolsAndToolVersions
         permissions:
           - dialogflow.tools.create
           - dialogflow.tools.get
           - dialogflow.tools.update
           - dialogflow.tools.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: tools
-        notes: Covers google_dialogflow_cx_tool and google_dialogflow_cx_tool_version (Pulumi diagflow.CxTool / CxToolVersion). Tool versions are a sub-resource of their tool; Dialogflow defines no separate tool-version permission, so the tool permissions cover creating, reading, and deleting them.
+        notes: Covers google_dialogflow_cx_tool and google_dialogflow_cx_tool_version (Pulumi diagflow.CxTool / CxToolVersion). Tool versions are a sub-resource of their tool; Dialogflow defines no separate tool-version permission, so the tool permissions cover creating, reading, and deleting them. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageFlowVersions
         permissions:
           - dialogflow.versions.create
@@ -61,12 +61,12 @@ spec:
           - dialogflow.versions.update
           - dialogflow.versions.delete
           - dialogflow.operations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: versions
-        notes: Covers google_dialogflow_cx_version (Pulumi diagflow.CxVersion) -- created through a long-running operation the provider polls while the flow's model trains.
+        notes: Covers google_dialogflow_cx_version (Pulumi diagflow.CxVersion) -- created through a long-running operation the provider polls while the flow's model trains. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageEnvironments
         permissions:
           - dialogflow.environments.create
@@ -74,19 +74,19 @@ spec:
           - dialogflow.environments.update
           - dialogflow.environments.delete
           - dialogflow.operations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: environments
-        notes: Covers google_dialogflow_cx_environment (Pulumi diagflow.CxEnvironment) -- created and updated through long-running operations the provider polls.
+        notes: Covers google_dialogflow_cx_environment (Pulumi diagflow.CxEnvironment) -- created and updated through long-running operations the provider polls. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: DeleteLinkedChatEngine
         permissions:
           - discoveryengine.engines.get
           - discoveryengine.engines.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: delete_chat_engine_on_destroy
-        notes: On destroy the provider reads the Vertex AI Search engine named in gen_app_builder_settings and deletes it. roles/dialogflow.admin contains every Dialogflow permission above; the engine delete needs roles/discoveryengine.admin or an equivalent.
+        notes: On destroy the provider reads the Vertex AI Search engine named in gen_app_builder_settings and deletes it. roles/dialogflow.admin contains every Dialogflow permission above; the engine delete needs roles/discoveryengine.admin or an equivalent. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
