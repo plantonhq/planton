@@ -4,6 +4,7 @@ go_library(
     name = "runner",
     srcs = [
         "dependencies.go",
+        "dependents.go",
         "failuremode.go",
         "fixtureintegrity.go",
         "helmenv.go",
@@ -66,6 +67,8 @@ go_test(
     srcs = [
         "dependencies_engine_test.go",
         "dependencies_test.go",
+        "dependents_test.go",
+        "deployretry_test.go",
         "failuremode_test.go",
         "fixture_integrity_test.go",
         "identity_env_test.go",

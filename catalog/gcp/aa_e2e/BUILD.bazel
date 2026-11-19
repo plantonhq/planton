@@ -3,8 +3,10 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "aa_e2e",
     srcs = [
+        "dependents.go",
         "harness.go",
         "identity.go",
+        "upgrade.go",
     ],
     importpath = "github.com/plantonhq/planton/catalog/gcp/aa_e2e",
     visibility = ["//visibility:public"],
@@ -73,10 +75,16 @@ go_library(
 
 go_test(
     name = "aa_e2e_test",
-    srcs = ["identity_test.go"],
+    srcs = [
+        "identity_test.go",
+        "outputs_test.go",
+        "upgrade_test.go",
+    ],
     embed = [":aa_e2e"],
     deps = [
+        "//catalog/gcp/aa_e2e/verify",
         "//e2e/framework/provider",
+        "//e2e/framework/runner",
         "@org_golang_google_api//cloudresourcemanager/v1:cloudresourcemanager",
         "@com_github_pkg_errors//:errors",
         "@com_google_cloud_go_auth//:auth",

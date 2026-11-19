@@ -569,6 +569,17 @@ func stringOutputs(outputs map[string]interface{}) map[string]string {
 			continue
 		}
 		result[key] = fmt.Sprintf("%v", value)
+		// A list output also reads by index (tunnel_names.0, tunnel_names.1),
+		// the form verifiers walk lists in, whichever engine produced it.
+		if list, ok := value.([]interface{}); ok {
+			for i, item := range list {
+				if s, ok := item.(string); ok {
+					result[fmt.Sprintf("%s.%d", key, i)] = s
+				} else {
+					result[fmt.Sprintf("%s.%d", key, i)] = fmt.Sprintf("%v", item)
+				}
+			}
+		}
 	}
 	return result
 }

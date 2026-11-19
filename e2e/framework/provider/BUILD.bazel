@@ -4,6 +4,7 @@ go_library(
     name = "provider",
     srcs = [
         "dependencies.go",
+        "dependents.go",
         "failuremode.go",
         "identity.go",
         "lifecycle.go",
