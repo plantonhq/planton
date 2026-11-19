@@ -113,7 +113,10 @@ The Certificate Authority Service pool that issues the certificates, by
 full name: projects/{project}/locations/{location}/caPools/{pool}.
 Reference a GcpPrivateCaPool -- its `name` output is exactly this value.
 The pool needs an enabled authority, and the Certificate Manager service
-agent needs roles/privateca.certificateRequester on it. Immutable.
+agent needs roles/privateca.certificateRequester on it before this
+config is created: Google refuses the create without it ("Config
+validation failed"). Google creates that agent only on request
+(services identity create), not when the API is turned on. Immutable.
 
 - references: GcpPrivateCaPool (`status.outputs.name`)
 - rule: a literal ca_pool must be projects/{project}/locations/{location}/caPools/{pool}
