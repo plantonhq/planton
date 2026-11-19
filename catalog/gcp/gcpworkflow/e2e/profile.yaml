@@ -3,28 +3,12 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpworkflow
 spec:
-  # Two scenarios: minimal (a two-step hello workflow, protection off so
-  # destroy runs) and revisions (env vars + logging levels + a dedicated
-  # description — proves the revision-minting surface; the revision_id
-  # output must differ across re-applies with changed source). Workflows
-  # deploy in seconds and are free. The destroy-guard round-trip is
-  # LIVE-PROVEN via a throwaway apply (2026-08-11): protection ON ->
-  # destroy fails with the provider's "cannot destroy workflow without
-  # setting deletion_protection=false" -> false applied -> destroy
-  # clean; scenarios ship protection OFF so lanes tear down. NOTE: the
-  # FIRST-ever workflow create after enabling workflows.googleapis.com
-  # can 400 with "Workflows service agent does not exist" — the agent
-  # provisions asynchronously seconds-to-minutes after enablement
-  # (generateServiceIdentity pre-provisions it; see e2e/README).
-  #
-  # Awaiting re-proof: secretEnvVars stores each value in its own Secret
-  # Manager secret and hands the workflow the version's resource name
-  # (with-secret-env). Offline bar met: both modules build and validate,
-  # plans are clean, and no value reaches the workflow. Live facts the
-  # proof lane confirms: an execution reads the value through the
-  # Secret Manager connector as the default compute account, re-plans
-  # clean, and destroy removes the secret.
+  # Proven live on both engines (2026-11-19): a minimal workflow, one with
+  # revisions, and one reading a stored secret, each deployed, re-described in
+  # place and destroyed by an identity holding only this kind's permissions
+  # manifest, with the re-plan clean. The deployer needs actAs on the runtime
+  # account even when it is the default compute account.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15

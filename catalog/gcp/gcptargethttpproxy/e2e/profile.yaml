@@ -3,19 +3,12 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcptargethttpproxy
 spec:
-  # Composed scenario: the harness installs the GcpUrlMap prerequisite (and
-  # its backend-service + health-check chain) via the kind registry, resolves
-  # the proxy's url_map reference from the URL map outputs, then runs
-  # deploy -> compute targetHttpProxies.get verify (incl. url-map wiring) ->
-  # destroy -> verify 404, on both provisioners.
-  #
-  # Awaiting re-proof: the kind gained its regional arm
-  # (google_compute_region_target_http_proxy behind spec.region), and the
-  # module now count-gates two resources. The regional scenario proves the
-  # regional family over a regional URL map, backend service, and health
-  # check fixture chain; the minimal scenario re-proves the global arm
-  # unchanged (offline plan equivalence already shows identical plans).
+  # Proven live on both engines (2026-11-19): a global proxy, swapped to a
+  # second URL map in place (setUrlMap), and a regional proxy, each deployed
+  # and destroyed by an identity holding only this kind's permissions
+  # manifest, with the re-plan clean. A regional proxy needs
+  # compute.regionUrlMaps.use.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 25

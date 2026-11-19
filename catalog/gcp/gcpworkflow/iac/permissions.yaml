@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling workflows.googleapis.com on the target project. disable_on_destroy is false in both modules, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling workflows.googleapis.com on the target project. disable_on_destroy is false in both modules, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageWorkflow
         permissions:
           - workflows.workflows.create
@@ -27,10 +27,10 @@ spec:
           - workflows.workflows.update
           - workflows.workflows.delete
           - workflows.operations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_workflows_workflow -- create, read/refresh, in-place updates (source, env vars, service account, log levels; each source-affecting update deploys a new revision), and destroy. Workflow mutations return long-running operations the provider polls, authorized as workflows.operations.get. The committed action-inventory snapshot (pkg/iac/actioninventory/gcp.yaml) carries the workflows service prefix and lists every workflows.* permission here; the list was also verified live against Google's Workflows roles-and-permissions documentation (https://cloud.google.com/workflows/docs/access-control). The kind's READMEs previously recommended roles/workflows.editor "or broader" -- that role carries all five of these plus execution, callback, and Cloud KMS Autokey permissions the deployer never exercises; this list is the least-privilege equivalent for what the modules actually do.
+        notes: Covers google_workflows_workflow -- create, read/refresh, in-place updates (source, env vars, service account, log levels; each source-affecting update deploys a new revision), and destroy. Workflow mutations return long-running operations the provider polls, authorized as workflows.operations.get. The committed action-inventory snapshot (pkg/iac/actioninventory/gcp.yaml) carries the workflows service prefix and lists every workflows.* permission here; the list was also verified live against Google's Workflows roles-and-permissions documentation (https://cloud.google.com/workflows/docs/access-control). The kind's READMEs previously recommended roles/workflows.editor "or broader" -- that role carries all five of these plus execution, callback, and Cloud KMS Autokey permissions the deployer never exercises; this list is the least-privilege equivalent for what the modules actually do. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: BindResourceManagerTags
         permissions:
           - workflows.workflows.createTagBinding
@@ -44,10 +44,10 @@ spec:
       - purpose: ActAsWorkflowServiceAccount
         permissions:
           - iam.serviceAccounts.actAs
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: uses_identity
-        notes: The Workflows API demands actAs on the account the workflow's executions run as -- the one service_account names, or the project's default compute service account when it names none (measured live -- "permission iam.serviceAccounts.ActAs is required on the workflow's new/current service account" without it, on both engines).
+        notes: The Workflows API demands actAs on the account the workflow's executions run as -- the one service_account names, or the project's default compute service account when it names none (measured live -- "permission iam.serviceAccounts.ActAs is required on the workflow's new/current service account" without it, on both engines). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageEnvSecrets
         permissions:
           - serviceusage.services.enable
@@ -66,21 +66,21 @@ spec:
           - secretmanager.versions.enable
           - secretmanager.versions.disable
           - secretmanager.versions.destroy
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: secret_env_vars
-        notes: Covers the secret the modules keep per secret_env_vars entry -- google_project_service enabling secretmanager.googleapis.com (disable_on_destroy false), google_secret_manager_secret (user-managed replication in the workflow's region, attribution labels), google_secret_manager_secret_version holding the value (a new value creates the new version before destroying the old; versions.access is the provider's read of the payload on refresh), and google_secret_manager_secret_iam_member granting roles/secretmanager.secretAccessor on that one secret to the workflow's runtime identity (IAM member resources read the policy before modifying it). Teardown deletes the secret, which destroys its versions. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers the secret the modules keep per secret_env_vars entry -- google_project_service enabling secretmanager.googleapis.com (disable_on_destroy false), google_secret_manager_secret (user-managed replication in the workflow's region, attribution labels), google_secret_manager_secret_version holding the value (a new value creates the new version before destroying the old; versions.access is the provider's read of the payload on refresh), and google_secret_manager_secret_iam_member granting roles/secretmanager.secretAccessor on that one secret to the workflow's runtime identity (IAM member resources read the policy before modifying it). Teardown deletes the secret, which destroys its versions. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ResolveDefaultRuntimeIdentity
         permissions:
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: secret_env_vars
-        notes: The data source the modules use to name the project's Compute Engine default service account (<project-number>-compute@developer.gserviceaccount.com) in the secretAccessor grant when service_account is unset -- google_project reads the project to learn its number. Not exercised when service_account names the identity (the condition cannot express "unset", so the entry rides the stored-value condition).
+        notes: The data source the modules use to name the project's Compute Engine default service account (<project-number>-compute@developer.gserviceaccount.com) in the secretAccessor grant when service_account is unset -- google_project reads the project to learn its number. Not exercised when service_account names the identity (the condition cannot express "unset", so the entry rides the stored-value condition). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageEnvSecrets
         permissions:
           - serviceusage.services.enable
@@ -99,18 +99,18 @@ spec:
           - secretmanager.versions.enable
           - secretmanager.versions.disable
           - secretmanager.versions.destroy
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: secret_env_vars
-        notes: Covers the secret the modules keep per secret_env_vars entry -- google_project_service enabling secretmanager.googleapis.com (disable_on_destroy false), google_secret_manager_secret (user-managed replication in the workflow's region, attribution labels), google_secret_manager_secret_version holding the value (a new value creates the new version before destroying the old; versions.access is the provider's read of the payload on refresh), and google_secret_manager_secret_iam_member granting roles/secretmanager.secretAccessor on that one secret to the workflow's runtime identity (IAM member resources read the policy before modifying it). Teardown deletes the secret, which destroys its versions. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers the secret the modules keep per secret_env_vars entry -- google_project_service enabling secretmanager.googleapis.com (disable_on_destroy false), google_secret_manager_secret (user-managed replication in the workflow's region, attribution labels), google_secret_manager_secret_version holding the value (a new value creates the new version before destroying the old; versions.access is the provider's read of the payload on refresh), and google_secret_manager_secret_iam_member granting roles/secretmanager.secretAccessor on that one secret to the workflow's runtime identity (IAM member resources read the policy before modifying it). Teardown deletes the secret, which destroys its versions. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ResolveDefaultRuntimeIdentity
         permissions:
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: secret_env_vars
-        notes: The data source the modules use to name the project's Compute Engine default service account (<project-number>-compute@developer.gserviceaccount.com) in the secretAccessor grant when service_account is unset -- google_project reads the project to learn its number. Not exercised when service_account names the identity (the condition cannot express "unset", so the entry rides the stored-value condition).
+        notes: The data source the modules use to name the project's Compute Engine default service account (<project-number>-compute@developer.gserviceaccount.com) in the secretAccessor grant when service_account is unset -- google_project reads the project to learn its number. Not exercised when service_account names the identity (the condition cannot express "unset", so the entry rides the stored-value condition). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

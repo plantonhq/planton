@@ -284,7 +284,9 @@ type GcpHaVpnConnectionCipherSuitePhase1 struct {
 	Integrity []string `protobuf:"bytes,2,rep,name=integrity,proto3" json:"integrity,omitempty"`
 	// Pseudo-random functions.
 	Prf []string `protobuf:"bytes,3,rep,name=prf,proto3" json:"prf,omitempty"`
-	// Diffie-Hellman groups.
+	// Diffie-Hellman groups. Google's supported set is narrower than IKE's:
+	// GROUP-14 is refused at create ("The specified Diffie-Hellman (DH) -
+	// GROUP-14 is not supported"), so check Cloud VPN's supported IKE ciphers.
 	Dh            []string `protobuf:"bytes,4,rep,name=dh,proto3" json:"dh,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

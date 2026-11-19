@@ -158,7 +158,9 @@ message GcpHaVpnConnectionCipherSuitePhase1 {
   repeated string integrity = 2;
   // Pseudo-random functions.
   repeated string prf = 3;
-  // Diffie-Hellman groups.
+  // Diffie-Hellman groups. Google's supported set is narrower than IKE's:
+  // GROUP-14 is refused at create ("The specified Diffie-Hellman (DH) -
+  // GROUP-14 is not supported"), so check Cloud VPN's supported IKE ciphers.
   repeated string dh = 4;
 }
 

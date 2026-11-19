@@ -62,12 +62,13 @@ spec:
       - purpose: UseReferencedSslCertificates
         permissions:
           - compute.sslCertificates.get
+          - compute.regionSslCertificates.get
         provenance: derived
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: ssl_certificates
-        notes: Service-side check on each attached certificate. GCP defines NO compute.sslCertificates.use -- attaching authorizes with GET, verified against the testable-permissions inventory.
+        notes: Service-side check on each attached certificate. GCP defines NO compute.sslCertificates.use -- attaching authorizes with GET, verified against the testable-permissions inventory. A regional proxy reads its regional certificates as compute.regionSslCertificates.get (measured live -- refused without it on both engines).
       - purpose: UseReferencedSslPolicy
         permissions:
           - compute.sslPolicies.use

@@ -179,7 +179,10 @@ type GcpPscServiceAttachmentSpec struct {
 	// way); the backends must speak the protocol when true.
 	EnableProxyProtocol bool `protobuf:"varint,11,opt,name=enable_proxy_protocol,json=enableProxyProtocol,proto3" json:"enable_proxy_protocol,omitempty"`
 	// Domain name registered with Cloud DNS for the connected endpoints, e.g.
-	// "p.mycompany.com." (with the trailing dot). At most one. Immutable.
+	// "p.mycompany.com." (with the trailing dot). Google refuses a domain the
+	// producer has not validated (Cloud DNS "DNS for VPC-hosted services"
+	// validation) -- set it only for a domain you own and have validated.
+	// At most one. Immutable.
 	DomainNames []string `protobuf:"bytes,12,rep,name=domain_names,json=domainNames,proto3" json:"domain_names,omitempty"`
 	// How many consumer spokes a connected PSC endpoint may be propagated to
 	// through Network Connectivity Center; per accept-list entry under

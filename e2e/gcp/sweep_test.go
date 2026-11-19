@@ -148,8 +148,21 @@ func standingResource(project string, harness harnessAccount, resource *cloudass
 		// Every project's two log routes.
 		return strings.HasSuffix(name, "/_Default") || strings.HasSuffix(name, "/_Required")
 	case "storage.googleapis.com/Bucket":
-		// Cloud Build's per-project source bucket, made on its first build.
-		return strings.HasSuffix(name, "/"+project+"_cloudbuild")
+		// Cloud Build's per-project source bucket, made on its first build;
+		// Cloud Functions' per-region source bucket, made on its first deploy.
+		return strings.HasSuffix(name, "/"+project+"_cloudbuild") ||
+			strings.Contains(name, "/gcf-v2-sources-")
+	case "artifactregistry.googleapis.com/Repository":
+		// Cloud Functions' per-region image repository, made on its first deploy.
+		return strings.HasSuffix(name, "/repositories/gcf-artifacts")
+	case "binaryauthorization.googleapis.com/Policy":
+		// Every project has exactly one Binary Authorization policy; a
+		// destroy resets it to Google's default rather than removing it.
+		return true
+	case "dataplex.googleapis.com/EntryGroup":
+		// Dataplex's system entry groups (@bigquery, @pubsub, ...), which
+		// Google creates as the services they catalog are used.
+		return strings.Contains(name, "/entryGroups/@")
 	case "cloudkms.googleapis.com/KeyRing", "cloudkms.googleapis.com/CryptoKey",
 		"cloudkms.googleapis.com/KeyHandle", "cloudkms.googleapis.com/AutokeyConfig":
 		// Cloud KMS deletes none of these: a key ring, a key and an Autokey
@@ -254,6 +267,10 @@ func newLiveReaders(ctx context.Context, t *testing.T, opts []option.ClientOptio
 			defer response.Body.Close()
 			return stillThere(googleapi.CheckResponse(response))
 		},
+		"binaryauthorization.googleapis.com/Attestor":      restReader(rest, "https://binaryauthorization.googleapis.com/v1/"),
+		"securitycenter.googleapis.com/NotificationConfig": restReader(rest, "https://securitycenter.googleapis.com/v2/"),
+		"secretmanager.googleapis.com/Secret":              restReader(rest, "https://secretmanager.googleapis.com/v1/"),
+		"secretmanager.googleapis.com/SecretVersion":       restReader(rest, "https://secretmanager.googleapis.com/v1/"),
 		// A key version that can no longer encrypt or bill reads as gone.
 		"cloudkms.googleapis.com/CryptoKeyVersion": func(ctx context.Context, name string) (bool, error) {
 			version, err := kms.Projects.Locations.KeyRings.CryptoKeys.CryptoKeyVersions.Get(name).Context(ctx).Do()
@@ -310,4 +327,21 @@ func stillThere(err error) (bool, error) {
 		return false, nil
 	}
 	return false, err
+}
+
+// restReader reads a candidate by GETting its resource name under an API's
+// base URL, for the services whose typed clients the sweep does not carry.
+func restReader(client *http.Client, base string) liveReader {
+	return func(ctx context.Context, name string) (bool, error) {
+		request, err := http.NewRequestWithContext(ctx, http.MethodGet, base+name, nil)
+		if err != nil {
+			return false, err
+		}
+		response, err := client.Do(request)
+		if err != nil {
+			return false, err
+		}
+		defer response.Body.Close()
+		return stillThere(googleapi.CheckResponse(response))
+	}
 }

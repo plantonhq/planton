@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling compute.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling compute.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageBackendService
         permissions:
           - compute.backendServices.create
@@ -27,10 +27,10 @@ spec:
           - compute.backendServices.update
           - compute.backendServices.delete
           - compute.globalOperations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_compute_backend_service -- create, read/refresh, in-place updates (backends, health check, affinity, CDN, IAP, logging, headers are all mutable; name and project changes replace), and destroy. Global backend services return global operations the provider polls. service_lb_policy attaches a Network Services ServiceLbPolicy by URL through this same compute mutation -- Google's networkservices role reference defines no serviceLbPolicies.use permission (only create/get/list/update/delete, verified live), so no extra grant is listed here; reading the referenced policy in its own project requires networkservices.serviceLbPolicies.get there.
+        notes: Covers google_compute_backend_service -- create, read/refresh, in-place updates (backends, health check, affinity, CDN, IAP, logging, headers are all mutable; name and project changes replace), and destroy. Global backend services return global operations the provider polls. service_lb_policy attaches a Network Services ServiceLbPolicy by URL through this same compute mutation -- Google's networkservices role reference defines no serviceLbPolicies.use permission (only create/get/list/update/delete, verified live), so no extra grant is listed here; reading the referenced policy in its own project requires networkservices.serviceLbPolicies.get there. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageRegionalBackendService
         permissions:
           - compute.regionBackendServices.create
@@ -41,41 +41,41 @@ spec:
           - compute.regionOperations.get
           - compute.regionHealthChecks.useReadOnly
           - compute.regionSecurityPolicies.use
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: region
-        notes: Covers google_compute_region_backend_service, built instead of the global service when region is set. Regional services authorize against their own compute.regionBackendServices family and return region operations the provider polls; a referenced regional health check authorizes with compute.regionHealthChecks.useReadOnly and a regional Cloud Armor policy with compute.regionSecurityPolicies.use (listed with the regional family because a condition names one field; each is exercised only when the service references one). Signed-URL keys exist on the global service alone.
+        notes: Covers google_compute_region_backend_service, built instead of the global service when region is set. Regional services authorize against their own compute.regionBackendServices family and return region operations the provider polls; a referenced regional health check authorizes with compute.regionHealthChecks.useReadOnly and a regional Cloud Armor policy with compute.regionSecurityPolicies.use (listed with the regional family because a condition names one field; each is exercised only when the service references one). Signed-URL keys exist on the global service alone. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: UsePassthroughNetwork
         permissions:
           - compute.networks.use
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: network
-        notes: The VPC network a regional passthrough Network Load Balancer's backend service names authorizes with compute.networks.use on that network.
+        notes: The VPC network a regional passthrough Network Load Balancer's backend service names authorizes with compute.networks.use on that network. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: UseReferencedHealthCheck
         permissions:
           - compute.healthChecks.useReadOnly
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: health_check
-        notes: A service-side check, not a module API call -- attaching a health check authorizes with compute.healthChecks.useReadOnly on the referenced check. Grant it on the project that owns the check, which differs from the backend service's project in cross-project setups.
+        notes: A service-side check, not a module API call -- attaching a health check authorizes with compute.healthChecks.useReadOnly on the referenced check. Grant it on the project that owns the check, which differs from the backend service's project in cross-project setups. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: UseReferencedBackendGroups
         permissions:
           - compute.instanceGroups.use
           - compute.networkEndpointGroups.use
           - compute.regionNetworkEndpointGroups.use
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: backends
-        notes: Service-side checks, not module API calls -- each backend group authorizes with compute.instanceGroups.use or compute.networkEndpointGroups.use on the referenced group. Grant the one(s) matching what the backends actually reference, on the projects that own those groups (which differ from the backend service's project in cross-project setups). A regional network endpoint group backend is checked as compute.regionNetworkEndpointGroups.use (measured live -- refused without it on both engines).
+        notes: Service-side checks, not module API calls -- each backend group authorizes with compute.instanceGroups.use or compute.networkEndpointGroups.use on the referenced group. Grant the one(s) matching what the backends actually reference, on the projects that own those groups (which differ from the backend service's project in cross-project setups). A regional network endpoint group backend is checked as compute.regionNetworkEndpointGroups.use (measured live -- refused without it on both engines). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageSignedUrlKeys
         permissions:
           - compute.backendServices.addSignedUrlKey

@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling compute.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling compute.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageForwardingRule
         permissions:
           - compute.globalForwardingRules.create
@@ -28,20 +28,20 @@ spec:
           - compute.globalForwardingRules.setTarget
           - compute.globalForwardingRules.setLabels
           - compute.globalForwardingRules.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Covers google_compute_global_forwarding_rule across create, read/refresh, and destroy. The two mutable surfaces map to dedicated authorizations: repointing target is the setTarget RPC (the zero-downtime frontend swap), label changes are setLabels, and the backend-bucket migration fields patch through update. All six permissions exist in IAM's testable-permissions inventory (verified live)."
+        notes: "Covers google_compute_global_forwarding_rule across create, read/refresh, and destroy. The two mutable surfaces map to dedicated authorizations: repointing target is the setTarget RPC (the zero-downtime frontend swap), label changes are setLabels, and the backend-bucket migration fields patch through update. All six permissions exist in IAM's testable-permissions inventory (verified live). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: ManagePscEndpoint
         permissions:
           - compute.globalForwardingRules.pscCreate
           - compute.globalForwardingRules.pscUpdate
           - compute.globalForwardingRules.pscSetLabels
           - compute.globalForwardingRules.pscDelete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: "IAM defines a parallel psc* permission set on global forwarding rules (verified live in the testable-permissions inventory) governing the Private Service Connect form -- the scheme-NONE rules the 03-psc-google-apis preset creates. Included so PSC frontends authorize; which of the two sets a given mutation actually exercises is for the live capture lane to prove."
+        notes: "IAM defines a parallel psc* permission set on global forwarding rules (verified live in the testable-permissions inventory) governing the Private Service Connect form -- the scheme-NONE rules the 03-psc-google-apis preset creates. Included so PSC frontends authorize; which of the two sets a given mutation actually exercises is for the live capture lane to prove. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: ManageRegionalForwardingRule
         permissions:
           - compute.forwardingRules.create
@@ -55,10 +55,10 @@ spec:
           - compute.forwardingRules.pscSetLabels
           - compute.forwardingRules.pscDelete
           - compute.regionOperations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Covers google_compute_forwarding_rule (created when spec.region is set) across create, read/refresh, the setTarget and setLabels mutations, destroy, and the parallel psc* set the PSC consumer-endpoint form exercises; regional rules return region operations the provider polls. Referenced regional resources authorize on their own families: compute.regionTargetHttpProxies.use / compute.regionTargetHttpsProxies.use for the proxy target, compute.regionBackendServices.use for a passthrough backend_service, compute.addresses.use for a regional reserved address."
+        notes: "Covers google_compute_forwarding_rule (created when spec.region is set) across create, read/refresh, the setTarget and setLabels mutations, destroy, and the parallel psc* set the PSC consumer-endpoint form exercises; regional rules return region operations the provider polls. Referenced regional resources authorize on their own families: compute.regionTargetHttpProxies.use / compute.regionTargetHttpsProxies.use for the proxy target, compute.regionBackendServices.use for a passthrough backend_service, compute.addresses.use for a regional reserved address. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: UseReferencedFrontendResources
         permissions:
           - compute.targetHttpProxies.use
@@ -69,7 +69,7 @@ spec:
           - compute.regionBackendServices.use
           - compute.regionTargetHttpProxies.use
           - compute.regionTargetHttpsProxies.use
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Compute authorizes attaching the rule to what it references: use on the target HTTP or HTTPS proxy (whichever kind target resolves to), use on a reserved static address when ip_address references one, and use on the VPC network and subnetwork for the internal-facing and Private Service Connect schemes. All verified live; only the permissions matching the manifest's actual references are exercised. A regional rule checks the regional form of what it targets: compute.regionBackendServices.use for an internal passthrough rule (measured live -- refused without it on both engines), and the regional proxies' use for a regional load balancer."
+        notes: "Compute authorizes attaching the rule to what it references: use on the target HTTP or HTTPS proxy (whichever kind target resolves to), use on a reserved static address when ip_address references one, and use on the VPC network and subnetwork for the internal-facing and Private Service Connect schemes. All verified live; only the permissions matching the manifest's actual references are exercised. A regional rule checks the regional form of what it targets: compute.regionBackendServices.use for an internal passthrough rule (measured live -- refused without it on both engines), and the regional proxies' use for a regional load balancer. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."

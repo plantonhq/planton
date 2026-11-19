@@ -3,45 +3,14 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpbackendservice
 spec:
-  # Composed scenario: the harness deploys a GcpHealthCheck prerequisite,
-  # resolves the backend service's health-check reference from its outputs,
-  # then runs deploy -> compute backendServices.get verify (incl. the
-  # health-check wiring) -> destroy -> verify 404, on both provisioners.
-  #
-  # Coverage note: the minimal scenario runs WITHOUT a backends[] entry
-  # (valid — probe first, attach capacity later); the neg-backend scenario
-  # covers the backends[] path live against the serverless
-  # GcpRegionNetworkEndpointGroup prerequisite (EXTERNAL_MANAGED, no health
-  # check — serverless NEGs manage their own). IAP is offline-only:
-  # exercising it live needs an OAuth client, an org-level artifact the test
-  # project does not own. The signed_url_key fan-out and the widened
-  # UNSPECIFIED/IN_FLIGHT enum values stay offline-proven (key material is
-  # secret; the enum values need queue-depth backend types a smoke fixture
-  # cannot honestly exercise). params.resource_manager_tags also stays
-  # offline-proven (needs org-level tagKeys/tagValues — the standing
-  # org-fixture unblock condition).
-  #
-  # Awaiting re-proof: both modules now send load_balancing_scheme
-  # EXTERNAL explicitly when the spec leaves it unset (the provider's own
-  # default moved to EXTERNAL_MANAGED, and the scheme is immutable). The
-  # earlier live proof predates that change; the next proof confirms the
-  # classic backend service deploys and re-plans clean on both engines
-  # under the apply-idempotency gate. The same proof covers the logged
-  # header lists (log_config.request_headers / response_headers), which
-  # the minimal scenario now sets on its HTTP backend service.
-  #
-  # Regional arm: the regional-external-managed scenario proves the
-  # regional resource family (google_compute_region_backend_service) as a
-  # regional ALB backend against a regional health-check fixture, and the
-  # internal-passthrough-nlb scenario proves the INTERNAL scheme with the
-  # passthrough-only levers (connection tracking, failover policy, zonal
-  # affinity) on the prerequisite network. Both engines send EXTERNAL
-  # explicitly when the scheme is unset on the regional arm too (the
-  # regional provider default is INTERNAL), so the classic scenarios also
-  # prove that a regional service with no scheme named re-plans clean.
-  # ha_policy stays offline-proven: it needs a zonal NEG with an attached
-  # instance as the leader, a fixture chain the harness does not carry.
+  # Proven live on both engines (2026-11-19): a classic global service with
+  # CDN and logging, a managed one over a serverless NEG logging request and
+  # response headers, a regional managed one, and an internal passthrough
+  # service, each deployed, updated in place and destroyed by an identity
+  # holding only this kind's permissions manifest, with the re-plan clean (the
+  # unset scheme is sent as EXTERNAL). Google refuses log header lists on the
+  # classic EXTERNAL scheme, and the spec walls it.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 20

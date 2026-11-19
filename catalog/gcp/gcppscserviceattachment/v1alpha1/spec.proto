@@ -168,7 +168,10 @@ message GcpPscServiceAttachmentSpec {
   bool enable_proxy_protocol = 11;
 
   // Domain name registered with Cloud DNS for the connected endpoints, e.g.
-  // "p.mycompany.com." (with the trailing dot). At most one. Immutable.
+  // "p.mycompany.com." (with the trailing dot). Google refuses a domain the
+  // producer has not validated (Cloud DNS "DNS for VPC-hosted services"
+  // validation) -- set it only for a domain you own and have validated.
+  // At most one. Immutable.
   repeated string domain_names = 12 [
     (buf.validate.field).repeated.max_items = 1,
     (buf.validate.field).repeated.items = {

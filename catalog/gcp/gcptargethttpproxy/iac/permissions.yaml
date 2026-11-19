@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling compute.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling compute.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageTargetHttpProxy
         permissions:
           - compute.targetHttpProxies.create
@@ -27,10 +27,10 @@ spec:
           - compute.targetHttpProxies.delete
           - compute.targetHttpProxies.setUrlMap
           - compute.globalOperations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_compute_target_http_proxy -- create, read/refresh, destroy, and polling the global operation every mutation returns. url_map is the only mutable field and the provider repoints it through the dedicated setUrlMap RPC; every other change is delete-plus-create, so compute.targetHttpProxies.update is deliberately omitted.
+        notes: Covers google_compute_target_http_proxy -- create, read/refresh, destroy, and polling the global operation every mutation returns. url_map is the only mutable field and the provider repoints it through the dedicated setUrlMap RPC; every other change is delete-plus-create, so compute.targetHttpProxies.update is deliberately omitted. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageRegionalTargetHttpProxy
         permissions:
           - compute.regionTargetHttpProxies.create
@@ -38,15 +38,15 @@ spec:
           - compute.regionTargetHttpProxies.delete
           - compute.regionTargetHttpProxies.setUrlMap
           - compute.regionOperations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_compute_region_target_http_proxy (created when spec.region is set). Regional proxies authorize against their own compute.regionTargetHttpProxies family and return region operations the provider polls. Not needed for global proxies; the global family is not needed for regional ones.
+        notes: Covers google_compute_region_target_http_proxy (created when spec.region is set). Regional proxies authorize against their own compute.regionTargetHttpProxies family and return region operations the provider polls. Not needed for global proxies; the global family is not needed for regional ones. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: UseUrlMap
         permissions:
           - compute.urlMaps.use
           - compute.regionUrlMaps.use
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: A service-side check, not a module API call -- GCP's targetHttpProxies.insert reference documents that authorization requires compute.urlMaps.use on the referenced urlMap, so the deploying principal needs it on the URL map's project even though the module never touches the URL map API itself. The same check backs setUrlMap repoints. A regional proxy checks compute.regionUrlMaps.use on its URL map (measured live -- refused without it on both engines).
+        notes: A service-side check, not a module API call -- GCP's targetHttpProxies.insert reference documents that authorization requires compute.urlMaps.use on the referenced urlMap, so the deploying principal needs it on the URL map's project even though the module never touches the URL map API itself. The same check backs setUrlMap repoints. A regional proxy checks compute.regionUrlMaps.use on its URL map (measured live -- refused without it on both engines). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

@@ -141,7 +141,10 @@ type GcpVpcPeeringSpec struct {
 	//
 	// Both sides of a pair must use the same strategy: Google refuses the
 	// second side's peering when it differs ("Matching peerings must use the
-	// same update_strategy"). CREATE form only. Mutable.
+	// same update_strategy"). Under CONSENSUS the two sides' route flags must
+	// also be complementary when the second side is added: this side's
+	// export_custom_routes equals the other side's import_custom_routes, and
+	// so on for every flag. CREATE form only. Mutable.
 	UpdateStrategy string `protobuf:"bytes,9,opt,name=update_strategy,json=updateStrategy,proto3" json:"update_strategy,omitempty"`
 	// What destroying this resource does to the peering in GCP (CREATE form
 	// only -- destroying the routes-config form never touches the peering):

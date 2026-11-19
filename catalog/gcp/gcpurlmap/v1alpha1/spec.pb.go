@@ -722,10 +722,10 @@ type GcpUrlMapUrlRewrite struct {
 	PathPrefixRewrite string `protobuf:"bytes,2,opt,name=path_prefix_rewrite,json=pathPrefixRewrite,proto3" json:"path_prefix_rewrite,omitempty"`
 	// Rewrite the path using a template that references named path variables
 	// captured by a route rule's path_template_match (e.g. "/v2/{country}").
-	// Honored inside a route_rule's route_action on both scopes and, on a
-	// REGIONAL map only, in a path matcher's default route action — GCP
-	// rejects it in the map's default route action and in path-rule route
-	// actions everywhere. Mutually exclusive with path_prefix_rewrite.
+	// Honored only inside a route_rule's route_action, on both scopes: Google
+	// refuses it in a path matcher's default route action ("pathTemplateRewrite
+	// can only be set on RouteRule level", measured on a regional map), in the
+	// map's default route action, and in path-rule route actions. Mutually exclusive with path_prefix_rewrite.
 	PathTemplateRewrite string `protobuf:"bytes,3,opt,name=path_template_rewrite,json=pathTemplateRewrite,proto3" json:"path_template_rewrite,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache

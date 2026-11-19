@@ -3427,7 +3427,12 @@ there. Every Compute Engine type shares one reader, since Compute names a
 resource by the same path in Asset Inventory and in its REST API; a Cloud KMS
 key version reads as gone once it is destroyed or scheduled for destruction,
 and the key rings, keys, key handles and Autokey configurations Cloud KMS
-never deletes stand. Any other type that first shows up stale is added
+never deletes stand. So do the objects Google makes once per project or
+region: Cloud Functions' `gcf-v2-sources-*` bucket and `gcf-artifacts`
+repository, Dataplex's `@`-named system entry groups, and the project's one
+Binary Authorization policy. Binary Authorization attestors, Security
+Command Center notification configs and Secret Manager secrets are read
+live by name. Any other type that first shows up stale is added
 there. Asset Inventory names
 a service account key by its account's unique id, not its email. A type it
 does not index relies on the lane's own VERIFY-CLEAN phase. Delete a leftover through its kind's module, or with
