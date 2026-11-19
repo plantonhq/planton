@@ -27,6 +27,16 @@ nothing draws the relationship on the diagram. Keep the StorageClass in
 the shared-cluster chart, deployed before any application environment
 that names it.
 
+## Scaling: set replicas, or leave the size to a scaler
+
+There is no inline autoscaler here: stateful members join and leave
+through application-aware procedures, so most StatefulSets set
+`availability.replicas` and every apply holds them to it. When a
+StatefulSet's members are interchangeable enough to scale on load, point a
+KubernetesHorizontalPodAutoscaler (or a KEDA ScaledObject) at it and leave
+`availability.replicas` unset: the set starts with one pod, and an apply
+never changes the live count the scaler chose.
+
 ## Namespace ownership
 
 `spec.namespace` is a required foreign key targeting KubernetesNamespace.

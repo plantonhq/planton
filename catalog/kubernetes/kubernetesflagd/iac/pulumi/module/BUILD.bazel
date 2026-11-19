@@ -22,6 +22,7 @@ go_library(
         "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider",
         "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/workloadpod",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/workloadreplicas",
         "//shared/catalogkind",
         "//shared/foreignkey/v1:foreignkey",
         "@com_github_pkg_errors//:errors",

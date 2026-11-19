@@ -18,7 +18,9 @@ inline block would do is the most common over-complication.
    velocity, stabilization windows). Reach for it when scaling on
    anything beyond CPU/memory or when the behavior policies matter.
    Never pair it with an inline block on the same workload — two
-   controllers fighting one replica count.
+   controllers fighting one replica count — and leave the target's
+   `availability.replicas` unset, so the workload's own applies never
+   reset the count this HPA chose.
 3. **[KubernetesKeda](../kuberneteskeda/GUIDE.md)** — event-driven
    scaling on real-world signals (70+ sources) AND scale-to-zero, which
    plain HPA cannot do. When the trigger is a queue that should idle at

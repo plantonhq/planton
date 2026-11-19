@@ -1,0 +1,42 @@
+# Act two of behavioral-hpa-keeps-size: the floor rises to 3 and E2E_ACT is
+# added, so the engine really updates the Deployment; the size the HPA owns
+# (4, set in act one) must survive.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesDeployment
+metadata:
+  name: e2e-dep-hpa-size
+  annotations:
+    planton.dev/e2e-second-act: behavioral-hpa-keeps-size.yaml
+spec:
+  namespace:
+    value: e2e-dep-hpa-size-ns
+  create_namespace: true
+  version: main
+  container:
+    app:
+      image:
+        repo: nginx
+        tag: "1.27-alpine"
+      resources:
+        requests:
+          cpu: "10m"
+          memory: "32Mi"
+        limits:
+          cpu: "100m"
+          memory: "64Mi"
+      ports:
+        - name: http
+          container_port: 80
+          network_protocol: TCP
+          app_protocol: http
+          service_port: 80
+      env:
+        variables:
+          - name: E2E_ACT
+            value: "two"
+  availability:
+    replicas: 3
+    horizontal_pod_autoscaling:
+      enabled: true
+      max_replicas: 5
+      target_cpu_utilization_percent: 70

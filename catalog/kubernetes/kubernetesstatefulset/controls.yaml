@@ -69,7 +69,7 @@ spec:
       field_path: availability.replicas
       evidence:
         type: spec_default
-        reference: replicas defaults to 1 (no redundancy); running 3 or more replicas with pod.scheduling anti-affinity or topology spread constraints places members on distinct nodes or zones, and availability.pod_disruption_budget holds the quorum floor through voluntary disruptions.
+        reference: an unset replicas starts the workload with one pod (no redundancy) and leaves its size to an external autoscaler; running 3 or more replicas with pod.scheduling anti-affinity or topology spread constraints places members on distinct nodes or zones, and availability.pod_disruption_budget holds the quorum floor through voluntary disruptions.
       notes: The 02-ha-quorum-cluster preset runs 3 replicas with required node anti-affinity and a PDB holding 2 available so a drain can never break quorum.
     - control_id: deletion-protection
       status: not_applicable

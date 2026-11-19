@@ -21,14 +21,22 @@ lives in the [KubernetesClusterIssuer guide](../kubernetesclusterissuer/GUIDE.md
 
 - `spec.availability.horizontalPodAutoscaling` (inline) covers CPU and
   memory targets — right for the common case, zero extra nodes. While it is
-  enabled, `availability.replicas` is the HPA's floor and the Deployment
-  leaves its live replica count to the HPA, so an apply never resets it.
+  enabled, `availability.replicas` is the HPA's floor (the Deployment is
+  created at it) and the HPA owns the live replica count, so an apply never
+  resets it — not even the apply that turns the HPA on.
 - The standalone KubernetesHorizontalPodAutoscaler kind carries the full
   autoscaling/v2 surface (custom metrics, external metrics, scaling
   behavior policies) and references this kind's
   `status.outputs.deployment_name`.
 - KubernetesKeda is the event-driven lane (queue depth, stream lag,
   cron — and scale-to-ZERO, which neither HPA lane can do).
+
+Under either external lane, leave `availability.replicas` unset. Unset
+means the size belongs to Kubernetes or to whatever scales the Deployment:
+it starts with one pod, and an apply — a new image from a deploy pipeline
+included — never changes the live count. A set `replicas` is a size every
+apply holds the Deployment to, so it would undo the autoscaler's choice on
+each deploy.
 
 The full three-lane comparison lives in the
 [KubernetesHorizontalPodAutoscaler guide](../kuberneteshorizontalpodautoscaler/GUIDE.md)

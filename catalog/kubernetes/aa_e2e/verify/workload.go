@@ -12,10 +12,29 @@ type WorkloadVerifier struct {
 	Namespace string
 	Kind      string
 	Name      string
+	// SizeLane is the replica-ownership lane the scenario runs, if any
+	// (workloadsize.go).
+	SizeLane workloadSizeLane
+}
+
+// newWorkloadVerifier builds the verifier for a workload scenario.
+func newWorkloadVerifier(manifestPath string, info *ManifestInfo, kind string) *WorkloadVerifier {
+	return &WorkloadVerifier{
+		Namespace: info.Namespace,
+		Kind:      kind,
+		Name:      info.Name,
+		SizeLane:  workloadSizeLaneFor(manifestPath),
+	}
 }
 
 func (v *WorkloadVerifier) VerifyExists(ctx context.Context, kubeconfig string) error {
-	return KubectlResourceExists(ctx, kubeconfig, v.Kind, v.Name, v.Namespace)
+	if err := KubectlResourceExists(ctx, kubeconfig, v.Kind, v.Name, v.Namespace); err != nil {
+		return err
+	}
+	if v.SizeLane != "" {
+		return v.proveSize(ctx, kubeconfig)
+	}
+	return nil
 }
 
 func (v *WorkloadVerifier) VerifyAbsent(ctx context.Context, kubeconfig string) error {

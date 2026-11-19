@@ -21,7 +21,9 @@ This kind installs the operator. The scaling rules — ScaledObject,
 ScaledJob, TriggerAuthentication — are KEDA custom resources deployed
 per workload (via KubernetesManifest today), in the workload's namespace.
 Installing KEDA alone scales nothing; a complete proposal names the
-ScaledObjects too. Diagram consequence: Manifest-carried ScaledObjects
+ScaledObjects too, and leaves the target KubernetesDeployment's (or
+KubernetesStatefulSet's) `availability.replicas` unset — so the
+workload's own applies never reset the count KEDA chose, zero included. Diagram consequence: Manifest-carried ScaledObjects
 render as opaque manifest nodes, so the event-scaling topology (which
 queue drives which workload) is invisible in the rendered architecture —
 state it in the proposal's prose.

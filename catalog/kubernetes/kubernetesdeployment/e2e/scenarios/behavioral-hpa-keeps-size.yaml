@@ -1,0 +1,41 @@
+# THE AUTOSCALED-SIZE PROMISE: while the inline HPA owns the replica count,
+# an apply never moves it. Act one runs the Deployment with an HPA (floor 2,
+# max 5); the verifier waits for the floor, then scales to 4 through the
+# /scale subresource the way the HPA does. Act two
+# (behavioral-hpa-keeps-size.to.yaml) re-applies with the floor raised to 3
+# and a new environment variable: the rollout must happen and 4 must survive.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesDeployment
+metadata:
+  name: e2e-dep-hpa-size
+  annotations:
+    planton.dev/e2e-upgrade-manifest: behavioral-hpa-keeps-size.to.yaml
+spec:
+  namespace:
+    value: e2e-dep-hpa-size-ns
+  create_namespace: true
+  version: main
+  container:
+    app:
+      image:
+        repo: nginx
+        tag: "1.27-alpine"
+      resources:
+        requests:
+          cpu: "10m"
+          memory: "32Mi"
+        limits:
+          cpu: "100m"
+          memory: "64Mi"
+      ports:
+        - name: http
+          container_port: 80
+          network_protocol: TCP
+          app_protocol: http
+          service_port: 80
+  availability:
+    replicas: 2
+    horizontal_pod_autoscaling:
+      enabled: true
+      max_replicas: 5
+      target_cpu_utilization_percent: 70

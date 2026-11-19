@@ -168,14 +168,17 @@ locals {
   # exact syntax kubectl -l and NetworkPolicy tooling accept.
   selector_labels_string = join(",", [for k in sort(keys(local.selector_labels)) : "${k}=${local.selector_labels[k]}"])
 
-  # Availability with Kubernetes-consistent fallbacks.
+  # Availability with Kubernetes-consistent fallbacks. `replicas` is also the
+  # inline HPA's floor (hpa.tf), 1 when unset.
   replicas = try(var.spec.availability.replicas, null) != null ? var.spec.availability.replicas : 1
 
-  # While autoscaling is on, the HPA owns the live replica count and
-  # `replicas` is only its floor. The Deployment then leaves replicas unset
-  # (the provider adopts the live count), so an apply never resets the size
-  # the HPA chose. Pulumi twin: deployment.go.
-  deployment_replicas = local.hpa_enabled ? null : local.replicas
+  # The Deployment is held to `replicas` only while the module owns the size.
+  # With the inline HPA on, the HPA owns the live count; with `replicas` unset,
+  # Kubernetes or an external autoscaler does. Then the Deployment's replicas is
+  # null, which keeps the live count (replicas is optional and computed on
+  # kubernetes_deployment_v1), so an apply never moves it. Pulumi twin: the
+  # workloadreplicas package.
+  deployment_replicas = (local.hpa_enabled || try(var.spec.availability.replicas, null) == null) ? null : var.spec.availability.replicas
 
   strategy_type = try(var.spec.availability.strategy.type, "") != "" ? var.spec.availability.strategy.type : "RollingUpdate"
 

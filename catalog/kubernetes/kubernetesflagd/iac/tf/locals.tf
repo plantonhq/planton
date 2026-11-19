@@ -126,6 +126,9 @@ locals {
     [for h in keys(try(s.grpc.sensitive_headers, {})) : h if contains([for x in keys(try(s.grpc.headers, {})) : lower(x)], lower(h))]
   )])
 
+  # With the HPA on it owns the live count: null keeps it (replicas is optional
+  # and computed on kubernetes_deployment_v1), so an apply never resets it.
+  # Pulumi twin: the workloadreplicas package.
   replicas = try(var.spec.hpa.enabled, false) == true ? null : (try(var.spec.replicas, null) != null ? var.spec.replicas : 1)
 
   # Empty topology-spread selectors self-spread on flagd's own selector.

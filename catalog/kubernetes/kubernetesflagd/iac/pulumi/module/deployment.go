@@ -6,6 +6,7 @@ import (
 	"github.com/pkg/errors"
 	kubernetesprovider "github.com/plantonhq/planton/catalog/kubernetes"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/workloadpod"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/workloadreplicas"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	appsv1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/apps/v1"
 	kubernetescorev1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/core/v1"
@@ -144,20 +145,26 @@ func deployment(ctx *pulumi.Context, locals *Locals, provider pulumi.ProviderRes
 		Selector: kubernetesmeta.LabelSelectorArgs{MatchLabels: pulumi.ToStringMap(locals.SelectorLabels)},
 		Template: template,
 	}
-	if !spec.GetHpa().GetEnabled() {
-		replicas := 1
-		if spec.Replicas != nil {
-			replicas = int(spec.GetReplicas())
-		}
-		deploymentSpec.Replicas = pulumi.Int(replicas)
+	// Replica count: with the HPA on, its min_replicas is the floor the
+	// Deployment is created at and the HPA owns the live count, so an apply never
+	// moves it (workloadreplicas says why leaving the field out is not enough).
+	// Off, `replicas` (1 when unset) is the size every apply holds. Terraform
+	// twin: locals.replicas.
+	replicas := workloadreplicas.For(proto.Int32(1), false)
+	switch {
+	case spec.GetHpa().GetEnabled():
+		replicas = workloadreplicas.For(spec.GetHpa().MinReplicas, true)
+	case spec.Replicas != nil:
+		replicas = workloadreplicas.For(spec.Replicas, false)
 	}
+	deploymentSpec.Replicas = replicas.Replicas()
 
 	created, err := appsv1.NewDeployment(ctx, locals.Name, &appsv1.DeploymentArgs{
 		Metadata: kubernetesmeta.ObjectMetaPtrInput(&kubernetesmeta.ObjectMetaArgs{
 			Name: pulumi.String(locals.Name), Namespace: pulumi.String(locals.Namespace), Labels: pulumi.ToStringMap(locals.Labels),
 		}),
 		Spec: deploymentSpec,
-	}, append([]pulumi.ResourceOption{pulumi.Provider(provider)}, deps...)...)
+	}, append(append([]pulumi.ResourceOption{pulumi.Provider(provider)}, deps...), replicas.Options()...)...)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create flagd deployment")
 	}

@@ -39,7 +39,7 @@ resource "kubernetes_stateful_set_v1" "this" {
   wait_for_rollout = true
 
   spec {
-    replicas = local.replicas
+    replicas = local.statefulset_replicas
 
     # The governing Service — the source of each replica's stable DNS identity.
     # It must exist before the StatefulSet (see service.tf).

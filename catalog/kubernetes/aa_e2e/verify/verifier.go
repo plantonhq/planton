@@ -163,18 +163,10 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 		return &NamespaceVerifier{Name: info.Name}, nil
 
 	case "kubernetesdeployment":
-		return &WorkloadVerifier{
-			Namespace: info.Namespace,
-			Kind:      "deployment",
-			Name:      info.Name,
-		}, nil
+		return newWorkloadVerifier(manifestPath, info, "deployment"), nil
 
 	case "kubernetesstatefulset":
-		return &WorkloadVerifier{
-			Namespace: info.Namespace,
-			Kind:      "statefulset",
-			Name:      info.Name,
-		}, nil
+		return newWorkloadVerifier(manifestPath, info, "statefulset"), nil
 
 	case "kubernetessecret":
 		return &ResourceExistenceVerifier{

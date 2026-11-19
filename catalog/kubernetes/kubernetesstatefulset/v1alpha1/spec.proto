@@ -6,7 +6,6 @@ import "buf/validate/validate.proto";
 import "catalog/kubernetes/workload_container.proto";
 import "catalog/kubernetes/workload_pod.proto";
 import "shared/foreignkey/v1/foreign_key.proto";
-import "shared/options/options.proto";
 
 /**
  * **KubernetesStatefulSetSpec** deploys a stateful application on a Kubernetes
@@ -66,8 +65,9 @@ message KubernetesStatefulSetSpec {
   /**
    * Availability configuration: replica count, disruption budget, and rollout
    * safeguards. Omit for a single-replica set with Kubernetes defaults. StatefulSets
-   * deliberately have no autoscaling here — stateful members join and leave through
-   * application-aware procedures, not HPA.
+   * deliberately have no inline autoscaling here — stateful members join and leave
+   * through application-aware procedures; an external autoscaler sizes the set only
+   * when `availability.replicas` is left unset.
    */
   KubernetesStatefulSetAvailability availability = 5;
 
@@ -147,14 +147,14 @@ message KubernetesStatefulSetContainer {
  */
 message KubernetesStatefulSetAvailability {
   /**
-   * Desired replica count. Defaults to 1. Scaling a stateful system is not free:
-   * new members must sync data, and removed members' PVCs follow
-   * `pvc_retention_policy.when_scaled`.
+   * Desired replica count. Set, it is the size every apply holds the StatefulSet to.
+   * Unset, the size is left to Kubernetes or to an external autoscaler (a
+   * KubernetesHorizontalPodAutoscaler or a KEDA ScaledObject targeting this
+   * StatefulSet): it starts with 1 pod, and an apply never changes the live count.
+   * Scaling a stateful system is not free: new members must sync data, and removed
+   * members' PVCs follow `pvc_retention_policy.when_scaled`.
    */
-  optional int32 replicas = 1 [
-    (dev.planton.shared.options.default) = "1",
-    (buf.validate.field).int32.gte = 0
-  ];
+  optional int32 replicas = 1 [(buf.validate.field).int32.gte = 0];
 
   /**
    * PodDisruptionBudget guarding availability during voluntary disruptions (node

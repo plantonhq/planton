@@ -1,0 +1,35 @@
+# THE EXTERNAL-SCALER PROMISE: with availability.replicas unset, an external
+# autoscaler (a KubernetesHorizontalPodAutoscaler or a KEDA ScaledObject) owns
+# the StatefulSet's size and an apply never moves it. Act one deploys with
+# replicas unset (Kubernetes starts it at 1); the verifier scales to 3 through
+# the /scale subresource the way an autoscaler does. Act two
+# (behavioral-external-scaler-keeps-size.to.yaml) adds an environment
+# variable: the rollout must happen and 3 must survive.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesStatefulSet
+metadata:
+  name: e2e-sts-ext-size
+  annotations:
+    planton.dev/e2e-upgrade-manifest: behavioral-external-scaler-keeps-size.to.yaml
+spec:
+  namespace:
+    value: e2e-sts-ext-size-ns
+  create_namespace: true
+  container:
+    app:
+      image:
+        repo: nginx
+        tag: "1.27-alpine"
+      resources:
+        requests:
+          cpu: "10m"
+          memory: "32Mi"
+        limits:
+          cpu: "100m"
+          memory: "64Mi"
+      ports:
+        - name: http
+          container_port: 80
+          network_protocol: TCP
+          app_protocol: http
+          service_port: 80

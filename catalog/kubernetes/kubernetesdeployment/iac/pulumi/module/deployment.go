@@ -5,6 +5,7 @@ import (
 	kubernetesv1 "github.com/plantonhq/planton/catalog/kubernetes"
 	kubernetesdeploymentv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesdeployment/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/workloadpod"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/workloadreplicas"
 	appsv1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/apps/v1"
 	kubernetescorev1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/core/v1"
 	metav1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/meta/v1"
@@ -61,18 +62,19 @@ func deployment(ctx *pulumi.Context, locals *Locals,
 		Strategy: buildDeploymentStrategy(getStrategy(spec.Availability)),
 	}
 
-	// Replica count: the availability block's value, defaulting to 1. While
-	// autoscaling is on, the HPA owns the live count and `replicas` is only its
-	// floor, so the Deployment leaves replicas out of the applied object: an
-	// apply then never resets the size the HPA chose. Terraform twin:
-	// locals.deployment_replicas.
-	if !spec.GetAvailability().GetHorizontalPodAutoscaling().GetEnabled() {
-		replicas := int32(1)
-		if spec.Availability != nil && spec.Availability.Replicas != nil {
-			replicas = *spec.Availability.Replicas
-		}
-		deploymentSpecArgs.Replicas = pulumi.Int(int(replicas))
+	// Replica count: the module holds the Deployment to `replicas` only while it
+	// owns the size. With the inline HPA on, `replicas` is the floor the
+	// Deployment is created at and the HPA owns the live count; unset without
+	// it, Kubernetes or an external autoscaler does. Either way an apply never
+	// moves the live count (workloadreplicas says why leaving the field out is
+	// not enough). Terraform twin: locals.deployment_replicas.
+	var declaredReplicas *int32
+	if spec.Availability != nil {
+		declaredReplicas = spec.Availability.Replicas
 	}
+	replicas := workloadreplicas.For(declaredReplicas,
+		spec.GetAvailability().GetHorizontalPodAutoscaling().GetEnabled())
+	deploymentSpecArgs.Replicas = replicas.Replicas()
 
 	if spec.Availability != nil {
 		if spec.Availability.MinReadySeconds != nil {
@@ -104,6 +106,7 @@ func deployment(ctx *pulumi.Context, locals *Locals,
 	}
 
 	deployOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
+	deployOpts = append(deployOpts, replicas.Options()...)
 	createdDeployment, err := appsv1.NewDeployment(ctx,
 		locals.KubernetesDeployment.Metadata.Name,
 		deploymentArgs,

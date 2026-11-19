@@ -10,7 +10,6 @@ import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	kubernetes "github.com/plantonhq/planton/catalog/kubernetes"
 	v1 "github.com/plantonhq/planton/shared/foreignkey/v1"
-	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -71,8 +70,9 @@ type KubernetesStatefulSetSpec struct {
 	// *
 	// Availability configuration: replica count, disruption budget, and rollout
 	// safeguards. Omit for a single-replica set with Kubernetes defaults. StatefulSets
-	// deliberately have no autoscaling here — stateful members join and leave through
-	// application-aware procedures, not HPA.
+	// deliberately have no inline autoscaling here — stateful members join and leave
+	// through application-aware procedures; an external autoscaler sizes the set only
+	// when `availability.replicas` is left unset.
 	Availability *KubernetesStatefulSetAvailability `protobuf:"bytes,5,opt,name=availability,proto3" json:"availability,omitempty"`
 	// *
 	// PersistentVolumeClaim templates. Each replica gets its OWN PVC stamped from each
@@ -278,9 +278,12 @@ func (x *KubernetesStatefulSetContainer) GetSidecars() []*kubernetes.WorkloadCon
 type KubernetesStatefulSetAvailability struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
-	// Desired replica count. Defaults to 1. Scaling a stateful system is not free:
-	// new members must sync data, and removed members' PVCs follow
-	// `pvc_retention_policy.when_scaled`.
+	// Desired replica count. Set, it is the size every apply holds the StatefulSet to.
+	// Unset, the size is left to Kubernetes or to an external autoscaler (a
+	// KubernetesHorizontalPodAutoscaler or a KEDA ScaledObject targeting this
+	// StatefulSet): it starts with 1 pod, and an apply never changes the live count.
+	// Scaling a stateful system is not free: new members must sync data, and removed
+	// members' PVCs follow `pvc_retention_policy.when_scaled`.
 	Replicas *int32 `protobuf:"varint,1,opt,name=replicas,proto3,oneof" json:"replicas,omitempty"`
 	// *
 	// PodDisruptionBudget guarding availability during voluntary disruptions (node
@@ -735,7 +738,7 @@ var File_catalog_kubernetes_kubernetesstatefulset_v1alpha1_spec_proto protorefle
 
 const file_catalog_kubernetes_kubernetesstatefulset_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/kubernetes/kubernetesstatefulset/v1alpha1/spec.proto\x125dev.planton.kubernetes.kubernetesstatefulset.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a+catalog/kubernetes/workload_container.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xda\t\n" +
+	"<catalog/kubernetes/kubernetesstatefulset/v1alpha1/spec.proto\x125dev.planton.kubernetes.kubernetesstatefulset.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a+catalog/kubernetes/workload_container.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xda\t\n" +
 	"\x19KubernetesStatefulSetSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x12{\n" +
@@ -752,9 +755,9 @@ const file_catalog_kubernetes_kubernetesstatefulset_v1alpha1_spec_proto_rawDesc 
 	"\x1eKubernetesStatefulSetContainer\x12C\n" +
 	"\x03app\x18\x01 \x01(\v2).dev.planton.kubernetes.WorkloadContainerB\x06\xbaH\x03\xc8\x01\x01R\x03app\x12\xb1\x01\n" +
 	"\bsidecars\x18\x02 \x03(\v2).dev.planton.kubernetes.WorkloadContainerBj\xbaHg\xba\x01d\n" +
-	"\x1dspec.container.sidecars.named\x12(Every sidecar container must have a name\x1a\x19this.all(c, c.name != '')R\bsidecars\"\xa4\x03\n" +
-	"!KubernetesStatefulSetAvailability\x12-\n" +
-	"\breplicas\x18\x01 \x01(\x05B\f\xbaH\x04\x1a\x02(\x00\x8a\xa6\x1d\x011H\x00R\breplicas\x88\x01\x01\x12\x93\x01\n" +
+	"\x1dspec.container.sidecars.named\x12(Every sidecar container must have a name\x1a\x19this.all(c, c.name != '')R\bsidecars\"\x9f\x03\n" +
+	"!KubernetesStatefulSetAvailability\x12(\n" +
+	"\breplicas\x18\x01 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00H\x00R\breplicas\x88\x01\x01\x12\x93\x01\n" +
 	"\x15pod_disruption_budget\x18\x02 \x01(\v2_.dev.planton.kubernetes.kubernetesstatefulset.v1alpha1.KubernetesStatefulSetPodDisruptionBudgetR\x13podDisruptionBudget\x128\n" +
 	"\x11min_ready_seconds\x18\x03 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00H\x01R\x0fminReadySeconds\x88\x01\x01\x12B\n" +
 	"\x16revision_history_limit\x18\x04 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00H\x02R\x14revisionHistoryLimit\x88\x01\x01B\v\n" +

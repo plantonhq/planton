@@ -10,7 +10,7 @@ spec:
   cost_drivers:
     - field_path: availability.replicas
       sku_meter: cluster CPU and memory reservations
-      impact: Every replica is a full pod carrying the declared container resources AND its own persistent volume per claim template -- three replicas reserve three times the compute and three times the storage. Defaults to 1.
+      impact: Every replica is a full pod carrying the declared container resources AND its own persistent volume per claim template -- three replicas reserve three times the compute and three times the storage. Unset, the workload starts with one pod and its size follows whatever scales it (a KubernetesHorizontalPodAutoscaler or KEDA).
     - field_path: container.app.resources
       sku_meter: cluster CPU and memory reservations
       impact: The app container's CPU and memory requests are what the scheduler reserves on the cluster's nodes per replica -- the capacity is claimed whether the application is busy or idle. Limits set the burst ceiling, not the reservation.

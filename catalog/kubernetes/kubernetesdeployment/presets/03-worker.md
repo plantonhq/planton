@@ -11,7 +11,7 @@ This preset deploys a queue consumer or background processor: no ports, no Servi
 
 - **No ports** — no Service is created; the workload is unreachable by design
 - **Env split** — plain configuration under `variables`, sensitive values under `secrets` referencing an existing Kubernetes Secret by name and key
-- **Single replica default** — scale with `availability.replicas`; note CPU-based HPA works for workers too when work is CPU-bound
+- **One pod to start** — `availability.replicas` is unset, so the worker starts with one pod; set it to hold a fixed size, or leave it unset and point an autoscaler at the Deployment (KEDA on queue depth is the usual worker lane; CPU-based HPA works too when work is CPU-bound)
 
 ## Placeholders to Replace
 

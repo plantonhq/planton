@@ -11,7 +11,11 @@ spec:
   # regenerated variables.tf -- but the new arm has not run live. Unblock: run the
   # kubernetes lane; watch that <workload>-image-pull materializes keyed by the
   # declared server and the pod becomes Ready (the image stays public, so the
-  # login is presented to no registry the pull actually needs).
+  # login is presented to no registry the pull actually needs). Live
+  # 2026-11-19 on both engines: minimal, multi-replica and
+  # behavioral-external-scaler-keeps-size (with replicas unset, a size an
+  # external scaler chose survived a re-apply that rolled the pods); the
+  # image-pull arm above is still unproven.
   status: pending_proof
   validated_provisioners:
     - pulumi

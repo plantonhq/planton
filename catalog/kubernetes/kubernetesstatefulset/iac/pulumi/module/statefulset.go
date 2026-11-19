@@ -5,6 +5,7 @@ import (
 	kubernetesv1 "github.com/plantonhq/planton/catalog/kubernetes"
 	kubernetesstatefulsetv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesstatefulset/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/workloadpod"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/workloadreplicas"
 	appsv1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/apps/v1"
 	kubernetescorev1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/core/v1"
 	metav1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/meta/v1"
@@ -66,13 +67,18 @@ func statefulSet(ctx *pulumi.Context, locals *Locals,
 		VolumeClaimTemplates: buildVolumeClaimTemplates(spec.VolumeClaimTemplates, locals),
 	}
 
-	// Replica count defaults to 1. Scaling stateful members is application-aware
-	// work (data sync, quorum changes) — there is deliberately no HPA on this kind.
-	replicas := int32(1)
-	if spec.Availability != nil && spec.Availability.Replicas != nil {
-		replicas = *spec.Availability.Replicas
+	// Replica count: scaling stateful members is application-aware work (data
+	// sync, quorum changes), so there is deliberately no inline HPA on this kind.
+	// Set, `replicas` is the size every apply holds; unset, Kubernetes or an
+	// external autoscaler owns the size and an apply never moves the live count
+	// (workloadreplicas says why leaving the field out is not enough). Terraform
+	// twin: locals.statefulset_replicas.
+	var declaredReplicas *int32
+	if spec.Availability != nil {
+		declaredReplicas = spec.Availability.Replicas
 	}
-	statefulSetSpecArgs.Replicas = pulumi.Int(int(replicas))
+	replicas := workloadreplicas.For(declaredReplicas, false)
+	statefulSetSpecArgs.Replicas = replicas.Replicas()
 
 	if spec.PodManagementPolicy != "" {
 		statefulSetSpecArgs.PodManagementPolicy = pulumi.String(spec.PodManagementPolicy)
@@ -126,6 +132,7 @@ func statefulSet(ctx *pulumi.Context, locals *Locals,
 		pulumi.Provider(kubernetesProvider),
 		pulumi.DependsOn([]pulumi.Resource{createdService}),
 	}, namespaceDeps...)
+	stsOpts = append(stsOpts, replicas.Options()...)
 	_, err := appsv1.NewStatefulSet(ctx,
 		locals.KubernetesStatefulSet.Metadata.Name,
 		statefulSetArgs,

@@ -175,9 +175,12 @@ locals {
   # exact syntax kubectl -l and NetworkPolicy tooling accept.
   selector_labels_string = join(",", [for k in sort(keys(local.selector_labels)) : "${k}=${local.selector_labels[k]}"])
 
-  # Replica count defaults to 1. Scaling stateful members is application-aware
-  # work (data sync, quorum changes) — there is deliberately no HPA on this kind.
-  replicas = try(var.spec.availability.replicas, null) != null ? var.spec.availability.replicas : 1
+  # Replica count. Scaling stateful members is application-aware work (data
+  # sync, quorum changes), so there is deliberately no inline HPA on this kind.
+  # Unset, Kubernetes or an external autoscaler owns the size: null keeps the
+  # live count (replicas is optional and computed on kubernetes_stateful_set_v1),
+  # so an apply never moves it. Pulumi twin: the workloadreplicas package.
+  statefulset_replicas = try(var.spec.availability.replicas, null)
 
   update_strategy_type = try(var.spec.update_strategy.type, "") != "" ? var.spec.update_strategy.type : "RollingUpdate"
 

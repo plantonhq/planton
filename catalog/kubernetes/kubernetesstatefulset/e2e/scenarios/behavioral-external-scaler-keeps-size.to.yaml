@@ -1,0 +1,35 @@
+# Act two of behavioral-external-scaler-keeps-size: E2E_ACT is added, so the
+# engine really updates the StatefulSet; replicas stays unset, and the size the
+# external scaler owns (3, set in act one) must survive.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesStatefulSet
+metadata:
+  name: e2e-sts-ext-size
+  annotations:
+    planton.dev/e2e-second-act: behavioral-external-scaler-keeps-size.yaml
+spec:
+  namespace:
+    value: e2e-sts-ext-size-ns
+  create_namespace: true
+  container:
+    app:
+      image:
+        repo: nginx
+        tag: "1.27-alpine"
+      resources:
+        requests:
+          cpu: "10m"
+          memory: "32Mi"
+        limits:
+          cpu: "100m"
+          memory: "64Mi"
+      ports:
+        - name: http
+          container_port: 80
+          network_protocol: TCP
+          app_protocol: http
+          service_port: 80
+      env:
+        variables:
+          - name: E2E_ACT
+            value: "two"

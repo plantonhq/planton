@@ -1045,7 +1045,7 @@ spec:
 | `spec.pod.priorityClassName` | `string` |  |  |  |
 | `spec.pod.runtimeClassName` | `string` |  |  |  |
 | `spec.availability` | `KubernetesStatefulSetAvailability` |  |  |  |
-| `spec.availability.replicas` | `int32` |  | `1` |  |
+| `spec.availability.replicas` | `int32` |  |  |  |
 | `spec.availability.podDisruptionBudget` | `KubernetesStatefulSetPodDisruptionBudget` |  |  |  |
 | `spec.availability.podDisruptionBudget.enabled` | `bool` |  |  |  |
 | `spec.availability.podDisruptionBudget.minAvailable` | `string` |  |  |  |
@@ -12089,18 +12089,21 @@ or Kata sandboxing) installed by the cluster administrator.
 
 Availability configuration: replica count, disruption budget, and rollout
 safeguards. Omit for a single-replica set with Kubernetes defaults. StatefulSets
-deliberately have no autoscaling here — stateful members join and leave through
-application-aware procedures, not HPA.
+deliberately have no inline autoscaling here — stateful members join and leave
+through application-aware procedures; an external autoscaler sizes the set only
+when `availability.replicas` is left unset.
 
 ### spec.availability.replicas
 
 `int32` · optional (explicit presence)
 
-Desired replica count. Defaults to 1. Scaling a stateful system is not free:
-new members must sync data, and removed members' PVCs follow
-`pvc_retention_policy.when_scaled`.
+Desired replica count. Set, it is the size every apply holds the StatefulSet to.
+Unset, the size is left to Kubernetes or to an external autoscaler (a
+KubernetesHorizontalPodAutoscaler or a KEDA ScaledObject targeting this
+StatefulSet): it starts with 1 pod, and an apply never changes the live count.
+Scaling a stateful system is not free: new members must sync data, and removed
+members' PVCs follow `pvc_retention_policy.when_scaled`.
 
-- default: `1`
 - rule: {"int32":{"gte":0}}
 
 ### spec.availability.podDisruptionBudget

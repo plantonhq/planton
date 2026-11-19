@@ -7,6 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	kubernetes "github.com/plantonhq/planton/catalog/kubernetes"
+	"github.com/plantonhq/planton/internal/manifest/protodefaults"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
 )
@@ -559,6 +560,19 @@ var _ = ginkgo.Describe("KubernetesDeploymentSpec validations", func() {
 				spec := withMounts(&kubernetes.VolumeMount{Name: "id", MountPath: "/id", PodCertificate: source})
 				gomega.Expect(protovalidate.Validate(spec)).ToNot(gomega.BeNil())
 			}
+		})
+	})
+
+	ginkgo.Context("When availability leaves replicas unset", func() {
+		// Unset replicas means Kubernetes or an external autoscaler owns the size,
+		// so no default may fill it in: a filled-in 1 would make every apply reset
+		// the size the autoscaler chose.
+		ginkgo.It("keeps replicas unset through the manifest defaults", func() {
+			spec := validSpec()
+			spec.Availability = &KubernetesDeploymentAvailability{MinReadySeconds: proto.Int32(10)}
+			gomega.Expect(protodefaults.ApplyDefaults(spec)).To(gomega.Succeed())
+			gomega.Expect(spec.GetAvailability().Replicas).To(gomega.BeNil())
+			gomega.Expect(protovalidate.Validate(spec)).To(gomega.BeNil())
 		})
 	})
 })

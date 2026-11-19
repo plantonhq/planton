@@ -1,0 +1,37 @@
+# THE HPA-ENABLE PROMISE: turning the inline HPA on for a Deployment that
+# runs above one replica never drops it below its floor. Act one runs 3
+# replicas without an HPA. Act two (behavioral-hpa-enable-keeps-size.to.yaml)
+# turns the HPA on with floor 3 and adds an environment variable: the HPA must
+# never find the Deployment below 3 (an apply that let the size fall back to
+# Kubernetes' default of 1 would leave that trace).
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesDeployment
+metadata:
+  name: e2e-dep-hpa-on
+  annotations:
+    planton.dev/e2e-upgrade-manifest: behavioral-hpa-enable-keeps-size.to.yaml
+spec:
+  namespace:
+    value: e2e-dep-hpa-on-ns
+  create_namespace: true
+  version: main
+  container:
+    app:
+      image:
+        repo: nginx
+        tag: "1.27-alpine"
+      resources:
+        requests:
+          cpu: "10m"
+          memory: "32Mi"
+        limits:
+          cpu: "100m"
+          memory: "64Mi"
+      ports:
+        - name: http
+          container_port: 80
+          network_protocol: TCP
+          app_protocol: http
+          service_port: 80
+  availability:
+    replicas: 3

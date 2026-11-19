@@ -221,7 +221,13 @@ func (x *KubernetesDeploymentContainer) GetSidecars() []*kubernetes.WorkloadCont
 type KubernetesDeploymentAvailability struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
-	// Desired replica count; the floor when autoscaling is enabled. Defaults to 1.
+	// Desired replica count. Set, it is the size every apply holds the Deployment to.
+	// With `horizontal_pod_autoscaling` enabled, it is the autoscaler's floor instead
+	// (1 when unset): the HPA owns the live count and an apply never resets it.
+	// Unset without the inline autoscaler, the size is left to Kubernetes or to an
+	// external autoscaler (a KubernetesHorizontalPodAutoscaler or a KEDA ScaledObject
+	// targeting this Deployment): it starts with 1 pod, and an apply never changes the
+	// live count. Leave it unset whenever another controller sizes this Deployment.
 	Replicas *int32 `protobuf:"varint,1,opt,name=replicas,proto3,oneof" json:"replicas,omitempty"`
 	// *
 	// Horizontal pod autoscaling on CPU and/or memory utilization. When enabled, the
@@ -587,9 +593,9 @@ const file_catalog_kubernetes_kubernetesdeployment_v1alpha1_spec_proto_rawDesc =
 	"\x1dKubernetesDeploymentContainer\x12C\n" +
 	"\x03app\x18\x01 \x01(\v2).dev.planton.kubernetes.WorkloadContainerB\x06\xbaH\x03\xc8\x01\x01R\x03app\x12\xb1\x01\n" +
 	"\bsidecars\x18\x02 \x03(\v2).dev.planton.kubernetes.WorkloadContainerBj\xbaHg\xba\x01d\n" +
-	"\x1dspec.container.sidecars.named\x12(Every sidecar container must have a name\x1a\x19this.all(c, c.name != '')R\bsidecars\"\x9f\x06\n" +
-	" KubernetesDeploymentAvailability\x12-\n" +
-	"\breplicas\x18\x01 \x01(\x05B\f\xbaH\x04\x1a\x02(\x00\x8a\xa6\x1d\x011H\x00R\breplicas\x88\x01\x01\x12\x8b\x01\n" +
+	"\x1dspec.container.sidecars.named\x12(Every sidecar container must have a name\x1a\x19this.all(c, c.name != '')R\bsidecars\"\x9a\x06\n" +
+	" KubernetesDeploymentAvailability\x12(\n" +
+	"\breplicas\x18\x01 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00H\x00R\breplicas\x88\x01\x01\x12\x8b\x01\n" +
 	"\x1ahorizontal_pod_autoscaling\x18\x02 \x01(\v2M.dev.planton.kubernetes.kubernetesdeployment.v1alpha1.KubernetesDeploymentHpaR\x18horizontalPodAutoscaling\x12n\n" +
 	"\bstrategy\x18\x03 \x01(\v2R.dev.planton.kubernetes.kubernetesdeployment.v1alpha1.KubernetesDeploymentStrategyR\bstrategy\x12\x91\x01\n" +
 	"\x15pod_disruption_budget\x18\x04 \x01(\v2].dev.planton.kubernetes.kubernetesdeployment.v1alpha1.KubernetesDeploymentPodDisruptionBudgetR\x13podDisruptionBudget\x128\n" +

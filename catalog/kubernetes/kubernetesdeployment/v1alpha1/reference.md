@@ -1029,7 +1029,7 @@ spec:
 | `spec.pod.priorityClassName` | `string` |  |  |  |
 | `spec.pod.runtimeClassName` | `string` |  |  |  |
 | `spec.availability` | `KubernetesDeploymentAvailability` |  |  |  |
-| `spec.availability.replicas` | `int32` |  | `1` |  |
+| `spec.availability.replicas` | `int32` |  |  |  |
 | `spec.availability.horizontalPodAutoscaling` | `KubernetesDeploymentHpa` |  |  |  |
 | `spec.availability.horizontalPodAutoscaling.enabled` | `bool` |  |  |  |
 | `spec.availability.horizontalPodAutoscaling.maxReplicas` | `int32` |  |  |  |
@@ -12084,9 +12084,14 @@ rolling updates.
 
 `int32` · optional (explicit presence)
 
-Desired replica count; the floor when autoscaling is enabled. Defaults to 1.
+Desired replica count. Set, it is the size every apply holds the Deployment to.
+With `horizontal_pod_autoscaling` enabled, it is the autoscaler's floor instead
+(1 when unset): the HPA owns the live count and an apply never resets it.
+Unset without the inline autoscaler, the size is left to Kubernetes or to an
+external autoscaler (a KubernetesHorizontalPodAutoscaler or a KEDA ScaledObject
+targeting this Deployment): it starts with 1 pod, and an apply never changes the
+live count. Leave it unset whenever another controller sizes this Deployment.
 
-- default: `1`
 - rule: {"int32":{"gte":0}}
 
 ### spec.availability.horizontalPodAutoscaling

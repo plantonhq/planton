@@ -11,7 +11,12 @@ spec:
   # once the projected token, the ClusterTrustBundle referenced from the
   # substrate's outputs, and the router pod certificate were all mounted; and
   # the OpenTofu engine refused those two projections at plan, naming the
-  # mount and the engine that writes them.
+  # mount and the engine that writes them. The replica-ownership lanes
+  # (behavioral-hpa-keeps-size, behavioral-hpa-enable-keeps-size,
+  # behavioral-external-scaler-keeps-size) proven live 2026-11-19 on both
+  # engines with minimal, with-replicas and with-hpa: a size the inline HPA or
+  # an external scaler chose survived a re-apply that rolled the pods, and
+  # turning the HPA on never dropped the Deployment below its floor.
   status: green
   validated_provisioners:
     - pulumi

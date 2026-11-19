@@ -118,12 +118,15 @@ message KubernetesDeploymentContainer {
  */
 message KubernetesDeploymentAvailability {
   /**
-   * Desired replica count; the floor when autoscaling is enabled. Defaults to 1.
+   * Desired replica count. Set, it is the size every apply holds the Deployment to.
+   * With `horizontal_pod_autoscaling` enabled, it is the autoscaler's floor instead
+   * (1 when unset): the HPA owns the live count and an apply never resets it.
+   * Unset without the inline autoscaler, the size is left to Kubernetes or to an
+   * external autoscaler (a KubernetesHorizontalPodAutoscaler or a KEDA ScaledObject
+   * targeting this Deployment): it starts with 1 pod, and an apply never changes the
+   * live count. Leave it unset whenever another controller sizes this Deployment.
    */
-  optional int32 replicas = 1 [
-    (dev.planton.shared.options.default) = "1",
-    (buf.validate.field).int32.gte = 0
-  ];
+  optional int32 replicas = 1 [(buf.validate.field).int32.gte = 0];
 
   /**
    * Horizontal pod autoscaling on CPU and/or memory utilization. When enabled, the

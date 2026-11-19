@@ -23,6 +23,7 @@ Keep flags OUT of this kind. Declare them as **KubernetesFlagdFlagFile** resourc
 - **An empty CORS list allows every origin.** flagd always installs its CORS handler, and with no `evaluation.corsOrigins` it accepts any origin. List the origins whenever browsers reach flagd.
 - **TLS covers evaluation and sync only.** `server.tlsSecretName` serves the evaluation and sync listeners over TLS; the OFREP and management listeners stay plain HTTP, so terminate TLS for OFREP at a gateway.
 - **An HTTP source authenticates one way.** `authHeader` or `oauth` client credentials (flagd exchanges them at `tokenUrl` for a token), never both -- validation refuses the pair.
+- **The HPA owns the size while it is on.** With `hpa.enabled`, the Deployment is created at `hpa.minReplicas` and every later apply leaves the live count to the HPA, so turning it on never drops the daemon below its floor. Turning it off after the HPA scaled away from `replicas` fails on the Pulumi engine with a field conflict naming `kube-controller-manager` (the HPA's write still owns the count); set `replicas` to the live count for that apply, or turn the HPA back on.
 - **The name budget is 63 characters.** The Service is named after the resource, and a Service name is a 63-character DNS label; both engines refuse a longer `metadata.name` before creating anything.
 
 ## On the diagram

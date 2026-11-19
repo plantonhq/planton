@@ -69,7 +69,7 @@ spec:
       field_path: availability.replicas
       evidence:
         type: spec_default
-        reference: replicas defaults to 1 (no redundancy); running 2 or more replicas with pod.scheduling.topology_spread_constraints on the zone topology key spreads them across availability zones, and availability.pod_disruption_budget keeps a floor of pods through voluntary disruptions.
+        reference: an unset replicas starts the workload with one pod (no redundancy) and leaves its size to an external autoscaler; running 2 or more replicas with pod.scheduling.topology_spread_constraints on the zone topology key spreads them across availability zones, and availability.pod_disruption_budget keeps a floor of pods through voluntary disruptions.
       notes: The 04-hardened-production preset runs 3 replicas zone-spread with a PDB holding 2 available; 02-web-service-with-hpa runs 2 replicas with a PDB holding 1.
     - control_id: deletion-protection
       status: not_applicable
