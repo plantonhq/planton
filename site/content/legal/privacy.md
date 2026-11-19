@@ -2,7 +2,7 @@
 
 *Effective date: March 25, 2026*
 
-*Last updated: October 17, 2026*
+*Last updated: November 19, 2026*
 
 ## Introduction
 
@@ -160,14 +160,15 @@ When you sign in with Google, we access only your basic profile information (nam
 
 **Connecting a Google Cloud account.**
 
-Separately from signing in, a member of your organization can connect a Google Cloud account so Planton can work in your Google Cloud projects. Two of the ways to connect use your Google account in the browser, and both ask Google for the `cloud-platform` permission, which lets Planton act in Google Cloud as the person who approves it, within what that person's own Google Cloud roles allow. Planton asks for it only when you start one of these two ways, and you see Google's consent screen before anything happens.
+Separately from signing in, a member of your organization can connect a Google Cloud project so Planton can deploy in it. One way to connect uses your Google account in the browser: the one-click keyless setup, **Set It Up for Me**. It asks Google for the `cloud-platform` permission, which lets Planton act in Google Cloud as the person who approves it, within what that person's own Google Cloud roles allow, and for your email address, to record who approved the setup. Planton asks for it only when you start the setup, and you see Google's consent screen before anything happens.
 
-- **One-click keyless setup.** You approve once, and Planton uses that approval only to set up a keyless trust in the Google Cloud project you chose: it creates a workload identity pool and provider that trust Planton's identity, a service account named "Planton Provisioner", and grants that service account the roles you selected. Planton reads which projects your account can see, to confirm the one you chose. Your Google access token is used only during that setup and is never stored; no refresh token is requested, and no service account key is created. From then on, Planton reaches the project through the keyless trust, which you can remove in your own project at any time.
-- **Sign in with Google as the connection.** The connection then acts as you. Planton asks Google for a refresh token so the connection keeps working after you leave, and stores it as a secret in your organization's secrets store (encrypted when Planton's built-in store holds it); the connection record keeps only a reference to that secret, and the token is never sent to your browser. Planton also keeps the email address of the Google account that approved it, to show on the connection, and lists the projects, folders, and organizations your account can see so you can pick a default project (that list is not kept). When a member of your organization uses the connection, Planton exchanges the refresh token for an access token that expires within an hour and uses it to read your Google Cloud resources, such as projects, networks, compute instances, storage buckets, and service accounts, and to check that the connection still works. Planton does not deploy infrastructure through this kind of connection.
+You approve once, and Planton uses that approval only to set up a keyless trust in the Google Cloud project you chose. It reads that project (its number, and the organization and billing account it belongs to) to confirm your account can see it, and checks that your account may make every change before it makes any. It then turns on the Google Cloud APIs the trust and Planton need in that project (IAM, IAM Service Account Credentials, Security Token Service, Cloud Resource Manager and Service Usage), creates a workload identity pool and an OIDC provider that trust only this connection's tokens from Planton's identity issuer, creates a service account named "Planton Provisioner" (or uses the one you named), and creates this connection's own custom role, holding exactly the permissions of what you chose to let Planton deploy, and grants it to that service account. If you turned on organization access, the same role is also created in the project's organization, and billing roles are granted on the project's billing account. When you later change what Planton may deploy and choose **Update the Role for Me**, Planton asks for the same approval once more and uses it only to run the same setup again, which keeps what already exists and rewrites that role and its grants.
 
-The email address of the Google account used in either way may appear in our service logs. Deleting the connection deletes the stored refresh token. To also end the permission on Google's side, remove Planton at your [Google Account permissions page](https://myaccount.google.com/permissions); for the keyless setup, delete the workload identity pool and service account Planton created in your project.
+Your Google access token is used only during the setup request it was issued for and is never stored. Planton requests online access only, so Google issues no refresh token, and no service account key is created. From then on, Planton reaches the project through the keyless trust, which you can remove in your own project at any time.
 
-We use data received through these Google Cloud permissions only to provide the connection features you use: setting up the trust, showing your Google Cloud resources in the Service, and keeping the connection working.
+The email address of the Google account that approved the setup may appear in our service logs. To end the permission on Google's side, remove Planton at your [Google Account permissions page](https://myaccount.google.com/permissions). To remove the trust itself, delete the OIDC provider, the custom role and the service account Planton created in your project; when you delete the connection in Planton, it shows exactly what stays in your project and a script that removes it.
+
+We use data received through this Google Cloud permission only to set up, and later update, the trust you asked for.
 
 **What we do not do with Google user data.**
 
@@ -187,6 +188,18 @@ When you authenticate with Microsoft, we access only your basic profile informat
 - Create and maintain your Planton account.
 - Display your name and avatar within the Service.
 - Send you account-related communications.
+
+**Connecting an Azure subscription.**
+
+Separately from signing in, a member of your organization can connect an Azure subscription so Planton can deploy in it. One way to connect uses your Microsoft account in the browser: the one-click keyless setup, **Set It Up for Me**. On one consent screen it asks Microsoft for two delegated permissions: `Application.ReadWrite.All` on Microsoft Graph, to create the app registration Planton signs in as and its federated credential, and `user_impersonation` on Azure Resource Manager, to create this connection's role in your subscription and assign it. It also asks for your basic profile, to record who approved the setup and in which tenant. Both permissions act as the person who approves them, within what that person's own Microsoft Entra and Azure roles allow; Microsoft requires an Entra administrator to consent to `Application.ReadWrite.All`. Planton asks for them only when you start the setup, and you see Microsoft's consent screen before anything happens.
+
+You approve once, and Planton uses that approval only to set up a keyless trust for the subscription you chose. It creates an app registration and its service principal (or uses the ones that already exist under the name you gave), adds a federated identity credential that trusts only this connection's tokens from Planton's identity issuer, confirms your account can see the subscription, creates this connection's own role, "Planton Deployer (*organization*/*connection*)", holding exactly the actions of what you chose to let Planton deploy, and assigns it to the app's service principal on the subscription. No client secret is created. Planton stores the app's client ID on the connection: an identifier that names the app and signs nothing. When you later change what Planton may deploy and choose **Update the Role for Me**, Planton asks Microsoft once more, for `user_impersonation` on Azure Resource Manager alone, and uses it only to rewrite that role.
+
+Each Microsoft access token is used only during the setup request it was issued for and is never stored. Planton never requests offline access, so Microsoft issues no refresh token. From then on, Planton reaches the subscription through the keyless trust, which you can remove in your own tenant at any time.
+
+The email address of the Microsoft account that approved the setup may appear in our service logs. To end the permission on Microsoft's side, a tenant administrator removes Planton in the Microsoft Entra admin center under **Enterprise applications** (revoke its permissions, or delete it), and anyone can review the apps they have consented to at [My Apps](https://myapps.microsoft.com). To remove the trust itself, delete the federated credential, the role assignment and the role Planton created (and the app registration, if no other Planton connection uses it); when you delete the connection in Planton, it shows exactly what stays in your tenant and a script that removes it.
+
+We use data received through these Microsoft permissions only to set up, and later update, the trust you asked for.
 
 We do not:
 

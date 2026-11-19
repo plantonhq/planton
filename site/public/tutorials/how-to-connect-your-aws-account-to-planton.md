@@ -88,6 +88,16 @@ On **Review & Create**, click **Create**. The next screen runs the connection's 
 
 For what the script does in detail, running it again, and a second connection in the same account, see [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections#aws).
 
+### From Your Terminal Instead
+
+The same keyless connection, from your terminal, with your AWS CLI sign-in:
+
+```bash
+planton connect aws --profile prod-admin
+```
+
+The command shows the account and the sign-in the setup runs as, what Planton will be able to deploy (everything by default; `--kinds AwsVpc,AwsEksCluster` narrows it), and asks. On your yes it runs Planton's setup script with your AWS sign-in, and refuses if that sign-in belongs to another account. It waits for AWS to accept the trust, creates the connection, and prints which kinds it can deploy. To read the script first: `planton connect aws --account-id 123456789012 --print-documents`.
+
 ## Path B: Stored Key
 
 This approach stores a long-lived credential. You create an IAM user with programmatic access, store its credentials as Planton secrets, and create a connection that references them.

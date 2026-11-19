@@ -265,6 +265,12 @@ DigitalOcean connections use an API token to authenticate. Optionally, you can p
 
 Generate an API token from the DigitalOcean control panel under **API > Tokens/Keys**. For Spaces, create a separate Spaces access key under **API > Spaces Keys**.
 
+From the terminal: `planton connect digitalocean --print-documents` prints the scopes the token needs and where to create it. Then pass the token in `DIGITALOCEAN_TOKEN` or on stdin, never as a flag, so it stays out of your shell history:
+
+```bash
+DIGITALOCEAN_TOKEN=dop_v1_... planton connect digitalocean --region nyc3
+```
+
 ---
 
 ## Cloudflare
@@ -276,6 +282,12 @@ Cloudflare connections support two authentication schemes. The recommended appro
 | Field | Description |
 |-------|-------------|
 | API Token | A scoped API token created in the Cloudflare dashboard |
+
+From the terminal: `planton connect cloudflare --print-documents` prints the permissions the token needs. Then pass the token in `CLOUDFLARE_API_TOKEN` or on stdin, never as a flag:
+
+```bash
+CLOUDFLARE_API_TOKEN=... planton connect cloudflare
+```
 
 ### What You Need (Legacy)
 

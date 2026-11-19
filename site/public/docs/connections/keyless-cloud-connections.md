@@ -75,6 +75,26 @@ The journey is the same on every cloud, and the connection is created last, once
 
 The setups on this page are described for an example connection: organization `acme`, connections `acme-aws-prod`, `acme-gcp-prod`, and `acme-azure-prod`, AWS account `123456789012`, Google Cloud project `acme-prod`, and placeholder Azure IDs, each with **Everything Planton Can Deploy**. Copy your script from the console, not from this page. Your subject, account, names, and permissions differ, and your cloud matches the trust's values as exact strings. Each script prints every step as it starts (`Step 1 of 3: …`), in the same words the console shows beside it.
 
+### From Your Terminal or a Coding Agent
+
+`planton connect gcp`, `planton connect aws` and `planton connect azure` build the same trust from your terminal, with the cloud sign-in already on your machine. The command shows where and as whom the setup will act and what Planton will be able to deploy, and asks before anything changes. It then runs Planton's own setup script as you (your sign-in never leaves your machine), waits until your cloud accepts the trust, creates the connection, and tells you which kinds it can deploy.
+
+```bash
+planton connect gcp --project acme-prod            # the active gcloud configuration
+planton connect aws --profile prod-admin           # the account that profile signs in to
+planton connect azure --subscription "Acme Prod"   # by ID or name
+```
+
+- `--print-documents` prints the exact script and changes nothing, so you can read it first or run it yourself in your cloud's browser shell.
+- `-o json` prints the plan as data and changes nothing. A coding agent with the Planton skill shows you that plan and asks before it runs the command again with `--yes`. This is how the Setup Prompt connects your cloud ([Coding Agents](/docs/coding-agents)).
+- `planton connect gcp verify <name>` checks a connection again. `planton connect gcp cleanup <name>` prints what deleting it leaves in your cloud, and the script that removes it.
+
+Install the CLI with [the one-line installer](/docs/cli).
+
+### From Planton Desktop
+
+Signed in to planton.ai, Planton Desktop finds the gcloud, AWS CLI or Azure CLI sign-in already on your laptop and offers **Set Up Keyless With Your gcloud Login** (or your AWS CLI or Azure CLI login). It opens the keyless setup filled in from that sign-in. The **Set Up** step names who the setup runs as and where, and lists every step it takes. **Run With Your gcloud Login** runs Planton's setup script on your laptop, narrating each step as it goes, with **Stop** beside it. The desktop runs only the script your screen showed you: it asks Planton for it again as you, and refuses one that changed. Your sign-in never leaves your laptop. When the script finishes, Planton asks your cloud whether it trusts the connection, then creates it.
+
 ## AWS
 
 ### What You Need

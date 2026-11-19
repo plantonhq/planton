@@ -86,6 +86,16 @@ On **Review & Create**, click **Create**. The next screen runs the connection's 
 
 For what the setup creates in detail, running it again, and a second connection in the same project, see [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections#google-cloud).
 
+### From Your Terminal Instead
+
+The same keyless connection, from your terminal, with your gcloud sign-in:
+
+```bash
+planton connect gcp --project acme-prod
+```
+
+The command shows the project and the sign-in the setup runs as, and what Planton will be able to deploy (everything by default; `--kinds GcpGkeCluster,GcpGcsBucket` narrows it), then asks. On your yes it runs Planton's setup script with your gcloud sign-in, waits for Google Cloud to accept the trust, creates the connection, and prints which kinds it can deploy. To read the script first: `planton connect gcp --project acme-prod --print-documents`.
+
 ## Path B: Stored Key (a Service Account Key)
 
 This approach stores a long-lived credential. You create a GCP service account with the role Planton's catalog renders for what you want it to deploy, download the JSON key file, store it as a Planton secret, and create a connection that references it.
