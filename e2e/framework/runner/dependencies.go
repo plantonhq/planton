@@ -685,10 +685,10 @@ func deployPulumiDependency(moduleDir string, dep Dependency, stackName, backend
 		return DependencyState{}, errors.Wrapf(err, "failed to build IaC input for dependency %q", dep.KindSlug)
 	}
 
-	if _, err := PulumiDeploy(moduleDir, stackName, backendURL, iacInputPath); err != nil {
-		return DependencyState{}, errors.Wrapf(err, "failed to deploy dependency %q", dep.KindSlug)
-	}
-
+	// The state is tracked from before the deploy, as the Terraform path's
+	// is: a failed `pulumi up` may still have created resources (a VPN
+	// connection's tunnels before its refused BGP peer), and teardown must
+	// destroy them.
 	state := DependencyState{
 		Dependency:   dep,
 		Engine:       "pulumi",
@@ -697,6 +697,9 @@ func deployPulumiDependency(moduleDir string, dep Dependency, stackName, backend
 		BackendURL:   backendURL,
 		IacInputPath: iacInputPath,
 		ManifestName: manifestName,
+	}
+	if _, err := PulumiDeploy(moduleDir, stackName, backendURL, iacInputPath); err != nil {
+		return state, errors.Wrapf(err, "failed to deploy dependency %q", dep.KindSlug)
 	}
 
 	outputsJSON, err := PulumiOutputs(moduleDir, stackName, backendURL)
