@@ -3,23 +3,12 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpdialogflowcxsecuritysettings
 spec:
-  # Awaiting the live proof lane. Both scenarios prove in the harness
-  # project with roles/dialogflow.admin (plus storage.buckets.setIamPolicy
-  # on the fixture bucket); the module enables dialogflow.googleapis.com
-  # itself: redaction with a retention window, and audio export into a
-  # bucket fixture with Insights export. Offline bar met: both modules build
-  # and validate, offline plans for the reference manifest, both scenarios,
-  # the fixture, and both presets are clean on the pinned provider, and the
-  # accounting is total. Live facts the proof lane confirms: (1) the
-  # settings create and RE-PLAN CLEAN under the apply-idempotency gate on
-  # both engines -- insights_export_settings sent only when on, and the
-  # retention window sent only when positive, show no diff; (2) Google's
-  # object-creator grant to the Dialogflow service agent lands on the
-  # bucket (the service agent may not exist before the project's first
-  # Dialogflow call -- a failure there is recorded, not patched); (3) the
-  # name output reads back as the settings' full resource name; (4) destroy
-  # deletes the settings and the verifier reads 404.
+  # Proven live on both engines (2026-11-19): redaction with a seven-day
+  # retention window, and MP3 audio export into a bucket with Insights export,
+  # each deployed, updated in place and destroyed by an identity holding only
+  # this kind's permissions manifest, with the re-plan clean. Sensitive Data
+  # Protection templates stay offline-only.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 20
