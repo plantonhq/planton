@@ -234,7 +234,9 @@ How a change to this peering's settings is applied:
                    behavior. Use it when the two sides are owned by
                    different teams and a one-sided flip must never
                    change what traffic flows.
-CREATE form only. Mutable.
+Both sides of a pair must use the same strategy: Google refuses the
+second side's peering when it differs ("Matching peerings must use the
+same update_strategy"). CREATE form only. Mutable.
 
 - rule: update_strategy must be INDEPENDENT or CONSENSUS
 
