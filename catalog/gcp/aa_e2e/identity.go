@@ -44,8 +44,9 @@ import (
 // lane's stage, not its subject).
 //
 // Which permissions: every group with no condition, plus each conditional
-// group whose spec field the scenario's manifest sets (permissions.
-// ConditionNeeded, the rule the platform's runner policy uses). A customer's
+// group whose spec field the scenario's manifest, or its second act, sets
+// (permissions.ConditionNeeded, the rule the platform's runner policy uses).
+// One identity deploys both acts, so it holds what the upgrade turns on too. A customer's
 // connection is granted the conditional groups too, so a lane proves the
 // tighter claim: the unconditional groups suffice, and each condition is
 // drawn where the module needs it.
@@ -56,6 +57,13 @@ import (
 // project. A group that reaches above the project (an organization, folder
 // or billing account) fails the lane with the group named: the test
 // projects hold no grant above themselves.
+//
+// Which project: the harness's own, unless the scenario names the project
+// its kind targets with provider.IdentityProjectAnnotation (a policy that
+// lives in the second test project). The custom role is written and bound
+// there, since Google binds a project's custom role only inside that
+// project; the account itself always lives in the harness's project, where
+// CleanLaneIdentities finds a crashed lane's leftovers.
 const identityDeclared = "declared"
 
 const (
@@ -87,11 +95,22 @@ func (h *Harness) ProvisionIdentity(ctx context.Context, tc *provider.KindTestCo
 	if os.Getenv("GOOGLE_OAUTH_ACCESS_TOKEN") != "" {
 		return "", nil, errors.New("GOOGLE_OAUTH_ACCESS_TOKEN is set in the test process; it outranks the lane's key in both engines' google providers, so the lane could not run as its declared identity -- unset it")
 	}
-	grant, err := declaredGrant(tc.RepoRoot, tc.Kind, tc.ManifestPath)
+	start := time.Now()
+	acts := []string{tc.ManifestPath}
+	if secondAct, _ := ctx.Value(provider.SecondActManifestPathKey{}).(string); secondAct != "" {
+		if err := requireUpgradeExpectation(secondAct); err != nil {
+			return "", nil, err
+		}
+		acts = append(acts, secondAct)
+	}
+	grant, err := declaredGrant(tc.RepoRoot, tc.Kind, acts)
 	if err != nil {
 		return "", nil, err
 	}
-	project := h.services.Project
+	project, err := h.identityProject(tc)
+	if err != nil {
+		return "", nil, err
+	}
 	lane := laneLabel(tc)
 	accountID := laneAccountID(lane)
 
@@ -105,7 +124,7 @@ func (h *Harness) ProvisionIdentity(ctx context.Context, tc *provider.KindTestCo
 	}
 	roles = append(roles, grant.predefinedRoles...)
 
-	account, err := h.services.Iam.Projects.ServiceAccounts.Create("projects/"+project, &iam.CreateServiceAccountRequest{
+	account, err := h.services.Iam.Projects.ServiceAccounts.Create("projects/"+h.services.Project, &iam.CreateServiceAccountRequest{
 		AccountId: accountID,
 		ServiceAccount: &iam.ServiceAccount{
 			DisplayName: truncate("e2e "+lane, 100),
@@ -174,18 +193,21 @@ func (h *Harness) ProvisionIdentity(ctx context.Context, tc *provider.KindTestCo
 		cleanup()
 		return "", nil, errors.Wrap(err, "writing the lane identity's provider configuration")
 	}
-	lanef(tc, "  [identity] %s holds %s (%d permission(s) from permissions.yaml%s)",
-		account.Email, strings.Join(roles, ", "), len(grant.permissions), grant.conditionalNote())
+	lanef(tc, "  [identity] %s holds %s on %s (%d permission(s) from permissions.yaml%s)",
+		account.Email, strings.Join(roles, ", "), project, len(grant.permissions), grant.conditionalNote())
 	held := make(map[string]bool, len(grant.permissions))
 	for _, permission := range grant.permissions {
 		held[permission] = true
 	}
+	firstAct := tc.ManifestPath
 	h.mu.Lock()
 	h.laneGrants[tc] = held
+	h.laneAudits[firstAct] = &laneAudit{project: project, principal: account.Email, start: start}
 	h.mu.Unlock()
 	return config.Path, func() {
 		h.mu.Lock()
 		delete(h.laneGrants, tc)
+		delete(h.laneAudits, firstAct)
 		h.mu.Unlock()
 		cleanup()
 		removeConfig()
@@ -230,42 +252,51 @@ func (g declaredGrantSet) conditionalNote() string {
 	return "; conditional: " + strings.Join(g.conditionalPurposes, ", ")
 }
 
-// declaredGrant reads the kind's manifest and the scenario's spec and decides
-// the lane's grant. It refuses, before anything is minted, a group that
-// reaches above the project and a permission Google keeps out of custom
-// roles (which the manifest must cover with a predefined role instead).
-func declaredGrant(repoRoot, kindDir, scenarioManifestPath string) (declaredGrantSet, error) {
+// declaredGrant reads the kind's manifest and the specs of the scenario's
+// acts (the first act, then the second when it has one) and decides the
+// lane's grant. It refuses, before anything is minted, a group that reaches
+// above the project and a permission Google keeps out of custom roles
+// (which the manifest must cover with a predefined role instead).
+func declaredGrant(repoRoot, kindDir string, actManifestPaths []string) (declaredGrantSet, error) {
 	manifest, err := permissions.Load(repoRoot, "gcp", kindDir)
 	if err != nil {
 		return declaredGrantSet{}, errors.Wrap(err, "the declared identity is built from the kind's permissions manifest")
 	}
-	raw, err := os.ReadFile(scenarioManifestPath)
-	if err != nil {
-		return declaredGrantSet{}, errors.Wrap(err, "reading the scenario manifest")
-	}
-	var scenario struct {
-		Kind string                 `json:"kind"`
-		Spec map[string]interface{} `json:"spec"`
-	}
-	if err := yaml.Unmarshal(raw, &scenario); err != nil {
-		return declaredGrantSet{}, errors.Wrap(err, "parsing the scenario manifest")
+	var kind string
+	specs := make([]map[string]interface{}, 0, len(actManifestPaths))
+	for _, path := range actManifestPaths {
+		raw, err := os.ReadFile(path)
+		if err != nil {
+			return declaredGrantSet{}, errors.Wrap(err, "reading the scenario manifest")
+		}
+		var act struct {
+			Kind string                 `json:"kind"`
+			Spec map[string]interface{} `json:"spec"`
+		}
+		if err := yaml.Unmarshal(raw, &act); err != nil {
+			return declaredGrantSet{}, errors.Wrapf(err, "parsing the scenario manifest %s", path)
+		}
+		if kind == "" {
+			kind = act.Kind
+		}
+		specs = append(specs, act.Spec)
 	}
 	inventory, err := actioninventory.LoadGcp(filepath.Join(repoRoot, "pkg", "iac", "actioninventory"))
 	if err != nil {
 		return declaredGrantSet{}, errors.Wrap(err, "loading Google's permission inventory")
 	}
 
-	grant := declaredGrantSet{kind: scenario.Kind}
+	grant := declaredGrantSet{kind: kind}
 	seenPermission := map[string]bool{}
 	seenRole := map[string]bool{}
 	manifestPath := permissions.Path(repoRoot, "gcp", kindDir)
 	for _, group := range manifest.GetSpec().GetGcp().GetGroups() {
 		condition := group.GetCondition().GetSpecFieldSet()
-		if !permissions.ConditionNeeded(condition, []map[string]interface{}{scenario.Spec}) {
+		if !permissions.ConditionNeeded(condition, specs) {
 			continue
 		}
 		if group.GetReach() != permissionsv1.PermissionReach_target {
-			return declaredGrantSet{}, errors.Errorf("%s group %q reaches %s; the declared identity is granted on the test project only, so this group's lane needs a grant above the project that the harness does not hold",
+			return declaredGrantSet{}, errors.Errorf("%s group %q reaches %s; the declared identity is granted on a test project only, so this group's lane needs a grant above the project that the harness does not hold",
 				manifestPath, group.GetPurpose(), group.GetReach())
 		}
 		if condition != "" {
@@ -482,15 +513,15 @@ func removeMembersWhere(policy *cloudresourcemanager.Policy, drop func(string) b
 }
 
 // CleanLaneIdentities removes what crashed lanes left: every lane service
-// account in the test project, and every policy binding that names one or a
-// deleted member. A killed test process (exit 137, a go test timeout) skips
-// the deferred cleanup a lane registers, and the rule of one test process per
-// provider account means that when a process starts, every lane account
-// already present is such a leftover. Returns what it removed.
+// account in the harness's project, and, in every test project a lane may be
+// granted in, every policy binding that names one or a deleted member. A
+// killed test process (exit 137, a go test timeout) skips the deferred
+// cleanup a lane registers, and the rule of one test process per provider
+// account means that when a process starts, every lane account already
+// present is such a leftover. Returns what it removed.
 func (h *Harness) CleanLaneIdentities(ctx context.Context) ([]string, error) {
-	project := h.services.Project
 	var removed []string
-	err := h.services.Iam.Projects.ServiceAccounts.List("projects/"+project).Pages(ctx, func(page *iam.ListServiceAccountsResponse) error {
+	err := h.services.Iam.Projects.ServiceAccounts.List("projects/"+h.services.Project).Pages(ctx, func(page *iam.ListServiceAccountsResponse) error {
 		for _, account := range page.Accounts {
 			if !strings.HasPrefix(account.Email, laneAccountPrefix) {
 				continue
@@ -505,10 +536,50 @@ func (h *Harness) CleanLaneIdentities(ctx context.Context) ([]string, error) {
 	if err != nil {
 		return removed, err
 	}
-	err = h.updateProjectPolicy(ctx, project, func(policy *cloudresourcemanager.Policy) bool {
-		return removeMembersWhere(policy, isLaneOrDeletedMember)
-	})
-	return removed, err
+	for _, project := range h.testProjects() {
+		if err := h.updateProjectPolicy(ctx, project, func(policy *cloudresourcemanager.Policy) bool {
+			return removeMembersWhere(policy, isLaneOrDeletedMember)
+		}); err != nil {
+			return removed, errors.Wrapf(err, "removing lane bindings from %s", project)
+		}
+	}
+	return removed, nil
+}
+
+// secondProjectEnv names the second test project, for the kinds whose lanes
+// target one apart from the harness's own (a project-singleton policy, a
+// fleet). The sweep reads both projects too.
+const secondProjectEnv = "PLANTON_E2E_GCP_SECOND_PROJECT_ID"
+
+// testProjects is every project a lane's identity may be granted in: the
+// harness's own, and the second test project when one is set.
+func (h *Harness) testProjects() []string {
+	projects := []string{h.services.Project}
+	if second := os.Getenv(secondProjectEnv); second != "" && second != h.services.Project {
+		projects = append(projects, second)
+	}
+	return projects
+}
+
+// identityProject is the project a lane's identity is granted in: the one
+// the scenario names with provider.IdentityProjectAnnotation (tokens already
+// expanded), else the harness's own. It must be a test project, so a typo
+// never grants a lane identity somewhere CleanLaneIdentities would not look.
+func (h *Harness) identityProject(tc *provider.KindTestContext) (string, error) {
+	named, err := runner.ManifestAnnotation(tc.ManifestPath, provider.IdentityProjectAnnotation)
+	if err != nil {
+		return "", errors.Wrapf(err, "reading %s", provider.IdentityProjectAnnotation)
+	}
+	if named == "" {
+		return h.services.Project, nil
+	}
+	for _, project := range h.testProjects() {
+		if named == project {
+			return project, nil
+		}
+	}
+	return "", errors.Errorf("%s names %q, which is not a test project (%s)",
+		provider.IdentityProjectAnnotation, named, strings.Join(h.testProjects(), ", "))
 }
 
 // isLaneOrDeletedMember names a policy member a lane left behind: a lane

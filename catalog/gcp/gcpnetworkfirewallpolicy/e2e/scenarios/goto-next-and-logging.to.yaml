@@ -18,7 +18,7 @@ metadata:
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e: "true"
     planton.dev/e2e-second-act: goto-next-and-logging.yaml
-    planton.dev/e2e-upgrade-manifest: goto-next-and-logging.to.yaml # the in-place update act
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
     # The target service account is the GcpServiceAccount install profile,
     # deployed as an extra fixture through the kind-name entry.
     planton.dev/e2e-prerequisites: "GcpServiceAccount"

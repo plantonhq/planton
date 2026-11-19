@@ -779,7 +779,11 @@ exactly these permissions -- nothing more -- deployed, updated and destroyed
 this kind"). For each lane it
 
 - picks every group with no condition, plus each conditional group whose
-  spec field the scenario's manifest sets (`permissions.ConditionNeeded`,
+  spec field the scenario's manifest, or its second act, sets (one identity
+  deploys both acts, so a feature only the upgrade turns on is granted from
+  the start; the runner reads the lifecycle annotations before IDENTITY and
+  hands the harness the prepared second act as
+  `provider.SecondActManifestPathKey`) (`permissions.ConditionNeeded`,
   the rule the platform's runner policy reads from one shared case table) --
   tighter than a customer's connection, which is granted the conditional
   groups too, so a passing lane also proves where each condition is drawn;
@@ -791,8 +795,13 @@ this kind"). For each lane it
   exactly those permissions -- rewritten before every lane, never deleted, so
   a manifest fix takes effect on the next lane and Google's per-project role
   cap and deleted-id hold never bite;
-- creates a lane account `pe2e-<hash>` (the full lane in its display name),
-  binds the role and any named predefined roles on the project, mints a key,
+- creates a lane account `pe2e-<hash>` (the full lane in its display name)
+  in the harness's project, binds the role and any named predefined roles on
+  the project the kind targets -- the harness's own, or the one the scenario
+  names with `planton.dev/e2e-identity-project` (a token such as
+  `${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID}`; it must be a test project),
+  where the custom role is written too, because Google binds a project's
+  custom role only inside that project -- mints a key,
   and waits until Google answers every granted permission for the account
   itself (`testIamPermissions`, up to five minutes) and has accepted the key
   for a full minute without one refusal, each check with a fresh token. A
@@ -809,9 +818,42 @@ this kind"). For each lane it
   one set;
 - removes the binding and deletes the account after the lane, whatever the
   verdict. `TestMain` removes what a killed process left (every `pe2e-`
-  account and any binding naming one or a deleted principal) before the
-  first lane, since one test process per account means anything already
-  there is a leftover.
+  account, and any binding naming one or a deleted principal in either test
+  project) before the first lane, since one test process per account means
+  anything already there is a leftover.
+
+**A declared lane's update is judged: in place, or replaced.** The catalog's
+`updated` means the kind's objects were changed, not deleted and created
+again (a replacement proves create and delete twice and never the update
+permissions). So every GCP second act carries
+`planton.dev/e2e-expect-upgrade: in-place | replaced`, and a declared lane
+whose second act omits it is refused before anything is minted. At
+VERIFY-UPGRADED the harness reads the Admin Activity audit log of the
+identity's project for the lane's account alone (fixtures deploy as the
+harness, so every entry is the kind under test): the resource names the
+account created before VERIFY-RES are the kind's objects; during the upgrade,
+any of those deleted or created again means replaced, and any other write
+(a patch, a set, `addRule`, `attachNetworkEndpoints`, `updatePeering`) means
+in place. Silence is never a verdict: with no entry three minutes after the
+upgrade the lane fails as "update not judged" -- the second act's change
+never reached Google, usually a field the module does not send. A kind whose
+create, update and destroy are one call (a project-singleton policy) has no
+created name to lose, so any write reads in place, which is true of a
+singleton; a kind whose every field replaces carries no second act, and its
+profile says so.
+
+**What the provider makes on a lane's behalf is released before the
+fixtures go.** Some kinds make Google create objects neither engine knows:
+a Dialogflow agent's data-store tool makes Discovery Engine create a chat
+engine that outlives the agent and keeps holding the store; a KMS key handle
+makes Autokey create an HSM key that bills monthly. A scenario names the
+class with `planton.dev/e2e-release-dependents: <class>`; the runner calls
+the harness (`provider.DependentsReleaser`) after the kind's last destroy and
+before DEPENDENCIES-DOWN, on every path, as the RELEASE-DEPENDENTS phase.
+The harness finds the objects by what this lane deployed (its run-scoped
+names), never by listing a type, so lanes side by side never release each
+other's. The GCP classes are in `catalog/gcp/aa_e2e/dependents.go`. Teaching
+the customer what the provider leaves is the kind's GUIDE's job.
 
 A kind's manifest flips from `derived` to `proven` only for what a passing
 declared run showed: every group the lanes granted, on both engines, with the
@@ -3357,7 +3399,12 @@ deleted resource in its index for minutes to hours (measured: lane accounts,
 their keys and tag keys and values deleted ten minutes earlier were all still
 listed), so a candidate whose type the sweep reads live (`liveReaders` in
 `sweep_test.go`) is read through its own API and reported only if it is still
-there; a type that first shows up stale is added there. Asset Inventory names
+there. Every Compute Engine type shares one reader, since Compute names a
+resource by the same path in Asset Inventory and in its REST API; a Cloud KMS
+key version reads as gone once it is destroyed or scheduled for destruction,
+and the key rings, keys, key handles and Autokey configurations Cloud KMS
+never deletes stand. Any other type that first shows up stale is added
+there. Asset Inventory names
 a service account key by its account's unique id, not its email. A type it
 does not index relies on the lane's own VERIFY-CLEAN phase. Delete a leftover through its kind's module, or with
 `gcloud` for the special classes below.

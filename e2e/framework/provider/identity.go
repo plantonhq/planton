@@ -2,6 +2,17 @@ package provider
 
 import "context"
 
+// IdentityProjectAnnotation names, on a scenario, the project (or the
+// provider's equivalent scope) its declared identity is granted in, when the
+// kind under test targets one other than the harness's own: a policy that
+// lives in a second test project is deployed by an identity granted there,
+// exactly as a customer's connection is granted on the project the
+// deployment targets. The value is a manifest value, so tokens such as
+// ${E2E_ENV:NAME} expand in it; without it the identity is granted in the
+// harness's own project. Harness vocabulary like the identity spec itself:
+// the runner never reads it.
+const IdentityProjectAnnotation = "planton.dev/e2e-identity-project"
+
 // IdentityProvisioner is the optional harness capability behind the
 // planton.dev/e2e-identity scenario annotation: the lane deploys as an
 // identity the harness creates for it, instead of the harness's own

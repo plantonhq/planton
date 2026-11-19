@@ -208,7 +208,9 @@ resource "google_discovery_engine_control" "this" {
   solution_type = local.solution_type
   use_cases     = length(each.value.use_cases) > 0 ? each.value.use_cases : null
 
-  deletion_policy = local.deletion_policy
+  # A control the serving config lists goes with the engine's delete (see
+  # local.control_deletion_policy).
+  deletion_policy = local.control_deletion_policy[each.key]
 
   dynamic "conditions" {
     for_each = each.value.conditions

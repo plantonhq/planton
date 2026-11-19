@@ -45,4 +45,24 @@ locals {
   # removing one never renumbers the others.
   controls   = { for control in var.spec.controls : control.control_id => control }
   assistants = { for assistant in var.spec.assistants : assistant.assistant_id => assistant }
+
+  # Google refuses to delete a control the serving config lists ("actively
+  # referenced by at least one serving config"), and the provider's serving
+  # config delete clears nothing, so a listed control is left to the
+  # engine's own delete, which removes every control with it. A control the
+  # serving config does not list is deleted on its own. PREVENT and ABANDON
+  # on the engine apply to every control as declared.
+  serving_config_control_ids = var.spec.serving_config == null ? [] : distinct(concat(
+    var.spec.serving_config.boost_control_ids,
+    var.spec.serving_config.filter_control_ids,
+    var.spec.serving_config.promote_control_ids,
+    var.spec.serving_config.redirect_control_ids,
+    var.spec.serving_config.synonyms_control_ids,
+  ))
+  control_deletion_policy = {
+    for id, control in local.controls : id => (
+      contains(["PREVENT", "ABANDON"], var.spec.deletion_policy) ? var.spec.deletion_policy :
+      contains(local.serving_config_control_ids, id) ? "ABANDON" : local.deletion_policy
+    )
+  }
 }

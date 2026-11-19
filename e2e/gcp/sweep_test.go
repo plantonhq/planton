@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
 	"os"
 	"strings"
 	"testing"
@@ -14,6 +15,7 @@ import (
 	"golang.org/x/oauth2/google"
 	cloudasset "google.golang.org/api/cloudasset/v1"
 	"google.golang.org/api/clouddeploy/v1"
+	"google.golang.org/api/cloudkms/v1"
 	"google.golang.org/api/cloudresourcemanager/v1"
 	crmv3 "google.golang.org/api/cloudresourcemanager/v3"
 	"google.golang.org/api/compute/v1"
@@ -21,6 +23,7 @@ import (
 	"google.golang.org/api/googleapi"
 	iam "google.golang.org/api/iam/v1"
 	"google.golang.org/api/option"
+	htransport "google.golang.org/api/transport/http"
 )
 
 // TestSweep proves the test projects hold nothing a lane left behind. It runs
@@ -79,7 +82,7 @@ func sweepProject(ctx context.Context, t *testing.T, project string, harness har
 			if standingResource(project, harness, resource) {
 				continue
 			}
-			if read, ok := readers[resource.AssetType]; ok {
+			if read, ok := readers.lookup(resource.AssetType); ok {
 				exists, err := read(ctx, resourcePath(resource.Name))
 				if err != nil {
 					return fmt.Errorf("reading %s live: %w", resource.Name, err)
@@ -147,6 +150,14 @@ func standingResource(project string, harness harnessAccount, resource *cloudass
 	case "storage.googleapis.com/Bucket":
 		// Cloud Build's per-project source bucket, made on its first build.
 		return strings.HasSuffix(name, "/"+project+"_cloudbuild")
+	case "cloudkms.googleapis.com/KeyRing", "cloudkms.googleapis.com/CryptoKey",
+		"cloudkms.googleapis.com/KeyHandle", "cloudkms.googleapis.com/AutokeyConfig":
+		// Cloud KMS deletes none of these: a key ring, a key and an Autokey
+		// key handle keep their names for good, and a project's Autokey
+		// configuration is cleared, never removed. Each run's names carry
+		// its run id. What can still cost or encrypt is a key VERSION, which
+		// the live reader requires destroyed or scheduled for destruction.
+		return true
 	}
 	return false
 }
@@ -183,7 +194,26 @@ func harnessAccountOf(ctx context.Context, t *testing.T) harnessAccount {
 // when a lane first leaves it in Asset Inventory's index.
 type liveReader func(ctx context.Context, name string) (bool, error)
 
-func newLiveReaders(ctx context.Context, t *testing.T, opts []option.ClientOption) map[string]liveReader {
+// liveReaders maps an asset type to its reader. Every Compute Engine type
+// shares one reader (computeReaderKey): Compute names a resource by the same
+// path in Asset Inventory and in its REST API, so a single GET by that path
+// reads any of them, from networks and tunnels to security policies.
+type liveReaders map[string]liveReader
+
+const computeReaderKey = "compute.googleapis.com/*"
+
+func (r liveReaders) lookup(assetType string) (liveReader, bool) {
+	if read, ok := r[assetType]; ok {
+		return read, true
+	}
+	if strings.HasPrefix(assetType, "compute.googleapis.com/") {
+		read, ok := r[computeReaderKey]
+		return read, ok
+	}
+	return nil, false
+}
+
+func newLiveReaders(ctx context.Context, t *testing.T, opts []option.ClientOption) liveReaders {
 	t.Helper()
 	iamService, err := iam.NewService(ctx, opts...)
 	if err != nil {
@@ -193,7 +223,11 @@ func newLiveReaders(ctx context.Context, t *testing.T, opts []option.ClientOptio
 	if err != nil {
 		t.Fatal(err)
 	}
-	computeService, err := compute.NewService(ctx, opts...)
+	rest, _, err := htransport.NewClient(ctx, append([]option.ClientOption{option.WithScopes(compute.CloudPlatformScope)}, opts...)...)
+	if err != nil {
+		t.Fatal(err)
+	}
+	kms, err := cloudkms.NewService(ctx, opts...)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -205,20 +239,28 @@ func newLiveReaders(ctx context.Context, t *testing.T, opts []option.ClientOptio
 	if err != nil {
 		t.Fatal(err)
 	}
-	return map[string]liveReader{
-		// projects/{p}/global/firewallPolicies/{n} or
-		// projects/{p}/regions/{r}/firewallPolicies/{n}.
-		"compute.googleapis.com/FirewallPolicy": func(ctx context.Context, name string) (bool, error) {
-			parts := strings.Split(name, "/")
-			if len(parts) == 6 && parts[2] == "regions" {
-				_, err := computeService.RegionNetworkFirewallPolicies.Get(parts[1], parts[3], parts[5]).Context(ctx).Do()
-				return stillThere(err)
+	return liveReaders{
+		// projects/{p}/global/{collection}/{n}, projects/{p}/regions/{r}/...,
+		// projects/{p}/zones/{z}/...: the same path under compute/v1.
+		computeReaderKey: func(ctx context.Context, name string) (bool, error) {
+			request, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://compute.googleapis.com/compute/v1/"+name, nil)
+			if err != nil {
+				return false, err
 			}
-			if len(parts) == 5 && parts[2] == "global" {
-				_, err := computeService.NetworkFirewallPolicies.Get(parts[1], parts[4]).Context(ctx).Do()
-				return stillThere(err)
+			response, err := rest.Do(request)
+			if err != nil {
+				return false, err
 			}
-			return true, nil // a shape this reader does not know is reported as found
+			defer response.Body.Close()
+			return stillThere(googleapi.CheckResponse(response))
+		},
+		// A key version that can no longer encrypt or bill reads as gone.
+		"cloudkms.googleapis.com/CryptoKeyVersion": func(ctx context.Context, name string) (bool, error) {
+			version, err := kms.Projects.Locations.KeyRings.CryptoKeys.CryptoKeyVersions.Get(name).Context(ctx).Do()
+			if exists, err := stillThere(err); !exists || err != nil {
+				return exists, err
+			}
+			return version.State != "DESTROY_SCHEDULED" && version.State != "DESTROYED", nil
 		},
 		"clouddeploy.googleapis.com/DeliveryPipeline": func(ctx context.Context, name string) (bool, error) {
 			_, err := deploy.Projects.Locations.DeliveryPipelines.Get(name).Context(ctx).Do()

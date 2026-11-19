@@ -84,12 +84,14 @@ import (
 type Harness struct {
 	services *verify.Services
 
-	// mu guards deployed, written by VerifyDeployed and read by VerifyDestroyed,
-	// and laneGrants, the permissions each running lane's identity holds
-	// (written by ProvisionIdentity, read by HeldPermissionRefused).
+	// mu guards deployed, written by VerifyDeployed and read by VerifyDestroyed;
+	// laneGrants, the permissions each running lane's identity holds (written
+	// by ProvisionIdentity, read by HeldPermissionRefused); and laneAudits,
+	// what the upgrade judgment reads for each declared lane (upgrade.go).
 	mu         sync.Mutex
 	deployed   map[string]map[string]string
 	laneGrants map[*provider.KindTestContext]map[string]bool
+	laneAudits map[string]*laneAudit
 }
 
 // NewHarness creates a GCP test harness. Credentials come from the ambient ADC
@@ -98,6 +100,7 @@ func NewHarness() *Harness {
 	return &Harness{
 		deployed:   make(map[string]map[string]string),
 		laneGrants: make(map[*provider.KindTestContext]map[string]bool),
+		laneAudits: make(map[string]*laneAudit),
 	}
 }
 
@@ -452,7 +455,12 @@ func (h *Harness) VerifyDeployed(ctx context.Context, kindDir string, outputs ma
 	h.deployed[kindKey(ctx, kindDir)] = strOutputs
 	h.mu.Unlock()
 
-	return v.VerifyExists(ctx, h.services, strOutputs)
+	if err := v.VerifyExists(ctx, h.services, strOutputs); err != nil {
+		return err
+	}
+	// A declared lane's upgrade is judged here, at VERIFY-UPGRADED; the first
+	// act's VERIFY-RES closes the window its creations are read from.
+	return h.noteVerified(ctx)
 }
 
 // VerifyDestroyed confirms the previously deployed resource no longer exists.

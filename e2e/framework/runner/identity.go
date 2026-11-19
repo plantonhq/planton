@@ -29,12 +29,17 @@ const PhaseIdentity Phase = "IDENTITY"
 
 // provisionIdentity resolves the annotation, requires the harness capability,
 // and records the provider configuration on the context so every manifest
-// binding uses it. The returned cleanup is a no-op when the scenario declares
-// no identity.
-func provisionIdentity(ctx context.Context, tc *provider.KindTestContext, harness provider.Harness) (func(), error) {
+// binding uses it. secondAct is the scenario's prepared second act, or empty:
+// the harness receives it on the context (provider.SecondActManifestPathKey)
+// so the one identity that deploys both acts holds what each uses. The
+// returned cleanup is a no-op when the scenario declares no identity.
+func provisionIdentity(ctx context.Context, tc *provider.KindTestContext, harness provider.Harness, secondAct string) (func(), error) {
 	spec, err := ManifestAnnotation(tc.ManifestPath, IdentityAnnotation)
 	if err != nil || spec == "" {
 		return func() {}, nil
+	}
+	if secondAct != "" {
+		ctx = context.WithValue(ctx, provider.SecondActManifestPathKey{}, secondAct)
 	}
 	provisioner, ok := harness.(provider.IdentityProvisioner)
 	if !ok {

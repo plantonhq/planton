@@ -8,6 +8,15 @@ package provider
 // object changed in place, or a new one that replaced it.
 type FirstActManifestPathKey struct{}
 
+// SecondActManifestPathKey is the context key that carries, while the lane's
+// identity is provisioned (IdentityProvisioner), the path of the scenario's
+// second act, prepared the way the runner will deploy it. One identity
+// deploys both acts, so a harness that grants what a manifest uses reads
+// both: a feature only the upgrade turns on is the identity's to hold, never
+// a refusal that would read as a gap in the kind's permissions. Absent when
+// the scenario declares no second act.
+type SecondActManifestPathKey struct{}
+
 // ExpectUpgradeAnnotation, on a second-act manifest, declares what the upgrade
 // does to the deployed object's identity: UpgradeInPlace (the same object,
 // changed) or UpgradeReplaced (a new object, the old one gone the way the

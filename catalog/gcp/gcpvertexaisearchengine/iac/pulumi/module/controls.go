@@ -59,8 +59,8 @@ func controls(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider,
 				Synonyms: pulumi.ToStringArray(control.SynonymsAction.Synonyms),
 			}
 		}
-		if spec.DeletionPolicy != "" {
-			args.DeletionPolicy = pulumi.String(spec.DeletionPolicy)
+		if policy := controlDeletionPolicy(spec, control.ControlId); policy != "" {
+			args.DeletionPolicy = pulumi.String(policy)
 		}
 
 		createdControl, err := discoveryengine.NewControl(ctx,
@@ -74,6 +74,30 @@ func controls(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider,
 		resources = append(resources, createdControl)
 	}
 	return resources, names, nil
+}
+
+// controlDeletionPolicy is what destroy does with one control. Google
+// refuses to delete a control the serving config lists ("actively
+// referenced by at least one serving config"), and the provider's serving
+// config delete clears nothing, so a listed control is left to the engine's
+// own delete, which removes every control with it (ABANDON). A control the
+// serving config does not list is deleted on its own. PREVENT and ABANDON on
+// the engine apply to every control as declared.
+func controlDeletionPolicy(spec *gcpvertexaisearchenginev1alpha1.GcpVertexAiSearchEngineSpec, controlID string) string {
+	if spec.DeletionPolicy == "PREVENT" || spec.DeletionPolicy == "ABANDON" {
+		return spec.DeletionPolicy
+	}
+	if serving := spec.ServingConfig; serving != nil {
+		for _, ids := range [][]string{serving.BoostControlIds, serving.FilterControlIds, serving.PromoteControlIds,
+			serving.RedirectControlIds, serving.SynonymsControlIds} {
+			for _, id := range ids {
+				if id == controlID {
+					return "ABANDON"
+				}
+			}
+		}
+	}
+	return spec.DeletionPolicy
 }
 
 // buildConditions maps when a control is active: query terms, time

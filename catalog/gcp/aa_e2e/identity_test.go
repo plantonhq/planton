@@ -10,7 +10,9 @@ import (
 
 	"cloud.google.com/go/auth"
 	"github.com/pkg/errors"
+	"github.com/plantonhq/planton/catalog/gcp/aa_e2e/verify"
 	"github.com/plantonhq/planton/e2e/framework/provider"
+	"github.com/plantonhq/planton/e2e/framework/runner"
 	"google.golang.org/api/cloudresourcemanager/v1"
 	"google.golang.org/api/googleapi"
 )
@@ -35,7 +37,7 @@ func repoRoot(t *testing.T) string {
 func TestDeclaredGrantTurnsOnTheConditionalGroupTheScenarioSets(t *testing.T) {
 	root := repoRoot(t)
 	scenario := filepath.Join(root, "catalog", "gcp", "gcpdatastreamstream", "e2e", "scenarios", "not-started-postgresql-to-bigquery.yaml")
-	grant, err := declaredGrant(root, "gcpdatastreamstream", scenario)
+	grant, err := declaredGrant(root, "gcpdatastreamstream", []string{scenario})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -64,7 +66,7 @@ func TestDeclaredGrantLeavesOutConditionalGroupsTheScenarioDoesNotSet(t *testing
 	if err := os.WriteFile(scenario, []byte(unset), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	grant, err := declaredGrant(root, "gcpdatastreamstream", scenario)
+	grant, err := declaredGrant(root, "gcpdatastreamstream", []string{scenario})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -81,12 +83,77 @@ func TestDeclaredGrantLeavesOutConditionalGroupsTheScenarioDoesNotSet(t *testing
 	}
 }
 
+// One identity deploys both acts, so a conditional group only the second act
+// turns on is granted from the start: the upgrade would otherwise be refused
+// a permission the kind's manifest does list.
+func TestDeclaredGrantHoldsWhatTheSecondActTurnsOn(t *testing.T) {
+	root := repoRoot(t)
+	second := filepath.Join(root, "catalog", "gcp", "gcpdatastreamstream", "e2e", "scenarios", "not-started-postgresql-to-bigquery.yaml")
+	raw, err := os.ReadFile(second)
+	if err != nil {
+		t.Fatal(err)
+	}
+	first := filepath.Join(t.TempDir(), "first.yaml")
+	if err := os.WriteFile(first, []byte(strings.Replace(string(raw), "desiredState: NOT_STARTED", "", 1)), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	alone, err := declaredGrant(root, "gcpdatastreamstream", []string{first})
+	if err != nil {
+		t.Fatal(err)
+	}
+	both, err := declaredGrant(root, "gcpdatastreamstream", []string{first, second})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(alone.conditionalPurposes) != 0 || len(both.conditionalPurposes) != 1 {
+		t.Fatalf("conditional groups: first act alone %v, both acts %v; want none, then the desired_state group", alone.conditionalPurposes, both.conditionalPurposes)
+	}
+}
+
+// A lane's identity is granted in the harness's project unless the scenario
+// names another test project, and a name that is no test project is refused
+// before anything is minted.
+func TestIdentityProjectIsATestProject(t *testing.T) {
+	t.Setenv(secondProjectEnv, "second-project")
+	h := NewHarness()
+	h.services = &verify.Services{Project: "harness-project"}
+	manifest := func(annotation string) *provider.KindTestContext {
+		t.Helper()
+		body := "apiVersion: gcp.planton.dev/v1alpha1\nkind: GcpBinaryAuthorizationPolicy\nmetadata:\n  name: x\n"
+		if annotation != "" {
+			body += "  annotations:\n    " + provider.IdentityProjectAnnotation + ": " + annotation + "\n"
+		}
+		path := filepath.Join(t.TempDir(), "scenario.yaml")
+		if err := os.WriteFile(path, []byte(body), 0o600); err != nil {
+			t.Fatal(err)
+		}
+		return &provider.KindTestContext{ManifestPath: path}
+	}
+	cases := []struct {
+		annotation, want string
+		refused          bool
+	}{
+		{"", "harness-project", false},
+		{"second-project", "second-project", false},
+		{"someone-elses-project", "", true},
+	}
+	for _, c := range cases {
+		got, err := h.identityProject(manifest(c.annotation))
+		if c.refused != (err != nil) || got != c.want {
+			t.Errorf("annotation %q: got (%q, %v), want %q refused=%v", c.annotation, got, err, c.want, c.refused)
+		}
+	}
+	if projects := h.testProjects(); len(projects) != 2 || projects[1] != "second-project" {
+		t.Errorf("test projects = %v, want the harness's then the second", projects)
+	}
+}
+
 // A group that reaches above the project is refused before anything is
 // minted, naming the group.
 func TestDeclaredGrantRefusesAGroupAboveTheProject(t *testing.T) {
 	root := repoRoot(t)
 	scenario := filepath.Join(root, "catalog", "gcp", "gcporgpolicy", "e2e", "scenarios", "minimal.yaml")
-	_, err := declaredGrant(root, "gcporgpolicy", scenario)
+	_, err := declaredGrant(root, "gcporgpolicy", []string{scenario})
 	if err == nil || !strings.Contains(err.Error(), "reaches organization") {
 		t.Fatalf("err = %v, want a refusal naming the organization reach", err)
 	}
@@ -157,7 +224,11 @@ func TestEveryDeclaredScenarioHasAMintableGrant(t *testing.T) {
 		}
 		declared++
 		kindDir := filepath.Base(filepath.Dir(filepath.Dir(filepath.Dir(scenario))))
-		if _, err := declaredGrant(root, kindDir, scenario); err != nil {
+		acts := []string{scenario}
+		if secondAct, _ := runner.ManifestAnnotation(scenario, runner.UpgradeManifestAnnotation); secondAct != "" {
+			acts = append(acts, filepath.Join(filepath.Dir(scenario), secondAct))
+		}
+		if _, err := declaredGrant(root, kindDir, acts); err != nil {
 			rel, _ := filepath.Rel(root, scenario)
 			t.Errorf("%s: %v", rel, err)
 		}

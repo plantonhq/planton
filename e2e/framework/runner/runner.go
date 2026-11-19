@@ -204,11 +204,58 @@ func RunKindTest(ctx context.Context, tc *provider.KindTestContext, harness prov
 		}
 	}
 
+	// Failure-mode annotations (see failuremode.go). Mutually exclusive: one
+	// says the deploy itself must fail, the other presupposes it succeeds.
+	expectDeployFailure, _ := ManifestAnnotation(tc.ManifestPath, ExpectDeployFailureAnnotation)
+	expectedRuntimeCause, _ := ManifestAnnotation(tc.ManifestPath, ExpectedRuntimeFailureAnnotation)
+	if expectDeployFailure != "" && expectedRuntimeCause != "" {
+		result.Passed = false
+		result.Phases = append(result.Phases, PhaseResult{
+			Phase:  PhaseValidate,
+			Passed: false,
+			Error: errors.Errorf("scenario carries both %s and %s -- they are mutually exclusive",
+				ExpectDeployFailureAnnotation, ExpectedRuntimeFailureAnnotation),
+		})
+		if tdErr := TeardownDependencies(dependencyStates); tdErr != nil {
+			result.Phases = append(result.Phases, PhaseResult{Phase: PhaseDepsDn, Passed: false, Error: tdErr})
+		}
+		result.Duration = time.Since(start)
+		return result
+	}
+
+	// Lifecycle annotations (see lifecycle.go): a second deploy against the
+	// same stack (upgrade, or an upgrade that must be refused) and a second
+	// install after the first destroy. They presuppose a successful first
+	// deploy, so they never combine with expect-deploy-failure. They are read
+	// before IDENTITY: a lane's identity is granted what its second act uses
+	// too, and a scenario these checks refuse must not mint one.
+	lifecycle, lifecycleErr := readLifecycleAnnotations(sourceManifest)
+	if lifecycleErr == nil && expectDeployFailure != "" && (lifecycle.upgradeManifest != "" || lifecycle.reinstall || lifecycle.outOfBand != nil) {
+		lifecycleErr = errors.Errorf("scenario carries %s together with a lifecycle annotation -- a deploy that must fail has no second act",
+			ExpectDeployFailureAnnotation)
+	}
+	if lifecycleErr == nil && lifecycle.outOfBand != nil {
+		lifecycleErr = requireOutOfBandEngine(tc.Engine)
+	}
+	if lifecycleErr == nil && lifecycle.upgradeManifest != "" {
+		lifecycle.upgradeManifest, lifecycleErr = prepareSecondAct(lifecycle.upgradeManifest, expandRunID, ScenarioSlug(sourceManifest), laneClock, depOutputs)
+	}
+	if lifecycleErr != nil {
+		result.Passed = false
+		result.Phases = append(result.Phases, PhaseResult{Phase: PhaseValidate, Passed: false, Error: lifecycleErr})
+		if tdErr := TeardownDependencies(dependencyStates); tdErr != nil {
+			result.Phases = append(result.Phases, PhaseResult{Phase: PhaseDepsDn, Passed: false, Error: tdErr})
+		}
+		result.Duration = time.Since(start)
+		return result
+	}
 	// IDENTITY: the identity the lane deploys as (see identity.go), created
-	// after the fixtures and SETUP, before VALIDATE because the binding reads
-	// it.
+	// after the fixtures, SETUP and the annotation checks above, before
+	// VALIDATE because the binding reads it. It is handed the prepared second
+	// act, because one identity deploys both acts and must hold what each
+	// uses.
 	identityStart := time.Now()
-	identityCleanup, identityErr := provisionIdentity(ctx, tc, harness)
+	identityCleanup, identityErr := provisionIdentity(ctx, tc, harness, lifecycle.upgradeManifest)
 	if identityErr != nil {
 		result.Passed = false
 		result.Phases = append(result.Phases, PhaseResult{
@@ -236,49 +283,6 @@ func RunKindTest(ctx context.Context, tc *provider.KindTestContext, harness prov
 		})
 	}
 
-	// Failure-mode annotations (see failuremode.go). Mutually exclusive: one
-	// says the deploy itself must fail, the other presupposes it succeeds.
-	expectDeployFailure, _ := ManifestAnnotation(tc.ManifestPath, ExpectDeployFailureAnnotation)
-	expectedRuntimeCause, _ := ManifestAnnotation(tc.ManifestPath, ExpectedRuntimeFailureAnnotation)
-	if expectDeployFailure != "" && expectedRuntimeCause != "" {
-		result.Passed = false
-		result.Phases = append(result.Phases, PhaseResult{
-			Phase:  PhaseValidate,
-			Passed: false,
-			Error: errors.Errorf("scenario carries both %s and %s -- they are mutually exclusive",
-				ExpectDeployFailureAnnotation, ExpectedRuntimeFailureAnnotation),
-		})
-		if tdErr := TeardownDependencies(dependencyStates); tdErr != nil {
-			result.Phases = append(result.Phases, PhaseResult{Phase: PhaseDepsDn, Passed: false, Error: tdErr})
-		}
-		result.Duration = time.Since(start)
-		return result
-	}
-
-	// Lifecycle annotations (see lifecycle.go): a second deploy against the
-	// same stack (upgrade, or an upgrade that must be refused) and a second
-	// install after the first destroy. They presuppose a successful first
-	// deploy, so they never combine with expect-deploy-failure.
-	lifecycle, lifecycleErr := readLifecycleAnnotations(sourceManifest)
-	if lifecycleErr == nil && expectDeployFailure != "" && (lifecycle.upgradeManifest != "" || lifecycle.reinstall || lifecycle.outOfBand != nil) {
-		lifecycleErr = errors.Errorf("scenario carries %s together with a lifecycle annotation -- a deploy that must fail has no second act",
-			ExpectDeployFailureAnnotation)
-	}
-	if lifecycleErr == nil && lifecycle.outOfBand != nil {
-		lifecycleErr = requireOutOfBandEngine(tc.Engine)
-	}
-	if lifecycleErr == nil && lifecycle.upgradeManifest != "" {
-		lifecycle.upgradeManifest, lifecycleErr = prepareSecondAct(lifecycle.upgradeManifest, expandRunID, ScenarioSlug(sourceManifest), laneClock, depOutputs)
-	}
-	if lifecycleErr != nil {
-		result.Passed = false
-		result.Phases = append(result.Phases, PhaseResult{Phase: PhaseValidate, Passed: false, Error: lifecycleErr})
-		if tdErr := TeardownDependencies(dependencyStates); tdErr != nil {
-			result.Phases = append(result.Phases, PhaseResult{Phase: PhaseDepsDn, Passed: false, Error: tdErr})
-		}
-		result.Duration = time.Since(start)
-		return result
-	}
 	originalManifest := tc.ManifestPath
 
 	// Phases 1-6 (7 with the opt-in import round-trip): standard lifecycle.
@@ -434,6 +438,16 @@ func RunKindTest(ctx context.Context, tc *provider.KindTestContext, harness prov
 				}
 			}
 			break
+		}
+	}
+
+	// What the provider made on the lane's behalf, which neither engine's
+	// destroy removes (see dependents.go), goes before the fixtures it may
+	// hold on to.
+	if release := releaseDependents(verifyCtx, tc, harness, originalManifest); release != nil {
+		result.Phases = append(result.Phases, *release)
+		if !release.Passed {
+			result.Passed = false
 		}
 	}
 

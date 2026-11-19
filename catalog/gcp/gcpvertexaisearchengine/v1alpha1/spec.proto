@@ -373,7 +373,10 @@ message GcpVertexAiSearchEngineBoostAction {
 
   // The data store whose documents are boosted: a GcpVertexAiSearchDataStore
   // reference (its full name) or a literal
-  // projects/{project}/locations/{location}/collections/{collection}/dataStores/{store}.
+  // projects/{project_number}/locations/{location}/collections/{collection}/dataStores/{store}.
+  // Google accepts a control's data store only by project NUMBER and refuses
+  // the project id ("invalid data store name"); the data store kind's name
+  // output already carries the number.
   dev.planton.shared.foreignkey.v1.StringValueOrRef data_store = 1 [
     (buf.validate.field).required = true,
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpVertexAiSearchDataStore,
@@ -401,7 +404,8 @@ message GcpVertexAiSearchEngineBoostAction {
 // a filter from the results.
 message GcpVertexAiSearchEngineFilterAction {
   // The data store the filter applies to (a GcpVertexAiSearchDataStore
-  // reference or a literal full name).
+  // reference or a literal full name, by project number as on the boost
+  // action).
   dev.planton.shared.foreignkey.v1.StringValueOrRef data_store = 1 [
     (buf.validate.field).required = true,
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpVertexAiSearchDataStore,
@@ -444,7 +448,8 @@ message GcpVertexAiSearchEngineSearchLinkPromotion {
 // GcpVertexAiSearchEnginePromoteAction pins a link for matching queries.
 message GcpVertexAiSearchEnginePromoteAction {
   // The data store the promotion applies to (a GcpVertexAiSearchDataStore
-  // reference or a literal full name).
+  // reference or a literal full name, by project number as on the boost
+  // action).
   dev.planton.shared.foreignkey.v1.StringValueOrRef data_store = 1 [
     (buf.validate.field).required = true,
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpVertexAiSearchDataStore,
@@ -548,6 +553,13 @@ message GcpVertexAiSearchEngineControl {
 // PATCHes the engine's own "default_search" serving config; Google creates
 // it with the engine and never deletes it). Every id must name a control
 // declared on this engine with the matching action.
+//
+// Google refuses to delete a control a serving config lists, and the
+// serving config is never deleted, so a listed control is not deleted on
+// its own: it goes when the engine is deleted, which takes every control
+// with it. Removing a listed control from controls[] unlists it and leaves
+// it in the engine until then, inert; declare a control that replaces it
+// under a new control_id, since Google keeps the old id taken.
 message GcpVertexAiSearchEngineServingConfig {
   // Ids of boost controls to apply.
   repeated string boost_control_ids = 1 [(buf.validate.field).repeated.items.string.min_len = 1];
@@ -1158,7 +1170,10 @@ message GcpVertexAiSearchEngineSpec {
   // What happens to the engine, its controls, and its assistants when this
   // resource is destroyed:
   //   "" / "DELETE" -- deleted (the widget config and serving config are
-  //                    Google's own and stay with the engine's deletion)
+  //                    Google's own and stay with the engine's deletion; a
+  //                    control the serving config lists is deleted by the
+  //                    engine's own deletion, since Google refuses to
+  //                    delete a listed control)
   //   "PREVENT"     -- destroy fails
   //   "ABANDON"     -- everything leaves management and stays in GCP
   // The data stores are separate resources and are not touched.
