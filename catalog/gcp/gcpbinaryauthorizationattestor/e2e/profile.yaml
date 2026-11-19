@@ -3,22 +3,13 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpbinaryauthorizationattestor
 spec:
-  # Awaiting the live proof lane. Both scenarios run in the harness
-  # project: a PGP attestor with its own note, and a Cloud KMS attestor
-  # over a run-scoped key ring and an ASYMMETRIC_SIGN key fixture (which
-  # also proves GcpKmsKey's initial_version_name live). Offline bar met:
-  # both modules build and validate, offline plans for the PGP scenario
-  # and the PEM arm are clean on the pinned provider, and the accounting is
-  # total. The Cloud KMS arm (the reference manifest, the kms scenario, and
-  # preset 01) reads the key version from Cloud KMS at plan time -- a
-  # credential-gated read -- so its first full plan is the proof lane's. Live facts the proof lane confirms: (1)
-  # the attestor reads back naming the note_reference output, with the
-  # delegation service account the output reports; (2) the module's
-  # occurrences-viewer grant lands on the created note; (3) the KMS arm's
-  # key id is //cloudkms.googleapis.com/v1/... and the PEM and algorithm
-  # match the key; (4) the re-plan is clean on both engines; (5) destroy
-  # deletes the attestor (404) and the note.
+  # Proven live on both engines (2026-11-19): a PGP attestor and a Cloud KMS
+  # signing attestor, each with the note it creates, deployed, re-described in
+  # place and destroyed by an identity holding only this kind's permissions
+  # manifest, with the re-plan clean. The KMS arm needs
+  # cloudkms.cryptoKeys.get: the provider reads the key before its version.
+  # The PEM arm over an existing note stays offline-only.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 20

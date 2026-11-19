@@ -52,6 +52,16 @@ locals {
   tunnels = {
     for t in var.spec.tunnels : t.name => merge(t, {
       session_name = t.bgp_session.name != "" ? t.bgp_session.name : t.name
+      # Google refuses an IPv4 session whose peer address is missing ("IP
+      # address ... is specified, but peer IP address is not specified"), so
+      # an unset peer_ip_address is the /30's other usable address.
+      peer_ip_address = (
+        t.bgp_session.peer_ip_address != null && t.bgp_session.peer_ip_address != "" ? t.bgp_session.peer_ip_address :
+        t.bgp_session.interface_ip_range == "" ? null :
+        cidrhost(t.bgp_session.interface_ip_range, 1) == split("/", t.bgp_session.interface_ip_range)[0]
+        ? cidrhost(t.bgp_session.interface_ip_range, 2)
+        : cidrhost(t.bgp_session.interface_ip_range, 1)
+      )
       md5_key_name = (
         t.bgp_session.md5_authentication_key != null
         ? (t.bgp_session.md5_authentication_key.name != "" ? t.bgp_session.md5_authentication_key.name : "${t.name}-md5")

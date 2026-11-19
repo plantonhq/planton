@@ -2,6 +2,7 @@ package module
 
 import (
 	"fmt"
+	"net"
 
 	"github.com/pkg/errors"
 	gcphavpnconnectionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcphavpnconnection/v1alpha1"
@@ -175,8 +176,8 @@ func routerPeer(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider, 
 	if locals.Project != "" {
 		args.Project = pulumi.String(locals.Project)
 	}
-	if session.PeerIpAddress != nil && *session.PeerIpAddress != "" {
-		args.PeerIpAddress = pulumi.StringPtr(*session.PeerIpAddress)
+	if peer := sessionPeerIPAddress(session.GetPeerIpAddress(), session.InterfaceIpRange); peer != "" {
+		args.PeerIpAddress = pulumi.StringPtr(peer)
 	}
 	if session.AdvertisedRoutePriority != nil {
 		args.AdvertisedRoutePriority = pulumi.IntPtr(int(*session.AdvertisedRoutePriority))
@@ -317,4 +318,30 @@ func enable(value *bool) bool {
 		return true
 	}
 	return *value
+}
+
+// sessionPeerIPAddress is the address the BGP peer is sent: the declared
+// one, else the other usable address of the session's /30. Google refuses an
+// IPv4 session whose peer address is missing ("IP address ... is specified,
+// but peer IP address is not specified"), so an unset address is derived the
+// way the spec describes. Empty when neither is set (an IPv6-only session,
+// whose addresses Google assigns).
+func sessionPeerIPAddress(declared, interfaceIPRange string) string {
+	if declared != "" {
+		return declared
+	}
+	ip, network, err := net.ParseCIDR(interfaceIPRange)
+	if err != nil {
+		return ""
+	}
+	base := network.IP.To4()
+	if base == nil {
+		return ""
+	}
+	first := net.IPv4(base[0], base[1], base[2], base[3]+1).To4()
+	second := net.IPv4(base[0], base[1], base[2], base[3]+2).To4()
+	if ip.To4().Equal(first) {
+		return second.String()
+	}
+	return first.String()
 }

@@ -3,20 +3,13 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpkmskeyhandle
 spec:
-  # Awaiting the live proof lane. The scenario requests a bucket key on the
-  # harness project over a same-project Autokey configuration (the
-  # consumer-scoped prerequisite), so no folder or key project is needed.
-  # Offline bar met: both modules build and validate, offline plans for the
-  # reference manifest and the scenario are clean on the pinned provider,
-  # and the accounting is total. Live facts the proof lane confirms: (1)
-  # the handle's kms_key names a key in the project's "autokey" key ring
-  # that reads back; (2) the re-plan is clean on both engines; (3) destroy
-  # leaves the handle readable (Google keeps handles) -- the verifier
-  # asserts it; (4) the key left behind is one HSM version per run, inside
-  # Autokey's free allowance; (5) the prerequisite configuration's destroy
-  # clears the harness project's Autokey -- run this lane apart from the
-  # GcpKmsAutokeyConfig lane, which configures the same project.
+  # Proven live on both engines (2026-11-19): a Cloud Storage key handle over
+  # the project's own Autokey configuration, deployed and destroyed by an
+  # identity holding only this kind's permissions manifest, with the re-plan
+  # clean. A handle has no in-place update. Google keeps the handle and the
+  # HSM key Autokey made for it, so the lane schedules that key's versions for
+  # destruction (e2e-release-dependents autokey-key).
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 20

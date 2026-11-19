@@ -27,20 +27,22 @@ spec:
           - compute.vpnGateways.delete
           - compute.vpnGateways.setLabels
           - compute.networks.get
+          - compute.networks.updatePolicy
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: "Covers google_compute_ha_vpn_gateway (Pulumi compute.HaVpnGateway). create on first apply; get on every refresh and import; setLabels when labels change (every other argument is ForceNew and recreates instead); delete on destroy under deletion_policy DELETE (refused by Google while tunnels reference the gateway; ABANDON and PREVENT call no delete API); networks.get to resolve the network reference. roles/compute.networkAdmin contains all of these."
+        notes: "Covers google_compute_ha_vpn_gateway (Pulumi compute.HaVpnGateway). create on first apply; get on every refresh and import; setLabels when labels change (every other argument is ForceNew and recreates instead); delete on destroy under deletion_policy DELETE (refused by Google while tunnels reference the gateway; ABANDON and PREVENT call no delete API); networks.get to resolve the network reference. roles/compute.networkAdmin contains all of these. Google checks compute.networks.updatePolicy on the network when a gateway or a router is created on it (measured live -- refused without it on both engines)."
       - purpose: ManageCloudRouter
         permissions:
           - compute.routers.create
           - compute.routers.get
           - compute.routers.update
           - compute.routers.delete
+          - compute.networks.updatePolicy
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: "Covers google_compute_router (Pulumi compute.Router). create on first apply; get on refresh and import; update when the description or BGP advertisement changes (the ASN and encrypted_interconnect_router are ForceNew); delete on destroy under deletion_policy DELETE. roles/compute.networkAdmin contains all four."
+        notes: "Covers google_compute_router (Pulumi compute.Router). create on first apply; get on refresh and import; update when the description or BGP advertisement changes (the ASN and encrypted_interconnect_router are ForceNew); delete on destroy under deletion_policy DELETE. roles/compute.networkAdmin contains all four. Google checks compute.networks.updatePolicy on the network when a gateway or a router is created on it (measured live -- refused without it on both engines)."
       - purpose: ReadInterconnectAttachments
         permissions:
           - compute.interconnectAttachments.get

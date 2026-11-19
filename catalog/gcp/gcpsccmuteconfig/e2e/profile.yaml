@@ -3,16 +3,11 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpsccmuteconfig
 spec:
-  # Awaiting the live proof lane. Needs Security Command Center activated
-  # on one project (owner-arranged, PLANTON_E2E_GCP_SCC_PROJECT_ID). The
-  # scenario proves the project arm; folder and organization arms are
-  # proven offline. Offline bar met: both modules build and validate,
-  # offline plans for the reference manifest, the scenario, and throwaway
-  # folder and organization arms are clean on the pinned provider, and the
-  # accounting is total. Live facts the proof lane confirms: (1) the rule
-  # reads back with its filter and type; (2) the re-plan is clean on both
-  # engines; (3) destroy deletes it (404).
+  # Proven live on both engines (2026-11-19): a dynamic project mute rule
+  # matching no real finding, deployed, re-described in place and destroyed by
+  # an identity holding only this kind's permissions manifest, with the
+  # re-plan clean. Folder and organization scopes stay offline-only.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15

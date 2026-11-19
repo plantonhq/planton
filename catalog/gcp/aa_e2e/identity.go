@@ -394,8 +394,12 @@ func (h *Harness) awaitGrants(ctx context.Context, project string, keyJSON []byt
 	var missing []string
 	var acceptedSince time.Time
 	err := retryUntil(ctx, readinessBudget, func() (bool, error) {
+		// Quota is billed to the account's own project, the harness's: a lane
+		// granted in the second project holds no serviceusage.services.use
+		// there, and Google answers a call billed to it with 403, which would
+		// read as a key not yet accepted until the budget ran out.
 		asLane, err := cloudresourcemanager.NewService(ctx,
-			option.WithCredentialsJSON(keyJSON), option.WithQuotaProject(project))
+			option.WithCredentialsJSON(keyJSON), option.WithQuotaProject(h.services.Project))
 		if err != nil {
 			return false, errors.Wrap(err, "building a client that authenticates as the lane identity")
 		}

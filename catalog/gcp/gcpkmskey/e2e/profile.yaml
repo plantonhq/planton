@@ -3,39 +3,13 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpkmskey
 spec:
-  # Chain scenario: ring prerequisite + key, all control-plane — seconds
-  # per phase. Crypto keys have no delete API: destroy destroys every key
-  # VERSION and disables rotation (asserted by the verifier), while the
-  # key object persists in its run-scoped ring — inert, free, and
-  # collision-proof via ${E2E_RUN_ID} names.
-  #
-  # ONE live scenario by design: the ring prerequisite is undeletable, so
-  # a second scenario in the same engine run would re-create the
-  # just-"destroyed" (state-only) ring and 409. The single scenario folds
-  # rotation + the version-template (HSM) arm together.
-  #
-  # Live exclusions (proven offline, with reasons):
-  #   - EXTERNAL / EXTERNAL_VPC protection + crypto_key_backend: require a
-  #     real external key manager and an EKM connection — cloud-external
-  #     infrastructure no ephemeral test can provision.
-  #   - import_only: the key creates empty by design; exercising it end to
-  #     end requires the BYOK import ceremony (wrapping keys, out-of-band
-  #     material) which is operational, not automatable here.
-  #   - the no-version-template default branch: covered by the offline
-  #     converter plan (hack manifest); live coverage would need a second
-  #     scenario, blocked by the undeletable-prerequisite constraint above.
-  #
-  # Live-proven 2026-08-12 on both engines under the apply-idempotency
-  # gate (2/2 lane runs; verify-destroyed asserted every version
-  # DESTROYED/DESTROY_SCHEDULED with rotation off — the undeletable-class
-  # posture — and the rotation + HSM version-template arm applied clean).
-  #
-  # Re-opened for the initial_version_name output (both engines compose
-  # {key_id}/cryptoKeyVersions/1 unless skip_initial_version_creation):
-  # the proof lane confirms the scenario's outputs carry it and that it
-  # names a version that reads back from Cloud KMS. The resources the
-  # module creates are unchanged.
+  # Proven live on both engines (2026-11-19): an HSM key with a 90-day
+  # rotation, deployed, given a longer rotation and a label in place, and
+  # destroyed by an identity holding only this kind's permissions manifest,
+  # with the re-plan clean and the update judged in place from Google's audit
+  # log; initial_version_name reads back. Cloud KMS never deletes a key:
+  # destroy schedules its versions for destruction.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 30

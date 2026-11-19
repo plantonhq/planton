@@ -6,11 +6,11 @@ The judgment this guide protects: an issuance config is shared policy, not a per
 
 1. A `GcpPrivateCaPool`.
 2. An enabled `GcpPrivateCaCertificateAuthority` in that pool.
-3. The Certificate Manager service agent, `service-<project_number>@gcp-sa-certificatemanager.iam.gserviceaccount.com`, granted `roles/privateca.certificateRequester` on the pool.
+3. The Certificate Manager service agent, `service-<project_number>@gcp-sa-certificatemanager.iam.gserviceaccount.com`, created and granted `roles/privateca.certificateRequester` on the pool. Google does not create this agent when the API is turned on: create it first (`gcloud beta services identity create --service=certificatemanager.googleapis.com --project=<project>`), or the grant is refused as an invalid member.
 4. This config, `caPool` from the pool's `name` output.
 5. `GcpCertManagerCert` resources whose `managed.issuance_config` references this config's `issuance_config_id`.
 
-The config creates without steps 2 and 3. Certificates that name it are what fail, so a missing grant shows up as a certificate stuck in provisioning, not as an error here. No catalog kind grants on a CA pool yet; make that grant outside the catalog, once per project.
+Google checks step 3 when the config is created: without the agent's grant on the pool, the create fails with "Config validation failed" (measured on both engines). No catalog kind creates the agent or grants on a CA pool yet; do both outside the catalog, once per project and pool, before creating the config.
 
 ## Choosing the policy
 

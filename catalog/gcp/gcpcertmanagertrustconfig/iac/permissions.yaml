@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service (Pulumi projects.Service) enabling certificatemanager.googleapis.com on the target project -- the provider lists the project's enabled services before enabling one and reads the service back on refresh. disable_on_destroy is false in both modules, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service (Pulumi projects.Service) enabling certificatemanager.googleapis.com on the target project -- the provider lists the project's enabled services before enabling one and reads the service back on refresh. disable_on_destroy is false in both modules, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageTrustConfig
         permissions:
           - certificatemanager.trustconfigs.create
@@ -27,7 +27,7 @@ spec:
           - certificatemanager.trustconfigs.update
           - certificatemanager.trustconfigs.delete
           - certificatemanager.operations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_certificate_manager_trust_config (Pulumi certificatemanager.TrustConfig) -- create, read/refresh, in-place PATCH updates (description, labels, trust stores, allowlisted certificates -- rotating a CA is an update, never a replacement), and destroy. Certificate Manager mutations return long-running operations the provider polls under certificatemanager.operations.get. The modules make no other API calls; the certificates arrive in the spec, so no CA or secret is read.
+        notes: Covers google_certificate_manager_trust_config (Pulumi certificatemanager.TrustConfig) -- create, read/refresh, in-place PATCH updates (description, labels, trust stores, allowlisted certificates -- rotating a CA is an update, never a replacement), and destroy. Certificate Manager mutations return long-running operations the provider polls under certificatemanager.operations.get. The modules make no other API calls; the certificates arrive in the spec, so no CA or secret is read. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

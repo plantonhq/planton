@@ -16,20 +16,20 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling binaryauthorization.googleapis.com and containeranalysis.googleapis.com on the attestor's project. disable_on_destroy is false, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling binaryauthorization.googleapis.com and containeranalysis.googleapis.com on the attestor's project. disable_on_destroy is false, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageAttestor
         permissions:
           - binaryauthorization.attestors.create
           - binaryauthorization.attestors.get
           - binaryauthorization.attestors.update
           - binaryauthorization.attestors.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_binary_authorization_attestor (Pulumi binaryauthorization.Attestor) -- create, read on every refresh, PUT updates of the description and public keys, delete on destroy. Held on the project (roles/binaryauthorization.attestorsAdmin). The provider-default project lookup reads provider configuration only and needs no permission.
+        notes: Covers google_binary_authorization_attestor (Pulumi binaryauthorization.Attestor) -- create, read on every refresh, PUT updates of the description and public keys, delete on destroy. Held on the project (roles/binaryauthorization.attestorsAdmin). The provider-default project lookup reads provider configuration only and needs no permission. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageAttestorNote
         permissions:
           - containeranalysis.notes.create
@@ -38,20 +38,20 @@ spec:
           - containeranalysis.notes.delete
           - containeranalysis.notes.getIamPolicy
           - containeranalysis.notes.setIamPolicy
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: note
-        notes: Covers google_container_analysis_note and its google_container_analysis_note_iam_member grant (Pulumi containeranalysis.Note / NoteIamMember) -- the note the block creates and the occurrences-viewer grant for the attestor's service account. Held on the project (roles/containeranalysis.notes.editor plus note IAM administration). Not exercised for a referenced note.
+        notes: Covers google_container_analysis_note and its google_container_analysis_note_iam_member grant (Pulumi containeranalysis.Note / NoteIamMember) -- the note the block creates and the occurrences-viewer grant for the attestor's service account. Held on the project (roles/containeranalysis.notes.editor plus note IAM administration). Not exercised for a referenced note. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ReadKmsPublicKey
         permissions:
           - cloudkms.cryptoKeys.get
           - cloudkms.cryptoKeyVersions.get
           - cloudkms.cryptoKeyVersions.viewPublicKey
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: attestation_authority_note.public_keys.pkix_public_key.kms_key_version
-        notes: Covers data.google_kms_crypto_key_version (Pulumi kms.GetKMSCryptoKeyVersion), which reads each named key version and its public key at plan time. Held on the key (roles/cloudkms.publicKeyViewer). Not exercised for PEM or PGP keys. The provider's key-version lookup reads the key itself first (cloudkms.cryptoKeys.get), measured live -- without it Terraform is refused before the version is read.
+        notes: Covers data.google_kms_crypto_key_version (Pulumi kms.GetKMSCryptoKeyVersion), which reads each named key version and its public key at plan time. Held on the key (roles/cloudkms.publicKeyViewer). Not exercised for PEM or PGP keys. The provider's key-version lookup reads the key itself first (cloudkms.cryptoKeys.get), measured live -- without it Terraform is refused before the version is read. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

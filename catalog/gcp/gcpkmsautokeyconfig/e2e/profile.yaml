@@ -3,19 +3,13 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpkmsautokeyconfig
 spec:
-  # Awaiting the live proof lane. The scenario proves the project arm on
-  # the harness project (same-project storage needs only the Cloud KMS API
-  # there; Google creates the service agent itself). The folder arm, with
-  # dedicated-project storage, is proven offline: it needs a folder and a
-  # key project the harness does not hold. Offline bar met: both modules
-  # build and validate, offline plans for the reference manifest (folder),
-  # the scenario, and a throwaway project-literal arm are clean on the
-  # pinned provider, and the accounting is total. Live facts the proof lane
-  # confirms: (1) the PATCH takes over the project's configuration and
-  # re-plans clean on both engines; (2) the name output is
-  # projects/{id}/autokeyConfig; (3) destroy under DELETE leaves the
-  # configuration readable with no resolution mode.
+  # Proven live on both engines (2026-11-19): the project's own Autokey
+  # configuration storing keys in the resource's project, deployed and cleared
+  # on destroy by an identity holding only this kind's permissions manifest,
+  # with the re-plan clean. Create and every update are the same PATCH of the
+  # project's one configuration, so there is no separate update act. The
+  # folder arm and dedicated key projects stay offline-only.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15

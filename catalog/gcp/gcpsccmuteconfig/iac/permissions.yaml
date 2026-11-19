@@ -16,17 +16,17 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling securitycenter.googleapis.com on a project config's project (scope.project_id, or no scope at all); a folder or organization config enables nothing. disable_on_destroy is false, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling securitycenter.googleapis.com on a project config's project (scope.project_id, or no scope at all); a folder or organization config enables nothing. disable_on_destroy is false, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageMuteConfig
         permissions:
           - securitycenter.muteconfigs.create
           - securitycenter.muteconfigs.get
           - securitycenter.muteconfigs.update
           - securitycenter.muteconfigs.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers the project, folder, and organization mute-config resources (Pulumi securitycenter.V2*MuteConfig) -- create, read on every refresh, PATCH updates of description, filter, and type, delete on destroy. Held at the scope (roles/securitycenter.muteConfigsEditor there). The provider-default project lookup reads provider configuration only and needs no permission.
+        notes: Covers the project, folder, and organization mute-config resources (Pulumi securitycenter.V2*MuteConfig) -- create, read on every refresh, PATCH updates of description, filter, and type, delete on destroy. Held at the scope (roles/securitycenter.muteConfigsEditor there). The provider-default project lookup reads provider configuration only and needs no permission. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

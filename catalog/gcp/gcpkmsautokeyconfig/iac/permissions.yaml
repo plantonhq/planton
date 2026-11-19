@@ -16,15 +16,15 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling cloudkms.googleapis.com on a project configuration's project and on a folder configuration's key project. disable_on_destroy is false, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling cloudkms.googleapis.com on a project configuration's project and on a folder configuration's key project. disable_on_destroy is false, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-19 -- an identity holding only this manifest deployed and destroyed the kind on both engines; it has no in-place update.
       - purpose: ManageAutokeyConfig
         permissions:
           - cloudkms.autokeyConfigs.get
           - cloudkms.autokeyConfigs.update
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_kms_autokey_config and google_kms_project_autokey_config (Pulumi kms.AutokeyConfig / kms.ProjectAutokeyConfig) -- create, update, and the DELETE destroy are all PATCHes of the scope's one configuration, read on every refresh. Held at the folder or the project (roles/cloudkms.autokeyAdmin there). The provider-default project lookup reads provider configuration only and needs no permission.
+        notes: Covers google_kms_autokey_config and google_kms_project_autokey_config (Pulumi kms.AutokeyConfig / kms.ProjectAutokeyConfig) -- create, update, and the DELETE destroy are all PATCHes of the scope's one configuration, read on every refresh. Held at the folder or the project (roles/cloudkms.autokeyAdmin there). The provider-default project lookup reads provider configuration only and needs no permission. Proven 2026-11-19 -- an identity holding only this manifest deployed and destroyed the kind on both engines; it has no in-place update.

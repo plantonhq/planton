@@ -42,6 +42,14 @@ import (
 // true of a singleton; kinds whose every field replaces (an IAM member) carry
 // no second act and say so on their profiles.
 
+// upgradeUnauditedAnnotation, on a GCP second act, names why Google keeps no
+// Admin Activity entry for the kind -- measured, never assumed: Security
+// Command Center writes none for notification configs, not even their
+// create, while it logs its BigQuery exports. The upgrade is then not judged
+// from the log; the engine's own plan (an update in place) and the
+// verifier's read of the upgraded object stand, and the lane says so.
+const upgradeUnauditedAnnotation = "planton.dev/e2e-upgrade-unaudited"
+
 const (
 	// upgradeJudgmentBudget bounds the wait for the upgrade's first entry:
 	// Admin Activity entries usually land within a minute.
@@ -111,6 +119,10 @@ func (h *Harness) noteVerified(ctx context.Context) error {
 	}
 	secondAct, _ := ctx.Value(provider.ManifestPathKey{}).(string)
 	expectation, _ := runner.ManifestAnnotation(secondAct, provider.ExpectUpgradeAnnotation)
+	if unaudited, _ := runner.ManifestAnnotation(secondAct, upgradeUnauditedAnnotation); unaudited != "" {
+		lanef(audit.tc, "  [upgrade] not judged from the audit log (%s): the engine planned an update in place and the verifier read the upgraded object", unaudited)
+		return nil
+	}
 	verdict, evidence, err := h.judgeUpgrade(ctx, *audit, time.Now())
 	if err != nil {
 		return err

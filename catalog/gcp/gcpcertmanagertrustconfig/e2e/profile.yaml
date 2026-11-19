@@ -3,21 +3,11 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpcertmanagertrustconfig
 spec:
-  # Awaiting the live proof lane. One leaf scenario, no prerequisites: a
-  # global trust config whose trust store holds a throwaway self-signed
-  # test root (generated for this scenario; its private key was never
-  # committed) and one allowlisted self-signed device certificate. Free --
-  # a trust config bills nothing until a TLS policy validates connections
-  # with it. Offline bar met: both modules build and validate, offline
-  # plans for the reference manifest, the scenario, and the presets are
-  # clean on the pinned provider, and the accounting is total. Live facts
-  # the proof lane confirms: (1) Certificate Manager accepts the test root
-  # as a trust anchor and the device certificate as an allowlisted entry;
-  # (2) the config reads back with the platform attribution labels and
-  # RE-PLANS CLEAN on both engines -- the location "global" both modules
-  # send when unset, and the sensitive trust-anchor blocks, must not diff;
-  # (3) destroy leaves the verifier reading 404.
+  # Proven live on both engines (2026-11-19): a trust config with a throwaway
+  # root as trust anchor and one allowlisted certificate, deployed, relabelled
+  # in place and destroyed by an identity holding only this kind's permissions
+  # manifest, with the re-plan clean.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15

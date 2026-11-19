@@ -185,7 +185,7 @@ resource "google_compute_router_peer" "this" {
   interface = google_compute_router_interface.this[each.key].name
   peer_asn  = each.value.bgp_session.peer_asn
 
-  peer_ip_address           = each.value.bgp_session.peer_ip_address
+  peer_ip_address           = each.value.peer_ip_address
   advertised_route_priority = each.value.bgp_session.advertised_route_priority
   advertise_mode            = each.value.bgp_session.advertise_mode != "" ? each.value.bgp_session.advertise_mode : null
   advertised_groups         = length(each.value.bgp_session.advertised_groups) > 0 ? each.value.bgp_session.advertised_groups : null

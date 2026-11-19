@@ -849,7 +849,11 @@ never reached Google, usually a field the module does not send. A kind whose
 create, update and destroy are one call (a project-singleton policy) has no
 created name to lose, so any write reads in place, which is true of a
 singleton; a kind whose every field replaces carries no second act, and its
-profile says so.
+profile says so. A kind Google keeps no Admin Activity entry for -- measured,
+never assumed: Security Command Center logs no notification-config call, not
+even the create -- carries `planton.dev/e2e-upgrade-unaudited: <reason>` on
+its second act; the lane then says the update was not judged from the log,
+and the engine's plan and the verifier's read stand.
 
 **What the provider makes on a lane's behalf is released before the
 fixtures go.** Some kinds make Google create objects neither engine knows:
