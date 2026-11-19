@@ -171,6 +171,12 @@ locals {
   # Availability with Kubernetes-consistent fallbacks.
   replicas = try(var.spec.availability.replicas, null) != null ? var.spec.availability.replicas : 1
 
+  # While autoscaling is on, the HPA owns the live replica count and
+  # `replicas` is only its floor. The Deployment then leaves replicas unset
+  # (the provider adopts the live count), so an apply never resets the size
+  # the HPA chose. Pulumi twin: deployment.go.
+  deployment_replicas = local.hpa_enabled ? null : local.replicas
+
   strategy_type = try(var.spec.availability.strategy.type, "") != "" ? var.spec.availability.strategy.type : "RollingUpdate"
 
   hpa_enabled = try(var.spec.availability.horizontal_pod_autoscaling.enabled, false)

@@ -30,7 +30,7 @@ resource "kubernetes_deployment_v1" "this" {
   }
 
   spec {
-    replicas = local.replicas
+    replicas = local.deployment_replicas
 
     # The selector is the workload's immutable pod-selection identity — it must
     # never include mutable labels like version.

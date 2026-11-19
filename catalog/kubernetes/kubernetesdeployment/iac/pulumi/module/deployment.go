@@ -61,13 +61,18 @@ func deployment(ctx *pulumi.Context, locals *Locals,
 		Strategy: buildDeploymentStrategy(getStrategy(spec.Availability)),
 	}
 
-	// Replica count: the availability block's floor, defaulting to 1. When HPA is
-	// enabled the HPA takes over scaling; the replicas field remains the initial size.
-	replicas := int32(1)
-	if spec.Availability != nil && spec.Availability.Replicas != nil {
-		replicas = *spec.Availability.Replicas
+	// Replica count: the availability block's value, defaulting to 1. While
+	// autoscaling is on, the HPA owns the live count and `replicas` is only its
+	// floor, so the Deployment leaves replicas out of the applied object: an
+	// apply then never resets the size the HPA chose. Terraform twin:
+	// locals.deployment_replicas.
+	if !spec.GetAvailability().GetHorizontalPodAutoscaling().GetEnabled() {
+		replicas := int32(1)
+		if spec.Availability != nil && spec.Availability.Replicas != nil {
+			replicas = *spec.Availability.Replicas
+		}
+		deploymentSpecArgs.Replicas = pulumi.Int(int(replicas))
 	}
-	deploymentSpecArgs.Replicas = pulumi.Int(int(replicas))
 
 	if spec.Availability != nil {
 		if spec.Availability.MinReadySeconds != nil {

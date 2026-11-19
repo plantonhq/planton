@@ -20,7 +20,9 @@ lives in the [KubernetesClusterIssuer guide](../kubernetesclusterissuer/GUIDE.md
 ## Three ways to autoscale — pick by scale signal
 
 - `spec.availability.horizontalPodAutoscaling` (inline) covers CPU and
-  memory targets — right for the common case, zero extra nodes.
+  memory targets — right for the common case, zero extra nodes. While it is
+  enabled, `availability.replicas` is the HPA's floor and the Deployment
+  leaves its live replica count to the HPA, so an apply never resets it.
 - The standalone KubernetesHorizontalPodAutoscaler kind carries the full
   autoscaling/v2 surface (custom metrics, external metrics, scaling
   behavior policies) and references this kind's
