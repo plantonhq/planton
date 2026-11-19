@@ -18,6 +18,7 @@ metadata:
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_SECOND_PROJECT_ID
     planton.dev/e2e-upgrade-manifest: accept-manual.to.yaml # the in-place update: a higher connection limit for the accepted project
     planton.dev/e2e-prerequisites: "GcpVpcNetwork,catalog/gcp/gcppscserviceattachment/e2e/prerequisites/gcpsubnetwork-private.yaml,catalog/gcp/gcppscserviceattachment/e2e/prerequisites/gcpsubnetwork-psc-nat.yaml,catalog/gcp/gcppscserviceattachment/e2e/prerequisites/gcphealthcheck-regional-tcp.yaml,catalog/gcp/gcppscserviceattachment/e2e/prerequisites/gcpbackendservice-internal.yaml,catalog/gcp/gcppscserviceattachment/e2e/prerequisites/gcpglobalforwardingrule-internal.yaml"
   tags:
@@ -42,7 +43,7 @@ spec:
         value: ${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}
       connectionLimit: 4
   consumerRejectLists:
-    - value: planton-e2e-rejected-project
+    - value: ${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID} # Google refuses a project that doesn't exist
   reconcileConnections: true
   enableProxyProtocol: true
   domainNames:

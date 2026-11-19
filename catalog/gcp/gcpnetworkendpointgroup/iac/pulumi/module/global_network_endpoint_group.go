@@ -63,8 +63,12 @@ func globalNetworkEndpointGroup(ctx *pulumi.Context, locals *Locals, gcpProvider
 		if spec.DeletionPolicy != "" {
 			epArgs.DeletionPolicy = pulumi.StringPtr(spec.DeletionPolicy)
 		}
+		// An endpoint's fields replace it, and a global group holds at most
+		// one endpoint: Google refuses a second while the first is attached,
+		// so the old endpoint is detached before its replacement attaches
+		// (the order Terraform's replace already takes).
 		if _, err := compute.NewGlobalNetworkEndpoint(ctx, fmt.Sprintf("global-network-endpoint-%d", i), epArgs,
-			pulumi.Provider(gcpProvider), pulumi.Parent(group)); err != nil {
+			pulumi.Provider(gcpProvider), pulumi.Parent(group), pulumi.DeleteBeforeReplace(true)); err != nil {
 			return errors.Wrapf(err, "failed to create global network endpoint %d", i)
 		}
 	}

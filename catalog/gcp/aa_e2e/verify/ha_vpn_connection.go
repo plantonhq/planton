@@ -3,6 +3,7 @@ package verify
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/pkg/errors"
@@ -45,6 +46,19 @@ func (v *haVpnConnectionVerifier) VerifyExists(ctx context.Context, svc *Service
 	routerName := outputs["router_name"]
 	if routerName == "" {
 		return errors.New("router_name output missing after deploy")
+	}
+
+	// A Google-to-Google connection comes up only once the far gateway has
+	// tunnels back to this one. The side deployed first -- a fixture
+	// standing in for the far side of the kind under test -- waits with no
+	// incoming packets until then, which is right; the sessions must reach
+	// Established once the far side exists.
+	farSide, err := farSideExists(ctx, svc, tunnelLinks[0])
+	if err != nil {
+		return err
+	}
+	if !farSide {
+		return nil
 	}
 
 	deadline := time.Now().Add(5 * time.Minute)
@@ -148,4 +162,37 @@ func (v *haVpnConnectionVerifier) VerifyAbsent(ctx context.Context, svc *Service
 		}
 	}
 	return nil
+}
+
+// farSideExists reports whether the gateway a tunnel peers with holds a
+// tunnel back to this tunnel's gateway. A tunnel to an external peer has no
+// Google-side far gateway to read and counts as present.
+func farSideExists(ctx context.Context, svc *Services, tunnelLink string) (bool, error) {
+	region, tunnelName, err := regionalLocator(tunnelLink, "vpnTunnels")
+	if err != nil {
+		return false, errors.Wrap(err, "after deploy")
+	}
+	tunnel, err := svc.Compute.VpnTunnels.Get(svc.Project, region, tunnelName).Context(ctx).Do()
+	if err != nil {
+		return false, errors.Wrapf(err, "vpn tunnel %s in %s not found after deploy", tunnelName, region)
+	}
+	if tunnel.PeerGcpGateway == "" {
+		return true, nil
+	}
+	ownGateway := lastSegment(tunnel.VpnGateway)
+	farGateway := lastSegment(tunnel.PeerGcpGateway)
+	list, err := svc.Compute.VpnTunnels.List(svc.Project, region).Context(ctx).Do()
+	if err != nil {
+		return false, errors.Wrap(err, "listing vpn tunnels after deploy")
+	}
+	for _, other := range list.Items {
+		if other != nil && lastSegment(other.VpnGateway) == farGateway && lastSegment(other.PeerGcpGateway) == ownGateway {
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
+func lastSegment(link string) string {
+	return link[strings.LastIndex(link, "/")+1:]
 }

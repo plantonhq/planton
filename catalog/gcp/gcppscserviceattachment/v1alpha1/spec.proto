@@ -144,7 +144,9 @@ message GcpPscServiceAttachmentSpec {
   repeated GcpPscServiceAttachmentConsumer consumer_accept_lists = 8;
 
   // Consumer projects (IDs or numbers, or GcpProject references) refused
-  // even under ACCEPT_AUTOMATIC. Compared as a set.
+  // even under ACCEPT_AUTOMATIC. Google checks each one exists and refuses
+  // a project it can't find ("Must be a valid project ID"). Compared as a
+  // set.
   repeated dev.planton.shared.foreignkey.v1.StringValueOrRef consumer_reject_lists = 9 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id",

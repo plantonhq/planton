@@ -60,6 +60,18 @@ func (v *vpcPeeringVerifier) VerifyExists(ctx context.Context, svc *Services, ou
 		if peering.State == "ACTIVE" {
 			return nil
 		}
+		// A pair is one peering on each network. Until the other network
+		// peers back, Google holds this side INACTIVE ("Waiting for peer
+		// network to connect"), which is right for the side deployed first
+		// -- a fixture standing in for the far side of the kind under test.
+		// ACTIVE is required once the far side exists.
+		back, err := peersBack(ctx, svc, peering.Network, networkSelfLink)
+		if err != nil {
+			return errors.Wrapf(err, "reading the peer network of %s after deploy", peeringName)
+		}
+		if !back {
+			return nil
+		}
 		if time.Now().After(deadline) {
 			return errors.Errorf("peering %s on %s is %s after deploy (%s), want ACTIVE",
 				peeringName, networkNameFromSelfLink(networkSelfLink), peering.State, peering.StateDetails)
@@ -95,4 +107,20 @@ func (v *vpcPeeringVerifier) VerifyAbsent(ctx context.Context, svc *Services, ou
 		return errors.Errorf("peering %s still exists on %s after destroy", peeringName, networkNameFromSelfLink(networkSelfLink))
 	}
 	return nil
+}
+
+// peersBack reports whether the peer network holds a peering toward this
+// network: until it does, this side cannot go ACTIVE.
+func peersBack(ctx context.Context, svc *Services, peerNetworkURL, networkSelfLink string) (bool, error) {
+	peer, err := svc.Compute.Networks.Get(svc.Project, networkNameFromSelfLink(peerNetworkURL)).Context(ctx).Do()
+	if err != nil {
+		return false, err
+	}
+	own := networkNameFromSelfLink(networkSelfLink)
+	for _, peering := range peer.Peerings {
+		if peering != nil && networkNameFromSelfLink(peering.Network) == own {
+			return true, nil
+		}
+	}
+	return false, nil
 }
