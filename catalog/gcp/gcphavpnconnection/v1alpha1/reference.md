@@ -458,6 +458,8 @@ Google's defaults (which already exclude broken algorithms). Immutable.
 
 Phase-1 (IKE SA) ciphers.
 
+- rule: phase-1 encryption that is all AES-GCM (AEAD) needs no separate integrity algorithm, and Google refuses one: leave integrity empty
+
 ### spec.tunnels[].cipherSuite.phase1.encryption
 
 `[]string`
@@ -468,7 +470,8 @@ Encryption algorithms.
 
 `[]string`
 
-Integrity algorithms.
+Integrity algorithms. Leave empty when every encryption algorithm is
+AES-GCM (AEAD).
 
 ### spec.tunnels[].cipherSuite.phase1.prf
 

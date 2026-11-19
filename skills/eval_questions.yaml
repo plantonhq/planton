@@ -871,6 +871,22 @@ questions:
         file: references/setup.first-deployment.md
         pattern: 'Never tick a step the person did themselves'
 
+  - id: first-deployment-creates-a-registry-through-planton
+    persona: developer
+    question: >
+      My Google Cloud project has no container registry yet. During first
+      setup, will the agent create one with gcloud?
+    answer: >
+      No. It asks first, then creates the registry through Planton, as a
+      GcpArtifactRegistryRepo deployed through the cloud connection, never
+      with your cloud CLI, so you can see, change and destroy it in Planton.
+      Once it is deployed it ticks Deploy Your First Infra Component, because
+      it finished that step.
+    checks:
+      - skill: planton
+        file: references/setup.first-deployment.md
+        pattern: 'create it through Planton, never with their cloud CLI'
+
   - id: first-deployment-wary-of-access
     persona: security lead, wary of granting access
     question: >

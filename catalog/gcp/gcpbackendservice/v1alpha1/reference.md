@@ -1214,8 +1214,9 @@ Names of the optional log fields to include with optional_mode CUSTOM
 
 HTTP request headers whose values join each log entry (e.g.
 "X-Request-Id", "User-Agent") — for tracing a request across services
-without instrumenting the backend. Requires enable and an HTTP-family
-protocol (HTTP, HTTPS, HTTP2, GRPC). Header names are case-insensitive
+without instrumenting the backend. Requires enable, an HTTP-family
+protocol (HTTP, HTTPS, HTTP2, GRPC), and a managed load-balancing scheme:
+Google refuses it on the classic EXTERNAL scheme. Header names are case-insensitive
 in HTTP; each entry is one name.
 
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE","repeated":{"unique":true,"items":{"string":{"minLen":"1"}}}}
@@ -1945,6 +1946,7 @@ switch governs both objects this kind manages:
 
 ## Validation Rules
 
+- `log_headers_need_a_managed_scheme`: log_config.request_headers and response_headers are refused on the classic EXTERNAL scheme (Google: "Logging is not supported for GLOBAL EXTERNAL HTTP load balancers"); use EXTERNAL_MANAGED or INTERNAL_MANAGED, or remove them
 - `cdn_requires_external_scheme`: Cloud CDN can only be enabled on external backend services (scheme EXTERNAL or EXTERNAL_MANAGED) — it does not front internal load balancers
 - `client_ip_no_destination_regional_only`: session_affinity CLIENT_IP_NO_DESTINATION exists only on a regional backend service (the internal passthrough Network Load Balancer as a next hop) — set region or choose another affinity
 - `circuit_breakers_scheme`: circuit_breakers only applies to Traffic Director backend services — set load_balancing_scheme INTERNAL_SELF_MANAGED or remove it
