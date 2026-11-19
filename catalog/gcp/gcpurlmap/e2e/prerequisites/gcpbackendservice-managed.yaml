@@ -21,6 +21,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
+  backendServiceName: planton-oss-e2e-gcpbs-managed-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   description: Ephemeral EXTERNAL_MANAGED CDN-enabled backend for the URL map features E2E scenario; safe to delete
   protocol: HTTP
   loadBalancingScheme: EXTERNAL_MANAGED

@@ -16,6 +16,9 @@ metadata:
     e2e-catalog-kind: gcpkmskeyhandle
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-exclusive: gcp-autokey # one Autokey configuration per project: never beside the configuration lane
+    planton.dev/e2e-release-dependents: autokey-key # Autokey keeps the handle and its HSM key; the lane destroys the key versions
   tags:
     - planton-e2e
 spec:

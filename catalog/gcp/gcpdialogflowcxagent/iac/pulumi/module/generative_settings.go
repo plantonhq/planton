@@ -38,6 +38,12 @@ func generativeSettings(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Pr
 				fallbackArgs.PromptTemplates = templates
 			}
 			args.FallbackSettings = fallbackArgs
+		} else {
+			// Google returns an empty fallbackSettings on an agent that
+			// declares none, so an undeclared block is sent empty: sending
+			// nothing previews its removal forever. It matches what Google
+			// holds and overwrites no prompt.
+			args.FallbackSettings = &diagflow.CxGenerativeSettingsFallbackSettingsArgs{}
 		}
 		if safety := settings.GenerativeSafetySettings; safety != nil {
 			safetyArgs := &diagflow.CxGenerativeSettingsGenerativeSafetySettingsArgs{

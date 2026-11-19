@@ -3,6 +3,7 @@ package module
 import (
 	"github.com/pkg/errors"
 	gcpgkenodepoolv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkenodepool/v1alpha1"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/datatypes/decimalfloat"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/container"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/projects"
@@ -217,7 +218,7 @@ func nodePool(ctx *pulumi.Context,
 			rollout := blueGreen.StandardRolloutPolicy
 			rolloutArgs := &container.NodePoolUpgradeSettingsBlueGreenSettingsStandardRolloutPolicyArgs{}
 			if rollout.BatchPercentage != nil {
-				rolloutArgs.BatchPercentage = pulumi.Float64Ptr(float64(*rollout.BatchPercentage))
+				rolloutArgs.BatchPercentage = pulumi.Float64Ptr(decimalfloat.Float64(*rollout.BatchPercentage))
 			}
 			if rollout.BatchNodeCount != nil {
 				rolloutArgs.BatchNodeCount = pulumi.IntPtr(int(*rollout.BatchNodeCount))

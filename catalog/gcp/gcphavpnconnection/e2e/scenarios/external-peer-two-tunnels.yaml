@@ -21,6 +21,7 @@ metadata:
     e2e-catalog-kind: gcphavpnconnection
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e-required-env: PLANTON_E2E_GCP_VPN_PEER_IP_0,PLANTON_E2E_GCP_VPN_PEER_IP_1
   tags:
     - planton-e2e
@@ -42,7 +43,7 @@ spec:
       fieldPath: status.outputs.region
   peer:
     externalGateway:
-      name: planton-oss-e2e-gcpvpncn-onprem-dev
+      name: planton-oss-e2e-gcpvpncn-onprem-dev-${E2E_RUN_ID}
       redundancyType: TWO_IPS_REDUNDANCY
       description: Planton E2E external peer; safe to delete
       labels:
@@ -53,15 +54,15 @@ spec:
         - id: 1
           ipAddress: ${E2E_ENV:PLANTON_E2E_GCP_VPN_PEER_IP_1}
   tunnels:
-    - name: planton-oss-e2e-gcpvpncn-onprem-0
+    - name: planton-oss-e2e-gcpvpncn-onprem-0-${E2E_RUN_ID}
       vpnGatewayInterface: 0
       peerExternalGatewayInterface: 0
       bgpSession:
         interfaceIpRange: 169.254.110.1/30
         peerAsn: 65001
         md5AuthenticationKey:
-          name: planton-oss-e2e-gcpvpncn-onprem-0-md5
-    - name: planton-oss-e2e-gcpvpncn-onprem-1
+          name: planton-oss-e2e-gcpvpncn-onprem-0-md5-${E2E_RUN_ID}
+    - name: planton-oss-e2e-gcpvpncn-onprem-1-${E2E_RUN_ID}
       vpnGatewayInterface: 1
       peerExternalGatewayInterface: 1
       bgpSession:

@@ -17,9 +17,12 @@ metadata:
     e2e-catalog-kind: gcpglobalforwardingrule
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the in-place update: a second label
   tags:
     - planton-e2e
 spec:
+  forwardingRuleName: planton-oss-e2e-gcpgfr-smoke-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   description: Ephemeral global forwarding rule created by the Planton E2E harness; safe to delete
   target:
     valueFrom:

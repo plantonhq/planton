@@ -22,7 +22,7 @@ spec:
       kind: GcpVpcNetwork
       name: planton-oss-e2e-gcpvpcnetwork-prereq
       fieldPath: status.outputs.network_self_link
-  subnetworkName: planton-oss-e2e-gcpneg-subnet
+  subnetworkName: planton-oss-e2e-gcpneg-subnet-${E2E_RUN_ID}
   region: us-central1
   ipCidrRange: 10.132.0.0/24
   deletionPolicy: DELETE

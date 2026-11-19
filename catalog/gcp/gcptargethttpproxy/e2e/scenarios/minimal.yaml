@@ -16,9 +16,13 @@ metadata:
     e2e-catalog-kind: gcptargethttpproxy
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcptargethttpproxy/e2e/prerequisites/gcpurlmap-swap.yaml" # the URL map the update act swaps to
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the in-place update: the proxy swaps to a second URL map
   tags:
     - planton-e2e
 spec:
+  proxyName: planton-oss-e2e-gcpthp-smoke-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   description: Ephemeral target HTTP proxy created by the Planton E2E harness; safe to delete
   urlMap:
     valueFrom:

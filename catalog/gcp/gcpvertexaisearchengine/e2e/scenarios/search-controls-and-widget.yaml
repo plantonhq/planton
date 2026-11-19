@@ -19,6 +19,10 @@ metadata:
   annotations:
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e: "true"
+    planton.dev/e2e-deploy-retry: >-
+      Google refuses a filter or boost control with "Unsupported field" for a
+      field the fresh store's schema indexes, in about one run in three, and
+      accepts the same apply a minute later
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpvertexaisearchengine/e2e/prerequisites/gcpvsds-controls.yaml"
   tags:
     - planton-e2e

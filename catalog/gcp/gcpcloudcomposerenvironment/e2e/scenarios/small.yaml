@@ -19,6 +19,8 @@ metadata:
     e2e-catalog-kind: gcpcloudcomposerenvironment
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: small.to.yaml # the in-place update: a second label
   tags:
     - planton-e2e
 spec:

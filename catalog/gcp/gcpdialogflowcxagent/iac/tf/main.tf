@@ -512,6 +512,15 @@ resource "google_dialogflow_cx_generative_settings" "this" {
     }
   }
 
+  # Google returns an empty fallback_settings on an agent that declares
+  # none, and the provider keeps it in state, so sending nothing re-plans its
+  # removal forever. An undeclared block is sent empty: it matches what
+  # Google holds and overwrites no prompt.
+  dynamic "fallback_settings" {
+    for_each = each.value.fallback_settings == null ? [true] : []
+    content {}
+  }
+
   dynamic "generative_safety_settings" {
     for_each = each.value.generative_safety_settings != null ? [each.value.generative_safety_settings] : []
     content {

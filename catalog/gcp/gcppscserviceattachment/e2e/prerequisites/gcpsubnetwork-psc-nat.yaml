@@ -23,7 +23,7 @@ spec:
       kind: GcpVpcNetwork
       name: planton-oss-e2e-gcpvpcnetwork-prereq
       fieldPath: status.outputs.network_self_link
-  subnetworkName: planton-oss-e2e-gcppsca-nat
+  subnetworkName: planton-oss-e2e-gcppsca-nat-${E2E_RUN_ID}
   region: us-central1
   ipCidrRange: 10.131.1.0/24
   purpose: PRIVATE_SERVICE_CONNECT

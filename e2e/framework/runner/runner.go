@@ -308,7 +308,9 @@ func RunKindTest(ctx context.Context, tc *provider.KindTestContext, harness prov
 		phases = []lifecyclePhase{
 			{PhaseValidate, func() error { return runValidate(tc) }},
 			{PhaseDeploy, func() error {
-				return deployWhileGrantsPropagate(tc, harness, func() error { return runDeploy(tc) })
+				return deployWhileGrantsPropagate(tc, harness, func() error {
+					return deployMaybeRetry(tc, func() error { return runDeploy(tc) })
+				})
 			}},
 		}
 		// The idempotency gate re-plans the configuration DEPLOY just applied and
@@ -612,6 +614,49 @@ func runVerifyResources(ctx context.Context, tc *provider.KindTestContext, harne
 // the annotation keep the single-attempt behavior, so a genuine destroy bug
 // still fails loudly everywhere else.
 const DestroyRetryAnnotation = "planton.dev/e2e-destroy-retry"
+
+// DeployRetryAnnotation opts ONE scenario into bounded deploy retries, the
+// deploy-side twin of DestroyRetryAnnotation; its value MUST state the
+// reason (an empty value does not opt in). It exists for a create the cloud
+// refuses for a while after something the resource depends on was created,
+// with no state the module could wait on, so the deploy succeeds verbatim on
+// a re-apply -- exactly what the kind's GUIDE tells a person to do. First
+// user: a Vertex AI Search filter or boost control, which Google refuses with
+// "Unsupported field" for a field its data store's new schema indexes (seen
+// in one of three runs of the same lane on 2026-11-19, accepted on the next
+// apply). The retry is as dumb as the destroy one, for the same reason, and
+// scenarios without the annotation keep one attempt, so a real deploy bug
+// still fails at once.
+const DeployRetryAnnotation = "planton.dev/e2e-deploy-retry"
+
+var (
+	deployRetryInterval = 60 * time.Second
+	deployRetryBudget   = 6 * time.Minute
+)
+
+// deployMaybeRetry runs deploy once, then -- only for scenarios carrying
+// DeployRetryAnnotation -- re-runs it on deployRetryInterval until it succeeds
+// or deployRetryBudget elapses, printing the declared reason each time.
+func deployMaybeRetry(tc *provider.KindTestContext, deploy func() error) error {
+	err := deploy()
+	if err == nil {
+		return nil
+	}
+	reason, annErr := ManifestAnnotation(tc.ManifestPath, DeployRetryAnnotation)
+	if annErr != nil || reason == "" {
+		return err
+	}
+	deadline := time.Now().Add(deployRetryBudget)
+	for attempt := 2; time.Now().Before(deadline); attempt++ {
+		lanef(tc.T, "  [deploy-retry] attempt %d in %s (scenario-declared: %s); last error: %v",
+			attempt, deployRetryInterval, reason, err)
+		time.Sleep(deployRetryInterval)
+		if err = deploy(); err == nil {
+			return nil
+		}
+	}
+	return errors.Wrapf(err, "deploy still failing after the %s retry budget", deployRetryBudget)
+}
 
 const (
 	destroyRetryInterval = 60 * time.Second

@@ -1,0 +1,41 @@
+# The second act of consensus-dual-stack-flags.yaml: the same peering with
+# custom routes no longer exported, an updatePeering in place (the networks
+# and the peering name recreate it). Not a scenario of its own (the
+# second-act annotation keeps discovery from running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVpcPeering
+metadata:
+  name: planton-oss-e2e-gcppeer-consensus
+  id: planton-oss-e2e-gcppeer-consensus
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpvpcpeering
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: consensus-dual-stack-flags.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpvpcpeering/e2e/prerequisites/gcpvpcnetwork-peer.yaml,catalog/gcp/gcpvpcpeering/e2e/prerequisites/gcpvpcpeering-side-b.yaml"
+  tags:
+    - planton-e2e
+spec:
+  peeringName: planton-oss-e2e-gcppeer-side-a-${E2E_RUN_ID}
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpvpcnetwork-prereq
+      fieldPath: status.outputs.network_self_link
+  peerNetwork:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcppeer-peer-vpc
+      fieldPath: status.outputs.network_self_link
+  exportCustomRoutes: false
+  importCustomRoutes: true
+  exportSubnetRoutesWithPublicIp: false
+  importSubnetRoutesWithPublicIp: true
+  stackType: IPV4_ONLY
+  updateStrategy: CONSENSUS
+  deletionPolicy: DELETE

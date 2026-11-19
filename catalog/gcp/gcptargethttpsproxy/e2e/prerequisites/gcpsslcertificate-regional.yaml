@@ -18,6 +18,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
+  certificateName: planton-oss-e2e-gcpthsp-rcert-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   description: Ephemeral regional self-managed certificate for the gcptargethttpsproxy regional E2E chain; safe to delete
   region: us-central1
   certificate: |

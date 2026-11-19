@@ -1,0 +1,31 @@
+# The second act of minimal.yaml: the same workflow with a new description,
+# a patch in place (its name and region recreate it). Not a scenario of its
+# own (the second-act annotation keeps discovery from running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpWorkflow
+metadata:
+  name: planton-oss-e2e-gcpwflow-minimal
+  id: planton-oss-e2e-gcpwflow-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpworkflow
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: minimal.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+  tags:
+    - planton-e2e
+spec:
+  workflowName: planton-oss-e2e-gcpwf-minimal-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
+  region: us-central1
+  sourceContents: |
+    main:
+      steps:
+        - hello:
+            return: "hello world"
+  description: E2E minimal workflow — returns a constant; updated in place; delete freely.
+  deletionProtection: false
+  deletionPolicy: DELETE

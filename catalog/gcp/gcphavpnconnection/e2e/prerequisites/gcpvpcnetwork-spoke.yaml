@@ -18,5 +18,5 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  networkName: planton-oss-e2e-gcpvpncn-spoke-vpc
+  networkName: planton-oss-e2e-gcpvpncn-spoke-vpc-${E2E_RUN_ID}
   autoCreateSubnetworks: false

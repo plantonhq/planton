@@ -1,0 +1,38 @@
+# The second act of devops-pool.yaml: the same issuance config with a second
+# label -- labels are the one thing an issuance config updates in place (the
+# pool, key algorithm, lifetime, window and description recreate it). Not a
+# scenario of its own (the second-act annotation keeps discovery from running
+# it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCertManagerIssuanceConfig
+metadata:
+  name: planton-oss-e2e-gcpcmic-devops
+  id: planton-oss-e2e-gcpcmic-devops
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpcertmanagerissuanceconfig
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: devops-pool.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+    planton.dev/e2e-prerequisites: "GcpPrivateCaCertificateAuthority"
+  tags:
+    - planton-e2e
+spec:
+  issuanceConfigName: planton-e2e-cmic-${E2E_RUN_ID}
+  description: Planton E2E issuance config; safe to delete
+  caPool:
+    valueFrom:
+      kind: GcpPrivateCaPool
+      name: planton-oss-e2e-gcpcmic-pool
+      fieldPath: status.outputs.name
+  keyAlgorithm: ECDSA_P256
+  lifetime: 2592000s
+  rotationWindowPercentage: 66
+  labels:
+    e2e-arm: devops-pool
+    e2e-act: updated
+  deletionPolicy: DELETE

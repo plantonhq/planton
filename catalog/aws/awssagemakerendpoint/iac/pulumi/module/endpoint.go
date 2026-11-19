@@ -3,6 +3,7 @@ package module
 import (
 	"github.com/pkg/errors"
 	awssagemakerendpointv1alpha1 "github.com/plantonhq/planton/catalog/aws/awssagemakerendpoint/v1alpha1"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/datatypes/decimalfloat"
 	"github.com/pulumi/pulumi-aws/sdk/v7/go/aws"
 	"github.com/pulumi/pulumi-aws/sdk/v7/go/aws/sagemaker"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
@@ -117,7 +118,7 @@ func productionVariantArgs(v *awssagemakerendpointv1alpha1.AwsSagemakerEndpointV
 		args.InitialInstanceCount = pulumi.Int(int(*v.InitialInstanceCount))
 	}
 	if v.InitialVariantWeight != nil {
-		args.InitialVariantWeight = pulumi.Float64(float64(*v.InitialVariantWeight))
+		args.InitialVariantWeight = pulumi.Float64(decimalfloat.Float64(*v.InitialVariantWeight))
 	}
 	if v.AcceleratorType != "" {
 		args.AcceleratorType = pulumi.String(v.AcceleratorType)
@@ -200,7 +201,7 @@ func shadowVariantArgs(v *awssagemakerendpointv1alpha1.AwsSagemakerEndpointVaria
 		args.InitialInstanceCount = pulumi.Int(int(*v.InitialInstanceCount))
 	}
 	if v.InitialVariantWeight != nil {
-		args.InitialVariantWeight = pulumi.Float64(float64(*v.InitialVariantWeight))
+		args.InitialVariantWeight = pulumi.Float64(decimalfloat.Float64(*v.InitialVariantWeight))
 	}
 	if v.AcceleratorType != "" {
 		args.AcceleratorType = pulumi.String(v.AcceleratorType)

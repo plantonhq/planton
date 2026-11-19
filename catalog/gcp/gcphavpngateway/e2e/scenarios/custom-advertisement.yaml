@@ -15,10 +15,12 @@ metadata:
     e2e-catalog-kind: gcphavpngateway
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: custom-advertisement.to.yaml # the in-place update: a longer BGP keepalive and a label
   tags:
     - planton-e2e
 spec:
-  gatewayName: planton-oss-e2e-gcpvpngw-custom
+  gatewayName: planton-oss-e2e-gcpvpngw-custom-${E2E_RUN_ID}
   region: us-central1
   network:
     valueFrom:
@@ -31,7 +33,7 @@ spec:
     purpose: e2e
     arm: custom-advertisement
   router:
-    name: planton-oss-e2e-gcpvpngw-custom-rtr
+    name: planton-oss-e2e-gcpvpngw-custom-rtr-${E2E_RUN_ID}
     description: Planton E2E router with custom advertisement; safe to delete
     bgp:
       asn: 4200000001

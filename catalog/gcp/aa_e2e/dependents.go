@@ -6,10 +6,12 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/e2e/framework/provider"
+	"github.com/plantonhq/planton/e2e/framework/runner"
 	"google.golang.org/api/cloudkms/v1"
 	"sigs.k8s.io/yaml"
 )
@@ -23,6 +25,22 @@ const (
 	// release schedules the lane's key's versions for destruction -- the
 	// end state Cloud KMS allows, and the one the sweep accepts.
 	releaseAutokeyKey = "autokey-key"
+
+	// releaseChatEngineAgent: a CHAT engine that creates its agent
+	// (agentCreationConfig) makes Dialogflow create a CX agent named after the
+	// engine, and deleting the engine leaves that agent behind. The release
+	// deletes the agent this lane's engine made, found by the engine's
+	// run-scoped display name. Cloud Asset Inventory does not index
+	// Dialogflow agents, so the sweep would never see one left over.
+	releaseChatEngineAgent = "chat-engine-agent"
+
+	// releaseDataStoreToolChatEngines: a Dialogflow agent's data store tool
+	// makes Discovery Engine create chat engines named
+	// <agent-id>-chat-<n>, sometimes more than one; the agent records only
+	// the newest, which delete_chat_engine_on_destroy removes, and the rest
+	// keep holding the store. The release deletes the chat engines over this
+	// lane's own data stores (their ids carry the lane's run id).
+	releaseDataStoreToolChatEngines = "data-store-tool-chat-engines"
 )
 
 // ReleaseDependents implements provider.DependentsReleaser.
@@ -34,8 +52,13 @@ func (h *Harness) ReleaseDependents(ctx context.Context, tc *provider.KindTestCo
 	switch class {
 	case releaseAutokeyKey:
 		return h.releaseAutokeyKey(ctx, tc, manifestPath)
+	case releaseChatEngineAgent:
+		return h.releaseChatEngineAgent(ctx, tc, manifestPath)
+	case releaseDataStoreToolChatEngines:
+		return h.releaseDataStoreToolChatEngines(ctx, tc)
 	default:
-		return errors.Errorf("unknown release class %q: the GCP harness releases %q", class, releaseAutokeyKey)
+		return errors.Errorf("unknown release class %q: the GCP harness releases %q, %q and %q",
+			class, releaseAutokeyKey, releaseChatEngineAgent, releaseDataStoreToolChatEngines)
 	}
 }
 
@@ -134,4 +157,119 @@ func (h *Harness) restGet(ctx context.Context, url string, out interface{}) (int
 		return resp.StatusCode, errors.Errorf("GET %s: HTTP %d", url, resp.StatusCode)
 	}
 	return resp.StatusCode, json.NewDecoder(resp.Body).Decode(out)
+}
+
+// releaseChatEngineAgent deletes the Dialogflow CX agents in the engine's
+// Dialogflow location whose display name is this lane's engine's -- the
+// agent Google created for it. The display name carries the lane's run id,
+// so another lane's agent never matches. None found means Google made none
+// (the deploy failed first) or already removed it.
+func (h *Harness) releaseChatEngineAgent(ctx context.Context, tc *provider.KindTestContext, manifestPath string) error {
+	raw, err := os.ReadFile(manifestPath)
+	if err != nil {
+		return errors.Wrap(err, "reading the chat engine manifest")
+	}
+	var manifest struct {
+		Spec struct {
+			DisplayName      string `json:"displayName"`
+			ChatEngineConfig struct {
+				AgentCreationConfig struct {
+					Location string `json:"location"`
+				} `json:"agentCreationConfig"`
+			} `json:"chatEngineConfig"`
+		} `json:"spec"`
+	}
+	if err := yaml.Unmarshal(raw, &manifest); err != nil {
+		return errors.Wrap(err, "parsing the chat engine manifest")
+	}
+	displayName := manifest.Spec.DisplayName
+	if displayName == "" || !strings.Contains(displayName, tc.RunID) {
+		return errors.Errorf("the chat engine's displayName %q must carry the lane's run id, so the release finds this lane's agent and no other", displayName)
+	}
+	location := manifest.Spec.ChatEngineConfig.AgentCreationConfig.Location
+	if location == "" {
+		location = "global"
+	}
+	base := fmt.Sprintf("https://dialogflow.googleapis.com/v3/projects/%s/locations/%s/agents", h.services.Project, location)
+	var listing struct {
+		Agents []struct {
+			Name        string `json:"name"`
+			DisplayName string `json:"displayName"`
+		} `json:"agents"`
+	}
+	if _, err := h.restGet(ctx, base+"?pageSize=1000", &listing); err != nil {
+		return errors.Wrap(err, "listing the Dialogflow agents")
+	}
+	released := 0
+	for _, agent := range listing.Agents {
+		if agent.DisplayName != displayName {
+			continue
+		}
+		if err := h.restDelete(ctx, "https://dialogflow.googleapis.com/v3/"+agent.Name); err != nil {
+			return errors.Wrapf(err, "deleting the agent %s the chat engine left", agent.Name)
+		}
+		released++
+	}
+	lanef(tc, "  [release] the chat engine %q left %d Dialogflow agent(s); deleted", displayName, released)
+	return nil
+}
+
+// restDelete deletes one Google REST resource with the harness's credential;
+// an absent resource is already released.
+func (h *Harness) restDelete(ctx context.Context, url string) error {
+	ctx, cancel := context.WithTimeout(ctx, time.Minute)
+	defer cancel()
+	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, url, nil)
+	if err != nil {
+		return err
+	}
+	resp, err := h.services.RestClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNotFound {
+		return errors.Errorf("DELETE %s: HTTP %d", url, resp.StatusCode)
+	}
+	return nil
+}
+
+// releaseDataStoreToolChatEngines deletes the chat engines in the default
+// collection whose data stores are this lane's (a store id carrying the
+// lane's engine-scoped run id) -- the engines Google made for the agent's
+// data store tool -- so the fixture stores can be deleted after them.
+func (h *Harness) releaseDataStoreToolChatEngines(ctx context.Context, tc *provider.KindTestContext) error {
+	runID := runner.EngineScopedRunID(tc.RunID, tc.Engine)
+	base := fmt.Sprintf("https://discoveryengine.googleapis.com/v1/projects/%s/locations/global/collections/default_collection/engines", h.services.Project)
+	var listing struct {
+		Engines []struct {
+			Name         string   `json:"name"`
+			DataStoreIds []string `json:"dataStoreIds"`
+			SolutionType string   `json:"solutionType"`
+		} `json:"engines"`
+	}
+	if _, err := h.restGet(ctx, base+"?pageSize=1000", &listing); err != nil {
+		return errors.Wrap(err, "listing the Discovery Engine engines")
+	}
+	released := 0
+	for _, engine := range listing.Engines {
+		if engine.SolutionType != "SOLUTION_TYPE_CHAT" || !strings.Contains(engine.Name, "-chat-") {
+			continue
+		}
+		ours := false
+		for _, store := range engine.DataStoreIds {
+			if strings.Contains(store, runID) {
+				ours = true
+			}
+		}
+		if !ours {
+			continue
+		}
+		if err := h.restDelete(ctx, "https://discoveryengine.googleapis.com/v1/"+engine.Name); err != nil {
+			return errors.Wrapf(err, "deleting the chat engine %s the data store tool left", engine.Name)
+		}
+		released++
+	}
+	lanef(tc, "  [release] the data store tool left %d chat engine(s) over this lane's stores; deleted", released)
+	return nil
 }

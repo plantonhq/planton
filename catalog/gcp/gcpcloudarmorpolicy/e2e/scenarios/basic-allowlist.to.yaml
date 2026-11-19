@@ -1,0 +1,56 @@
+# The second act of basic-allowlist.yaml: the same policy with its allow
+# rule reworded, a patchRule in place (its name, type and scope recreate it).
+# Not a scenario of its own (the second-act annotation keeps discovery from
+# running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudArmorPolicy
+metadata:
+  name: planton-oss-e2e-cap-allowlist
+  id: planton-oss-e2e-cap-allowlist
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpcloudarmorpolicy
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: basic-allowlist.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+  tags:
+    - planton-e2e
+spec:
+  policyName: planton-oss-e2e-cap-${E2E_RUN_ID}
+  description: Ephemeral allowlist policy for Planton OSS E2E
+
+  # User labels arm the merge idiom (platform labels win on key conflicts).
+  labels:
+    team: platform
+
+  # The flagship advanced-options pairing from the canonical manifest:
+  # STANDARD JSON parsing with a deeper-than-default (8KB) body inspection
+  # size. request_body_inspection_size is Optional+Computed server-side, so
+  # the re-plan after apply is the echo probe.
+  advancedOptionsConfig:
+    jsonParsing: STANDARD
+    requestBodyInspectionSize: 16KB
+
+  rules:
+    - action: allow
+      priority: 1000
+      description: Allow RFC1918 ranges (updated in place)
+      match:
+        versionedExpr: SRC_IPS_V1
+        srcIpRanges:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+    - action: deny(403)
+      priority: 2147483647
+      description: Default deny
+      match:
+        versionedExpr: SRC_IPS_V1
+        srcIpRanges:
+          - "*"
+
+  # Ephemeral test fixture: fully delete on destroy.
+  deletionPolicy: DELETE

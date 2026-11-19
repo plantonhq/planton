@@ -17,6 +17,7 @@ metadata:
   annotations:
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e: "true"
+    planton.dev/e2e-release-dependents: chat-engine-agent # the Dialogflow agent Google created for the engine outlives it
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpvertexaisearchengine/e2e/prerequisites/gcpvsds-chat.yaml"
   tags:
     - planton-e2e
@@ -24,7 +25,7 @@ spec:
   location: global
   engineType: CHAT
   engineId: planton-oss-e2e-vseng-chat-${E2E_RUN_ID}
-  displayName: Planton OSS E2E chat engine
+  displayName: Planton OSS E2E chat engine ${E2E_RUN_ID} # the agent Google creates takes this name and outlives the engine
   industryVertical: GENERIC
   commonConfig:
     companyName: Planton

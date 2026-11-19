@@ -44,12 +44,12 @@ spec:
         name: planton-oss-e2e-gcpvpngw-prereq
         fieldPath: status.outputs.gateway_self_link
   tunnels:
-    - name: planton-oss-e2e-gcpvpncn-s2h-0
+    - name: planton-oss-e2e-gcpvpncn-s2h-0-${E2E_RUN_ID}
       vpnGatewayInterface: 0
       bgpSession:
         interfaceIpRange: 169.254.100.2/30
         peerAsn: 64514
-    - name: planton-oss-e2e-gcpvpncn-s2h-1
+    - name: planton-oss-e2e-gcpvpncn-s2h-1-${E2E_RUN_ID}
       vpnGatewayInterface: 1
       bgpSession:
         interfaceIpRange: 169.254.101.2/30

@@ -18,6 +18,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
+  proxyName: planton-oss-e2e-gcpthsp-prereq-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   description: Ephemeral target HTTPS proxy created by the Planton E2E harness as a prerequisite; safe to delete
   urlMap:
     valueFrom:

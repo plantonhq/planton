@@ -19,6 +19,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
+  urlMapName: planton-oss-e2e-gcpum-prereq-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   description: Ephemeral URL map created by the Planton E2E harness as a prerequisite; safe to delete
   defaultService:
     valueFrom:

@@ -14,10 +14,12 @@ metadata:
     e2e-catalog-kind: gcpnetworkendpointgroup
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: global-internet-fqdn.to.yaml # the in-place update: the endpoint moves to another origin
   tags:
     - planton-e2e
 spec:
-  negName: planton-oss-e2e-gcpneg-global
+  negName: planton-oss-e2e-gcpneg-global-${E2E_RUN_ID}
   description: Ephemeral global internet network endpoint group created by the Planton E2E harness; safe to delete
   networkEndpointType: INTERNET_FQDN_PORT
   defaultPort: 443

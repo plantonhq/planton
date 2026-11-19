@@ -20,6 +20,7 @@ go_library(
     deps = [
         "//catalog/gcp",
         "//catalog/gcp/gcpvertexaisearchengine/v1alpha1",
+        "//pkg/iac/pulumi/pulumimodule/datatypes/decimalfloat",
         "//pkg/iac/pulumi/pulumimodule/provider/gcp/pulumigoogleprovider",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp",

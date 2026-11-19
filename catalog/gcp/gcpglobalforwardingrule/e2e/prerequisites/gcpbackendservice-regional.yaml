@@ -17,6 +17,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
+  backendServiceName: planton-oss-e2e-gcpgfr-rbs-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   description: Ephemeral regional backend service for the gcpglobalforwardingrule regional E2E chain; safe to delete
   region: us-central1
   loadBalancingScheme: EXTERNAL_MANAGED

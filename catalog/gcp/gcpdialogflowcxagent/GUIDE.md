@@ -32,6 +32,8 @@ Generative settings hold the fallback prompts, banned phrases, knowledge-connect
 
 Link from one side. A `GcpVertexAiSearchEngine` chat engine that names this agent in `dialogflowAgentToLink` needs nothing here. `genAppBuilderSettings.engine` is for pinning the engine Google created when a data store was connected in the console, and `deleteChatEngineOnDestroy` removes that engine with the agent -- refused when the engine is another block's, because that block owns its lifecycle.
 
+A data store tool makes Google create chat engines for the agent, named `<agent-id>-chat-<n>` and holding the tool's data store -- sometimes more than one for a single tool. Google records only the newest in the agent's `genAppBuilderSettings`, so `deleteChatEngineOnDestroy` removes that one; the others outlive the agent, and while they exist Google refuses to delete the data store ("currently exists in list ... of Engine"). After destroying an agent with data store tools, delete its remaining `<agent-id>-chat-` engines (their `chatEngineMetadata` names the agent) before the stores. Deleting the tool alone leaves them too.
+
 ## Destroy
 
 `deletionPolicy` fans to every webhook, tool, tool version, version, and environment. `DELETE` removes the agent and all of its console-authored content with it; `PREVENT` makes destroy fail; `ABANDON` leaves everything in place. `locked` additionally makes Google reject every change except a restore -- unlock before changing anything else. Export content to GitHub (`gitIntegrationSettings`) if it must survive the agent.

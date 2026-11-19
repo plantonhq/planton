@@ -58,6 +58,7 @@ const (
 // when its identity is provisioned and keyed by the first act's manifest
 // (the path the runner later passes as provider.FirstActManifestPathKey).
 type laneAudit struct {
+	tc        *provider.KindTestContext
 	project   string
 	principal string
 	start     time.Time
@@ -118,6 +119,7 @@ func (h *Harness) noteVerified(ctx context.Context) error {
 		return errors.Errorf("the second act declares %s %q, but Google's audit log shows the upgrade %s: %s",
 			provider.ExpectUpgradeAnnotation, expectation, verdict, evidence)
 	}
+	lanef(audit.tc, "  [upgrade] %s, as declared -- Google's audit log in %s: %s", verdict, audit.project, evidence)
 	return nil
 }
 

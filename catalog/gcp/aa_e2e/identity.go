@@ -202,7 +202,7 @@ func (h *Harness) ProvisionIdentity(ctx context.Context, tc *provider.KindTestCo
 	firstAct := tc.ManifestPath
 	h.mu.Lock()
 	h.laneGrants[tc] = held
-	h.laneAudits[firstAct] = &laneAudit{project: project, principal: account.Email, start: start}
+	h.laneAudits[firstAct] = &laneAudit{tc: tc, project: project, principal: account.Email, start: start}
 	h.mu.Unlock()
 	return config.Path, func() {
 		h.mu.Lock()

@@ -19,6 +19,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
+  healthCheckName: planton-oss-e2e-gcphc-prereq-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   description: Ephemeral health check created by the Planton E2E harness as a prerequisite; safe to delete
   http:
     portSpecification: USE_SERVING_PORT

@@ -1,0 +1,35 @@
+# The second act of project-to-dataset.yaml: the same export with a new
+# description, updated in place (the scope and id recreate it). Not a
+# scenario of its own (the second-act annotation keeps discovery from running
+# it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSccBigQueryExport
+metadata:
+  name: planton-oss-e2e-gcpsccx-project
+  id: planton-oss-e2e-gcpsccx-project
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpsccbigqueryexport
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: project-to-dataset.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_SCC_PROJECT_ID
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpsccbigqueryexport/e2e/prerequisites/dataset.yaml"
+  tags:
+    - planton-e2e
+spec:
+  scope:
+    projectId:
+      value: ${E2E_ENV:PLANTON_E2E_GCP_SCC_PROJECT_ID}
+  bigQueryExportId: e2e-gcpsccx-${E2E_RUN_ID}
+  description: Planton E2E BigQuery export, updated in place
+  dataset:
+    valueFrom:
+      kind: GcpBigQueryDataset
+      name: planton-oss-e2e-gcpsccx-dataset
+      fieldPath: status.outputs.self_link
+  filter: category = "PLANTON_E2E_NO_SUCH_CATEGORY"

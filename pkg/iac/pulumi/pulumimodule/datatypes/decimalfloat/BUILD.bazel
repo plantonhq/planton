@@ -1,0 +1,14 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "decimalfloat",
+    srcs = ["decimalfloat.go"],
+    importpath = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/datatypes/decimalfloat",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "decimalfloat_test",
+    srcs = ["decimalfloat_test.go"],
+    embed = [":decimalfloat"],
+)

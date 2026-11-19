@@ -1,0 +1,31 @@
+# The second act of global-internet-fqdn.yaml: the same group with its one
+# endpoint moved to another origin -- the endpoint is detached and the new one
+# attached, the group itself unchanged (its type, port and name recreate it).
+# Not a scenario of its own (the second-act annotation keeps discovery from
+# running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpNetworkEndpointGroup
+metadata:
+  name: planton-oss-e2e-gcpneg-global
+  id: planton-oss-e2e-gcpneg-global
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpnetworkendpointgroup
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: global-internet-fqdn.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+  tags:
+    - planton-e2e
+spec:
+  negName: planton-oss-e2e-gcpneg-global-${E2E_RUN_ID}
+  description: Ephemeral global internet network endpoint group created by the Planton E2E harness; safe to delete
+  networkEndpointType: INTERNET_FQDN_PORT
+  defaultPort: 443
+  endpoints:
+    - fqdn: origin2.example.com
+      port: 443
+  deletionPolicy: DELETE

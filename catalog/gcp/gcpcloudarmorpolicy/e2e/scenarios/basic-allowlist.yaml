@@ -11,6 +11,8 @@ metadata:
     e2e-catalog-kind: gcpcloudarmorpolicy
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: basic-allowlist.to.yaml # the in-place update: a rule reworded
   tags:
     - planton-e2e
 spec:

@@ -18,6 +18,7 @@ metadata:
   annotations:
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e: "true"
+    planton.dev/e2e-release-dependents: data-store-tool-chat-engines # Google makes chat engines for the data store tool that outlive the agent
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpdialogflowcxagent/e2e/prerequisites/gcpvertexaisearchdatastore-tools.yaml"
   tags:
     - planton-e2e

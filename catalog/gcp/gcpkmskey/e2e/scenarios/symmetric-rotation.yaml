@@ -21,6 +21,8 @@ metadata:
     e2e-catalog-kind: gcpkmskey
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: symmetric-rotation.to.yaml # the in-place update: a longer rotation and a label
   tags:
     - planton-e2e
 spec:

@@ -18,10 +18,12 @@ metadata:
     e2e-catalog-kind: gcpglobalforwardingrule
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e-prerequisites: "GcpVpcNetwork,catalog/gcp/gcpglobalforwardingrule/e2e/prerequisites/gcpsubnetwork-private.yaml,catalog/gcp/gcpglobalforwardingrule/e2e/prerequisites/gcphealthcheck-regional-tcp.yaml,catalog/gcp/gcpglobalforwardingrule/e2e/prerequisites/gcpbackendservice-internal.yaml"
   tags:
     - planton-e2e
 spec:
+  forwardingRuleName: planton-oss-e2e-gcpgfr-ilb-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   description: Ephemeral internal passthrough NLB forwarding rule created by the Planton E2E harness; safe to delete
   region: us-central1
   backendService:

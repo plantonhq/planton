@@ -1,0 +1,61 @@
+# The second act of minimal.yaml: the same backend service with a ten-minute
+# affinity cookie, a patch in place (its name, description, scheme and scope
+# recreate it). Not a scenario of its own (the second-act annotation keeps
+# discovery from running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBackendService
+metadata:
+  name: planton-oss-e2e-gcpbs-smoke
+  id: planton-oss-e2e-gcpbs-smoke
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpbackendservice
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: minimal.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+  tags:
+    - planton-e2e
+spec:
+  backendServiceName: planton-oss-e2e-gcpbs-smoke-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
+  description: Ephemeral backend service created by the Planton E2E harness; safe to delete
+  protocol: HTTP
+  loadBalancingScheme: EXTERNAL
+  healthCheck:
+    valueFrom:
+      kind: GcpHealthCheck
+      name: planton-oss-e2e-gcphc-prereq
+      fieldPath: status.outputs.self_link
+  sessionAffinity: GENERATED_COOKIE
+  affinityCookieTtlSec: 600
+  enableCdn: true
+  cdnPolicy:
+    cacheMode: CACHE_ALL_STATIC
+    defaultTtl: 300
+    negativeCaching: true
+    negativeCachingPolicy:
+      - code: 404
+        ttl: 30
+    cacheKeyPolicy:
+      includeHost: true
+      includeProtocol: true
+      includeQueryString: true
+      queryStringWhitelist:
+        - v
+  compressionMode: AUTOMATIC
+  logConfig:
+    enable: true
+    sampleRate: 0.5
+    # Header values joined to each log entry (HTTP protocol).
+    requestHeaders:
+      - X-Request-Id
+    responseHeaders:
+      - Content-Type
+  customResponseHeaders:
+    - "X-Cache-Status: {cdn_cache_status}"
+
+  # Ephemeral test fixture: fully delete on destroy.
+  deletionPolicy: DELETE

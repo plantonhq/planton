@@ -1,6 +1,8 @@
 # An extra GcpBinaryAuthorizationAttestor instance for the gcpbapol
-# scenario: a PGP attestor in the harness project with its own note, named
-# by the policy's cluster rule across projects.
+# scenario: a PGP attestor with its own note in the second project, beside
+# the policy whose cluster rule names it -- the lane's identity is granted in
+# that one project, as a customer's connection is granted on the project it
+# deploys to.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpBinaryAuthorizationAttestor
 metadata:
@@ -16,6 +18,8 @@ metadata:
   tags:
     - planton-e2e
 spec:
+  projectId:
+    value: ${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID}
   attestorName: e2e-gcpbapol-${E2E_RUN_ID}
   description: Planton E2E attestor for the policy scenario
   note:

@@ -16,11 +16,13 @@ metadata:
     e2e-catalog-kind: gcpvpcpeering
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: consensus-dual-stack-flags.to.yaml # the in-place update: custom routes no longer exported
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpvpcpeering/e2e/prerequisites/gcpvpcnetwork-peer.yaml,catalog/gcp/gcpvpcpeering/e2e/prerequisites/gcpvpcpeering-side-b.yaml"
   tags:
     - planton-e2e
 spec:
-  peeringName: planton-oss-e2e-gcppeer-side-a
+  peeringName: planton-oss-e2e-gcppeer-side-a-${E2E_RUN_ID}
   network:
     valueFrom:
       kind: GcpVpcNetwork

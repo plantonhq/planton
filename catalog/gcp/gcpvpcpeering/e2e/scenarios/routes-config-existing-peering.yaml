@@ -19,6 +19,7 @@ metadata:
     e2e-catalog-kind: gcpvpcpeering
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     # The Google-managed peering exists only with a private-services fixture
     # the harness lacks; the token gates the lane to skip honestly.
     planton.dev/e2e-required-env: PLANTON_E2E_GCP_SERVICE_NETWORKING_VPC

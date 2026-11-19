@@ -2,6 +2,7 @@ package module
 
 import (
 	"fmt"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/datatypes/decimalfloat"
 
 	"github.com/pkg/errors"
 	gcpvertexaisearchenginev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaisearchengine/v1alpha1"
@@ -146,7 +147,7 @@ func buildBoostAction(boost *gcpvertexaisearchenginev1alpha1.GcpVertexAiSearchEn
 		Filter:    pulumi.String(boost.Filter),
 	}
 	if boost.FixedBoost != nil {
-		args.FixedBoost = pulumi.Float64(float64(boost.GetFixedBoost()))
+		args.FixedBoost = pulumi.Float64(decimalfloat.Float64(boost.GetFixedBoost()))
 	}
 	if ib := boost.InterpolationBoostSpec; ib != nil {
 		ibArgs := &discoveryengine.ControlBoostActionInterpolationBoostSpecArgs{}
@@ -165,7 +166,7 @@ func buildBoostAction(boost *gcpvertexaisearchenginev1alpha1.GcpVertexAiSearchEn
 				cpArgs.AttributeValue = pulumi.String(cp.AttributeValue)
 			}
 			if cp.BoostAmount != nil {
-				cpArgs.BoostAmount = pulumi.Float64(float64(cp.GetBoostAmount()))
+				cpArgs.BoostAmount = pulumi.Float64(decimalfloat.Float64(cp.GetBoostAmount()))
 			}
 			ibArgs.ControlPoint = cpArgs
 		}

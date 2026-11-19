@@ -13,6 +13,7 @@ go_library(
     deps = [
         "//catalog/gcp",
         "//catalog/gcp/gcpgkecluster/v1alpha1",
+        "//pkg/iac/pulumi/pulumimodule/datatypes/decimalfloat",
         "//pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/gcp/pulumigoogleprovider",
         "//shared/catalogkind",

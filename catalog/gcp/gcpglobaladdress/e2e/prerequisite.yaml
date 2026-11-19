@@ -18,6 +18,6 @@ metadata:
     - planton-e2e
 spec:
   description: Ephemeral global address created by the Planton E2E harness as a prerequisite; safe to delete
-  addressName: planton-oss-e2e-gcpgip-prereq
+  addressName: planton-oss-e2e-gcpgip-prereq-${E2E_RUN_ID}
   addressType: EXTERNAL
   ipVersion: IPV4

@@ -16,6 +16,7 @@ metadata:
     e2e-catalog-kind: gcpgcsbucketiammember
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e-prerequisites: "GcpLoggingSink"
   tags:
     - planton-e2e

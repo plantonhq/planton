@@ -17,10 +17,13 @@ metadata:
     e2e-catalog-kind: gcpvertexaiagentengine
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the in-place update: a description
   tags:
     - planton-e2e
 spec:
   location: us-central1
+  displayName: planton-oss-e2e-gcpage-minimal-${E2E_RUN_ID} # names this lane's engine in the project's list
   agent:
     agentFramework: google-adk
     sourceCodeSpec:

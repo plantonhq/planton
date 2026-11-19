@@ -2,6 +2,7 @@ package module
 
 import (
 	"fmt"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/datatypes/decimalfloat"
 
 	"github.com/pkg/errors"
 	gcpgkeclusterv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkecluster/v1alpha1"
@@ -635,7 +636,7 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 					if rollout := blueGreen.StandardRolloutPolicy; rollout != nil {
 						rolloutArgs := &container.ClusterClusterAutoscalingAutoProvisioningDefaultsUpgradeSettingsBlueGreenSettingsStandardRolloutPolicyArgs{}
 						if rollout.BatchPercentage != nil {
-							rolloutArgs.BatchPercentage = pulumi.Float64Ptr(float64(*rollout.BatchPercentage))
+							rolloutArgs.BatchPercentage = pulumi.Float64Ptr(decimalfloat.Float64(*rollout.BatchPercentage))
 						}
 						if rollout.BatchNodeCount != nil {
 							rolloutArgs.BatchNodeCount = pulumi.IntPtr(int(*rollout.BatchNodeCount))

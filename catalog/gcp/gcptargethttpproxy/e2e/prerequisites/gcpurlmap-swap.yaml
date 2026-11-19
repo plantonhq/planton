@@ -1,0 +1,26 @@
+# A second global URL map for the minimal scenario's update act: the proxy's
+# url_map is its one field GCP changes in place (a setUrlMap call), so the
+# second act points the proxy here. The same default service as the
+# registry's URL map, so routing is unchanged by the swap.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpUrlMap
+metadata:
+  name: planton-oss-e2e-gcpthp-swap-um
+  id: planton-oss-e2e-gcpthp-swap-um
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcptargethttpproxy
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  urlMapName: planton-oss-e2e-gcpthp-swap-um-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
+  description: Ephemeral second URL map for the target HTTP proxy update act; safe to delete
+  defaultService:
+    valueFrom:
+      kind: GcpBackendService
+      name: planton-oss-e2e-gcpbs-prereq
+      fieldPath: status.outputs.self_link

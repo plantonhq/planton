@@ -17,6 +17,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
+  gatewayName: planton-oss-e2e-gcpvpncn-spoke-gw-${E2E_RUN_ID} # per kind and engine; the router takes the same name
   region: us-central1
   network:
     valueFrom:

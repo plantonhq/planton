@@ -24,7 +24,7 @@ spec:
       kind: GcpVpcNetwork
       name: planton-oss-e2e-gcpvpcnetwork-prereq
       fieldPath: status.outputs.network_self_link
-  subnetworkName: planton-oss-e2e-gcpgfr-proxy-subnet
+  subnetworkName: planton-oss-e2e-gcpgfr-proxy-subnet-${E2E_RUN_ID}
   region: us-central1
   ipCidrRange: 10.129.0.0/23
   purpose: REGIONAL_MANAGED_PROXY

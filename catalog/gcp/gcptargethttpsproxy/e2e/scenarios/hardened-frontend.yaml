@@ -18,9 +18,12 @@ metadata:
     e2e-catalog-kind: gcptargethttpsproxy
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: hardened-frontend.to.yaml # the in-place update: QUIC turned on
   tags:
     - planton-e2e
 spec:
+  proxyName: planton-oss-e2e-gcpthsp-hardened-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   description: Ephemeral hardened target HTTPS proxy created by the Planton E2E harness; safe to delete
   urlMap:
     valueFrom:

@@ -22,6 +22,8 @@ metadata:
     e2e-catalog-kind: gcphavpnconnection
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: bfd-md5-custom-advertisement.to.yaml # the in-place update: the first session advertised at a lower priority
     planton.dev/e2e-prerequisites: "catalog/gcp/gcphavpnconnection/e2e/prerequisites/gcpvpcnetwork-spoke.yaml,catalog/gcp/gcphavpnconnection/e2e/prerequisites/gcphavpngateway-spoke.yaml,catalog/gcp/gcphavpnconnection/e2e/prerequisites/gcphavpnconnection-spoke-to-hub.yaml"
   tags:
     - planton-e2e
@@ -48,7 +50,7 @@ spec:
         name: planton-oss-e2e-gcpvpncn-spoke-gw
         fieldPath: status.outputs.gateway_self_link
   tunnels:
-    - name: planton-oss-e2e-gcpvpncn-knobs-0
+    - name: planton-oss-e2e-gcpvpncn-knobs-0-${E2E_RUN_ID}
       description: Planton E2E tunnel with every knob; safe to delete
       vpnGatewayInterface: 0
       ikeVersion: 2
@@ -72,7 +74,7 @@ spec:
       labels:
         tunnel: primary
       bgpSession:
-        name: planton-oss-e2e-gcpvpncn-knobs-s0
+        name: planton-oss-e2e-gcpvpncn-knobs-s0-${E2E_RUN_ID}
         interfaceIpRange: 169.254.100.1/30
         peerIpAddress: 169.254.100.2
         peerAsn: 64515
@@ -90,8 +92,8 @@ spec:
           minTransmitInterval: 1000
           multiplier: 5
         md5AuthenticationKey:
-          name: planton-oss-e2e-gcpvpncn-knobs-s0-md5
-    - name: planton-oss-e2e-gcpvpncn-knobs-1
+          name: planton-oss-e2e-gcpvpncn-knobs-s0-md5-${E2E_RUN_ID}
+    - name: planton-oss-e2e-gcpvpncn-knobs-1-${E2E_RUN_ID}
       vpnGatewayInterface: 1
       bgpSession:
         interfaceIpRange: 169.254.101.1/30

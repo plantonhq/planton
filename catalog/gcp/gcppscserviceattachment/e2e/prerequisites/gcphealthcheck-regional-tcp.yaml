@@ -18,6 +18,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
+  healthCheckName: planton-oss-e2e-gcppsca-tcp-rhc-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   description: Ephemeral regional health check for the gcppscserviceattachment regional E2E chain; safe to delete
   region: us-central1
   tcp:

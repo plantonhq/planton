@@ -1,0 +1,50 @@
+# The second act of custom-advertisement.yaml: the same gateway and router
+# with a 40-second BGP keepalive and a second label, a router patch and a
+# label set in place (the network, region, stack and names recreate them).
+# Not a scenario of its own (the second-act annotation keeps discovery from
+# running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpHaVpnGateway
+metadata:
+  name: planton-oss-e2e-gcpvpngw-custom
+  id: planton-oss-e2e-gcpvpngw-custom
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcphavpngateway
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: custom-advertisement.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+  tags:
+    - planton-e2e
+spec:
+  gatewayName: planton-oss-e2e-gcpvpngw-custom-${E2E_RUN_ID}
+  region: us-central1
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpvpcnetwork-prereq
+      fieldPath: status.outputs.network_self_link
+  gatewayIpVersion: IPV4
+  stackType: IPV4_ONLY
+  labels:
+    purpose: e2e
+    arm: custom-advertisement
+    act: updated
+  router:
+    name: planton-oss-e2e-gcpvpngw-custom-rtr-${E2E_RUN_ID}
+    description: Planton E2E router with custom advertisement; safe to delete
+    bgp:
+      asn: 4200000001
+      advertiseMode: CUSTOM
+      advertisedGroups:
+        - ALL_SUBNETS
+      advertisedIpRanges:
+        - range: 10.250.0.0/16
+          description: Planton E2E advertised range
+      keepaliveInterval: 40
+      identifierRange: 169.254.250.0/30
+  deletionPolicy: DELETE

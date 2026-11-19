@@ -27,6 +27,7 @@ import (
 	"fmt"
 	"os"
 	"sync"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/catalog/gcp/aa_e2e/verify"
@@ -477,8 +478,29 @@ func (h *Harness) VerifyDestroyed(ctx context.Context, kindDir string) error {
 	if len(outputs) == 0 {
 		return errors.Errorf("no stored outputs for %s -- VerifyDeployed may not have run", kindDir)
 	}
-	return v.VerifyAbsent(ctx, h.services, outputs)
+	// A delete can finish before a read sees it: Dialogflow still answered a
+	// security setting's read half a second after its destroy succeeded, and
+	// not a minute later. The verdict is read again for a bounded window; a
+	// resource still there after it is a real leftover.
+	deadline := time.Now().Add(absentReadBudget)
+	for {
+		err := v.VerifyAbsent(ctx, h.services, outputs)
+		if err == nil || time.Now().After(deadline) {
+			return err
+		}
+		select {
+		case <-ctx.Done():
+			return err
+		case <-time.After(absentReadInterval):
+		}
+	}
 }
+
+// absentReadBudget and absentReadInterval bound VerifyDestroyed's re-reads.
+const (
+	absentReadBudget   = 2 * time.Minute
+	absentReadInterval = 10 * time.Second
+)
 
 // VerifyExpectedDeployFailure implements the framework's optional
 // DeployFailureVerifier capability (expected-deploy-failure lanes, for

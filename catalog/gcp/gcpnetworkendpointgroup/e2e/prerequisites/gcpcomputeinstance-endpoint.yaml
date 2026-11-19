@@ -16,6 +16,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
+  instanceName: planton-oss-e2e-gcpneg-vm-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   zone: us-central1-a
   machineType: e2-micro
   bootDisk:

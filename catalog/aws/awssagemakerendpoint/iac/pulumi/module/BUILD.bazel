@@ -12,6 +12,7 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//catalog/aws/awssagemakerendpoint/v1alpha1",
+        "//pkg/iac/pulumi/pulumimodule/datatypes/decimalfloat",
         "//pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/aws/pulumiawsprovider",
         "//shared/catalogkind",

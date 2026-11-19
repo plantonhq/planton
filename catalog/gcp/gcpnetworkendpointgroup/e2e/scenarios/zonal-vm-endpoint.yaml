@@ -17,11 +17,12 @@ metadata:
     e2e-catalog-kind: gcpnetworkendpointgroup
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e-prerequisites: "GcpVpcNetwork,catalog/gcp/gcpnetworkendpointgroup/e2e/prerequisites/gcpsubnetwork-vm.yaml,catalog/gcp/gcpnetworkendpointgroup/e2e/prerequisites/gcpcomputeinstance-endpoint.yaml"
   tags:
     - planton-e2e
 spec:
-  negName: planton-oss-e2e-gcpneg-zonal
+  negName: planton-oss-e2e-gcpneg-zonal-${E2E_RUN_ID}
   description: Ephemeral zonal network endpoint group created by the Planton E2E harness; safe to delete
   zone: us-central1-a
   network:

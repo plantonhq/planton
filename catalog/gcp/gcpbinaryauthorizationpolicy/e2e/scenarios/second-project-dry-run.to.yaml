@@ -1,0 +1,45 @@
+# The second act of second-project-dry-run.yaml: the same policy with a new
+# description. A project has exactly one policy, written by one PUT for create,
+# update and destroy alike, so the update is in place by construction. Not a
+# scenario of its own (the second-act annotation keeps discovery from running
+# it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBinaryAuthorizationPolicy
+metadata:
+  name: planton-oss-e2e-gcpbapol-second
+  id: planton-oss-e2e-gcpbapol-second
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpbinaryauthorizationpolicy
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-identity-project: ${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID} # the policy lives in the second project, so its identity is granted there
+    planton.dev/e2e-exclusive: gcp-binauthz-policy # one policy per project
+    planton.dev/e2e-second-act: second-project-dry-run.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_SECOND_PROJECT_ID
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpbinaryauthorizationpolicy/e2e/prerequisites/attestor.yaml"
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    value: ${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID}
+  description: Planton E2E policy, updated in place
+  globalPolicyEvaluationMode: ENABLE
+  admissionWhitelistPatterns:
+    - us-docker.pkg.dev/planton-e2e/none/*
+  defaultAdmissionRule:
+    evaluationMode: ALWAYS_ALLOW
+    enforcementMode: ENFORCED_BLOCK_AND_AUDIT_LOG
+  clusterAdmissionRules:
+    - cluster: us-central1.planton-e2e-none
+      evaluationMode: REQUIRE_ATTESTATION
+      enforcementMode: DRYRUN_AUDIT_LOG_ONLY
+      requireAttestationsBy:
+        - valueFrom:
+            kind: GcpBinaryAuthorizationAttestor
+            name: planton-oss-e2e-gcpbapol-attestor
+            fieldPath: status.outputs.attestor_id

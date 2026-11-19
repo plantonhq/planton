@@ -1,0 +1,44 @@
+# The second act of http-minimal.yaml: the same function with a 90-second
+# request timeout, an update in place that rolls a new revision (its name and
+# region recreate it). Not a scenario of its own (the second-act annotation
+# keeps discovery from running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudFunction
+metadata:
+  name: planton-oss-e2e-cldfunc-http
+  id: planton-oss-e2e-cldfunc-http
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpcloudfunction
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: http-minimal.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+  tags:
+    - planton-e2e
+spec:
+  region: us-east1
+  functionName: e2e-fn-http-${E2E_RUN_ID}
+  description: Ephemeral function created by the Planton E2E harness; safe to delete
+  buildConfig:
+    runtime: python312
+    entryPoint: handler
+    source:
+      storageSource:
+        bucket:
+          value: planton-oss-e2e-cldfunc-src-${E2E_RUN_ID}
+        object: functions/hello.zip
+  serviceConfig:
+    availableMemory: 256M
+    timeoutSeconds: 90
+    scaling:
+      minInstanceCount: 0
+      maxInstanceCount: 1
+    allowUnauthenticated: true
+  trigger:
+    triggerType: HTTP
+  # Destroy really destroys in E2E: the live lanes prove the full lifecycle.
+  deletionPolicy: DELETE

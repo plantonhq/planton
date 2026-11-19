@@ -1,0 +1,58 @@
+# The second act of small.yaml: the same environment with a second label, an
+# update in place (its name, region, network and image recreate it). Not a
+# scenario of its own (the second-act annotation keeps discovery from running
+# it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudComposerEnvironment
+metadata:
+  name: planton-oss-e2e-gcpcce-smoke
+  id: planton-oss-e2e-gcpcce-smoke
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpcloudcomposerenvironment
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: small.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+  tags:
+    - planton-e2e
+spec:
+  region: us-central1
+  environmentName: e2e-cce-${E2E_RUN_ID}
+  labels:
+    team: data-platform
+    e2e-act: updated
+  nodeConfig:
+    network:
+      valueFrom:
+        kind: GcpVpcNetwork
+        name: planton-oss-e2e-gcpvpcnetwork-prereq
+        fieldPath: status.outputs.network_self_link
+    subnetwork:
+      valueFrom:
+        kind: GcpSubnetwork
+        name: planton-oss-e2e-gcpsnw-cce-prereq
+        fieldPath: status.outputs.subnetwork_self_link
+    # Composer 3 requires the workloads identity to be explicitly
+    # specified — the prerequisite service account carries its own
+    # composer.worker grant.
+    serviceAccount:
+      valueFrom:
+        kind: GcpServiceAccount
+        name: planton-oss-e2e-gsa-prereq
+        fieldPath: status.outputs.email
+  softwareConfig:
+    imageVersion: composer-3-airflow-2
+    envVariables:
+      E2E_MODE: smoke
+    # Stored by the module in a Secret Manager secret granted to the node
+    # service account alone; Airflow receives the version's resource name.
+    # A literal because this lane runs without a platform; on Planton the
+    # field takes only a $secret/ reference.
+    secretEnvVariables:
+      E2E_TOKEN: e2e-not-a-real-secret
+  environmentSize: ENVIRONMENT_SIZE_SMALL
+  deletionPolicy: DELETE

@@ -22,9 +22,12 @@ metadata:
     e2e-catalog-kind: gcpbackendservice
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the in-place update: a longer affinity cookie
   tags:
     - planton-e2e
 spec:
+  backendServiceName: planton-oss-e2e-gcpbs-smoke-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   description: Ephemeral backend service created by the Planton E2E harness; safe to delete
   protocol: HTTP
   loadBalancingScheme: EXTERNAL

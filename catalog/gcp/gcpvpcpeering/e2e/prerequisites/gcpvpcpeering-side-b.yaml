@@ -18,7 +18,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  peeringName: planton-oss-e2e-gcppeer-side-b
+  peeringName: planton-oss-e2e-gcppeer-side-b-${E2E_RUN_ID}
   network:
     valueFrom:
       kind: GcpVpcNetwork

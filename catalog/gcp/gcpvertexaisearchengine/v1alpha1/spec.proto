@@ -100,7 +100,10 @@ message GcpVertexAiSearchEngineKnowledgeGraphConfig {
 }
 
 // GcpVertexAiSearchEngineAgentCreationConfig has Google create the
-// Dialogflow CX agent a chat engine answers through.
+// Dialogflow CX agent a chat engine answers through. The agent takes the
+// engine's display_name and outlives the engine: deleting the engine leaves
+// it, and another engine created under the same display name is refused
+// until it is deleted.
 message GcpVertexAiSearchEngineAgentCreationConfig {
   // The company, organization, or entity the agent represents; used in the
   // knowledge connector's LLM prompt.

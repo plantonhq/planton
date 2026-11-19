@@ -17,9 +17,11 @@ metadata:
     e2e-catalog-kind: gcpbackendservice
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
   tags:
     - planton-e2e
 spec:
+  backendServiceName: planton-oss-e2e-gcpbs-neg-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   description: Ephemeral backend service with a live serverless NEG backend; safe to delete
   protocol: HTTP
   loadBalancingScheme: EXTERNAL_MANAGED

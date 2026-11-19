@@ -14,6 +14,8 @@ metadata:
     e2e-catalog-kind: gcpsccmuteconfig
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: project-dynamic.to.yaml # the in-place update: the description
     planton.dev/e2e-required-env: PLANTON_E2E_GCP_SCC_PROJECT_ID
   tags:
     - planton-e2e

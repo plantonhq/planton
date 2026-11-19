@@ -1,0 +1,38 @@
+# The second act of minimal.yaml: the same URL map with its routing test
+# reworded, a urlMaps update in place (its name, description and scope
+# recreate it). Not a scenario of its own (the second-act annotation keeps
+# discovery from running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpUrlMap
+metadata:
+  name: planton-oss-e2e-gcpum-smoke
+  id: planton-oss-e2e-gcpum-smoke
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpurlmap
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: minimal.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+  tags:
+    - planton-e2e
+spec:
+  urlMapName: planton-oss-e2e-gcpum-smoke-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
+  description: Ephemeral URL map created by the Planton E2E harness; safe to delete
+  defaultService:
+    valueFrom:
+      kind: GcpBackendService
+      name: planton-oss-e2e-gcpbs-prereq
+      fieldPath: status.outputs.self_link
+  tests:
+    - host: smoke.example.com
+      path: /
+      service:
+        valueFrom:
+          kind: GcpBackendService
+          name: planton-oss-e2e-gcpbs-prereq
+          fieldPath: status.outputs.self_link
+      description: Catch-all still resolves to the prerequisite backend service

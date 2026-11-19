@@ -207,6 +207,14 @@ recently" until ~10 minutes after create (measured 2026-08-26: refused at
 9m14s, accepted at 10m15s). An empty annotation value does not opt in —
 state the guard, its error signature, and the measured window.
 
+The deploy side has the same twin, `planton.dev/e2e-deploy-retry`, for a
+create the cloud refuses for a while after something it depends on was
+created, with no state a module could wait on, and which the kind's GUIDE
+already tells a person to re-apply (a full deploy re-runs 60s apart under a
+6-minute budget). First user: a Vertex AI Search filter or boost control,
+which Google refuses with "Unsupported field" for a field its data store's
+new schema indexes in about one run in three, and accepts on the next apply.
+
 **Run ONE live-lane process at a time per provider account.** Two `go test`
 processes hammering the same provider API concurrently can push a create into
 the retry path of the provider's HTTP client: the first POST lands
@@ -852,7 +860,18 @@ the harness (`provider.DependentsReleaser`) after the kind's last destroy and
 before DEPENDENCIES-DOWN, on every path, as the RELEASE-DEPENDENTS phase.
 The harness finds the objects by what this lane deployed (its run-scoped
 names), never by listing a type, so lanes side by side never release each
-other's. The GCP classes are in `catalog/gcp/aa_e2e/dependents.go`. Teaching
+other's. The GCP classes are in `catalog/gcp/aa_e2e/dependents.go`: Autokey's key,
+the Dialogflow agent a chat engine creates (which outlives the engine and
+keeps its display name taken), and the extra chat engines a Dialogflow data
+store tool makes (which outlive the agent and keep its store from being
+deleted). Cloud Asset Inventory indexes none of the Dialogflow objects, so
+the sweep cannot see them; the release is the only net.
+
+**VERIFY-CLEAN re-reads for two minutes.** A delete can finish before a read
+sees it (Dialogflow answered a security setting's read half a second after
+its destroy succeeded), so the GCP harness reads a destroyed kind's absence
+again every ten seconds for up to two minutes; a resource still there after
+that is a real leftover. Teaching
 the customer what the provider leaves is the kind's GUIDE's job.
 
 A kind's manifest flips from `derived` to `proven` only for what a passing

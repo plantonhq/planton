@@ -1,0 +1,41 @@
+# The second act of hardened-frontend.yaml: the same proxy with QUIC turned
+# on, a setQuicOverride call in place (its name, description and scope
+# recreate it). Not a scenario of its own (the second-act annotation keeps
+# discovery from running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTargetHttpsProxy
+metadata:
+  name: planton-oss-e2e-gcpthsp-hardened
+  id: planton-oss-e2e-gcpthsp-hardened
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcptargethttpsproxy
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: hardened-frontend.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+  tags:
+    - planton-e2e
+spec:
+  proxyName: planton-oss-e2e-gcpthsp-hardened-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
+  description: Ephemeral hardened target HTTPS proxy created by the Planton E2E harness; safe to delete
+  urlMap:
+    valueFrom:
+      kind: GcpUrlMap
+      name: planton-oss-e2e-gcpum-prereq
+      fieldPath: status.outputs.self_link
+  sslCertificates:
+    - valueFrom:
+        kind: GcpSslCertificate
+        name: planton-oss-e2e-gcpsslcert-prereq
+        fieldPath: status.outputs.self_link
+  sslPolicy:
+    valueFrom:
+      name: planton-oss-e2e-gcpsslpol-prereq
+  quicOverride: ENABLE
+  # Explicit DELETE keeps the destroy real and proves the no-op-diff
+  # behavior of the new arm.
+  deletionPolicy: DELETE

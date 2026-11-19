@@ -1,0 +1,40 @@
+# The second act of symmetric-rotation.yaml: the same key with a 120-day
+# rotation and a second label, both updated in place (the key ring, name,
+# purpose and protection level recreate it). Not a scenario of its own (the
+# second-act annotation keeps discovery from running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpKmsKey
+metadata:
+  name: planton-oss-e2e-gcpkms-smoke
+  id: planton-oss-e2e-gcpkms-smoke
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpkmskey
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: symmetric-rotation.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+  tags:
+    - planton-e2e
+spec:
+  keyRingId:
+    valueFrom:
+      kind: GcpKmsKeyRing
+      name: planton-oss-e2e-gcpkr-prereq
+      fieldPath: status.outputs.key_ring_id
+  keyName: e2e-cmek-${E2E_RUN_ID}
+  rotationPeriod: "10368000s"
+  # The version-template branch, proven live with HSM protection (the
+  # single HSM version is destroy-scheduled at teardown — cents of
+  # prorated cost).
+  versionTemplate:
+    algorithm: GOOGLE_SYMMETRIC_ENCRYPTION
+    protectionLevel: HSM
+  labels:
+    e2e-scenario: symmetric-rotation
+    e2e-act: updated
+  # Destroy really destroys in E2E: the live lanes prove the full lifecycle.
+  deletionPolicy: DELETE

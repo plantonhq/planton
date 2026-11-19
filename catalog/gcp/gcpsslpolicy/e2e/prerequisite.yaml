@@ -17,6 +17,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
+  sslPolicyName: planton-oss-e2e-gcpsslpol-prereq-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   description: Ephemeral SSL policy created by the Planton E2E harness as a prerequisite; safe to delete
   profile: MODERN
   minTlsVersion: TLS_1_2

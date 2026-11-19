@@ -17,6 +17,10 @@ metadata:
     e2e-catalog-kind: gcpbinaryauthorizationpolicy
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-identity-project: ${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID} # the policy lives in the second project, so its identity is granted there
+    planton.dev/e2e-exclusive: gcp-binauthz-policy # one policy per project
+    planton.dev/e2e-upgrade-manifest: second-project-dry-run.to.yaml # the update: the description
     planton.dev/e2e-required-env: PLANTON_E2E_GCP_SECOND_PROJECT_ID
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpbinaryauthorizationpolicy/e2e/prerequisites/attestor.yaml"
   tags:

@@ -2,6 +2,7 @@ package module
 
 import (
 	"fmt"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/datatypes/decimalfloat"
 
 	"github.com/pkg/errors"
 	awscloudfrontv1alpha1 "github.com/plantonhq/planton/catalog/aws/awscloudfront/v1alpha1"
@@ -62,7 +63,7 @@ func createDistribution(ctx *pulumi.Context, locals *Locals, provider *aws.Provi
 		if cd.SingleWeight != nil {
 			trafficConfig.Type = pulumi.String("SingleWeight")
 			weightArgs := &cloudfront.ContinuousDeploymentPolicyTrafficConfigSingleWeightConfigArgs{
-				Weight: pulumi.Float64(float64(cd.SingleWeight.Weight)),
+				Weight: pulumi.Float64(decimalfloat.Float64(cd.SingleWeight.Weight)),
 			}
 			if ss := cd.SingleWeight.SessionStickiness; ss != nil {
 				weightArgs.SessionStickinessConfig = &cloudfront.ContinuousDeploymentPolicyTrafficConfigSingleWeightConfigSessionStickinessConfigArgs{
