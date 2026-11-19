@@ -1,6 +1,8 @@
 package module
 
 import (
+	"strings"
+
 	"github.com/pkg/errors"
 	gcpcloudarmorpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudarmorpolicy/v1alpha1"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
@@ -117,7 +119,10 @@ func regionSecurityPolicy(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.
 
 	ctx.Export(OpPolicyId, createdPolicy.ID())
 	ctx.Export(OpPolicyName, createdPolicy.Name)
-	ctx.Export(OpPolicySelfLink, createdPolicy.SelfLink)
+	// The regional resource rides the beta provider, whose self links name
+	// compute/beta; the output is the v1 link Google reads back and the
+	// Terraform module exports, so both engines publish one value.
+	ctx.Export(OpPolicySelfLink, v1SelfLink(createdPolicy.SelfLink))
 	ctx.Export(OpFingerprint, createdPolicy.Fingerprint)
 	ctx.Export(OpRegion, pulumi.String(spec.Region))
 
@@ -156,7 +161,7 @@ func regionSecurityPolicy(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.
 	if err != nil {
 		return errors.Wrap(err, "failed to create network edge security service")
 	}
-	ctx.Export(OpNetworkEdgeSecurityServiceSelfLink, createdEdgeService.SelfLink)
+	ctx.Export(OpNetworkEdgeSecurityServiceSelfLink, v1SelfLink(createdEdgeService.SelfLink))
 
 	return nil
 }
@@ -379,4 +384,11 @@ func mapRegionPreconfiguredWafConfig(wc *gcpcloudarmorpolicyv1alpha1.GcpCloudArm
 	return &compute.RegionSecurityPolicyRulePreconfiguredWafConfigArgs{
 		Exclusions: exclusions,
 	}
+}
+
+// v1SelfLink rewrites a beta-API self link to the v1 form.
+func v1SelfLink(link pulumi.StringOutput) pulumi.StringOutput {
+	return link.ApplyT(func(value string) string {
+		return strings.Replace(value, "/compute/beta/", "/compute/v1/", 1)
+	}).(pulumi.StringOutput)
 }

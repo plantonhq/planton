@@ -2393,8 +2393,9 @@ type GcpBackendServiceLogConfig struct {
 	OptionalFields []string `protobuf:"bytes,4,rep,name=optional_fields,json=optionalFields,proto3" json:"optional_fields,omitempty"`
 	// HTTP request headers whose values join each log entry (e.g.
 	// "X-Request-Id", "User-Agent") — for tracing a request across services
-	// without instrumenting the backend. Requires enable and an HTTP-family
-	// protocol (HTTP, HTTPS, HTTP2, GRPC). Header names are case-insensitive
+	// without instrumenting the backend. Requires enable, an HTTP-family
+	// protocol (HTTP, HTTPS, HTTP2, GRPC), and a managed load-balancing scheme:
+	// Google refuses it on the classic EXTERNAL scheme. Header names are case-insensitive
 	// in HTTP; each entry is one name.
 	RequestHeaders []string `protobuf:"bytes,5,rep,name=request_headers,json=requestHeaders,proto3" json:"request_headers,omitempty"`
 	// HTTP response headers whose values join each log entry (e.g.
@@ -3097,7 +3098,7 @@ var File_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto protoreflect.FileDesc
 
 const file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/gcp/gcpbackendservice/v1alpha1/spec.proto\x12*dev.planton.gcp.gcpbackendservice.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xe6r\n" +
+	"1catalog/gcp/gcpbackendservice/v1alpha1/spec.proto\x12*dev.planton.gcp.gcpbackendservice.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xdcv\n" +
 	"\x15GcpBackendServiceSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\xae\x02\n" +
@@ -3165,7 +3166,8 @@ const file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDesc = "" +
 	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1aF\n" +
 	"\x18ResourceManagerTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xd6:\xbaH\xd2:\x1a\x9f\x02\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xcc>\xbaH\xc8>\x1a\xf3\x03\n" +
+	"!log_headers_need_a_managed_scheme\x12\xe1\x01log_config.request_headers and response_headers are refused on the classic EXTERNAL scheme (Google: \"Logging is not supported for GLOBAL EXTERNAL HTTP load balancers\"); use EXTERNAL_MANAGED or INTERNAL_MANAGED, or remove them\x1a\xe9\x01!has(this.log_config) || (size(this.log_config.request_headers) == 0 && size(this.log_config.response_headers) == 0) || (has(this.load_balancing_scheme) && this.load_balancing_scheme != '' && this.load_balancing_scheme != 'EXTERNAL')\x1a\x9f\x02\n" +
 	"\x1ccdn_requires_external_scheme\x12\x8e\x01Cloud CDN can only be enabled on external backend services (scheme EXTERNAL or EXTERNAL_MANAGED) — it does not front internal load balancers\x1an!this.enable_cdn || !(this.load_balancing_scheme in ['INTERNAL', 'INTERNAL_MANAGED', 'INTERNAL_SELF_MANAGED'])\x1a\xd0\x02\n" +
 	"&client_ip_no_destination_regional_only\x12\xbc\x01session_affinity CLIENT_IP_NO_DESTINATION exists only on a regional backend service (the internal passthrough Network Load Balancer as a next hop) — set region or choose another affinity\x1ag!has(this.session_affinity) || this.session_affinity != 'CLIENT_IP_NO_DESTINATION' || this.region != ''\x1a\xf5\x01\n" +
 	"\x17circuit_breakers_scheme\x12\x83\x01circuit_breakers only applies to Traffic Director backend services — set load_balancing_scheme INTERNAL_SELF_MANAGED or remove it\x1aT!has(this.circuit_breakers) || this.load_balancing_scheme == 'INTERNAL_SELF_MANAGED'\x1a\xfe\x01\n" +

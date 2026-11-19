@@ -3,56 +3,12 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpcloudfunction
 spec:
-  # Two scenarios: a public HTTP function from staged GCS source, and the
-  # same function routing egress through the GcpServerlessVpcConnector
-  # prerequisite chain (the live FK-composition proof). Budget generously:
-  # each deploy runs a real Cloud Build (~2-4 minutes) and the prerequisite
-  # chain includes a connector (~3-5 minutes each way).
-  #
-  # SOURCE STAGING: Gen 2 functions cannot deploy without a real source
-  # archive in GCS, and prerequisites deploy inside the runner with no hook
-  # before the scenario apply — so the test entrypoint zips
-  # e2e/fixtures/function-source/ and stages it in a run-scoped bucket
-  # BEFORE the runner starts. The scenarios' ${E2E_RUN_ID} bucket tokens
-  # land on that staged path.
-  #
-  # DIRECT-VPC EGRESS IS OFFLINE-PROVEN ONLY (deferral, 2026-08-11): a
-  # direct-VPC function leaves a serverless-ipv4-* address reservation in
-  # its subnetwork after destroy, held by the serverless service agent and
-  # released by GCP garbage collection on an hours scale — probe-verified
-  # live (idle Cloud Run service, us-east1: the reservation survived the
-  # service delete and blocked the subnet delete; functions Gen 2 run on
-  # the same infrastructure). The framework's dependency-teardown budget
-  # is ~6 minutes by design, so no live lane can destroy the subnet
-  # fixture behind such a scenario. The directVpcNetworkInterface /
-  # directVpcEgress rendering is offline-proven (tofu plan, both values).
-  # Unblock: GCP releasing the reservation synchronously with the service
-  # delete, or a harness design for hour-scale async releases.
-  #
-  # Live-proven 2026-08-12 on both engines under the apply-idempotency
-  # gate (http-minimal + vpc-connector-egress; chain relocated to us-east1
-  # the same day — see the prerequisites' notes). The gate's first
-  # connector-egress re-plan caught a REAL cross-engine defect: both
-  # modules treated the egress enum's zero value (PRIVATE_RANGES_ONLY) as
-  # "unset" and sent nothing, while the API materializes that default
-  # server-side — a perpetual remove-diff. Fixed to explicit-send-when-
-  # connector-present in BOTH engines (the direct_vpc_egress grain);
-  # re-proven green.
-  #
-  # The count-gated ambient-project fallback (data.google_project firing
-  # only for ambient-project secret entries) was LIVE-PROVEN via a
-  # throwaway apply (2026-08-12): a function with no projectId and one
-  # projectless secret ref deployed clean once the runtime SA held
-  # secretAccessor, re-planned idempotent, destroyed clean.
-  #
-  # Awaiting re-proof: secretEnvironmentVariables gained a value arm the
-  # module stores in its own Secret Manager secret (with-secret-env), and
-  # buildConfig.workerPool became a reference. Offline bar met: both
-  # modules build and validate, plans are clean, and no value reaches the
-  # function. Live facts the proof lane confirms: the function starts and
-  # reads the stored version through the default compute account's grant,
-  # re-plans clean, and destroy removes the secret.
+  # Proven live on both engines (2026-11-19): a public HTTP function, one
+  # egressing through a serverless VPC connector, and one reading a secret
+  # Secret Manager holds, each deployed, given a longer timeout in place and
+  # destroyed by an identity holding only this kind's permissions manifest,
+  # with the re-plan clean.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 60

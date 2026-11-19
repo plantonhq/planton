@@ -47,9 +47,7 @@ spec:
         provenance: derived
         reach: target
         privilege: uses_identity
-        condition:
-          spec_field_set: service_account
-        notes: Required when service_account names the identity the workflow's executions run as (both presets do) -- the Workflows API demands actAs on that account at deploy time. Migrated from the kinds' READMEs, which stated the deployer needs "iam.serviceAccounts.actAs on the workflow's service account when one is set".
+        notes: The Workflows API demands actAs on the account the workflow's executions run as -- the one service_account names, or the project's default compute service account when it names none (measured live -- "permission iam.serviceAccounts.ActAs is required on the workflow's new/current service account" without it, on both engines).
       - purpose: ManageEnvSecrets
         permissions:
           - serviceusage.services.enable

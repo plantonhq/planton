@@ -51,9 +51,7 @@ spec:
       cipherSuite:
         phase1:
           encryption:
-            - AES-GCM-16-256
-          integrity:
-            - HMAC-SHA2-256-128
+            - AES-GCM-16-256 # AEAD: Google refuses a phase-1 integrity list beside it
           prf:
             - PRF-HMAC-SHA2-256
           dh:

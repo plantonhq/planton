@@ -48,7 +48,8 @@ spec:
         permissions:
           - compute.backendServices.use
           - compute.backendBuckets.use
+          - compute.regionBackendServices.use
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: "Service-side checks, not module API calls -- GCP's urlMaps.insert reference documents that every backend target named in the map (default_service, path matcher defaults, path/route rule services, weighted_backend_services, request_mirror_policy, custom error services) authorizes with compute.backendServices.use or compute.backendBuckets.use on the referenced resource. Grant the one(s) matching what the map actually targets: backendBuckets.use is needed only when a bucket is a target (e.g. a custom error service or static-content path)."
+        notes: "Service-side checks, not module API calls -- GCP's urlMaps.insert reference documents that every backend target named in the map (default_service, path matcher defaults, path/route rule services, weighted_backend_services, request_mirror_policy, custom error services) authorizes with compute.backendServices.use or compute.backendBuckets.use on the referenced resource. Grant the one(s) matching what the map actually targets: backendBuckets.use is needed only when a bucket is a target (e.g. a custom error service or static-content path). A regional URL map checks compute.regionBackendServices.use on the services it routes to (measured live -- refused without it on both engines)."

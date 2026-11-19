@@ -61,7 +61,10 @@ resource "google_compute_subnetwork" "main" {
 
   # Deliberate address-space reclaims only: subnet routes still win over the
   # overlapping peer/on-prem routes this permits.
-  allow_subnet_cidr_routes_overlap = coalesce(var.spec.allow_subnet_cidr_routes_overlap, false)
+  # Google refuses the field on a special-purpose subnet (proxy-only, PSC
+  # NAT, ...): "Invalid field set in subnetwork with purpose
+  # REGIONAL_MANAGED_PROXY". It is sent only on an ordinary PRIVATE subnet.
+  allow_subnet_cidr_routes_overlap = local.purpose == "PRIVATE" ? coalesce(var.spec.allow_subnet_cidr_routes_overlap, false) : null
 
   # Safety latch: by default an empty secondary-range list is NOT sent on
   # update, so a partial manifest cannot silently wipe GKE pod ranges.

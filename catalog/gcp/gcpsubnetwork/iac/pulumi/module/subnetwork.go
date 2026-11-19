@@ -91,7 +91,6 @@ func subnetwork(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) 
 
 		// Deliberate address-space reclaims only: subnet routes still win
 		// over the overlapping peer/on-prem routes this permits.
-		AllowSubnetCidrRoutesOverlap: pulumi.BoolPtr(spec.AllowSubnetCidrRoutesOverlap),
 
 		SecondaryIpRanges: secondaryRanges,
 	}
@@ -175,6 +174,13 @@ func subnetwork(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) 
 			logConfig.FilterExpr = pulumi.String(spec.LogConfig.FilterExpr)
 		}
 		args.LogConfig = logConfig
+	}
+
+	// Google refuses the field on a special-purpose subnet (proxy-only, PSC
+	// NAT, ...): "Invalid field set in subnetwork with purpose
+	// REGIONAL_MANAGED_PROXY". It is sent only on an ordinary PRIVATE subnet.
+	if purpose := spec.GetPurpose(); purpose == "" || purpose == "PRIVATE" {
+		args.AllowSubnetCidrRoutesOverlap = pulumi.BoolPtr(spec.AllowSubnetCidrRoutesOverlap)
 	}
 
 	createdSubnetwork, err := compute.NewSubnetwork(ctx, "subnetwork", args,

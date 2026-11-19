@@ -85,7 +85,12 @@ IPv6, TCP, or UDP header, optionally masked) — never through the HTTP
 `match`. Every listed field must match (AND); within a field any listed
 value matches (OR); an empty `networkMatch: {}` matches every packet and
 is how the default rule is written. A rule that names a user-defined
-field the policy never defined is rejected before deploy.
+field the policy never defined is rejected before deploy. Rules beyond the
+default rule need advanced network DDoS protection turned on in the region
+first: on a region with only `STANDARD`, Google refuses the policy
+("Creating network security policies with custom rules requires advanced
+network DDoS protection to be enabled in the region"), so a `STANDARD`
+policy carries the default rule alone.
 
 `ddosProtectionConfig.ddosProtection` is the reason most network
 policies exist. `STANDARD` is Google's always-on protection, free with

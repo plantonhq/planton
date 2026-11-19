@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling the five APIs a Gen 2 deploy exercises -- cloudfunctions, cloudbuild, run, artifactregistry, and eventarc -- so a fresh project works on the first deploy. disable_on_destroy is false in both modules, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling the five APIs a Gen 2 deploy exercises -- cloudfunctions, cloudbuild, run, artifactregistry, and eventarc -- so a fresh project works on the first deploy. disable_on_destroy is false in both modules, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageFunction
         permissions:
           - cloudfunctions.functions.create
@@ -27,34 +27,34 @@ spec:
           - cloudfunctions.functions.update
           - cloudfunctions.functions.delete
           - cloudfunctions.operations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_cloudfunctions2_function -- create, read/refresh, in-place updates (build config, service config, scaling, networking, event trigger), and destroy. Function mutations on the Cloud Functions v2 API return long-running operations the provider polls, which authorize as cloudfunctions.operations.get. The committed action-inventory snapshot (pkg/iac/actioninventory/gcp.yaml) carries the cloudfunctions service prefix (iam.googleapis.com queryTestablePermissions, retrieved 2026-08-22) and lists all five permissions named here.
+        notes: Covers google_cloudfunctions2_function -- create, read/refresh, in-place updates (build config, service config, scaling, networking, event trigger), and destroy. Function mutations on the Cloud Functions v2 API return long-running operations the provider polls, which authorize as cloudfunctions.operations.get. The committed action-inventory snapshot (pkg/iac/actioninventory/gcp.yaml) carries the cloudfunctions service prefix (iam.googleapis.com queryTestablePermissions, retrieved 2026-08-22) and lists all five permissions named here. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: GrantPublicInvoker
         permissions:
           - run.services.setIamPolicy
           - run.services.getIamPolicy
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: service_config.allow_unauthenticated
-        notes: Covers google_cloud_run_service_iam_member -- Gen 2 functions are served by Cloud Run, so "allow unauthenticated" is a roles/run.invoker grant to allUsers on the UNDERLYING Cloud Run service, created only for HTTP-triggered functions with service_config.allow_unauthenticated true (the 01-http-api preset). IAM member resources read the current policy before modifying it, so getIamPolicy rides along.
+        notes: Covers google_cloud_run_service_iam_member -- Gen 2 functions are served by Cloud Run, so "allow unauthenticated" is a roles/run.invoker grant to allUsers on the UNDERLYING Cloud Run service, created only for HTTP-triggered functions with service_config.allow_unauthenticated true (the 01-http-api preset). IAM member resources read the current policy before modifying it, so getIamPolicy rides along. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ActAsServiceAccounts
         permissions:
           - iam.serviceAccounts.actAs
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: uses_identity
-        notes: Deploying a Gen 2 function requires iam.serviceAccounts.actAs on the runtime identity (service_config.service_account_email, or the project's Compute Engine default service account when unset) -- and additionally on the build identity when build_config.service_account names one, and on the trigger identity when event_trigger.service_account_email names one. No shape of this component escapes the runtime-identity requirement.
+        notes: Deploying a Gen 2 function requires iam.serviceAccounts.actAs on the runtime identity (service_config.service_account_email, or the project's Compute Engine default service account when unset) -- and additionally on the build identity when build_config.service_account names one, and on the trigger identity when event_trigger.service_account_email names one. No shape of this component escapes the runtime-identity requirement. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ResolveAmbientProject
         permissions:
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers the count-gated data google_project lookup, needed only when a secret env var naming a secret the author owns, or a secret volume, omits its project_id and the manifest names no project of its own (a stored value takes its project from the secret the module created) -- the v2 API requires an explicit project on every secret reference, so the module resolves the ambient one. Plans that name their project (or carry no ambient-project secrets) never exercise it.
+        notes: Covers the count-gated data google_project lookup, needed only when a secret env var naming a secret the author owns, or a secret volume, omits its project_id and the manifest names no project of its own (a stored value takes its project from the secret the module created) -- the v2 API requires an explicit project on every secret reference, so the module resolves the ambient one. Plans that name their project (or carry no ambient-project secrets) never exercise it. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageEnvSecrets
         permissions:
           - serviceusage.services.enable
@@ -73,21 +73,21 @@ spec:
           - secretmanager.versions.enable
           - secretmanager.versions.disable
           - secretmanager.versions.destroy
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: service_config.secret_environment_variables.value
-        notes: Covers the secret the modules keep per service_config.secret_environment_variables[].value -- google_project_service enabling secretmanager.googleapis.com (disable_on_destroy false), google_secret_manager_secret (user-managed replication in the function's region, attribution labels), google_secret_manager_secret_version holding the value (a new value creates the new version before destroying the old; versions.access is the provider's read of the payload on refresh), and google_secret_manager_secret_iam_member granting roles/secretmanager.secretAccessor on that one secret to the function's runtime identity (IAM member resources read the policy before modifying it). Teardown deletes the secret, which destroys its versions. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers the secret the modules keep per service_config.secret_environment_variables[].value -- google_project_service enabling secretmanager.googleapis.com (disable_on_destroy false), google_secret_manager_secret (user-managed replication in the function's region, attribution labels), google_secret_manager_secret_version holding the value (a new value creates the new version before destroying the old; versions.access is the provider's read of the payload on refresh), and google_secret_manager_secret_iam_member granting roles/secretmanager.secretAccessor on that one secret to the function's runtime identity (IAM member resources read the policy before modifying it). Teardown deletes the secret, which destroys its versions. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ResolveDefaultRuntimeIdentity
         permissions:
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: service_config.secret_environment_variables.value
-        notes: The data source the modules use to name the project's Compute Engine default service account (<project-number>-compute@developer.gserviceaccount.com) in the secretAccessor grant when service_config.service_account_email is unset -- google_project reads the project to learn its number. Not exercised when service_config.service_account_email names the identity (the condition cannot express "unset", so the entry rides the stored-value condition).
+        notes: The data source the modules use to name the project's Compute Engine default service account (<project-number>-compute@developer.gserviceaccount.com) in the secretAccessor grant when service_config.service_account_email is unset -- google_project reads the project to learn its number. Not exercised when service_config.service_account_email names the identity (the condition cannot express "unset", so the entry rides the stored-value condition). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageEnvSecrets
         permissions:
           - serviceusage.services.enable
@@ -106,18 +106,18 @@ spec:
           - secretmanager.versions.enable
           - secretmanager.versions.disable
           - secretmanager.versions.destroy
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: service_config.secret_environment_variables.value
-        notes: Covers the secret the modules keep per service_config.secret_environment_variables[].value -- google_project_service enabling secretmanager.googleapis.com (disable_on_destroy false), google_secret_manager_secret (user-managed replication in the function's region, attribution labels), google_secret_manager_secret_version holding the value (a new value creates the new version before destroying the old; versions.access is the provider's read of the payload on refresh), and google_secret_manager_secret_iam_member granting roles/secretmanager.secretAccessor on that one secret to the function's runtime identity (IAM member resources read the policy before modifying it). Teardown deletes the secret, which destroys its versions. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers the secret the modules keep per service_config.secret_environment_variables[].value -- google_project_service enabling secretmanager.googleapis.com (disable_on_destroy false), google_secret_manager_secret (user-managed replication in the function's region, attribution labels), google_secret_manager_secret_version holding the value (a new value creates the new version before destroying the old; versions.access is the provider's read of the payload on refresh), and google_secret_manager_secret_iam_member granting roles/secretmanager.secretAccessor on that one secret to the function's runtime identity (IAM member resources read the policy before modifying it). Teardown deletes the secret, which destroys its versions. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ResolveDefaultRuntimeIdentity
         permissions:
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: service_config.secret_environment_variables.value
-        notes: The data source the modules use to name the project's Compute Engine default service account (<project-number>-compute@developer.gserviceaccount.com) in the secretAccessor grant when service_config.service_account_email is unset -- google_project reads the project to learn its number. Not exercised when service_config.service_account_email names the identity (the condition cannot express "unset", so the entry rides the stored-value condition).
+        notes: The data source the modules use to name the project's Compute Engine default service account (<project-number>-compute@developer.gserviceaccount.com) in the secretAccessor grant when service_config.service_account_email is unset -- google_project reads the project to learn its number. Not exercised when service_config.service_account_email names the identity (the condition cannot express "unset", so the entry rides the stored-value condition). Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

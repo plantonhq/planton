@@ -56,11 +56,8 @@ spec:
   logConfig:
     enable: true
     sampleRate: 0.5
-    # Header values joined to each log entry (HTTP protocol).
-    requestHeaders:
-      - X-Request-Id
-    responseHeaders:
-      - Content-Type
+    # No header lists: Google refuses them on the classic EXTERNAL scheme (the
+    # neg-backend scenario carries them on EXTERNAL_MANAGED).
   customResponseHeaders:
     - "X-Cache-Status: {cdn_cache_status}"
 

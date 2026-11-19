@@ -162,7 +162,9 @@ type GcpPscServiceAttachmentSpec struct {
 	// The provider compares the list as a set.
 	ConsumerAcceptLists []*GcpPscServiceAttachmentConsumer `protobuf:"bytes,8,rep,name=consumer_accept_lists,json=consumerAcceptLists,proto3" json:"consumer_accept_lists,omitempty"`
 	// Consumer projects (IDs or numbers, or GcpProject references) refused
-	// even under ACCEPT_AUTOMATIC. Compared as a set.
+	// even under ACCEPT_AUTOMATIC. Google checks each one exists and refuses
+	// a project it can't find ("Must be a valid project ID"). Compared as a
+	// set.
 	ConsumerRejectLists []*v1.StringValueOrRef `protobuf:"bytes,9,rep,name=consumer_reject_lists,json=consumerRejectLists,proto3" json:"consumer_reject_lists,omitempty"`
 	// Whether a change to the accept or reject lists reconciles EXISTING
 	// connections: false (Google's default) only affects PENDING endpoints,

@@ -232,7 +232,9 @@ the attachment at once. Required, at least 1.
 `[]string | valueFrom`
 
 Consumer projects (IDs or numbers, or GcpProject references) refused
-even under ACCEPT_AUTOMATIC. Compared as a set.
+even under ACCEPT_AUTOMATIC. Google checks each one exists and refuses
+a project it can't find ("Must be a valid project ID"). Compared as a
+set.
 
 - references: GcpProject (`status.outputs.project_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpProject, name: <that resource's name>, fieldPath: status.outputs.project_id}} -- a bare string does not parse

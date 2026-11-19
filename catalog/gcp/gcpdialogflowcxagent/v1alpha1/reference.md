@@ -587,8 +587,12 @@ projects/{project}/locations/{location}/collections/{collection}/engines/{engine
 Delete the linked Vertex AI Search engine (gen_app_builder_settings)
 when the agent is destroyed. Google creates that engine when a data
 store is connected to the agent, outside any declaration; this is the
-only way it goes away with the agent. Refused when the engine is a
-kind reference, because that block owns the engine's lifecycle.
+only way it goes away with the agent. It removes the one engine the
+agent records: a data store tool can make Google create more than one
+(<agent-id>-chat-<n>), and the others outlive the agent and keep its data
+store from being deleted until they are deleted by hand. Refused when
+the engine is a kind reference, because that block owns the engine's
+lifecycle.
 
 ### spec.gitIntegrationSettings
 
@@ -1799,7 +1803,9 @@ in place.
 
 `GcpDialogflowCxAgentFallbackSettings`
 
-Generative fallback.
+Generative fallback. Left unset, it is sent empty, which is what Google
+holds for an agent that declares none: no prompt is overwritten, and the
+re-plan stays clean.
 
 ### spec.generativeSettings[].fallbackSettings.selectedPrompt
 

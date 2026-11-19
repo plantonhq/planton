@@ -3,20 +3,13 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpcloudcomposerenvironment
 spec:
-  # Composed scenario: installs the VPC -> subnetwork chain, then creates
-  # a small Composer 3 environment. Composer assembles a GKE cluster,
-  # Cloud SQL database, web server, and DAG bucket behind the resource —
-  # creates run 25-45 minutes and destroys ~10-15 minutes, so a batch
-  # run for both engines needs >=240m.
-  #
-  # Awaiting re-proof: the small scenario now carries a plain env var and
-  # a secretEnvVariables entry the module stores in its own Secret Manager
-  # secret, handing the environment the version's resource name. Offline
-  # bar met: both modules build and validate, plans are clean, and no
-  # value reaches the environment. Live facts the proof lane confirms:
-  # the environment accepts both variables, re-plans clean, and destroy
-  # removes the secret.
+  # Proven live on both engines (2026-11-19): a small Composer 3 environment
+  # on its own subnetwork with a dedicated workloads identity, environment
+  # variables and a secret stored in Secret Manager, deployed (about 25
+  # minutes), relabelled in place and destroyed by an identity holding only
+  # this kind's permissions manifest, with the re-plan clean. Composer 3 runs
+  # its cluster in Google's project and uses none of the project's CPU quota.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 240

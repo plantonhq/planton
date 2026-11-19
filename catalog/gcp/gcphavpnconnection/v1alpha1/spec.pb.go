@@ -272,12 +272,15 @@ func (x *GcpHaVpnConnectionPeer) GetGcpGateway() *v1.StringValueOrRef {
 // Google's default set for that class; set them to satisfy a device or a
 // compliance baseline that forbids weaker suites. The current accepted
 // names are Google's to publish (Cloud VPN "supported IKE ciphers"), so no
-// list is walled here.
+// list is walled here, with one exception Google enforces at create: an
+// all-AEAD encryption list (AES-GCM-*) carries its own integrity, and Google
+// refuses a phase-1 integrity list beside it.
 type GcpHaVpnConnectionCipherSuitePhase1 struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Encryption algorithms.
 	Encryption []string `protobuf:"bytes,1,rep,name=encryption,proto3" json:"encryption,omitempty"`
-	// Integrity algorithms.
+	// Integrity algorithms. Leave empty when every encryption algorithm is
+	// AES-GCM (AEAD).
 	Integrity []string `protobuf:"bytes,2,rep,name=integrity,proto3" json:"integrity,omitempty"`
 	// Pseudo-random functions.
 	Prf []string `protobuf:"bytes,3,rep,name=prf,proto3" json:"prf,omitempty"`
@@ -1439,14 +1442,15 @@ const file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_rawDesc = "" +
 	"\x10external_gateway\x18\x01 \x01(\v2N.dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionExternalGatewayR\x0fexternalGateway\x12~\n" +
 	"\vgcp_gateway\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xef\x18\x92\xd4a status.outputs.gateway_self_linkR\n" +
 	"gcpGateway:\xaf\x02\xbaH\xab\x02\x1a\xa8\x02\n" +
-	"\x10exactly_one_peer\x12\x7fset exactly one of external_gateway (an on-premises or other-cloud device) or gcp_gateway (another Google Cloud HA VPN gateway)\x1a\x92\x01[has(this.external_gateway), has(this.gcp_gateway) && (this.gcp_gateway.value != '' || has(this.gcp_gateway.value_from))].filter(x, x).size() == 1\"\x85\x01\n" +
+	"\x10exactly_one_peer\x12\x7fset exactly one of external_gateway (an on-premises or other-cloud device) or gcp_gateway (another Google Cloud HA VPN gateway)\x1a\x92\x01[has(this.external_gateway), has(this.gcp_gateway) && (this.gcp_gateway.value != '' || has(this.gcp_gateway.value_from))].filter(x, x).size() == 1\"\xa3\x03\n" +
 	"#GcpHaVpnConnectionCipherSuitePhase1\x12\x1e\n" +
 	"\n" +
 	"encryption\x18\x01 \x03(\tR\n" +
 	"encryption\x12\x1c\n" +
 	"\tintegrity\x18\x02 \x03(\tR\tintegrity\x12\x10\n" +
 	"\x03prf\x18\x03 \x03(\tR\x03prf\x12\x0e\n" +
-	"\x02dh\x18\x04 \x03(\tR\x02dh\"u\n" +
+	"\x02dh\x18\x04 \x03(\tR\x02dh:\x9b\x02\xbaH\x97\x02\x1a\x94\x02\n" +
+	"\x1ephase1_aead_takes_no_integrity\x12\x82\x01phase-1 encryption that is all AES-GCM (AEAD) needs no separate integrity algorithm, and Google refuses one: leave integrity empty\x1amthis.encryption.size() == 0 || !this.encryption.all(e, e.startsWith('AES-GCM')) || this.integrity.size() == 0\"u\n" +
 	"#GcpHaVpnConnectionCipherSuitePhase2\x12\x1e\n" +
 	"\n" +
 	"encryption\x18\x01 \x03(\tR\n" +

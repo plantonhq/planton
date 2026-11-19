@@ -619,6 +619,17 @@ var _ = ginkgo.Describe("GcpBackendServiceSpec", func() {
 		gomega.Expect(strings.Contains(err.Error(), "CUSTOM")).To(gomega.BeTrue())
 	})
 
+	ginkgo.It("should reject log header lists on the classic EXTERNAL scheme and accept them on a managed one", func() {
+		target := minimal()
+		target.Spec.LogConfig = &GcpBackendServiceLogConfig{Enable: true, RequestHeaders: []string{"X-Request-Id"}}
+		err := validator.Validate(target)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(strings.Contains(err.Error(), "classic EXTERNAL")).To(gomega.BeTrue())
+
+		target.Spec.LoadBalancingScheme = str("EXTERNAL_MANAGED")
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+	})
+
 	ginkgo.It("should reject log optional_mode with logging disabled", func() {
 		target := minimal()
 		target.Spec.LogConfig = &GcpBackendServiceLogConfig{
@@ -664,8 +675,9 @@ var _ = ginkgo.Describe("GcpBackendServiceSpec", func() {
 		gomega.Expect(err).To(gomega.HaveOccurred())
 	})
 
-	ginkgo.It("should accept logged request and response headers with logging enabled", func() {
+	ginkgo.It("should accept logged request and response headers with logging enabled on a managed scheme", func() {
 		target := minimal()
+		target.Spec.LoadBalancingScheme = str("EXTERNAL_MANAGED")
 		target.Spec.LogConfig = &GcpBackendServiceLogConfig{
 			Enable:          true,
 			RequestHeaders:  []string{"X-Request-Id", "User-Agent"},

@@ -762,7 +762,10 @@ Reorder matching results.
 
 The data store whose documents are boosted: a GcpVertexAiSearchDataStore
 reference (its full name) or a literal
-projects/{project}/locations/{location}/collections/{collection}/dataStores/{store}.
+projects/{project_number}/locations/{location}/collections/{collection}/dataStores/{store}.
+Google accepts a control's data store only by project NUMBER and refuses
+the project id ("invalid data store name"); the data store kind's name
+output already carries the number.
 
 - references: GcpVertexAiSearchDataStore (`status.outputs.name`)
 - rule: {"required":true}
@@ -851,7 +854,8 @@ Drop non-matching results.
 `string | valueFrom` · required
 
 The data store the filter applies to (a GcpVertexAiSearchDataStore
-reference or a literal full name).
+reference or a literal full name, by project number as on the boost
+action).
 
 - references: GcpVertexAiSearchDataStore (`status.outputs.name`)
 - rule: {"required":true}
@@ -876,7 +880,8 @@ Pin a link.
 `string | valueFrom` · required
 
 The data store the promotion applies to (a GcpVertexAiSearchDataStore
-reference or a literal full name).
+reference or a literal full name, by project number as on the boost
+action).
 
 - references: GcpVertexAiSearchDataStore (`status.outputs.name`)
 - rule: {"required":true}
@@ -1455,7 +1460,10 @@ Text appended to the default system instruction.
 What happens to the engine, its controls, and its assistants when this
 resource is destroyed:
   "" / "DELETE" -- deleted (the widget config and serving config are
-                   Google's own and stay with the engine's deletion)
+                   Google's own and stay with the engine's deletion; a
+                   control the serving config lists is deleted by the
+                   engine's own deletion, since Google refuses to
+                   delete a listed control)
   "PREVENT"     -- destroy fails
   "ABANDON"     -- everything leaves management and stays in GCP
 The data stores are separate resources and are not touched.

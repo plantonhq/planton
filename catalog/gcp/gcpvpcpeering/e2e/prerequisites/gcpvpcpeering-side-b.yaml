@@ -30,3 +30,4 @@ spec:
       name: planton-oss-e2e-gcpvpcnetwork-prereq
       fieldPath: status.outputs.network_self_link
   importCustomRoutes: true
+  updateStrategy: CONSENSUS # Google requires both sides of a pair to use the same strategy

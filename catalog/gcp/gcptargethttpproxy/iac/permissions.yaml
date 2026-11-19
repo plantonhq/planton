@@ -45,7 +45,8 @@ spec:
       - purpose: UseUrlMap
         permissions:
           - compute.urlMaps.use
+          - compute.regionUrlMaps.use
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: A service-side check, not a module API call -- GCP's targetHttpProxies.insert reference documents that authorization requires compute.urlMaps.use on the referenced urlMap, so the deploying principal needs it on the URL map's project even though the module never touches the URL map API itself. The same check backs setUrlMap repoints.
+        notes: A service-side check, not a module API call -- GCP's targetHttpProxies.insert reference documents that authorization requires compute.urlMaps.use on the referenced urlMap, so the deploying principal needs it on the URL map's project even though the module never touches the URL map API itself. The same check backs setUrlMap repoints. A regional proxy checks compute.regionUrlMaps.use on its URL map (measured live -- refused without it on both engines).

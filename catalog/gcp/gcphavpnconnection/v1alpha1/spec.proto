@@ -141,11 +141,20 @@ message GcpHaVpnConnectionPeer {
 // Google's default set for that class; set them to satisfy a device or a
 // compliance baseline that forbids weaker suites. The current accepted
 // names are Google's to publish (Cloud VPN "supported IKE ciphers"), so no
-// list is walled here.
+// list is walled here, with one exception Google enforces at create: an
+// all-AEAD encryption list (AES-GCM-*) carries its own integrity, and Google
+// refuses a phase-1 integrity list beside it.
 message GcpHaVpnConnectionCipherSuitePhase1 {
+  option (buf.validate.message).cel = {
+    id: "phase1_aead_takes_no_integrity"
+    message: "phase-1 encryption that is all AES-GCM (AEAD) needs no separate integrity algorithm, and Google refuses one: leave integrity empty"
+    expression: "this.encryption.size() == 0 || !this.encryption.all(e, e.startsWith('AES-GCM')) || this.integrity.size() == 0"
+  };
+
   // Encryption algorithms.
   repeated string encryption = 1;
-  // Integrity algorithms.
+  // Integrity algorithms. Leave empty when every encryption algorithm is
+  // AES-GCM (AEAD).
   repeated string integrity = 2;
   // Pseudo-random functions.
   repeated string prf = 3;

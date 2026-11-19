@@ -54,10 +54,11 @@ spec:
       - purpose: UseReferencedUrlMap
         permissions:
           - compute.urlMaps.use
+          - compute.regionUrlMaps.use
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: Service-side check GCP's targetHttpsProxies.insert reference documents on the referenced urlMap -- always needed, since url_map is required.
+        notes: Service-side check GCP's targetHttpsProxies.insert reference documents on the referenced urlMap -- always needed, since url_map is required. A regional proxy checks compute.regionUrlMaps.use on its URL map (measured live -- refused without it on both engines).
       - purpose: UseReferencedSslCertificates
         permissions:
           - compute.sslCertificates.get

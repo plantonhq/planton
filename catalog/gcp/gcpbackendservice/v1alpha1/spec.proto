@@ -35,6 +35,11 @@ import "shared/options/options.proto";
 // cached and keyed. Cloud Armor attaches by reference through
 // security_policy / edge_security_policy.
 message GcpBackendServiceSpec {
+  option (buf.validate.message).cel = {
+    id: "log_headers_need_a_managed_scheme"
+    message: "log_config.request_headers and response_headers are refused on the classic EXTERNAL scheme (Google: \"Logging is not supported for GLOBAL EXTERNAL HTTP load balancers\"); use EXTERNAL_MANAGED or INTERNAL_MANAGED, or remove them"
+    expression: "!has(this.log_config) || (size(this.log_config.request_headers) == 0 && size(this.log_config.response_headers) == 0) || (has(this.load_balancing_scheme) && this.load_balancing_scheme != '' && this.load_balancing_scheme != 'EXTERNAL')"
+  };
   // The GCP project that owns the backend service.
   // Can be a literal project ID or a reference to a GcpProject resource.
   // If omitted, the provider's default project is used.
@@ -1270,8 +1275,9 @@ message GcpBackendServiceLogConfig {
 
   // HTTP request headers whose values join each log entry (e.g.
   // "X-Request-Id", "User-Agent") — for tracing a request across services
-  // without instrumenting the backend. Requires enable and an HTTP-family
-  // protocol (HTTP, HTTPS, HTTP2, GRPC). Header names are case-insensitive
+  // without instrumenting the backend. Requires enable, an HTTP-family
+  // protocol (HTTP, HTTPS, HTTP2, GRPC), and a managed load-balancing scheme:
+  // Google refuses it on the classic EXTERNAL scheme. Header names are case-insensitive
   // in HTTP; each entry is one name.
   repeated string request_headers = 5 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,

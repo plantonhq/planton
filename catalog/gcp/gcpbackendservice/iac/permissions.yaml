@@ -69,12 +69,13 @@ spec:
         permissions:
           - compute.instanceGroups.use
           - compute.networkEndpointGroups.use
+          - compute.regionNetworkEndpointGroups.use
         provenance: derived
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: backends
-        notes: Service-side checks, not module API calls -- each backend group authorizes with compute.instanceGroups.use or compute.networkEndpointGroups.use on the referenced group. Grant the one(s) matching what the backends actually reference, on the projects that own those groups (which differ from the backend service's project in cross-project setups).
+        notes: Service-side checks, not module API calls -- each backend group authorizes with compute.instanceGroups.use or compute.networkEndpointGroups.use on the referenced group. Grant the one(s) matching what the backends actually reference, on the projects that own those groups (which differ from the backend service's project in cross-project setups). A regional network endpoint group backend is checked as compute.regionNetworkEndpointGroups.use (measured live -- refused without it on both engines).
       - purpose: ManageSignedUrlKeys
         permissions:
           - compute.backendServices.addSignedUrlKey

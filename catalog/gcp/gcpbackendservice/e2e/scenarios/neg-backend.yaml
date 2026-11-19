@@ -25,6 +25,14 @@ spec:
   description: Ephemeral backend service with a live serverless NEG backend; safe to delete
   protocol: HTTP
   loadBalancingScheme: EXTERNAL_MANAGED
+  logConfig:
+    enable: true
+    sampleRate: 0.5
+    # Header values joined to each log entry: accepted on a managed scheme.
+    requestHeaders:
+      - X-Request-Id
+    responseHeaders:
+      - Content-Type
   backends:
     - group:
         valueFrom:

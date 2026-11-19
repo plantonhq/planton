@@ -66,7 +66,10 @@ spec:
           - compute.globalAddresses.use
           - compute.networks.use
           - compute.subnetworks.use
+          - compute.regionBackendServices.use
+          - compute.regionTargetHttpProxies.use
+          - compute.regionTargetHttpsProxies.use
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: "Compute authorizes attaching the rule to what it references: use on the target HTTP or HTTPS proxy (whichever kind target resolves to), use on a reserved static address when ip_address references one, and use on the VPC network and subnetwork for the internal-facing and Private Service Connect schemes. All verified live; only the permissions matching the manifest's actual references are exercised."
+        notes: "Compute authorizes attaching the rule to what it references: use on the target HTTP or HTTPS proxy (whichever kind target resolves to), use on a reserved static address when ip_address references one, and use on the VPC network and subnetwork for the internal-facing and Private Service Connect schemes. All verified live; only the permissions matching the manifest's actual references are exercised. A regional rule checks the regional form of what it targets: compute.regionBackendServices.use for an internal passthrough rule (measured live -- refused without it on both engines), and the regional proxies' use for a regional load balancer."

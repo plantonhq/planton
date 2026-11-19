@@ -36,22 +36,9 @@ spec:
       size: 2
       mask: "0x8F00"
 
+  # The default rule alone: on a region with only STANDARD protection,
+  # Google refuses any other rule on a network policy.
   rules:
-    - action: allow
-      priority: 100
-      description: Signed partner flows (preview)
-      preview: true
-      networkMatch:
-        srcIpRanges:
-          - 10.10.0.0/16
-        ipProtocols:
-          - tcp
-        destPorts:
-          - "443"
-        userDefinedFields:
-          - name: SIG1_AT_0
-            values:
-              - "0x8F00"
     - action: allow
       priority: 2147483647
       description: Default rule -- every packet

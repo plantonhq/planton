@@ -170,7 +170,7 @@ var _ = ginkgo.Describe("GcpHaVpnConnectionSpec", func() {
 		t0.LocalTrafficSelector = []string{"10.0.0.0/8"}
 		t0.RemoteTrafficSelector = []string{"192.168.0.0/16"}
 		t0.CipherSuite = &GcpHaVpnConnectionCipherSuite{
-			Phase1: &GcpHaVpnConnectionCipherSuitePhase1{Encryption: []string{"AES-GCM-16-256"}, Integrity: []string{"HMAC-SHA2-256-128"}, Prf: []string{"PRF-HMAC-SHA2-256"}, Dh: []string{"GROUP-14"}},
+			Phase1: &GcpHaVpnConnectionCipherSuitePhase1{Encryption: []string{"AES-GCM-16-256"}, Prf: []string{"PRF-HMAC-SHA2-256"}, Dh: []string{"GROUP-14"}},
 			Phase2: &GcpHaVpnConnectionCipherSuitePhase2{Encryption: []string{"AES-GCM-16-256"}, Integrity: []string{"HMAC-SHA2-256-128"}, Pfs: []string{"GROUP-14"}},
 		}
 		t0.Labels = map[string]string{"tunnel": "primary"}
@@ -283,6 +283,20 @@ var _ = ginkgo.Describe("GcpHaVpnConnectionSpec", func() {
 		target = toOnprem()
 		target.Spec.Tunnels[0].PeerExternalGatewayInterface = nil
 		expectError(target, "with peer.external_gateway every tunnel sets peer_external_gateway_interface")
+	})
+
+	ginkgo.It("should reject a phase-1 integrity list beside all-AEAD encryption, and accept it beside CBC", func() {
+		target := toGcp()
+		target.Spec.Tunnels[0].CipherSuite = &GcpHaVpnConnectionCipherSuite{
+			Phase1: &GcpHaVpnConnectionCipherSuitePhase1{Encryption: []string{"AES-GCM-16-256"}, Integrity: []string{"HMAC-SHA2-256-128"}},
+		}
+		expectError(target, "needs no separate integrity algorithm")
+
+		target = toGcp()
+		target.Spec.Tunnels[0].CipherSuite = &GcpHaVpnConnectionCipherSuite{
+			Phase1: &GcpHaVpnConnectionCipherSuitePhase1{Encryption: []string{"AES-CBC-256"}, Integrity: []string{"HMAC-SHA2-256-128"}},
+		}
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
 	})
 
 	ginkgo.It("should reject a tunnel naming an external interface the gateway does not declare", func() {
