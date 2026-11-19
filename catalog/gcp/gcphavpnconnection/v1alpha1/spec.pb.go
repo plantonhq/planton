@@ -763,10 +763,10 @@ type GcpHaVpnConnectionBgpSession struct {
 	// ASN. Any public or private ASN. Required. Mutable.
 	PeerAsn uint32 `protobuf:"varint,4,opt,name=peer_asn,json=peerAsn,proto3" json:"peer_asn,omitempty"`
 	// The peer's address on the tunnel: the other usable address of
-	// interface_ip_range (e.g. "169.254.10.2" for 169.254.10.1/30). Google
-	// derives it from the interface range when empty, so it is normally left
-	// unset; set it only when the device insists on a specific address.
-	// Sent only when set. Immutable.
+	// interface_ip_range (e.g. "169.254.10.2" for 169.254.10.1/30). Left unset,
+	// the modules send exactly that address: Google refuses an IPv4 session
+	// whose peer address is missing. Set it only when the device insists on a
+	// specific address. Immutable.
 	PeerIpAddress *string `protobuf:"bytes,5,opt,name=peer_ip_address,json=peerIpAddress,proto3,oneof" json:"peer_ip_address,omitempty"`
 	// The priority (MED) of routes advertised to this peer: where the peer
 	// has more than one matching route of equal length, the LOWEST value

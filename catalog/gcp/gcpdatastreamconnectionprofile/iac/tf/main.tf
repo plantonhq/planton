@@ -46,8 +46,8 @@ resource "google_datastream_connection_profile" "this" {
       password                       = mysql_profile.value.password != "" ? mysql_profile.value.password : null
       secret_manager_stored_password = mysql_profile.value.secret_manager_stored_password != "" ? mysql_profile.value.secret_manager_stored_password : null
 
-      # Declared (even empty) means sent: an empty ssl_config turns TLS on
-      # without certificate verification.
+      # Sent when declared; the provider itself drops an empty block, so an
+      # empty ssl_config reaches Google as no TLS setting (the spec comment).
       dynamic "ssl_config" {
         for_each = mysql_profile.value.ssl_config != null ? [mysql_profile.value.ssl_config] : []
         content {

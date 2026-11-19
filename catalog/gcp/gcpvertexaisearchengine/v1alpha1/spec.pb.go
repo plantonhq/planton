@@ -293,7 +293,10 @@ func (x *GcpVertexAiSearchEngineKnowledgeGraphConfig) GetFeatureConfig() *GcpVer
 }
 
 // GcpVertexAiSearchEngineAgentCreationConfig has Google create the
-// Dialogflow CX agent a chat engine answers through.
+// Dialogflow CX agent a chat engine answers through. The agent takes the
+// engine's display_name and outlives the engine: deleting the engine leaves
+// it, and another engine created under the same display name is refused
+// until it is deleted.
 type GcpVertexAiSearchEngineAgentCreationConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The company, organization, or entity the agent represents; used in the
@@ -1065,7 +1068,10 @@ type GcpVertexAiSearchEngineBoostAction struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The data store whose documents are boosted: a GcpVertexAiSearchDataStore
 	// reference (its full name) or a literal
-	// projects/{project}/locations/{location}/collections/{collection}/dataStores/{store}.
+	// projects/{project_number}/locations/{location}/collections/{collection}/dataStores/{store}.
+	// Google accepts a control's data store only by project NUMBER and refuses
+	// the project id ("invalid data store name"); the data store kind's name
+	// output already carries the number.
 	DataStore *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=data_store,json=dataStore,proto3" json:"data_store,omitempty"`
 	// The filter selecting the documents to boost, in Vertex AI Search filter
 	// syntax, e.g. "(category: ANY(\"docs\"))".
@@ -1141,7 +1147,8 @@ func (x *GcpVertexAiSearchEngineBoostAction) GetInterpolationBoostSpec() *GcpVer
 type GcpVertexAiSearchEngineFilterAction struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The data store the filter applies to (a GcpVertexAiSearchDataStore
-	// reference or a literal full name).
+	// reference or a literal full name, by project number as on the boost
+	// action).
 	DataStore *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=data_store,json=dataStore,proto3" json:"data_store,omitempty"`
 	// The filter results must match, in Vertex AI Search filter syntax.
 	Filter        string `protobuf:"bytes,2,opt,name=filter,proto3" json:"filter,omitempty"`
@@ -1290,7 +1297,8 @@ func (x *GcpVertexAiSearchEngineSearchLinkPromotion) GetEnabled() bool {
 type GcpVertexAiSearchEnginePromoteAction struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The data store the promotion applies to (a GcpVertexAiSearchDataStore
-	// reference or a literal full name).
+	// reference or a literal full name, by project number as on the boost
+	// action).
 	DataStore *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=data_store,json=dataStore,proto3" json:"data_store,omitempty"`
 	// The promoted link.
 	SearchLinkPromotion *GcpVertexAiSearchEngineSearchLinkPromotion `protobuf:"bytes,2,opt,name=search_link_promotion,json=searchLinkPromotion,proto3" json:"search_link_promotion,omitempty"`
@@ -1567,6 +1575,13 @@ func (x *GcpVertexAiSearchEngineControl) GetSynonymsAction() *GcpVertexAiSearchE
 // PATCHes the engine's own "default_search" serving config; Google creates
 // it with the engine and never deletes it). Every id must name a control
 // declared on this engine with the matching action.
+//
+// Google refuses to delete a control a serving config lists, and the
+// serving config is never deleted, so a listed control is not deleted on
+// its own: it goes when the engine is deleted, which takes every control
+// with it. Removing a listed control from controls[] unlists it and leaves
+// it in the engine until then, inert; declare a control that replaces it
+// under a new control_id, since Google keeps the old id taken.
 type GcpVertexAiSearchEngineServingConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Ids of boost controls to apply.
@@ -2889,7 +2904,10 @@ type GcpVertexAiSearchEngineSpec struct {
 	// resource is destroyed:
 	//
 	//	"" / "DELETE" -- deleted (the widget config and serving config are
-	//	                 Google's own and stay with the engine's deletion)
+	//	                 Google's own and stay with the engine's deletion; a
+	//	                 control the serving config lists is deleted by the
+	//	                 engine's own deletion, since Google refuses to
+	//	                 delete a listed control)
 	//	"PREVENT"     -- destroy fails
 	//	"ABANDON"     -- everything leaves management and stays in GCP
 	//

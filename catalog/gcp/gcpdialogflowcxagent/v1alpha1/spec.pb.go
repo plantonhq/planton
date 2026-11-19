@@ -2715,7 +2715,9 @@ type GcpDialogflowCxAgentGenerativeSettings struct {
 	// settings for another language and leaves the old language's settings
 	// in place.
 	LanguageCode string `protobuf:"bytes,1,opt,name=language_code,json=languageCode,proto3" json:"language_code,omitempty"`
-	// Generative fallback.
+	// Generative fallback. Left unset, it is sent empty, which is what Google
+	// holds for an agent that declares none: no prompt is overwritten, and the
+	// re-plan stays clean.
 	FallbackSettings *GcpDialogflowCxAgentFallbackSettings `protobuf:"bytes,2,opt,name=fallback_settings,json=fallbackSettings,proto3" json:"fallback_settings,omitempty"`
 	// Filters on generated text.
 	GenerativeSafetySettings *GcpDialogflowCxAgentGenerativeSafetySettings `protobuf:"bytes,3,opt,name=generative_safety_settings,json=generativeSafetySettings,proto3" json:"generative_safety_settings,omitempty"`
@@ -2877,8 +2879,12 @@ type GcpDialogflowCxAgentSpec struct {
 	// Delete the linked Vertex AI Search engine (gen_app_builder_settings)
 	// when the agent is destroyed. Google creates that engine when a data
 	// store is connected to the agent, outside any declaration; this is the
-	// only way it goes away with the agent. Refused when the engine is a
-	// kind reference, because that block owns the engine's lifecycle.
+	// only way it goes away with the agent. It removes the one engine the
+	// agent records: a data store tool can make Google create more than one
+	// (<agent-id>-chat-<n>), and the others outlive the agent and keep its data
+	// store from being deleted until they are deleted by hand. Refused when
+	// the engine is a kind reference, because that block owns the engine's
+	// lifecycle.
 	DeleteChatEngineOnDestroy bool `protobuf:"varint,18,opt,name=delete_chat_engine_on_destroy,json=deleteChatEngineOnDestroy,proto3" json:"delete_chat_engine_on_destroy,omitempty"`
 	// Git integration for exporting and restoring agent content.
 	GitIntegrationSettings *GcpDialogflowCxAgentGitIntegrationSettings `protobuf:"bytes,19,opt,name=git_integration_settings,json=gitIntegrationSettings,proto3" json:"git_integration_settings,omitempty"`

@@ -84,9 +84,11 @@ func (x *GcpDatastreamConnectionProfileGcsProfile) GetRootPath() string {
 }
 
 // GcpDatastreamConnectionProfileMysqlSslConfig encrypts the MySQL session
-// with TLS (`mysql_profile.ssl_config`). Declared -- even empty -- turns TLS
-// on; the certificates add server and client verification. Every value is
-// input-only: Google stores it and never returns it. Immutable.
+// with TLS (`mysql_profile.ssl_config`), verified by the certificates it
+// carries. Declare at least the CA certificate: the google provider sends the
+// block only when a field is set, so an empty ssl_config reaches Google as
+// no TLS setting at all. Every value is input-only: Google stores it and
+// never returns it. Immutable.
 type GcpDatastreamConnectionProfileMysqlSslConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// PEM certificate of the CA that signed the server's certificate.

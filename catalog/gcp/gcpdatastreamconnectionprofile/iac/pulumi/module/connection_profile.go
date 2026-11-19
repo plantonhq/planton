@@ -95,8 +95,9 @@ func connectionProfile(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Pro
 			Password:                    secret(mysql.Password),
 			SecretManagerStoredPassword: optionalString(mysql.SecretManagerStoredPassword.GetValue()),
 		}
-		// Declared (even empty) means sent: an empty ssl_config turns TLS on
-		// without certificate verification -- the Terraform module's rule.
+		// Sent when declared, as the Terraform module does; the provider itself
+		// drops an empty block, so an empty ssl_config reaches Google as no TLS
+		// setting (the spec comment).
 		if ssl := mysql.SslConfig; ssl != nil {
 			mysqlArgs.SslConfig = &datastream.ConnectionProfileMysqlProfileSslConfigArgs{
 				CaCertificate:     secret(ssl.CaCertificate),
