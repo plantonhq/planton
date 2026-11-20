@@ -16,17 +16,17 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers TWO google_project_service resources -- the module enables both memorystore.googleapis.com and networkconnectivity.googleapis.com (PSC service connectivity automation rides the latter). disable_on_destroy is false on both, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers TWO google_project_service resources -- the module enables both memorystore.googleapis.com and networkconnectivity.googleapis.com (PSC service connectivity automation rides the latter). disable_on_destroy is false on both, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ReadProject
         permissions:
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers the data "google_project" lookup the Terraform module runs to resolve the provider's default project when spec project_id is omitted (the PSC endpoint then lands next to the instance).
+        notes: Covers the data "google_project" lookup the Terraform module runs to resolve the provider's default project when spec project_id is omitted (the PSC endpoint then lands next to the instance). Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageInstance
         permissions:
           - memorystore.instances.create
@@ -34,7 +34,7 @@ spec:
           - memorystore.instances.update
           - memorystore.instances.delete
           - memorystore.operations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_memorystore_instance -- create, read/refresh, in-place updates (shards, replicas, persistence, backups, maintenance, and attaching or swapping an ACL policy through acl_policy, which the API applies as an instance update with no separate permission on the module's side), and destroy. Instance mutations are long-running operations (creates commonly run tens of minutes) the provider polls as memorystore.operations.get, a real dotted permission in IAM's testable-permissions inventory.
+        notes: Covers google_memorystore_instance -- create, read/refresh, in-place updates (shards, replicas, persistence, backups, maintenance, and attaching or swapping an ACL policy through acl_policy, which the API applies as an instance update with no separate permission on the module's side), and destroy. Instance mutations are long-running operations (creates commonly run tens of minutes) the provider polls as memorystore.operations.get, a real dotted permission in IAM's testable-permissions inventory. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

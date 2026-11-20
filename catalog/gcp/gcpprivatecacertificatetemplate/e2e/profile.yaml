@@ -3,20 +3,14 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpprivatecacertificatetemplate
 spec:
-  # Awaiting the live proof lane. Both scenarios prove in the harness
-  # project with roles/privateca.templateAdmin: a template with only a
-  # description, and a TLS server template with predefined values (is_ca
-  # false sent as itself; a template with ca_options but no is_ca would send
-  # null_ca), identity constraints with a CEL rule, and passthrough
-  # extensions. The module enables privateca.googleapis.com itself. A
-  # template bills nothing. Offline bar met: both modules build and
-  # validate, offline plans for the reference manifest, both scenarios, the
-  # presets, and throwaway arms are clean on the pinned provider, and the
-  # accounting is total. Live facts the proof lane confirms: (1) each
-  # template reads back with the platform attribution labels and RE-PLANS
-  # CLEAN on both engines; (2) the predefined values match the manifest;
-  # (3) destroy leaves the verifier reading 404.
+  # Proven live on both engines (2026-11-20): a minimal template and a TLS
+  # server template with predefined values, a CEL rule and passthrough
+  # extensions, each deployed, re-described in place (UpdateCertificateTemplate
+  # in Google's audit log) and destroyed by an identity holding only this kind's
+  # permissions manifest, with the re-plan clean. Google stores CA options and
+  # key usage on every template, so both modules always send them; a deleted
+  # template's ID is never usable again.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15

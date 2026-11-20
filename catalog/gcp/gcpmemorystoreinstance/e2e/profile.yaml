@@ -3,32 +3,12 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpmemorystoreinstance
 spec:
-  # Composed scenario: the instance rides the full service-connectivity
-  # chain — VPC -> subnet -> service connection policy (gcp-memorystore
-  # class) — all installed from the prerequisite graph via consumer-scoped
-  # overrides. Instance create/destroy runs ~10-20 minutes per engine, so
-  # batch runs need a generous timeout (>=120m for both engines).
-  # deploy -> ACTIVE + discovery-endpoint verify -> destroy -> verify
-  # gone, on both provisioners.
-  #
-  # Live-proven 2026-08-12 on both engines under the apply-idempotency
-  # gate (deploy ~7m, destroy ~11m per engine; service-connectivity chain
-  # reverse-destroyed clean). The lane's FIRST run caught an API truth:
-  # the maintenance window start time supports WHOLE HOURS ONLY (400
-  # "Invalid start time, only hours are supported" on a minute-carrying
-  # window, both engines) — the spec's minute field was removed and the
-  # exclusion recorded in iac/provider-parity.yaml.
-  #
-  # OFFLINE-PROVEN ARMS (deferrals with unblock conditions):
-  #   - server_ca_mode CUSTOMER_MANAGED_CAS_CA + server_ca_pool: needs a
-  #     CA Service pool in-region (real cost + undeletable-material
-  #     class). Unblock: a lane that owns a CA Service pool fixture.
-  #   - maintenance_version: update-only (the API rejects it at create);
-  #     needs an existing instance plus an available target version.
-  #     Unblock: an update-arm lane on a live instance.
-  #   - psc_auto_connections / DR composition / seed sources: composed
-  #     multi-instance shapes beyond the minimal scenario's scope,
-  #     offline-rendered.
+  # Proven live on both engines (2026-11-20): a standalone shared-core Valkey
+  # instance reached through the prerequisite service connection policy,
+  # deployed, its maintenance day moved in place (UpdateInstance in Google's
+  # audit log) and destroyed by an identity holding only this kind's
+  # permissions manifest, with the re-plan clean. shard_count and
+  # replica_count resize in place in CLUSTER mode (the provider updates them).
   tier: 1
   #
   # Awaiting re-proof: the instance gained acl_policy (a shared Valkey ACL
@@ -36,6 +16,6 @@ spec:
   # needs an ACL policy resource the catalog does not yet model, so the arm
   # stays offline-proven; the next proof confirms the untouched shape still
   # re-plans clean with the new argument unset.
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 120
