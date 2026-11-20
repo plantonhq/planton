@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers TWO google_project_service resources -- the module enables both redis.googleapis.com and networkconnectivity.googleapis.com (PSC service connectivity automation rides the latter). disable_on_destroy is false on both, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers TWO google_project_service resources -- the module enables both redis.googleapis.com and networkconnectivity.googleapis.com (PSC service connectivity automation rides the latter). disable_on_destroy is false on both, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageCluster
         permissions:
           - redis.clusters.create
@@ -27,7 +27,7 @@ spec:
           - redis.clusters.update
           - redis.clusters.delete
           - redis.operations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_redis_cluster -- create, read/refresh, in-place updates (shards, replicas, node type, redis configs, persistence, backups, maintenance, the replication role, the PSC config, deletion protection, and attaching or swapping an ACL policy through acl_policy), and destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). Cluster mutations are long-running operations (creates run ten to fifteen minutes) the provider polls as redis.operations.get. roles/redis.admin contains all five.
+        notes: Covers google_redis_cluster -- create, read/refresh, in-place updates (shards, replicas, node type, redis configs, persistence, backups, maintenance, the replication role, the PSC config, deletion protection, and attaching or swapping an ACL policy through acl_policy), and destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). Cluster mutations are long-running operations (creates run ten to fifteen minutes) the provider polls as redis.operations.get. roles/redis.admin contains all five. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
