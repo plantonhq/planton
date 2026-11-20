@@ -26,7 +26,7 @@ Choose your platform:
 
 | Platform | Command |
 |----------|---------|
-| **macOS and Linux** | `curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh` |
+| **macOS and Linux** | `curl -fsSL https://planton.ai/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh` |
 | **Windows** | See [Windows installation](#install-on-windows) |
 
 Setting Planton up from your coding agent? The Setup Prompt in your organization's Getting Started runs this same installer for you. See [Coding Agents](/docs/coding-agents).
@@ -38,7 +38,7 @@ Setting Planton up from your coding agent? The Setup Prompt in your organization
 One command installs the latest CLI on macOS or Linux, Intel or Arm, with no `sudo`:
 
 ```bash
-curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh
+curl -fsSL https://planton.ai/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh
 ```
 
 The installer:
@@ -118,7 +118,7 @@ xattr -dr com.apple.quarantine /usr/local/bin/planton
 Inside WSL, [the installer](#the-installer-macos-and-linux) works as on Linux:
 
 ```bash
-curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh
+curl -fsSL https://planton.ai/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh
 ```
 
 Or download the Linux binary yourself:

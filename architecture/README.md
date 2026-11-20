@@ -158,7 +158,7 @@ The default modules are intentionally designed to be **Terraform-like** even whe
 
 Installation:
 ```bash
-curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh
+curl -fsSL https://planton.ai/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh
 ```
 
 **What the CLI does:**
@@ -1307,7 +1307,7 @@ jobs:
       
       - name: Install Planton
         run: |
-          curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh
+          curl -fsSL https://planton.ai/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh
           echo "$HOME/.planton/bin" >> "$GITHUB_PATH"
       
       - name: Validate Manifests
@@ -1599,7 +1599,7 @@ Planton is a multi-cloud deployment framework that provides **consistency withou
 
 **Getting Started:**
 ```bash
-curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh
+curl -fsSL https://planton.ai/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh
 ~/.planton/bin/planton version
 ```
 

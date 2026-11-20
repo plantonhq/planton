@@ -73,7 +73,7 @@ The desktop app is the product; the CLI is its companion — the same deploys,
 from your shell, driving the same engine.
 
 ```bash
-curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh
+curl -fsSL https://planton.ai/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh
 ```
 
 The installer puts the CLI at `~/.planton/bin/planton` on macOS or Linux and prints how to add it to your PATH. Homebrew, Windows and direct downloads are in [the CLI docs](https://planton.ai/docs/cli).
