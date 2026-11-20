@@ -74,7 +74,7 @@ The skills do their best work with the `planton` CLI. Schema lookups (`planton e
 On macOS or Linux, the installer puts the CLI at `~/.planton/bin/planton` and prints how to add it to your PATH:
 
 ```bash
-curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh
+curl -fsSL https://planton.ai/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh
 planton login
 planton context set --org your-org -e dev
 ```

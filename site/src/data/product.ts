@@ -61,7 +61,7 @@ const proof = chapter('proof-it-works');
  * docs, the README). It puts the CLI at ~/.planton/bin/planton.
  */
 export const CLI_INSTALL_COMMAND =
-  'curl -fsSL https://downloads.planton.ai/client-apps/planton/cli/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh';
+  'curl -fsSL https://planton.ai/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh';
 
 export const PRODUCT_PAGES: readonly ProductPage[] = [
   {
