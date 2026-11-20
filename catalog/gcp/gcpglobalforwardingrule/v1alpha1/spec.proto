@@ -146,8 +146,11 @@ message GcpGlobalForwardingRuleSpec {
   // literal IP ("34.120.1.2") or an address resource URL. When omitted,
   // Google Cloud assigns an ephemeral IP — fine for testing, but production
   // frontends should reserve a static address so DNS never has to chase a
-  // new VIP. Required for Private Service Connect rules to Google APIs.
-  // Immutable.
+  // new VIP. Required for Private Service Connect rules to Google APIs. A
+  // Private Service Connect rule to a service attachment takes the address
+  // resource (its self link), not a literal IP: Google refuses an IP there
+  // ("Invalid value for field 'resource.IPAddress' ... The URL is
+  // malformed"). Immutable.
   dev.planton.shared.foreignkey.v1.StringValueOrRef ip_address = 5 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpGlobalAddress,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.address",

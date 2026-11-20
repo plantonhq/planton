@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageTensorboard
         permissions:
           - aiplatform.tensorboards.create
@@ -27,10 +27,10 @@ spec:
           - aiplatform.tensorboards.update
           - aiplatform.tensorboards.delete
           - aiplatform.locations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_vertex_ai_tensorboard (Pulumi vertex.AiTensorboard) -- created and deleted through long-running operations the provider polls, patched for display name, description, and labels, read on every refresh. GCP defines no aiplatform.operations.get permission; a TensorBoard's operations (tensorboards/{id}/operations/{op}) are read under aiplatform.locations.get -- without it Google refuses the provider's poll with 403 "The caller does not have permission", and with only it the poll succeeds (measured).
+        notes: Covers google_vertex_ai_tensorboard (Pulumi vertex.AiTensorboard) -- created and deleted through long-running operations the provider polls, patched for display name, description, and labels, read on every refresh. GCP defines no aiplatform.operations.get permission; a TensorBoard's operations (tensorboards/{id}/operations/{op}) are read under aiplatform.locations.get -- without it Google refuses the provider's poll with 403 "The caller does not have permission", and with only it the poll succeeds (measured). Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageTensorboardExperimentsAndRuns
         permissions:
           - aiplatform.tensorboardExperiments.create
@@ -41,7 +41,7 @@ spec:
           - aiplatform.tensorboardRuns.get
           - aiplatform.tensorboardRuns.update
           - aiplatform.tensorboardRuns.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_vertex_ai_tensorboard_experiment and google_vertex_ai_tensorboard_run (Pulumi vertex.AiTensorboardExperiment / AiTensorboardRun) for every declared experiment and run. roles/aiplatform.admin contains every permission in the three groups.
+        notes: Covers google_vertex_ai_tensorboard_experiment and google_vertex_ai_tensorboard_run (Pulumi vertex.AiTensorboardExperiment / AiTensorboardRun) for every declared experiment and run. roles/aiplatform.admin contains every permission in the three groups. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

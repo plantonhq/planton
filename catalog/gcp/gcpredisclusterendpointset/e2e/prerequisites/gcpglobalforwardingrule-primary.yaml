@@ -30,7 +30,7 @@ spec:
     valueFrom:
       kind: GcpAddress
       name: planton-oss-e2e-gcprclep-ip-prim
-      fieldPath: status.outputs.address
+      fieldPath: status.outputs.self_link # a PSC rule to a service attachment takes the address resource; Google refuses a literal IP
   network:
     valueFrom:
       kind: GcpVpcNetwork
