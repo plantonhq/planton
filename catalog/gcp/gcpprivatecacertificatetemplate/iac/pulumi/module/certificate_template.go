@@ -45,9 +45,11 @@ func certificateTemplate(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.P
 	if spec.ProjectId.GetValue() != "" {
 		args.Project = pulumi.String(spec.ProjectId.GetValue())
 	}
-	if spec.PredefinedValues != nil {
-		args.PredefinedValues = x509Parameters(spec.PredefinedValues)
-	}
+	// Google stores a predefined values block on every template, empty when
+	// the template sets none, and the provider reads it back as one block.
+	// An omitted block would then preview its removal forever, so a template
+	// without predefined values sends the block empty, which states nothing.
+	args.PredefinedValues = x509Parameters(spec.PredefinedValues)
 	if identity := spec.IdentityConstraints; identity != nil {
 		identityArgs := &certificateauthority.CertificateTemplateIdentityConstraintsArgs{
 			AllowSubjectPassthrough:         pulumi.Bool(identity.AllowSubjectPassthrough),

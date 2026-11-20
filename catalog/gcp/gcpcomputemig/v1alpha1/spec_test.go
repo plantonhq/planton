@@ -240,6 +240,17 @@ var _ = ginkgo.Describe("GcpComputeMigSpec", func() {
 			gomega.Expect(validator.Validate(m)).ToNot(gomega.Succeed())
 		})
 
+		ginkgo.It("rejects a host error timeout on Spot VMs", func() {
+			m := minimal()
+			m.Spec.Template.Scheduling = &GcpComputeMigScheduling{
+				ProvisioningModel:       "SPOT",
+				HostErrorTimeoutSeconds: proto.Int32(120),
+			}
+			gomega.Expect(validator.Validate(m)).ToNot(gomega.Succeed())
+			m.Spec.Template.Scheduling.ProvisioningModel = "STANDARD"
+			gomega.Expect(validator.Validate(m)).To(gomega.Succeed())
+		})
+
 		ginkgo.It("requires TERMINATE maintenance for confidential VMs and accelerators", func() {
 			m := minimal()
 			m.Spec.Template.ConfidentialInstanceConfig = &GcpComputeMigConfidentialConfig{

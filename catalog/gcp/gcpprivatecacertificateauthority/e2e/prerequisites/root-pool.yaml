@@ -16,5 +16,5 @@ metadata:
     - planton-e2e
 spec:
   location: us-central1
-  caPoolId: e2e-gcppcaa-root-${E2E_RUN_ID}
+  caPoolId: e2e-gcppcaa-root-${E2E_SCENARIO}-${E2E_RUN_ID}
   tier: DEVOPS

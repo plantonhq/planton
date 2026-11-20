@@ -1,6 +1,8 @@
 # Consumer-scoped GcpPrivateCaPool install profile for the gcppcaa chain: a
 # DevOps pool the scenario's authority lives in. The cloud-side ID carries
-# the run id; metadata.name stays fixed for reference resolution.
+# the scenario and the run id: Google holds a deleted pool's ID forever, and
+# both scenarios build this pool in one lane. metadata.name stays fixed for
+# reference resolution.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpPrivateCaPool
 metadata:
@@ -17,5 +19,5 @@ metadata:
     - planton-e2e
 spec:
   location: us-central1
-  caPoolId: e2e-gcppcaa-pool-${E2E_RUN_ID}
+  caPoolId: e2e-gcppcaa-pool-${E2E_SCENARIO}-${E2E_RUN_ID}
   tier: DEVOPS

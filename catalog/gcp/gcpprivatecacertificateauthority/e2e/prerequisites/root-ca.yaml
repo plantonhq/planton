@@ -24,7 +24,7 @@ spec:
       kind: GcpPrivateCaPool
       name: planton-oss-e2e-gcppcaa-root-pool
       fieldPath: status.outputs.name
-  certificateAuthorityId: e2e-gcppcaa-root-${E2E_RUN_ID}
+  certificateAuthorityId: e2e-gcppcaa-root-${E2E_SCENARIO}-${E2E_RUN_ID}
   config:
     subjectConfig:
       subject:

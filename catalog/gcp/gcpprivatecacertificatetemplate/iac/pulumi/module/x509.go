@@ -7,7 +7,8 @@ import (
 )
 
 // x509Parameters maps the spec's X.509 parameters onto the provider's
-// CertificateTemplatePredefinedValues block. Every block is sent only when the spec sets it.
+// CertificateTemplatePredefinedValues block. Every inner block is sent only when the spec sets
+// it, so a nil p yields the empty block a template without predefined values sends.
 func x509Parameters(p *gcpprivatecacertificatetemplatev1alpha1.GcpPrivateCaCertificateTemplateX509Parameters) *certificateauthority.CertificateTemplatePredefinedValuesArgs {
 	args := &certificateauthority.CertificateTemplatePredefinedValuesArgs{}
 	if p.GetCaOptions() != nil {

@@ -300,6 +300,11 @@ message GcpComputeMigSpec {
 // group.
 message GcpComputeMigTemplate {
   option (buf.validate.message).cel = {
+    id: "spot_takes_no_host_error_timeout"
+    expression: "!has(this.scheduling) || this.scheduling.provisioning_model != 'SPOT' || !has(this.scheduling.host_error_timeout_seconds)"
+    message: "Compute Engine refuses scheduling.host_error_timeout_seconds on a Spot VM — remove it, or use the STANDARD provisioning model"
+  };
+  option (buf.validate.message).cel = {
     id: "reclaimable_models_require_no_automatic_restart"
     expression: "!has(this.scheduling) || !(this.scheduling.provisioning_model in ['SPOT', 'FLEX_START']) || !has(this.scheduling.automatic_restart) || this.scheduling.automatic_restart == false"
     message: "SPOT and FLEX_START VMs cannot automatically restart after reclamation — leave scheduling.automatic_restart unset or set it to false"
@@ -953,7 +958,9 @@ message GcpComputeMigScheduling {
   // failed and starting host-error recovery for the VM on it. A lower
   // value recovers a hung host faster at the cost of more false
   // positives; leave unset for Compute Engine's default recovery timing.
-  // Must be 90..330 in steps of 30 (90, 120, ..., 330).
+  // Must be 90..330 in steps of 30 (90, 120, ..., 330). Compute Engine
+  // refuses it on Spot VMs ("hostErrorTimeoutSeconds feature is not
+  // supported for preemptible instance").
   optional int32 host_error_timeout_seconds = 12 [
     (buf.validate.field).int32 = {
       gte: 90

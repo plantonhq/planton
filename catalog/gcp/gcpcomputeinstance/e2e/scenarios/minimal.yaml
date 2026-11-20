@@ -28,6 +28,10 @@ spec:
   instanceName: planton-oss-e2e-vm-minimal-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   zone: us-east1-b
   machineType: e2-micro
+  # Host-error detection tightened to two minutes (the 30-second grid) on a
+  # standard VM; proves the dial round-trips and re-plans clean.
+  scheduling:
+    hostErrorTimeoutSeconds: 120
   bootDisk:
     image:
       value: debian-cloud/debian-12

@@ -1,6 +1,8 @@
 # Consumer-scoped GcpCloudSql install profile for the user chain. Shares the
 # same minimal Postgres shape as the database prerequisite — metadata.name
-# stays fixed for FK resolution; instanceName carries ${E2E_RUN_ID}.
+# stays fixed for FK resolution; instanceName carries the scenario and
+# ${E2E_RUN_ID}: Cloud SQL holds a deleted instance's name for a while, and
+# both scenarios build this instance in one lane.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpCloudSql
 metadata:
@@ -16,7 +18,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  instanceName: planton-oss-e2e-sql-prereq-${E2E_RUN_ID}
+  instanceName: planton-oss-e2e-sqlu-${E2E_SCENARIO}-${E2E_RUN_ID}
   region: us-central1
   databaseEngine: POSTGRESQL
   databaseVersion: POSTGRES_15

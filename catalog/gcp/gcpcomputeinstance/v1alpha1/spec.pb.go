@@ -1598,7 +1598,8 @@ type GcpComputeInstanceScheduling struct {
 	// automatic_restart). A lower value recovers faster from a hung host at
 	// the cost of more false positives; leave unset for Compute Engine's
 	// default recovery timing. Must be 90..330 in steps of 30 (90, 120, ...,
-	// 330).
+	// 330). Compute Engine refuses it on a Spot VM ("hostErrorTimeoutSeconds
+	// feature is not supported for preemptible instance").
 	HostErrorTimeoutSeconds *int32 `protobuf:"varint,12,opt,name=host_error_timeout_seconds,json=hostErrorTimeoutSeconds,proto3,oneof" json:"host_error_timeout_seconds,omitempty"`
 	unknownFields           protoimpl.UnknownFields
 	sizeCache               protoimpl.SizeCache
@@ -2299,7 +2300,7 @@ var File_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto protoreflect.FileDes
 
 const file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/gcp/gcpcomputeinstance/v1alpha1/spec.proto\x12+dev.planton.gcp.gcpcomputeinstance.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xe05\n" +
+	"2catalog/gcp/gcpcomputeinstance/v1alpha1/spec.proto\x12+dev.planton.gcp.gcpcomputeinstance.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x818\n" +
 	"\x16GcpComputeInstanceSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x88\x02\n" +
@@ -2355,7 +2356,8 @@ const file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aF\n" +
 	"\x18ResourceManagerTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xdd\x14\xbaH\xd9\x14\x1a\xee\x02\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xfe\x16\xbaH\xfa\x16\x1a\x9e\x02\n" +
+	" spot_takes_no_host_error_timeout\x12\x7fCompute Engine refuses scheduling.host_error_timeout_seconds on a Spot VM — remove it, or use the STANDARD provisioning model\x1ay!has(this.scheduling) || this.scheduling.provisioning_model != 'SPOT' || !has(this.scheduling.host_error_timeout_seconds)\x1a\xee\x02\n" +
 	"/reclaimable_models_require_no_automatic_restart\x12\x86\x01SPOT and FLEX_START VMs cannot automatically restart after reclamation — leave scheduling.automatic_restart unset or set it to false\x1a\xb1\x01!has(this.scheduling) || !(this.scheduling.provisioning_model in ['SPOT', 'FLEX_START']) || !has(this.scheduling.automatic_restart) || this.scheduling.automatic_restart == false\x1a\xe5\x03\n" +
 	"3termination_action_requires_reclaimable_or_timed_vm\x12\xc5\x01scheduling.instance_termination_action applies to SPOT/FLEX_START VMs and to timed-run VMs (max_run_duration_seconds or termination_time) — configure one of those or remove the termination action\x1a\xe5\x01!has(this.scheduling) || this.scheduling.instance_termination_action == '' || this.scheduling.provisioning_model in ['SPOT', 'FLEX_START'] || has(this.scheduling.max_run_duration_seconds) || this.scheduling.termination_time != ''\x1a\xf9\x01\n" +
 	"$flex_start_requires_max_run_duration\x12SFLEX_START VMs must bound their runtime — set scheduling.max_run_duration_seconds\x1a|!has(this.scheduling) || this.scheduling.provisioning_model != 'FLEX_START' || has(this.scheduling.max_run_duration_seconds)\x1a\x9e\x02\n" +

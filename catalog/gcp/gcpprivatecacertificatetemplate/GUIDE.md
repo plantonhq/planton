@@ -17,3 +17,7 @@ Put what is true of every certificate from a pool in the pool's baseline values;
 ## Access
 
 Using a template needs `privateca.templateUser` on it -- grant it to the teams or workloads that issue with it, and keep the template in the project that owns the PKI.
+
+## IDs are used once
+
+A deleted template's ID is never usable again in its project and location ("Previously used CertificateTemplate ids may not be reused"), so a template recreated by a pipeline needs a new ID each time.

@@ -2,11 +2,14 @@ package runner
 
 import (
 	"context"
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"time"
 
+	tt "github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/e2e/framework/provider"
 	"github.com/plantonhq/planton/pkg/iac/iacinput/iacinputproviderconfig"
@@ -142,7 +145,84 @@ func deployWhileGrantsPropagate(tc *provider.KindTestContext, harness provider.H
 		lanef(tc.T, "  [identity] refused %s, which the lane's identity holds: the grant is still propagating; deploying again in %s (retry %d)",
 			permission, propagationRetryInterval, attempt)
 		time.Sleep(propagationRetryInterval)
+		if untainted, untaintErr := untaintAfterRefusedRead(tc); untaintErr != nil {
+			return errors.Wrapf(err, "and keeping what the refused deploy created failed: %v", untaintErr)
+		} else if len(untainted) > 0 {
+			lanef(tc.T, "  [identity] kept %s: created before the refused read, so the retry reads it rather than replacing it",
+				strings.Join(untainted, ", "))
+		}
 		err = deploy()
 	}
 	return err
+}
+
+// untaintAfterRefusedRead keeps what a refused deploy already created. The
+// provider creates the object, then reads it back; when the read is refused
+// for a grant still propagating, Terraform marks the new object tainted, and
+// the retry would destroy and create it again. Some objects can never be
+// created again under the same name (a Private CA certificate template's id
+// is held after delete), and none needs it: the object is the lane's own and
+// whole, so the retry untaints it and reads it with the grant in place.
+// Pulumi records such an object with its error and updates it on the next
+// run, so only Terraform lanes untaint.
+func untaintAfterRefusedRead(tc *provider.KindTestContext) ([]string, error) {
+	if tc.Engine != "terraform" {
+		return nil, nil
+	}
+	opts, ok := tc.TerraformOpts.(*tt.Options)
+	if !ok || opts == nil {
+		return nil, nil
+	}
+	state, err := tt.RunTerraformCommandAndGetStdoutE(tc.T, opts, "show", "-json")
+	if err != nil {
+		return nil, errors.Wrap(err, "reading the state")
+	}
+	addresses, err := taintedAddresses([]byte(state))
+	if err != nil {
+		return nil, err
+	}
+	for _, address := range addresses {
+		if _, err := tt.RunTerraformCommandE(tc.T, opts, "untaint", address); err != nil {
+			return nil, errors.Wrapf(err, "untainting %s", address)
+		}
+	}
+	return addresses, nil
+}
+
+// taintedAddresses lists the tainted resources in `show -json` state, child
+// modules included.
+func taintedAddresses(showJSON []byte) ([]string, error) {
+	type module struct {
+		Resources []struct {
+			Address string `json:"address"`
+			Tainted bool   `json:"tainted"`
+		} `json:"resources"`
+		ChildModules []json.RawMessage `json:"child_modules"`
+	}
+	var state struct {
+		Values *struct {
+			RootModule json.RawMessage `json:"root_module"`
+		} `json:"values"`
+	}
+	if err := json.Unmarshal(showJSON, &state); err != nil {
+		return nil, errors.Wrap(err, "parsing the state")
+	}
+	if state.Values == nil {
+		return nil, nil
+	}
+	var addresses []string
+	pending := []json.RawMessage{state.Values.RootModule}
+	for len(pending) > 0 {
+		var m module
+		if err := json.Unmarshal(pending[0], &m); err != nil {
+			return nil, errors.Wrap(err, "parsing a state module")
+		}
+		pending = append(pending[1:], m.ChildModules...)
+		for _, resource := range m.Resources {
+			if resource.Tainted {
+				addresses = append(addresses, resource.Address)
+			}
+		}
+	}
+	return addresses, nil
 }

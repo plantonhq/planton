@@ -616,6 +616,17 @@ var _ = Describe("GcpComputeInstanceSpec validations", func() {
 			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
 		})
 
+		It("rejects a host error timeout on a Spot VM (CEL)", func() {
+			spec := makeValidSpec()
+			spec.Scheduling = &GcpComputeInstanceScheduling{
+				ProvisioningModel:       "SPOT",
+				HostErrorTimeoutSeconds: i32(120),
+			}
+			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
+			spec.Scheduling.ProvisioningModel = "STANDARD"
+			Expect(protovalidate.Validate(spec)).To(BeNil())
+		})
+
 		It("accepts Spot with automatic_restart unset", func() {
 			spec := makeValidSpec()
 			spec.Scheduling = &GcpComputeInstanceScheduling{ProvisioningModel: "SPOT"}

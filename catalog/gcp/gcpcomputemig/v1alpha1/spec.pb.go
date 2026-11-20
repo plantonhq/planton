@@ -1686,7 +1686,9 @@ type GcpComputeMigScheduling struct {
 	// failed and starting host-error recovery for the VM on it. A lower
 	// value recovers a hung host faster at the cost of more false
 	// positives; leave unset for Compute Engine's default recovery timing.
-	// Must be 90..330 in steps of 30 (90, 120, ..., 330).
+	// Must be 90..330 in steps of 30 (90, 120, ..., 330). Compute Engine
+	// refuses it on Spot VMs ("hostErrorTimeoutSeconds feature is not
+	// supported for preemptible instance").
 	HostErrorTimeoutSeconds *int32 `protobuf:"varint,12,opt,name=host_error_timeout_seconds,json=hostErrorTimeoutSeconds,proto3,oneof" json:"host_error_timeout_seconds,omitempty"`
 	unknownFields           protoimpl.UnknownFields
 	sizeCache               protoimpl.SizeCache
@@ -4067,7 +4069,7 @@ const file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDesc = "" +
 	"\f_target_sizeB\x18\n" +
 	"\x16_target_suspended_sizeB\x16\n" +
 	"\x14_target_stopped_sizeB\x15\n" +
-	"\x13_wait_for_instances\"\xac%\n" +
+	"\x13_wait_for_instances\"\xcd'\n" +
 	"\x15GcpComputeMigTemplate\x12-\n" +
 	"\fmachine_type\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\vmachineType\x12 \n" +
@@ -4106,7 +4108,8 @@ const file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aF\n" +
 	"\x18ResourceManagerTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xd9\x11\xbaH\xd5\x11\x1a\xee\x02\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xfa\x13\xbaH\xf6\x13\x1a\x9e\x02\n" +
+	" spot_takes_no_host_error_timeout\x12\x7fCompute Engine refuses scheduling.host_error_timeout_seconds on a Spot VM — remove it, or use the STANDARD provisioning model\x1ay!has(this.scheduling) || this.scheduling.provisioning_model != 'SPOT' || !has(this.scheduling.host_error_timeout_seconds)\x1a\xee\x02\n" +
 	"/reclaimable_models_require_no_automatic_restart\x12\x86\x01SPOT and FLEX_START VMs cannot automatically restart after reclamation — leave scheduling.automatic_restart unset or set it to false\x1a\xb1\x01!has(this.scheduling) || !(this.scheduling.provisioning_model in ['SPOT', 'FLEX_START']) || !has(this.scheduling.automatic_restart) || this.scheduling.automatic_restart == false\x1a\xe5\x03\n" +
 	"3termination_action_requires_reclaimable_or_timed_vm\x12\xc5\x01scheduling.instance_termination_action applies to SPOT/FLEX_START VMs and to timed-run VMs (max_run_duration_seconds or termination_time) — configure one of those or remove the termination action\x1a\xe5\x01!has(this.scheduling) || this.scheduling.instance_termination_action == '' || this.scheduling.provisioning_model in ['SPOT', 'FLEX_START'] || has(this.scheduling.max_run_duration_seconds) || this.scheduling.termination_time != ''\x1a\xb1\x02\n" +
 	"+confidential_requires_terminate_maintenance\x12\x88\x01confidential VMs cannot live-migrate — set scheduling.on_host_maintenance to TERMINATE when confidential_instance_config is configured\x1aw!has(this.confidential_instance_config) || (has(this.scheduling) && this.scheduling.on_host_maintenance == 'TERMINATE')\x1a\xb2\x02\n" +

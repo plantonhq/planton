@@ -26,3 +26,5 @@ A pool issues through every enabled authority in it. To rotate: add a new author
 ## Tearing down
 
 Google refuses to delete a pool that still holds an authority, including one in its 30-day soft delete. Destroy the authorities with `skipGracePeriod: true` first when the pool goes too.
+
+A deleted pool's ID is never usable again in its project and location ("Previously used CaPool ids may not be reused"), so a pool recreated by a pipeline needs a new ID each time. Certificate templates are held the same way.

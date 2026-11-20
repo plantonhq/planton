@@ -20,8 +20,9 @@ resource "google_privateca_certificate_template" "this" {
   maximum_lifetime = local.maximum_lifetime
   labels           = local.final_labels
 
+  # Always one block: Google stores it on every template (local.predefined_values).
   dynamic "predefined_values" {
-    for_each = var.spec.predefined_values != null ? [var.spec.predefined_values] : []
+    for_each = [local.predefined_values]
     content {
       aia_ocsp_servers = length(predefined_values.value.aia_ocsp_servers) > 0 ? predefined_values.value.aia_ocsp_servers : null
 

@@ -54,3 +54,22 @@ func TestDeployWhileGrantsPropagateRetriesOnlyAHeldRefusal(t *testing.T) {
 		t.Fatalf("a lane without a declared identity deploys once: err %v after %d call(s)", err, calls)
 	}
 }
+
+// The untaint reads every tainted resource from the state, child modules
+// included, and nothing else.
+func TestTaintedAddresses(t *testing.T) {
+	state := []byte(`{"values":{"root_module":{"resources":[
+		{"address":"google_privateca_certificate_template.this","tainted":true},
+		{"address":"google_project_service.api"}],
+		"child_modules":[{"resources":[{"address":"module.m.google_x.y","tainted":true}]}]}}}`)
+	got, err := taintedAddresses(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 2 || got[0] != "google_privateca_certificate_template.this" || got[1] != "module.m.google_x.y" {
+		t.Fatalf("tainted = %v", got)
+	}
+	if got, err := taintedAddresses([]byte(`{"format_version":"1.0"}`)); err != nil || len(got) != 0 {
+		t.Fatalf("an empty state lists nothing: %v, %v", got, err)
+	}
+}

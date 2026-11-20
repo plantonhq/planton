@@ -26,10 +26,11 @@ spec:
           - compute.instanceTemplates.get
           - compute.instanceTemplates.delete
           - compute.instanceTemplates.useReadOnly
+          - compute.networks.get
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: Covers google_compute_instance_template and google_compute_region_instance_template (the module picks one by zone vs region); templates are immutable, so updates are create-new-then-delete-old, never an update permission. GCP defines NO compute.regionInstanceTemplates permissions (verified against IAM's testable-permissions inventory) -- regional templates authorize under these same unqualified names. useReadOnly lets the group manager reference the template.
+        notes: Covers google_compute_instance_template and google_compute_region_instance_template (the module picks one by zone vs region); templates are immutable, so updates are create-new-then-delete-old, never an update permission. GCP defines NO compute.regionInstanceTemplates permissions (verified against IAM's testable-permissions inventory) -- regional templates authorize under these same unqualified names. useReadOnly lets the group manager reference the template. Creating a template reads the network its interface names (compute.networks.get; Google refuses the create without it, measured).
       - purpose: ManageGroupManager
         permissions:
           - compute.instanceGroupManagers.create
@@ -46,6 +47,35 @@ spec:
         reach: target
         privilege: ordinary
         notes: Covers google_compute_instance_group_manager / _region_instance_group_manager plus every sub-resource that authorizes THROUGH the manager -- per-instance configs (google_compute_per_instance_config / _region_) and resize requests (google_compute_resize_request / _region_) all check instanceGroupManagers.update, since GCP defines no compute.resizeRequests or per-instance-config permissions (verified against the IAM inventory; mirrors how node pools authorize under container.clusters.update). The manager creates and deletes VMs on the caller's behalf, so instances.create/delete are checked on sizing changes; zone/regionOperations.get polls the operations every mutation returns.
+      - purpose: CreateGroupVms
+        permissions:
+          - compute.disks.create
+          - compute.images.useReadOnly
+          - compute.subnetworks.use
+          - compute.instances.setLabels
+          - compute.instances.setMetadata
+        provenance: derived
+        reach: target
+        privilege: ordinary
+        notes: Creating a group manager, Google checks that the caller could create the template's VMs itself -- their boot disks from the template's image, their NICs on the network's subnetwork, the labels the module puts on every template, and metadata, which Google writes onto every group VM (its instance-template key) even when the template sets none (Google refuses the create without compute.disks.create and compute.instances.setMetadata, measured). instances.create sits in ManageGroupManager.
+      - purpose: CreateGroupVmsWithTags
+        permissions:
+          - compute.instances.setTags
+        provenance: derived
+        reach: target
+        privilege: ordinary
+        condition:
+          spec_field_set: template.tags
+        notes: Required only when the template carries network tags, which its VMs are created with.
+      - purpose: CreateGroupVmsWithServiceAccount
+        permissions:
+          - compute.instances.setServiceAccount
+        provenance: derived
+        reach: target
+        privilege: ordinary
+        condition:
+          spec_field_set: template.service_account.email
+        notes: Required only when the template attaches a service account to its VMs (with ActAsServiceAccount).
       - purpose: ManageAutoscaler
         permissions:
           - compute.autoscalers.create

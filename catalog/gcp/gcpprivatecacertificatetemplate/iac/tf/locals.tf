@@ -1,4 +1,17 @@
 locals {
+  # Google stores a predefined values block on every template, empty when
+  # the template sets none, and the provider reads it back as one block. An
+  # omitted block would then re-plan its removal forever, so a template
+  # without predefined values sends the block empty, which states nothing.
+  predefined_values = var.spec.predefined_values != null ? var.spec.predefined_values : {
+    key_usage             = null
+    ca_options            = null
+    policy_ids            = []
+    aia_ocsp_servers      = []
+    additional_extensions = []
+    name_constraints      = null
+  }
+
   # Honor the spec contract: an empty project_id falls back to the provider's
   # default project.
   project_id = var.spec.project_id != "" ? var.spec.project_id : null
