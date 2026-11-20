@@ -3,27 +3,17 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpcloudrunworkerpool
 spec:
-  # Awaiting the live proof lane. Every scenario proves in the harness
-  # project with roles/run.admin and iam.serviceAccounts.actAs on the
-  # Compute default service account: a one-instance MANUAL pool on Google's
-  # public worker-pool sample image, an AUTOMATIC pool between bounds with
-  # direct VPC egress into the registry's prerequisite subnet, and the
-  # minimal pool with a secret_value variable (the Secret Manager admin
-  # permissions join the list for that one). Offline
-  # bar met: both modules build and validate, offline plans for the
-  # reference manifest and every scenario are clean on the pinned provider,
-  # and the accounting is total. Live facts the proof lane confirms: (1)
-  # the pool reaches a ready revision with the declared instance count on
-  # both engines; (2) scaling left in Google's default (MANUAL) and every
-  # unset Optional+Computed lever RE-PLAN CLEAN under the apply-idempotency
-  # gate; (3) instance_splits left empty shows no diff against Google's
-  # all-on-latest default; (4) direct VPC egress places instances in the
-  # subnet; (5) the REST-read verifier (the pinned client library predates
-  # worker pools) sees the same latest_ready_revision both engines export;
-  # (6) a secret_value variable reaches the revision as a secret key
-  # reference to the module's own secret, whose ids match across engines,
-  # and the destroy removes that secret.
+  # Proven live on both engines (2026-11-20): a MANUAL pool of Google's sample
+  # worker image, one with direct VPC egress into a subnet, and one reading a
+  # stored secret, each deployed, its instance count raised in place
+  # (UpdateWorkerPool in Google's audit log) and destroyed by an identity
+  # holding only this kind's permissions manifest, with the re-plan clean.
+  # AUTOMATIC scaling can't be deployed: the provider sends a manual count
+  # under it and Cloud Run refuses one, so the spec refuses AUTOMATIC. After a
+  # pool with direct VPC egress is deleted, Cloud Run holds its serverless
+  # address in the subnet for about two hours (1h49m measured), so the fixture
+  # subnet's teardown waits it out.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 25
