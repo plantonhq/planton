@@ -739,6 +739,29 @@ questions:
         file: references/infra.connecting-clouds.md
         pattern: 'planton connect gcp verify <slug>` re-runs Verify any time'
 
+  - id: verdict-not-yet-checked-after-setup
+    persona: platform engineer, wary of a half-working connection
+    question: >
+      `planton connect aws --yes -o json` ended with "Signed In, Not Yet
+      Checked for What It Can Deploy". Is the connection broken?
+    answer: >
+      No: it signed in, and the check of what it can deploy didn't finish.
+      When `notJudgedFix` has `door: "retry"`, AWS rate-limited the check
+      after the CLI had already verified again for a few minutes. Wait a
+      minute and run its `command` (`planton connect aws verify <slug>`);
+      give the connect command about ten minutes next time, since it waits
+      out these answers by itself.
+    checks:
+      - skill: planton
+        file: references/infra.connecting-clouds.md
+        pattern: '`judged: false` on a healthy verdict: it signed in, but the check of what it can deploy didn''t finish'
+      - skill: planton
+        file: references/infra.connecting-clouds.md
+        pattern: 'Tell the person plainly that it works and the check will finish; it is not a failure'
+      - skill: planton
+        file: references/infra.connecting-clouds.md
+        pattern: 'Give the command about ten minutes, never a tool''s default two'
+
   - id: connect-stopped-half-way
     persona: developer
     question: >

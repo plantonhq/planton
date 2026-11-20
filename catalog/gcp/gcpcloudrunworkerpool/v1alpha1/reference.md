@@ -19,9 +19,9 @@ keeps the revision template (containers, volumes, VPC egress, GPU) and the
 revision model (every template change stamps out a new immutable
 revision, instance_splits decides how many instances each revision runs),
 but it has no port, no ingress, no invoker IAM, no URL, and no
-request-driven autoscaling: instances scale MANUALLY to a count you set,
-or AUTOMATICALLY between bounds by a signal you drive (for example a
-Pub/Sub backlog metric through Cloud Monitoring), never by traffic. CPU is
+request-driven autoscaling: instances scale MANUALLY to a count you set
+(Google also offers AUTOMATIC scaling between bounds by a signal you
+drive, which the provider cannot deploy; see scaling), never by traffic. CPU is
 always allocated, so billing is per instance-hour, not per request.
 
 Choose GcpCloudRun for anything that serves HTTP; GcpCloudRunJob for work
@@ -901,14 +901,16 @@ production; give real workers a dedicated least-privilege identity.
 `GcpCloudRunWorkerPoolScaling`
 
 How many instances run. MANUAL (Google's default) pins the total to
-manual_instance_count; AUTOMATIC lets Cloud Run move between
-min_instance_count and max_instance_count on a signal you drive.
+manual_instance_count. AUTOMATIC, moving between min_instance_count and
+max_instance_count on a signal you drive, is refused: the provider
+cannot deploy it (see scaling_mode).
 If omitted, no scaling block is sent and the pool runs in Google's
 default mode, MANUAL. A block that is MANUAL (or names no mode) must
 state manual_instance_count: the provider sends an unset count as 0,
 which parks the pool.
 
-- rule: Manual scaling needs an instance count. Set manual_instance_count (0 parks the pool on purpose), or set scaling_mode to AUTOMATIC with its bounds.
+- rule: AUTOMATIC scaling cannot be deployed: the Google provider sends a manual instance count with every scaling block, and Cloud Run refuses one under AUTOMATIC ("scaling mode must be set to MANUAL"). Use MANUAL with manual_instance_count.
+- rule: Manual scaling needs an instance count. Set manual_instance_count (0 parks the pool on purpose).
 - rule: manual_instance_count only applies when scaling_mode is MANUAL (or unset, which is MANUAL)
 - rule: min_instance_count and max_instance_count only apply when scaling_mode is AUTOMATIC
 - rule: min_instance_count cannot exceed max_instance_count
@@ -920,6 +922,11 @@ which parks the pool.
 MANUAL (Google's default): the pool runs exactly manual_instance_count
 instances. AUTOMATIC: Cloud Run moves the count between
 min_instance_count and max_instance_count on a signal you drive.
+The spec refuses AUTOMATIC: the Google provider sends a manual instance
+count with every scaling block (0 when unset), and Cloud Run refuses any
+manual count under AUTOMATIC, so no deploy can create it. The bounds
+stay modeled because Google's API offers them; they become usable when
+the provider sends the count only in MANUAL mode.
 
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"in":["","AUTOMATIC","MANUAL"]}}
 

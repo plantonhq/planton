@@ -8,10 +8,11 @@ import (
 )
 
 // redisClusterVerifier probes a Memorystore for Redis Cluster through the
-// typed Redis API client: existence, READY state, the uid the module
-// exported, the Google-placed discovery endpoint when the manifest asked
-// for one, and the per-connection-type service attachment handles the
-// outputs expose for consumer forwarding rules.
+// typed Redis API client: existence, ACTIVE state (Google's ready state for
+// a cluster), the uid the module exported, the Google-placed discovery
+// endpoint when the manifest asked for one, and the per-connection-type
+// service attachment handles the outputs expose for consumer forwarding
+// rules.
 type redisClusterVerifier struct{}
 
 // IDOutputKey is the cluster's full resource path -- the composition key
@@ -28,8 +29,8 @@ func (v *redisClusterVerifier) VerifyExists(ctx context.Context, svc *Services, 
 	if err != nil {
 		return errors.Wrapf(err, "redis cluster %s not found after deploy", name)
 	}
-	if cluster.State != "READY" {
-		return errors.Errorf("redis cluster %s state is %q, want READY", name, cluster.State)
+	if cluster.State != "ACTIVE" {
+		return errors.Errorf("redis cluster %s state is %q, want ACTIVE", name, cluster.State)
 	}
 	if uid := outputs["uid"]; uid != "" && cluster.Uid != uid {
 		return errors.Errorf("redis cluster %s uid mismatch: output %q, live %q", name, uid, cluster.Uid)

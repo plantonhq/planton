@@ -118,7 +118,10 @@ func persistentResource(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Pr
 		// API takes only PATCH, so an in-place update always fails (404). A
 		// change to the display name or a pool's replica count therefore
 		// replaces the resource, as a change to anything else already does.
-		pulumi.ReplaceOnChanges([]string{"displayName", "resourcePools[*].replicaCount"}))
+		pulumi.ReplaceOnChanges([]string{"displayName", "resourcePools[*].replicaCount"}),
+		// The replacement keeps the resource's ID, which Google holds while
+		// the old resource exists, so the old one goes first.
+		pulumi.DeleteBeforeReplace(true))
 	if err != nil {
 		return errors.Wrap(err, "failed to create vertex ai persistent resource")
 	}

@@ -16,27 +16,27 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageFeatureOnlineStore
         permissions:
           - aiplatform.featureOnlineStores.create
           - aiplatform.featureOnlineStores.get
           - aiplatform.featureOnlineStores.update
           - aiplatform.featureOnlineStores.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_vertex_ai_feature_online_store (Pulumi vertex.AiFeatureOnlineStore) -- created and deleted through long-running operations the provider polls, patched for Bigtable scaling, the dedicated endpoint, the key, and labels, read on every refresh. GCP defines no aiplatform.operations.get permission (IAM's testable-permissions inventory carries only aiplatform.operations.list); polling the long-running operations needs nothing beyond these.
+        notes: Covers google_vertex_ai_feature_online_store (Pulumi vertex.AiFeatureOnlineStore) -- created and deleted through long-running operations the provider polls, patched for Bigtable scaling, the dedicated endpoint, the key, and labels, read on every refresh. GCP defines no aiplatform.operations.get permission (IAM's testable-permissions inventory carries only aiplatform.operations.list); polling the long-running operations needs nothing beyond these. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageFeatureViews
         permissions:
           - aiplatform.featureViews.create
           - aiplatform.featureViews.get
           - aiplatform.featureViews.update
           - aiplatform.featureViews.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_vertex_ai_feature_online_store_featureview (Pulumi vertex.AiFeatureOnlineStoreFeatureview) for every declared view. Creating a registry-sourced view reads the referenced feature groups (aiplatform.featureGroups.get, in roles/aiplatform.admin with everything above).
+        notes: Covers google_vertex_ai_feature_online_store_featureview (Pulumi vertex.AiFeatureOnlineStoreFeatureview) for every declared view. Creating a registry-sourced view reads the referenced feature groups (aiplatform.featureGroups.get, in roles/aiplatform.admin with everything above). Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

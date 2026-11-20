@@ -16,34 +16,34 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageFeatureGroup
         permissions:
           - aiplatform.featureGroups.create
           - aiplatform.featureGroups.get
           - aiplatform.featureGroups.update
           - aiplatform.featureGroups.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_vertex_ai_feature_group (Pulumi vertex.AiFeatureGroup) -- created and deleted through long-running operations the provider polls, patched for description, labels, and entity ID columns, read on every refresh. GCP defines no aiplatform.operations.get permission (IAM's testable-permissions inventory carries only aiplatform.operations.list); polling the long-running operations needs nothing beyond these.
+        notes: Covers google_vertex_ai_feature_group (Pulumi vertex.AiFeatureGroup) -- created and deleted through long-running operations the provider polls, patched for description, labels, and entity ID columns, read on every refresh. GCP defines no aiplatform.operations.get permission (IAM's testable-permissions inventory carries only aiplatform.operations.list); polling the long-running operations needs nothing beyond these. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ReadBigQuerySource
         permissions:
           - bigquery.tables.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Creating the group, Vertex AI checks that the caller can read the source BigQuery table ("Caller does not have the required IAM permission(s) to access the BigQuery source", measured). Grant it where the table lives; the Vertex AI service agent's own read access, which serving needs later, is a separate grant.
+        notes: Creating the group, Vertex AI checks that the caller can read the source BigQuery table ("Caller does not have the required IAM permission(s) to access the BigQuery source", measured). Grant it where the table lives; the Vertex AI service agent's own read access, which serving needs later, is a separate grant. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageFeatures
         permissions:
           - aiplatform.features.create
           - aiplatform.features.get
           - aiplatform.features.update
           - aiplatform.features.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_vertex_ai_feature_group_feature (Pulumi vertex.AiFeatureGroupFeature) for every registered feature. roles/aiplatform.admin contains every permission in the three groups.
+        notes: Covers google_vertex_ai_feature_group_feature (Pulumi vertex.AiFeatureGroupFeature) for every registered feature. roles/aiplatform.admin contains every permission in the three groups. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

@@ -21,7 +21,7 @@ spec:
       kind: GcpVpcNetwork
       name: planton-oss-e2e-gcpvpcnetwork-prereq
       fieldPath: status.outputs.network_self_link
-  subnetworkName: e2e-runwp-subnet-${E2E_RUN_ID}
+  subnetworkName: e2e-runwp-subnet-${E2E_SCENARIO}-${E2E_RUN_ID}
   region: us-central1
   ipCidrRange: 10.9.4.0/24
   description: Ephemeral /24 for the GcpCloudRunWorkerPool E2E chain; safe to delete

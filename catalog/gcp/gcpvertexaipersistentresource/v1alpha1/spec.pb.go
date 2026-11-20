@@ -219,9 +219,9 @@ func (x *GcpVertexAiPersistentResourceDiskSpec) GetBootDiskType() string {
 // machines the persistent resource keeps provisioned. A training job
 // running on the resource names the pools its worker pools land on.
 //
-// Immutable: the pool's id, machine, disk, and autoscaling bounds (a
-// change replaces the whole persistent resource). replica_count updates in
-// place.
+// A change to any of the pool's settings replaces the whole persistent
+// resource; replica_count too, since the provider's in-place update is a PUT
+// Google does not serve.
 type GcpVertexAiPersistentResourceResourcePool struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The pool's id within the resource -- what a job's worker pool spec
@@ -231,7 +231,8 @@ type GcpVertexAiPersistentResourceResourcePool struct {
 	// The machine every replica runs on.
 	MachineSpec *GcpVertexAiPersistentResourceMachineSpec `protobuf:"bytes,2,opt,name=machine_spec,json=machineSpec,proto3" json:"machine_spec,omitempty"`
 	// How many replicas the pool runs (and bills) whether or not a job is
-	// using them. Sent as a decimal string. Mutable in place.
+	// using them. Sent as a decimal string. A change replaces the resource
+	// (the provider cannot update it in place).
 	ReplicaCount *int64 `protobuf:"varint,3,opt,name=replica_count,json=replicaCount,proto3,oneof" json:"replica_count,omitempty"`
 	// Autoscaling bounds for the pool. Omit for a fixed replica_count.
 	AutoscalingSpec *GcpVertexAiPersistentResourceAutoscalingSpec `protobuf:"bytes,4,opt,name=autoscaling_spec,json=autoscalingSpec,proto3" json:"autoscaling_spec,omitempty"`
@@ -451,9 +452,10 @@ func (x *GcpVertexAiPersistentResourcePscInterfaceConfig) GetDnsPeeringConfigs()
 // Every replica bills from the moment it is provisioned until the resource
 // is deleted, whether or not a job is running.
 //
-// Immutable: everything except the display name and each pool's
-// replica_count -- a change to any other setting, labels included, replaces
-// the resource and reprovisions its machines.
+// Every change replaces the resource and reprovisions its machines. Google
+// patches the display name and replica counts in place, but the provider
+// sends that update as a PUT Google does not serve, so the modules replace
+// the resource for those too; labels force replacement in the provider.
 type GcpVertexAiPersistentResourceSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The GCP project the resource lives in: a literal project ID or a
@@ -470,7 +472,8 @@ type GcpVertexAiPersistentResourceSpec struct {
 	// Immutable.
 	PersistentResourceId string `protobuf:"bytes,3,opt,name=persistent_resource_id,json=persistentResourceId,proto3" json:"persistent_resource_id,omitempty"`
 	// Human-readable name shown in the console -- up to 128 UTF-8
-	// characters. Mutable in place.
+	// characters. A change replaces the resource (the provider cannot update
+	// it in place).
 	DisplayName string `protobuf:"bytes,4,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
 	// Labels on the resource. The platform attribution labels are merged in
 	// and win on key conflicts. A change replaces the resource: the provider

@@ -3,21 +3,14 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpvertexaitensorboard
 spec:
-  # Awaiting the live proof lane. Both scenarios prove in the harness
-  # project with roles/aiplatform.admin; the module enables
-  # aiplatform.googleapis.com itself: the TensorBoard alone, and one with
-  # two experiments and two runs declared up front. Offline bar met: both
-  # modules build and validate, offline plans for the reference manifest,
-  # both scenarios, and the CMEK arm are clean on the pinned provider, and
-  # the accounting is total. Live facts the proof lane confirms: (1) the
-  # TensorBoard, its experiments, and its runs create and RE-PLAN CLEAN
-  # under the apply-idempotency gate on both engines -- the experiments and
-  # runs address the numeric TensorBoard id both engines derive from the
-  # resource name, and the run display names defaulted from their ids show
-  # no diff; (2) every exported experiment and run reads back with the
-  # attribution labels; (3) destroy removes runs, then experiments, then
-  # the TensorBoard, and the verifier reads 404.
+  # Proven live on both engines (2026-11-20): a minimal TensorBoard and one
+  # with two experiments and runs, each deployed, re-described in place
+  # (UpdateTensorboard in Google's audit log) and destroyed by an identity
+  # holding only this kind's permissions manifest, with the re-plan clean.
+  # Experiments and runs reach Google through the regional endpoint the
+  # provider's region selects, so both modules set it from the location, and
+  # a TensorBoard's operations are read under aiplatform.locations.get.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 30

@@ -24,7 +24,7 @@ spec:
     - field_path: scaling.min_instance_count
       sku_meter: instance vCPU
       pricing_unit: vCPU-seconds
-      impact: The floor in AUTOMATIC mode -- the pool never runs fewer instances than this, so the floor is the committed spend; the ceiling is max_instance_count.
+      impact: The floor in AUTOMATIC mode, which the spec refuses (the Google provider sends a manual count that Cloud Run rejects under AUTOMATIC), so no deployed pool bills by it; manual_instance_count is the dial.
     - field_path: containers.resources.cpu
       sku_meter: instance vCPU
       pricing_unit: vCPU-seconds

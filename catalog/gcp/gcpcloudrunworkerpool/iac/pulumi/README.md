@@ -17,7 +17,9 @@ Run Admin API enabled.
 ## Send Posture (parity with Terraform)
 
 - **`DeletionProtection`** -- always sent (spec default `true`).
-- **`Scaling`** -- each lever sent only when set.
+- **`Scaling`** -- each lever set only when the spec sets it; the provider
+  still sends `ManualInstanceCount` (0 when unset), and Cloud Run refuses
+  any manual count under AUTOMATIC, which is why the spec refuses AUTOMATIC.
 - **`InstanceSplits`** -- omitted when the spec list is empty.
 - **`Resources.Limits`** -- `cpu` and `memory` as the two map keys; the
   block is omitted when neither is set.

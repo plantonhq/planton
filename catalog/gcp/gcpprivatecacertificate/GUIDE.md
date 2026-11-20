@@ -19,7 +19,7 @@ Everything is immutable, so renewing means issuing a successor: declare a new ce
 
 ## The audit trail
 
-Certificate Authority Service records issuing, updating and revoking a certificate only in Data Access audit logs, never in Admin Activity, while every pool, authority and template change is in Admin Activity. Data Access logs are off by default, so a project that needs a record of who issued or revoked which certificate turns on `DATA_WRITE` audit logging for `privateca.googleapis.com` (the project's or organization's audit config).
+Certificate Authority Service writes no Admin Activity audit entry when a certificate is issued, updated or revoked, while every pool, authority and template change has one. A project that needs a record of who issued or revoked which certificate turns on Data Access audit logging (`DATA_WRITE`) for `privateca.googleapis.com` in the project's or organization's audit config, which is off by default, and confirms the entries arrive before relying on them.
 
 ## Lifetimes
 

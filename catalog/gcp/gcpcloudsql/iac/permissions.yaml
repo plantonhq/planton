@@ -19,7 +19,7 @@ spec:
         provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Covers google_project_service enabling sqladmin.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. Proven 2026-10-20 on dev by the least-privilege lane: an identity holding exactly the kind's rendered permissions deployed, updated and destroyed it. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live)."
+        notes: "Covers google_project_service enabling sqladmin.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. Proven 2026-10-20 on dev by the least-privilege lane: an identity holding exactly the kind's rendered permissions deployed, updated and destroyed it. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: ManageInstance
         permissions:
           - cloudsql.instances.create
@@ -29,27 +29,27 @@ spec:
         provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Covers google_sql_database_instance for primaries, read replicas, and read pools alike -- create, read/refresh, in-place updates (tier, disk, backup, network), and destroy. The provider polls the operations each mutation returns under the same instance-scoped authorization. Proven 2026-10-20 on dev by the least-privilege lane: an identity holding exactly the kind's rendered permissions deployed, updated and destroyed it."
+        notes: "Covers google_sql_database_instance for primaries, read replicas, and read pools alike -- create, read/refresh, in-place updates (tier, disk, backup, network), and destroy. The provider polls the operations each mutation returns under the same instance-scoped authorization. Proven 2026-10-20 on dev by the least-privilege lane: an identity holding exactly the kind's rendered permissions deployed, updated and destroyed it. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: ReadDefaultUsers
         permissions:
           - cloudsql.users.list
         provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Right after creating a primary, the provider lists its users to find a default root user with a wildcard host; the create fails without this read (cloudsql.users.list was refused on a live create). Replicas inherit their primary's users and skip the read. Proven 2026-10-20 on dev by the least-privilege lane: an identity holding exactly the kind's rendered permissions deployed, updated and destroyed it."
+        notes: "Right after creating a primary, the provider lists its users to find a default root user with a wildcard host; the create fails without this read (cloudsql.users.list was refused on a live create). Replicas inherit their primary's users and skip the read. Proven 2026-10-20 on dev by the least-privilege lane: an identity holding exactly the kind's rendered permissions deployed, updated and destroyed it. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: RemoveWildcardRootUser
         permissions:
           - cloudsql.users.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Used only when a new primary carries a root user with a wildcard host, which MySQL creates and PostgreSQL and SQL Server do not -- the provider deletes that user immediately after create.
+        notes: Used only when a new primary carries a root user with a wildcard host, which MySQL creates and PostgreSQL and SQL Server do not -- the provider deletes that user immediately after create. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: PeerPrivateNetwork
         permissions:
           - servicenetworking.services.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: network.private_network
-        notes: Required only when network.private_network attaches the instance to a VPC over private service access -- the provider verifies the service-networking connection exists. Creating that connection itself (the PSA range and peering) is a separate prerequisite resource, not this module.
+        notes: Required only when network.private_network attaches the instance to a VPC over private service access -- the provider verifies the service-networking connection exists. Creating that connection itself (the PSA range and peering) is a separate prerequisite resource, not this module. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

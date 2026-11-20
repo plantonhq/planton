@@ -27,7 +27,8 @@ Cloud Run Admin API enabled.
 - **`scaling`** -- the block is sent only when the spec has one, so Google's
   MANUAL default stays in charge otherwise. Inside it the provider sends an
   unset `manual_instance_count` as 0, which is why the spec requires the
-  count under MANUAL.
+  count under MANUAL. Because the count is always sent, and Cloud Run
+  refuses any manual count under AUTOMATIC, the spec refuses AUTOMATIC.
 - **`instance_splits`** -- omitted when the spec list is empty, so Google
   routes every instance to the latest ready revision without a diff-prone
   split.

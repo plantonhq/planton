@@ -99,9 +99,10 @@ func workerPool(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) 
 		args.BinaryAuthorization = binaryAuthorization
 	}
 
-	// Instance count: MANUAL pins the total (Google's default mode);
-	// AUTOMATIC moves between bounds. Each lever is sent only when set so
-	// Google's defaults stay in charge otherwise.
+	// Instance count: MANUAL pins the total (Google's default mode). The
+	// provider sends ManualInstanceCount even when unset (as 0), and Cloud
+	// Run refuses any manual count under AUTOMATIC, so the spec refuses
+	// AUTOMATIC; the bounds pass through for the day the provider stops.
 	if spec.Scaling != nil {
 		scaling := &cloudrunv2.WorkerPoolScalingArgs{}
 		if spec.Scaling.ScalingMode != "" {

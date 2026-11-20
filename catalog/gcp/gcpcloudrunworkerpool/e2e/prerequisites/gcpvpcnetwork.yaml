@@ -1,5 +1,5 @@
 # Consumer-scoped GcpVpcNetwork install profile for the worker pool chain:
-# the VPC the automatic-scaling scenario egresses into. Cloud-side network
+# the VPC the vpc-egress scenario egresses into. Cloud-side network
 # names carry ${E2E_RUN_ID}; metadata.name stays fixed for FK resolution.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpVpcNetwork
@@ -16,5 +16,5 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  networkName: e2e-runwp-vpc-${E2E_RUN_ID}
+  networkName: e2e-runwp-vpc-${E2E_SCENARIO}-${E2E_RUN_ID}
   autoCreateSubnetworks: false

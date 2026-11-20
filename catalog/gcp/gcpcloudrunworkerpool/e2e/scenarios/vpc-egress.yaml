@@ -1,14 +1,16 @@
-# GcpCloudRunWorkerPool scenario: AUTOMATIC scaling between bounds, direct
-# VPC egress into the prerequisite subnet, a literal env var, revision
-# labels, and a TCP startup probe -- the levers a real queue worker sets.
-# The public worker-pool sample image idles without a health listener, so
-# the probe is left off the liveness side; the startup probe's TCP arm on
-# the sample's port proves the probe wiring.
+# GcpCloudRunWorkerPool scenario: direct VPC egress into the prerequisite
+# subnet (network and subnetwork by reference, PRIVATE_RANGES_ONLY), a
+# literal env var, and revision labels, on a MANUAL pool of one instance.
+# AUTOMATIC scaling is not declared: the Google provider sends a manual
+# instance count with every scaling block, and Cloud Run refuses one under
+# AUTOMATIC, so the spec refuses AUTOMATIC. No probe is set: the public
+# worker-pool sample image idles without a health listener, so a probe
+# would have no port to reach.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpCloudRunWorkerPool
 metadata:
-  name: planton-oss-e2e-gcprunwp-auto
-  id: planton-oss-e2e-gcprunwp-auto
+  name: planton-oss-e2e-gcprunwp-vpc
+  id: planton-oss-e2e-gcprunwp-vpc
   org: planton-oss
   env: e2e
   labels:
@@ -20,8 +22,8 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  workerPoolName: planton-oss-e2e-gcprunwp-auto-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
-  description: Ephemeral autoscaled worker pool created by the Planton E2E harness; safe to delete
+  workerPoolName: planton-oss-e2e-gcprunwp-vpc-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
+  description: Ephemeral VPC-egress worker pool created by the Planton E2E harness; safe to delete
   region: us-central1
   containers:
     - name: worker
@@ -33,7 +35,7 @@ spec:
         cpu: "1"
         memory: 512Mi
   revisionLabels:
-    e2e-scenario: automatic-scaling-vpc
+    e2e-scenario: vpc-egress
   vpcAccess:
     networkInterfaces:
       - network:
@@ -48,8 +50,7 @@ spec:
             fieldPath: status.outputs.subnetwork_name
     egress: PRIVATE_RANGES_ONLY
   scaling:
-    scalingMode: AUTOMATIC
-    minInstanceCount: 1
-    maxInstanceCount: 2
+    scalingMode: MANUAL
+    manualInstanceCount: 1
   deletionProtection: false
   deletionPolicy: DELETE

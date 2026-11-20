@@ -21,9 +21,10 @@ network and encryption must match the resource's.
 Every replica bills from the moment it is provisioned until the resource
 is deleted, whether or not a job is running.
 
-Immutable: everything except the display name and each pool's
-replica_count -- a change to any other setting, labels included, replaces
-the resource and reprovisions its machines.
+Every change replaces the resource and reprovisions its machines. Google
+patches the display name and replica counts in place, but the provider
+sends that update as a PUT Google does not serve, so the modules replace
+the resource for those too; labels force replacement in the provider.
 
 ## Example
 
@@ -122,7 +123,8 @@ Immutable.
 `string`
 
 Human-readable name shown in the console -- up to 128 UTF-8
-characters. Mutable in place.
+characters. A change replaces the resource (the provider cannot update
+it in place).
 
 - rule: {"string":{"maxLen":"128"}}
 
@@ -198,7 +200,8 @@ Immutable.
 `int64` · optional (explicit presence)
 
 How many replicas the pool runs (and bills) whether or not a job is
-using them. Sent as a decimal string. Mutable in place.
+using them. Sent as a decimal string. A change replaces the resource
+(the provider cannot update it in place).
 
 - rule: {"int64":{"gte":"1"}}
 

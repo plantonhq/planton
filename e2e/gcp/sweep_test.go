@@ -168,6 +168,15 @@ func standingResource(project string, harness harnessAccount, resource *cloudass
 		// Discovery Engine's default collection, made with the first data
 		// store and never removed.
 		return strings.HasSuffix(name, "/collections/default_collection")
+	case "servicedirectory.googleapis.com/Namespace":
+		// Private Service Connect's per-region namespace, made with the first
+		// PSC endpoint in a region.
+		return strings.HasSuffix(name, "/namespaces/goog-psc-default")
+	case "sqladmin.googleapis.com/Backup":
+		// A Cloud SQL instance's final backup, taken when the instance is
+		// deleted and kept for its own retention (a day in the lanes), then
+		// removed by Cloud SQL.
+		return true
 	case "binaryauthorization.googleapis.com/Policy":
 		// Every project has exactly one Binary Authorization policy; a
 		// destroy resets it to Google's default rather than removing it.
@@ -300,10 +309,29 @@ func newLiveReaders(ctx context.Context, t *testing.T, opts []option.ClientOptio
 		},
 		// A certificate whose pool is gone reads 404; a revoked one in a live
 		// pool stays, and so does its pool.
-		"privateca.googleapis.com/Certificate":             restReader(rest, "https://privateca.googleapis.com/v1/"),
-		"privateca.googleapis.com/CaPool":                  restReader(rest, "https://privateca.googleapis.com/v1/"),
-		"privateca.googleapis.com/CertificateAuthority":    restReader(rest, "https://privateca.googleapis.com/v1/"),
-		"privateca.googleapis.com/CertificateTemplate":     restReader(rest, "https://privateca.googleapis.com/v1/"),
+		"privateca.googleapis.com/Certificate":          restReader(rest, "https://privateca.googleapis.com/v1/"),
+		"privateca.googleapis.com/CaPool":               restReader(rest, "https://privateca.googleapis.com/v1/"),
+		"privateca.googleapis.com/CertificateAuthority": restReader(rest, "https://privateca.googleapis.com/v1/"),
+		"privateca.googleapis.com/CertificateTemplate":  restReader(rest, "https://privateca.googleapis.com/v1/"),
+		// A service networking connection goes with its network: one a lane
+		// abandons on purpose (Cloud SQL's producer holds it for long after
+		// the instance) reads as gone once its network is.
+		"servicenetworking.googleapis.com/Connection": func(ctx context.Context, name string) (bool, error) {
+			_, network, found := strings.Cut(name, "/global/networks/")
+			project, _, _ := strings.Cut(strings.TrimPrefix(name, "projects/"), "/")
+			if !found || project == "" {
+				return false, fmt.Errorf("%s names no network", name)
+			}
+			return restReader(rest, "https://compute.googleapis.com/compute/v1/")(ctx, "projects/"+project+"/global/networks/"+network)
+		},
+		// A deleted custom role stays listed, marked deleted, until IAM purges it.
+		"iam.googleapis.com/Role": func(ctx context.Context, name string) (bool, error) {
+			role, err := iamService.Projects.Roles.Get(name).Context(ctx).Do()
+			if exists, err := stillThere(err); !exists || err != nil {
+				return exists, err
+			}
+			return !role.Deleted, nil
+		},
 		"binaryauthorization.googleapis.com/Attestor":      restReader(rest, "https://binaryauthorization.googleapis.com/v1/"),
 		"securitycenter.googleapis.com/NotificationConfig": restReader(rest, "https://securitycenter.googleapis.com/v2/"),
 		"secretmanager.googleapis.com/Secret":              restReader(rest, "https://secretmanager.googleapis.com/v1/"),

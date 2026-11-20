@@ -35,9 +35,9 @@ const (
 // revision model (every template change stamps out a new immutable
 // revision, instance_splits decides how many instances each revision runs),
 // but it has no port, no ingress, no invoker IAM, no URL, and no
-// request-driven autoscaling: instances scale MANUALLY to a count you set,
-// or AUTOMATICALLY between bounds by a signal you drive (for example a
-// Pub/Sub backlog metric through Cloud Monitoring), never by traffic. CPU is
+// request-driven autoscaling: instances scale MANUALLY to a count you set
+// (Google also offers AUTOMATIC scaling between bounds by a signal you
+// drive, which the provider cannot deploy; see scaling), never by traffic. CPU is
 // always allocated, so billing is per instance-hour, not per request.
 //
 // Choose GcpCloudRun for anything that serves HTTP; GcpCloudRunJob for work
@@ -86,8 +86,9 @@ type GcpCloudRunWorkerPoolSpec struct {
 	// production; give real workers a dedicated least-privilege identity.
 	ServiceAccount *v1.StringValueOrRef `protobuf:"bytes,9,opt,name=service_account,json=serviceAccount,proto3" json:"service_account,omitempty"`
 	// How many instances run. MANUAL (Google's default) pins the total to
-	// manual_instance_count; AUTOMATIC lets Cloud Run move between
-	// min_instance_count and max_instance_count on a signal you drive.
+	// manual_instance_count. AUTOMATIC, moving between min_instance_count and
+	// max_instance_count on a signal you drive, is refused: the provider
+	// cannot deploy it (see scaling_mode).
 	// If omitted, no scaling block is sent and the pool runs in Google's
 	// default mode, MANUAL. A block that is MANUAL (or names no mode) must
 	// state manual_instance_count: the provider sends an unset count as 0,
@@ -370,6 +371,11 @@ type GcpCloudRunWorkerPoolScaling struct {
 	// MANUAL (Google's default): the pool runs exactly manual_instance_count
 	// instances. AUTOMATIC: Cloud Run moves the count between
 	// min_instance_count and max_instance_count on a signal you drive.
+	// The spec refuses AUTOMATIC: the Google provider sends a manual instance
+	// count with every scaling block (0 when unset), and Cloud Run refuses any
+	// manual count under AUTOMATIC, so no deploy can create it. The bounds
+	// stay modeled because Google's API offers them; they become usable when
+	// the provider sends the count only in MANUAL mode.
 	ScalingMode string `protobuf:"bytes,1,opt,name=scaling_mode,json=scalingMode,proto3" json:"scaling_mode,omitempty"`
 	// Total instances across all revisions in MANUAL mode. 0 parks the pool
 	// (no instances, no bill) without deleting it. Required in MANUAL mode
@@ -2292,13 +2298,14 @@ const file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_spec_proto_rawDesc = "" +
 	"#gpu.redundancy_requires_accelerator\x12_gpu_zonal_redundancy_disabled only applies to GPU worker pools -- set node_selector.accelerator\x1a>!this.gpu_zonal_redundancy_disabled || has(this.node_selector)\x1a\xfc\x01\n" +
 	"5encryption.shutdown_duration_requires_shutdown_action\x12_encryption_key_shutdown_duration only applies when encryption_key_revocation_action is SHUTDOWN\x1abthis.encryption_key_shutdown_duration == '' || this.encryption_key_revocation_action == 'SHUTDOWN'\x1a\x9e\x02\n" +
 	")encryption.revocation_action_requires_key\x12Uencryption_key_revocation_action only applies to a worker pool with an encryption_key\x1a\x99\x01this.encryption_key_revocation_action == '' || (has(this.encryption_key.value) && this.encryption_key.value != '') || has(this.encryption_key.value_from)B\x16\n" +
-	"\x14_deletion_protection\"\xe2\t\n" +
+	"\x14_deletion_protection\"\xe3\v\n" +
 	"\x1cGcpCloudRunWorkerPoolScaling\x12@\n" +
 	"\fscaling_mode\x18\x01 \x01(\tB\x1d\xbaH\x1a\xd8\x01\x01r\x15R\x00R\tAUTOMATICR\x06MANUALR\vscalingMode\x12@\n" +
 	"\x15manual_instance_count\x18\x02 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00H\x00R\x13manualInstanceCount\x88\x01\x01\x12:\n" +
 	"\x12min_instance_count\x18\x03 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00H\x01R\x10minInstanceCount\x88\x01\x01\x12:\n" +
-	"\x12max_instance_count\x18\x04 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01H\x02R\x10maxInstanceCount\x88\x01\x01:\xfd\x06\xbaH\xf9\x06\x1a\xfe\x01\n" +
-	"\"scaling.manual_mode_requires_count\x12\x92\x01Manual scaling needs an instance count. Set manual_instance_count (0 parks the pool on purpose), or set scaling_mode to AUTOMATIC with its bounds.\x1aCthis.scaling_mode == 'AUTOMATIC' || has(this.manual_instance_count)\x1a\xcd\x01\n" +
+	"\x12max_instance_count\x18\x04 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01H\x02R\x10maxInstanceCount\x88\x01\x01:\xfe\b\xbaH\xfa\b\x1a\xb1\x02\n" +
+	" scaling.automatic_not_deployable\x12\xea\x01AUTOMATIC scaling cannot be deployed: the Google provider sends a manual instance count with every scaling block, and Cloud Run refuses one under AUTOMATIC (\"scaling mode must be set to MANUAL\"). Use MANUAL with manual_instance_count.\x1a this.scaling_mode != 'AUTOMATIC'\x1a\xcb\x01\n" +
+	"\"scaling.manual_mode_requires_count\x12`Manual scaling needs an instance count. Set manual_instance_count (0 parks the pool on purpose).\x1aCthis.scaling_mode == 'AUTOMATIC' || has(this.manual_instance_count)\x1a\xcd\x01\n" +
 	")scaling.manual_count_requires_manual_mode\x12Zmanual_instance_count only applies when scaling_mode is MANUAL (or unset, which is MANUAL)\x1aD!has(this.manual_instance_count) || this.scaling_mode != 'AUTOMATIC'\x1a\xe2\x01\n" +
 	"%scaling.bounds_require_automatic_mode\x12Smin_instance_count and max_instance_count only apply when scaling_mode is AUTOMATIC\x1ad(!has(this.min_instance_count) && !has(this.max_instance_count)) || this.scaling_mode == 'AUTOMATIC'\x1a\xc0\x01\n" +
 	"\x13scaling.min_lte_max\x123min_instance_count cannot exceed max_instance_count\x1at!has(this.min_instance_count) || !has(this.max_instance_count) || this.min_instance_count <= this.max_instance_countB\x18\n" +
