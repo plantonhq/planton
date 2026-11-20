@@ -16,5 +16,5 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  networkName: e2e-runwp-vpc-${E2E_RUN_ID}
+  networkName: e2e-runwp-vpc-${E2E_SCENARIO}-${E2E_RUN_ID}
   autoCreateSubnetworks: false
