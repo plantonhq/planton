@@ -3,8 +3,13 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpcloudsqluser
 spec:
-  # Composed scenario: deploys the GcpCloudSql prerequisite then creates a
-  # BUILT_IN user on it.
+  # Proven live on both engines (2026-11-20): a built-in user whose password
+  # rotates in place and an IAM user named by a GcpServiceAccount reference,
+  # each created and dropped by an identity holding only this kind's
+  # permissions manifest, with the re-plan clean. The provider reads the
+  # parent instance on create and refresh (cloudsql.instances.get). Cloud SQL
+  # writes no Admin Activity entry for users, so the rotation is judged from
+  # the engine's plan and the verifier's read (planton.dev/e2e-upgrade-unaudited).
   tier: 1
   # Live-proven 2026-08-13 on both engines at the total-accounting spec:
   # minimal scenario (BUILT_IN user + database_roles [cloudsqlsuperuser]
@@ -23,6 +28,6 @@ spec:
   # place. The iam-service-account scenario carries no second act: an IAM
   # database user has no updatable field (its name, type and account are
   # immutable, and it holds no password), so it proves by deploy and destroy.
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 30
