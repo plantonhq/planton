@@ -3,9 +3,13 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpgkenodepool
 spec:
-  # Every scenario deploys a full GKE cluster prerequisite (10-25 minutes)
-  # before the pool itself (~3-6 minutes), and destroys both after. Batch
-  # runs with a go test -timeout of at least 180m.
+  # Proven live on both engines (2026-11-20): an on-demand pool and an
+  # autoscaled Spot pool on a zonal cluster, each deployed, the Spot pool's
+  # autoscaling maximum raised in place (UpdateCluster in Google's audit log)
+  # and destroyed by an identity holding only this kind's permissions
+  # manifest, with the re-plan clean. A pool's nodes run as the project's
+  # Compute Engine default service account unless node_config names one, and
+  # GKE demands actAs on that account.
   tier: 1
   # Live-proven 2026-08-12 on both engines at the full spec surface of the release then pinned:
   # 2 scenarios (minimal fixed-count, autoscaling-spot incl. the kubelet
@@ -20,8 +24,8 @@ spec:
   # next proof confirms the grace periods round-trip on a Spot pool and re-
   # plan clean (both are API-computed when unset); the init script and the
   # hold stay offline-proven.
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   # Deferred arm — node_drain_config (customized node drain): GKE gates
   # the feature behind a per-project allowlist granted only via a GCP
   # support case; the live API rejects creates with "customized node drain
