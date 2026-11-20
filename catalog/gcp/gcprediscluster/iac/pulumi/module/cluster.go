@@ -310,7 +310,9 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 		}).(pulumi.StringOutput)
 	}
 
-	ctx.Export(OpName, createdCluster.Name)
+	// The resource id is the full path (the composition key); the
+	// provider's name attribute is the bare cluster id.
+	ctx.Export(OpName, createdCluster.ID())
 	ctx.Export(OpUid, createdCluster.Uid)
 	ctx.Export(OpState, createdCluster.State)
 	ctx.Export(OpDiscoveryEndpointAddress, discoveryAddress)

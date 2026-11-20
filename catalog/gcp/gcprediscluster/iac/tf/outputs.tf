@@ -3,7 +3,9 @@
 # it.
 output "name" {
   description = "Full resource path of the cluster"
-  value       = google_redis_cluster.this.name
+  # The resource id is the full path; the provider's name attribute is the
+  # bare cluster id.
+  value = google_redis_cluster.this.id
 }
 
 output "uid" {
