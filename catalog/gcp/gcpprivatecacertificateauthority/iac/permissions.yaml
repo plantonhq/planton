@@ -21,20 +21,20 @@ spec:
           - privateca.certificateAuthorities.delete
           - privateca.caPools.get
           - privateca.operations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_privateca_certificate_authority (Pulumi certificateauthority.Authority) -- created in the pool, read on every refresh, enabled or disabled and updated in place (desired state, subordinate config, access URLs, labels), disabled and deleted on destroy, and its long-running operations polled; the pool is read when the authority is created in it. Names grounded in Google's CA Service permissions-and-roles page; roles/privateca.caManager contains all six.
+        notes: Covers google_privateca_certificate_authority (Pulumi certificateauthority.Authority) -- created in the pool, read on every refresh, enabled or disabled and updated in place (desired state, subordinate config, access URLs, labels), disabled and deleted on destroy, and its long-running operations polled; the pool is read when the authority is created in it. Names grounded in Google's CA Service permissions-and-roles page; roles/privateca.caManager contains all six. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ActivateSubordinateByReference
         permissions:
           - privateca.certificates.create
           - privateca.caPools.use
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: subordinate_config.certificate_authority
-        notes: A subordinate named by reference is activated by having the parent's pool sign its CSR -- the provider creates a certificate in the parent's pool through the named authority -- so the caller needs certificate creation there (roles/privateca.certificateManager on the parent's pool). Not exercised by roots or outside-CA activation.
+        notes: A subordinate named by reference is activated by having the parent's pool sign its CSR -- the provider creates a certificate in the parent's pool through the named authority -- so the caller needs certificate creation there (roles/privateca.certificateManager on the parent's pool). Not exercised by roots or outside-CA activation. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: UseCustomerKey
         permissions:
           - cloudkms.cryptoKeyVersions.get

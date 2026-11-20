@@ -3,19 +3,12 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpvertexaidataset
 spec:
-  # Awaiting the live proof lane. Both scenarios prove in the harness
-  # project with roles/aiplatform.admin; the module enables
-  # aiplatform.googleapis.com itself: the smallest image dataset and a
-  # labeled tabular one. Offline bar met: both modules build and validate,
-  # offline plans for the reference manifest, both scenarios, and the CMEK
-  # arm are clean on the pinned provider, and the accounting is total. Live
-  # facts the proof lane confirms: (1) each dataset creates and RE-PLANS
-  # CLEAN under the apply-idempotency gate on both engines -- the display
-  # name defaulted from metadata.name and the attribution labels show no
-  # diff; (2) the dataset_id output is the numeric id at the end of the
-  # name on both engines; (3) the destroy deletes the dataset and the
-  # verifier reads 404.
+  # Proven live on both engines (2026-11-20): an image dataset and a labeled
+  # tabular one, each deployed, renamed in place (UpdateDataset in Google's
+  # audit log) and destroyed by an identity holding only this kind's
+  # permissions manifest, with the re-plan clean. The dataset_id output is the
+  # numeric id at the end of the name.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 20

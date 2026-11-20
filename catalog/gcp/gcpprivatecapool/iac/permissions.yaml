@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling privateca.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling privateca.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageCaPool
         permissions:
           - privateca.caPools.create
@@ -27,7 +27,7 @@ spec:
           - privateca.caPools.update
           - privateca.caPools.delete
           - privateca.operations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_privateca_ca_pool (Pulumi certificateauthority.CaPool) -- created, read on every refresh, updated in place (issuance policy, publishing options, encryption key, labels), deleted, and its long-running operations polled. Names grounded in Google's CA Service permissions-and-roles page; roles/privateca.caManager contains all five.
+        notes: Covers google_privateca_ca_pool (Pulumi certificateauthority.CaPool) -- created, read on every refresh, updated in place (issuance policy, publishing options, encryption key, labels), deleted, and its long-running operations polled. Names grounded in Google's CA Service permissions-and-roles page; roles/privateca.caManager contains all five. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

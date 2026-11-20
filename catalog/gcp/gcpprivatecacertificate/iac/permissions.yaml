@@ -18,10 +18,10 @@ spec:
           - privateca.certificates.get
           - privateca.certificates.update
           - privateca.caPools.use
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_privateca_certificate (Pulumi certificateauthority.Certificate) -- issued from the pool (caPools.use authorizes issuing through it), read on every refresh, labels updated in place, and revoked on destroy (Google's revoke is an update of the certificate). Names grounded in Google's CA Service permissions-and-roles page; roles/privateca.certificateManager contains all four.
+        notes: Covers google_privateca_certificate (Pulumi certificateauthority.Certificate) -- issued from the pool (caPools.use authorizes issuing through it), read on every refresh, labels updated in place, and revoked on destroy (Google's revoke is an update of the certificate). Names grounded in Google's CA Service permissions-and-roles page; roles/privateca.certificateManager contains all four. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: UseTemplate
         permissions:
           - privateca.certificateTemplates.use
