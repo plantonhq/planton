@@ -47,3 +47,4 @@ The `spec` object mirrors the proto spec; `StringValueOrRef` fields (`project_id
 | `service_account_email` | The instance's Google-managed service account |
 | `dns_name` | DNS name (PSC-enabled instances) |
 | `psc_service_attachment_link` | PSC service attachment link (PSC-enabled instances) |
+| `socket_path` | `/cloudsql/{connection_name}`, the Unix socket path a mounted workload connects through |

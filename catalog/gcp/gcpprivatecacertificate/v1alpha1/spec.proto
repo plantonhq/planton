@@ -18,7 +18,9 @@ message GcpPrivateCaCertificateSubjectConfig {
 
 // GcpPrivateCaCertificateSubject is the X.509 distinguished name.
 message GcpPrivateCaCertificateSubject {
-  // The common name (CN), e.g. "Example Root CA" or a host name.
+  // The common name (CN), e.g. a host name such as
+  // "api.internal.example.com" or a workload's name. TLS clients check the
+  // subject alternative names, not the common name.
   string common_name = 1 [(buf.validate.field).string.min_len = 1];
 
   // Two-letter country code (C), e.g. "US".
@@ -76,8 +78,10 @@ message GcpPrivateCaCertificateX509Parameters {
   GcpPrivateCaCertificateKeyUsage key_usage = 1;
 
   // The basic constraints extension: whether the certificate is a CA and
-  // how many CA levels may sit below it. Omit to leave the extension to
-  // Google's default (for a leaf certificate, is_ca false).
+  // how many CA levels may sit below it. Omitting the block sends no basic
+  // constraints at all, leaving the extension to the pool and the
+  // template. A block with is_ca unset is a different request: the block
+  // is sent without a CA flag. A leaf certificate states is_ca false.
   GcpPrivateCaCertificateCaOptions ca_options = 2;
 
   // Certificate policy object identifiers (RFC 5280 section 4.2.1.4), each
@@ -96,8 +100,8 @@ message GcpPrivateCaCertificateX509Parameters {
   repeated GcpPrivateCaCertificateX509Extension additional_extensions = 5;
 
   // The name constraints extension (RFC 5280 section 4.2.1.10): the names
-  // certificates below a CA may and may not carry. Meaningful on CA
-  // certificates.
+  // certificates signed below a CA may and may not carry. Only a CA
+  // certificate uses it; a leaf certificate leaves it out.
   GcpPrivateCaCertificateNameConstraints name_constraints = 6;
 }
 
@@ -172,17 +176,17 @@ message GcpPrivateCaCertificateExtendedKeyUsage {
 }
 
 // GcpPrivateCaCertificateCaOptions is the basic constraints extension (RFC 5280 section
-// 4.2.1.9). Both fields are presence-based: an unset field is left out of
-// the certificate, which is different from setting it to false or 0.
+// 4.2.1.9). Both fields are presence-based: an unset field is sent as
+// absent, which is different from setting it to false or 0.
 message GcpPrivateCaCertificateCaOptions {
-  // true makes a CA certificate (CA:TRUE), false states CA:FALSE; unset
-  // leaves the CA flag out of the extension.
+  // false states CA:FALSE -- what a leaf certificate (a server, a client,
+  // a workload) says. true makes a CA certificate (CA:TRUE). Unset sends
+  // the block without a CA flag.
   optional bool is_ca = 1;
 
-  // The path length constraint: how many CA levels may sit below this
-  // certificate. 0 means it may sign only leaf certificates -- a
-  // subordinate that issues workload certificates; unset means no limit
-  // is stated.
+  // The path length constraint, which only a CA certificate carries: how
+  // many CA levels may sit below it (0 lets it sign only leaf
+  // certificates). A leaf certificate leaves it unset.
   optional int32 max_issuer_path_length = 2 [(buf.validate.field).int32.gte = 0];
 }
 
@@ -283,9 +287,10 @@ message GcpPrivateCaCertificateConfig {
 // GcpPrivateCaCertificateSpec defines a certificate issued from a CA pool
 // (`google_privateca_certificate`) -- one signed X.509 certificate for a
 // key someone else holds, described by a CSR or by structured config.
-// Everything but labels is immutable: a change issues a new certificate.
-// Destroy REVOKES the certificate (Google keeps the revoked record); its
-// ID cannot be reused in the pool.
+// Everything but labels is immutable. Destroy REVOKES the certificate
+// (Google keeps the revoked record), and its ID cannot be reused in the
+// pool -- so renewal is a successor declared under a new ID beside the
+// current certificate, never a changed request under the same ID.
 //
 // The pool must be ENTERPRISE: Google cannot describe or revoke
 // certificates in a DEVOPS pool, so neither engine could track or destroy

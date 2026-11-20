@@ -36,8 +36,15 @@ type GcpPrivateCaCertificateOutputs struct {
 	PemCertificateChain []string `protobuf:"bytes,4,rep,name=pem_certificate_chain,json=pemCertificateChain,proto3" json:"pem_certificate_chain,omitempty"`
 	// The full name of the authority that signed it.
 	IssuerCertificateAuthority string `protobuf:"bytes,5,opt,name=issuer_certificate_authority,json=issuerCertificateAuthority,proto3" json:"issuer_certificate_authority,omitempty"`
-	unknownFields              protoimpl.UnknownFields
-	sizeCache                  protoimpl.SizeCache
+	// When the certificate becomes valid, as an RFC 3339 timestamp Google
+	// reads from the signed certificate.
+	NotBeforeTime string `protobuf:"bytes,6,opt,name=not_before_time,json=notBeforeTime,proto3" json:"not_before_time,omitempty"`
+	// When the certificate expires, as an RFC 3339 timestamp Google reads
+	// from the signed certificate -- the date a successor must be issued
+	// and installed by.
+	NotAfterTime  string `protobuf:"bytes,7,opt,name=not_after_time,json=notAfterTime,proto3" json:"not_after_time,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpPrivateCaCertificateOutputs) Reset() {
@@ -105,17 +112,33 @@ func (x *GcpPrivateCaCertificateOutputs) GetIssuerCertificateAuthority() string 
 	return ""
 }
 
+func (x *GcpPrivateCaCertificateOutputs) GetNotBeforeTime() string {
+	if x != nil {
+		return x.NotBeforeTime
+	}
+	return ""
+}
+
+func (x *GcpPrivateCaCertificateOutputs) GetNotAfterTime() string {
+	if x != nil {
+		return x.NotAfterTime
+	}
+	return ""
+}
+
 var File_catalog_gcp_gcpprivatecacertificate_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpprivatecacertificate_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/gcp/gcpprivatecacertificate/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpprivatecacertificate.v1alpha1\"\xfa\x01\n" +
+	":catalog/gcp/gcpprivatecacertificate/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpprivatecacertificate.v1alpha1\"\xc8\x02\n" +
 	"\x1eGcpPrivateCaCertificateOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12%\n" +
 	"\x0ecertificate_id\x18\x02 \x01(\tR\rcertificateId\x12'\n" +
 	"\x0fpem_certificate\x18\x03 \x01(\tR\x0epemCertificate\x122\n" +
 	"\x15pem_certificate_chain\x18\x04 \x03(\tR\x13pemCertificateChain\x12@\n" +
-	"\x1cissuer_certificate_authority\x18\x05 \x01(\tR\x1aissuerCertificateAuthorityB\x94\x03\n" +
+	"\x1cissuer_certificate_authority\x18\x05 \x01(\tR\x1aissuerCertificateAuthority\x12&\n" +
+	"\x0fnot_before_time\x18\x06 \x01(\tR\rnotBeforeTime\x12$\n" +
+	"\x0enot_after_time\x18\a \x01(\tR\fnotAfterTimeB\x94\x03\n" +
 	"4com.dev.planton.gcp.gcpprivatecacertificate.v1alpha1B\fOutputsProtoP\x01Zigithub.com/plantonhq/planton/catalog/gcp/gcpprivatecacertificate/v1alpha1;gcpprivatecacertificatev1alpha1\xa2\x02\x04DPGG\xaa\x020Dev.Planton.Gcp.Gcpprivatecacertificate.V1alpha1\xca\x020Dev\\Planton\\Gcp\\Gcpprivatecacertificate\\V1alpha1\xe2\x02<Dev\\Planton\\Gcp\\Gcpprivatecacertificate\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Gcp::Gcpprivatecacertificate::V1alpha1b\x06proto3"
 
 var (

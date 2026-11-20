@@ -28,3 +28,8 @@ output "feature_view_names" {
   description = "Full resource names of the declared feature views, in manifest order"
   value       = [for view in var.spec.feature_views : google_vertex_ai_feature_online_store_featureview.this[view.feature_view_id].id]
 }
+
+output "state" {
+  description = "The store's state as Google reports it: STABLE or UPDATING"
+  value       = google_vertex_ai_feature_online_store.this.state
+}

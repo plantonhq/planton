@@ -224,6 +224,7 @@ func databaseInstance(
 	ctx.Export(OpServiceAccountEmail, createdInstance.ServiceAccountEmailAddress)
 	ctx.Export(OpDnsName, createdInstance.DnsName)
 	ctx.Export(OpPscServiceAttachmentLink, createdInstance.PscServiceAttachmentLink)
+	ctx.Export(OpSocketPath, pulumi.Sprintf("/cloudsql/%s", createdInstance.ConnectionName))
 
 	return createdInstance, nil
 }

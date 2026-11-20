@@ -107,6 +107,7 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 | `public_endpoint_domain_name` | The dedicated endpoint's domain | Optimized-store clients |
 | `service_attachment` | The PSC service attachment | A consumer's PSC forwarding rule |
 | `feature_view_names` | The views' full names | FetchFeatureValues requests |
+| `state` | `STABLE` or `UPDATING` | Rollout checks |
 
 ## Common Patterns
 

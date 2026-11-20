@@ -1,6 +1,6 @@
 # GCP Vertex AI Persistent Resource
 
-A Vertex AI persistent resource -- a long-running cluster of machines Vertex AI keeps provisioned so custom training jobs (and Ray on Vertex AI) start in seconds instead of waiting minutes for capacity, and so scarce accelerators stay held between jobs. Declare the pools of machines, optionally peer them into your VPC or give them a Private Service Connect interface, and have training jobs name the resource's id in `persistent_resource_id`.
+A Vertex AI persistent resource -- a long-running cluster of machines Vertex AI keeps provisioned so custom training jobs start in seconds instead of waiting minutes for capacity, and so scarce accelerators stay held between jobs. Declare the pools of machines, optionally peer them into your VPC or give them a Private Service Connect interface, and have training jobs name the resource's id in `persistent_resource_id`.
 
 ## What Gets Created
 
@@ -76,7 +76,10 @@ planton apply -f vertex-ai-persistent-resource.yaml
 
 ### Validation Rules
 
-- At least one pool, each with a machine spec; replica counts and the autoscaling floor are at least 1 (Google rejects a zero floor on a persistent resource).
+- At least one pool, each with a machine spec naming its `machineType`; replica counts and the autoscaling floor are at least 1 (Google rejects a zero floor on a persistent resource).
+- With autoscaling, `minReplicaCount <= replicaCount <= maxReplicaCount`, and the most is more than the fewest.
+- `acceleratorType` and `acceleratorCount` are set together (a count of at least 1), or neither.
+- A literal `network` is `projects/{project}/global/networks/{name}` or the network's self-link, never a bare name.
 - Accelerator types and boot disk types are Google's lists.
 - DNS peering domains end with a dot.
 
@@ -88,6 +91,7 @@ planton apply -f vertex-ai-persistent-resource.yaml
 | `persistent_resource_id` | `string` | What a training job's `persistent_resource_id` takes |
 | `location` | `string` | The resource's location |
 | `state` | `string` | The resource's state (`RUNNING` once every pool is provisioned) |
+| `error` | `object` | Why the resource is in `ERROR`: Google's `code` and `message` (code `0` when there is none) |
 
 ## Deployment Methods
 

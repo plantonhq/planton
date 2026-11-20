@@ -203,9 +203,14 @@ type GcpRedisClusterPersistenceConfig struct {
 	//	RDB      -- periodic point-in-time snapshots (rdb_config)
 	//	AOF      -- append-only write log (aof_config)
 	Mode string `protobuf:"bytes,1,opt,name=mode,proto3" json:"mode,omitempty"`
-	// Snapshot schedule. Only meaningful when mode is RDB.
+	// Snapshot schedule. Only meaningful when mode is RDB. Write the block
+	// in full when switching to RDB: a field left out keeps Google's current
+	// value. The snapshot anchor (rdb_snapshot_start_time), once set, cannot
+	// be cleared.
 	RdbConfig *GcpRedisClusterRdbConfig `protobuf:"bytes,2,opt,name=rdb_config,json=rdbConfig,proto3" json:"rdb_config,omitempty"`
-	// Flush policy. Only meaningful when mode is AOF.
+	// Flush policy. Only meaningful when mode is AOF. Write the block in
+	// full when switching to AOF: a field left out keeps Google's current
+	// value (write append_fsync EVERYSEC to return to Google's default).
 	AofConfig     *GcpRedisClusterAofConfig `protobuf:"bytes,3,opt,name=aof_config,json=aofConfig,proto3" json:"aof_config,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -263,7 +268,10 @@ func (x *GcpRedisClusterPersistenceConfig) GetAofConfig() *GcpRedisClusterAofCon
 }
 
 // GcpRedisClusterZoneDistributionConfig decides how the cluster's nodes
-// spread across the region's zones. Immutable after creation.
+// spread across the region's zones. Fixed at creation: the provider plans
+// a change in place and sends nothing, so a changed value re-plans on every
+// deploy while the cluster keeps its distribution. A different
+// distribution is a new cluster.
 type GcpRedisClusterZoneDistributionConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// MULTI_ZONE (Google's default) spreads primaries and replicas across
@@ -381,7 +389,8 @@ func (x *GcpRedisClusterMaintenanceWindow) GetHour() int32 {
 }
 
 // GcpRedisClusterMaintenancePolicy schedules Google's maintenance. Without
-// it Google picks the window.
+// it Google picks the window; removing the block later clears the window
+// and Google picks again.
 type GcpRedisClusterMaintenancePolicy struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The weekly window.
@@ -590,7 +599,14 @@ func (x *GcpRedisClusterSecondaryCluster) GetCluster() *v1.StringValueOrRef {
 //
 // Deploy the primary first (role PRIMARY, optionally listing its
 // secondaries), then each secondary (role SECONDARY, naming the primary).
-// Roles are exchanged by an in-place update during a planned switchover.
+// A secondary carries the primary's shard count and lives in a different
+// region from it. Roles are exchanged by an in-place update during a
+// planned switchover. Google's API document marks the role output only;
+// the provider writes it, and its own acceptance test switches over and
+// detaches a live pair through it.
+//
+// Leaving a pair is written, not removed: cluster_role NONE with no
+// primary or secondaries. Removing this block keeps the role Google holds.
 type GcpRedisClusterCrossClusterReplicationConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// This cluster's role:
@@ -660,7 +676,8 @@ func (x *GcpRedisClusterCrossClusterReplicationConfig) GetSecondaryClusters() []
 }
 
 // GcpRedisClusterGcsSource seeds the new cluster from RDB files in Cloud
-// Storage at creation. Immutable: seeding happens once.
+// Storage at creation. Immutable: seeding happens once, but keep the block
+// for the cluster's life -- removing it replaces the cluster.
 type GcpRedisClusterGcsSource struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Cloud Storage URIs of the RDB files (gs://bucket/path.rdb). The
@@ -708,7 +725,8 @@ func (x *GcpRedisClusterGcsSource) GetUris() []string {
 }
 
 // GcpRedisClusterManagedBackupSource seeds the new cluster from a managed
-// backup at creation. Immutable: seeding happens once.
+// backup at creation. Immutable: seeding happens once, but keep the block
+// for the cluster's life -- removing it replaces the cluster.
 type GcpRedisClusterManagedBackupSource struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource path of the backup
@@ -770,12 +788,23 @@ func (x *GcpRedisClusterManagedBackupSource) GetBackup() string {
 //
 // Behavior an operator must know:
 //
-//   - Immutable after creation: cluster_name, region, authorization_mode,
-//     transit_encryption_mode, zone_distribution_config, and the seed
-//     sources (gcs_source / managed_backup_source). Everything else --
-//     shard_count, replica_count, node_type, redis_configs, kms_key,
-//     persistence, backups, maintenance, the replication role -- updates in
-//     place; shard and replica changes resize the cluster without downtime.
+//   - Immutable after creation: project_id, cluster_name, region,
+//     authorization_mode, transit_encryption_mode, and the seed sources
+//     (gcs_source / managed_backup_source) -- a change replaces the
+//     cluster, and removing a seed source counts as a change.
+//     zone_distribution_config is fixed too, but a change replaces nothing:
+//     the provider plans it in place, sends nothing, and re-plans forever.
+//     Everything else -- shard_count, replica_count, node_type,
+//     redis_configs, kms_key, persistence, backups, maintenance, the
+//     replication role -- updates in place; shard and replica changes
+//     resize the cluster without downtime.
+//
+//   - Removing a block is not always turning it off. node_type,
+//     server_ca_mode, persistence_config, zone_distribution_config, and
+//     cross_cluster_replication_config keep Google's current value when
+//     removed after creation; write the off-value instead (persistence mode
+//     DISABLED, cluster_role NONE). maintenance_policy and
+//     automated_backup_config clear when removed.
 //
 //   - Connectivity is Private Service Connect only. With psc_configs set,
 //     service connectivity automation places the endpoints, and it acts
@@ -795,7 +824,7 @@ type GcpRedisClusterSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The GCP project the cluster is created in: a literal project ID or a
 	// GcpProject reference. If omitted, the provider's default project is
-	// used.
+	// used. Immutable: a change replaces the cluster.
 	ProjectId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// The cluster's name in GCP. Defaults to metadata.name. 1-63
 	// characters: lowercase letters, digits, and hyphens, starting with a
@@ -824,7 +853,9 @@ type GcpRedisClusterSpec struct {
 	//	REDIS_HIGHMEM_XLARGE   -- ~58 GB
 	//	REDIS_HIGHMEM_2XLARGE  -- ~116 GB
 	//
-	// If unset, Google picks REDIS_HIGHMEM_MEDIUM. Updates in place.
+	// If unset at creation, Google picks REDIS_HIGHMEM_MEDIUM; removing it
+	// later keeps the current type (write the type you want instead).
+	// Updates in place.
 	NodeType string `protobuf:"bytes,6,opt,name=node_type,json=nodeType,proto3" json:"node_type,omitempty"`
 	// Native Redis configuration parameters Google lets a cluster tune, as
 	// key-value pairs (e.g. "maxmemory-policy": "allkeys-lru",
@@ -843,8 +874,11 @@ type GcpRedisClusterSpec struct {
 	//	AUTH_MODE_IAM_AUTH -- clients present an IAM access token as the
 	//	                      Redis password; access is governed by IAM
 	//
-	// Immutable. Sent explicitly on both engines so the choice never
-	// depends on a provider default.
+	// Fixed at creation by the provider, which replaces the cluster on a
+	// change; Google itself does not mark it immutable. Both engines send it
+	// explicitly, and a blank sends AUTH_MODE_DISABLED -- so removing the
+	// field from an IAM cluster plans a replacement with an unauthenticated
+	// cluster.
 	AuthorizationMode string `protobuf:"bytes,9,opt,name=authorization_mode,json=authorizationMode,proto3" json:"authorization_mode,omitempty"`
 	// TLS for client connections:
 	//
@@ -854,7 +888,11 @@ type GcpRedisClusterSpec struct {
 	//	                                                 the server's
 	//	                                                 certificate
 	//
-	// Immutable. Sent explicitly on both engines.
+	// Fixed at creation by the provider, which replaces the cluster on a
+	// change; Google itself does not mark it immutable. Both engines send it
+	// explicitly, and a blank sends TRANSIT_ENCRYPTION_MODE_DISABLED -- so
+	// removing the field from a TLS cluster plans a replacement with a
+	// plaintext cluster.
 	TransitEncryptionMode string `protobuf:"bytes,10,opt,name=transit_encryption_mode,json=transitEncryptionMode,proto3" json:"transit_encryption_mode,omitempty"`
 	// Which certificate authority signs the server certificate when TLS is
 	// on:
@@ -872,6 +910,8 @@ type GcpRedisClusterSpec struct {
 	//	                                                 (server_ca_pool)
 	//
 	// Meaningful only with TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION.
+	// Removing it after creation keeps the current mode; there is no way back
+	// to "Google's choice", so write the mode you want.
 	ServerCaMode string `protobuf:"bytes,11,opt,name=server_ca_mode,json=serverCaMode,proto3" json:"server_ca_mode,omitempty"`
 	// The Certificate Authority Service pool that signs the server
 	// certificate under SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA -- a
@@ -884,41 +924,54 @@ type GcpRedisClusterSpec struct {
 	// Memorystore service agent needs encrypter/decrypter on it. If unset,
 	// Google-managed keys encrypt the data.
 	KmsKey *v1.StringValueOrRef `protobuf:"bytes,13,opt,name=kms_key,json=kmsKey,proto3" json:"kms_key,omitempty"`
-	// Whether and how data survives a restart. Unset means in-memory only.
+	// Whether and how data survives a restart. Unset at creation means
+	// in-memory only. Removing the block later keeps Google's current mode:
+	// write mode DISABLED to turn persistence off.
 	PersistenceConfig *GcpRedisClusterPersistenceConfig `protobuf:"bytes,14,opt,name=persistence_config,json=persistenceConfig,proto3" json:"persistence_config,omitempty"`
 	// How nodes spread across the region's zones. Unset means MULTI_ZONE.
-	// Immutable.
+	// Fixed at creation: the provider plans a change in place and sends
+	// nothing, so a changed value re-plans on every deploy. A different
+	// distribution is a new cluster.
 	ZoneDistributionConfig *GcpRedisClusterZoneDistributionConfig `protobuf:"bytes,15,opt,name=zone_distribution_config,json=zoneDistributionConfig,proto3" json:"zone_distribution_config,omitempty"`
 	// The weekly window Google may apply maintenance in. Unset lets Google
-	// choose.
+	// choose; removing the block clears the window and Google picks again.
 	MaintenancePolicy *GcpRedisClusterMaintenancePolicy `protobuf:"bytes,16,opt,name=maintenance_policy,json=maintenancePolicy,proto3" json:"maintenance_policy,omitempty"`
 	// Daily backups into the cluster's managed backup collection. Unset
 	// means no automated backups (on-demand backups stay available through
-	// the console and gcloud).
+	// the console and gcloud); removing the block stops automated backups.
 	AutomatedBackupConfig *GcpRedisClusterAutomatedBackupConfig `protobuf:"bytes,17,opt,name=automated_backup_config,json=automatedBackupConfig,proto3" json:"automated_backup_config,omitempty"`
 	// Cross-region disaster recovery: make this cluster a PRIMARY that
 	// replicates to secondaries in other regions, or a SECONDARY that
-	// replicates from a primary. Unset (or role NONE) is a standalone
-	// cluster.
+	// replicates from a primary. Unset at creation (or role NONE) is a
+	// standalone cluster. Removing the block later keeps the role Google
+	// holds: write cluster_role NONE, with no primary or secondaries, to
+	// leave a pair.
 	CrossClusterReplicationConfig *GcpRedisClusterCrossClusterReplicationConfig `protobuf:"bytes,18,opt,name=cross_cluster_replication_config,json=crossClusterReplicationConfig,proto3" json:"cross_cluster_replication_config,omitempty"`
 	// Seed the new cluster from RDB files in Cloud Storage at creation.
-	// Mutually exclusive with managed_backup_source. Immutable.
+	// Mutually exclusive with managed_backup_source. Immutable: keep the
+	// block for the cluster's life, since removing it replaces the cluster.
 	GcsSource *GcpRedisClusterGcsSource `protobuf:"bytes,19,opt,name=gcs_source,json=gcsSource,proto3" json:"gcs_source,omitempty"`
 	// Seed the new cluster from a managed backup at creation. Mutually
-	// exclusive with gcs_source. Immutable.
+	// exclusive with gcs_source. Immutable: keep the block for the cluster's
+	// life, since removing it replaces the cluster.
 	ManagedBackupSource *GcpRedisClusterManagedBackupSource `protobuf:"bytes,20,opt,name=managed_backup_source,json=managedBackupSource,proto3" json:"managed_backup_source,omitempty"`
 	// User labels on the cluster, merged beneath Planton's platform
 	// attribution labels (platform keys win on conflict).
 	Labels map[string]string `protobuf:"bytes,21,rep,name=labels,proto3" json:"labels,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Whether deletion protection is on. Defaults to true (Google's own
-	// posture): destroying the cluster fails until this is set to false.
-	// Both engines send the value explicitly so a manifest that never
-	// mentions it behaves the same everywhere. Updates in place.
+	// posture). Google enforces it, so it guards only a DELETE destroy: under
+	// deletion_policy DELETE a destroy fails until this is set to false and
+	// that change is applied on its own first (a change made in the same
+	// destroy run never reaches Google). PREVENT and ABANDON are decided
+	// before Google is called, so protection never stops an ABANDON. Both
+	// engines send the value explicitly so a manifest that never mentions it
+	// behaves the same everywhere. Updates in place.
 	DeletionProtectionEnabled *bool `protobuf:"varint,22,opt,name=deletion_protection_enabled,json=deletionProtectionEnabled,proto3,oneof" json:"deletion_protection_enabled,omitempty"`
-	// Self-service maintenance: setting this to a newer version from the
-	// cluster's available maintenance versions applies the update on your
-	// schedule instead of waiting for Google's rollout. Update-only and
-	// forward-only; leave unset to follow Google's rollout.
+	// Self-service maintenance: used only to request an update on an
+	// existing cluster, to a version chosen from the
+	// available_maintenance_versions output. Setting it applies that update
+	// on your schedule instead of waiting for Google's rollout. Forward-only;
+	// leave unset at creation and to follow Google's rollout.
 	MaintenanceVersion string `protobuf:"bytes,23,opt,name=maintenance_version,json=maintenanceVersion,proto3" json:"maintenance_version,omitempty"`
 	// A Memorystore for Redis Cluster ACL policy attached to the cluster:
 	// Redis ACL rules (users, key patterns, allowed commands) authored once
@@ -928,14 +981,17 @@ type GcpRedisClusterSpec struct {
 	// is_acl_policy_in_sync status reports when the rules have reached
 	// every node.
 	AclPolicy string `protobuf:"bytes,24,opt,name=acl_policy,json=aclPolicy,proto3" json:"acl_policy,omitempty"`
-	// What happens to the cluster when this resource is destroyed
-	// (evaluated after deletion_protection_enabled allows the destroy):
+	// What happens to the cluster when this resource is destroyed. PREVENT
+	// and ABANDON are decided before Google is called; deletion protection
+	// applies only to DELETE, and must be turned off and applied before a
+	// DELETE destroy can succeed:
 	//
 	//	"" / "DELETE" -- the cluster is deleted and its data lost
 	//	"PREVENT"     -- destroy fails; a second guard for a cache whose
 	//	                 loss would stampede the backing store
 	//	"ABANDON"     -- the cluster leaves management but keeps running
-	//	                 (and billing) in GCP
+	//	                 (and billing) in GCP, even with deletion protection
+	//	                 on
 	DeletionPolicy string `protobuf:"bytes,25,opt,name=deletion_policy,json=deletionPolicy,proto3" json:"deletion_policy,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
@@ -1200,7 +1256,7 @@ const file_catalog_gcp_gcprediscluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\x04uris\x18\x01 \x03(\tBr\xbaHo\x92\x01l\b\x01\"h\xba\x01e\n" +
 	"\x0egcs_uri_format\x129each URI must be a Cloud Storage path starting with gs://\x1a\x18this.startsWith('gs://')R\x04uris\"D\n" +
 	"\"GcpRedisClusterManagedBackupSource\x12\x1e\n" +
-	"\x06backup\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06backup\"\x9b&\n" +
+	"\x06backup\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06backup\"\x8a'\n" +
 	"\x13GcpRedisClusterSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12K\n" +
@@ -1221,9 +1277,9 @@ const file_catalog_gcp_gcprediscluster_v1alpha1_spec_proto_rawDesc = "" +
 	" \x01(\tB\x8d\x02\xbaH\x89\x02\xba\x01\x85\x02\n" +
 	"#transit_encryption_mode_valid_value\x12qtransit_encryption_mode must be TRANSIT_ENCRYPTION_MODE_DISABLED or TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION\x1akthis == '' || this in ['TRANSIT_ENCRYPTION_MODE_DISABLED', 'TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION']R\x15transitEncryptionMode\x12\x85\x03\n" +
 	"\x0eserver_ca_mode\x18\v \x01(\tB\xde\x02\xbaH\xda\x02\xba\x01\xd6\x02\n" +
-	"\x1aserver_ca_mode_valid_value\x12\x98\x01server_ca_mode must be SERVER_CA_MODE_GOOGLE_MANAGED_PER_INSTANCE_CA, SERVER_CA_MODE_GOOGLE_MANAGED_SHARED_CA, or SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA\x1a\x9c\x01this == '' || this in ['SERVER_CA_MODE_GOOGLE_MANAGED_PER_INSTANCE_CA', 'SERVER_CA_MODE_GOOGLE_MANAGED_SHARED_CA', 'SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA']R\fserverCaMode\x12\xcb\x02\n" +
-	"\x0eserver_ca_pool\x18\f \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xf0\x01\xbaH\xcc\x01\xba\x01\xc8\x01\n" +
-	"\x15server_ca_pool_format\x12Ua literal server_ca_pool must be projects/{project}/locations/{region}/caPools/{pool}\x1aX!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$')\x88\xd4a\x9e\x19\x92\xd4a\x13status.outputs.name\x98\xd4a\x01R\fserverCaPool\x12\xa8\x01\n" +
+	"\x1aserver_ca_mode_valid_value\x12\x98\x01server_ca_mode must be SERVER_CA_MODE_GOOGLE_MANAGED_PER_INSTANCE_CA, SERVER_CA_MODE_GOOGLE_MANAGED_SHARED_CA, or SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA\x1a\x9c\x01this == '' || this in ['SERVER_CA_MODE_GOOGLE_MANAGED_PER_INSTANCE_CA', 'SERVER_CA_MODE_GOOGLE_MANAGED_SHARED_CA', 'SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA']R\fserverCaMode\x12\x8b\x03\n" +
+	"\x0eserver_ca_pool\x18\f \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xb0\x02\xbaH\x8c\x02\xba\x01\x88\x02\n" +
+	"\x15server_ca_pool_format\x12\x94\x01A literal CA pool must be its full name, projects/{project}/locations/{region}/caPools/{pool}. Write the full name, or reference a GcpPrivateCaPool.\x1aX!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$')\x88\xd4a\x9e\x19\x92\xd4a\x13status.outputs.name\x98\xd4a\x01R\fserverCaPool\x12\xa8\x01\n" +
 	"\akms_key\x18\r \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB[\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\x06kmsKey\x12y\n" +
 	"\x12persistence_config\x18\x0e \x01(\v2J.dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterPersistenceConfigR\x11persistenceConfig\x12\x89\x01\n" +
 	"\x18zone_distribution_config\x18\x0f \x01(\v2O.dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterZoneDistributionConfigR\x16zoneDistributionConfig\x12y\n" +
@@ -1235,10 +1291,10 @@ const file_catalog_gcp_gcprediscluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\x15managed_backup_source\x18\x14 \x01(\v2L.dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterManagedBackupSourceR\x13managedBackupSource\x12a\n" +
 	"\x06labels\x18\x15 \x03(\v2I.dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.LabelsEntryR\x06labels\x12M\n" +
 	"\x1bdeletion_protection_enabled\x18\x16 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\x19deletionProtectionEnabled\x88\x01\x01\x12/\n" +
-	"\x13maintenance_version\x18\x17 \x01(\tR\x12maintenanceVersion\x12\x86\x02\n" +
+	"\x13maintenance_version\x18\x17 \x01(\tR\x12maintenanceVersion\x12\xb5\x02\n" +
 	"\n" +
-	"acl_policy\x18\x18 \x01(\tB\xe6\x01\xbaH\xe2\x01\xba\x01\xde\x01\n" +
-	"\x11acl_policy_format\x12wacl_policy must be empty or a full resource name of the form projects/{project}/locations/{region}/aclPolicies/{policy}\x1aPthis == '' || this.matches('^projects/[^/]+/locations/[^/]+/aclPolicies/[^/]+$')R\taclPolicy\x12\xbb\x01\n" +
+	"acl_policy\x18\x18 \x01(\tB\x95\x02\xbaH\x91\x02\xba\x01\x8d\x02\n" +
+	"\x11acl_policy_format\x12\xa5\x01An ACL policy must be its full name, projects/{project}/locations/{region}/aclPolicies/{policy}. Write the full name, or leave it empty for the built-in default ACL.\x1aPthis == '' || this.matches('^projects/[^/]+/locations/[^/]+/aclPolicies/[^/]+$')R\taclPolicy\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\x19 \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
 	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a?\n" +
 	"\x11RedisConfigsEntry\x12\x10\n" +

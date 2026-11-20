@@ -32,3 +32,8 @@ output "run_names" {
     ]
   ])
 }
+
+output "run_count" {
+  description = "Number of runs the TensorBoard holds as Google counts them (declared and job-logged), read at the last deploy"
+  value       = google_vertex_ai_tensorboard.this.run_count
+}

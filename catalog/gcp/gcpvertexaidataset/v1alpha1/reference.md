@@ -105,9 +105,10 @@ gs://google-cloud-aiplatform/schema/dataset/metadata/:
                          object tracking)
   time_series_1.0.0.yaml forecasting data
 e.g. "gs://google-cloud-aiplatform/schema/dataset/metadata/image_1.0.0.yaml".
-Immutable.
+Only these five full URIs are accepted. Immutable.
 
-- rule: {"required":true,"string":{"pattern":"^gs://[^/]+/.+\\.yaml$"}}
+- rule: The dataset type must be one of Google's five schemas: gs://google-cloud-aiplatform/schema/dataset/metadata/ followed by image_1.0.0.yaml, text_1.0.0.yaml, tabular_1.0.0.yaml, video_1.0.0.yaml, or time_series_1.0.0.yaml.
+- rule: {"required":true}
 
 ### spec.labels
 

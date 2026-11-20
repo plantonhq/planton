@@ -70,12 +70,23 @@ import (
 // fills a resource's project from the provider's default when the import ID carries none (a
 // bucket imported by its name), and without one the imported state holds an empty project that
 // the next preview replaces the resource over. The project never comes from the connection.
-// There is no region argument: the GCP provider is not region-scoped -- each resource carries
-// its own location. nameSuffixes disambiguate the provider resource name when a module needs
+// There is no region argument: nearly every resource carries its own location (GetInRegion
+// is the exception). nameSuffixes disambiguate the provider resource name when a module needs
 // more than one provider.
 func Get(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig, project string,
 	nameSuffixes ...string) (*gcp.Provider, error) {
-	return get(ctx, gcpProviderConfig, project, false, "", nameSuffixes)
+	return get(ctx, gcpProviderConfig, project, "", false, "", nameSuffixes)
+}
+
+// GetInRegion builds the provider like Get and gives it a default region. A few resources name
+// a `location` but reach Google through a regional endpoint the provider builds from its own
+// region, never from that location: Vertex AI's TensorBoard experiments and runs, persistent
+// resources and Model Garden deployments call https://{region}-aiplatform.googleapis.com. With
+// no provider region the call has no endpoint and fails on a runner with none set, so their
+// modules pass the spec's location here. An empty region keeps Google's ambient default.
+func GetInRegion(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig, project, region string,
+	nameSuffixes ...string) (*gcp.Provider, error) {
+	return get(ctx, gcpProviderConfig, project, region, false, "", nameSuffixes)
 }
 
 // GetWithUserProjectOverride builds the provider like Get, additionally arming
@@ -88,7 +99,7 @@ func Get(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig, 
 // by the header, so arming it is safe across every credential mode.
 func GetWithUserProjectOverride(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig,
 	project string, nameSuffixes ...string) (*gcp.Provider, error) {
-	return get(ctx, gcpProviderConfig, project, true, "", nameSuffixes)
+	return get(ctx, gcpProviderConfig, project, "", true, "", nameSuffixes)
 }
 
 // GetWithQuotaProject builds the provider like GetWithUserProjectOverride and additionally NAMES
@@ -103,16 +114,17 @@ func GetWithUserProjectOverride(ctx *pulumi.Context, gcpProviderConfig *gcpprovi
 // quotaProject degrades to the override alone.
 func GetWithQuotaProject(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig,
 	project, quotaProject string, nameSuffixes ...string) (*gcp.Provider, error) {
-	return get(ctx, gcpProviderConfig, project, true, quotaProject, nameSuffixes)
+	return get(ctx, gcpProviderConfig, project, "", true, quotaProject, nameSuffixes)
 }
 
-func get(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig, project string,
+func get(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig, project, region string,
 	userProjectOverride bool, quotaProject string, nameSuffixes []string) (*gcp.Provider, error) {
 	args, err := buildProviderInputs(gcpProviderConfig)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to build google provider args")
 	}
 	setProject(args, project)
+	setRegion(args, region)
 	if userProjectOverride {
 		args.UserProjectOverride = pulumi.Bool(true)
 	}
@@ -133,6 +145,14 @@ func get(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig, 
 func setProject(args *gcp.ProviderArgs, project string) {
 	if bare := strings.TrimPrefix(project, "projects/"); bare != "" {
 		args.Project = pulumi.String(bare)
+	}
+}
+
+// setRegion gives the provider a default region (GetInRegion); an empty region leaves Google's
+// ambient default in place.
+func setRegion(args *gcp.ProviderArgs, region string) {
+	if region != "" {
+		args.Region = pulumi.String(region)
 	}
 }
 

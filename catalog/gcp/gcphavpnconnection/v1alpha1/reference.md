@@ -483,7 +483,9 @@ Pseudo-random functions.
 
 `[]string`
 
-Diffie-Hellman groups.
+Diffie-Hellman groups. Google's supported set is narrower than IKE's:
+GROUP-14 is refused at create ("The specified Diffie-Hellman (DH) -
+GROUP-14 is not supported"), so check Cloud VPN's supported IKE ciphers.
 
 ### spec.tunnels[].cipherSuite.phase2
 

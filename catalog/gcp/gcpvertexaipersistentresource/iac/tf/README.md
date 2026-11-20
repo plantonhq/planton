@@ -15,7 +15,7 @@ This directory contains the Terraform implementation for a Vertex AI persistent 
 | `variables.tf` | `metadata` and `spec` variable definitions (generated from the spec; the tfvars converter flattens refs to plain strings) |
 | `locals.tf` | Ambient project fallback, the id defaulted from `metadata.name`, null-for-empty optionals, the peered network normalized to Google's project-number form, the `planton-ai_*` labels |
 | `main.tf` | `google_project_service`, `data.google_project` (only when the network path carries a project ID), `google_vertex_ai_persistent_resource` |
-| `outputs.tf` | `name`, `persistent_resource_id`, `location`, `state` |
+| `outputs.tf` | `name`, `persistent_resource_id`, `location`, `state`, `error` |
 
 ## Send Posture
 

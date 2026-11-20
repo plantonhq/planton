@@ -89,9 +89,11 @@ Per container: `name`, `image`, `command`, `args`, `env` (literal, `valueFromSec
 
 ### Validation Rules
 
-- **`manualInstanceCount`** only under `MANUAL` (or unset); **`minInstanceCount` / `maxInstanceCount`** only under `AUTOMATIC`, and min ≤ max.
+- **`manualInstanceCount`** is required under `MANUAL` (or an unset mode) and allowed only there: the provider sends a missing count as `0`, which parks the pool, so `0` must be written on purpose. **`minInstanceCount` / `maxInstanceCount`** only under `AUTOMATIC`, and min ≤ max.
 - **`REVISION`** splits name a `revision`; **`LATEST`** splits do not.
-- **`encryptionKeyRevocationAction`** requires `encryptionKey`; **`encryptionKeyShutdownDuration`** requires `SHUTDOWN`.
+- **`encryptionKeyRevocationAction`** requires `encryptionKey`; **`encryptionKeyShutdownDuration`** requires `SHUTDOWN` and is a whole number of hours in seconds (`"3600s"`, `"7200s"`).
+- **`vpcAccess.networkInterfaces`** holds at most one interface, and it names a `network`, a `subnetwork`, or both.
+- **`binaryAuthorization.breakglassJustification`** only with `useDefault: true`.
 - An env var takes exactly one of `value`, `valueFromSecret`, or `secretValue`; a volume has exactly one source; `vpcAccess` uses a connector or network interfaces, not both.
 - Probe `timeoutSeconds` ≤ `periodSeconds`; a startup window (`failureThreshold` × `periodSeconds`) ≤ 240 s; **at most one probe `httpHeaders` entry** (see Important Notes).
 
@@ -105,6 +107,8 @@ Per container: `name`, `image`, `command`, `args`, `env` (literal, `valueFromSec
 | `location`, `project_id` | `string` | Where it lives |
 | `latest_created_revision`, `latest_ready_revision` | `string` | The rollout's two pointers |
 | `observed_generation`, `etag` | `string` | Reconciliation state |
+| `terminal_condition` | `object` | The pool's readiness (`type`, `state`, `message`, `severity`, `reason`, ...): why a rollout failed |
+| `conditions` | `list` | The sub-resources' conditions, same shape: the extra diagnostics |
 
 ## Deployment Methods
 

@@ -19,6 +19,14 @@ import (
 // kinds naming one class never run at once; unrelated kinds still do.
 const ExclusiveAnnotation = "planton.dev/e2e-exclusive"
 
+// NamesNothingAnnotation marks a document that creates nothing under a name of
+// its own, so it has no name to carry the run id: everything it makes is
+// scoped by what it references (a peering on a run-scoped network, a
+// username taken from a run-scoped service account, connections registered on
+// a run-scoped cluster). Its value says why. The run-id check passes such a
+// document; one that does name something carries the token instead.
+const NamesNothingAnnotation = "planton.dev/e2e-names-nothing"
+
 // LaneAdmission is how a kind's lanes may run beside other kinds' in one test
 // process: alone (nothing else running), or side by side under the bound,
 // holding the exclusive classes its scenarios name.
@@ -80,7 +88,8 @@ func LaneAdmissionFor(repoRoot, kindProvider, kindDir string, scenarioPaths []st
 }
 
 // documentWithoutRunID returns the kind of the first document in the file
-// that never mentions the run-id token, or "" when every document does.
+// that never mentions the run-id token and is not marked as naming nothing
+// (NamesNothingAnnotation), or "" when every document passes.
 func documentWithoutRunID(path string) (string, error) {
 	raw, err := os.ReadFile(path)
 	if err != nil {
@@ -91,11 +100,22 @@ func documentWithoutRunID(path string) (string, error) {
 		if kind == "" {
 			continue
 		}
-		if !strings.Contains(document, "${E2E_RUN_ID") {
+		if !strings.Contains(document, "${E2E_RUN_ID") && !namesNothing(document) {
 			return kind, nil
 		}
 	}
 	return "", nil
+}
+
+// namesNothing reports whether the document carries NamesNothingAnnotation
+// with a reason.
+func namesNothing(document string) bool {
+	for _, line := range strings.Split(document, "\n") {
+		if value, ok := strings.CutPrefix(strings.TrimSpace(line), NamesNothingAnnotation+":"); ok {
+			return strings.Trim(strings.TrimSpace(value), `"'`) != ""
+		}
+	}
+	return false
 }
 
 func documentKind(document string) string {
@@ -109,9 +129,11 @@ func documentKind(document string) string {
 
 // LaneScheduler admits kinds' tests to run side by side in one test process:
 // at most bound at once, a kind whose admission says Alone with nothing else
-// running, and kinds that share an exclusive class one at a time. The one
-// test process per provider account rule (the e2e README) still holds; this
-// is concurrency inside that process.
+// running, and kinds that share an exclusive class one at a time. A kind
+// waiting on a class holds no slot, so kinds queued behind one class (every
+// VM-running kind behind a project's few vCPUs) never keep unrelated kinds
+// from running. The one test process per provider account rule (the e2e
+// README) still holds; this is concurrency inside that process.
 type LaneScheduler struct {
 	slots   chan struct{}
 	whole   sync.RWMutex
@@ -139,7 +161,6 @@ func (s *LaneScheduler) Admit(t *testing.T, admission LaneAdmission) func() {
 		return s.whole.Unlock
 	}
 	s.whole.RLock()
-	s.slots <- struct{}{}
 	locks := make([]*sync.Mutex, 0, len(admission.Classes))
 	for _, class := range admission.Classes {
 		s.mu.Lock()
@@ -156,11 +177,16 @@ func (s *LaneScheduler) Admit(t *testing.T, admission LaneAdmission) func() {
 	for _, lock := range locks {
 		lock.Lock()
 	}
+	// The slot is taken only once the kind's classes are its own: a kind
+	// that took a slot first would sit on it for as long as another kind
+	// holds its class. A slot holder never waits on a class, so this order
+	// cannot deadlock.
+	s.slots <- struct{}{}
 	return func() {
+		<-s.slots
 		for i := len(locks) - 1; i >= 0; i-- {
 			locks[i].Unlock()
 		}
-		<-s.slots
 		s.whole.RUnlock()
 	}
 }

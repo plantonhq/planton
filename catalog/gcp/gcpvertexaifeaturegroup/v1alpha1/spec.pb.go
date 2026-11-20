@@ -216,8 +216,9 @@ type GcpVertexAiFeatureGroupSpec struct {
 	// Labels on the feature group. The platform attribution labels are
 	// merged in and win on key conflicts.
 	Labels map[string]string `protobuf:"bytes,5,rep,name=labels,proto3" json:"labels,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	// The BigQuery table or view the features come from. Google's API has no
-	// other source type today.
+	// The BigQuery table or view the features come from. Required: Google's
+	// API has no other source type, and a group without one has no data to
+	// register features against. Immutable.
 	BigQuery *GcpVertexAiFeatureGroupBigQuery `protobuf:"bytes,6,opt,name=big_query,json=bigQuery,proto3" json:"big_query,omitempty"`
 	// The source columns registered as features, each keyed by feature_id.
 	// Add or remove a feature by editing this list.
@@ -336,15 +337,15 @@ const file_catalog_gcp_gcpvertexaifeaturegroup_v1alpha1_spec_proto_rawDesc = "" 
 	"\x13version_column_name\x18\x04 \x01(\tR\x11versionColumnName\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x8c\b\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x94\b\n" +
 	"\x1bGcpVertexAiFeatureGroupSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12;\n" +
 	"\blocation\x18\x02 \x01(\tB\x1f\xbaH\x1c\xc8\x01\x01r\x172\x15^[a-z]+-[a-z]+[0-9]+$R\blocation\x12L\n" +
 	"\x10feature_group_id\x18\x03 \x01(\tB\"\xbaH\x1f\xc8\x01\x01r\x1a2\x18^[a-z_][a-z0-9_]{0,127}$R\x0efeatureGroupId\x12 \n" +
 	"\vdescription\x18\x04 \x01(\tR\vdescription\x12q\n" +
-	"\x06labels\x18\x05 \x03(\v2Y.dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupSpec.LabelsEntryR\x06labels\x12n\n" +
-	"\tbig_query\x18\x06 \x01(\v2Q.dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupBigQueryR\bbigQuery\x12l\n" +
+	"\x06labels\x18\x05 \x03(\v2Y.dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupSpec.LabelsEntryR\x06labels\x12v\n" +
+	"\tbig_query\x18\x06 \x01(\v2Q.dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupBigQueryB\x06\xbaH\x03\xc8\x01\x01R\bbigQuery\x12l\n" +
 	"\bfeatures\x18\a \x03(\v2P.dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupFeatureR\bfeatures\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\b \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
 	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a9\n" +

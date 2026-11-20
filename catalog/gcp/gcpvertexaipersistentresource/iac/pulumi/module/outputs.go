@@ -7,4 +7,5 @@ const (
 	OpPersistentResourceId = "persistent_resource_id"
 	OpLocation             = "location"
 	OpState                = "state"
+	OpError                = "error"
 )

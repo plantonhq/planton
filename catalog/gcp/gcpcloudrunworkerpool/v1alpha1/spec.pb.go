@@ -88,7 +88,10 @@ type GcpCloudRunWorkerPoolSpec struct {
 	// How many instances run. MANUAL (Google's default) pins the total to
 	// manual_instance_count; AUTOMATIC lets Cloud Run move between
 	// min_instance_count and max_instance_count on a signal you drive.
-	// If omitted, Google runs the pool in MANUAL mode at its default count.
+	// If omitted, no scaling block is sent and the pool runs in Google's
+	// default mode, MANUAL. A block that is MANUAL (or names no mode) must
+	// state manual_instance_count: the provider sends an unset count as 0,
+	// which parks the pool.
 	Scaling *GcpCloudRunWorkerPoolScaling `protobuf:"bytes,10,opt,name=scaling,proto3" json:"scaling,omitempty"`
 	// How instances are split across revisions. If empty, every instance
 	// runs the latest ready revision -- the right default. Populate for a
@@ -110,7 +113,9 @@ type GcpCloudRunWorkerPoolSpec struct {
 	// Only meaningful with encryption_key.
 	EncryptionKeyRevocationAction string `protobuf:"bytes,13,opt,name=encryption_key_revocation_action,json=encryptionKeyRevocationAction,proto3" json:"encryption_key_revocation_action,omitempty"`
 	// Grace period before instances are shut down after a key revocation
-	// under SHUTDOWN, as a seconds duration in whole hours (e.g. "3600s").
+	// under SHUTDOWN, as a seconds duration in whole hours (e.g. "3600s"
+	// for one hour, "7200s" for two). Cloud Run's smallest increment is one
+	// hour, so any other count of seconds is refused.
 	EncryptionKeyShutdownDuration string `protobuf:"bytes,14,opt,name=encryption_key_shutdown_duration,json=encryptionKeyShutdownDuration,proto3" json:"encryption_key_shutdown_duration,omitempty"`
 	// Explicit name for the next revision, prefixed with the worker pool
 	// name (e.g. "orders-worker-v42"). If omitted (recommended), Cloud Run
@@ -367,7 +372,10 @@ type GcpCloudRunWorkerPoolScaling struct {
 	// min_instance_count and max_instance_count on a signal you drive.
 	ScalingMode string `protobuf:"bytes,1,opt,name=scaling_mode,json=scalingMode,proto3" json:"scaling_mode,omitempty"`
 	// Total instances across all revisions in MANUAL mode. 0 parks the pool
-	// (no instances, no bill) without deleting it.
+	// (no instances, no bill) without deleting it. Required in MANUAL mode
+	// (or when scaling_mode is unset): the provider sends an unset count as
+	// 0, so a block without one would park the pool by accident. Presence
+	// is tracked, so an explicit 0 is a deliberate park, never a default.
 	ManualInstanceCount *int32 `protobuf:"varint,2,opt,name=manual_instance_count,json=manualInstanceCount,proto3,oneof" json:"manual_instance_count,omitempty"`
 	// Lower bound on instances in AUTOMATIC mode, distributed across
 	// revisions by instance_splits.
@@ -1585,7 +1593,8 @@ type GcpCloudRunWorkerPoolVolumeSecret struct {
 	// resource name (projects/*/secrets/*).
 	Secret string `protobuf:"bytes,1,opt,name=secret,proto3" json:"secret,omitempty"`
 	// Default Unix permission mode for projected files, in decimal (e.g. 292
-	// = 0444). If unset, GCP defaults to 0444.
+	// = 0444). If unset, GCP defaults to 0444. A mode of 0 is never sent
+	// (the provider drops a zero), so 0 also means 0444.
 	DefaultMode *int32 `protobuf:"varint,2,opt,name=default_mode,json=defaultMode,proto3,oneof" json:"default_mode,omitempty"`
 	// Which versions land at which relative paths. If empty, the "latest"
 	// version is projected at a file named after the secret.
@@ -1652,8 +1661,9 @@ type GcpCloudRunWorkerPoolVolumeSecretItem struct {
 	Path string `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"`
 	// Secret version to project: a version number or "latest".
 	Version string `protobuf:"bytes,2,opt,name=version,proto3" json:"version,omitempty"`
-	// Unix permission mode for this file, in decimal. Overrides
-	// default_mode.
+	// Unix permission mode for this file, in decimal (1-511, octal 01-0777).
+	// Overrides default_mode. A mode of 0 is never sent (the provider drops
+	// a zero), so the file takes default_mode, exactly as when unset.
 	Mode          *int32 `protobuf:"varint,3,opt,name=mode,proto3,oneof" json:"mode,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -1978,7 +1988,8 @@ type GcpCloudRunWorkerPoolVpcAccess struct {
 	Connector *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=connector,proto3" json:"connector,omitempty"`
 	// Direct VPC egress: instances get IPs in the subnetwork and reach VPC
 	// resources with no connector infrastructure. The subnetwork needs free
-	// address space for the instance fleet.
+	// address space for the instance fleet. Cloud Run supports a single
+	// network interface.
 	NetworkInterfaces []*GcpCloudRunWorkerPoolNetworkInterface `protobuf:"bytes,2,rep,name=network_interfaces,json=networkInterfaces,proto3" json:"network_interfaces,omitempty"`
 	// Which egress traffic uses the VPC path: everything (ALL_TRAFFIC) or
 	// only RFC1918/private destinations (PRIVATE_RANGES_ONLY -- the
@@ -2040,7 +2051,8 @@ func (x *GcpCloudRunWorkerPoolVpcAccess) GetEgress() string {
 }
 
 // GcpCloudRunWorkerPoolNetworkInterface places instances into a VPC
-// subnetwork for direct VPC egress.
+// subnetwork for direct VPC egress. It names a network, a subnetwork, or
+// both (Google's rule: at least one).
 type GcpCloudRunWorkerPoolNetworkInterface struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The VPC network. Accepts a literal network name or a reference to a
@@ -2168,6 +2180,8 @@ type GcpCloudRunWorkerPoolBinaryAuthorization struct {
 	// (projects/*/platforms/cloudRun/policies/*).
 	Policy string `protobuf:"bytes,2,opt,name=policy,proto3" json:"policy,omitempty"`
 	// Justification recorded when a break-glass deploy bypasses the policy.
+	// Only with use_default: Google requires it empty whenever use_default
+	// is false, including beside a named policy.
 	BreakglassJustification string `protobuf:"bytes,3,opt,name=breakglass_justification,json=breakglassJustification,proto3" json:"breakglass_justification,omitempty"`
 	unknownFields           protoimpl.UnknownFields
 	sizeCache               protoimpl.SizeCache
@@ -2228,7 +2242,7 @@ var File_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_spec_proto protoreflect.File
 
 const file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcpcloudrunworkerpool/v1alpha1/spec.proto\x12.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xbe \n" +
+	"5catalog/gcp/gcpcloudrunworkerpool/v1alpha1/spec.proto\x12.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xf4\"\n" +
 	"\x19GcpCloudRunWorkerPoolSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x127\n" +
@@ -2247,9 +2261,10 @@ const file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0finstance_splits\x18\v \x03(\v2R.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolInstanceSplitR\x0einstanceSplits\x12\xbc\x01\n" +
 	"\x0eencryption_key\x18\f \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefBa\xaa\xa6\x1d?KMS crypto key resource ID/reference only -- never key material\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\rencryptionKey\x12\xd6\x02\n" +
 	" encryption_key_revocation_action\x18\r \x01(\tB\x8c\x02\xbaH\xa7\x01\xba\x01\xa3\x01\n" +
-	",encryption_key_revocation_action_valid_value\x12@encryption_key_revocation_action must be PREVENT_NEW or SHUTDOWN\x1a1this == '' || this in ['PREVENT_NEW', 'SHUTDOWN']\xaa\xa6\x1d]an enum naming what happens on key revocation (PREVENT_NEW or SHUTDOWN) -- never key materialR\x1dencryptionKeyRevocationAction\x12\xb1\x02\n" +
-	" encryption_key_shutdown_duration\x18\x0e \x01(\tB\xe7\x01\xbaH\xa3\x01\xba\x01\x9f\x01\n" +
-	"'encryption_key_shutdown_duration_format\x12Kencryption_key_shutdown_duration must be a seconds duration such as \"3600s\"\x1a'this == '' || this.matches('^[0-9]+s$')\xaa\xa6\x1d<a grace-period duration (e.g. \"3600s\") -- never key materialR\x1dencryptionKeyShutdownDuration\x12D\n" +
+	",encryption_key_revocation_action_valid_value\x12@encryption_key_revocation_action must be PREVENT_NEW or SHUTDOWN\x1a1this == '' || this in ['PREVENT_NEW', 'SHUTDOWN']\xaa\xa6\x1d]an enum naming what happens on key revocation (PREVENT_NEW or SHUTDOWN) -- never key materialR\x1dencryptionKeyRevocationAction\x12\xe7\x04\n" +
+	" encryption_key_shutdown_duration\x18\x0e \x01(\tB\x9d\x04\xbaH\xd9\x03\xba\x01\x9f\x01\n" +
+	"'encryption_key_shutdown_duration_format\x12Kencryption_key_shutdown_duration must be a seconds duration such as \"3600s\"\x1a'this == '' || this.matches('^[0-9]+s$')\xba\x01\xb2\x02\n" +
+	",encryption_key_shutdown_duration_whole_hours\x12\x87\x01The shutdown grace period is counted in whole hours. Write a multiple of 3600 seconds, such as \"3600s\" for one hour or \"7200s\" for two.\x1axthis == '' || !this.matches('^[0-9]+s$') || (duration(this).getSeconds() > 0 && duration(this).getSeconds() % 3600 == 0)\xaa\xa6\x1d<a grace-period duration (e.g. \"3600s\") -- never key materialR\x1dencryptionKeyShutdownDuration\x12D\n" +
 	"\brevision\x18\x0f \x01(\tB(\xbaH%\xd8\x01\x01r \x18?2\x1c^[a-z]([-a-z0-9]*[a-z0-9])?$R\brevision\x12\x86\x01\n" +
 	"\x0frevision_labels\x18\x10 \x03(\v2].dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolSpec.RevisionLabelsEntryR\x0erevisionLabels\x12\x95\x01\n" +
 	"\x14revision_annotations\x18\x11 \x03(\v2b.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolSpec.RevisionAnnotationsEntryR\x13revisionAnnotations\x12m\n" +
@@ -2277,12 +2292,13 @@ const file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_spec_proto_rawDesc = "" +
 	"#gpu.redundancy_requires_accelerator\x12_gpu_zonal_redundancy_disabled only applies to GPU worker pools -- set node_selector.accelerator\x1a>!this.gpu_zonal_redundancy_disabled || has(this.node_selector)\x1a\xfc\x01\n" +
 	"5encryption.shutdown_duration_requires_shutdown_action\x12_encryption_key_shutdown_duration only applies when encryption_key_revocation_action is SHUTDOWN\x1abthis.encryption_key_shutdown_duration == '' || this.encryption_key_revocation_action == 'SHUTDOWN'\x1a\x9e\x02\n" +
 	")encryption.revocation_action_requires_key\x12Uencryption_key_revocation_action only applies to a worker pool with an encryption_key\x1a\x99\x01this.encryption_key_revocation_action == '' || (has(this.encryption_key.value) && this.encryption_key.value != '') || has(this.encryption_key.value_from)B\x16\n" +
-	"\x14_deletion_protection\"\xe1\a\n" +
+	"\x14_deletion_protection\"\xe2\t\n" +
 	"\x1cGcpCloudRunWorkerPoolScaling\x12@\n" +
 	"\fscaling_mode\x18\x01 \x01(\tB\x1d\xbaH\x1a\xd8\x01\x01r\x15R\x00R\tAUTOMATICR\x06MANUALR\vscalingMode\x12@\n" +
 	"\x15manual_instance_count\x18\x02 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00H\x00R\x13manualInstanceCount\x88\x01\x01\x12:\n" +
 	"\x12min_instance_count\x18\x03 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00H\x01R\x10minInstanceCount\x88\x01\x01\x12:\n" +
-	"\x12max_instance_count\x18\x04 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01H\x02R\x10maxInstanceCount\x88\x01\x01:\xfc\x04\xbaH\xf8\x04\x1a\xcd\x01\n" +
+	"\x12max_instance_count\x18\x04 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01H\x02R\x10maxInstanceCount\x88\x01\x01:\xfd\x06\xbaH\xf9\x06\x1a\xfe\x01\n" +
+	"\"scaling.manual_mode_requires_count\x12\x92\x01Manual scaling needs an instance count. Set manual_instance_count (0 parks the pool on purpose), or set scaling_mode to AUTOMATIC with its bounds.\x1aCthis.scaling_mode == 'AUTOMATIC' || has(this.manual_instance_count)\x1a\xcd\x01\n" +
 	")scaling.manual_count_requires_manual_mode\x12Zmanual_instance_count only applies when scaling_mode is MANUAL (or unset, which is MANUAL)\x1aD!has(this.manual_instance_count) || this.scaling_mode != 'AUTOMATIC'\x1a\xe2\x01\n" +
 	"%scaling.bounds_require_automatic_mode\x12Smin_instance_count and max_instance_count only apply when scaling_mode is AUTOMATIC\x1ad(!has(this.min_instance_count) && !has(this.max_instance_count)) || this.scaling_mode == 'AUTOMATIC'\x1a\xc0\x01\n" +
 	"\x13scaling.min_lte_max\x123min_instance_count cannot exceed max_instance_count\x1at!has(this.min_instance_count) || !has(this.max_instance_count) || this.min_instance_count <= this.max_instance_countB\x18\n" +
@@ -2418,27 +2434,29 @@ const file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_spec_proto_rawDesc = "" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x04name\x12.\n" +
 	"\n" +
 	"mount_path\x18\x02 \x01(\tB\x0f\xbaH\f\xc8\x01\x01r\a2\x05^/.*$R\tmountPath\x12\x19\n" +
-	"\bsub_path\x18\x03 \x01(\tR\asubPath\"\xf4\x04\n" +
+	"\bsub_path\x18\x03 \x01(\tR\asubPath\"\xfe\x04\n" +
 	"\x1eGcpCloudRunWorkerPoolVpcAccess\x12s\n" +
-	"\tconnector\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xb1\x18\x92\xd4a\x18status.outputs.self_linkR\tconnector\x12\x84\x01\n" +
-	"\x12network_interfaces\x18\x02 \x03(\v2U.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolNetworkInterfaceR\x11networkInterfaces\x12D\n" +
+	"\tconnector\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xb1\x18\x92\xd4a\x18status.outputs.self_linkR\tconnector\x12\x8e\x01\n" +
+	"\x12network_interfaces\x18\x02 \x03(\v2U.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolNetworkInterfaceB\b\xbaH\x05\x92\x01\x02\x10\x01R\x11networkInterfaces\x12D\n" +
 	"\x06egress\x18\x03 \x01(\tB,\xbaH)\xd8\x01\x01r$R\x00R\vALL_TRAFFICR\x13PRIVATE_RANGES_ONLYR\x06egress:\x8f\x02\xbaH\x8b\x02\x1a\x88\x02\n" +
-	"#vpc_access.connector_xor_interfaces\x12Yuse direct VPC egress (network_interfaces) or a Serverless VPC Access connector, not both\x1a\x85\x01!(((has(this.connector.value) && this.connector.value != '') || has(this.connector.value_from)) && size(this.network_interfaces) > 0)\"\xe3\x02\n" +
+	"#vpc_access.connector_xor_interfaces\x12Yuse direct VPC egress (network_interfaces) or a Serverless VPC Access connector, not both\x1a\x85\x01!(((has(this.connector.value) && this.connector.value != '') || has(this.connector.value_from)) && size(this.network_interfaces) > 0)\"\x95\x05\n" +
 	"%GcpCloudRunWorkerPoolNetworkInterface\x12v\n" +
 	"\anetwork\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\x88\xd4a\xc2\x17\x92\xd4a\x1bstatus.outputs.network_name\x98\xd4a\x01R\anetwork\x12\x7f\n" +
 	"\n" +
 	"subnetwork\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB+\x88\xd4a\xc3\x17\x92\xd4a\x1estatus.outputs.subnetwork_name\x98\xd4a\x01R\n" +
 	"subnetwork\x12A\n" +
-	"\x04tags\x18\x03 \x03(\tB-\xbaH*\xd8\x01\x01\x92\x01$\x18\x01\" r\x1e2\x1c^[a-z]([-a-z0-9]*[a-z0-9])?$R\x04tags\"Q\n" +
+	"\x04tags\x18\x03 \x03(\tB-\xbaH*\xd8\x01\x01\x92\x01$\x18\x01\" r\x1e2\x1c^[a-z]([-a-z0-9]*[a-z0-9])?$R\x04tags:\xaf\x02\xbaH\xab\x02\x1a\xa8\x02\n" +
+	"'network_interface.network_or_subnetwork\x12CA network interface must name its network, its subnetwork, or both.\x1a\xb7\x01(has(this.network.value) && this.network.value != '') || has(this.network.value_from) || (has(this.subnetwork.value) && this.subnetwork.value != '') || has(this.subnetwork.value_from)\"Q\n" +
 	"!GcpCloudRunWorkerPoolNodeSelector\x12,\n" +
 	"\vaccelerator\x18\x01 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\vaccelerator\"\xd5\x02\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\vaccelerator\"\xcc\x04\n" +
 	"(GcpCloudRunWorkerPoolBinaryAuthorization\x12\x1f\n" +
 	"\vuse_default\x18\x01 \x01(\bR\n" +
 	"useDefault\x12\x1e\n" +
 	"\x06policy\x18\x02 \x01(\tB\x06\xbaH\x03\xd8\x01\x01R\x06policy\x129\n" +
-	"\x18breakglass_justification\x18\x03 \x01(\tR\x17breakglassJustification:\xac\x01\xbaH\xa8\x01\x1a\xa5\x01\n" +
-	"'binary_authorization.default_xor_policy\x12Puse the project default policy (use_default) or name a specific policy, not both\x1a(!(this.use_default && this.policy != '')B\x83\x03\n" +
+	"\x18breakglass_justification\x18\x03 \x01(\tR\x17breakglassJustification:\xa3\x03\xbaH\x9f\x03\x1a\xa5\x01\n" +
+	"'binary_authorization.default_xor_policy\x12Puse the project default policy (use_default) or name a specific policy, not both\x1a(!(this.use_default && this.policy != '')\x1a\xf4\x01\n" +
+	"0binary_authorization.breakglass_requires_default\x12\x86\x01A break-glass justification applies only to the project's default policy. Set use_default to true, or remove breakglass_justification.\x1a7this.breakglass_justification == '' || this.use_defaultB\x83\x03\n" +
 	"2com.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1B\tSpecProtoP\x01Zegithub.com/plantonhq/planton/catalog/gcp/gcpcloudrunworkerpool/v1alpha1;gcpcloudrunworkerpoolv1alpha1\xa2\x02\x04DPGG\xaa\x02.Dev.Planton.Gcp.Gcpcloudrunworkerpool.V1alpha1\xca\x02.Dev\\Planton\\Gcp\\Gcpcloudrunworkerpool\\V1alpha1\xe2\x02:Dev\\Planton\\Gcp\\Gcpcloudrunworkerpool\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Gcp::Gcpcloudrunworkerpool::V1alpha1b\x06proto3"
 
 var (

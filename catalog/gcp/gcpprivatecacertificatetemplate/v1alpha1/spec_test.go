@@ -53,7 +53,10 @@ var _ = ginkgo.Describe("GcpPrivateCaCertificateTemplateSpec", func() {
 		}
 		r.Spec.IdentityConstraints = &GcpPrivateCaCertificateTemplateIdentityConstraints{
 			AllowSubjectAltNamesPassthrough: true,
-			CelExpression:                   &GcpPrivateCaCertificateTemplateCelExpression{Title: "no expression yet"},
+			CelExpression: &GcpPrivateCaCertificateTemplateCelExpression{
+				Title:      "Internal names",
+				Expression: `subject_alt_names.all(san, san.type == DNS && san.value.endsWith(".internal.example.com"))`,
+			},
 		}
 		r.Spec.PassthroughExtensions = &GcpPrivateCaCertificateTemplatePassthroughExtensions{
 			KnownExtensions:      []string{"BASE_KEY_USAGE", "EXTENDED_KEY_USAGE"},
@@ -80,6 +83,14 @@ var _ = ginkgo.Describe("GcpPrivateCaCertificateTemplateSpec", func() {
 			mutate(r.Spec)
 			gomega.Expect(validator.Validate(r)).ToNot(gomega.Succeed(), name)
 		}
+	})
+
+	ginkgo.It("should reject a CEL expression block with no expression", func() {
+		r := base()
+		r.Spec.IdentityConstraints = &GcpPrivateCaCertificateTemplateIdentityConstraints{
+			CelExpression: &GcpPrivateCaCertificateTemplateCelExpression{Title: "no expression yet"},
+		}
+		gomega.Expect(validator.Validate(r)).ToNot(gomega.Succeed())
 	})
 
 	ginkgo.It("should reject malformed predefined values", func() {

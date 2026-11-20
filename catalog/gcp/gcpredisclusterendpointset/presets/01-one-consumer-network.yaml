@@ -1,15 +1,16 @@
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpRedisClusterEndpointSet
 metadata:
-  name: orders-cache-endpoints
+  name: shared-cache-endpoints
 spec:
   projectId:
     value: my-gcp-project
-  # The cluster, created without pscConfigs so it publishes attachments.
+  # The cluster, created without pscConfigs (so it publishes attachments)
+  # and with no replicas (so it publishes no reader attachment).
   cluster:
     valueFrom:
       kind: GcpRedisCluster
-      name: orders-cache
+      name: shared-cache
       fieldPath: status.outputs.name
   region: us-central1
   endpoints:
@@ -19,17 +20,17 @@ spec:
         - forwardingRule:
             valueFrom:
               kind: GcpGlobalForwardingRule
-              name: orders-cache-disc
+              name: shared-cache-disc
               fieldPath: status.outputs.self_link
           pscConnectionId:
             valueFrom:
               kind: GcpGlobalForwardingRule
-              name: orders-cache-disc
+              name: shared-cache-disc
               fieldPath: status.outputs.psc_connection_id
           address:
             valueFrom:
               kind: GcpAddress
-              name: orders-cache-disc-ip
+              name: shared-cache-disc-ip
               fieldPath: status.outputs.address
           network:
             valueFrom:
@@ -39,22 +40,22 @@ spec:
           serviceAttachment:
             valueFrom:
               kind: GcpRedisCluster
-              name: orders-cache
+              name: shared-cache
               fieldPath: status.outputs.discovery_service_attachment
         - forwardingRule:
             valueFrom:
               kind: GcpGlobalForwardingRule
-              name: orders-cache-prim
+              name: shared-cache-prim
               fieldPath: status.outputs.self_link
           pscConnectionId:
             valueFrom:
               kind: GcpGlobalForwardingRule
-              name: orders-cache-prim
+              name: shared-cache-prim
               fieldPath: status.outputs.psc_connection_id
           address:
             valueFrom:
               kind: GcpAddress
-              name: orders-cache-prim-ip
+              name: shared-cache-prim-ip
               fieldPath: status.outputs.address
           network:
             valueFrom:
@@ -64,6 +65,6 @@ spec:
           serviceAttachment:
             valueFrom:
               kind: GcpRedisCluster
-              name: orders-cache
+              name: shared-cache
               fieldPath: status.outputs.primary_service_attachment
   deletionPolicy: DELETE

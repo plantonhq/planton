@@ -35,6 +35,10 @@ locals {
   # resources.
   is_autopilot = var.spec.enable_autopilot
 
+  # Logging is on unless the spec declares it off (enabled: false); an
+  # omitted logging block keeps GKE's default, which ships logs.
+  logging_enabled = try(var.spec.logging.enabled, null) != false
+
   # The same planton-ai_* label set the Pulumi module applies, so a cluster
   # is attributable to its Planton object regardless of the engine that
   # created it. The cluster name (not metadata.name) keys the name label so

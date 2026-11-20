@@ -40,8 +40,12 @@ type GcpVertexAiFeatureOnlineStoreOutputs struct {
 	ServiceAttachment string `protobuf:"bytes,5,opt,name=service_attachment,json=serviceAttachment,proto3" json:"service_attachment,omitempty"`
 	// Full resource names of the declared feature views, in manifest order.
 	FeatureViewNames []string `protobuf:"bytes,6,rep,name=feature_view_names,json=featureViewNames,proto3" json:"feature_view_names,omitempty"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	// The store's state as Google reports it: STABLE (configuration settled,
+	// the store serves) or UPDATING (a change is being applied; the store
+	// still serves, from the old or the new configuration).
+	State         string `protobuf:"bytes,7,opt,name=state,proto3" json:"state,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpVertexAiFeatureOnlineStoreOutputs) Reset() {
@@ -116,18 +120,26 @@ func (x *GcpVertexAiFeatureOnlineStoreOutputs) GetFeatureViewNames() []string {
 	return nil
 }
 
+func (x *GcpVertexAiFeatureOnlineStoreOutputs) GetState() string {
+	if x != nil {
+		return x.State
+	}
+	return ""
+}
+
 var File_catalog_gcp_gcpvertexaifeatureonlinestore_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpvertexaifeatureonlinestore_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/gcp/gcpvertexaifeatureonlinestore/v1alpha1/outputs.proto\x126dev.planton.gcp.gcpvertexaifeatureonlinestore.v1alpha1\"\xa9\x02\n" +
+	"@catalog/gcp/gcpvertexaifeatureonlinestore/v1alpha1/outputs.proto\x126dev.planton.gcp.gcpvertexaifeatureonlinestore.v1alpha1\"\xbf\x02\n" +
 	"$GcpVertexAiFeatureOnlineStoreOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x125\n" +
 	"\x17feature_online_store_id\x18\x02 \x01(\tR\x14featureOnlineStoreId\x12\x1a\n" +
 	"\blocation\x18\x03 \x01(\tR\blocation\x12=\n" +
 	"\x1bpublic_endpoint_domain_name\x18\x04 \x01(\tR\x18publicEndpointDomainName\x12-\n" +
 	"\x12service_attachment\x18\x05 \x01(\tR\x11serviceAttachment\x12,\n" +
-	"\x12feature_view_names\x18\x06 \x03(\tR\x10featureViewNamesB\xbe\x03\n" +
+	"\x12feature_view_names\x18\x06 \x03(\tR\x10featureViewNames\x12\x14\n" +
+	"\x05state\x18\a \x01(\tR\x05stateB\xbe\x03\n" +
 	":com.dev.planton.gcp.gcpvertexaifeatureonlinestore.v1alpha1B\fOutputsProtoP\x01Zugithub.com/plantonhq/planton/catalog/gcp/gcpvertexaifeatureonlinestore/v1alpha1;gcpvertexaifeatureonlinestorev1alpha1\xa2\x02\x04DPGG\xaa\x026Dev.Planton.Gcp.Gcpvertexaifeatureonlinestore.V1alpha1\xca\x026Dev\\Planton\\Gcp\\Gcpvertexaifeatureonlinestore\\V1alpha1\xe2\x02BDev\\Planton\\Gcp\\Gcpvertexaifeatureonlinestore\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Gcp::Gcpvertexaifeatureonlinestore::V1alpha1b\x06proto3"
 
 var (

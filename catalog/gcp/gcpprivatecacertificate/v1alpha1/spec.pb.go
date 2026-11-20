@@ -83,7 +83,9 @@ func (x *GcpPrivateCaCertificateSubjectConfig) GetSubjectAltName() *GcpPrivateCa
 // GcpPrivateCaCertificateSubject is the X.509 distinguished name.
 type GcpPrivateCaCertificateSubject struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The common name (CN), e.g. "Example Root CA" or a host name.
+	// The common name (CN), e.g. a host name such as
+	// "api.internal.example.com" or a workload's name. TLS clients check the
+	// subject alternative names, not the common name.
 	CommonName string `protobuf:"bytes,1,opt,name=common_name,json=commonName,proto3" json:"common_name,omitempty"`
 	// Two-letter country code (C), e.g. "US".
 	CountryCode string `protobuf:"bytes,2,opt,name=country_code,json=countryCode,proto3" json:"country_code,omitempty"`
@@ -274,8 +276,10 @@ type GcpPrivateCaCertificateX509Parameters struct {
 	// groups are optional and an empty group states nothing.
 	KeyUsage *GcpPrivateCaCertificateKeyUsage `protobuf:"bytes,1,opt,name=key_usage,json=keyUsage,proto3" json:"key_usage,omitempty"`
 	// The basic constraints extension: whether the certificate is a CA and
-	// how many CA levels may sit below it. Omit to leave the extension to
-	// Google's default (for a leaf certificate, is_ca false).
+	// how many CA levels may sit below it. Omitting the block sends no basic
+	// constraints at all, leaving the extension to the pool and the
+	// template. A block with is_ca unset is a different request: the block
+	// is sent without a CA flag. A leaf certificate states is_ca false.
 	CaOptions *GcpPrivateCaCertificateCaOptions `protobuf:"bytes,2,opt,name=ca_options,json=caOptions,proto3" json:"ca_options,omitempty"`
 	// Certificate policy object identifiers (RFC 5280 section 4.2.1.4), each
 	// an OID path such as [2, 23, 140, 1, 2, 1] (CA/Browser Forum
@@ -290,8 +294,8 @@ type GcpPrivateCaCertificateX509Parameters struct {
 	// certificate (critical).
 	AdditionalExtensions []*GcpPrivateCaCertificateX509Extension `protobuf:"bytes,5,rep,name=additional_extensions,json=additionalExtensions,proto3" json:"additional_extensions,omitempty"`
 	// The name constraints extension (RFC 5280 section 4.2.1.10): the names
-	// certificates below a CA may and may not carry. Meaningful on CA
-	// certificates.
+	// certificates signed below a CA may and may not carry. Only a CA
+	// certificate uses it; a leaf certificate leaves it out.
 	NameConstraints *GcpPrivateCaCertificateNameConstraints `protobuf:"bytes,6,opt,name=name_constraints,json=nameConstraints,proto3" json:"name_constraints,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
@@ -650,17 +654,17 @@ func (x *GcpPrivateCaCertificateExtendedKeyUsage) GetOcspSigning() bool {
 }
 
 // GcpPrivateCaCertificateCaOptions is the basic constraints extension (RFC 5280 section
-// 4.2.1.9). Both fields are presence-based: an unset field is left out of
-// the certificate, which is different from setting it to false or 0.
+// 4.2.1.9). Both fields are presence-based: an unset field is sent as
+// absent, which is different from setting it to false or 0.
 type GcpPrivateCaCertificateCaOptions struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// true makes a CA certificate (CA:TRUE), false states CA:FALSE; unset
-	// leaves the CA flag out of the extension.
+	// false states CA:FALSE -- what a leaf certificate (a server, a client,
+	// a workload) says. true makes a CA certificate (CA:TRUE). Unset sends
+	// the block without a CA flag.
 	IsCa *bool `protobuf:"varint,1,opt,name=is_ca,json=isCa,proto3,oneof" json:"is_ca,omitempty"`
-	// The path length constraint: how many CA levels may sit below this
-	// certificate. 0 means it may sign only leaf certificates -- a
-	// subordinate that issues workload certificates; unset means no limit
-	// is stated.
+	// The path length constraint, which only a CA certificate carries: how
+	// many CA levels may sit below it (0 lets it sign only leaf
+	// certificates). A leaf certificate leaves it unset.
 	MaxIssuerPathLength *int32 `protobuf:"varint,2,opt,name=max_issuer_path_length,json=maxIssuerPathLength,proto3,oneof" json:"max_issuer_path_length,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
@@ -1084,9 +1088,10 @@ func (x *GcpPrivateCaCertificateConfig) GetPublicKey() *GcpPrivateCaCertificateP
 // GcpPrivateCaCertificateSpec defines a certificate issued from a CA pool
 // (`google_privateca_certificate`) -- one signed X.509 certificate for a
 // key someone else holds, described by a CSR or by structured config.
-// Everything but labels is immutable: a change issues a new certificate.
-// Destroy REVOKES the certificate (Google keeps the revoked record); its
-// ID cannot be reused in the pool.
+// Everything but labels is immutable. Destroy REVOKES the certificate
+// (Google keeps the revoked record), and its ID cannot be reused in the
+// pool -- so renewal is a successor declared under a new ID beside the
+// current certificate, never a changed request under the same ID.
 //
 // The pool must be ENTERPRISE: Google cannot describe or revoke
 // certificates in a DEVOPS pool, so neither engine could track or destroy

@@ -12,14 +12,15 @@ Reach a Memorystore for Redis Cluster from a VPC its own connectivity automation
 
 ## What This Creates
 
-- A registration on `orders-cache` of one consumer network's connections: the discovery and primary forwarding rules, each with its reserved address, in `consumer-vpc`
+- A registration on `shared-cache` (a cluster created without `pscConfigs` and with no replicas) of one consumer network's connections: the discovery and primary forwarding rules, each with its reserved address, in `consumer-vpc`
 
 ## Customize
 
 | Field | Default | Why Change |
 |-------|---------|------------|
-| `cluster` | `orders-cache` | Your cluster, created without `pscConfigs`. |
-| `endpoints[].connections` | discovery + primary | Add a reader connection when the cluster has replicas (`reader_service_attachment`); add an `endpoints[]` entry per additional consumer VPC. |
+| `projectId` | `my-gcp-project` | A stand-in: the project your cluster lives in. |
+| `cluster` | `shared-cache` | Your cluster, created without `pscConfigs` and with `replicaCount: 0`. None of the cluster presets is that shape as written: they all set `pscConfigs`, and the Production Cache preset has replicas. |
+| `endpoints[].connections` | discovery + primary | Exactly what a cluster with no replicas publishes. A cluster with replicas also publishes a reader attachment, and Google rejects a group without its connection: add one on `reader_service_attachment`. Add an `endpoints[]` entry per additional consumer VPC. |
 | `endpoints[].connections[].projectId` | the rule's project | Set only when the forwarding rule lives in a different project than the cluster. |
 | `deletionPolicy` | `DELETE` | `PREVENT` for a cluster other VPCs depend on. |
 

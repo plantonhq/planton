@@ -162,7 +162,52 @@ func workerPool(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) 
 	ctx.Export(OpObservedGeneration, createdWorkerPool.ObservedGeneration)
 	ctx.Export(OpEtag, createdWorkerPool.Etag)
 
+	// The readiness condition and the sub-resources' conditions export as
+	// structured outputs -- registered synchronously here; only the VALUES
+	// resolve inside ApplyT. The outputs transformer flattens them onto the
+	// condition messages by dotted (and, for the list, dot-indexed) keys.
+	ctx.Export(OpTerminalCondition, createdWorkerPool.TerminalConditions.ApplyT(
+		func(terminal []cloudrunv2.WorkerPoolTerminalCondition) map[string]string {
+			if len(terminal) == 0 {
+				return conditionOutput(nil, nil, nil, nil, nil, nil, nil, nil)
+			}
+			c := terminal[0]
+			return conditionOutput(c.Type, c.State, c.Message, c.LastTransitionTime,
+				c.Severity, c.Reason, c.RevisionReason, c.ExecutionReason)
+		}))
+	ctx.Export(OpConditions, createdWorkerPool.Conditions.ApplyT(
+		func(conditions []cloudrunv2.WorkerPoolCondition) []map[string]string {
+			out := []map[string]string{}
+			for _, c := range conditions {
+				out = append(out, conditionOutput(c.Type, c.State, c.Message, c.LastTransitionTime,
+					c.Severity, c.Reason, c.RevisionReason, c.ExecutionReason))
+			}
+			return out
+		}))
+
 	return nil
+}
+
+// conditionOutput shapes one Cloud Run condition as the outputs proto's
+// GcpCloudRunWorkerPoolCondition, an absent value as an empty string.
+func conditionOutput(conditionType, state, message, lastTransitionTime,
+	severity, reason, revisionReason, executionReason *string) map[string]string {
+	value := func(v *string) string {
+		if v == nil {
+			return ""
+		}
+		return *v
+	}
+	return map[string]string{
+		"type":                 value(conditionType),
+		"state":                value(state),
+		"message":              value(message),
+		"last_transition_time": value(lastTransitionTime),
+		"severity":             value(severity),
+		"reason":               value(reason),
+		"revision_reason":      value(revisionReason),
+		"execution_reason":     value(executionReason),
+	}
 }
 
 // buildTemplate maps the spec's revision-level surface onto the v2 worker

@@ -22,6 +22,7 @@ A production Memorystore for Redis Cluster: sharded for capacity, replicated for
 
 | Field | Default | Why Change |
 |-------|---------|------------|
+| `projectId` | `my-gcp-project` | A stand-in: your project ID, or a `GcpProject` reference. |
 | `shardCount` / `replicaCount` | `3` / `1` | Size for the keyspace and read load; both resize in place. `replicaCount: 2` for a second failover target. |
 | `nodeType` | `REDIS_HIGHMEM_MEDIUM` | `REDIS_HIGHMEM_XLARGE` or `_2XLARGE` for large keyspaces; `REDIS_STANDARD_SMALL` for a small production cache. |
 | `kmsKey` | Google-managed | A `GcpKmsKey` reference for customer-managed encryption at rest. |

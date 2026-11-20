@@ -9,7 +9,7 @@ This directory contains the Pulumi implementation for a Vertex AI TensorBoard an
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `tensorboard` |
 | `module/locals.go` | The display name defaulted from `metadata.name`; the `planton-ai_*` attribution labels |
 | `module/tensorboard.go` | Enables the API; maps the TensorBoard, every experiment, and every run; exports the outputs |
-| `module/outputs.go` | Output key constants (`name`, `tensorboard_id`, `location`, `blob_storage_path_prefix`, `experiment_names`, `run_names`) |
+| `module/outputs.go` | Output key constants (`name`, `tensorboard_id`, `location`, `blob_storage_path_prefix`, `experiment_names`, `run_names`, `run_count`) |
 
 ## Send Posture (parity with Terraform)
 

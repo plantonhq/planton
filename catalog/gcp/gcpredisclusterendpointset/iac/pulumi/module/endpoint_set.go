@@ -15,8 +15,13 @@ import (
 // Every field of a connection is an output of the block that built it (the
 // forwarding rule twice, on two output paths; the reserved address; the
 // network; the cluster's service-attachment handle), so the registration
-// carries no literals a consumer has to copy by hand. Only the project is
-// immutable; the set updates in place.
+// carries no literals a consumer has to copy by hand. The project is
+// ForceNew; the cluster and the region are not, and the provider's update
+// masks only the endpoint list, so a changed cluster or region plans in
+// place and sends nothing. The endpoints update in place. Create and
+// destroy both PATCH the cluster's whole list: create replaces whatever
+// was registered, and a DELETE destroy deregisters every user-created
+// connection on the cluster.
 func endpointSet(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) error {
 	spec := locals.GcpRedisClusterEndpointSet.Spec
 

@@ -153,6 +153,7 @@ func tensorboard(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider)
 	ctx.Export(OpBlobStoragePathPrefix, createdTensorboard.BlobStoragePathPrefix)
 	ctx.Export(OpExperimentNames, experimentNames.ToStringArrayOutput())
 	ctx.Export(OpRunNames, runNames.ToStringArrayOutput())
+	ctx.Export(OpRunCount, createdTensorboard.RunCount)
 	return nil
 }
 

@@ -80,7 +80,7 @@ These are the most important decisions when configuring a cluster. Explore the f
 
 **Durability** — `persistenceConfig` (RDB snapshots or AOF log) makes data survive restarts; `automatedBackupConfig` takes daily backups with a retention you choose; `crossClusterReplicationConfig` replicates to another region.
 
-**Destroy semantics** — `deletionProtectionEnabled` (default `true`) blocks destroys until flipped; `deletionPolicy: PREVENT` is a second guard.
+**Destroy semantics** — `deletionProtectionEnabled` (default `true`) blocks a `DELETE` destroy until it is turned off and applied; `deletionPolicy: PREVENT` fails any destroy before Google is called. `ABANDON` succeeds even on a protected cluster, which keeps running and billing.
 
 ## Outputs and Dependencies
 
@@ -91,6 +91,8 @@ These are the most important decisions when configuring a cluster. Explore the f
 | **GCP Project** | `projectId` | `status.outputs.project_id` |
 | **GCP VPC Network** | `pscConfigs[].network` | `status.outputs.network_id` |
 | **GCP KMS Key** | `kmsKey` | `status.outputs.key_id` |
+| **GCP KMS Key Handle** | `kmsKey` | `status.outputs.kms_key` |
+| **GCP Private CA Pool** | `serverCaPool` | `status.outputs.name` |
 | **GCP Redis Cluster** | `crossClusterReplicationConfig.primaryCluster.cluster`, `secondaryClusters[].cluster` | `status.outputs.name` |
 
 ### What This Kind Provides
@@ -105,6 +107,7 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 | `state` | Lifecycle state | Readiness checks |
 | `size_gb`, `shard_count`, `replica_count` | The shape in effect | Capacity dashboards |
 | `backup_collection` | Where managed backups live | `managedBackupSource` for a new cluster |
+| `available_maintenance_versions` | Versions the cluster can move to now | Choosing a `maintenanceVersion` for a self-service update |
 
 ## Common Patterns
 

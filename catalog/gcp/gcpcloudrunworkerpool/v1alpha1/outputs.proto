@@ -37,4 +37,46 @@ message GcpCloudRunWorkerPoolOutputs {
 
   // Opaque version token for optimistic concurrency on the API.
   string etag = 9;
+
+  // The pool's overall readiness: type "Ready", with state
+  // CONDITION_SUCCEEDED once the pool reaches its serving state. When a
+  // rollout fails, its message and reasons say why (an image that cannot
+  // be pulled, a container that never passes its startup probe), while
+  // latest_ready_revision still names the last revision that worked.
+  GcpCloudRunWorkerPoolCondition terminal_condition = 10;
+
+  // The conditions of the pool's sub-resources, in the order Google
+  // reports them: the extra diagnostics to read when terminal_condition
+  // is not CONDITION_SUCCEEDED. Empty when Google reports none.
+  repeated GcpCloudRunWorkerPoolCondition conditions = 11;
+}
+
+// GcpCloudRunWorkerPoolCondition is one status condition Cloud Run reports
+// for the worker pool, as Google returns it.
+message GcpCloudRunWorkerPoolCondition {
+  // What the condition reports, e.g. "Ready" for the pool as a whole.
+  string type = 1;
+
+  // The condition's state: CONDITION_PENDING, CONDITION_RECONCILING,
+  // CONDITION_FAILED, or CONDITION_SUCCEEDED.
+  string state = 2;
+
+  // Human-readable detail about the current state, the first thing to
+  // read when a rollout fails.
+  string message = 3;
+
+  // When the condition last changed state, as an RFC 3339 timestamp.
+  string last_transition_time = 4;
+
+  // How to read a failure of this condition: ERROR, WARNING, or INFO.
+  string severity = 5;
+
+  // The pool-level reason for the state, when Google gives one.
+  string reason = 6;
+
+  // The revision-level reason, when the condition is about a revision.
+  string revision_reason = 7;
+
+  // The execution-level reason, when the condition is about an execution.
+  string execution_reason = 8;
 }

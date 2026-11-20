@@ -47,8 +47,14 @@ type GcpCloudSqlOutputs struct {
 	// The PSC service attachment link consumers target with PSC endpoints
 	// (populated only when psc.enabled is true).
 	PscServiceAttachmentLink string `protobuf:"bytes,8,opt,name=psc_service_attachment_link,json=pscServiceAttachmentLink,proto3" json:"psc_service_attachment_link,omitempty"`
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+	// The Unix socket path a workload connects through when Cloud Run (or the
+	// Cloud SQL Auth Proxy with --unix-socket /cloudsql) mounts the instance:
+	// /cloudsql/{connection_name}. PostgreSQL clients take it as the host
+	// (the driver appends /.s.PGSQL.5432); MySQL clients take it as the
+	// socket. Derived from connection_name, so it is set for every instance.
+	SocketPath    string `protobuf:"bytes,9,opt,name=socket_path,json=socketPath,proto3" json:"socket_path,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpCloudSqlOutputs) Reset() {
@@ -137,11 +143,18 @@ func (x *GcpCloudSqlOutputs) GetPscServiceAttachmentLink() string {
 	return ""
 }
 
+func (x *GcpCloudSqlOutputs) GetSocketPath() string {
+	if x != nil {
+		return x.SocketPath
+	}
+	return ""
+}
+
 var File_catalog_gcp_gcpcloudsql_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpcloudsql_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	".catalog/gcp/gcpcloudsql/v1alpha1/outputs.proto\x12$dev.planton.gcp.gcpcloudsql.v1alpha1\"\xc9\x02\n" +
+	".catalog/gcp/gcpcloudsql/v1alpha1/outputs.proto\x12$dev.planton.gcp.gcpcloudsql.v1alpha1\"\xea\x02\n" +
 	"\x12GcpCloudSqlOutputs\x12#\n" +
 	"\rinstance_name\x18\x01 \x01(\tR\finstanceName\x12'\n" +
 	"\x0fconnection_name\x18\x02 \x01(\tR\x0econnectionName\x12\x1d\n" +
@@ -151,7 +164,9 @@ const file_catalog_gcp_gcpcloudsql_v1alpha1_outputs_proto_rawDesc = "" +
 	"\tself_link\x18\x05 \x01(\tR\bselfLink\x122\n" +
 	"\x15service_account_email\x18\x06 \x01(\tR\x13serviceAccountEmail\x12\x19\n" +
 	"\bdns_name\x18\a \x01(\tR\adnsName\x12=\n" +
-	"\x1bpsc_service_attachment_link\x18\b \x01(\tR\x18pscServiceAttachmentLinkB\xc0\x02\n" +
+	"\x1bpsc_service_attachment_link\x18\b \x01(\tR\x18pscServiceAttachmentLink\x12\x1f\n" +
+	"\vsocket_path\x18\t \x01(\tR\n" +
+	"socketPathB\xc0\x02\n" +
 	"(com.dev.planton.gcp.gcpcloudsql.v1alpha1B\fOutputsProtoP\x01ZQgithub.com/plantonhq/planton/catalog/gcp/gcpcloudsql/v1alpha1;gcpcloudsqlv1alpha1\xa2\x02\x04DPGG\xaa\x02$Dev.Planton.Gcp.Gcpcloudsql.V1alpha1\xca\x02$Dev\\Planton\\Gcp\\Gcpcloudsql\\V1alpha1\xe2\x020Dev\\Planton\\Gcp\\Gcpcloudsql\\V1alpha1\\GPBMetadata\xea\x02(Dev::Planton::Gcp::Gcpcloudsql::V1alpha1b\x06proto3"
 
 var (

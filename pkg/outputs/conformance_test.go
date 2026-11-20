@@ -2828,9 +2828,10 @@ func TestOutputsConformance(t *testing.T) {
 				"service_account_email":       "p1234-abcdef@gcp-sa-cloud-sql.iam.gserviceaccount.com",
 				"dns_name":                    "",
 				"psc_service_attachment_link": "",
+				"socket_path":                 "/cloudsql/my-project:us-central1:orders-db",
 			},
 			mustPopulate: []string{
-				"instance_name", "connection_name", "self_link", "service_account_email",
+				"instance_name", "connection_name", "self_link", "service_account_email", "socket_path",
 			},
 		},
 		{
@@ -4177,7 +4178,7 @@ func TestOutputsConformance(t *testing.T) {
 			rawOutputs: map[string]interface{}{
 				"name":                         "projects/my-project/locations/us-central1/clusters/orders-cache",
 				"uid":                          "0123456789abcdef",
-				"state":                        "READY",
+				"state":                        "ACTIVE",
 				"discovery_endpoint_address":   "10.0.0.5",
 				"discovery_endpoint_port":      "6379",
 				"discovery_service_attachment": "projects/p/regions/us-central1/serviceAttachments/gcp-memorystore-auto-disc",
@@ -4187,6 +4188,9 @@ func TestOutputsConformance(t *testing.T) {
 				"shard_count":                  "1",
 				"replica_count":                "0",
 				"backup_collection":            "projects/my-project/locations/us-central1/backupCollections/abcd",
+				"available_maintenance_versions": []interface{}{
+					"MAINTENANCE_2026_10_01",
+				},
 			},
 			mustPopulate: []string{"name", "uid", "state", "discovery_endpoint_address", "discovery_endpoint_port", "discovery_service_attachment", "primary_service_attachment", "size_gb", "shard_count", "backup_collection"},
 		},
@@ -4219,8 +4223,32 @@ func TestOutputsConformance(t *testing.T) {
 				"latest_ready_revision":   "orders-worker-00001-abc",
 				"observed_generation":     "1",
 				"etag":                    "\"abc123\"",
+				"terminal_condition": map[string]interface{}{
+					"type":                 "Ready",
+					"state":                "CONDITION_SUCCEEDED",
+					"message":              "",
+					"last_transition_time": "2026-10-24T10:00:00Z",
+					"severity":             "",
+					"reason":               "",
+					"revision_reason":      "",
+					"execution_reason":     "",
+				},
+				"conditions": []interface{}{
+					map[string]interface{}{
+						"type":                 "RoutesReady",
+						"state":                "CONDITION_SUCCEEDED",
+						"message":              "",
+						"last_transition_time": "2026-10-24T10:00:00Z",
+						"severity":             "",
+						"reason":               "",
+						"revision_reason":      "",
+						"execution_reason":     "",
+					},
+				},
 			},
-			mustPopulate: []string{"name", "worker_pool_name", "uid", "location", "project_id", "latest_created_revision", "latest_ready_revision", "observed_generation", "etag"},
+			// conditions can be empty (Google reports none), so only the
+			// terminal condition is guaranteed.
+			mustPopulate: []string{"name", "worker_pool_name", "uid", "location", "project_id", "latest_created_revision", "latest_ready_revision", "observed_generation", "etag", "terminal_condition"},
 		},
 		{
 			// GcpVertexAiRagEngineConfig: the singleton's full resource name
@@ -4349,8 +4377,9 @@ func TestOutputsConformance(t *testing.T) {
 				"feature_view_names": []interface{}{
 					"projects/my-project/locations/us-central1/featureOnlineStores/serving_store/featureViews/customer_view",
 				},
+				"state": "STABLE",
 			},
-			mustPopulate: []string{"name", "feature_online_store_id", "location", "public_endpoint_domain_name", "feature_view_names"},
+			mustPopulate: []string{"name", "feature_online_store_id", "location", "public_endpoint_domain_name", "feature_view_names", "state"},
 		},
 		{
 			// GcpVertexAiDataset: the dataset's full name (the verifier's
@@ -4382,6 +4411,8 @@ func TestOutputsConformance(t *testing.T) {
 				"run_names": []interface{}{
 					"projects/my-project/locations/us-central1/tensorboards/1234567890123456789/experiments/churn-model/runs/baseline",
 				},
+				// Empty until Google counts a run; never required.
+				"run_count": "1",
 			},
 			mustPopulate: []string{"name", "tensorboard_id", "location", "blob_storage_path_prefix", "experiment_names", "run_names"},
 		},
@@ -4396,6 +4427,12 @@ func TestOutputsConformance(t *testing.T) {
 				"persistent_resource_id": "training-pool",
 				"location":               "us-central1",
 				"state":                  "RUNNING",
+				// Code 0 and an empty message while there is no error, so
+				// the error is never required.
+				"error": map[string]interface{}{
+					"code":    "0",
+					"message": "",
+				},
 			},
 			mustPopulate: []string{"name", "persistent_resource_id", "location", "state"},
 		},
@@ -4748,8 +4785,10 @@ func TestOutputsConformance(t *testing.T) {
 				"pem_certificate":              "-----BEGIN CERTIFICATE-----\nleaf\n-----END CERTIFICATE-----",
 				"pem_certificate_chain":        []interface{}{"-----BEGIN CERTIFICATE-----\nroot\n-----END CERTIFICATE-----"},
 				"issuer_certificate_authority": "projects/p/locations/us-central1/caPools/internal-tls/certificateAuthorities/root-ca",
+				"not_before_time":              "2026-10-18T00:00:00Z",
+				"not_after_time":               "2026-11-17T00:00:00Z",
 			},
-			mustPopulate: []string{"name", "certificate_id", "pem_certificate", "pem_certificate_chain", "issuer_certificate_authority"},
+			mustPopulate: []string{"name", "certificate_id", "pem_certificate", "pem_certificate_chain", "issuer_certificate_authority", "not_before_time", "not_after_time"},
 		},
 		{
 			// GcpKmsAutokeyConfig: the configuration's name and the scope it

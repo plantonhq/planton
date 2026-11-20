@@ -8,7 +8,7 @@ Put what is true of every certificate from a pool in the pool's baseline values;
 
 ## Identities
 
-`identityConstraints` decides what a request may say about itself. Turn off `allowSubjectPassthrough` when the subject should come from the template or not at all, and keep `allowSubjectAltNamesPassthrough` on with a CEL expression that pins the names -- for example `subject_alt_names.all(san, san.type == URI && san.value.startsWith("spiffe://example.org/"))` for workload identities.
+`identityConstraints` decides what a request may say about itself. Turn off `allowSubjectPassthrough` when a requested subject should be dropped: the template sets no subject, so the certificate then carries none and its subject alternative names are its whole identity. Keep `allowSubjectAltNamesPassthrough` on with a CEL expression that pins the names -- for example `subject_alt_names.all(san, san.type == URI && san.value.startsWith("spiffe://example.org/"))` for workload identities.
 
 ## CA options, carefully
 

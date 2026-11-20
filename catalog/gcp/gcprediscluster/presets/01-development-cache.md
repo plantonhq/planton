@@ -20,6 +20,7 @@ The cheapest Memorystore for Redis Cluster Google sells: one shared-core shard, 
 
 | Field | Default | Why Change |
 |-------|---------|------------|
+| `projectId` | `my-gcp-project` | A stand-in: your project ID, or a `GcpProject` reference. |
 | `pscConfigs[].network` | `dev-vpc` | Your VPC; a `GcpServiceConnectionPolicy` with `serviceClass: gcp-memorystore-redis` must exist on it in this region. |
 | `shardCount` | `1` | More shards when a test needs a multi-slot topology. |
 | `nodeType` | `REDIS_SHARED_CORE_NANO` | A dedicated-core type when the test needs realistic throughput. |

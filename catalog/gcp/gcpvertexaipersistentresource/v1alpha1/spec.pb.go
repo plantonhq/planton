@@ -29,7 +29,7 @@ type GcpVertexAiPersistentResourceMachineSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Compute Engine machine type, e.g. "n1-standard-4", "a2-highgpu-1g",
 	// "ct5lp-hightpu-4t" -- any type Vertex AI custom training supports.
-	// Immutable.
+	// Required. Immutable.
 	MachineType string `protobuf:"bytes,1,opt,name=machine_type,json=machineType,proto3" json:"machine_type,omitempty"`
 	// The accelerator attached to every replica (NVIDIA_TESLA_T4,
 	// NVIDIA_L4, NVIDIA_TESLA_A100, NVIDIA_A100_80GB, NVIDIA_H100_80GB,
@@ -38,8 +38,9 @@ type GcpVertexAiPersistentResourceMachineSpec struct {
 	// or TPU_V2 / TPU_V3 / TPU_V4_POD / TPU_V5_LITEPOD). The machine type
 	// must be one Google pairs with it. Empty attaches none. Immutable.
 	AcceleratorType string `protobuf:"bytes,2,opt,name=accelerator_type,json=acceleratorType,proto3" json:"accelerator_type,omitempty"`
-	// How many accelerators each replica carries, set together with
-	// accelerator_type. Sent only when set. Immutable.
+	// How many accelerators each replica carries -- at least 1 when
+	// accelerator_type is set, 0 (unset) when it is not. Sent only when set.
+	// Immutable.
 	AcceleratorCount int32 `protobuf:"varint,3,opt,name=accelerator_count,json=acceleratorCount,proto3" json:"accelerator_count,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
@@ -440,8 +441,10 @@ func (x *GcpVertexAiPersistentResourcePscInterfaceConfig) GetDnsPeeringConfigs()
 // GcpVertexAiPersistentResourceSpec defines a Vertex AI persistent
 // resource (`google_vertex_ai_persistent_resource`) -- a long-running
 // cluster of machines Vertex AI keeps provisioned so custom training jobs
-// (and Ray on Vertex AI) start in seconds instead of waiting minutes for
-// capacity, and so scarce accelerators stay reserved between jobs. A job
+// start in seconds instead of waiting minutes for capacity, and so scarce
+// accelerators stay reserved between jobs. A Ray on Vertex AI cluster is a
+// persistent resource with Ray settings, which neither provider carries;
+// this kind keeps machines for custom training jobs only. A job
 // runs on it by naming its id in `persistent_resource_id`; the job's
 // network and encryption must match the resource's.
 //
@@ -477,9 +480,11 @@ type GcpVertexAiPersistentResourceSpec struct {
 	// services: a GcpVpcNetwork reference or a literal
 	// projects/{project}/global/networks/{name}. Google requires the project
 	// NUMBER in that path; both modules resolve a project ID to its number
-	// (one project lookup at plan time). The network must already have VPC
-	// Network Peering for Vertex AI (private services access) configured.
-	// Omit for no peering. Immutable.
+	// (one project lookup at plan time). A literal is that path or the
+	// network's full https://www.googleapis.com/compute/v1/ self-link; a bare
+	// network name is refused. The network must already have VPC Network
+	// Peering for Vertex AI (private services access) configured. Omit for
+	// no peering. Immutable.
 	Network *v1.StringValueOrRef `protobuf:"bytes,7,opt,name=network,proto3" json:"network,omitempty"`
 	// Names of the private-services-access ranges on the peered network the
 	// resource's machines take addresses from, e.g. ["vertex-ai-range"]
@@ -631,27 +636,30 @@ var File_catalog_gcp_gcpvertexaipersistentresource_v1alpha1_spec_proto protorefl
 
 const file_catalog_gcp_gcpvertexaipersistentresource_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/gcp/gcpvertexaipersistentresource/v1alpha1/spec.proto\x126dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xde\x03\n" +
-	"(GcpVertexAiPersistentResourceMachineSpec\x12!\n" +
-	"\fmachine_type\x18\x01 \x01(\tR\vmachineType\x12\xd8\x02\n" +
+	"=catalog/gcp/gcpvertexaipersistentresource/v1alpha1/spec.proto\x126dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xd7\x05\n" +
+	"(GcpVertexAiPersistentResourceMachineSpec\x12*\n" +
+	"\fmachine_type\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\vmachineType\x12\xd8\x02\n" +
 	"\x10accelerator_type\x18\x02 \x01(\tB\xac\x02\xbaH\xa8\x02\xd8\x01\x01r\xa2\x02R\x10NVIDIA_TESLA_K80R\x11NVIDIA_TESLA_P100R\x11NVIDIA_TESLA_V100R\x0fNVIDIA_TESLA_P4R\x0fNVIDIA_TESLA_T4R\x11NVIDIA_TESLA_A100R\x10NVIDIA_A100_80GBR\tNVIDIA_L4R\x10NVIDIA_H100_80GBR\x15NVIDIA_H100_MEGA_80GBR\x11NVIDIA_H200_141GBR\vNVIDIA_B200R\fNVIDIA_GB200R\x13NVIDIA_RTX_PRO_6000R\x06TPU_V2R\x06TPU_V3R\n" +
 	"TPU_V4_PODR\x0eTPU_V5_LITEPODR\x0facceleratorType\x124\n" +
-	"\x11accelerator_count\x18\x03 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00R\x10acceleratorCount\"\xce\x01\n" +
+	"\x11accelerator_count\x18\x03 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00R\x10acceleratorCount:\xed\x01\xbaH\xe9\x01\x1a\xe6\x01\n" +
+	"\x1dmachine_spec.accelerator_pair\x12\x84\x01An accelerator needs both its type and its count. Set accelerator_type with an accelerator_count of at least 1, or leave both unset.\x1a>(this.accelerator_type == '') == (this.accelerator_count == 0)\"\xcb\x03\n" +
 	",GcpVertexAiPersistentResourceAutoscalingSpec\x128\n" +
 	"\x11min_replica_count\x18\x01 \x01(\x03B\a\xbaH\x04\"\x02(\x01H\x00R\x0fminReplicaCount\x88\x01\x01\x128\n" +
-	"\x11max_replica_count\x18\x02 \x01(\x03B\a\xbaH\x04\"\x02(\x01H\x01R\x0fmaxReplicaCount\x88\x01\x01B\x14\n" +
+	"\x11max_replica_count\x18\x02 \x01(\x03B\a\xbaH\x04\"\x02(\x01H\x01R\x0fmaxReplicaCount\x88\x01\x01:\xfa\x01\xbaH\xf6\x01\x1a\xf3\x01\n" +
+	"\x1eautoscaling_spec.max_above_min\x12`The most replicas must be more than the fewest. Raise max_replica_count above min_replica_count.\x1ao!has(this.min_replica_count) || !has(this.max_replica_count) || this.max_replica_count > this.min_replica_countB\x14\n" +
 	"\x12_min_replica_countB\x14\n" +
 	"\x12_max_replica_count\"\xcf\x01\n" +
 	"%GcpVertexAiPersistentResourceDiskSpec\x127\n" +
 	"\x11boot_disk_size_gb\x18\x01 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01H\x00R\x0ebootDiskSizeGb\x88\x01\x01\x12W\n" +
 	"\x0eboot_disk_type\x18\x02 \x01(\tB1\xbaH.\xd8\x01\x01r)R\x06pd-ssdR\vpd-standardR\x12hyperdisk-balancedR\fbootDiskTypeB\x14\n" +
-	"\x12_boot_disk_size_gb\"\x9c\x04\n" +
+	"\x12_boot_disk_size_gb\"\xc7\a\n" +
 	")GcpVertexAiPersistentResourceResourcePool\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x8b\x01\n" +
 	"\fmachine_spec\x18\x02 \x01(\v2`.dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceMachineSpecB\x06\xbaH\x03\xc8\x01\x01R\vmachineSpec\x121\n" +
 	"\rreplica_count\x18\x03 \x01(\x03B\a\xbaH\x04\"\x02(\x01H\x00R\freplicaCount\x88\x01\x01\x12\x8f\x01\n" +
 	"\x10autoscaling_spec\x18\x04 \x01(\v2d.dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceAutoscalingSpecR\x0fautoscalingSpec\x12z\n" +
-	"\tdisk_spec\x18\x05 \x01(\v2].dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceDiskSpecR\bdiskSpecB\x10\n" +
+	"\tdisk_spec\x18\x05 \x01(\v2].dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceDiskSpecR\bdiskSpec:\xa8\x03\xbaH\xa4\x03\x1a\xa1\x03\n" +
+	")resource_pool.replica_count_within_bounds\x12oreplica_count must sit within the autoscaling bounds: at least min_replica_count and at most max_replica_count.\x1a\x82\x02!has(this.replica_count) || ((!has(this.autoscaling_spec.min_replica_count) || this.autoscaling_spec.min_replica_count <= this.replica_count) && (!has(this.autoscaling_spec.max_replica_count) || this.autoscaling_spec.max_replica_count >= this.replica_count))B\x10\n" +
 	"\x0e_replica_count\"\xef\x02\n" +
 	"-GcpVertexAiPersistentResourceDnsPeeringConfig\x12(\n" +
 	"\x06domain\x18\x01 \x01(\tB\x10\xbaH\r\xc8\x01\x01r\b2\x06^.+\\.$R\x06domain\x12\x87\x01\n" +
@@ -659,7 +667,7 @@ const file_catalog_gcp_gcpvertexaipersistentresource_v1alpha1_spec_proto_rawDesc
 	"\x0etarget_network\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB.\xbaH\x03\xc8\x01\x01\x88\xd4a\xc2\x17\x92\xd4a\x1bstatus.outputs.network_name\x98\xd4a\x01R\rtargetNetwork\"\xf8\x01\n" +
 	"/GcpVertexAiPersistentResourcePscInterfaceConfig\x12-\n" +
 	"\x12network_attachment\x18\x01 \x01(\tR\x11networkAttachment\x12\x95\x01\n" +
-	"\x13dns_peering_configs\x18\x02 \x03(\v2e.dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceDnsPeeringConfigR\x11dnsPeeringConfigs\"\x82\v\n" +
+	"\x13dns_peering_configs\x18\x02 \x03(\v2e.dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceDnsPeeringConfigR\x11dnsPeeringConfigs\"\xf3\r\n" +
 	"!GcpVertexAiPersistentResourceSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12;\n" +
@@ -679,7 +687,8 @@ const file_catalog_gcp_gcpvertexaipersistentresource_v1alpha1_spec_proto_rawDesc
 	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xbb\x03\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xee\x02\xbaH\xea\x02\x1a\xe7\x02\n" +
+	"\x19spec.network_literal_path\x12\x9d\x01A literal network must be its full path, projects/{project}/global/networks/{name}, or the network's self-link. Write the path, or reference a GcpVpcNetwork.\x1a\xa9\x01!has(this.network.value) || this.network.value == '' || this.network.value.matches('^(https://www\\\\.googleapis\\\\.com/compute/v1/)?projects/[^/]+/global/networks/[^/]+$')B\xbb\x03\n" +
 	":com.dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1B\tSpecProtoP\x01Zugithub.com/plantonhq/planton/catalog/gcp/gcpvertexaipersistentresource/v1alpha1;gcpvertexaipersistentresourcev1alpha1\xa2\x02\x04DPGG\xaa\x026Dev.Planton.Gcp.Gcpvertexaipersistentresource.V1alpha1\xca\x026Dev\\Planton\\Gcp\\Gcpvertexaipersistentresource\\V1alpha1\xe2\x02BDev\\Planton\\Gcp\\Gcpvertexaipersistentresource\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Gcp::Gcpvertexaipersistentresource::V1alpha1b\x06proto3"
 
 var (

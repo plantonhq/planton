@@ -60,12 +60,12 @@ planton apply -f certificate.yaml
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
-| `projectId` | `StringValueOrRef` | provider project | The pool's project. |
+| `projectId` | `StringValueOrRef` | provider project | The pool's project. Immutable. |
 | `certificateId` | `string` | `metadata.name` | Immutable; not reusable in the pool after revocation. |
 | `certificateAuthority` | `StringValueOrRef` | pool chooses | The signing authority (reference, full name, or bare ID). Immutable. |
 | `certificateTemplate` | `StringValueOrRef` | none | A `GcpPrivateCaCertificateTemplate` in the same region. Immutable. |
 | `lifetime` | `string` | `315360000s` | Cut short by the pool's and template's caps and the authority's expiry. Immutable. |
-| `pemCsr` | `string` | -- | A PEM certificate signing request. |
+| `pemCsr` | `string` | -- | A PEM certificate signing request. Immutable. |
 | `config` | `object` | -- | `subjectConfig`, optional `subjectKeyId`, `x509Config`, and `publicKey` (`key`, base64 of the PEM; `format` `PEM`). |
 | `labels` | `map<string,string>` | none | Merged with the platform attribution labels. |
 | `deletionPolicy` | `string` | `DELETE` | `DELETE` (revokes), `PREVENT`, or `ABANDON`. |
@@ -85,6 +85,7 @@ planton apply -f certificate.yaml
 | `pem_certificate` | `string` | The signed certificate |
 | `pem_certificate_chain` | `list(string)` | The chain that verifies it, issuer first |
 | `issuer_certificate_authority` | `string` | The authority that signed it |
+| `not_before_time` / `not_after_time` | `string` | The validity window (RFC 3339); `not_after_time` is when a successor must be installed |
 
 ## Deployment Methods
 
@@ -101,7 +102,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 - **Destroy revokes.** Google keeps the revoked record, and the certificate ID cannot be reused in the pool.
 - **The private key never reaches Google or the manifest.** The workload generates it and supplies the CSR or public key; the outputs are the certificate and its chain.
 - **Enterprise pools only**, and each issue bills at the pool's tier (see `cost.yaml`).
-- **Renewal is a new certificate**: change the ID (or the request) to issue a successor before the current one expires.
+- **Renewal is a new certificate with a new ID.** Declare the successor beside the current one before it expires (the `not_after_time` output), move the workload, then remove the old one, which revokes it. An ID cannot be reused in the pool, so a changed request under the same ID is not a renewal.
 
 ## Examples
 

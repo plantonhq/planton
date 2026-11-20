@@ -39,7 +39,14 @@ type GcpVertexAiTensorboardOutputs struct {
 	ExperimentNames []string `protobuf:"bytes,5,rep,name=experiment_names,json=experimentNames,proto3" json:"experiment_names,omitempty"`
 	// Full resource names of the declared runs, experiment by experiment in
 	// manifest order.
-	RunNames      []string `protobuf:"bytes,6,rep,name=run_names,json=runNames,proto3" json:"run_names,omitempty"`
+	RunNames []string `protobuf:"bytes,6,rep,name=run_names,json=runNames,proto3" json:"run_names,omitempty"`
+	// The number of runs the TensorBoard holds as Google counts them --
+	// runs training jobs logged as well as the declared ones -- as read
+	// during the last deploy. The TensorBoard is read before its declared
+	// runs are created, so runs added in a deploy count from the next one. A
+	// decimal string, as Google reports it; empty when Google reports no
+	// count.
+	RunCount      string `protobuf:"bytes,7,opt,name=run_count,json=runCount,proto3" json:"run_count,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -116,18 +123,26 @@ func (x *GcpVertexAiTensorboardOutputs) GetRunNames() []string {
 	return nil
 }
 
+func (x *GcpVertexAiTensorboardOutputs) GetRunCount() string {
+	if x != nil {
+		return x.RunCount
+	}
+	return ""
+}
+
 var File_catalog_gcp_gcpvertexaitensorboard_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpvertexaitensorboard_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/gcp/gcpvertexaitensorboard/v1alpha1/outputs.proto\x12/dev.planton.gcp.gcpvertexaitensorboard.v1alpha1\"\xf7\x01\n" +
+	"9catalog/gcp/gcpvertexaitensorboard/v1alpha1/outputs.proto\x12/dev.planton.gcp.gcpvertexaitensorboard.v1alpha1\"\x94\x02\n" +
 	"\x1dGcpVertexAiTensorboardOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12%\n" +
 	"\x0etensorboard_id\x18\x02 \x01(\tR\rtensorboardId\x12\x1a\n" +
 	"\blocation\x18\x03 \x01(\tR\blocation\x127\n" +
 	"\x18blob_storage_path_prefix\x18\x04 \x01(\tR\x15blobStoragePathPrefix\x12)\n" +
 	"\x10experiment_names\x18\x05 \x03(\tR\x0fexperimentNames\x12\x1b\n" +
-	"\trun_names\x18\x06 \x03(\tR\brunNamesB\x8d\x03\n" +
+	"\trun_names\x18\x06 \x03(\tR\brunNames\x12\x1b\n" +
+	"\trun_count\x18\a \x01(\tR\brunCountB\x8d\x03\n" +
 	"3com.dev.planton.gcp.gcpvertexaitensorboard.v1alpha1B\fOutputsProtoP\x01Zggithub.com/plantonhq/planton/catalog/gcp/gcpvertexaitensorboard/v1alpha1;gcpvertexaitensorboardv1alpha1\xa2\x02\x04DPGG\xaa\x02/Dev.Planton.Gcp.Gcpvertexaitensorboard.V1alpha1\xca\x02/Dev\\Planton\\Gcp\\Gcpvertexaitensorboard\\V1alpha1\xe2\x02;Dev\\Planton\\Gcp\\Gcpvertexaitensorboard\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Gcp::Gcpvertexaitensorboard::V1alpha1b\x06proto3"
 
 var (

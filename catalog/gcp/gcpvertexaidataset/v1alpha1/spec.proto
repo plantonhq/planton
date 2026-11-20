@@ -54,10 +54,14 @@ message GcpVertexAiDatasetSpec {
   //                          object tracking)
   //   time_series_1.0.0.yaml forecasting data
   // e.g. "gs://google-cloud-aiplatform/schema/dataset/metadata/image_1.0.0.yaml".
-  // Immutable.
+  // Only these five full URIs are accepted. Immutable.
   string metadata_schema_uri = 4 [
     (buf.validate.field).required = true,
-    (buf.validate.field).string.pattern = "^gs://[^/]+/.+\\.yaml$"
+    (buf.validate.field).cel = {
+      id: "metadata_schema_uri.supported"
+      expression: "this in ['gs://google-cloud-aiplatform/schema/dataset/metadata/image_1.0.0.yaml', 'gs://google-cloud-aiplatform/schema/dataset/metadata/text_1.0.0.yaml', 'gs://google-cloud-aiplatform/schema/dataset/metadata/tabular_1.0.0.yaml', 'gs://google-cloud-aiplatform/schema/dataset/metadata/video_1.0.0.yaml', 'gs://google-cloud-aiplatform/schema/dataset/metadata/time_series_1.0.0.yaml']"
+      message: "The dataset type must be one of Google's five schemas: gs://google-cloud-aiplatform/schema/dataset/metadata/ followed by image_1.0.0.yaml, text_1.0.0.yaml, tabular_1.0.0.yaml, video_1.0.0.yaml, or time_series_1.0.0.yaml."
+    }
   ];
 
   // Labels on the dataset. The platform attribution labels are merged in

@@ -165,6 +165,61 @@ var _ = ginkgo.Describe("GcpCloudRunWorkerPoolSpec", func() {
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "zero parks the pool")
 	})
 
+	ginkgo.It("should require an explicit instance count under manual scaling", func() {
+		msg := minimal()
+		msg.Spec.Scaling = nil
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "no scaling block at all")
+
+		msg.Spec.Scaling = &GcpCloudRunWorkerPoolScaling{ScalingMode: "MANUAL"}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "MANUAL with no count")
+
+		msg.Spec.Scaling = &GcpCloudRunWorkerPoolScaling{}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "a block naming no mode and no count")
+
+		msg.Spec.Scaling = &GcpCloudRunWorkerPoolScaling{ManualInstanceCount: proto.Int32(0)}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "an explicit zero parks the pool on purpose")
+
+		msg.Spec.Scaling = &GcpCloudRunWorkerPoolScaling{ScalingMode: "AUTOMATIC", MinInstanceCount: proto.Int32(1), MaxInstanceCount: proto.Int32(3)}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "AUTOMATIC needs no manual count")
+	})
+
+	ginkgo.It("should count the key-revocation grace period in whole hours", func() {
+		msg := minimal()
+		msg.Spec.EncryptionKey = nameRef("cmek")
+		msg.Spec.EncryptionKeyRevocationAction = "SHUTDOWN"
+		msg.Spec.EncryptionKeyShutdownDuration = "7200s"
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "two hours")
+		msg.Spec.EncryptionKeyShutdownDuration = "5400s"
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "an hour and a half")
+		msg.Spec.EncryptionKeyShutdownDuration = "0s"
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "zero hours")
+	})
+
+	ginkgo.It("should take one network interface naming a network or a subnetwork", func() {
+		msg := minimal()
+		msg.Spec.VpcAccess = &GcpCloudRunWorkerPoolVpcAccess{
+			NetworkInterfaces: []*GcpCloudRunWorkerPoolNetworkInterface{{Network: litRef("vpc")}},
+		}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "a network alone")
+		msg.Spec.VpcAccess.NetworkInterfaces = []*GcpCloudRunWorkerPoolNetworkInterface{{Tags: []string{"worker"}}}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "an interface naming neither")
+		msg.Spec.VpcAccess.NetworkInterfaces = []*GcpCloudRunWorkerPoolNetworkInterface{
+			{Subnetwork: nameRef("subnet-a")},
+			{Subnetwork: nameRef("subnet-b")},
+		}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "two interfaces")
+	})
+
+	ginkgo.It("should allow a break-glass justification only under the default policy", func() {
+		msg := minimal()
+		msg.Spec.BinaryAuthorization = &GcpCloudRunWorkerPoolBinaryAuthorization{UseDefault: true, BreakglassJustification: "hotfix"}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		msg.Spec.BinaryAuthorization = &GcpCloudRunWorkerPoolBinaryAuthorization{Policy: "projects/p/platforms/cloudRun/policies/x", BreakglassJustification: "hotfix"}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "beside a named policy")
+		msg.Spec.BinaryAuthorization = &GcpCloudRunWorkerPoolBinaryAuthorization{BreakglassJustification: "hotfix"}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "with no policy")
+	})
+
 	ginkgo.It("should enforce instance split coherence", func() {
 		msg := minimal()
 		msg.Spec.InstanceSplits = []*GcpCloudRunWorkerPoolInstanceSplit{{Type: "INSTANCE_SPLIT_ALLOCATION_TYPE_REVISION", Percent: proto.Int32(100)}}

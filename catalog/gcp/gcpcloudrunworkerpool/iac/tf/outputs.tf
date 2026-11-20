@@ -43,3 +43,37 @@ output "etag" {
   description = "Opaque version token for optimistic concurrency"
   value       = google_cloud_run_v2_worker_pool.main.etag
 }
+
+# The pool's overall readiness condition, flattened from the provider's
+# one-element list; empty strings until Google reports one.
+output "terminal_condition" {
+  description = "The pool's overall readiness condition (type Ready), with the failure detail when a rollout fails"
+  value = {
+    type                 = try(google_cloud_run_v2_worker_pool.main.terminal_condition[0].type, "")
+    state                = try(google_cloud_run_v2_worker_pool.main.terminal_condition[0].state, "")
+    message              = try(google_cloud_run_v2_worker_pool.main.terminal_condition[0].message, "")
+    last_transition_time = try(google_cloud_run_v2_worker_pool.main.terminal_condition[0].last_transition_time, "")
+    severity             = try(google_cloud_run_v2_worker_pool.main.terminal_condition[0].severity, "")
+    reason               = try(google_cloud_run_v2_worker_pool.main.terminal_condition[0].reason, "")
+    revision_reason      = try(google_cloud_run_v2_worker_pool.main.terminal_condition[0].revision_reason, "")
+    execution_reason     = try(google_cloud_run_v2_worker_pool.main.terminal_condition[0].execution_reason, "")
+  }
+}
+
+# The sub-resources' conditions, in Google's order: the diagnostics to read
+# when the terminal condition has not succeeded.
+output "conditions" {
+  description = "Conditions of the pool's sub-resources, the extra diagnostics behind a failed rollout"
+  value = [
+    for condition in try(google_cloud_run_v2_worker_pool.main.conditions, []) : {
+      type                 = condition.type
+      state                = condition.state
+      message              = condition.message
+      last_transition_time = condition.last_transition_time
+      severity             = condition.severity
+      reason               = condition.reason
+      revision_reason      = condition.revision_reason
+      execution_reason     = condition.execution_reason
+    }
+  ]
+}

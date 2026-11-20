@@ -10,4 +10,5 @@ const (
 	OpServiceAccountEmail      = "service_account_email"       // Instance's Google-managed service account
 	OpDnsName                  = "dns_name"                    // DNS name (PSC-enabled instances)
 	OpPscServiceAttachmentLink = "psc_service_attachment_link" // PSC service attachment for consumer endpoints
+	OpSocketPath               = "socket_path"                 // /cloudsql/{connection_name} Unix socket path
 )

@@ -39,7 +39,7 @@ type GcpRedisClusterOutputs struct {
 	// Server-generated unique identifier, stable across updates.
 	Uid string `protobuf:"bytes,2,opt,name=uid,proto3" json:"uid,omitempty"`
 	// The cluster's lifecycle state at the end of provisioning: CREATING,
-	// READY, UPDATING, DELETING, or SUSPENDED.
+	// ACTIVE, UPDATING, or DELETING. ACTIVE is a cluster that serves.
 	State string `protobuf:"bytes,3,opt,name=state,proto3" json:"state,omitempty"`
 	// IP address of the Google-placed discovery endpoint -- the address a
 	// Cluster-protocol client bootstraps from. Empty when psc_configs is
@@ -70,8 +70,12 @@ type GcpRedisClusterOutputs struct {
 	// this cluster once automated backups are configured -- the source of
 	// managed_backup_source paths for seeding new clusters.
 	BackupCollection string `protobuf:"bytes,12,opt,name=backup_collection,json=backupCollection,proto3" json:"backup_collection,omitempty"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	// The maintenance versions this cluster can move to now, as Google lists
+	// them -- the values maintenance_version accepts for a self-service
+	// update. Empty when no newer version is available.
+	AvailableMaintenanceVersions []string `protobuf:"bytes,13,rep,name=available_maintenance_versions,json=availableMaintenanceVersions,proto3" json:"available_maintenance_versions,omitempty"`
+	unknownFields                protoimpl.UnknownFields
+	sizeCache                    protoimpl.SizeCache
 }
 
 func (x *GcpRedisClusterOutputs) Reset() {
@@ -188,11 +192,18 @@ func (x *GcpRedisClusterOutputs) GetBackupCollection() string {
 	return ""
 }
 
+func (x *GcpRedisClusterOutputs) GetAvailableMaintenanceVersions() []string {
+	if x != nil {
+		return x.AvailableMaintenanceVersions
+	}
+	return nil
+}
+
 var File_catalog_gcp_gcprediscluster_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcprediscluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/gcp/gcprediscluster/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcprediscluster.v1alpha1\"\x92\x04\n" +
+	"2catalog/gcp/gcprediscluster/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcprediscluster.v1alpha1\"\xd8\x04\n" +
 	"\x16GcpRedisClusterOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x10\n" +
 	"\x03uid\x18\x02 \x01(\tR\x03uid\x12\x14\n" +
@@ -207,7 +218,8 @@ const file_catalog_gcp_gcprediscluster_v1alpha1_outputs_proto_rawDesc = "" +
 	" \x01(\x05R\n" +
 	"shardCount\x12#\n" +
 	"\rreplica_count\x18\v \x01(\x05R\freplicaCount\x12+\n" +
-	"\x11backup_collection\x18\f \x01(\tR\x10backupCollectionB\xdc\x02\n" +
+	"\x11backup_collection\x18\f \x01(\tR\x10backupCollection\x12D\n" +
+	"\x1eavailable_maintenance_versions\x18\r \x03(\tR\x1cavailableMaintenanceVersionsB\xdc\x02\n" +
 	",com.dev.planton.gcp.gcprediscluster.v1alpha1B\fOutputsProtoP\x01ZYgithub.com/plantonhq/planton/catalog/gcp/gcprediscluster/v1alpha1;gcpredisclusterv1alpha1\xa2\x02\x04DPGG\xaa\x02(Dev.Planton.Gcp.Gcprediscluster.V1alpha1\xca\x02(Dev\\Planton\\Gcp\\Gcprediscluster\\V1alpha1\xe2\x024Dev\\Planton\\Gcp\\Gcprediscluster\\V1alpha1\\GPBMetadata\xea\x02,Dev::Planton::Gcp::Gcprediscluster::V1alpha1b\x06proto3"
 
 var (

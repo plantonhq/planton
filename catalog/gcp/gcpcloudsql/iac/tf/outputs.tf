@@ -33,6 +33,11 @@ output "dns_name" {
   value       = google_sql_database_instance.this.dns_name
 }
 
+output "socket_path" {
+  description = "Unix socket path (/cloudsql/project:region:instance) a workload connects through when Cloud Run or the Auth Proxy mounts the instance"
+  value       = "/cloudsql/${google_sql_database_instance.this.connection_name}"
+}
+
 output "psc_service_attachment_link" {
   description = "PSC service attachment consumers target with PSC endpoints (populated only when PSC is enabled)"
   value       = google_sql_database_instance.this.psc_service_attachment_link

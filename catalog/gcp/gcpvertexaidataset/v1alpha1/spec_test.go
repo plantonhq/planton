@@ -75,6 +75,19 @@ var _ = ginkgo.Describe("GcpVertexAiDatasetSpec", func() {
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
 
+	ginkgo.It("should accept each of Google's five dataset schemas and nothing else", func() {
+		for _, schema := range []string{"image", "text", "tabular", "video", "time_series"} {
+			msg := minimal()
+			msg.Spec.MetadataSchemaUri = "gs://google-cloud-aiplatform/schema/dataset/metadata/" + schema + "_1.0.0.yaml"
+			gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), schema)
+		}
+		msg := minimal()
+		msg.Spec.MetadataSchemaUri = "gs://google-cloud-aiplatform/schema/dataset/metadata/audio_1.0.0.yaml"
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "a schema Google does not publish")
+		msg.Spec.MetadataSchemaUri = "gs://my-bucket/schema/image_1.0.0.yaml"
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "a copy in another bucket")
+	})
+
 	ginkgo.It("should reject a display name over 128 characters", func() {
 		msg := minimal()
 		msg.Spec.DisplayName = strings.Repeat("d", 129)

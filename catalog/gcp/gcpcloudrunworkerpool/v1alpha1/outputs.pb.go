@@ -48,7 +48,17 @@ type GcpCloudRunWorkerPoolOutputs struct {
 	// rollout is complete.
 	ObservedGeneration string `protobuf:"bytes,8,opt,name=observed_generation,json=observedGeneration,proto3" json:"observed_generation,omitempty"`
 	// Opaque version token for optimistic concurrency on the API.
-	Etag          string `protobuf:"bytes,9,opt,name=etag,proto3" json:"etag,omitempty"`
+	Etag string `protobuf:"bytes,9,opt,name=etag,proto3" json:"etag,omitempty"`
+	// The pool's overall readiness: type "Ready", with state
+	// CONDITION_SUCCEEDED once the pool reaches its serving state. When a
+	// rollout fails, its message and reasons say why (an image that cannot
+	// be pulled, a container that never passes its startup probe), while
+	// latest_ready_revision still names the last revision that worked.
+	TerminalCondition *GcpCloudRunWorkerPoolCondition `protobuf:"bytes,10,opt,name=terminal_condition,json=terminalCondition,proto3" json:"terminal_condition,omitempty"`
+	// The conditions of the pool's sub-resources, in the order Google
+	// reports them: the extra diagnostics to read when terminal_condition
+	// is not CONDITION_SUCCEEDED. Empty when Google reports none.
+	Conditions    []*GcpCloudRunWorkerPoolCondition `protobuf:"bytes,11,rep,name=conditions,proto3" json:"conditions,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,11 +156,137 @@ func (x *GcpCloudRunWorkerPoolOutputs) GetEtag() string {
 	return ""
 }
 
+func (x *GcpCloudRunWorkerPoolOutputs) GetTerminalCondition() *GcpCloudRunWorkerPoolCondition {
+	if x != nil {
+		return x.TerminalCondition
+	}
+	return nil
+}
+
+func (x *GcpCloudRunWorkerPoolOutputs) GetConditions() []*GcpCloudRunWorkerPoolCondition {
+	if x != nil {
+		return x.Conditions
+	}
+	return nil
+}
+
+// GcpCloudRunWorkerPoolCondition is one status condition Cloud Run reports
+// for the worker pool, as Google returns it.
+type GcpCloudRunWorkerPoolCondition struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// What the condition reports, e.g. "Ready" for the pool as a whole.
+	Type string `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
+	// The condition's state: CONDITION_PENDING, CONDITION_RECONCILING,
+	// CONDITION_FAILED, or CONDITION_SUCCEEDED.
+	State string `protobuf:"bytes,2,opt,name=state,proto3" json:"state,omitempty"`
+	// Human-readable detail about the current state, the first thing to
+	// read when a rollout fails.
+	Message string `protobuf:"bytes,3,opt,name=message,proto3" json:"message,omitempty"`
+	// When the condition last changed state, as an RFC 3339 timestamp.
+	LastTransitionTime string `protobuf:"bytes,4,opt,name=last_transition_time,json=lastTransitionTime,proto3" json:"last_transition_time,omitempty"`
+	// How to read a failure of this condition: ERROR, WARNING, or INFO.
+	Severity string `protobuf:"bytes,5,opt,name=severity,proto3" json:"severity,omitempty"`
+	// The pool-level reason for the state, when Google gives one.
+	Reason string `protobuf:"bytes,6,opt,name=reason,proto3" json:"reason,omitempty"`
+	// The revision-level reason, when the condition is about a revision.
+	RevisionReason string `protobuf:"bytes,7,opt,name=revision_reason,json=revisionReason,proto3" json:"revision_reason,omitempty"`
+	// The execution-level reason, when the condition is about an execution.
+	ExecutionReason string `protobuf:"bytes,8,opt,name=execution_reason,json=executionReason,proto3" json:"execution_reason,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *GcpCloudRunWorkerPoolCondition) Reset() {
+	*x = GcpCloudRunWorkerPoolCondition{}
+	mi := &file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GcpCloudRunWorkerPoolCondition) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GcpCloudRunWorkerPoolCondition) ProtoMessage() {}
+
+func (x *GcpCloudRunWorkerPoolCondition) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GcpCloudRunWorkerPoolCondition.ProtoReflect.Descriptor instead.
+func (*GcpCloudRunWorkerPoolCondition) Descriptor() ([]byte, []int) {
+	return file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *GcpCloudRunWorkerPoolCondition) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+func (x *GcpCloudRunWorkerPoolCondition) GetState() string {
+	if x != nil {
+		return x.State
+	}
+	return ""
+}
+
+func (x *GcpCloudRunWorkerPoolCondition) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *GcpCloudRunWorkerPoolCondition) GetLastTransitionTime() string {
+	if x != nil {
+		return x.LastTransitionTime
+	}
+	return ""
+}
+
+func (x *GcpCloudRunWorkerPoolCondition) GetSeverity() string {
+	if x != nil {
+		return x.Severity
+	}
+	return ""
+}
+
+func (x *GcpCloudRunWorkerPoolCondition) GetReason() string {
+	if x != nil {
+		return x.Reason
+	}
+	return ""
+}
+
+func (x *GcpCloudRunWorkerPoolCondition) GetRevisionReason() string {
+	if x != nil {
+		return x.RevisionReason
+	}
+	return ""
+}
+
+func (x *GcpCloudRunWorkerPoolCondition) GetExecutionReason() string {
+	if x != nil {
+		return x.ExecutionReason
+	}
+	return ""
+}
+
 var File_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/gcp/gcpcloudrunworkerpool/v1alpha1/outputs.proto\x12.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1\"\xda\x02\n" +
+	"8catalog/gcp/gcpcloudrunworkerpool/v1alpha1/outputs.proto\x12.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1\"\xc9\x04\n" +
 	"\x1cGcpCloudRunWorkerPoolOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12(\n" +
 	"\x10worker_pool_name\x18\x02 \x01(\tR\x0eworkerPoolName\x12\x10\n" +
@@ -161,7 +297,21 @@ const file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto_rawDesc = ""
 	"\x17latest_created_revision\x18\x06 \x01(\tR\x15latestCreatedRevision\x122\n" +
 	"\x15latest_ready_revision\x18\a \x01(\tR\x13latestReadyRevision\x12/\n" +
 	"\x13observed_generation\x18\b \x01(\tR\x12observedGeneration\x12\x12\n" +
-	"\x04etag\x18\t \x01(\tR\x04etagB\x86\x03\n" +
+	"\x04etag\x18\t \x01(\tR\x04etag\x12}\n" +
+	"\x12terminal_condition\x18\n" +
+	" \x01(\v2N.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolConditionR\x11terminalCondition\x12n\n" +
+	"\n" +
+	"conditions\x18\v \x03(\v2N.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolConditionR\n" +
+	"conditions\"\x9e\x02\n" +
+	"\x1eGcpCloudRunWorkerPoolCondition\x12\x12\n" +
+	"\x04type\x18\x01 \x01(\tR\x04type\x12\x14\n" +
+	"\x05state\x18\x02 \x01(\tR\x05state\x12\x18\n" +
+	"\amessage\x18\x03 \x01(\tR\amessage\x120\n" +
+	"\x14last_transition_time\x18\x04 \x01(\tR\x12lastTransitionTime\x12\x1a\n" +
+	"\bseverity\x18\x05 \x01(\tR\bseverity\x12\x16\n" +
+	"\x06reason\x18\x06 \x01(\tR\x06reason\x12'\n" +
+	"\x0frevision_reason\x18\a \x01(\tR\x0erevisionReason\x12)\n" +
+	"\x10execution_reason\x18\b \x01(\tR\x0fexecutionReasonB\x86\x03\n" +
 	"2com.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1B\fOutputsProtoP\x01Zegithub.com/plantonhq/planton/catalog/gcp/gcpcloudrunworkerpool/v1alpha1;gcpcloudrunworkerpoolv1alpha1\xa2\x02\x04DPGG\xaa\x02.Dev.Planton.Gcp.Gcpcloudrunworkerpool.V1alpha1\xca\x02.Dev\\Planton\\Gcp\\Gcpcloudrunworkerpool\\V1alpha1\xe2\x02:Dev\\Planton\\Gcp\\Gcpcloudrunworkerpool\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Gcp::Gcpcloudrunworkerpool::V1alpha1b\x06proto3"
 
 var (
@@ -176,16 +326,19 @@ func file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto_rawDescGZIP()
 	return file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto_rawDescData
 }
 
-var file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCloudRunWorkerPoolOutputs)(nil), // 0: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolOutputs
+	(*GcpCloudRunWorkerPoolOutputs)(nil),   // 0: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolOutputs
+	(*GcpCloudRunWorkerPoolCondition)(nil), // 1: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolCondition
 }
 var file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	1, // 0: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolOutputs.terminal_condition:type_name -> dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolCondition
+	1, // 1: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolOutputs.conditions:type_name -> dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolCondition
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto_init() }
@@ -199,7 +352,7 @@ func file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto_rawDesc), len(file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

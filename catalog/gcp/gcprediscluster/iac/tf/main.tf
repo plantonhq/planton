@@ -27,11 +27,14 @@ resource "google_project_service" "networkconnectivity_api" {
 # the cluster only publishes service attachments and consumers register
 # their own forwarding rules through GcpRedisClusterEndpointSet.
 #
-# The immutables (ForceNew): name, region, authorization_mode,
-# transit_encryption_mode, zone_distribution_config, and the seed sources.
-# shard_count, replica_count, node_type, redis_configs, kms_key,
-# psc_configs, persistence, backups, maintenance, the replication role,
-# labels, and deletion protection all update in place.
+# The immutables (ForceNew, a change replaces the cluster): project, name,
+# region, authorization_mode, transit_encryption_mode, and the seed sources
+# (removing one counts as a change). zone_distribution_config is ForceNew
+# on the block only, not on mode or zone, so a changed value plans in
+# place, sends nothing, and re-plans on every deploy. shard_count,
+# replica_count, node_type, redis_configs, kms_key, psc_configs,
+# persistence, backups, maintenance, the replication role, labels, and
+# deletion protection all update in place.
 resource "google_redis_cluster" "this" {
   name        = local.cluster_name
   project     = local.project_id
@@ -59,9 +62,9 @@ resource "google_redis_cluster" "this" {
 
   kms_key = local.kms_key
 
-  # Self-service maintenance: a newer available version applies the update
-  # now instead of waiting for Google's rollout. Update-only and
-  # forward-only at the API.
+  # Self-service maintenance: requests an update of an existing cluster to
+  # a version from its available_maintenance_versions output, now instead
+  # of waiting for Google's rollout. Forward-only at the API.
   maintenance_version = local.maintenance_version
 
   # Shared Redis ACL policy attached by full resource name. Sent only when
@@ -74,8 +77,9 @@ resource "google_redis_cluster" "this" {
   deletion_protection_enabled = var.spec.deletion_protection_enabled
 
   # Client-side destroy behavior: DELETE (default), PREVENT, or ABANDON.
-  # Sent only when set so the provider default stays in charge otherwise;
-  # evaluated only after deletion_protection_enabled allows the destroy.
+  # Sent only when set so the provider default stays in charge otherwise.
+  # The provider decides PREVENT and ABANDON before calling Google, so
+  # deletion protection (Google's check) guards only a DELETE.
   deletion_policy = var.spec.deletion_policy != "" ? var.spec.deletion_policy : null
 
   labels = local.final_labels
@@ -114,7 +118,8 @@ resource "google_redis_cluster" "this" {
     }
   }
 
-  # Zone distribution (immutable).
+  # Zone distribution, fixed at creation (ForceNew is on the block only: a
+  # changed mode or zone plans in place and is never sent).
   dynamic "zone_distribution_config" {
     for_each = var.spec.zone_distribution_config != null ? [var.spec.zone_distribution_config] : []
     content {

@@ -402,7 +402,13 @@ type GcpGkeClusterSpec struct {
 	// Bring-your-own control-plane keys: customer-managed CAs for the
 	// cluster/etcd/aggregation trust domains and KMS keys for control-plane
 	// disk encryption and ServiceAccount JWT signing. For regulated
-	// environments that must own the entire trust chain. Immutable.
+	// environments that must own the entire trust chain. A change is sent
+	// as an in-place cluster update (the provider's desired user-managed
+	// keys), never a recreate: rotating the signing key means adding the
+	// new key version to service_account_signing_keys while the previous
+	// one stays in service_account_verification_keys, so tokens it signed
+	// keep verifying. Whether Google accepts a different CA pool on a
+	// running cluster is its call at update time.
 	UserManagedKeys *GcpGkeClusterUserManagedKeys `protobuf:"bytes,72,opt,name=user_managed_keys,json=userManagedKeys,proto3" json:"user_managed_keys,omitempty"`
 	// Rotation of Secret Manager secrets mounted through the built-in CSI
 	// add-on (requires enable_secret_manager_csi): re-fetch cadence for

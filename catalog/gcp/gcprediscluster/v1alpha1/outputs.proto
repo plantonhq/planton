@@ -21,7 +21,7 @@ message GcpRedisClusterOutputs {
   string uid = 2;
 
   // The cluster's lifecycle state at the end of provisioning: CREATING,
-  // READY, UPDATING, DELETING, or SUSPENDED.
+  // ACTIVE, UPDATING, or DELETING. ACTIVE is a cluster that serves.
   string state = 3;
 
   // IP address of the Google-placed discovery endpoint -- the address a
@@ -61,4 +61,9 @@ message GcpRedisClusterOutputs {
   // this cluster once automated backups are configured -- the source of
   // managed_backup_source paths for seeding new clusters.
   string backup_collection = 12;
+
+  // The maintenance versions this cluster can move to now, as Google lists
+  // them -- the values maintenance_version accepts for a self-service
+  // update. Empty when no newer version is available.
+  repeated string available_maintenance_versions = 13;
 }

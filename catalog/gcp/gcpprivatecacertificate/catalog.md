@@ -12,7 +12,7 @@ When you deploy this Infra Component, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** — an active connection in the Connect module with certificate permissions (`roles/privateca.certificateManager`) on the pool. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
+- **GCP Provider Connection** — an active connection in the Connect module with certificate permissions (`roles/privateca.certificateManager`) on the pool, plus `roles/privateca.templateUser` on the template when one is named. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Required Dependencies
@@ -88,6 +88,7 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 |--------|-------------|-----------------------|
 | `pem_certificate` | The signed certificate | A server's or load balancer's certificate, beside its private key |
 | `pem_certificate_chain` | The chain that verifies it | The intermediate chain served with the certificate |
+| `not_before_time` / `not_after_time` | The validity window (RFC 3339) | Renewal: issue a successor before `not_after_time` |
 
 ## Common Patterns
 

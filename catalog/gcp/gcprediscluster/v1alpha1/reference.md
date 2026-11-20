@@ -21,12 +21,23 @@ engine should be Valkey rather than Redis.
 
 Behavior an operator must know:
 
-  - Immutable after creation: cluster_name, region, authorization_mode,
-    transit_encryption_mode, zone_distribution_config, and the seed
-    sources (gcs_source / managed_backup_source). Everything else --
-    shard_count, replica_count, node_type, redis_configs, kms_key,
-    persistence, backups, maintenance, the replication role -- updates in
-    place; shard and replica changes resize the cluster without downtime.
+  - Immutable after creation: project_id, cluster_name, region,
+    authorization_mode, transit_encryption_mode, and the seed sources
+    (gcs_source / managed_backup_source) -- a change replaces the
+    cluster, and removing a seed source counts as a change.
+    zone_distribution_config is fixed too, but a change replaces nothing:
+    the provider plans it in place, sends nothing, and re-plans forever.
+    Everything else -- shard_count, replica_count, node_type,
+    redis_configs, kms_key, persistence, backups, maintenance, the
+    replication role -- updates in place; shard and replica changes
+    resize the cluster without downtime.
+
+  - Removing a block is not always turning it off. node_type,
+    server_ca_mode, persistence_config, zone_distribution_config, and
+    cross_cluster_replication_config keep Google's current value when
+    removed after creation; write the off-value instead (persistence mode
+    DISABLED, cluster_role NONE). maintenance_policy and
+    automated_backup_config clear when removed.
 
   - Connectivity is Private Service Connect only. With psc_configs set,
     service connectivity automation places the endpoints, and it acts
@@ -155,7 +166,7 @@ spec:
 
 The GCP project the cluster is created in: a literal project ID or a
 GcpProject reference. If omitted, the provider's default project is
-used.
+used. Immutable: a change replaces the cluster.
 
 - references: GcpProject (`status.outputs.project_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpProject, name: <that resource's name>, fieldPath: status.outputs.project_id}} -- a bare string does not parse
@@ -213,7 +224,9 @@ and the memory each shard holds:
   REDIS_STANDARD_LARGE   -- ~13 GB, balanced
   REDIS_HIGHMEM_XLARGE   -- ~58 GB
   REDIS_HIGHMEM_2XLARGE  -- ~116 GB
-If unset, Google picks REDIS_HIGHMEM_MEDIUM. Updates in place.
+If unset at creation, Google picks REDIS_HIGHMEM_MEDIUM; removing it
+later keeps the current type (write the type you want instead).
+Updates in place.
 
 - rule: node_type must be one of: REDIS_SHARED_CORE_NANO, REDIS_STANDARD_SMALL, REDIS_HIGHCPU_MEDIUM, REDIS_HIGHMEM_MEDIUM, REDIS_STANDARD_LARGE, REDIS_HIGHMEM_XLARGE, REDIS_HIGHMEM_2XLARGE
 
@@ -259,8 +272,11 @@ How clients authenticate:
                         network is the boundary)
   AUTH_MODE_IAM_AUTH -- clients present an IAM access token as the
                         Redis password; access is governed by IAM
-Immutable. Sent explicitly on both engines so the choice never
-depends on a provider default.
+Fixed at creation by the provider, which replaces the cluster on a
+change; Google itself does not mark it immutable. Both engines send it
+explicitly, and a blank sends AUTH_MODE_DISABLED -- so removing the
+field from an IAM cluster plans a replacement with an unauthenticated
+cluster.
 
 - rule: authorization_mode must be AUTH_MODE_DISABLED or AUTH_MODE_IAM_AUTH
 
@@ -274,7 +290,11 @@ TLS for client connections:
   TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION -- TLS; clients verify
                                                    the server's
                                                    certificate
-Immutable. Sent explicitly on both engines.
+Fixed at creation by the provider, which replaces the cluster on a
+change; Google itself does not mark it immutable. Both engines send it
+explicitly, and a blank sends TRANSIT_ENCRYPTION_MODE_DISABLED -- so
+removing the field from a TLS cluster plans a replacement with a
+plaintext cluster.
 
 - rule: transit_encryption_mode must be TRANSIT_ENCRYPTION_MODE_DISABLED or TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION
 
@@ -296,6 +316,8 @@ on:
                                                    Authority Service
                                                    (server_ca_pool)
 Meaningful only with TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION.
+Removing it after creation keeps the current mode; there is no way back
+to "Google's choice", so write the mode you want.
 
 - rule: server_ca_mode must be SERVER_CA_MODE_GOOGLE_MANAGED_PER_INSTANCE_CA, SERVER_CA_MODE_GOOGLE_MANAGED_SHARED_CA, or SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA
 
@@ -309,7 +331,7 @@ GcpPrivateCaPool reference (its full name) or a literal
 projects/{project}/locations/{region}/caPools/{pool}.
 
 - references: GcpPrivateCaPool (`status.outputs.name`)
-- rule: a literal server_ca_pool must be projects/{project}/locations/{region}/caPools/{pool}
+- rule: A literal CA pool must be its full name, projects/{project}/locations/{region}/caPools/{pool}. Write the full name, or reference a GcpPrivateCaPool.
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpPrivateCaPool, name: <that resource's name>, fieldPath: status.outputs.name}} -- a bare string does not parse
 
 ### spec.kmsKey
@@ -329,7 +351,9 @@ Google-managed keys encrypt the data.
 
 `GcpRedisClusterPersistenceConfig`
 
-Whether and how data survives a restart. Unset means in-memory only.
+Whether and how data survives a restart. Unset at creation means
+in-memory only. Removing the block later keeps Google's current mode:
+write mode DISABLED to turn persistence off.
 
 - rule: rdb_config is only set when mode is RDB
 - rule: aof_config is only set when mode is AOF
@@ -349,7 +373,10 @@ Persistence mode:
 
 `GcpRedisClusterRdbConfig`
 
-Snapshot schedule. Only meaningful when mode is RDB.
+Snapshot schedule. Only meaningful when mode is RDB. Write the block
+in full when switching to RDB: a field left out keeps Google's current
+value. The snapshot anchor (rdb_snapshot_start_time), once set, cannot
+be cleared.
 
 ### spec.persistenceConfig.rdbConfig.rdbSnapshotPeriod
 
@@ -372,7 +399,9 @@ unset, Google anchors the schedule at creation.
 
 `GcpRedisClusterAofConfig`
 
-Flush policy. Only meaningful when mode is AOF.
+Flush policy. Only meaningful when mode is AOF. Write the block in
+full when switching to AOF: a field left out keeps Google's current
+value (write append_fsync EVERYSEC to return to Google's default).
 
 ### spec.persistenceConfig.aofConfig.appendFsync
 
@@ -390,7 +419,9 @@ How often the AOF buffer is flushed to disk (Redis appendfsync):
 `GcpRedisClusterZoneDistributionConfig`
 
 How nodes spread across the region's zones. Unset means MULTI_ZONE.
-Immutable.
+Fixed at creation: the provider plans a change in place and sends
+nothing, so a changed value re-plans on every deploy. A different
+distribution is a new cluster.
 
 - rule: zone is required when mode is SINGLE_ZONE
 - rule: zone is only set when mode is SINGLE_ZONE
@@ -418,7 +449,7 @@ SINGLE_ZONE; must be empty for MULTI_ZONE.
 `GcpRedisClusterMaintenancePolicy`
 
 The weekly window Google may apply maintenance in. Unset lets Google
-choose.
+choose; removing the block clears the window and Google picks again.
 
 ### spec.maintenancePolicy.weeklyMaintenanceWindow
 
@@ -450,7 +481,7 @@ Hour of day (0-23, UTC) the one-hour window starts.
 
 Daily backups into the cluster's managed backup collection. Unset
 means no automated backups (on-demand backups stay available through
-the console and gcloud).
+the console and gcloud); removing the block stops automated backups.
 
 ### spec.automatedBackupConfig.startHour
 
@@ -475,8 +506,10 @@ How long backups are kept, as a seconds duration between one day
 
 Cross-region disaster recovery: make this cluster a PRIMARY that
 replicates to secondaries in other regions, or a SECONDARY that
-replicates from a primary. Unset (or role NONE) is a standalone
-cluster.
+replicates from a primary. Unset at creation (or role NONE) is a
+standalone cluster. Removing the block later keeps the role Google
+holds: write cluster_role NONE, with no primary or secondaries, to
+leave a pair.
 
 - rule: a SECONDARY cluster must name its primary through primary_cluster
 - rule: primary_cluster is only set when cluster_role is SECONDARY
@@ -535,7 +568,8 @@ reference resolves to another GcpRedisCluster's name output.
 `GcpRedisClusterGcsSource`
 
 Seed the new cluster from RDB files in Cloud Storage at creation.
-Mutually exclusive with managed_backup_source. Immutable.
+Mutually exclusive with managed_backup_source. Immutable: keep the
+block for the cluster's life, since removing it replaces the cluster.
 
 ### spec.gcsSource.uris
 
@@ -551,7 +585,8 @@ Memorystore service agent needs read access to the objects.
 `GcpRedisClusterManagedBackupSource`
 
 Seed the new cluster from a managed backup at creation. Mutually
-exclusive with gcs_source. Immutable.
+exclusive with gcs_source. Immutable: keep the block for the cluster's
+life, since removing it replaces the cluster.
 
 ### spec.managedBackupSource.backup
 
@@ -576,9 +611,13 @@ attribution labels (platform keys win on conflict).
 `bool` · optional (explicit presence)
 
 Whether deletion protection is on. Defaults to true (Google's own
-posture): destroying the cluster fails until this is set to false.
-Both engines send the value explicitly so a manifest that never
-mentions it behaves the same everywhere. Updates in place.
+posture). Google enforces it, so it guards only a DELETE destroy: under
+deletion_policy DELETE a destroy fails until this is set to false and
+that change is applied on its own first (a change made in the same
+destroy run never reaches Google). PREVENT and ABANDON are decided
+before Google is called, so protection never stops an ABANDON. Both
+engines send the value explicitly so a manifest that never mentions it
+behaves the same everywhere. Updates in place.
 
 - default: `true`
 
@@ -586,10 +625,11 @@ mentions it behaves the same everywhere. Updates in place.
 
 `string`
 
-Self-service maintenance: setting this to a newer version from the
-cluster's available maintenance versions applies the update on your
-schedule instead of waiting for Google's rollout. Update-only and
-forward-only; leave unset to follow Google's rollout.
+Self-service maintenance: used only to request an update on an
+existing cluster, to a version chosen from the
+available_maintenance_versions output. Setting it applies that update
+on your schedule instead of waiting for Google's rollout. Forward-only;
+leave unset at creation and to follow Google's rollout.
 
 ### spec.aclPolicy
 
@@ -603,19 +643,22 @@ empty for the built-in default ACL. Updates in place; the cluster's
 is_acl_policy_in_sync status reports when the rules have reached
 every node.
 
-- rule: acl_policy must be empty or a full resource name of the form projects/{project}/locations/{region}/aclPolicies/{policy}
+- rule: An ACL policy must be its full name, projects/{project}/locations/{region}/aclPolicies/{policy}. Write the full name, or leave it empty for the built-in default ACL.
 
 ### spec.deletionPolicy
 
 `string`
 
-What happens to the cluster when this resource is destroyed
-(evaluated after deletion_protection_enabled allows the destroy):
+What happens to the cluster when this resource is destroyed. PREVENT
+and ABANDON are decided before Google is called; deletion protection
+applies only to DELETE, and must be turned off and applied before a
+DELETE destroy can succeed:
   "" / "DELETE" -- the cluster is deleted and its data lost
   "PREVENT"     -- destroy fails; a second guard for a cache whose
                    loss would stampede the backing store
   "ABANDON"     -- the cluster leaves management but keeps running
-                   (and billing) in GCP
+                   (and billing) in GCP, even with deletion protection
+                   on
 
 - rule: deletion_policy must be one of: DELETE, PREVENT, ABANDON
 
@@ -633,7 +676,7 @@ Reference an output from another manifest as `valueFrom: {kind: GcpRedisCluster,
 |---|---|---|
 | `status.outputs.name` | `string` | Full resource path of the cluster (projects/{project}/locations/{region}/clusters/{cluster}). The composition key: a SECONDARY's primary_cluster reference and a GcpRedisClusterEndpointSet's cluster reference resolve to it. |
 | `status.outputs.uid` | `string` | Server-generated unique identifier, stable across updates. |
-| `status.outputs.state` | `string` | The cluster's lifecycle state at the end of provisioning: CREATING, READY, UPDATING, DELETING, or SUSPENDED. |
+| `status.outputs.state` | `string` | The cluster's lifecycle state at the end of provisioning: CREATING, ACTIVE, UPDATING, or DELETING. ACTIVE is a cluster that serves. |
 | `status.outputs.discovery_endpoint_address` | `string` | IP address of the Google-placed discovery endpoint -- the address a Cluster-protocol client bootstraps from. Empty when psc_configs is unset (consumers build their own endpoints). |
 | `status.outputs.discovery_endpoint_port` | `int32` | Port of the discovery endpoint (6379 unless configured otherwise). 0 when psc_configs is unset. |
 | `status.outputs.discovery_service_attachment` | `string` | Service attachment a consumer's own forwarding rule targets to reach the DISCOVERY endpoint (projects/{project}/regions/{region}/serviceAttachments/{id}). The handle GcpRedisClusterEndpointSet registers a discovery connection against. |
@@ -643,6 +686,7 @@ Reference an output from another manifest as `valueFrom: {kind: GcpRedisCluster,
 | `status.outputs.shard_count` | `int32` | The shard count in effect after provisioning. |
 | `status.outputs.replica_count` | `int32` | The replica count per shard in effect after provisioning. |
 | `status.outputs.backup_collection` | `string` | Full resource path of the managed backup collection Google keeps for this cluster once automated backups are configured -- the source of managed_backup_source paths for seeding new clusters. |
+| `status.outputs.available_maintenance_versions` | `[]string` | The maintenance versions this cluster can move to now, as Google lists them -- the values maintenance_version accepts for a self-service update. Empty when no newer version is available. |
 
 ## References
 

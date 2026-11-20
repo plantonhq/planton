@@ -275,11 +275,12 @@ resources:
           anti-pattern.
       - arg: node_config
         reason: >-
-          The default pool's node configuration is deliberately not
-          modeled: the module removes the API-mandated default node pool
-          at create time on Standard clusters, so this block would
-          configure nodes that never survive creation. Node configuration
-          lives on GcpGkeNodePool.
+          Module-fixed, not modeled: on Standard clusters it configures
+          only the API-mandated default pool, which the module removes at
+          create time, so the module boots that pool from a pd-standard
+          disk (GKE's default pd-balanced boot disks exceed a new project's
+          regional SSD quota on a regional cluster) and ignores the block
+          after create. Node configuration lives on GcpGkeNodePool.
       - arg: initial_node_count
         reason: >-
           Module-fixed to 1: the API requires a default pool at create

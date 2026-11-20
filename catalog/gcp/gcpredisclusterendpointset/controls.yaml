@@ -74,7 +74,7 @@ spec:
       field_path: deletion_policy
       evidence:
         type: spec_default
-        reference: Empty defaults to DELETE -- the connections are deregistered and every consumer reaching the cluster through them loses its path at once; PREVENT makes destroy fail; ABANDON unmanages the registration while it keeps working.
+        reference: Empty defaults to DELETE -- every user-created connection on the cluster is deregistered, including any this set did not declare, and every consumer reaching the cluster through them loses its path at once; PREVENT makes destroy fail; ABANDON unmanages the registration while it keeps working.
       notes: PREVENT is the guard for a cluster other VPCs depend on; removing one endpoint from the list is the surgical alternative to deleting the set.
     - control_id: managed-patching
       status: not_applicable

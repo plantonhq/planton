@@ -20,11 +20,18 @@ consumer VPC one reserved GcpAddress and one regional
 GcpGlobalForwardingRule per service attachment (empty scheme, the
 attachment handle as target), then this set naming every rule. Google
 replaces the cluster's whole user-created endpoint list with this set on
-every apply, so declare exactly one set per cluster and list every
-consumer network in it. Removing a connection here stops the matching
-forwarding rule from working; delete the rule in the same change.
+every apply -- creating the set also replaces any connections already
+registered on the cluster -- so declare exactly one set per cluster and
+list every consumer network in it. Removing a connection here stops the
+matching forwarding rule from working; delete the rule in the same
+change.
 
-Only the project is immutable; the set updates in place.
+The project, the cluster, and the region are fixed. A change to the
+project replaces the set; a change to the cluster or the region is
+planned in place but sends nothing, so the old cluster keeps its
+registration. A set on another cluster is a new set: destroy this one,
+which deregisters it, and declare the next. The endpoints update in
+place.
 
 ## Example
 
@@ -137,7 +144,9 @@ used.
 The cluster the connections belong to. A GcpRedisCluster reference
 resolves to its full resource path (name output); a literal takes
 either the full path or the bare cluster name. The modules derive the
-bare name Google's resource expects.
+bare name Google's resource expects. Fixed: a changed cluster is
+planned in place and never sent, so a set on another cluster is a new
+set.
 
 - references: GcpRedisCluster (`status.outputs.name`)
 - rule: {"required":true}
@@ -147,7 +156,8 @@ bare name Google's resource expects.
 
 `string` · required
 
-The cluster's region (e.g. "us-central1").
+The cluster's region (e.g. "us-central1"). Fixed: a changed region is
+planned in place and never sent.
 
 - rule: {"required":true,"string":{"pattern":"^[a-z]+-[a-z]+[0-9]+$"}}
 
@@ -251,8 +261,10 @@ the rule lives in a different project than the cluster.
 `string`
 
 What happens to the registration when this resource is destroyed:
-  "" / "DELETE" -- the connections are deregistered (the forwarding
-                   rules themselves belong to their own blocks)
+  "" / "DELETE" -- every user-created connection on the cluster is
+                   deregistered, including any this set did not
+                   declare (the forwarding rules themselves belong to
+                   their own blocks)
   "PREVENT"     -- destroy fails
   "ABANDON"     -- the registration leaves management but stays on
                    the cluster
@@ -266,8 +278,8 @@ Reference an output from another manifest as `valueFrom: {kind: GcpRedisClusterE
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.cluster_name` | `string` | Bare name of the cluster the connections were registered on -- the segment Google's resource is keyed by. |
-| `status.outputs.endpoint_count` | `int32` | Number of consumer-network endpoints registered (one per VPC). |
-| `status.outputs.connection_count` | `int32` | Number of individual PSC connections registered across every endpoint. |
+| `status.outputs.endpoint_count` | `int32` | Number of consumer-network endpoints registered (one per VPC), counted from the spec's endpoints list, not read back from Google. |
+| `status.outputs.connection_count` | `int32` | Number of individual PSC connections registered across every endpoint, counted from the spec, not read back from Google. |
 | `status.outputs.region` | `string` | The cluster's region -- with cluster_name, what rebuilds the cluster's full resource path. |
 
 ## References

@@ -122,6 +122,23 @@ func persistentResource(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Pr
 	ctx.Export(OpPersistentResourceId, createdResource.Name)
 	ctx.Export(OpLocation, createdResource.Location.Elem())
 	ctx.Export(OpState, createdResource.State)
+	// Google's error as one structured output, code 0 and an empty message
+	// while there is none; the outputs transformer flattens it onto the
+	// error message by dotted keys.
+	ctx.Export(OpError, createdResource.Errors.ApplyT(
+		func(errs []vertex.AiPersistentResourceError) map[string]interface{} {
+			out := map[string]interface{}{"code": 0, "message": ""}
+			if len(errs) == 0 {
+				return out
+			}
+			if errs[0].Code != nil {
+				out["code"] = *errs[0].Code
+			}
+			if errs[0].Message != nil {
+				out["message"] = *errs[0].Message
+			}
+			return out
+		}))
 	return nil
 }
 

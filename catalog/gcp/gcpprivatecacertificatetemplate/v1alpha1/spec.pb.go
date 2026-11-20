@@ -34,8 +34,10 @@ type GcpPrivateCaCertificateTemplateX509Parameters struct {
 	// groups are optional and an empty group states nothing.
 	KeyUsage *GcpPrivateCaCertificateTemplateKeyUsage `protobuf:"bytes,1,opt,name=key_usage,json=keyUsage,proto3" json:"key_usage,omitempty"`
 	// The basic constraints extension: whether the certificate is a CA and
-	// how many CA levels may sit below it. Omit to leave the extension to
-	// Google's default (for a leaf certificate, is_ca false).
+	// how many CA levels may sit below it. Omitting the block sends no basic
+	// constraints at all, leaving the extension to the pool and the request.
+	// A block with is_ca unset is a different request: the block is sent
+	// without a CA flag.
 	CaOptions *GcpPrivateCaCertificateTemplateCaOptions `protobuf:"bytes,2,opt,name=ca_options,json=caOptions,proto3" json:"ca_options,omitempty"`
 	// Certificate policy object identifiers (RFC 5280 section 4.2.1.4), each
 	// an OID path such as [2, 23, 140, 1, 2, 1] (CA/Browser Forum
@@ -410,12 +412,12 @@ func (x *GcpPrivateCaCertificateTemplateExtendedKeyUsage) GetOcspSigning() bool 
 }
 
 // GcpPrivateCaCertificateTemplateCaOptions is the basic constraints extension (RFC 5280 section
-// 4.2.1.9). Both fields are presence-based: an unset field is left out of
-// the certificate, which is different from setting it to false or 0.
+// 4.2.1.9). Both fields are presence-based: an unset field is sent as
+// absent, which is different from setting it to false or 0.
 type GcpPrivateCaCertificateTemplateCaOptions struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// true makes a CA certificate (CA:TRUE), false states CA:FALSE; unset
-	// leaves the CA flag out of the extension.
+	// sends the block without a CA flag.
 	IsCa *bool `protobuf:"varint,1,opt,name=is_ca,json=isCa,proto3,oneof" json:"is_ca,omitempty"`
 	// The path length constraint: how many CA levels may sit below this
 	// certificate. 0 means it may sign only leaf certificates -- a
@@ -778,7 +780,8 @@ func (x *GcpPrivateCaCertificateTemplateIdentityConstraints) GetCelExpression() 
 // (Google's Expr); see Google's CA Service CEL guide for the variables.
 type GcpPrivateCaCertificateTemplateCelExpression struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The expression.
+	// The expression. Required when the block is set: an empty expression
+	// constrains nothing.
 	Expression string `protobuf:"bytes,1,opt,name=expression,proto3" json:"expression,omitempty"`
 	// A short title for the expression.
 	Title string `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
@@ -1110,10 +1113,10 @@ const file_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_spec_proto_rawDe
 	"2GcpPrivateCaCertificateTemplateIdentityConstraints\x12:\n" +
 	"\x19allow_subject_passthrough\x18\x01 \x01(\bR\x17allowSubjectPassthrough\x12L\n" +
 	"#allow_subject_alt_names_passthrough\x18\x02 \x01(\bR\x1fallowSubjectAltNamesPassthrough\x12\x8d\x01\n" +
-	"\x0ecel_expression\x18\x03 \x01(\v2f.dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateCelExpressionR\rcelExpression\"\xa2\x01\n" +
-	",GcpPrivateCaCertificateTemplateCelExpression\x12\x1e\n" +
+	"\x0ecel_expression\x18\x03 \x01(\v2f.dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateCelExpressionR\rcelExpression\"\xab\x01\n" +
+	",GcpPrivateCaCertificateTemplateCelExpression\x12'\n" +
 	"\n" +
-	"expression\x18\x01 \x01(\tR\n" +
+	"expression\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\n" +
 	"expression\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x1a\n" +

@@ -9,4 +9,5 @@ const (
 	OpPublicEndpointDomainName = "public_endpoint_domain_name"
 	OpServiceAttachment        = "service_attachment"
 	OpFeatureViewNames         = "feature_view_names"
+	OpState                    = "state"
 )

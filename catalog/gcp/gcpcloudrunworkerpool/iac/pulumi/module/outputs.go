@@ -12,4 +12,6 @@ const (
 	OpLatestReadyRevision   = "latest_ready_revision"
 	OpObservedGeneration    = "observed_generation"
 	OpEtag                  = "etag"
+	OpTerminalCondition     = "terminal_condition"
+	OpConditions            = "conditions"
 )

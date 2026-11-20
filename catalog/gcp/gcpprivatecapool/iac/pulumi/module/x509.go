@@ -53,9 +53,13 @@ func x509Parameters(p *gcpprivatecapoolv1alpha1.GcpPrivateCaPoolX509Parameters) 
 
 // caOptions maps the presence-based basic constraints onto the provider's
 // flags. A path length of 0 is sent through zero_max_issuer_path_length,
-// because the provider reads a plain 0 as unset.
+// because the provider reads a plain 0 as unset. Baseline values without CA
+// options send the block empty, which states nothing.
 func caOptions(o *gcpprivatecapoolv1alpha1.GcpPrivateCaPoolCaOptions) *certificateauthority.CaPoolIssuancePolicyBaselineValuesCaOptionsArgs {
 	args := &certificateauthority.CaPoolIssuancePolicyBaselineValuesCaOptionsArgs{}
+	if o == nil {
+		return args
+	}
 	// Unset is_ca omits the CA flag; false is sent with non_ca, the
 	// provider's way to state CA:FALSE rather than leave it out.
 	if o.IsCa != nil {

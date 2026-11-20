@@ -41,6 +41,28 @@ func TestLaneAdmissionForFixedAndTokenizedNames(t *testing.T) {
 	}
 }
 
+// A document that names nothing, and says so with a reason, does not send its
+// kind to run alone; the marker with no reason does not count.
+func TestLaneAdmissionForADocumentThatNamesNothing(t *testing.T) {
+	marked := writeScenario(t, "apiVersion: gcp.planton.dev/v1\nkind: GcpNoSuchKind\nmetadata:\n  name: x\n  annotations:\n    planton.dev/e2e-names-nothing: \"a peering on the run-scoped network\"\nspec:\n  network: ref\n")
+	admission, err := LaneAdmissionFor(t.TempDir(), "gcp", "gcpnosuchkind", []string{marked})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if admission.Alone != "" {
+		t.Fatalf("Alone = %q, want side by side for a document that names nothing", admission.Alone)
+	}
+
+	unexplained := writeScenario(t, "apiVersion: gcp.planton.dev/v1\nkind: GcpNoSuchKind\nmetadata:\n  name: x\n  annotations:\n    planton.dev/e2e-names-nothing: \"\"\nspec:\n  network: ref\n")
+	admission, err = LaneAdmissionFor(t.TempDir(), "gcp", "gcpnosuchkind", []string{unexplained})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if admission.Alone == "" {
+		t.Fatal("a names-nothing marker without a reason let the kind run side by side")
+	}
+}
+
 // The check reads the real prerequisite chain: a catalog scenario whose own
 // documents name fixed resources runs alone.
 func TestLaneAdmissionForAFixedCatalogScenario(t *testing.T) {
@@ -121,6 +143,36 @@ func TestLaneSchedulerBoundsAloneAndClasses(t *testing.T) {
 	}
 	if aloneSawOthers.Load() {
 		t.Fatal("the alone kind ran while others were running")
+	}
+}
+
+// A kind waiting on a class holds no slot: with one kind running its class
+// and others queued behind it, a kind outside the class is admitted at once
+// rather than after the queue.
+func TestLaneSchedulerClassWaitersHoldNoSlot(t *testing.T) {
+	scheduler := NewLaneScheduler(2)
+	const classHold = 400 * time.Millisecond
+	var freeWaited time.Duration
+	t.Run("group", func(t *testing.T) {
+		for i := 0; i < 3; i++ {
+			t.Run("one-class", func(t *testing.T) {
+				release := scheduler.Admit(t, LaneAdmission{Classes: []string{"project-vcpus"}})
+				defer release()
+				time.Sleep(classHold)
+			})
+		}
+		t.Run("free", func(t *testing.T) {
+			// Arrive after the class kinds have queued, so every free slot a
+			// waiting class kind could take is already taken.
+			time.Sleep(50 * time.Millisecond)
+			asked := time.Now()
+			release := scheduler.Admit(t, LaneAdmission{})
+			defer release()
+			freeWaited = time.Since(asked)
+		})
+	})
+	if freeWaited >= classHold/2 {
+		t.Fatalf("the unclassed kind waited %s for a slot while kinds queued on a class held the free ones", freeWaited)
 	}
 }
 

@@ -15,7 +15,7 @@ spec:
     - field_path: certificate_id
       sku_meter: certificate fee
       pricing_unit: certificates
-      impact: A new ID (or any change to an immutable field) issues and bills a new certificate; the old one is revoked, not refunded.
+      impact: Every certificate issued bills once, a successor declared under a new ID included; removing the old one revokes it, with no refund.
   estimate_exclusions:
     - the signing authority's monthly fee bills under GcpPrivateCaCertificateAuthority
     - the volume tier a certificate lands in depends on every certificate the billing account issued that month

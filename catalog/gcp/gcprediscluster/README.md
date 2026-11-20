@@ -65,26 +65,26 @@ planton apply -f redis-cluster.yaml
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
-| `projectId` | `StringValueOrRef` | provider project | The project. |
+| `projectId` | `StringValueOrRef` | provider project | The project. Immutable. |
 | `clusterName` | `string` | `metadata.name` | Name in GCP. Immutable. |
 | `replicaCount` | `int32` | `0` | Replicas per shard (0-5). Resizes in place. |
-| `nodeType` | `string` | Google's default (`REDIS_HIGHMEM_MEDIUM`) | `REDIS_SHARED_CORE_NANO`, `REDIS_STANDARD_SMALL`, `REDIS_HIGHCPU_MEDIUM`, `REDIS_HIGHMEM_MEDIUM`, `REDIS_STANDARD_LARGE`, `REDIS_HIGHMEM_XLARGE`, `REDIS_HIGHMEM_2XLARGE`. |
+| `nodeType` | `string` | Google's default (`REDIS_HIGHMEM_MEDIUM`) | `REDIS_SHARED_CORE_NANO`, `REDIS_STANDARD_SMALL`, `REDIS_HIGHCPU_MEDIUM`, `REDIS_HIGHMEM_MEDIUM`, `REDIS_STANDARD_LARGE`, `REDIS_HIGHMEM_XLARGE`, `REDIS_HIGHMEM_2XLARGE`. Removing it later keeps the current type. |
 | `redisConfigs` | `map<string,string>` | — | Native Redis parameters from Google's supported subset. |
 | `pscConfigs` | `[]object` | — | At most one consumer network for Google-placed endpoints (`GcpVpcNetwork` reference). Empty publishes service attachments only. |
-| `authorizationMode` | `string` | `AUTH_MODE_DISABLED` | Or `AUTH_MODE_IAM_AUTH`. Immutable; always sent explicitly. |
-| `transitEncryptionMode` | `string` | `TRANSIT_ENCRYPTION_MODE_DISABLED` | Or `TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION`. Immutable; always sent explicitly. |
+| `authorizationMode` | `string` | `AUTH_MODE_DISABLED` | Or `AUTH_MODE_IAM_AUTH`. Immutable (the provider replaces the cluster on a change); always sent explicitly, so removing it from an IAM cluster plans a replacement. |
+| `transitEncryptionMode` | `string` | `TRANSIT_ENCRYPTION_MODE_DISABLED` | Or `TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION`. Immutable (the provider replaces the cluster on a change); always sent explicitly, so removing it from a TLS cluster plans a replacement. |
 | `serverCaMode` | `string` | Google's default | Which CA signs the server certificate under TLS: `SERVER_CA_MODE_GOOGLE_MANAGED_PER_INSTANCE_CA`, `SERVER_CA_MODE_GOOGLE_MANAGED_SHARED_CA`, `SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA`. |
 | `serverCaPool` | `StringValueOrRef` | — | CA pool for `SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA`: a `GcpPrivateCaPool` reference or its full name. |
 | `kmsKey` | `StringValueOrRef` | Google-managed | CMEK for data at rest (`GcpKmsKey` reference). |
-| `persistenceConfig` | `object` | in-memory only | `mode` `DISABLED`/`RDB`/`AOF` with `rdbConfig` or `aofConfig`. |
-| `zoneDistributionConfig` | `object` | `MULTI_ZONE` | `SINGLE_ZONE` with a `zone`. Immutable. |
-| `maintenancePolicy` | `object` | Google chooses | `weeklyMaintenanceWindow.day` and `.hour` (UTC, on the hour). |
-| `automatedBackupConfig` | `object` | none | Daily backups at `startHour` kept for `retention` (`"86400s"`-`"31536000s"`). |
-| `crossClusterReplicationConfig` | `object` | none | `clusterRole` `PRIMARY` with `secondaryClusters`, or `SECONDARY` with `primaryCluster` (`GcpRedisCluster` references). |
-| `gcsSource` / `managedBackupSource` | `object` | — | Seed at creation from RDB files or a managed backup (exactly one). Immutable. |
+| `persistenceConfig` | `object` | in-memory only | `mode` `DISABLED`/`RDB`/`AOF` with `rdbConfig` or `aofConfig`. Removing the block keeps Google's mode: write `mode: DISABLED` to turn persistence off. |
+| `zoneDistributionConfig` | `object` | `MULTI_ZONE` | `SINGLE_ZONE` with a `zone`. Fixed at creation: a change is planned in place, never sent, and re-planned on every deploy. |
+| `maintenancePolicy` | `object` | Google chooses | `weeklyMaintenanceWindow.day` and `.hour` (UTC, on the hour). Removing it lets Google choose again. |
+| `automatedBackupConfig` | `object` | none | Daily backups at `startHour` kept for `retention` (`"86400s"`-`"31536000s"`). Removing it stops automated backups. |
+| `crossClusterReplicationConfig` | `object` | none | `clusterRole` `PRIMARY` with `secondaryClusters`, or `SECONDARY` with `primaryCluster` (`GcpRedisCluster` references). Leave a pair with `clusterRole: NONE`; removing the block keeps the role. |
+| `gcsSource` / `managedBackupSource` | `object` | — | Seed at creation from RDB files or a managed backup (exactly one). Immutable; keep it for the cluster's life, since removing it replaces the cluster. |
 | `labels` | `map<string,string>` | — | Merged beneath Planton's attribution labels. |
-| `deletionProtectionEnabled` | `bool` | `true` | Destroy fails until set to `false`. Always sent explicitly. |
-| `maintenanceVersion` | `string` | Google's rollout | Self-service maintenance to a newer available version. Update-only. |
+| `deletionProtectionEnabled` | `bool` | `true` | A `DELETE` destroy fails until this is set to `false` and applied. `PREVENT` and `ABANDON` are decided before Google is called, so protection never stops an `ABANDON`. Always sent explicitly. |
+| `maintenanceVersion` | `string` | Google's rollout | Requests a self-service update of an existing cluster to a version from `available_maintenance_versions`. Leave unset at creation. |
 | `aclPolicy` | `string` | built-in default ACL | A Redis Cluster ACL policy's full resource name. |
 | `deletionPolicy` | `string` | `DELETE` | `DELETE`, `PREVENT`, or `ABANDON`. |
 
@@ -101,12 +101,13 @@ planton apply -f redis-cluster.yaml
 |--------|------|-------------|
 | `name` | `string` | Full resource path -- the composition key |
 | `uid` | `string` | Server-generated identifier |
-| `state` | `string` | `CREATING`, `READY`, `UPDATING`, `DELETING`, `SUSPENDED` |
+| `state` | `string` | `CREATING`, `ACTIVE`, `UPDATING`, or `DELETING` |
 | `discovery_endpoint_address` / `discovery_endpoint_port` | `string` / `int32` | The Google-placed discovery endpoint (empty without `pscConfigs`) |
 | `discovery_service_attachment` / `primary_service_attachment` / `reader_service_attachment` | `string` | The service attachments a consumer's own forwarding rules target (reader empty without replicas) |
 | `size_gb` | `int32` | Redis memory across the cluster |
 | `shard_count` / `replica_count` | `int32` | The counts in effect |
 | `backup_collection` | `string` | Where managed backups live |
+| `available_maintenance_versions` | `[]string` | The versions `maintenanceVersion` accepts now (empty when none is newer) |
 
 ## Deployment Methods
 
@@ -120,7 +121,9 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 ## Important Notes
 
-- **Immutable after creation:** `clusterName`, `region`, `authorizationMode`, `transitEncryptionMode`, `zoneDistributionConfig`, and the seed sources. Everything else updates in place; shard and replica changes resize without downtime.
+- **Immutable after creation:** `projectId`, `clusterName`, `region`, `authorizationMode`, `transitEncryptionMode`, and the seed sources: a change replaces the cluster, and so does removing a seed source. `zoneDistributionConfig` is fixed too, but a change is planned in place and never sent, so it re-plans on every deploy. Everything else updates in place; shard and replica changes resize without downtime.
+- **Removing a block is not always turning it off.** `nodeType`, `serverCaMode`, `persistenceConfig`, and `crossClusterReplicationConfig` keep Google's current value when removed; write `mode: DISABLED` or `clusterRole: NONE` instead. `maintenancePolicy` and `automatedBackupConfig` clear when removed.
+- **Deletion protection guards only `DELETE`.** `PREVENT` fails a destroy before Google is called; `ABANDON` succeeds on a protected cluster and leaves it running and billing.
 - **Creation takes ten to fifteen minutes** (more for many shards). Budget deploy windows for it.
 - **Every node bills by the hour** from creation, serving or idle: `shardCount x (1 + replicaCount)` nodes at the `nodeType`'s rate. The smallest shape is one `REDIS_SHARED_CORE_NANO` shard with no replicas.
 - **Deploy the service connection policy first** when using `pscConfigs`; without it creation fails. Without `pscConfigs`, register your own endpoints through `GcpRedisClusterEndpointSet`.

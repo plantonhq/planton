@@ -114,6 +114,7 @@ This creates a PostgreSQL 16 instance with a public IPv4 address and **no author
 | `service_account_email` | `string` | The instance's Google-managed service account — grant it GCS access for imports/exports and audit uploads |
 | `dns_name` | `string` | DNS name (PSC-enabled instances) |
 | `psc_service_attachment_link` | `string` | PSC service attachment consumers target with endpoints |
+| `socket_path` | `string` | `/cloudsql/{connection_name}`: the Unix socket path a workload connects through when Cloud Run or the Auth Proxy mounts the instance |
 
 ## Deployment Methods
 

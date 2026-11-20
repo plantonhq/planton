@@ -758,7 +758,8 @@ resource name (projects/*/secrets/*).
 `int32` · optional (explicit presence)
 
 Default Unix permission mode for projected files, in decimal (e.g. 292
-= 0444). If unset, GCP defaults to 0444.
+= 0444). If unset, GCP defaults to 0444. A mode of 0 is never sent
+(the provider drops a zero), so 0 also means 0444.
 
 - rule: {"int32":{"lte":511,"gte":0}}
 
@@ -789,8 +790,9 @@ Secret version to project: a version number or "latest".
 
 `int32` · optional (explicit presence)
 
-Unix permission mode for this file, in decimal. Overrides
-default_mode.
+Unix permission mode for this file, in decimal (1-511, octal 01-0777).
+Overrides default_mode. A mode of 0 is never sent (the provider drops
+a zero), so the file takes default_mode, exactly as when unset.
 
 - rule: {"int32":{"lte":511,"gte":0}}
 
@@ -901,8 +903,12 @@ production; give real workers a dedicated least-privilege identity.
 How many instances run. MANUAL (Google's default) pins the total to
 manual_instance_count; AUTOMATIC lets Cloud Run move between
 min_instance_count and max_instance_count on a signal you drive.
-If omitted, Google runs the pool in MANUAL mode at its default count.
+If omitted, no scaling block is sent and the pool runs in Google's
+default mode, MANUAL. A block that is MANUAL (or names no mode) must
+state manual_instance_count: the provider sends an unset count as 0,
+which parks the pool.
 
+- rule: Manual scaling needs an instance count. Set manual_instance_count (0 parks the pool on purpose), or set scaling_mode to AUTOMATIC with its bounds.
 - rule: manual_instance_count only applies when scaling_mode is MANUAL (or unset, which is MANUAL)
 - rule: min_instance_count and max_instance_count only apply when scaling_mode is AUTOMATIC
 - rule: min_instance_count cannot exceed max_instance_count
@@ -922,7 +928,10 @@ min_instance_count and max_instance_count on a signal you drive.
 `int32` · optional (explicit presence)
 
 Total instances across all revisions in MANUAL mode. 0 parks the pool
-(no instances, no bill) without deleting it.
+(no instances, no bill) without deleting it. Required in MANUAL mode
+(or when scaling_mode is unset): the provider sends an unset count as
+0, so a block without one would park the pool by accident. Presence
+is tracked, so an explicit 0 is a deliberate park, never a default.
 
 - rule: {"int32":{"gte":0}}
 
@@ -1013,9 +1022,12 @@ Only meaningful with encryption_key.
 `string`
 
 Grace period before instances are shut down after a key revocation
-under SHUTDOWN, as a seconds duration in whole hours (e.g. "3600s").
+under SHUTDOWN, as a seconds duration in whole hours (e.g. "3600s"
+for one hour, "7200s" for two). Cloud Run's smallest increment is one
+hour, so any other count of seconds is refused.
 
 - rule: encryption_key_shutdown_duration must be a seconds duration such as "3600s"
+- rule: The shutdown grace period is counted in whole hours. Write a multiple of 3600 seconds, such as "3600s" for one hour or "7200s" for two.
 
 ### spec.revision
 
@@ -1070,7 +1082,11 @@ GcpServerlessVpcConnector resource.
 
 Direct VPC egress: instances get IPs in the subnetwork and reach VPC
 resources with no connector infrastructure. The subnetwork needs free
-address space for the instance fleet.
+address space for the instance fleet. Cloud Run supports a single
+network interface.
+
+- rule: {"repeated":{"maxItems":"1"}}
+- rule: A network interface must name its network, its subnetwork, or both.
 
 ### spec.vpcAccess.networkInterfaces[].network
 
@@ -1158,6 +1174,7 @@ Binary Authorization: only images that pass the policy's attestation
 checks may deploy. The project default policy or a named one.
 
 - rule: use the project default policy (use_default) or name a specific policy, not both
+- rule: A break-glass justification applies only to the project's default policy. Set use_default to true, or remove breakglass_justification.
 
 ### spec.binaryAuthorization.useDefault
 
@@ -1180,6 +1197,8 @@ Evaluate deploys against a specific platform policy
 `string`
 
 Justification recorded when a break-glass deploy bypasses the policy.
+Only with use_default: Google requires it empty whenever use_default
+is false, including beside a named policy.
 
 ### spec.deletionProtection
 
@@ -1225,6 +1244,24 @@ Reference an output from another manifest as `valueFrom: {kind: GcpCloudRunWorke
 | `status.outputs.latest_ready_revision` | `string` | Name of the newest revision that is serving instances -- what a rollout has actually reached. |
 | `status.outputs.observed_generation` | `string` | The generation Cloud Run's controller has reconciled (a decimal string, as Google reports it); equal to the pool's generation once a rollout is complete. |
 | `status.outputs.etag` | `string` | Opaque version token for optimistic concurrency on the API. |
+| `status.outputs.terminal_condition` | `GcpCloudRunWorkerPoolCondition` | The pool's overall readiness: type "Ready", with state CONDITION_SUCCEEDED once the pool reaches its serving state. When a rollout fails, its message and reasons say why (an image that cannot be pulled, a container that never passes its startup probe), while latest_ready_revision still names the last revision that worked. |
+| `status.outputs.terminal_condition.type` | `string` | What the condition reports, e.g. "Ready" for the pool as a whole. |
+| `status.outputs.terminal_condition.state` | `string` | The condition's state: CONDITION_PENDING, CONDITION_RECONCILING, CONDITION_FAILED, or CONDITION_SUCCEEDED. |
+| `status.outputs.terminal_condition.message` | `string` | Human-readable detail about the current state, the first thing to read when a rollout fails. |
+| `status.outputs.terminal_condition.last_transition_time` | `string` | When the condition last changed state, as an RFC 3339 timestamp. |
+| `status.outputs.terminal_condition.severity` | `string` | How to read a failure of this condition: ERROR, WARNING, or INFO. |
+| `status.outputs.terminal_condition.reason` | `string` | The pool-level reason for the state, when Google gives one. |
+| `status.outputs.terminal_condition.revision_reason` | `string` | The revision-level reason, when the condition is about a revision. |
+| `status.outputs.terminal_condition.execution_reason` | `string` | The execution-level reason, when the condition is about an execution. |
+| `status.outputs.conditions` | `[]GcpCloudRunWorkerPoolCondition` | The conditions of the pool's sub-resources, in the order Google reports them: the extra diagnostics to read when terminal_condition is not CONDITION_SUCCEEDED. Empty when Google reports none. |
+| `status.outputs.conditions[].type` | `string` | What the condition reports, e.g. "Ready" for the pool as a whole. |
+| `status.outputs.conditions[].state` | `string` | The condition's state: CONDITION_PENDING, CONDITION_RECONCILING, CONDITION_FAILED, or CONDITION_SUCCEEDED. |
+| `status.outputs.conditions[].message` | `string` | Human-readable detail about the current state, the first thing to read when a rollout fails. |
+| `status.outputs.conditions[].last_transition_time` | `string` | When the condition last changed state, as an RFC 3339 timestamp. |
+| `status.outputs.conditions[].severity` | `string` | How to read a failure of this condition: ERROR, WARNING, or INFO. |
+| `status.outputs.conditions[].reason` | `string` | The pool-level reason for the state, when Google gives one. |
+| `status.outputs.conditions[].revision_reason` | `string` | The revision-level reason, when the condition is about a revision. |
+| `status.outputs.conditions[].execution_reason` | `string` | The execution-level reason, when the condition is about an execution. |
 
 ## References
 

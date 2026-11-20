@@ -28,10 +28,11 @@ type GcpRedisClusterEndpointSetOutputs struct {
 	// Bare name of the cluster the connections were registered on -- the
 	// segment Google's resource is keyed by.
 	ClusterName string `protobuf:"bytes,1,opt,name=cluster_name,json=clusterName,proto3" json:"cluster_name,omitempty"`
-	// Number of consumer-network endpoints registered (one per VPC).
+	// Number of consumer-network endpoints registered (one per VPC), counted
+	// from the spec's endpoints list, not read back from Google.
 	EndpointCount int32 `protobuf:"varint,2,opt,name=endpoint_count,json=endpointCount,proto3" json:"endpoint_count,omitempty"`
 	// Number of individual PSC connections registered across every
-	// endpoint.
+	// endpoint, counted from the spec, not read back from Google.
 	ConnectionCount int32 `protobuf:"varint,3,opt,name=connection_count,json=connectionCount,proto3" json:"connection_count,omitempty"`
 	// The cluster's region -- with cluster_name, what rebuilds the cluster's
 	// full resource path.

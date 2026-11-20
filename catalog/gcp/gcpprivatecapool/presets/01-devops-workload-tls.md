@@ -11,7 +11,7 @@ A pool for short-lived service certificates -- a mesh or workload identity minti
 
 ## What This Creates
 
-- A DevOps-tier pool in `us-central1` issuing 7-day, P-256 leaf certificates that carry the requested SANs and server-and-client authentication
+- A DevOps-tier pool in `us-central1` issuing 7-day, P-256 leaf certificates that carry the requested SANs and server-and-client authentication; the requested subject is discarded (`allowSubjectPassthrough: false`), so the SANs are the certificate's whole identity
 
 ## Customize
 

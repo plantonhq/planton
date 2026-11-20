@@ -1670,6 +1670,7 @@ Reference an output from another manifest as `valueFrom: {kind: GcpCloudSql, nam
 | `status.outputs.service_account_email` | `string` | The Google-managed service account this instance runs as. Grant it GCS access to enable imports/exports and SQL Server audit uploads. |
 | `status.outputs.dns_name` | `string` | DNS name of the instance (populated for PSC-enabled instances). |
 | `status.outputs.psc_service_attachment_link` | `string` | The PSC service attachment link consumers target with PSC endpoints (populated only when psc.enabled is true). |
+| `status.outputs.socket_path` | `string` | The Unix socket path a workload connects through when Cloud Run (or the Cloud SQL Auth Proxy with --unix-socket /cloudsql) mounts the instance: /cloudsql/{connection_name}. PostgreSQL clients take it as the host (the driver appends /.s.PGSQL.5432); MySQL clients take it as the socket. Derived from connection_name, so it is set for every instance. |
 
 ## References
 

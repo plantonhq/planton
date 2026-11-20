@@ -274,8 +274,9 @@ type GcpPrivateCaCertificateAuthorityX509Parameters struct {
 	// groups are optional and an empty group states nothing.
 	KeyUsage *GcpPrivateCaCertificateAuthorityKeyUsage `protobuf:"bytes,1,opt,name=key_usage,json=keyUsage,proto3" json:"key_usage,omitempty"`
 	// The basic constraints extension: whether the certificate is a CA and
-	// how many CA levels may sit below it. Omit to leave the extension to
-	// Google's default (for a leaf certificate, is_ca false).
+	// how many CA levels may sit below it. Required on an authority, with
+	// is_ca set (config.is_ca_required): an authority's certificate states
+	// its CA flag.
 	CaOptions *GcpPrivateCaCertificateAuthorityCaOptions `protobuf:"bytes,2,opt,name=ca_options,json=caOptions,proto3" json:"ca_options,omitempty"`
 	// Certificate policy object identifiers (RFC 5280 section 4.2.1.4), each
 	// an OID path such as [2, 23, 140, 1, 2, 1] (CA/Browser Forum
@@ -650,12 +651,13 @@ func (x *GcpPrivateCaCertificateAuthorityExtendedKeyUsage) GetOcspSigning() bool
 }
 
 // GcpPrivateCaCertificateAuthorityCaOptions is the basic constraints extension (RFC 5280 section
-// 4.2.1.9). Both fields are presence-based: an unset field is left out of
-// the certificate, which is different from setting it to false or 0.
+// 4.2.1.9). Both fields are presence-based. On an authority is_ca must be
+// set; max_issuer_path_length may be left out, which states no limit.
 type GcpPrivateCaCertificateAuthorityCaOptions struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// true makes a CA certificate (CA:TRUE), false states CA:FALSE; unset
-	// leaves the CA flag out of the extension.
+	// true makes a CA certificate (CA:TRUE) -- what every authority sets.
+	// Required on an authority (config.is_ca_required); false would state
+	// CA:FALSE on a certificate meant to sign others.
 	IsCa *bool `protobuf:"varint,1,opt,name=is_ca,json=isCa,proto3,oneof" json:"is_ca,omitempty"`
 	// The path length constraint: how many CA levels may sit below this
 	// certificate. 0 means it may sign only leaf certificates -- a
@@ -1089,8 +1091,10 @@ type GcpPrivateCaCertificateAuthoritySubordinateConfig struct {
 	// and activate it on create.
 	CertificateAuthority *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=certificate_authority,json=certificateAuthority,proto3" json:"certificate_authority,omitempty"`
 	// An external issuer's PEM certificate chain, issuer first, not
-	// including this authority's own certificate. With pem_ca_certificate,
-	// it activates the authority from an outside CA.
+	// including this authority's own certificate. Set it together with
+	// pem_ca_certificate, in the same apply: the pair activates the authority
+	// from an outside CA, and the chain alone carries no certificate to
+	// activate with.
 	PemIssuerChain []string `protobuf:"bytes,2,rep,name=pem_issuer_chain,json=pemIssuerChain,proto3" json:"pem_issuer_chain,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
@@ -1208,9 +1212,9 @@ func (x *GcpPrivateCaCertificateAuthorityUserDefinedAccessUrls) GetCrlAccessUrls
 //   - a self-signed root is ENABLED after create, or STAGED when
 //     desired_state says so (trusted but not yet issuing);
 //   - a subordinate signed by reference is activated and enabled on create;
-//     one signed by an outside CA needs pem_ca_certificate and
-//     subordinate_config.pem_issuer_chain; with neither it waits in
-//     AWAITING_USER_ACTIVATION;
+//     one signed by an outside CA waits in AWAITING_USER_ACTIVATION after
+//     the first apply, until a second apply sets pem_ca_certificate and
+//     subordinate_config.pem_issuer_chain;
 //   - destroy disables it and schedules deletion after 30 days (restorable
 //     until then) unless skip_grace_period; its pool cannot be deleted
 //     until the authority is gone.
@@ -1247,9 +1251,14 @@ type GcpPrivateCaCertificateAuthoritySpec struct {
 	// A subordinate's issuer. Updatable in place, but the authority must
 	// continue to validate against it.
 	SubordinateConfig *GcpPrivateCaCertificateAuthoritySubordinateConfig `protobuf:"bytes,9,opt,name=subordinate_config,json=subordinateConfig,proto3" json:"subordinate_config,omitempty"`
-	// The CA certificate an outside CA signed from this authority's CSR
-	// (read the CSR from Google after the first apply), PEM. With
-	// subordinate_config.pem_issuer_chain, it activates the authority.
+	// The CA certificate an outside CA signed from this authority's CSR,
+	// PEM. Read the CSR after the first apply with
+	// `gcloud privateca subordinates get-csr {id} --pool={pool}
+	// --location={location}`. With subordinate_config.pem_issuer_chain, it
+	// activates the authority. Updates in place, but it is read only by the
+	// activation, which runs when subordinate_config changes on an authority
+	// still AWAITING_USER_ACTIVATION: set both in the same apply. Once the
+	// authority is active, a changed value reaches nothing at Google.
 	PemCaCertificate string `protobuf:"bytes,10,opt,name=pem_ca_certificate,json=pemCaCertificate,proto3" json:"pem_ca_certificate,omitempty"`
 	// The Cloud Storage bucket the authority publishes its CA certificate
 	// and CRLs to -- a GcpGcsBucket reference or a bare bucket name (no

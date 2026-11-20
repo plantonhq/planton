@@ -19,13 +19,15 @@ Cloud Run Admin API enabled.
 | `locals.tf` | Ambient project fallback, pool name (spec or metadata.name fallback), null-when-empty levers, the platform labels, the VPC access guards |
 | `main.tf` | `google_project_service`, `google_cloud_run_v2_worker_pool` |
 | `secrets.tf` | Per `env[].secret_value`: the Secret Manager API, one secret replicated in the pool's region, its version, and the runtime identity's `secretAccessor` grant on that secret alone; the Compute Engine default identity lookup when `service_account` is unset |
-| `outputs.tf` | `name`, `worker_pool_name`, `uid`, `location`, `project_id`, `latest_created_revision`, `latest_ready_revision`, `observed_generation`, `etag` |
+| `outputs.tf` | `name`, `worker_pool_name`, `uid`, `location`, `project_id`, `latest_created_revision`, `latest_ready_revision`, `observed_generation`, `etag`, `terminal_condition`, `conditions` |
 
 ## Send Posture
 
 - **`deletion_protection`** -- always sent (spec default `true`).
-- **`scaling`** -- each lever sent only when set, so Google's MANUAL default
-  and default count stay in charge otherwise.
+- **`scaling`** -- the block is sent only when the spec has one, so Google's
+  MANUAL default stays in charge otherwise. Inside it the provider sends an
+  unset `manual_instance_count` as 0, which is why the spec requires the
+  count under MANUAL.
 - **`instance_splits`** -- omitted when the spec list is empty, so Google
   routes every instance to the latest ready revision without a diff-prone
   split.

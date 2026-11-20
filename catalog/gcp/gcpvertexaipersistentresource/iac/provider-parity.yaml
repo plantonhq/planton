@@ -5,6 +5,12 @@
 # Only divergences are recorded -- an argument absent from this file must
 # match its spec field by exact name. Every exclusion carries its reason:
 # omission is a decision, never an accident.
+#
+# The two engines reach different API versions. Terraform's GA provider
+# calls Vertex AI v1; the pinned pulumi-gcp bridges google-beta, which calls
+# v1beta1. The resource's schema is the same in both, so the spec serves
+# both engines unchanged; a field only v1beta1 offers stays out of the spec
+# until the GA provider carries it.
 
 resources:
   google_vertex_ai_persistent_resource:

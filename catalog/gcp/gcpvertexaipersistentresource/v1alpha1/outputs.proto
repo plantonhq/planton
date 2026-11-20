@@ -19,4 +19,20 @@ message GcpVertexAiPersistentResourceOutputs {
   // The resource's state as last read (RUNNING once every pool is
   // provisioned).
   string state = 4;
+
+  // Why the resource is in ERROR, as Google reports it. Code 0 and an empty
+  // message while the resource has no error.
+  GcpVertexAiPersistentResourceError error = 5;
+}
+
+// GcpVertexAiPersistentResourceError is the error Google holds on a
+// persistent resource that failed to provision or to stay running.
+message GcpVertexAiPersistentResourceError {
+  // The google.rpc.Code number, e.g. 8 (RESOURCE_EXHAUSTED) when the
+  // region has no capacity or quota for the pool's machines.
+  int32 code = 1;
+
+  // Google's description of the failure, the first thing to read when the
+  // state is ERROR.
+  string message = 2;
 }

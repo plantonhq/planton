@@ -34,4 +34,11 @@ message GcpCloudSqlOutputs {
   // The PSC service attachment link consumers target with PSC endpoints
   // (populated only when psc.enabled is true).
   string psc_service_attachment_link = 8;
+
+  // The Unix socket path a workload connects through when Cloud Run (or the
+  // Cloud SQL Auth Proxy with --unix-socket /cloudsql) mounts the instance:
+  // /cloudsql/{connection_name}. PostgreSQL clients take it as the host
+  // (the driver appends /.s.PGSQL.5432); MySQL clients take it as the
+  // socket. Derived from connection_name, so it is set for every instance.
+  string socket_path = 9;
 }

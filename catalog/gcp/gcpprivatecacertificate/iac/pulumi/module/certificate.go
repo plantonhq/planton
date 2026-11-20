@@ -68,5 +68,26 @@ func certificate(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider)
 	ctx.Export(OpPemCertificate, created.PemCertificate)
 	ctx.Export(OpPemCertificateChain, created.PemCertificateChains)
 	ctx.Export(OpIssuerCertificateAuthority, created.IssuerCertificateAuthority)
+
+	// The validity window, read from the provider's description of the
+	// signed certificate (a one-element list nested twice).
+	validity := func(pick func(certificateauthority.CertificateCertificateDescriptionSubjectDescription) *string) pulumi.StringOutput {
+		return created.CertificateDescriptions.ApplyT(
+			func(descriptions []certificateauthority.CertificateCertificateDescription) string {
+				if len(descriptions) == 0 || len(descriptions[0].SubjectDescriptions) == 0 {
+					return ""
+				}
+				if v := pick(descriptions[0].SubjectDescriptions[0]); v != nil {
+					return *v
+				}
+				return ""
+			}).(pulumi.StringOutput)
+	}
+	ctx.Export(OpNotBeforeTime, validity(func(d certificateauthority.CertificateCertificateDescriptionSubjectDescription) *string {
+		return d.NotBeforeTime
+	}))
+	ctx.Export(OpNotAfterTime, validity(func(d certificateauthority.CertificateCertificateDescriptionSubjectDescription) *string {
+		return d.NotAfterTime
+	}))
 	return nil
 }

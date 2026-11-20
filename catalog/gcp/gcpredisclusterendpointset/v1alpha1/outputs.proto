@@ -9,11 +9,12 @@ message GcpRedisClusterEndpointSetOutputs {
   // segment Google's resource is keyed by.
   string cluster_name = 1;
 
-  // Number of consumer-network endpoints registered (one per VPC).
+  // Number of consumer-network endpoints registered (one per VPC), counted
+  // from the spec's endpoints list, not read back from Google.
   int32 endpoint_count = 2;
 
   // Number of individual PSC connections registered across every
-  // endpoint.
+  // endpoint, counted from the spec, not read back from Google.
   int32 connection_count = 3;
 
   // The cluster's region -- with cluster_name, what rebuilds the cluster's

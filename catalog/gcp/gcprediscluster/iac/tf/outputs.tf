@@ -67,3 +67,9 @@ output "backup_collection" {
   description = "Full resource path of the cluster's managed backup collection"
   value       = google_redis_cluster.this.backup_collection
 }
+
+# The versions maintenance_version accepts for a self-service update.
+output "available_maintenance_versions" {
+  description = "Maintenance versions the cluster can move to now (empty when none is newer)"
+  value       = google_redis_cluster.this.available_maintenance_versions
+}

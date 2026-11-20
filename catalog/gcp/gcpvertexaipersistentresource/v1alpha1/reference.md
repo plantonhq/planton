@@ -11,8 +11,10 @@
 GcpVertexAiPersistentResourceSpec defines a Vertex AI persistent
 resource (`google_vertex_ai_persistent_resource`) -- a long-running
 cluster of machines Vertex AI keeps provisioned so custom training jobs
-(and Ray on Vertex AI) start in seconds instead of waiting minutes for
-capacity, and so scarce accelerators stay reserved between jobs. A job
+start in seconds instead of waiting minutes for capacity, and so scarce
+accelerators stay reserved between jobs. A Ray on Vertex AI cluster is a
+persistent resource with Ray settings, which neither provider carries;
+this kind keeps machines for custom training jobs only. A job
 runs on it by naming its id in `persistent_resource_id`; the job's
 network and encryption must match the resource's.
 
@@ -58,7 +60,7 @@ spec:
 | `spec.resourcePools` | `[]GcpVertexAiPersistentResourceResourcePool` | yes |  |  |
 | `spec.resourcePools[].id` | `string` |  |  |  |
 | `spec.resourcePools[].machineSpec` | `GcpVertexAiPersistentResourceMachineSpec` | yes |  |  |
-| `spec.resourcePools[].machineSpec.machineType` | `string` |  |  |  |
+| `spec.resourcePools[].machineSpec.machineType` | `string` | yes |  |  |
 | `spec.resourcePools[].machineSpec.acceleratorType` | `string` |  |  |  |
 | `spec.resourcePools[].machineSpec.acceleratorCount` | `int32` |  |  |  |
 | `spec.resourcePools[].replicaCount` | `int64` |  |  |  |
@@ -137,6 +139,7 @@ and win on key conflicts. Mutable in place.
 The pools of machines the resource keeps provisioned. At least one.
 
 - rule: {"repeated":{"minItems":"1"}}
+- rule: replica_count must sit within the autoscaling bounds: at least min_replica_count and at most max_replica_count.
 
 ### spec.resourcePools[].id
 
@@ -153,14 +156,17 @@ Immutable.
 The machine every replica runs on.
 
 - rule: {"required":true}
+- rule: An accelerator needs both its type and its count. Set accelerator_type with an accelerator_count of at least 1, or leave both unset.
 
 ### spec.resourcePools[].machineSpec.machineType
 
-`string`
+`string` · required
 
 The Compute Engine machine type, e.g. "n1-standard-4", "a2-highgpu-1g",
 "ct5lp-hightpu-4t" -- any type Vertex AI custom training supports.
-Immutable.
+Required. Immutable.
+
+- rule: {"string":{"minLen":"1"}}
 
 ### spec.resourcePools[].machineSpec.acceleratorType
 
@@ -179,8 +185,9 @@ must be one Google pairs with it. Empty attaches none. Immutable.
 
 `int32`
 
-How many accelerators each replica carries, set together with
-accelerator_type. Sent only when set. Immutable.
+How many accelerators each replica carries -- at least 1 when
+accelerator_type is set, 0 (unset) when it is not. Sent only when set.
+Immutable.
 
 - rule: {"int32":{"gte":0}}
 
@@ -198,6 +205,8 @@ using them. Sent as a decimal string. Mutable in place.
 `GcpVertexAiPersistentResourceAutoscalingSpec`
 
 Autoscaling bounds for the pool. Omit for a fixed replica_count.
+
+- rule: The most replicas must be more than the fewest. Raise max_replica_count above min_replica_count.
 
 ### spec.resourcePools[].autoscalingSpec.minReplicaCount
 
@@ -252,9 +261,11 @@ A VPC network to peer the resource with, so jobs reach private
 services: a GcpVpcNetwork reference or a literal
 projects/{project}/global/networks/{name}. Google requires the project
 NUMBER in that path; both modules resolve a project ID to its number
-(one project lookup at plan time). The network must already have VPC
-Network Peering for Vertex AI (private services access) configured.
-Omit for no peering. Immutable.
+(one project lookup at plan time). A literal is that path or the
+network's full https://www.googleapis.com/compute/v1/ self-link; a bare
+network name is refused. The network must already have VPC Network
+Peering for Vertex AI (private services access) configured. Omit for
+no peering. Immutable.
 
 - references: GcpVpcNetwork (`status.outputs.network_self_link`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpVpcNetwork, name: <that resource's name>, fieldPath: status.outputs.network_self_link}} -- a bare string does not parse
@@ -362,6 +373,10 @@ What happens to the resource when this block is destroyed:
 
 - rule: deletion_policy must be one of: DELETE, PREVENT, ABANDON
 
+## Validation Rules
+
+- `spec.network_literal_path`: A literal network must be its full path, projects/{project}/global/networks/{name}, or the network's self-link. Write the path, or reference a GcpVpcNetwork.
+
 ## Outputs
 
 Reference an output from another manifest as `valueFrom: {kind: GcpVertexAiPersistentResource, name: <resource-name>, fieldPath: status.outputs.<output>}`.
@@ -372,6 +387,9 @@ Reference an output from another manifest as `valueFrom: {kind: GcpVertexAiPersi
 | `status.outputs.persistent_resource_id` | `string` | The resource's id -- what a job's persistent_resource_id takes. |
 | `status.outputs.location` | `string` | The location the resource runs in. |
 | `status.outputs.state` | `string` | The resource's state as last read (RUNNING once every pool is provisioned). |
+| `status.outputs.error` | `GcpVertexAiPersistentResourceError` | Why the resource is in ERROR, as Google reports it. Code 0 and an empty message while the resource has no error. |
+| `status.outputs.error.code` | `int32` | The google.rpc.Code number, e.g. 8 (RESOURCE_EXHAUSTED) when the region has no capacity or quota for the pool's machines. |
+| `status.outputs.error.message` | `string` | Google's description of the failure, the first thing to read when the state is ERROR. |
 
 ## References
 

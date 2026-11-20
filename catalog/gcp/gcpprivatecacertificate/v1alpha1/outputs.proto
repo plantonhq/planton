@@ -20,4 +20,13 @@ message GcpPrivateCaCertificateOutputs {
 
   // The full name of the authority that signed it.
   string issuer_certificate_authority = 5;
+
+  // When the certificate becomes valid, as an RFC 3339 timestamp Google
+  // reads from the signed certificate.
+  string not_before_time = 6;
+
+  // When the certificate expires, as an RFC 3339 timestamp Google reads
+  // from the signed certificate -- the date a successor must be issued
+  // and installed by.
+  string not_after_time = 7;
 }

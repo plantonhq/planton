@@ -24,11 +24,14 @@ const (
 // consumers register their own forwarding rules through
 // GcpRedisClusterEndpointSet.
 //
-// The immutables (ForceNew in the provider): name, region,
-// authorizationMode, transitEncryptionMode, zoneDistributionConfig, and
-// the seed sources. shardCount, replicaCount, nodeType, redisConfigs,
-// kmsKey, pscConfigs, persistence, backups, maintenance, the replication
-// role, labels, and deletion protection all update in place.
+// The immutables (ForceNew in the provider, a change replaces the
+// cluster): project, name, region, authorizationMode,
+// transitEncryptionMode, and the seed sources (removing one counts as a
+// change). zoneDistributionConfig is ForceNew on the block only, not on
+// mode or zone, so a changed value plans in place, sends nothing, and
+// re-plans on every deploy. shardCount, replicaCount, nodeType,
+// redisConfigs, kmsKey, pscConfigs, persistence, backups, maintenance, the
+// replication role, labels, and deletion protection all update in place.
 func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) error {
 	spec := locals.GcpRedisCluster.Spec
 
@@ -137,9 +140,9 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 		args.KmsKey = pulumi.StringPtr(spec.KmsKey.GetValue())
 	}
 
-	// Self-service maintenance: a newer available version applies the
-	// update now instead of waiting for Google's rollout. Update-only and
-	// forward-only at the API.
+	// Self-service maintenance: requests an update of an existing cluster
+	// to a version from its available_maintenance_versions output, now
+	// instead of waiting for Google's rollout. Forward-only at the API.
 	if spec.MaintenanceVersion != "" {
 		args.MaintenanceVersion = pulumi.StringPtr(spec.MaintenanceVersion)
 	}
@@ -151,8 +154,9 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 	}
 
 	// Client-side destroy behavior: DELETE (default), PREVENT, or ABANDON.
-	// Sent only when set so the provider default stays in charge otherwise;
-	// evaluated only after deletion_protection_enabled allows the destroy.
+	// Sent only when set so the provider default stays in charge otherwise.
+	// The provider decides PREVENT and ABANDON before calling Google, so
+	// deletion protection (Google's check) guards only a DELETE.
 	if spec.DeletionPolicy != "" {
 		args.DeletionPolicy = pulumi.StringPtr(spec.DeletionPolicy)
 	}
@@ -184,7 +188,8 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 		args.PersistenceConfig = persistenceArgs
 	}
 
-	// Zone distribution (immutable).
+	// Zone distribution, fixed at creation (ForceNew is on the block only:
+	// a changed mode or zone plans in place and is never sent).
 	if spec.ZoneDistributionConfig != nil {
 		zdcArgs := &redis.ClusterZoneDistributionConfigArgs{}
 		if spec.ZoneDistributionConfig.Mode != "" {
@@ -250,7 +255,8 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 		args.CrossClusterReplicationConfig = ccrArgs
 	}
 
-	// Seed sources (mutually exclusive, ForceNew -- seeding happens once).
+	// Seed sources (mutually exclusive, ForceNew -- seeding happens once,
+	// and removing a source after creation replaces the cluster).
 	if spec.GcsSource != nil {
 		uris := make(pulumi.StringArray, 0, len(spec.GcsSource.Uris))
 		for _, u := range spec.GcsSource.Uris {
@@ -316,6 +322,7 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 	ctx.Export(OpShardCount, createdCluster.ShardCount)
 	ctx.Export(OpReplicaCount, createdCluster.ReplicaCount.Elem())
 	ctx.Export(OpBackupCollection, createdCluster.BackupCollection)
+	ctx.Export(OpAvailableMaintenanceVersions, createdCluster.AvailableMaintenanceVersions)
 
 	return nil
 }

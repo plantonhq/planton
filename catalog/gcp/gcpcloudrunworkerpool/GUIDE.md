@@ -33,7 +33,9 @@ public traffic that way too).
 A service scales with traffic; a worker pool has none. `MANUAL`
 (Google's default) runs exactly `manualInstanceCount` instances --
 including `0`, which parks the pool without deleting it, the cheapest
-way to pause a worker. `AUTOMATIC` moves the count between
+way to pause a worker. A `MANUAL` block must state the count: the
+provider sends a missing count as `0`, so a forgotten count would park
+the pool, and the spec refuses it. `AUTOMATIC` moves the count between
 `minInstanceCount` and `maxInstanceCount` on a signal you supply, for
 example a queue-depth metric wired through Cloud Monitoring. Because
 CPU is always allocated on a worker pool, an idle instance bills like a

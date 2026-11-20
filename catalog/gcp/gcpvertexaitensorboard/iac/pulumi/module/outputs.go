@@ -9,4 +9,5 @@ const (
 	OpBlobStoragePathPrefix = "blob_storage_path_prefix"
 	OpExperimentNames       = "experiment_names"
 	OpRunNames              = "run_names"
+	OpRunCount              = "run_count"
 )

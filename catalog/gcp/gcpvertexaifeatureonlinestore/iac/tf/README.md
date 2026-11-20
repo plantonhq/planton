@@ -15,7 +15,7 @@ This directory contains the Terraform implementation for a Vertex AI Feature Sto
 | `variables.tf` | `metadata` and `spec` variable definitions (generated from the spec; the tfvars converter flattens refs to plain strings) |
 | `locals.tf` | Ambient project fallback, null-for-empty optionals, the `planton-ai_*` labels, the feature view map |
 | `main.tf` | `google_project_service`, `google_vertex_ai_feature_online_store`, `google_vertex_ai_feature_online_store_featureview` |
-| `outputs.tf` | `name`, `feature_online_store_id`, `location`, `public_endpoint_domain_name`, `service_attachment`, `feature_view_names` |
+| `outputs.tf` | `name`, `feature_online_store_id`, `location`, `public_endpoint_domain_name`, `service_attachment`, `feature_view_names`, `state` |
 
 ## Send Posture
 

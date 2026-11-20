@@ -239,3 +239,16 @@ func TestSetProject_EmptyKeepsAmbientDefault(t *testing.T) {
 	setProject(args, "")
 	assert.Nil(t, args.Project)
 }
+
+// A regional-endpoint kind's location reaches the provider as its region.
+func TestSetRegion_Location(t *testing.T) {
+	args := &gcp.ProviderArgs{}
+	setRegion(args, "us-central1")
+	assert.Equal(t, pulumi.String("us-central1"), args.Region)
+}
+
+func TestSetRegion_EmptyKeepsAmbientDefault(t *testing.T) {
+	args := &gcp.ProviderArgs{}
+	setRegion(args, "")
+	assert.Nil(t, args.Region)
+}

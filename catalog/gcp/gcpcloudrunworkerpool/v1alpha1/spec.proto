@@ -117,7 +117,10 @@ message GcpCloudRunWorkerPoolSpec {
   // How many instances run. MANUAL (Google's default) pins the total to
   // manual_instance_count; AUTOMATIC lets Cloud Run move between
   // min_instance_count and max_instance_count on a signal you drive.
-  // If omitted, Google runs the pool in MANUAL mode at its default count.
+  // If omitted, no scaling block is sent and the pool runs in Google's
+  // default mode, MANUAL. A block that is MANUAL (or names no mode) must
+  // state manual_instance_count: the provider sends an unset count as 0,
+  // which parks the pool.
   GcpCloudRunWorkerPoolScaling scaling = 10;
 
   // How instances are split across revisions. If empty, every instance
@@ -152,12 +155,19 @@ message GcpCloudRunWorkerPoolSpec {
   ];
 
   // Grace period before instances are shut down after a key revocation
-  // under SHUTDOWN, as a seconds duration in whole hours (e.g. "3600s").
+  // under SHUTDOWN, as a seconds duration in whole hours (e.g. "3600s"
+  // for one hour, "7200s" for two). Cloud Run's smallest increment is one
+  // hour, so any other count of seconds is refused.
   string encryption_key_shutdown_duration = 14 [
     (buf.validate.field).cel = {
       id: "encryption_key_shutdown_duration_format"
       expression: "this == '' || this.matches('^[0-9]+s$')"
       message: "encryption_key_shutdown_duration must be a seconds duration such as \"3600s\""
+    },
+    (buf.validate.field).cel = {
+      id: "encryption_key_shutdown_duration_whole_hours"
+      expression: "this == '' || !this.matches('^[0-9]+s$') || (duration(this).getSeconds() > 0 && duration(this).getSeconds() % 3600 == 0)"
+      message: "The shutdown grace period is counted in whole hours. Write a multiple of 3600 seconds, such as \"3600s\" for one hour or \"7200s\" for two."
     },
     (dev.planton.shared.options.sensitive_exempt_reason) = "a grace-period duration (e.g. \"3600s\") -- never key material"
   ];
@@ -240,6 +250,12 @@ message GcpCloudRunWorkerPoolSpec {
 // GcpCloudRunWorkerPoolScaling decides how many instances the pool runs.
 message GcpCloudRunWorkerPoolScaling {
   option (buf.validate.message).cel = {
+    id: "scaling.manual_mode_requires_count"
+    message: "Manual scaling needs an instance count. Set manual_instance_count (0 parks the pool on purpose), or set scaling_mode to AUTOMATIC with its bounds."
+    expression: "this.scaling_mode == 'AUTOMATIC' || has(this.manual_instance_count)"
+  };
+
+  option (buf.validate.message).cel = {
     id: "scaling.manual_count_requires_manual_mode"
     message: "manual_instance_count only applies when scaling_mode is MANUAL (or unset, which is MANUAL)"
     expression: "!has(this.manual_instance_count) || this.scaling_mode != 'AUTOMATIC'"
@@ -272,7 +288,10 @@ message GcpCloudRunWorkerPoolScaling {
   ];
 
   // Total instances across all revisions in MANUAL mode. 0 parks the pool
-  // (no instances, no bill) without deleting it.
+  // (no instances, no bill) without deleting it. Required in MANUAL mode
+  // (or when scaling_mode is unset): the provider sends an unset count as
+  // 0, so a block without one would park the pool by accident. Presence
+  // is tracked, so an explicit 0 is a deliberate park, never a default.
   optional int32 manual_instance_count = 2 [(buf.validate.field).int32.gte = 0];
 
   // Lower bound on instances in AUTOMATIC mode, distributed across
@@ -702,7 +721,8 @@ message GcpCloudRunWorkerPoolVolumeSecret {
   ];
 
   // Default Unix permission mode for projected files, in decimal (e.g. 292
-  // = 0444). If unset, GCP defaults to 0444.
+  // = 0444). If unset, GCP defaults to 0444. A mode of 0 is never sent
+  // (the provider drops a zero), so 0 also means 0444.
   optional int32 default_mode = 2 [(buf.validate.field).int32 = {
     gte: 0
     lte: 511
@@ -724,8 +744,9 @@ message GcpCloudRunWorkerPoolVolumeSecretItem {
   // Secret version to project: a version number or "latest".
   string version = 2 [(dev.planton.shared.options.recommended_default) = "latest"];
 
-  // Unix permission mode for this file, in decimal. Overrides
-  // default_mode.
+  // Unix permission mode for this file, in decimal (1-511, octal 01-0777).
+  // Overrides default_mode. A mode of 0 is never sent (the provider drops
+  // a zero), so the file takes default_mode, exactly as when unset.
   optional int32 mode = 3 [(buf.validate.field).int32 = {
     gte: 0
     lte: 511
@@ -835,8 +856,9 @@ message GcpCloudRunWorkerPoolVpcAccess {
 
   // Direct VPC egress: instances get IPs in the subnetwork and reach VPC
   // resources with no connector infrastructure. The subnetwork needs free
-  // address space for the instance fleet.
-  repeated GcpCloudRunWorkerPoolNetworkInterface network_interfaces = 2;
+  // address space for the instance fleet. Cloud Run supports a single
+  // network interface.
+  repeated GcpCloudRunWorkerPoolNetworkInterface network_interfaces = 2 [(buf.validate.field).repeated.max_items = 1];
 
   // Which egress traffic uses the VPC path: everything (ALL_TRAFFIC) or
   // only RFC1918/private destinations (PRIVATE_RANGES_ONLY -- the
@@ -854,8 +876,15 @@ message GcpCloudRunWorkerPoolVpcAccess {
 }
 
 // GcpCloudRunWorkerPoolNetworkInterface places instances into a VPC
-// subnetwork for direct VPC egress.
+// subnetwork for direct VPC egress. It names a network, a subnetwork, or
+// both (Google's rule: at least one).
 message GcpCloudRunWorkerPoolNetworkInterface {
+  option (buf.validate.message).cel = {
+    id: "network_interface.network_or_subnetwork"
+    message: "A network interface must name its network, its subnetwork, or both."
+    expression: "(has(this.network.value) && this.network.value != '') || has(this.network.value_from) || (has(this.subnetwork.value) && this.subnetwork.value != '') || has(this.subnetwork.value_from)"
+  };
+
   // The VPC network. Accepts a literal network name or a reference to a
   // GcpVpcNetwork resource. May be omitted when subnetwork is set (the
   // network is inferred).
@@ -907,6 +936,12 @@ message GcpCloudRunWorkerPoolBinaryAuthorization {
     expression: "!(this.use_default && this.policy != '')"
   };
 
+  option (buf.validate.message).cel = {
+    id: "binary_authorization.breakglass_requires_default"
+    message: "A break-glass justification applies only to the project's default policy. Set use_default to true, or remove breakglass_justification."
+    expression: "this.breakglass_justification == '' || this.use_default"
+  };
+
   // Evaluate deploys against the project's default Binary Authorization
   // policy.
   bool use_default = 1;
@@ -916,5 +951,7 @@ message GcpCloudRunWorkerPoolBinaryAuthorization {
   string policy = 2 [(buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE];
 
   // Justification recorded when a break-glass deploy bypasses the policy.
+  // Only with use_default: Google requires it empty whenever use_default
+  // is false, including beside a named policy.
   string breakglass_justification = 3;
 }

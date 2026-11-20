@@ -8,7 +8,7 @@ The judgment this guide protects: an online store is standing capacity. Pick the
 
 ## The dedicated endpoint
 
-Optimized stores always get a dedicated endpoint, public by default; the `public_endpoint_domain_name` output is where clients call. Set `dedicatedServingEndpoint.privateServiceConnectConfig` with `enablePrivateServiceConnect: true` to serve only over Private Service Connect: Google publishes a service attachment (the `service_attachment` output, populated once a view has synced) that consumer projects in `projectAllowlist` target with a forwarding rule. Leave the block unset to keep Google's default.
+Optimized stores always get a dedicated endpoint, public by default; the `public_endpoint_domain_name` output is where clients call. Set `dedicatedServingEndpoint.privateServiceConnectConfig` with `enablePrivateServiceConnect: true` to serve only over Private Service Connect: Google publishes a service attachment (the `service_attachment` output, populated once a view has synced) that consumer projects in `projectAllowlist` target with a forwarding rule. Leave the block unset to keep Google's default. Private Service Connect is an Optimized-store feature, so the spec refuses it on a Bigtable store.
 
 ## Feature views are the product
 

@@ -85,10 +85,12 @@ message GcpVertexAiFeatureOnlineStoreBigQuerySource {
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.qualified_name"
   ];
 
-  // The columns that form the entity ID the view serves by. Google
-  // supports exactly one today.
+  // The column that forms the entity ID the view serves by. Google
+  // accepts exactly one column on a BigQuery-sourced view, so the list
+  // holds one name.
   repeated string entity_id_columns = 2 [(buf.validate.field).repeated = {
     min_items: 1
+    max_items: 1
     items: {
       string: {min_len: 1}
     }
@@ -214,6 +216,11 @@ message GcpVertexAiFeatureOnlineStoreSpec {
     expression: "this.feature_views.map(v, v.feature_view_id).unique()"
     message: "feature_view_id must be unique within the online store"
   };
+  option (buf.validate.message).cel = {
+    id: "spec.private_service_connect_requires_optimized"
+    expression: "!has(this.dedicated_serving_endpoint.private_service_connect_config) || this.optimized"
+    message: "Private Service Connect serves an Optimized store's dedicated endpoint, and a Bigtable store has none. Set optimized to true, or remove dedicated_serving_endpoint.private_service_connect_config."
+  };
 
   // The GCP project the store lives in: a literal project ID or a
   // GcpProject reference. If omitted, the provider's default project is
@@ -257,7 +264,9 @@ message GcpVertexAiFeatureOnlineStoreSpec {
 
   // The store's dedicated serving endpoint. Set it to serve over Private
   // Service Connect; omit to keep Google's default (a public dedicated
-  // endpoint on Optimized stores). Sent only when set.
+  // endpoint on Optimized stores). Private Service Connect applies only to
+  // an Optimized store: a Bigtable store serves through the shared Vertex
+  // AI endpoint. Sent only when set.
   GcpVertexAiFeatureOnlineStoreDedicatedServingEndpoint dedicated_serving_endpoint = 7;
 
   // Customer-managed encryption key protecting both the online and the

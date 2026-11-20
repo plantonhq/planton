@@ -56,13 +56,23 @@ spec:
             valueFrom: {kind: GcpVpcNetwork, name: consumer-vpc, fieldPath: status.outputs.network_id}
           serviceAttachment:
             valueFrom: {kind: GcpRedisCluster, name: orders-cache, fieldPath: status.outputs.discovery_service_attachment}
+        - forwardingRule:
+            valueFrom: {kind: GcpGlobalForwardingRule, name: orders-cache-prim, fieldPath: status.outputs.self_link}
+          pscConnectionId:
+            valueFrom: {kind: GcpGlobalForwardingRule, name: orders-cache-prim, fieldPath: status.outputs.psc_connection_id}
+          address:
+            valueFrom: {kind: GcpAddress, name: orders-cache-prim-ip, fieldPath: status.outputs.address}
+          network:
+            valueFrom: {kind: GcpVpcNetwork, name: consumer-vpc, fieldPath: status.outputs.network_id}
+          serviceAttachment:
+            valueFrom: {kind: GcpRedisCluster, name: orders-cache, fieldPath: status.outputs.primary_service_attachment}
 ```
 
 ```shell
 planton apply -f redis-cluster-endpoint-set.yaml
 ```
 
-This registers one consumer network's connection to the cluster's discovery endpoint (a real deployment lists one connection per attachment the cluster publishes). An Infra Job tracks the provisioning in real time.
+This registers one consumer network's two connections, to the cluster's discovery and primary attachments: Google rejects a group that leaves out an attachment the cluster publishes. A cluster with replicas publishes a reader attachment too, and its group adds a third connection on `reader_service_attachment`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 

@@ -17,6 +17,6 @@ A 30-day server certificate whose contents -- the host name, key usage, and publ
 
 | Field | Default | Why Change |
 |-------|---------|------------|
-| `config.publicKey.key` | an example P-256 key | Base64 of your key's PEM public key (`filebase64("key.pub.pem")`); the private key stays with you. |
+| `config.publicKey.key` | an example P-256 key | Base64 of your key's PEM public key (`filebase64("key.pub.pem")`); the private key stays with you. Always replace it: the example key's private half was discarded, so a certificate issued for it as written can never be used. |
 | `config.subjectConfig` | `api.internal.example.com` | Your host names. |
 | `lifetime` | `2592000s` (30 days) | Capped by the pool and template anyway. |

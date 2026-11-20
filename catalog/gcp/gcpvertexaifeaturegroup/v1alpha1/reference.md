@@ -67,7 +67,7 @@ spec:
 | `spec.featureGroupId` | `string` | yes |  |  |
 | `spec.description` | `string` |  |  |  |
 | `spec.labels` | `map<string, string>` |  |  |  |
-| `spec.bigQuery` | `GcpVertexAiFeatureGroupBigQuery` |  |  |  |
+| `spec.bigQuery` | `GcpVertexAiFeatureGroupBigQuery` | yes |  |  |
 | `spec.bigQuery.inputUri` | `string \| valueFrom` | yes |  | GcpBigQueryTable (`status.outputs.qualified_name`) |
 | `spec.bigQuery.entityIdColumns` | `[]string` |  |  |  |
 | `spec.features` | `[]GcpVertexAiFeatureGroupFeature` |  |  |  |
@@ -129,10 +129,13 @@ merged in and win on key conflicts.
 
 ### spec.bigQuery
 
-`GcpVertexAiFeatureGroupBigQuery`
+`GcpVertexAiFeatureGroupBigQuery` · required
 
-The BigQuery table or view the features come from. Google's API has no
-other source type today.
+The BigQuery table or view the features come from. Required: Google's
+API has no other source type, and a group without one has no data to
+register features against. Immutable.
+
+- rule: {"required":true}
 
 ### spec.bigQuery.inputUri
 

@@ -15,7 +15,7 @@ This directory contains the Terraform implementation for a Vertex AI TensorBoard
 | `variables.tf` | `metadata` and `spec` variable definitions (generated from the spec; the tfvars converter flattens refs to plain strings) |
 | `locals.tf` | Ambient project fallback, the display name defaulted from `metadata.name`, null-for-empty optionals, the `planton-ai_*` labels, the numeric TensorBoard id, the experiment and run maps |
 | `main.tf` | `google_project_service`, `google_vertex_ai_tensorboard`, `google_vertex_ai_tensorboard_experiment`, `google_vertex_ai_tensorboard_run` |
-| `outputs.tf` | `name`, `tensorboard_id`, `location`, `blob_storage_path_prefix`, `experiment_names`, `run_names` |
+| `outputs.tf` | `name`, `tensorboard_id`, `location`, `blob_storage_path_prefix`, `experiment_names`, `run_names`, `run_count` |
 
 ## Send Posture
 

@@ -9,7 +9,7 @@ This directory contains the Pulumi implementation for a Vertex AI persistent res
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `persistentResource` |
 | `module/locals.go` | The id defaulted from `metadata.name`; the `planton-ai_*` attribution labels |
 | `module/persistent_resource.go` | Enables the API; resolves the network; maps the pools, networking, runtime spec, and key; exports the outputs |
-| `module/outputs.go` | Output key constants (`name`, `persistent_resource_id`, `location`, `state`) |
+| `module/outputs.go` | Output key constants (`name`, `persistent_resource_id`, `location`, `state`, `error`) |
 
 ## Send Posture (parity with Terraform)
 

@@ -18,7 +18,7 @@ two project APIs it depends on enabled.
 | `variables.tf` | `metadata` and `spec` variable definitions (generated from the spec; the tfvars converter flattens refs to plain strings) |
 | `locals.tf` | Ambient project fallback, cluster name (spec or metadata.name fallback), the two explicit security-mode defaults, null-when-empty levers, the platform labels, and the per-connection-type service attachment map |
 | `main.tf` | `google_project_service` x2, `google_redis_cluster` |
-| `outputs.tf` | `name`, `uid`, `state`, the discovery endpoint, the three service attachment handles, `size_gb`, `shard_count`, `replica_count`, `backup_collection` |
+| `outputs.tf` | `name`, `uid`, `state`, the discovery endpoint, the three service attachment handles, `size_gb`, `shard_count`, `replica_count`, `backup_collection`, `available_maintenance_versions` |
 
 ## Send Posture
 

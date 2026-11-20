@@ -66,7 +66,7 @@ type GcpVertexAiDatasetSpec struct {
 	//	time_series_1.0.0.yaml forecasting data
 	//
 	// e.g. "gs://google-cloud-aiplatform/schema/dataset/metadata/image_1.0.0.yaml".
-	// Immutable.
+	// Only these five full URIs are accepted. Immutable.
 	MetadataSchemaUri string `protobuf:"bytes,4,opt,name=metadata_schema_uri,json=metadataSchemaUri,proto3" json:"metadata_schema_uri,omitempty"`
 	// Labels on the dataset. The platform attribution labels are merged in
 	// and win on key conflicts.
@@ -172,13 +172,14 @@ var File_catalog_gcp_gcpvertexaidataset_v1alpha1_spec_proto protoreflect.FileDes
 
 const file_catalog_gcp_gcpvertexaidataset_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/gcp/gcpvertexaidataset/v1alpha1/spec.proto\x12+dev.planton.gcp.gcpvertexaidataset.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xa2\x06\n" +
+	"2catalog/gcp/gcpvertexaidataset/v1alpha1/spec.proto\x12+dev.planton.gcp.gcpvertexaidataset.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x8d\v\n" +
 	"\x16GcpVertexAiDatasetSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12;\n" +
 	"\blocation\x18\x02 \x01(\tB\x1f\xbaH\x1c\xc8\x01\x01r\x172\x15^[a-z]+-[a-z]+[0-9]+$R\blocation\x12+\n" +
-	"\fdisplay_name\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x01R\vdisplayName\x12O\n" +
-	"\x13metadata_schema_uri\x18\x04 \x01(\tB\x1f\xbaH\x1c\xc8\x01\x01r\x172\x15^gs://[^/]+/.+\\.yaml$R\x11metadataSchemaUri\x12g\n" +
+	"\fdisplay_name\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x01R\vdisplayName\x12\xb9\x05\n" +
+	"\x13metadata_schema_uri\x18\x04 \x01(\tB\x88\x05\xbaH\x84\x05\xba\x01\xfd\x04\n" +
+	"\x1dmetadata_schema_uri.supported\x12\xdc\x01The dataset type must be one of Google's five schemas: gs://google-cloud-aiplatform/schema/dataset/metadata/ followed by image_1.0.0.yaml, text_1.0.0.yaml, tabular_1.0.0.yaml, video_1.0.0.yaml, or time_series_1.0.0.yaml.\x1a\xfc\x02this in ['gs://google-cloud-aiplatform/schema/dataset/metadata/image_1.0.0.yaml', 'gs://google-cloud-aiplatform/schema/dataset/metadata/text_1.0.0.yaml', 'gs://google-cloud-aiplatform/schema/dataset/metadata/tabular_1.0.0.yaml', 'gs://google-cloud-aiplatform/schema/dataset/metadata/video_1.0.0.yaml', 'gs://google-cloud-aiplatform/schema/dataset/metadata/time_series_1.0.0.yaml']\xc8\x01\x01R\x11metadataSchemaUri\x12g\n" +
 	"\x06labels\x18\x05 \x03(\v2O.dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDatasetSpec.LabelsEntryR\x06labels\x12t\n" +
 	"\fkms_key_name\x18\x06 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\n" +
 	"kmsKeyName\x12\xbb\x01\n" +

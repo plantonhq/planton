@@ -13,7 +13,7 @@ When you deploy this Infra Component, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** — an active connection in the Connect module with CA Service admin permissions (`roles/privateca.caManager`) on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
+- **GCP Provider Connection** — an active connection in the Connect module with CA Service admin permissions (`roles/privateca.caManager` or `roles/privateca.admin`) on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Required Dependencies
@@ -60,7 +60,7 @@ Authorities and certificates reference the pool from `pool`; Kafka and Redis clu
 
 These are the most important decisions when configuring this component. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**Tier** — `ENTERPRISE` stores, lists, and revokes certificates and allows your own KMS keys; `DEVOPS` issues faster and tracks nothing. Immutable.
+**Tier** — `ENTERPRISE` stores, lists, and revokes certificates and lets its authorities sign with your own Cloud KMS key versions; `DEVOPS` issues faster and tracks nothing. Immutable.
 
 **Issuance policy** — the guardrails: key types, maximum lifetime, which request forms are accepted, a CEL expression over the identities, and baseline X.509 values (key usage, CA constraints, name constraints) stamped on every certificate.
 

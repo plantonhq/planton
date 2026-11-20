@@ -85,9 +85,9 @@ go_test(
         "//catalog/gcp/aa_e2e/verify",
         "//e2e/framework/provider",
         "//e2e/framework/runner",
-        "@org_golang_google_api//cloudresourcemanager/v1:cloudresourcemanager",
         "@com_github_pkg_errors//:errors",
         "@com_google_cloud_go_auth//:auth",
+        "@org_golang_google_api//cloudresourcemanager/v1:cloudresourcemanager",
         "@org_golang_google_api//googleapi",
     ],
 )

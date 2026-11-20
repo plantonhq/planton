@@ -22,3 +22,15 @@ output "issuer_certificate_authority" {
   description = "The full name of the authority that signed the certificate"
   value       = google_privateca_certificate.this.issuer_certificate_authority
 }
+
+# The validity window, read from the provider's description of the signed
+# certificate (a one-element list nested twice).
+output "not_before_time" {
+  description = "When the certificate becomes valid (RFC 3339)"
+  value       = try(google_privateca_certificate.this.certificate_description[0].subject_description[0].not_before_time, "")
+}
+
+output "not_after_time" {
+  description = "When the certificate expires (RFC 3339) -- the date a successor must be installed by"
+  value       = try(google_privateca_certificate.this.certificate_description[0].subject_description[0].not_after_time, "")
+}

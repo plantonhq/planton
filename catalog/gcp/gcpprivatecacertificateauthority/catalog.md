@@ -6,13 +6,13 @@ The signing authority inside a private CA pool — a root you trust directly, or
 
 When you deploy this Infra Component, the IaC module provisions:
 
-- **Certificate authority** — a `privateca_certificate_authority` in the named pool, activated and enabled on create
+- **Certificate authority** — a `privateca_certificate_authority` in the named pool: enabled on create when it is a root or a subordinate signed by reference; a subordinate signed by an outside CA waits for its signed certificate
 
 ## Before You Deploy
 
 ### Planton Setup
 
-- **GCP Provider Connection** — an active connection in the Connect module with CA Service admin permissions (`roles/privateca.caManager`) on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
+- **GCP Provider Connection** — an active connection in the Connect module with CA Service admin permissions (`roles/privateca.caManager`) on the project; a subordinate signed by reference also needs `roles/privateca.certificateManager` on the parent's pool. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Required Dependencies
@@ -78,7 +78,7 @@ These are the most important decisions when configuring this component. Explore 
 
 **The certificate** — subject, CA constraints (`isCa`, `maxIssuerPathLength`), key usage, name constraints, and lifetime — all immutable.
 
-**Teardown** — `deletionProtection`, the 30-day soft delete, and `skipGracePeriod` decide how hard it is to lose a CA by accident.
+**Teardown** — three guards, in order: `deletionProtection`; Google's refusal while issued certificates are still valid (`ignoreActiveCertificatesOnDeletion` lifts it); and the 30-day soft delete (`skipGracePeriod` skips it). Together they decide how hard it is to lose a CA by accident.
 
 ## Outputs and Dependencies
 

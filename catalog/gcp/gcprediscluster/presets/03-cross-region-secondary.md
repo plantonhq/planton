@@ -21,6 +21,7 @@ Disaster recovery for a production cache: a second Memorystore for Redis Cluster
 
 | Field | Default | Why Change |
 |-------|---------|------------|
+| `projectId` | `my-gcp-project` | A stand-in: your project ID, or a `GcpProject` reference. |
 | `region` | `europe-west1` | The DR region; must differ from the primary's. |
 | `primaryCluster.cluster` | `orders-cache` | Your primary cluster, by reference or full resource path. |
 | `shardCount` | `3` | Must equal the primary's shard count. |

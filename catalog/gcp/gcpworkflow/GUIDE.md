@@ -53,8 +53,8 @@ With `cryptoKey` set, the Workflows service agent
 (service-{project_number}@gcp-sa-workflows.iam.gserviceaccount.com) needs
 roles/cloudkms.cryptoKeyEncrypterDecrypter on the key BEFORE the apply —
 the deploy fails otherwise, and the agent only exists after the API is
-first enabled in the project. Grant through the GcpKmsKey's iam_members
-in the same chart and order the workflow after it.
+first enabled in the project. Grant it with a GcpKmsKeyIamMember on the
+key in the same chart and order the workflow after it.
 
 ## Teardown discipline
 

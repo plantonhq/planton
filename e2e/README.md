@@ -243,11 +243,22 @@ adopts it needs all three:
   prerequisite chains -- and a document with no `${E2E_RUN_ID}` sends the
   kind to run with nothing else running, naming the file. The check is
   textual and per document; a document that tokenizes one name but fixes
-  another passes it, so tokenize by reading the file.
+  another passes it, so tokenize by reading the file. A document that
+  creates nothing under a name of its own (a service networking peering on
+  a run-scoped network, a database user named by a run-scoped service
+  account, connections registered on a run-scoped cluster) says so with
+  `planton.dev/e2e-names-nothing: "<why>"` and passes; the reason is the
+  review, so a document that does name something never carries it.
 - **Singletons and scarce quota take a class.** A scenario annotated
   `planton.dev/e2e-exclusive: <class>` never runs beside another kind naming
   the same class: a location's RAG Engine configuration, a project's Model
-  Armor floor, a project too small in vCPUs for two clusters at once.
+  Armor floor, a project too small in vCPUs for two clusters at once. GCP's
+  VM-running kinds (GKE clusters and node pools, Dataproc, Compute
+  instances and managed instance groups, Workbench notebooks) name
+  `gcp-project-vcpus`: the lane project holds 12 vCPUs across all regions,
+  so they run one at a time, and each kind's two engines in turn. A kind
+  takes its classes before its slot, so kinds queued behind a class never
+  hold the slots the other kinds run in.
 
 Pulumi stacks are created with `--no-select` and never selected (every
 command names its stack), because selecting writes one record per module

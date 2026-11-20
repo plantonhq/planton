@@ -9,6 +9,29 @@ resource "google_project_service" "container_api" {
   disable_on_destroy         = false
 }
 
+# Cloud Logging and Cloud Monitoring receive what the cluster ships. GKE turns
+# both integrations on by default (system components and workloads for
+# logging, system metrics for monitoring), but it never turns on the project's
+# Logging and Monitoring APIs, and with either API off nothing arrives. The
+# Logging API is enabled unless the spec turns logging off; monitoring has no
+# off switch in the spec, so its API is always enabled. Like the Kubernetes
+# Engine API, neither is disabled on destroy.
+resource "google_project_service" "logging_api" {
+  count = local.logging_enabled ? 1 : 0
+
+  project = local.project_id
+  service = "logging.googleapis.com"
+
+  disable_on_destroy = false
+}
+
+resource "google_project_service" "monitoring_api" {
+  project = local.project_id
+  service = "monitoring.googleapis.com"
+
+  disable_on_destroy = false
+}
+
 # A GKE cluster — the managed Kubernetes control plane plus cluster-wide
 # configuration. Node pools are separate GcpGkeNodePool resources: the
 # default node pool is always removed at create time on Standard clusters,
@@ -120,6 +143,21 @@ resource "google_container_cluster" "this" {
   # both fields (GKE owns node management there).
   remove_default_node_pool = local.is_autopilot ? null : true
   initial_node_count       = local.is_autopilot ? null : 1
+
+  # The default pool lives only while the cluster is created, so it boots
+  # from a standard persistent disk. GKE's default boot disk is a 100 GB
+  # pd-balanced disk, which counts against the region's SSD quota: a
+  # regional cluster's three of them (300 GB) exceed the 250 GB a new
+  # project holds, and the create fails before the pool can be removed.
+  # Standard disk counts against the far larger total-disk quota. Once the
+  # pool is gone the provider reads node_config back from whichever pool
+  # the cluster has, so the block is ignored after create (lifecycle below).
+  dynamic "node_config" {
+    for_each = local.is_autopilot ? [] : [1]
+    content {
+      disk_type = "pd-standard"
+    }
+  }
 
   enable_autopilot = local.is_autopilot ? true : null
   allow_net_admin  = var.spec.allow_net_admin ? true : null
@@ -952,5 +990,15 @@ resource "google_container_cluster" "this" {
 
   resource_labels = local.final_labels
 
-  depends_on = [google_project_service.container_api]
+  lifecycle {
+    # node_config configures only the default pool removed at create; what
+    # the provider reads back afterwards belongs to the cluster's own pools.
+    ignore_changes = [node_config]
+  }
+
+  depends_on = [
+    google_project_service.container_api,
+    google_project_service.logging_api,
+    google_project_service.monitoring_api,
+  ]
 }

@@ -248,6 +248,7 @@ Reference an output from another manifest as `valueFrom: {kind: GcpVertexAiTenso
 | `status.outputs.blob_storage_path_prefix` | `string` | The Cloud Storage path prefix (bucket or directory, no trailing slash) in Google's tenant project where the TensorBoard stores blob data. |
 | `status.outputs.experiment_names` | `[]string` | Full resource names of the declared experiments, in manifest order. |
 | `status.outputs.run_names` | `[]string` | Full resource names of the declared runs, experiment by experiment in manifest order. |
+| `status.outputs.run_count` | `string` | The number of runs the TensorBoard holds as Google counts them -- runs training jobs logged as well as the declared ones -- as read during the last deploy. The TensorBoard is read before its declared runs are created, so runs added in a deploy count from the next one. A decimal string, as Google reports it; empty when Google reports no count. |
 
 ## References
 

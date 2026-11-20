@@ -132,6 +132,7 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 | `service_account_email` | The instance's service account | GCS bucket grants (SQL Server audit), CMEK key access |
 | `dns_name` | DNS name (PSC instances) | Consumer application endpoints |
 | `psc_service_attachment_link` | PSC service attachment | Consumer-side PSC endpoint wiring |
+| `socket_path` | Unix socket path, `/cloudsql/{connection_name}` | The host (PostgreSQL) or socket (MySQL) of a connection string for Cloud Run and Auth Proxy workloads |
 
 ## Common Patterns
 

@@ -88,6 +88,7 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 | `blob_storage_path_prefix` | Where Google stores blob data | Diagnostics |
 | `experiment_names` | The declared experiments' full names | Dashboards, evaluation pipelines |
 | `run_names` | The declared runs' full names | Baseline comparisons |
+| `run_count` | Runs held, job-logged runs included | Usage dashboards |
 
 ## Common Patterns
 

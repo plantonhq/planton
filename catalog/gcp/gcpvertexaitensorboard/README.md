@@ -78,6 +78,7 @@ planton apply -f vertex-ai-tensorboard.yaml
 | `blob_storage_path_prefix` | `string` | Where Google stores the TensorBoard's blob data |
 | `experiment_names` | `[]string` | Full resource names of the declared experiments, in manifest order |
 | `run_names` | `[]string` | Full resource names of the declared runs, in manifest order |
+| `run_count` | `string` | Runs the TensorBoard holds as Google counts them, job-logged runs included, read at the last deploy |
 
 ## Deployment Methods
 

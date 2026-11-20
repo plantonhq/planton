@@ -15,7 +15,7 @@ This directory contains the Terraform implementation for a Certificate Authority
 | `variables.tf` | `metadata` and `spec` variable definitions (generated from the spec; the tfvars converter flattens refs to plain strings) |
 | `locals.tf` | Ambient project fallback, the bare pool and authority IDs trimmed from their references, the certificate ID defaulted from `metadata.name`, null-for-empty optionals, the merged labels |
 | `main.tf` | `google_privateca_certificate` from a CSR or a config block (subject, subject key ID, X.509, public key) |
-| `outputs.tf` | `name`, `certificate_id`, `pem_certificate`, `pem_certificate_chain`, `issuer_certificate_authority` |
+| `outputs.tf` | `name`, `certificate_id`, `pem_certificate`, `pem_certificate_chain`, `issuer_certificate_authority`, `not_before_time`, `not_after_time` |
 
 ## Send Posture
 

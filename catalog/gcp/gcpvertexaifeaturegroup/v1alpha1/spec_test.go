@@ -78,6 +78,12 @@ var _ = ginkgo.Describe("GcpVertexAiFeatureGroupSpec", func() {
 		}
 	})
 
+	ginkgo.It("should require the BigQuery source", func() {
+		msg := minimal()
+		msg.Spec.BigQuery = nil
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
 	ginkgo.It("should require the source table when a BigQuery source is declared", func() {
 		msg := minimal()
 		msg.Spec.BigQuery.InputUri = nil

@@ -99,7 +99,7 @@ The InfraPipeline resolves the dependency graph, deploys the project and VPC fir
 
 These are the most important decisions when configuring a Memorystore instance. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**Cluster mode and sharding** — Set `mode` to `CLUSTER` for sharded mode with native cluster protocol (requires cluster-aware client drivers) or `CLUSTER_DISABLED` for standalone mode with a single primary endpoint. `shardCount` controls data distribution across nodes. Both are immutable after creation.
+**Cluster mode and sharding** — Set `mode` to `CLUSTER` for sharded mode with native cluster protocol (requires cluster-aware client drivers) or `CLUSTER_DISABLED` for standalone mode with a single primary endpoint. `shardCount` controls data distribution across nodes. The mode is immutable after creation; `shardCount` (and `replicaCount`) resize in place.
 
 **Node type** — Choose from `SHARED_CORE_NANO` (dev/test), `STANDARD_SMALL` (small workloads), `HIGHMEM_MEDIUM` (medium production), or `HIGHMEM_XLARGE` (large production). Memory per node is determined by the node type, not an explicit size field. The actual memory is reported in `status.outputs.node_size_gb`.
 

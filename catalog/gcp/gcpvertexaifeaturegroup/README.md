@@ -58,6 +58,7 @@ planton apply -f vertex-ai-feature-group.yaml
 |-------|------|-------------|
 | `location` | `string` | The Vertex AI region. Immutable. |
 | `featureGroupId` | `string` | Up to 128 lowercase letters, digits, and underscores, not starting with a digit. |
+| `bigQuery.inputUri` | `StringValueOrRef` | A `GcpBigQueryTable` reference or a literal `project.dataset.table` / `bq://project.dataset.table`; the modules add `bq://` when missing. Immutable. |
 
 ### Optional Fields
 
@@ -65,7 +66,6 @@ planton apply -f vertex-ai-feature-group.yaml
 |-------|------|---------|-------------|
 | `projectId` | `StringValueOrRef` | provider project | The project, as a literal or a `GcpProject` reference. |
 | `description`, `labels` | | | Descriptive metadata; mutable. |
-| `bigQuery.inputUri` | `StringValueOrRef` | none | A `GcpBigQueryTable` reference or a literal `project.dataset.table` / `bq://project.dataset.table`; the modules add `bq://` when missing. Immutable. |
 | `bigQuery.entityIdColumns` | `[]string` | `entity_id` | The columns that form an entity's ID. Mutable. |
 | `features[]` | `[]object` | none | `featureId` (same rule as the group id; immutable), `description`, `labels`, `versionColumnName` (the source column, when it differs from the id). |
 | `deletionPolicy` | `string` | `DELETE` | `DELETE`, `PREVENT`, or `ABANDON`; fanned to every feature. |
@@ -74,7 +74,7 @@ planton apply -f vertex-ai-feature-group.yaml
 
 - Group and feature ids follow Google's rule: `[a-z0-9_]`, first character not a digit, up to 128.
 - Feature ids are unique within the group.
-- A declared BigQuery source names its table.
+- `bigQuery` is required and names its table.
 
 ## Outputs
 

@@ -6,7 +6,7 @@ A certificate authority in a Certificate Authority Service CA pool: a self-signe
 
 When you deploy this Infra Component, the IaC module provisions:
 
-- **Certificate authority** -- a `privateca_certificate_authority` in the named pool, with its own CA certificate (subject, X.509 fields, lifetime) and signing key (a Google-managed HSM key or your own Cloud KMS key version), activated and enabled on create
+- **Certificate authority** -- a `privateca_certificate_authority` in the named pool, with its own CA certificate (subject, X.509 fields, lifetime) and signing key (a Google-managed HSM key or your own Cloud KMS key version), enabled on create when it is a root (or held `STAGED` when `desiredState` says so) or a subordinate signed by reference; a subordinate signed by an outside CA waits in `AWAITING_USER_ACTIVATION` until a second apply supplies its signed certificate
 
 ## Before You Deploy
 
@@ -70,7 +70,7 @@ planton apply -f root-ca.yaml
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
-| `projectId` | `StringValueOrRef` | provider project | The pool's project. |
+| `projectId` | `StringValueOrRef` | provider project | The pool's project. Immutable. |
 | `certificateAuthorityId` | `string` | `metadata.name` | Immutable. |
 | `type` | `string` | `SELF_SIGNED` | `SELF_SIGNED` or `SUBORDINATE`. Immutable. |
 | `lifetime` | `string` | `315360000s` | The CA certificate's validity. Immutable. |
@@ -78,7 +78,7 @@ planton apply -f root-ca.yaml
 | `pemCaCertificate` | `string` | -- | An outside CA's signed certificate, with `subordinateConfig.pemIssuerChain`. |
 | `gcsBucket` | `StringValueOrRef` | Google-managed bucket | Where the CA certificate and CRLs are published. Immutable. |
 | `userDefinedAccessUrls` | `object` | -- | URLs advertised instead of the bucket's. |
-| `desiredState` | `string` | `ENABLED` | `ENABLED`, `STAGED` (only at create), or `DISABLED` (only after create). |
+| `desiredState` | `string` | unset (issuing once active) | `ENABLED`, `STAGED` (only at create), or `DISABLED` (only after create). |
 | `deletionProtection` | `bool` | `true` | A destroy fails until this is false. |
 | `skipGracePeriod` | `bool` | `false` | Delete immediately instead of after 30 days. |
 | `ignoreActiveCertificatesOnDeletion` | `bool` | `false` | Allow destroy while issued certificates are still valid. |
@@ -116,9 +116,9 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 ## Important Notes
 
-- **Destroy is guarded twice.** `deletionProtection` defaults to true; with it false, destroy disables the authority and schedules deletion after 30 days (restorable until then) unless `skipGracePeriod`. The pool cannot be deleted while the authority exists, even in that window.
+- **Destroy has three guards, in order.** `deletionProtection` (true until you set it false and apply); then Google's refusal while certificates the authority issued are still valid, unless `ignoreActiveCertificatesOnDeletion`; then the 30-day soft delete (restorable until then), unless `skipGracePeriod`. The pool cannot be deleted while the authority exists, even in that window.
 - **The certificate is forever.** `config`, `keySpec`, `type`, `lifetime`, and `gcsBucket` are immutable; changing one replaces the authority -- plan it as a rotation.
-- **A subordinate signed by reference is activated on create**; one signed by an outside CA needs its signed certificate and issuer chain (read the CSR from Google after the first apply); with neither, it waits in `AWAITING_USER_ACTIVATION`.
+- **A subordinate signed by reference is activated on create**; one signed by an outside CA waits in `AWAITING_USER_ACTIVATION` after the first apply. Read its CSR with `gcloud privateca subordinates get-csr`, have your CA sign it, then set `pemCaCertificate` and `subordinateConfig.pemIssuerChain` together and apply again.
 - **Each authority bills a monthly fee** at its pool's tier (see `cost.yaml`).
 
 ## Examples

@@ -112,7 +112,8 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 ## Important Notes
 
 - **The list is the set.** Google replaces the cluster's whole user-created endpoint list on every apply; a connection missing from the manifest is deregistered and its forwarding rule stops working -- delete the rule in the same change.
-- **One set per cluster.** Two sets on one cluster overwrite each other.
+- **One set per cluster.** Two sets on one cluster overwrite each other: creating a set replaces whatever connections were registered, and a `DELETE` destroy deregisters every user-created connection on the cluster, declared here or not.
+- **The cluster and the region are fixed.** A change to either is planned in place but never sent; the old cluster keeps its registration. A set on another cluster is a new set: destroy this one and declare the next.
 - **Every field is an output of another block** -- the forwarding rule twice (two output paths), the address, the network, the cluster's attachment handle -- so nothing is copied by hand.
 
 ## Examples

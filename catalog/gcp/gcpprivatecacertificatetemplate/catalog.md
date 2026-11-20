@@ -13,7 +13,7 @@ When you deploy this Infra Component, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** — an active connection in the Connect module with CA Service template admin permissions (`roles/privateca.templateAdmin`) on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
+- **GCP Provider Connection** — an active connection in the Connect module with CA Service template admin permissions (`roles/privateca.templateAdmin` or `roles/privateca.admin`) on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Required Dependencies
@@ -98,4 +98,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 ## Works With
 
 - [**GCP Private CA Certificate**](/infra-catalog/gcp-private-ca-certificate) — certificates issued with it
-- [**GCP Private CA Pool**](/infra-catalog/gcp-private-ca-pool) — the pools it issues from
+- [**GCP Private CA Pool**](/infra-catalog/gcp-private-ca-pool) — the pools certificates using it are issued from (a certificate names both its pool and its template; the template names no pool)

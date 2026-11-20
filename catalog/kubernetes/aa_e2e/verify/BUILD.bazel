@@ -110,6 +110,7 @@ go_library(
         "velero.go",
         "verifier.go",
         "workload.go",
+        "workloadsize.go",
     ],
     importpath = "github.com/plantonhq/planton/catalog/kubernetes/aa_e2e/verify",
     visibility = ["//visibility:public"],

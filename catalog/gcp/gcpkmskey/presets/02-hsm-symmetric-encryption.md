@@ -26,4 +26,6 @@ versions, and rotation accumulates versions until old ones are destroyed
 
 - Drop `rotationPeriod` for a manually rotated HSM key.
 - Use this template for `MAC` or asymmetric purposes by switching
-  `purpose` and the algorithm together.
+  `purpose` and the algorithm together and dropping `rotationPeriod`:
+  Cloud KMS rotates only symmetric encryption keys automatically, and the
+  spec refuses a rotation period on any other purpose.

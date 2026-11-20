@@ -25,4 +25,9 @@ message GcpVertexAiFeatureOnlineStoreOutputs {
 
   // Full resource names of the declared feature views, in manifest order.
   repeated string feature_view_names = 6;
+
+  // The store's state as Google reports it: STABLE (configuration settled,
+  // the store serves) or UPDATING (a change is being applied; the store
+  // still serves, from the old or the new configuration).
+  string state = 7;
 }

@@ -110,10 +110,11 @@ type GcpComputeInstanceSpec struct {
 	AdvancedMachineFeatures *GcpComputeInstanceAdvancedMachineFeatures `protobuf:"bytes,15,opt,name=advanced_machine_features,json=advancedMachineFeatures,proto3" json:"advanced_machine_features,omitempty"`
 	// GPU accelerator cards attached to the instance. Requires a
 	// GPU-capable zone and on_host_maintenance = "TERMINATE". Each entry
-	// attaches at least one card (count >= 1). Removing every entry from an
-	// existing VM leaves its GPUs attached (the provider preserves the
-	// current accelerators when the block is absent); detaching GPUs
-	// replaces the VM, so plan it as a recreate rather than an edit.
+	// attaches at least one card (count >= 1). Any change to this list on
+	// an existing VM (a type, a count, an added or removed entry) replaces
+	// the VM, so plan it as a recreate rather than an edit. Removing every
+	// entry is the exception: the provider preserves the current
+	// accelerators when the block is absent, so the GPUs stay attached.
 	GuestAccelerators []*GcpComputeInstanceGuestAccelerator `protobuf:"bytes,16,rep,name=guest_accelerators,json=guestAccelerators,proto3" json:"guest_accelerators,omitempty"`
 	// Reservation affinity — whether this VM consumes capacity from any
 	// matching reservation, a specific reservation, or none.

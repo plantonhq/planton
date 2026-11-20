@@ -86,18 +86,37 @@ var _ = ginkgo.Describe("GcpVertexAiFeatureOnlineStoreSpec", func() {
 		msg.Spec.Bigtable.Zone = "us-central1-a"
 		target := int32(60)
 		msg.Spec.Bigtable.AutoScaling.CpuUtilizationTarget = &target
-		msg.Spec.DedicatedServingEndpoint = &GcpVertexAiFeatureOnlineStoreDedicatedServingEndpoint{
-			PrivateServiceConnectConfig: &GcpVertexAiFeatureOnlineStorePrivateServiceConnectConfig{
-				EnablePrivateServiceConnect: true,
-				ProjectAllowlist:            []string{"consumer-project"},
-			},
-		}
 		msg.Spec.KmsKeyName = litRef("projects/p/locations/us-central1/keyRings/r/cryptoKeys/k")
 		msg.Spec.ForceDestroy = true
 		msg.Spec.FeatureViews[0].Labels = map[string]string{"tier": "gold"}
 		msg.Spec.FeatureViews[0].FeatureRegistrySource.ProjectNumber = litRef("123456789012")
 		msg.Spec.DeletionPolicy = "ABANDON"
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should accept Private Service Connect only on an Optimized store", func() {
+		psc := &GcpVertexAiFeatureOnlineStoreDedicatedServingEndpoint{
+			PrivateServiceConnectConfig: &GcpVertexAiFeatureOnlineStorePrivateServiceConnectConfig{
+				EnablePrivateServiceConnect: true,
+				ProjectAllowlist:            []string{"consumer-project"},
+			},
+		}
+		msg := optimized()
+		msg.Spec.DedicatedServingEndpoint = psc
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		msg = bigtable()
+		msg.Spec.DedicatedServingEndpoint = psc
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.DedicatedServingEndpoint = &GcpVertexAiFeatureOnlineStoreDedicatedServingEndpoint{}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "an empty endpoint block names no PSC")
+	})
+
+	ginkgo.It("should take exactly one entity column on a BigQuery view", func() {
+		msg := bigtable()
+		msg.Spec.FeatureViews[1].BigQuerySource.EntityIdColumns = []string{"customer_id", "region"}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "two columns")
+		msg.Spec.FeatureViews[1].BigQuerySource.EntityIdColumns = nil
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "no column")
 	})
 
 	ginkgo.It("should require exactly one storage kind", func() {

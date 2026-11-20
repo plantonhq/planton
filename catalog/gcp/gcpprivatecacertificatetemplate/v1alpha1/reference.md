@@ -111,7 +111,7 @@ spec:
 | `spec.identityConstraints.allowSubjectPassthrough` | `bool` |  |  |  |
 | `spec.identityConstraints.allowSubjectAltNamesPassthrough` | `bool` |  |  |  |
 | `spec.identityConstraints.celExpression` | `GcpPrivateCaCertificateTemplateCelExpression` |  |  |  |
-| `spec.identityConstraints.celExpression.expression` | `string` |  |  |  |
+| `spec.identityConstraints.celExpression.expression` | `string` | yes |  |  |
 | `spec.identityConstraints.celExpression.title` | `string` |  |  |  |
 | `spec.identityConstraints.celExpression.description` | `string` |  |  |  |
 | `spec.identityConstraints.celExpression.location` | `string` |  |  |  |
@@ -306,15 +306,17 @@ The OID's arcs, most significant first.
 `GcpPrivateCaCertificateTemplateCaOptions`
 
 The basic constraints extension: whether the certificate is a CA and
-how many CA levels may sit below it. Omit to leave the extension to
-Google's default (for a leaf certificate, is_ca false).
+how many CA levels may sit below it. Omitting the block sends no basic
+constraints at all, leaving the extension to the pool and the request.
+A block with is_ca unset is a different request: the block is sent
+without a CA flag.
 
 ### spec.predefinedValues.caOptions.isCa
 
 `bool` · optional (explicit presence)
 
 true makes a CA certificate (CA:TRUE), false states CA:FALSE; unset
-leaves the CA flag out of the extension.
+sends the block without a CA flag.
 
 ### spec.predefinedValues.caOptions.maxIssuerPathLength
 
@@ -485,9 +487,12 @@ subject_alt_names.all(san, san.type == DNS && san.value.endsWith(".internal.exam
 
 ### spec.identityConstraints.celExpression.expression
 
-`string`
+`string` · required
 
-The expression.
+The expression. Required when the block is set: an empty expression
+constrains nothing.
+
+- rule: {"string":{"minLen":"1"}}
 
 ### spec.identityConstraints.celExpression.title
 

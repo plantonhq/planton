@@ -104,6 +104,7 @@ func featureOnlineStore(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Pr
 	ctx.Export(OpPublicEndpointDomainName, createdStore.DedicatedServingEndpoint.PublicEndpointDomainName().Elem())
 	ctx.Export(OpServiceAttachment, createdStore.DedicatedServingEndpoint.ServiceAttachment().Elem())
 	ctx.Export(OpFeatureViewNames, featureViewNames.ToStringArrayOutput())
+	ctx.Export(OpState, createdStore.State)
 	return nil
 }
 

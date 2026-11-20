@@ -264,7 +264,10 @@ way); the backends must speak the protocol when true.
 `[]string`
 
 Domain name registered with Cloud DNS for the connected endpoints, e.g.
-"p.mycompany.com." (with the trailing dot). At most one. Immutable.
+"p.mycompany.com." (with the trailing dot). Google refuses a domain the
+producer has not validated (Cloud DNS "DNS for VPC-hosted services"
+validation) -- set it only for a domain you own and have validated.
+At most one. Immutable.
 
 - rule: {"repeated":{"maxItems":"1","items":{"string":{"pattern":"^([a-z0-9-]+\\.)+$"}}}}
 

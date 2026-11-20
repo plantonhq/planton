@@ -95,15 +95,15 @@ spec:
       field_path: zone_distribution_config.mode
       evidence:
         type: spec_default
-        reference: MULTI_ZONE (Google's default when the block is absent) spreads nodes across zones; SINGLE_ZONE is the explicit single-zone opt-down. Immutable after creation.
+        reference: MULTI_ZONE (Google's default when the block is absent) spreads nodes across zones; SINGLE_ZONE is the explicit single-zone opt-down. Fixed at creation -- a change is planned in place, never sent, and re-planned on every deploy.
       notes: Preset 02 pins MULTI_ZONE and adds replica_count 1 for per-shard failover; zone spreading without replicas narrows the blast radius but does not fail over.
     - control_id: deletion-protection
       status: configurable
       field_path: deletion_protection_enabled
       evidence:
         type: spec_default
-        reference: Defaults to true -- destroying the cluster fails until the flag is explicitly set false; both engines send the value explicitly so the spec is the single source of truth.
-      notes: The dev preset opts out; presets 02 and 03 keep it on. deletion_policy PREVENT is a second, independent guard.
+        reference: Defaults to true -- a DELETE destroy fails until the flag is set false and that change is applied; both engines send the value explicitly so the spec is the single source of truth. Google enforces it, so it guards only DELETE -- the provider decides PREVENT and ABANDON before calling Google, and an ABANDON succeeds on a protected cluster.
+      notes: The dev preset opts out; presets 02 and 03 keep it on. deletion_policy PREVENT fails any destroy before Google is called.
     - control_id: managed-patching
       status: enforced_by_default
       evidence:

@@ -8,10 +8,16 @@ import "shared/foreignkey/v1/foreign_key.proto";
 // GcpVertexAiPersistentResourceMachineSpec is the machine every replica of
 // a pool runs on.
 message GcpVertexAiPersistentResourceMachineSpec {
+  option (buf.validate.message).cel = {
+    id: "machine_spec.accelerator_pair"
+    message: "An accelerator needs both its type and its count. Set accelerator_type with an accelerator_count of at least 1, or leave both unset."
+    expression: "(this.accelerator_type == '') == (this.accelerator_count == 0)"
+  };
+
   // The Compute Engine machine type, e.g. "n1-standard-4", "a2-highgpu-1g",
   // "ct5lp-hightpu-4t" -- any type Vertex AI custom training supports.
-  // Immutable.
-  string machine_type = 1;
+  // Required. Immutable.
+  string machine_type = 1 [(buf.validate.field).string.min_len = 1];
 
   // The accelerator attached to every replica (NVIDIA_TESLA_T4,
   // NVIDIA_L4, NVIDIA_TESLA_A100, NVIDIA_A100_80GB, NVIDIA_H100_80GB,
@@ -45,14 +51,21 @@ message GcpVertexAiPersistentResourceMachineSpec {
     }
   ];
 
-  // How many accelerators each replica carries, set together with
-  // accelerator_type. Sent only when set. Immutable.
+  // How many accelerators each replica carries -- at least 1 when
+  // accelerator_type is set, 0 (unset) when it is not. Sent only when set.
+  // Immutable.
   int32 accelerator_count = 3 [(buf.validate.field).int32.gte = 0];
 }
 
 // GcpVertexAiPersistentResourceAutoscalingSpec lets a pool grow and shrink
 // with the jobs running on it.
 message GcpVertexAiPersistentResourceAutoscalingSpec {
+  option (buf.validate.message).cel = {
+    id: "autoscaling_spec.max_above_min"
+    message: "The most replicas must be more than the fewest. Raise max_replica_count above min_replica_count."
+    expression: "!has(this.min_replica_count) || !has(this.max_replica_count) || this.max_replica_count > this.min_replica_count"
+  };
+
   // Fewest replicas kept running -- at least 1 on a persistent resource
   // (Google rejects 0 here), and at most the pool's replica_count. Sent as
   // a decimal string. Immutable.
@@ -93,6 +106,12 @@ message GcpVertexAiPersistentResourceDiskSpec {
 // change replaces the whole persistent resource). replica_count updates in
 // place.
 message GcpVertexAiPersistentResourceResourcePool {
+  option (buf.validate.message).cel = {
+    id: "resource_pool.replica_count_within_bounds"
+    message: "replica_count must sit within the autoscaling bounds: at least min_replica_count and at most max_replica_count."
+    expression: "!has(this.replica_count) || ((!has(this.autoscaling_spec.min_replica_count) || this.autoscaling_spec.min_replica_count <= this.replica_count) && (!has(this.autoscaling_spec.max_replica_count) || this.autoscaling_spec.max_replica_count >= this.replica_count))"
+  };
+
   // The pool's id within the resource -- what a job's worker pool spec
   // refers to. Google generates one when empty. Sent only when set.
   // Immutable.
@@ -162,8 +181,10 @@ message GcpVertexAiPersistentResourcePscInterfaceConfig {
 // GcpVertexAiPersistentResourceSpec defines a Vertex AI persistent
 // resource (`google_vertex_ai_persistent_resource`) -- a long-running
 // cluster of machines Vertex AI keeps provisioned so custom training jobs
-// (and Ray on Vertex AI) start in seconds instead of waiting minutes for
-// capacity, and so scarce accelerators stay reserved between jobs. A job
+// start in seconds instead of waiting minutes for capacity, and so scarce
+// accelerators stay reserved between jobs. A Ray on Vertex AI cluster is a
+// persistent resource with Ray settings, which neither provider carries;
+// this kind keeps machines for custom training jobs only. A job
 // runs on it by naming its id in `persistent_resource_id`; the job's
 // network and encryption must match the resource's.
 //
@@ -173,6 +194,12 @@ message GcpVertexAiPersistentResourcePscInterfaceConfig {
 // Immutable: everything except the display name, labels, and each pool's
 // replica_count -- a change to any other setting replaces the resource.
 message GcpVertexAiPersistentResourceSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.network_literal_path"
+    message: "A literal network must be its full path, projects/{project}/global/networks/{name}, or the network's self-link. Write the path, or reference a GcpVpcNetwork."
+    expression: "!has(this.network.value) || this.network.value == '' || this.network.value.matches('^(https://www\\\\.googleapis\\\\.com/compute/v1/)?projects/[^/]+/global/networks/[^/]+$')"
+  };
+
   // The GCP project the resource lives in: a literal project ID or a
   // GcpProject reference. If omitted, the provider's default project is
   // used.
@@ -213,9 +240,11 @@ message GcpVertexAiPersistentResourceSpec {
   // services: a GcpVpcNetwork reference or a literal
   // projects/{project}/global/networks/{name}. Google requires the project
   // NUMBER in that path; both modules resolve a project ID to its number
-  // (one project lookup at plan time). The network must already have VPC
-  // Network Peering for Vertex AI (private services access) configured.
-  // Omit for no peering. Immutable.
+  // (one project lookup at plan time). A literal is that path or the
+  // network's full https://www.googleapis.com/compute/v1/ self-link; a bare
+  // network name is refused. The network must already have VPC Network
+  // Peering for Vertex AI (private services access) configured. Omit for
+  // no peering. Immutable.
   dev.planton.shared.foreignkey.v1.StringValueOrRef network = 7 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpVpcNetwork,
     (dev.planton.shared.foreignkey.v1.containment_exempt) = true,

@@ -60,7 +60,7 @@ planton apply -f vertex-ai-dataset.yaml
 ### Validation Rules
 
 - `location` is a region (`us-central1`, never `global` or a multi-region).
-- `metadataSchemaUri` is a `gs://` path to a YAML file.
+- `metadataSchemaUri` is one of Google's five full schema URIs (listed above); any other value is refused.
 - `displayName` is at most 128 characters.
 
 ## Outputs

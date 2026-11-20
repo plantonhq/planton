@@ -16,8 +16,10 @@ message GcpPrivateCaCertificateTemplateX509Parameters {
   GcpPrivateCaCertificateTemplateKeyUsage key_usage = 1;
 
   // The basic constraints extension: whether the certificate is a CA and
-  // how many CA levels may sit below it. Omit to leave the extension to
-  // Google's default (for a leaf certificate, is_ca false).
+  // how many CA levels may sit below it. Omitting the block sends no basic
+  // constraints at all, leaving the extension to the pool and the request.
+  // A block with is_ca unset is a different request: the block is sent
+  // without a CA flag.
   GcpPrivateCaCertificateTemplateCaOptions ca_options = 2;
 
   // Certificate policy object identifiers (RFC 5280 section 4.2.1.4), each
@@ -112,11 +114,11 @@ message GcpPrivateCaCertificateTemplateExtendedKeyUsage {
 }
 
 // GcpPrivateCaCertificateTemplateCaOptions is the basic constraints extension (RFC 5280 section
-// 4.2.1.9). Both fields are presence-based: an unset field is left out of
-// the certificate, which is different from setting it to false or 0.
+// 4.2.1.9). Both fields are presence-based: an unset field is sent as
+// absent, which is different from setting it to false or 0.
 message GcpPrivateCaCertificateTemplateCaOptions {
   // true makes a CA certificate (CA:TRUE), false states CA:FALSE; unset
-  // leaves the CA flag out of the extension.
+  // sends the block without a CA flag.
   optional bool is_ca = 1;
 
   // The path length constraint: how many CA levels may sit below this
@@ -204,8 +206,9 @@ message GcpPrivateCaCertificateTemplateIdentityConstraints {
 // GcpPrivateCaCertificateTemplateCelExpression is a CEL expression with its descriptive fields
 // (Google's Expr); see Google's CA Service CEL guide for the variables.
 message GcpPrivateCaCertificateTemplateCelExpression {
-  // The expression.
-  string expression = 1;
+  // The expression. Required when the block is set: an empty expression
+  // constrains nothing.
+  string expression = 1 [(buf.validate.field).string.min_len = 1];
 
   // A short title for the expression.
   string title = 2;

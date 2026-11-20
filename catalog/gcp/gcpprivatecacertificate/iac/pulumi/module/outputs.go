@@ -8,4 +8,6 @@ const (
 	OpPemCertificate             = "pem_certificate"
 	OpPemCertificateChain        = "pem_certificate_chain"
 	OpIssuerCertificateAuthority = "issuer_certificate_authority"
+	OpNotBeforeTime              = "not_before_time"
+	OpNotAfterTime               = "not_after_time"
 )

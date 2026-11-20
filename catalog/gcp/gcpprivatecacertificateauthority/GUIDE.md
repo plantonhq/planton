@@ -4,10 +4,10 @@ The judgment this guide protects: an authority's certificate is immutable and tr
 
 ## Root, subordinate, or both
 
-Run two tiers for anything serious: a root in its own pool that signs only subordinates (`maxIssuerPathLength: 0` on the subordinates' certificates), and subordinates in the issuing pools. The root's key is used rarely; a compromised subordinate is revoked and replaced without re-trusting anything. A single self-signed authority is fine for a lab or a short-lived mesh.
+Run two tiers for anything serious: a root in its own pool that signs only subordinates (`maxIssuerPathLength: 0` on the subordinates' certificates), and subordinates in the issuing pools. The root's key is used rarely; a compromised subordinate is revoked and replaced without re-trusting anything. Revocation is an Enterprise feature, so the root's pool must be `ENTERPRISE`: a DevOps pool cannot revoke the certificates it issues, a subordinate's included. A single self-signed authority is fine for a lab or a short-lived mesh.
 
 - **Signed by reference** -- set `type: SUBORDINATE` and `subordinateConfig.certificateAuthority` to the root. The module has the root sign this authority's CSR and activates it on create.
-- **Signed by your existing CA** -- apply once with `type: SUBORDINATE` and no activation fields; the authority waits in `AWAITING_USER_ACTIVATION`. Fetch its CSR from Google, have your CA sign it, then set `pemCaCertificate` and `subordinateConfig.pemIssuerChain` and apply again.
+- **Signed by your existing CA** -- apply once with `type: SUBORDINATE` and no activation fields; the authority waits in `AWAITING_USER_ACTIVATION`. Read its CSR with `gcloud privateca subordinates get-csr <id> --pool=<pool> --location=<location>`, have your CA sign it, then set `pemCaCertificate` and `subordinateConfig.pemIssuerChain` together and apply again. The pair is read only by that activation; once the authority is active, changing `pemCaCertificate` reaches nothing at Google.
 
 ## The key
 

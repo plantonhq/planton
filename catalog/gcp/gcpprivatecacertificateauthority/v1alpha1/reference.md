@@ -18,9 +18,9 @@ Lifecycle Google enforces:
   - a self-signed root is ENABLED after create, or STAGED when
     desired_state says so (trusted but not yet issuing);
   - a subordinate signed by reference is activated and enabled on create;
-    one signed by an outside CA needs pem_ca_certificate and
-    subordinate_config.pem_issuer_chain; with neither it waits in
-    AWAITING_USER_ACTIVATION;
+    one signed by an outside CA waits in AWAITING_USER_ACTIVATION after
+    the first apply, until a second apply sets pem_ca_certificate and
+    subordinate_config.pem_issuer_chain;
   - destroy disables it and schedules deletion after 30 days (restorable
     until then) unless skip_grace_period; its pool cannot be deleted
     until the authority is gone.
@@ -467,15 +467,17 @@ The OID's arcs, most significant first.
 `GcpPrivateCaCertificateAuthorityCaOptions`
 
 The basic constraints extension: whether the certificate is a CA and
-how many CA levels may sit below it. Omit to leave the extension to
-Google's default (for a leaf certificate, is_ca false).
+how many CA levels may sit below it. Required on an authority, with
+is_ca set (config.is_ca_required): an authority's certificate states
+its CA flag.
 
 ### spec.config.x509Config.caOptions.isCa
 
 `bool` · optional (explicit presence)
 
-true makes a CA certificate (CA:TRUE), false states CA:FALSE; unset
-leaves the CA flag out of the extension.
+true makes a CA certificate (CA:TRUE) -- what every authority sets.
+Required on an authority (config.is_ca_required); false would state
+CA:FALSE on a certificate meant to sign others.
 
 ### spec.config.x509Config.caOptions.maxIssuerPathLength
 
@@ -686,16 +688,23 @@ and activate it on create.
 `[]string`
 
 An external issuer's PEM certificate chain, issuer first, not
-including this authority's own certificate. With pem_ca_certificate,
-it activates the authority from an outside CA.
+including this authority's own certificate. Set it together with
+pem_ca_certificate, in the same apply: the pair activates the authority
+from an outside CA, and the chain alone carries no certificate to
+activate with.
 
 ### spec.pemCaCertificate
 
 `string`
 
-The CA certificate an outside CA signed from this authority's CSR
-(read the CSR from Google after the first apply), PEM. With
-subordinate_config.pem_issuer_chain, it activates the authority.
+The CA certificate an outside CA signed from this authority's CSR,
+PEM. Read the CSR after the first apply with
+`gcloud privateca subordinates get-csr {id} --pool={pool}
+--location={location}`. With subordinate_config.pem_issuer_chain, it
+activates the authority. Updates in place, but it is read only by the
+activation, which runs when subordinate_config changes on an authority
+still AWAITING_USER_ACTIVATION: set both in the same apply. Once the
+authority is active, a changed value reaches nothing at Google.
 
 ### spec.gcsBucket
 

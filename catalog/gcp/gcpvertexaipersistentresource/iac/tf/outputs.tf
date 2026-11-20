@@ -17,3 +17,13 @@ output "state" {
   description = "The resource's state as last read (RUNNING once every pool is provisioned)"
   value       = google_vertex_ai_persistent_resource.this.state
 }
+
+# Flattened from the provider's one-element list; code 0 and an empty
+# message while the resource has no error.
+output "error" {
+  description = "Why the resource is in ERROR: Google's error code and message (code 0 when there is none)"
+  value = {
+    code    = try(google_vertex_ai_persistent_resource.this.error[0].code, 0)
+    message = try(google_vertex_ai_persistent_resource.this.error[0].message, "")
+  }
+}

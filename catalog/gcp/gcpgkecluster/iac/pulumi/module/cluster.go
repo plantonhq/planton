@@ -48,6 +48,33 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 	if err != nil {
 		return errors.Wrap(err, "failed to enable container.googleapis.com api")
 	}
+	clusterDependsOn := []pulumi.Resource{createdProjectService}
+
+	// Cloud Logging and Cloud Monitoring receive what the cluster ships. GKE
+	// turns both integrations on by default (system components and workloads
+	// for logging, system metrics for monitoring), but it never turns on the
+	// project's Logging and Monitoring APIs, and with either API off nothing
+	// arrives. The Logging API is enabled unless the spec turns logging off;
+	// monitoring has no off switch in the spec, so its API is always enabled.
+	// Like the Kubernetes Engine API, neither is disabled on destroy.
+	observabilityApis := []string{"monitoring.googleapis.com"}
+	if spec.Logging == nil || spec.Logging.Enabled == nil || spec.Logging.GetEnabled() {
+		observabilityApis = append([]string{"logging.googleapis.com"}, observabilityApis...)
+	}
+	for _, api := range observabilityApis {
+		apiArgs := &projects.ServiceArgs{
+			Service:          pulumi.String(api),
+			DisableOnDestroy: pulumi.BoolPtr(false),
+		}
+		if spec.ProjectId.GetValue() != "" {
+			apiArgs.Project = pulumi.String(spec.ProjectId.GetValue())
+		}
+		createdApi, err := projects.NewService(ctx, "gke-"+api, apiArgs, pulumi.Provider(gcpProvider))
+		if err != nil {
+			return errors.Wrapf(err, "failed to enable %s api", api)
+		}
+		clusterDependsOn = append(clusterDependsOn, createdApi)
+	}
 
 	// The Workload Identity pool name is fixed by the API to
 	// PROJECT_ID.svc.id.goog; when the spec omits project_id the ambient
@@ -204,6 +231,18 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 	} else {
 		args.RemoveDefaultNodePool = pulumi.BoolPtr(true)
 		args.InitialNodeCount = pulumi.IntPtr(1)
+		// The default pool lives only while the cluster is created, so it
+		// boots from a standard persistent disk. GKE's default boot disk is a
+		// 100 GB pd-balanced disk, which counts against the region's SSD
+		// quota: a regional cluster's three of them (300 GB) exceed the
+		// 250 GB a new project holds, and the create fails before the pool
+		// can be removed. Standard disk counts against the far larger
+		// total-disk quota. Once the pool is gone the provider reads
+		// nodeConfig back from whichever pool the cluster has, so the
+		// cluster ignores later changes to it (IgnoreChanges below).
+		args.NodeConfig = &container.ClusterNodeConfigArgs{
+			DiskType: pulumi.StringPtr("pd-standard"),
+		}
 	}
 
 	if spec.DatapathProvider != "" {
@@ -1014,7 +1053,11 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 	}
 
 	createdCluster, err := container.NewCluster(ctx, "cluster", args,
-		pulumi.Provider(gcpProvider), pulumi.DependsOn([]pulumi.Resource{createdProjectService}))
+		pulumi.Provider(gcpProvider), pulumi.DependsOn(clusterDependsOn),
+		// nodeConfig configures only the default pool removed at create;
+		// what the provider reads back afterwards belongs to the cluster's
+		// own pools.
+		pulumi.IgnoreChanges([]string{"nodeConfig"}))
 	if err != nil {
 		return errors.Wrap(err, "failed to create container cluster")
 	}

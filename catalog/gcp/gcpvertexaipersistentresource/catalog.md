@@ -1,6 +1,6 @@
 # GCP Vertex AI Persistent Resource
 
-Keeps a pool of training machines warm on Vertex AI so custom training jobs and Ray on Vertex AI start in seconds instead of waiting minutes for capacity — and so the GPUs you fought for stay yours between jobs. Declare the machine pools, optionally peer them into your VPC, and point training jobs at the resource by id. The machines bill from the moment they are provisioned until you delete the resource, which is exactly the trade: pay for readiness, get instant starts and held accelerators.
+Keeps a pool of training machines warm on Vertex AI so custom training jobs start in seconds instead of waiting minutes for capacity — and so the GPUs you fought for stay yours between jobs. Declare the machine pools, optionally peer them into your VPC, and point training jobs at the resource by id. The machines bill from the moment they are provisioned until you delete the resource, which is exactly the trade: pay for readiness, get instant starts and held accelerators.
 
 ## What Gets Created
 
@@ -88,6 +88,7 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 | `persistent_resource_id` | The resource's id | A training job's `persistent_resource_id` |
 | `location` | The resource's region | Regional clients |
 | `state` | The resource's state | Readiness checks |
+| `error` | Google's error code and message when the state is `ERROR` | Diagnosing a failed provision |
 
 ## Common Patterns
 

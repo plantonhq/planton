@@ -280,8 +280,9 @@ type GcpVertexAiFeatureOnlineStoreBigQuerySource struct {
 	// literal "project.dataset.table", or the bq:// form Google stores. The
 	// modules add the bq:// prefix when it is missing.
 	Uri *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=uri,proto3" json:"uri,omitempty"`
-	// The columns that form the entity ID the view serves by. Google
-	// supports exactly one today.
+	// The column that forms the entity ID the view serves by. Google
+	// accepts exactly one column on a BigQuery-sourced view, so the list
+	// holds one name.
 	EntityIdColumns []string `protobuf:"bytes,2,rep,name=entity_id_columns,json=entityIdColumns,proto3" json:"entity_id_columns,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
@@ -642,7 +643,9 @@ type GcpVertexAiFeatureOnlineStoreSpec struct {
 	Optimized bool `protobuf:"varint,6,opt,name=optimized,proto3" json:"optimized,omitempty"`
 	// The store's dedicated serving endpoint. Set it to serve over Private
 	// Service Connect; omit to keep Google's default (a public dedicated
-	// endpoint on Optimized stores). Sent only when set.
+	// endpoint on Optimized stores). Private Service Connect applies only to
+	// an Optimized store: a Bigtable store serves through the shared Vertex
+	// AI endpoint. Sent only when set.
 	DedicatedServingEndpoint *GcpVertexAiFeatureOnlineStoreDedicatedServingEndpoint `protobuf:"bytes,7,opt,name=dedicated_serving_endpoint,json=dedicatedServingEndpoint,proto3" json:"dedicated_serving_endpoint,omitempty"`
 	// Customer-managed encryption key protecting both the online and the
 	// offline data: a GcpKmsKey reference or a literal
@@ -797,10 +800,11 @@ const file_catalog_gcp_gcpvertexaifeatureonlinestore_v1alpha1_spec_proto_rawDesc
 	"\x1eenable_private_service_connect\x18\x01 \x01(\bR\x1benablePrivateServiceConnect\x129\n" +
 	"\x11project_allowlist\x18\x02 \x03(\tB\f\xbaH\t\x92\x01\x06\"\x04r\x02\x10\x01R\x10projectAllowlist\"\xef\x01\n" +
 	"5GcpVertexAiFeatureOnlineStoreDedicatedServingEndpoint\x12\xb5\x01\n" +
-	"\x1eprivate_service_connect_config\x18\x01 \x01(\v2p.dev.planton.gcp.gcpvertexaifeatureonlinestore.v1alpha1.GcpVertexAiFeatureOnlineStorePrivateServiceConnectConfigR\x1bprivateServiceConnectConfig\"\xdd\x01\n" +
+	"\x1eprivate_service_connect_config\x18\x01 \x01(\v2p.dev.planton.gcp.gcpvertexaifeatureonlinestore.v1alpha1.GcpVertexAiFeatureOnlineStorePrivateServiceConnectConfigR\x1bprivateServiceConnectConfig\"\xdf\x01\n" +
 	"+GcpVertexAiFeatureOnlineStoreBigQuerySource\x12r\n" +
-	"\x03uri\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xed\x17\x92\xd4a\x1dstatus.outputs.qualified_nameR\x03uri\x12:\n" +
-	"\x11entity_id_columns\x18\x02 \x03(\tB\x0e\xbaH\v\x92\x01\b\b\x01\"\x04r\x02\x10\x01R\x0fentityIdColumns\"\xf4\x01\n" +
+	"\x03uri\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xed\x17\x92\xd4a\x1dstatus.outputs.qualified_nameR\x03uri\x12<\n" +
+	"\x11entity_id_columns\x18\x02 \x03(\tB\x10\xbaH\r\x92\x01\n" +
+	"\b\x01\x10\x01\"\x04r\x02\x10\x01R\x0fentityIdColumns\"\xf4\x01\n" +
 	"2GcpVertexAiFeatureOnlineStoreFeatureGroupSelection\x12\x8c\x01\n" +
 	"\x10feature_group_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB.\xbaH\x03\xc8\x01\x01\x88\xd4a\x87\x19\x92\xd4a\x1fstatus.outputs.feature_group_idR\x0efeatureGroupId\x12/\n" +
 	"\vfeature_ids\x18\x02 \x03(\tB\x0e\xbaH\v\x92\x01\b\b\x01\"\x04r\x02\x10\x01R\n" +
@@ -824,7 +828,7 @@ const file_catalog_gcp_gcpvertexaifeatureonlinestore_v1alpha1_spec_proto_rawDesc
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xb8\x01\xbaH\xb4\x01\x1a\xb1\x01\n" +
-	"\x1ffeature_view.exactly_one_source\x12Ma feature view has exactly one of big_query_source or feature_registry_source\x1a?has(this.big_query_source) != has(this.feature_registry_source)\"\xb2\f\n" +
+	"\x1ffeature_view.exactly_one_source\x12Ma feature view has exactly one of big_query_source or feature_registry_source\x1a?has(this.big_query_source) != has(this.feature_registry_source)\"\x83\x0f\n" +
 	"!GcpVertexAiFeatureOnlineStoreSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12;\n" +
@@ -843,9 +847,10 @@ const file_catalog_gcp_gcpvertexaifeatureonlinestore_v1alpha1_spec_proto_rawDesc
 	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x9c\x02\xbaH\x98\x02\x1a\x85\x01\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xed\x04\xbaH\xe9\x04\x1a\x85\x01\n" +
 	"\x18spec.exactly_one_storage\x12Can online store has exactly one storage kind: bigtable or optimized\x1a$has(this.bigtable) != this.optimized\x1a\x8d\x01\n" +
-	"\x1cspec.unique_feature_view_ids\x126feature_view_id must be unique within the online store\x1a5this.feature_views.map(v, v.feature_view_id).unique()B\xbb\x03\n" +
+	"\x1cspec.unique_feature_view_ids\x126feature_view_id must be unique within the online store\x1a5this.feature_views.map(v, v.feature_view_id).unique()\x1a\xce\x02\n" +
+	"/spec.private_service_connect_requires_optimized\x12\xc2\x01Private Service Connect serves an Optimized store's dedicated endpoint, and a Bigtable store has none. Set optimized to true, or remove dedicated_serving_endpoint.private_service_connect_config.\x1aV!has(this.dedicated_serving_endpoint.private_service_connect_config) || this.optimizedB\xbb\x03\n" +
 	":com.dev.planton.gcp.gcpvertexaifeatureonlinestore.v1alpha1B\tSpecProtoP\x01Zugithub.com/plantonhq/planton/catalog/gcp/gcpvertexaifeatureonlinestore/v1alpha1;gcpvertexaifeatureonlinestorev1alpha1\xa2\x02\x04DPGG\xaa\x026Dev.Planton.Gcp.Gcpvertexaifeatureonlinestore.V1alpha1\xca\x026Dev\\Planton\\Gcp\\Gcpvertexaifeatureonlinestore\\V1alpha1\xe2\x02BDev\\Planton\\Gcp\\Gcpvertexaifeatureonlinestore\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Gcp::Gcpvertexaifeatureonlinestore::V1alpha1b\x06proto3"
 
 var (

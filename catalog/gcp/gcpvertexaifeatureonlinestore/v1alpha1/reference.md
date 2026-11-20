@@ -215,7 +215,9 @@ optimized.
 
 The store's dedicated serving endpoint. Set it to serve over Private
 Service Connect; omit to keep Google's default (a public dedicated
-endpoint on Optimized stores). Sent only when set.
+endpoint on Optimized stores). Private Service Connect applies only to
+an Optimized store: a Bigtable store serves through the shared Vertex
+AI endpoint. Sent only when set.
 
 ### spec.dedicatedServingEndpoint.privateServiceConnectConfig
 
@@ -310,10 +312,11 @@ modules add the bq:// prefix when it is missing.
 
 `[]string` · required
 
-The columns that form the entity ID the view serves by. Google
-supports exactly one today.
+The column that forms the entity ID the view serves by. Google
+accepts exactly one column on a BigQuery-sourced view, so the list
+holds one name.
 
-- rule: {"repeated":{"minItems":"1","items":{"string":{"minLen":"1"}}}}
+- rule: {"repeated":{"minItems":"1","maxItems":"1","items":{"string":{"minLen":"1"}}}}
 
 ### spec.featureViews[].featureRegistrySource
 
@@ -400,6 +403,7 @@ destroyed:
 
 - `spec.exactly_one_storage`: an online store has exactly one storage kind: bigtable or optimized
 - `spec.unique_feature_view_ids`: feature_view_id must be unique within the online store
+- `spec.private_service_connect_requires_optimized`: Private Service Connect serves an Optimized store's dedicated endpoint, and a Bigtable store has none. Set optimized to true, or remove dedicated_serving_endpoint.private_service_connect_config.
 
 ## Outputs
 
@@ -413,6 +417,7 @@ Reference an output from another manifest as `valueFrom: {kind: GcpVertexAiFeatu
 | `status.outputs.public_endpoint_domain_name` | `string` | The dedicated endpoint's public domain name (Optimized stores); empty on Bigtable stores and behind Private Service Connect. |
 | `status.outputs.service_attachment` | `string` | The Private Service Connect service attachment consumers target, once PSC is enabled and a view has synced; empty otherwise. |
 | `status.outputs.feature_view_names` | `[]string` | Full resource names of the declared feature views, in manifest order. |
+| `status.outputs.state` | `string` | The store's state as Google reports it: STABLE (configuration settled, the store serves) or UPDATING (a change is being applied; the store still serves, from the old or the new configuration). |
 
 ## References
 

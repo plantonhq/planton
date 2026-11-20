@@ -1219,10 +1219,11 @@ frequency (supported machine families only).
 
 GPU accelerator cards attached to the instance. Requires a
 GPU-capable zone and on_host_maintenance = "TERMINATE". Each entry
-attaches at least one card (count >= 1). Removing every entry from an
-existing VM leaves its GPUs attached (the provider preserves the
-current accelerators when the block is absent); detaching GPUs
-replaces the VM, so plan it as a recreate rather than an edit.
+attaches at least one card (count >= 1). Any change to this list on
+an existing VM (a type, a count, an added or removed entry) replaces
+the VM, so plan it as a recreate rather than an edit. Removing every
+entry is the exception: the provider preserves the current
+accelerators when the block is absent, so the GPUs stay attached.
 
 ### spec.guestAccelerators[].type
 

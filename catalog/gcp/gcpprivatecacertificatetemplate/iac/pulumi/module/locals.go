@@ -54,9 +54,3 @@ func initializeLocals(_ *pulumi.Context, iacInput *gcpprivatecacertificatetempla
 	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }
-
-// lastSegment returns what follows the last "/" -- the bare ID of a full
-// resource path, or the value itself when it is already bare.
-func lastSegment(value string) string {
-	return value[strings.LastIndex(value, "/")+1:]
-}

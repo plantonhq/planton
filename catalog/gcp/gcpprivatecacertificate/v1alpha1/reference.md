@@ -11,9 +11,10 @@
 GcpPrivateCaCertificateSpec defines a certificate issued from a CA pool
 (`google_privateca_certificate`) -- one signed X.509 certificate for a
 key someone else holds, described by a CSR or by structured config.
-Everything but labels is immutable: a change issues a new certificate.
-Destroy REVOKES the certificate (Google keeps the revoked record); its
-ID cannot be reused in the pool.
+Everything but labels is immutable. Destroy REVOKES the certificate
+(Google keeps the revoked record), and its ID cannot be reused in the
+pool -- so renewal is a successor declared under a new ID beside the
+current certificate, never a changed request under the same ID.
 
 The pool must be ENTERPRISE: Google cannot describe or revoke
 certificates in a DEVOPS pool, so neither engine could track or destroy
@@ -250,7 +251,9 @@ The distinguished name. common_name is required.
 
 `string` · required
 
-The common name (CN), e.g. "Example Root CA" or a host name.
+The common name (CN), e.g. a host name such as
+"api.internal.example.com" or a workload's name. TLS clients check the
+subject alternative names, not the common name.
 
 - rule: {"string":{"minLen":"1"}}
 
@@ -479,24 +482,26 @@ The OID's arcs, most significant first.
 `GcpPrivateCaCertificateCaOptions`
 
 The basic constraints extension: whether the certificate is a CA and
-how many CA levels may sit below it. Omit to leave the extension to
-Google's default (for a leaf certificate, is_ca false).
+how many CA levels may sit below it. Omitting the block sends no basic
+constraints at all, leaving the extension to the pool and the
+template. A block with is_ca unset is a different request: the block
+is sent without a CA flag. A leaf certificate states is_ca false.
 
 ### spec.config.x509Config.caOptions.isCa
 
 `bool` · optional (explicit presence)
 
-true makes a CA certificate (CA:TRUE), false states CA:FALSE; unset
-leaves the CA flag out of the extension.
+false states CA:FALSE -- what a leaf certificate (a server, a client,
+a workload) says. true makes a CA certificate (CA:TRUE). Unset sends
+the block without a CA flag.
 
 ### spec.config.x509Config.caOptions.maxIssuerPathLength
 
 `int32` · optional (explicit presence)
 
-The path length constraint: how many CA levels may sit below this
-certificate. 0 means it may sign only leaf certificates -- a
-subordinate that issues workload certificates; unset means no limit
-is stated.
+The path length constraint, which only a CA certificate carries: how
+many CA levels may sit below it (0 lets it sign only leaf
+certificates). A leaf certificate leaves it unset.
 
 - rule: {"int32":{"gte":0}}
 
@@ -569,8 +574,8 @@ The extension's DER value, base64-encoded.
 `GcpPrivateCaCertificateNameConstraints`
 
 The name constraints extension (RFC 5280 section 4.2.1.10): the names
-certificates below a CA may and may not carry. Meaningful on CA
-certificates.
+certificates signed below a CA may and may not carry. Only a CA
+certificate uses it; a leaf certificate leaves it out.
 
 ### spec.config.x509Config.nameConstraints.critical
 
@@ -686,6 +691,8 @@ Reference an output from another manifest as `valueFrom: {kind: GcpPrivateCaCert
 | `status.outputs.pem_certificate` | `string` | The signed certificate, PEM. |
 | `status.outputs.pem_certificate_chain` | `[]string` | The chain that verifies it, PEM, issuer first and root last. |
 | `status.outputs.issuer_certificate_authority` | `string` | The full name of the authority that signed it. |
+| `status.outputs.not_before_time` | `string` | When the certificate becomes valid, as an RFC 3339 timestamp Google reads from the signed certificate. |
+| `status.outputs.not_after_time` | `string` | When the certificate expires, as an RFC 3339 timestamp Google reads from the signed certificate -- the date a successor must be issued and installed by. |
 
 ## References
 

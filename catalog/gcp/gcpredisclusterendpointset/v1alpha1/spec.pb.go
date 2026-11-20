@@ -199,11 +199,18 @@ func (x *GcpRedisClusterEndpointSetEndpoint) GetConnections() []*GcpRedisCluster
 // GcpGlobalForwardingRule per service attachment (empty scheme, the
 // attachment handle as target), then this set naming every rule. Google
 // replaces the cluster's whole user-created endpoint list with this set on
-// every apply, so declare exactly one set per cluster and list every
-// consumer network in it. Removing a connection here stops the matching
-// forwarding rule from working; delete the rule in the same change.
+// every apply -- creating the set also replaces any connections already
+// registered on the cluster -- so declare exactly one set per cluster and
+// list every consumer network in it. Removing a connection here stops the
+// matching forwarding rule from working; delete the rule in the same
+// change.
 //
-// Only the project is immutable; the set updates in place.
+// The project, the cluster, and the region are fixed. A change to the
+// project replaces the set; a change to the cluster or the region is
+// planned in place but sends nothing, so the old cluster keeps its
+// registration. A set on another cluster is a new set: destroy this one,
+// which deregisters it, and declare the next. The endpoints update in
+// place.
 type GcpRedisClusterEndpointSetSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The GCP project the cluster lives in: a literal project ID or a
@@ -213,9 +220,12 @@ type GcpRedisClusterEndpointSetSpec struct {
 	// The cluster the connections belong to. A GcpRedisCluster reference
 	// resolves to its full resource path (name output); a literal takes
 	// either the full path or the bare cluster name. The modules derive the
-	// bare name Google's resource expects.
+	// bare name Google's resource expects. Fixed: a changed cluster is
+	// planned in place and never sent, so a set on another cluster is a new
+	// set.
 	Cluster *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=cluster,proto3" json:"cluster,omitempty"`
-	// The cluster's region (e.g. "us-central1").
+	// The cluster's region (e.g. "us-central1"). Fixed: a changed region is
+	// planned in place and never sent.
 	Region string `protobuf:"bytes,3,opt,name=region,proto3" json:"region,omitempty"`
 	// One entry per consumer VPC, each carrying a connection per cluster
 	// service attachment. This list IS the cluster's user-created endpoint
@@ -223,8 +233,10 @@ type GcpRedisClusterEndpointSetSpec struct {
 	Endpoints []*GcpRedisClusterEndpointSetEndpoint `protobuf:"bytes,4,rep,name=endpoints,proto3" json:"endpoints,omitempty"`
 	// What happens to the registration when this resource is destroyed:
 	//
-	//	"" / "DELETE" -- the connections are deregistered (the forwarding
-	//	                 rules themselves belong to their own blocks)
+	//	"" / "DELETE" -- every user-created connection on the cluster is
+	//	                 deregistered, including any this set did not
+	//	                 declare (the forwarding rules themselves belong to
+	//	                 their own blocks)
 	//	"PREVENT"     -- destroy fails
 	//	"ABANDON"     -- the registration leaves management but stays on
 	//	                 the cluster

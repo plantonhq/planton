@@ -81,7 +81,7 @@ When deploying as part of a multi-resource environment, wire `serviceAccount`, t
 
 These are the most important decisions when configuring a worker pool. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**How many instances** — `scaling.scalingMode: MANUAL` (Google's default) runs exactly `manualInstanceCount` instances (`0` parks the pool); `AUTOMATIC` lets Cloud Run move between `minInstanceCount` and `maxInstanceCount` on a signal you drive, such as a queue-depth metric.
+**How many instances** — `scaling.scalingMode: MANUAL` (Google's default) runs exactly `manualInstanceCount` instances (`0` parks the pool; a MANUAL block must state its count); `AUTOMATIC` lets Cloud Run move between `minInstanceCount` and `maxInstanceCount` on a signal you drive, such as a queue-depth metric.
 
 **The container** — `containers[].image`, `env` (a literal, a Secret Manager secret you own, or a `secretValue` the component keeps in Secret Manager for you), `resources.cpu` / `memory`, probes on the port a health listener binds, sidecars ordered by `dependsOn`.
 
@@ -115,6 +115,7 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 | `worker_pool_name` | Bare name in GCP | Dashboards |
 | `latest_ready_revision` | The revision serving instances | Rollout checks |
 | `uid`, `location`, `project_id`, `observed_generation`, `etag` | Identity and reconciliation state | Audit |
+| `terminal_condition`, `conditions` | The pool's readiness and its sub-resources' conditions, with the message and reasons when a rollout fails | Rollout checks, alerting |
 
 ## Common Patterns
 

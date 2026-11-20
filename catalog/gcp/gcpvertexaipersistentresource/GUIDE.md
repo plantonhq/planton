@@ -4,7 +4,7 @@ The judgment this guide protects: a persistent resource trades money for readine
 
 ## When a persistent resource pays off
 
-Vertex AI custom training provisions machines per job, which takes minutes and can fail when accelerators are scarce. A persistent resource provisions the machines once and keeps them: jobs that name its id in `persistent_resource_id` start in seconds on machines already running, and GPUs or TPUs stay held between jobs. Ray on Vertex AI clusters are persistent resources too. If jobs are rare and a few minutes of startup do not matter, on-demand training is cheaper.
+Vertex AI custom training provisions machines per job, which takes minutes and can fail when accelerators are scarce. A persistent resource provisions the machines once and keeps them: jobs that name its id in `persistent_resource_id` start in seconds on machines already running, and GPUs or TPUs stay held between jobs. Ray on Vertex AI clusters are persistent resources too, but neither provider carries their Ray settings, so this kind keeps machines for custom training jobs only. If jobs are rare and a few minutes of startup do not matter, on-demand training is cheaper.
 
 ## Pools
 

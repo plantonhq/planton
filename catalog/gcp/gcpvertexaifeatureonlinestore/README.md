@@ -91,6 +91,8 @@ planton apply -f vertex-ai-feature-online-store.yaml
 - Bigtable node bounds follow Google's rule (`1 <= min <= max <= 10 * min`); the CPU target is 10-80.
 - Store and view ids follow Google's rule (`[a-z0-9_]`, first character not a digit, up to 60); view ids are unique.
 - A view has exactly one source; a registry selection names at least one feature; a sync is cron or continuous, not both.
+- A BigQuery-sourced view names exactly one `entityIdColumns` entry.
+- `dedicatedServingEndpoint.privateServiceConnectConfig` only on an Optimized store.
 
 ## Outputs
 
@@ -102,6 +104,7 @@ planton apply -f vertex-ai-feature-online-store.yaml
 | `public_endpoint_domain_name` | `string` | The dedicated endpoint's domain (Optimized stores); empty otherwise |
 | `service_attachment` | `string` | The PSC service attachment consumers target; empty unless PSC is on and a view has synced |
 | `feature_view_names` | `[]string` | Full resource names of the feature views, in manifest order |
+| `state` | `string` | `STABLE` (settled and serving) or `UPDATING` (a change is being applied; still serving) |
 
 ## Deployment Methods
 

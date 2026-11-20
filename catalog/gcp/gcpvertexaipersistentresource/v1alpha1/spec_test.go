@@ -117,6 +117,47 @@ var _ = ginkgo.Describe("GcpVertexAiPersistentResourceSpec", func() {
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
 
+	ginkgo.It("should require a machine type", func() {
+		msg := minimal()
+		msg.Spec.ResourcePools[0].MachineSpec.MachineType = ""
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should set an accelerator's type and count together", func() {
+		msg := minimal()
+		msg.Spec.ResourcePools[0].MachineSpec = &GcpVertexAiPersistentResourceMachineSpec{MachineType: "g2-standard-8", AcceleratorType: "NVIDIA_L4", AcceleratorCount: 1}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		msg.Spec.ResourcePools[0].MachineSpec.AcceleratorCount = 0
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "a type with no count")
+		msg.Spec.ResourcePools[0].MachineSpec = &GcpVertexAiPersistentResourceMachineSpec{MachineType: "n1-standard-4", AcceleratorCount: 2}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "a count with no type")
+	})
+
+	ginkgo.It("should keep the replica count inside the autoscaling bounds", func() {
+		msg := minimal()
+		msg.Spec.ResourcePools[0].ReplicaCount = i64(2)
+		msg.Spec.ResourcePools[0].AutoscalingSpec = &GcpVertexAiPersistentResourceAutoscalingSpec{MinReplicaCount: i64(1), MaxReplicaCount: i64(4)}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		msg.Spec.ResourcePools[0].ReplicaCount = i64(5)
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "a count above the most")
+		msg.Spec.ResourcePools[0].ReplicaCount = i64(1)
+		msg.Spec.ResourcePools[0].AutoscalingSpec.MinReplicaCount = i64(2)
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "a count below the fewest")
+		msg.Spec.ResourcePools[0].ReplicaCount = i64(2)
+		msg.Spec.ResourcePools[0].AutoscalingSpec = &GcpVertexAiPersistentResourceAutoscalingSpec{MinReplicaCount: i64(2), MaxReplicaCount: i64(2)}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "the most equal to the fewest")
+	})
+
+	ginkgo.It("should require a literal network to be its full path", func() {
+		msg := minimal()
+		msg.Spec.Network = litRef("https://www.googleapis.com/compute/v1/projects/ml-project/global/networks/ml-vpc")
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "a self-link")
+		msg.Spec.Network = litRef("projects/ml-project/global/networks/ml-vpc")
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "a path with a project id")
+		msg.Spec.Network = litRef("ml-vpc")
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "a bare name")
+	})
+
 	ginkgo.It("should reject an id outside RFC 1035", func() {
 		msg := minimal()
 		msg.Spec.PersistentResourceId = "Training_Pool"
