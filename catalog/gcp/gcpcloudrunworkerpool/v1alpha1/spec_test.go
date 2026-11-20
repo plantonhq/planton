@@ -108,7 +108,7 @@ var _ = ginkgo.Describe("GcpCloudRunWorkerPoolSpec", func() {
 			{Name: "share", Source: &GcpCloudRunWorkerPoolVolume_Nfs{Nfs: &GcpCloudRunWorkerPoolVolumeNfs{Server: "10.0.0.2", Path: "/share1", ReadOnly: false}}},
 		}
 		msg.Spec.ServiceAccount = nameRef("orders-worker-sa")
-		msg.Spec.Scaling = &GcpCloudRunWorkerPoolScaling{ScalingMode: "AUTOMATIC", MinInstanceCount: proto.Int32(1), MaxInstanceCount: proto.Int32(10)}
+		msg.Spec.Scaling = &GcpCloudRunWorkerPoolScaling{ScalingMode: "MANUAL", ManualInstanceCount: proto.Int32(3)}
 		msg.Spec.InstanceSplits = []*GcpCloudRunWorkerPoolInstanceSplit{
 			{Type: "INSTANCE_SPLIT_ALLOCATION_TYPE_LATEST", Percent: proto.Int32(90)},
 			{Type: "INSTANCE_SPLIT_ALLOCATION_TYPE_REVISION", Revision: "orders-worker-v41", Percent: proto.Int32(10)},
@@ -180,7 +180,7 @@ var _ = ginkgo.Describe("GcpCloudRunWorkerPoolSpec", func() {
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "an explicit zero parks the pool on purpose")
 
 		msg.Spec.Scaling = &GcpCloudRunWorkerPoolScaling{ScalingMode: "AUTOMATIC", MinInstanceCount: proto.Int32(1), MaxInstanceCount: proto.Int32(3)}
-		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "AUTOMATIC needs no manual count")
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "AUTOMATIC cannot be deployed: the provider always sends a manual count")
 	})
 
 	ginkgo.It("should count the key-revocation grace period in whole hours", func() {

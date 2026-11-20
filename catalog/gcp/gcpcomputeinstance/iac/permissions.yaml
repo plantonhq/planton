@@ -49,6 +49,7 @@ spec:
       - purpose: ProvisionBootDisk
         permissions:
           - compute.disks.create
+          - compute.disks.get
           - compute.disks.use
           - compute.disks.setLabels
           - compute.images.useReadOnly
@@ -56,7 +57,7 @@ spec:
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: Creating the VM with a fresh boot disk (boot_disk.image or source_snapshot via initialize_params) creates a disk from an image or snapshot; disks.use covers booting from an existing GcpComputeDisk (boot_disk.source_disk) and attaching data disks (attached_disks); disks.setLabels covers boot_disk.disk_labels.
+        notes: Creating the VM with a fresh boot disk (boot_disk.image or source_snapshot via initialize_params) creates a disk from an image or snapshot; disks.use covers booting from an existing GcpComputeDisk (boot_disk.source_disk) and attaching data disks (attached_disks); disks.setLabels covers boot_disk.disk_labels. The Pulumi provider reads the new boot disk after create (compute.disks.get); refused, the provider crashes mid-create and leaves the VM outside its state (measured).
       - purpose: WireNetworking
         permissions:
           - compute.subnetworks.use

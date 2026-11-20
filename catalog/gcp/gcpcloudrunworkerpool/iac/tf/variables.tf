@@ -360,6 +360,10 @@ variable "spec" {
       # MANUAL (Google's default): the pool runs exactly manual_instance_count
       # instances. AUTOMATIC: Cloud Run moves the count between
       # min_instance_count and max_instance_count on a signal you drive.
+      # The spec refuses AUTOMATIC: the Google provider sends a manual
+      # instance count with every scaling block (0 when unset), and Cloud
+      # Run refuses any manual count under AUTOMATIC, so no deploy can
+      # create it.
       scaling_mode = optional(string, "")
 
       # Total instances across all revisions in MANUAL mode. 0 parks the pool

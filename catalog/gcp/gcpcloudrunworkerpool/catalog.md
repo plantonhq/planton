@@ -1,6 +1,6 @@
 # GCP Cloud Run Worker Pool
 
-Cloud Run's shape for work that is not a request: a pool of always-running container instances with no HTTP front door. Queue consumers, schedulers, event pullers, ML batch workers — anything that should be up all the time and pull its own work. It keeps everything a Cloud Run service has for building the instance (containers and sidecars, volumes, direct VPC egress, GPUs, CMEK) and drops the request path: no port, no URL, no ingress, and instances scaled to a count you set or between bounds by a signal you drive, never by traffic.
+Cloud Run's shape for work that is not a request: a pool of always-running container instances with no HTTP front door. Queue consumers, schedulers, event pullers, ML batch workers — anything that should be up all the time and pull its own work. It keeps everything a Cloud Run service has for building the instance (containers and sidecars, volumes, direct VPC egress, GPUs, CMEK) and drops the request path: no port, no URL, no ingress, and instances scaled to a count you set, never by traffic.
 
 ## What Gets Created
 
@@ -81,7 +81,7 @@ When deploying as part of a multi-resource environment, wire `serviceAccount`, t
 
 These are the most important decisions when configuring a worker pool. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**How many instances** — `scaling.scalingMode: MANUAL` (Google's default) runs exactly `manualInstanceCount` instances (`0` parks the pool; a MANUAL block must state its count); `AUTOMATIC` lets Cloud Run move between `minInstanceCount` and `maxInstanceCount` on a signal you drive, such as a queue-depth metric.
+**How many instances** — `scaling.scalingMode: MANUAL` (Google's default) runs exactly `manualInstanceCount` instances (`0` parks the pool; a MANUAL block must state its count). MANUAL is the mode that deploys: Google also offers `AUTOMATIC` between `minInstanceCount` and `maxInstanceCount`, but the Google provider sends a manual instance count with every scaling block (`0` when unset), and Cloud Run refuses any manual count under `AUTOMATIC` ("scaling mode must be set to MANUAL"), so the spec refuses it.
 
 **The container** — `containers[].image`, `env` (a literal, a Secret Manager secret you own, or a `secretValue` the component keeps in Secret Manager for you), `resources.cpu` / `memory`, probes on the port a health listener binds, sidecars ordered by `dependsOn`.
 
@@ -123,7 +123,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 **Queue consumer** — A fixed number of instances pulling from Pub/Sub over direct VPC egress. Start from the **Queue Consumer** preset.
 
-**Autoscaled worker** — Bounds instead of a count, a secret-backed env var, a liveness probe. Start from the **Autoscaled Worker** preset.
+**Scratch volume worker** — An in-memory scratch volume per instance and a startup probe that waits for warm-up, at a count you set. Start from the **Scratch Volume Worker** preset.
 
 **GPU inference worker** — An L4 GPU per instance, single-zone for cost, a startup probe with a long window. Start from the **GPU Inference Worker** preset.
 

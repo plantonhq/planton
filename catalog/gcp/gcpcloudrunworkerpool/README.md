@@ -1,6 +1,6 @@
 # GCP Cloud Run Worker Pool
 
-A Cloud Run worker pool -- a pool of always-running container instances with no HTTP front door. Queue consumers, schedulers, event pullers, and background workers that do their own work instead of answering requests. It keeps the Cloud Run service's revision template (containers, volumes, direct VPC egress, GPUs) and revision model, but has no port, no URL, no ingress, no invoker IAM, and no request-driven autoscaling: instances scale MANUALLY to a count you set, or AUTOMATICALLY between bounds by a signal you drive. CPU is always allocated, so billing is per instance-hour.
+A Cloud Run worker pool -- a pool of always-running container instances with no HTTP front door. Queue consumers, schedulers, event pullers, and background workers that do their own work instead of answering requests. It keeps the Cloud Run service's revision template (containers, volumes, direct VPC egress, GPUs) and revision model, but has no port, no URL, no ingress, no invoker IAM, and no request-driven autoscaling: instances run at a count you set (MANUAL scaling). CPU is always allocated, so billing is per instance-hour.
 
 ## What Gets Created
 
@@ -72,7 +72,7 @@ planton apply -f worker-pool.yaml
 | `description`, `labels`, `annotations` | — | — | Pool-object metadata. |
 | `volumes` | `[]object` | — | Cloud SQL, Secret Manager, empty dir, GCS FUSE, NFS. |
 | `serviceAccount` | `StringValueOrRef` | Compute default SA | Runtime identity (`GcpServiceAccount` reference). |
-| `scaling` | `object` | Google's default (MANUAL) | `scalingMode` `MANUAL` with `manualInstanceCount`, or `AUTOMATIC` with `minInstanceCount` / `maxInstanceCount`. |
+| `scaling` | `object` | Google's default (MANUAL) | `scalingMode` `MANUAL` with `manualInstanceCount`. `AUTOMATIC` is refused (see Validation Rules). |
 | `instanceSplits` | `[]object` | all on latest | `type` `INSTANCE_SPLIT_ALLOCATION_TYPE_LATEST` / `_REVISION`, `revision`, `percent` (sum 100). |
 | `encryptionKey` | `StringValueOrRef` | Google-managed | CMEK for the deployed images (`GcpKmsKey`). |
 | `encryptionKeyRevocationAction` / `encryptionKeyShutdownDuration` | `string` | — | `PREVENT_NEW` or `SHUTDOWN` (with a seconds duration) if the key is revoked. |
@@ -89,7 +89,8 @@ Per container: `name`, `image`, `command`, `args`, `env` (literal, `valueFromSec
 
 ### Validation Rules
 
-- **`manualInstanceCount`** is required under `MANUAL` (or an unset mode) and allowed only there: the provider sends a missing count as `0`, which parks the pool, so `0` must be written on purpose. **`minInstanceCount` / `maxInstanceCount`** only under `AUTOMATIC`, and min ≤ max.
+- **`manualInstanceCount`** is required under `MANUAL` (or an unset mode) and allowed only there: the provider sends a missing count as `0`, which parks the pool, so `0` must be written on purpose.
+- **`scalingMode: AUTOMATIC`** is refused: the Google provider sends a manual instance count with every scaling block (`0` when unset), and Cloud Run refuses any manual count under `AUTOMATIC` ("scaling mode must be set to MANUAL"), so no pool with `AUTOMATIC` can be created. The `minInstanceCount` / `maxInstanceCount` bounds belong to `AUTOMATIC` only (min ≤ max), so they cannot be used either.
 - **`REVISION`** splits name a `revision`; **`LATEST`** splits do not.
 - **`encryptionKeyRevocationAction`** requires `encryptionKey`; **`encryptionKeyShutdownDuration`** requires `SHUTDOWN` and is a whole number of hours in seconds (`"3600s"`, `"7200s"`).
 - **`vpcAccess.networkInterfaces`** holds at most one interface, and it names a `network`, a `subnetwork`, or both.
@@ -123,7 +124,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 ## Important Notes
 
 - **No requests reach a worker pool.** There is no port, no URL, and no ingress; the worker pulls its own work (Pub/Sub, a queue, a schedule). Health probes must name the port a health listener binds.
-- **Scaling is yours to drive.** `MANUAL` pins a count (`0` parks the pool without deleting it); `AUTOMATIC` moves between bounds on a signal you supply, never on traffic.
+- **Scaling is yours to drive.** `MANUAL` pins a count (`0` parks the pool without deleting it); change it as the work grows or shrinks. Google's `AUTOMATIC` mode is refused because the provider always sends a manual count, which Cloud Run rejects under `AUTOMATIC`.
 - **CPU is always allocated**, so an idle instance bills like a busy one.
 - **Immutable:** `region`, `workerPoolName`, and a container's `dependsOn`. Everything else rolls a new revision in place.
 - **Two levers wait on the Pulumi SDK.** A container's `sandboxLauncher` flag and more than one probe `httpHeaders` entry are not yet in the pinned pulumi-gcp SDK's worker-pool types; both are held out of the spec so both engines accept the same manifests, and return when the SDK carries them (re-evaluated at pulumi-gcp v10 GA).

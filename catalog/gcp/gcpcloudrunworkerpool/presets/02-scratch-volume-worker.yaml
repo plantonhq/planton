@@ -6,7 +6,7 @@ spec:
   projectId:
     value: my-gcp-project
   workerPoolName: media-transcoder
-  description: Transcodes uploaded media from a queue; scaled by queue depth
+  description: Transcodes uploaded media from a queue into a scratch volume per instance
   region: us-central1
   containers:
     - name: transcoder
@@ -22,11 +22,14 @@ spec:
       volumeMounts:
         - name: scratch
           mountPath: /tmp/work
+      # The transcoder warms up before it binds its health listener; the
+      # probe holds the revision back until it does.
       startupProbe:
         tcpSocket:
           port: 8081
         periodSeconds: 10
         failureThreshold: 6
+  # In-memory scratch per instance; it counts against the memory limit.
   volumes:
     - name: scratch
       emptyDir:
@@ -37,12 +40,11 @@ spec:
       kind: GcpServiceAccount
       name: media-transcoder-sa
       fieldPath: status.outputs.email
-  # Cloud Run moves the count between the bounds on a signal you drive
-  # (for example a queue-depth metric through Cloud Monitoring).
+  # Four instances; raise or lower the count as the queue grows or shrinks,
+  # and 0 parks the pool.
   scaling:
-    scalingMode: AUTOMATIC
-    minInstanceCount: 1
-    maxInstanceCount: 20
+    scalingMode: MANUAL
+    manualInstanceCount: 4
   labels:
     tier: production
   deletionProtection: true

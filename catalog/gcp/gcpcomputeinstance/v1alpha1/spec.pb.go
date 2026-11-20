@@ -636,8 +636,10 @@ type GcpComputeInstanceBootDisk struct {
 	// semantics — a partial list plans a VM REPLACEMENT on every re-apply
 	// (live-verified: debian-12's ["UEFI_COMPATIBLE", "GVNIC"] echoed back
 	// ["UEFI_COMPATIBLE", "VIRTIO_SCSI_MULTIQUEUE", "GVNIC", "SEV_CAPABLE",
-	// "SEV_LIVE_MIGRATABLE_V2"]). Leave unset to follow the image's own
-	// features cleanly.
+	// "SEV_LIVE_MIGRATABLE_V2"]). An image family's feature set also grows
+	// between releases (debian-12 has since added "SUSPEND_SAFE_FPR"), so a
+	// complete list must follow every image change. Leave unset to follow the
+	// image's own features cleanly.
 	GuestOsFeatures []string `protobuf:"bytes,19,rep,name=guest_os_features,json=guestOsFeatures,proto3" json:"guest_os_features,omitempty"`
 	// Zones for a REGIONAL boot disk (exactly two, one of which must be
 	// the instance's own zone; short names or self links). Setting this

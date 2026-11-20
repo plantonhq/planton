@@ -39,14 +39,16 @@ spec:
     # The image's COMPLETE feature set in the API's echo order — a
     # partial list plans a VM replacement on every re-apply (the API
     # merges at create; the provider compares authoritatively;
-    # live-verified 2026-08-11 against debian-12). If a debian-12 image
-    # release changes its feature set, this list must follow it.
+    # live-verified against debian-12, whose releases added SUSPEND_SAFE_FPR
+    # by 2026-11-20). If a debian-12 image release changes its feature set,
+    # this list must follow it.
     guestOsFeatures:
       - UEFI_COMPATIBLE
       - VIRTIO_SCSI_MULTIQUEUE
       - GVNIC
       - SEV_CAPABLE
       - SEV_LIVE_MIGRATABLE_V2
+      - SUSPEND_SAFE_FPR
   attachedDisks:
     - source:
         valueFrom:

@@ -35,11 +35,25 @@ A service scales with traffic; a worker pool has none. `MANUAL`
 including `0`, which parks the pool without deleting it, the cheapest
 way to pause a worker. A `MANUAL` block must state the count: the
 provider sends a missing count as `0`, so a forgotten count would park
-the pool, and the spec refuses it. `AUTOMATIC` moves the count between
-`minInstanceCount` and `maxInstanceCount` on a signal you supply, for
-example a queue-depth metric wired through Cloud Monitoring. Because
-CPU is always allocated on a worker pool, an idle instance bills like a
-busy one: size the count for the work, and park what is not needed.
+the pool, and the spec refuses it. Because CPU is always allocated on
+a worker pool, an idle instance bills like a busy one: size the count for
+the work, and park what is not needed. To follow a queue, change the
+count from whatever watches the queue's depth.
+
+## AUTOMATIC is refused
+
+Google also offers `AUTOMATIC`: Cloud Run moves the count between
+`minInstanceCount` (the floor, which is the committed spend) and
+`maxInstanceCount` (the ceiling, the cost circuit breaker) on a signal
+you drive -- Cloud Run never watches a queue on its own, so the signal
+is yours to build, for example a queue-depth metric wired through Cloud
+Monitoring. Neither engine can create such a pool: the Google provider
+sends a manual instance count with every scaling block (`0` when
+unset), and Cloud Run refuses any manual count under `AUTOMATIC`
+("scaling mode must be set to MANUAL"). So the spec refuses `AUTOMATIC`
+before anything deploys. The bounds stay in the spec because Google's
+API has them; they become usable the day the provider sends the manual
+count only in `MANUAL` mode.
 
 ## Where a worker's secrets live
 

@@ -66,7 +66,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: Cloud Run publishes per-revision instance count, CPU and memory utilization, and container restart metrics to Cloud Monitoring for every worker pool without configuration; the same metrics are what an AUTOMATIC scaling signal is built from.
+        reference: Cloud Run publishes per-revision instance count, CPU and memory utilization, and container restart metrics to Cloud Monitoring for every worker pool without configuration; the instance count metric is the one to watch when sizing the pool's manual count.
     - control_id: backup-recovery
       status: not_applicable
       notes: The pool is declarative configuration fully re-creatable from the manifest, and revisions are immutable snapshots Cloud Run retains for rollback. Instances are stateless -- whatever data the code produces lives in the systems it writes to, backed up there.
