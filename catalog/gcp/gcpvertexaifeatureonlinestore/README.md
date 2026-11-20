@@ -1,13 +1,13 @@
 # GCP Vertex AI Feature Online Store
 
-A Vertex AI Feature Store online store -- the low-latency serving layer that answers "give me this entity's features now" for models in production -- together with the feature views it serves. Storage is exactly one of two kinds: a managed Bigtable instance with autoscaling (large feature sets) or Optimized serving behind a dedicated endpoint (the lowest latency). Feature views select features from `GcpVertexAiFeatureGroup` blocks or materialize a BigQuery table directly, and sync on a schedule or continuously.
+A Vertex AI Feature Store online store -- the low-latency serving layer that answers "give me this entity's features now" for models in production -- together with the feature views it serves. Storage is exactly one of two kinds: a managed Bigtable instance with autoscaling, which every new store uses, or Optimized serving behind a dedicated endpoint, which Google no longer creates (`Creating FeatureOnlineStore with Optimized serving is no longer supported.`) and the kind manages on stores that already exist. Feature views select features from `GcpVertexAiFeatureGroup` blocks or materialize a BigQuery table directly, and sync on a schedule or continuously.
 
 ## What Gets Created
 
 When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `aiplatform.googleapis.com` on the project (never disabled on destroy)
-- **Online store** -- a `vertex_ai_feature_online_store` with Bigtable or Optimized storage, an optional Private Service Connect endpoint, and optional CMEK
+- **Online store** -- a `vertex_ai_feature_online_store` on Bigtable storage (or an existing store's Optimized storage, with an optional Private Service Connect endpoint), and optional CMEK
 - **Feature views** -- one `vertex_ai_feature_online_store_featureview` per `featureViews[]` entry, keyed by `featureViewId`
 
 ## Before You Deploy
@@ -67,7 +67,7 @@ planton apply -f vertex-ai-feature-online-store.yaml
 |-------|------|-------------|
 | `location` | `string` | The Vertex AI region. Immutable. |
 | `featureOnlineStoreId` | `string` | Up to 60 lowercase letters, digits, and underscores, not starting with a digit. Immutable. |
-| `bigtable` or `optimized` | | Exactly one storage kind. |
+| `bigtable` or `optimized` | | Exactly one storage kind; a new store uses `bigtable`. |
 
 ### Optional Fields
 
@@ -78,8 +78,8 @@ planton apply -f vertex-ai-feature-online-store.yaml
 | `bigtable.autoScaling` | `object` | -- | `minNodeCount` (at least 1), `maxNodeCount` (at least min, at most ten times it), `cpuUtilizationTarget` (10-80, Google default 50). |
 | `bigtable.enableDirectBigtableAccess` | `bool` | `false` | Let clients read the managed Bigtable instance directly. |
 | `bigtable.zone` | `string` | Google-chosen | The Bigtable instance's zone. |
-| `optimized` | `bool` | `false` | Optimized serving behind a dedicated endpoint. |
-| `dedicatedServingEndpoint.privateServiceConnectConfig` | `object` | public endpoint | `enablePrivateServiceConnect`, `projectAllowlist`. |
+| `optimized` | `bool` | `false` | An existing Optimized store (Google no longer creates them). |
+| `dedicatedServingEndpoint.privateServiceConnectConfig` | `object` | public endpoint | `enablePrivateServiceConnect`, `projectAllowlist`; an existing Optimized store only. |
 | `kmsKeyName` | `StringValueOrRef` | Google-managed | A `GcpKmsKey` reference or literal key path. |
 | `forceDestroy` | `bool` | `false` | Let a destroy delete a store that still holds views the block does not manage. |
 | `featureViews[]` | `[]object` | none | `featureViewId` (same rule as the store id; immutable), `labels`, exactly one of `bigQuerySource { uri, entityIdColumns }` or `featureRegistrySource { featureGroups[] { featureGroupId, featureIds }, projectNumber }`, and `syncConfig { cron | continuous }`. |
@@ -101,7 +101,7 @@ planton apply -f vertex-ai-feature-online-store.yaml
 | `name` | `string` | `projects/{project}/locations/{location}/featureOnlineStores/{feature_online_store_id}` |
 | `feature_online_store_id` | `string` | The store's id |
 | `location` | `string` | The store's location |
-| `public_endpoint_domain_name` | `string` | The dedicated endpoint's domain (Optimized stores); empty otherwise |
+| `public_endpoint_domain_name` | `string` | The dedicated endpoint's domain (existing Optimized stores); empty otherwise |
 | `service_attachment` | `string` | The PSC service attachment consumers target; empty unless PSC is on and a view has synced |
 | `feature_view_names` | `[]string` | Full resource names of the feature views, in manifest order |
 | `state` | `string` | `STABLE` (settled and serving) or `UPDATING` (a change is being applied; still serving) |
@@ -119,6 +119,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 ## Important Notes
 
 - **Capacity bills around the clock.** Both storage kinds run serving nodes from creation, whether or not requests arrive; syncs add data-processing charges.
+- **New stores serve from Bigtable.** Google refuses to create a store with Optimized serving; Optimized stores that already exist keep serving and stay manageable.
 - **Storage kind is permanent.** Switching between Bigtable and Optimized, or changing the id or location, replaces the store and every view.
 - **Syncs read BigQuery as the Vertex AI Service Agent**, which needs `roles/bigquery.dataViewer` on the sources.
 

@@ -1098,7 +1098,8 @@ failed and starting host-error recovery (restart or termination per
 automatic_restart). A lower value recovers faster from a hung host at
 the cost of more false positives; leave unset for Compute Engine's
 default recovery timing. Must be 90..330 in steps of 30 (90, 120, ...,
-330).
+330). Compute Engine refuses it on a Spot VM ("hostErrorTimeoutSeconds
+feature is not supported for preemptible instance").
 
 - rule: host_error_timeout_seconds must be a multiple of 30 between 90 and 330
 - rule: {"int32":{"lte":330,"gte":90}}
@@ -1494,6 +1495,7 @@ Immutable.
 
 ## Validation Rules
 
+- `spot_takes_no_host_error_timeout`: Compute Engine refuses scheduling.host_error_timeout_seconds on a Spot VM — remove it, or use the STANDARD provisioning model
 - `reclaimable_models_require_no_automatic_restart`: SPOT and FLEX_START VMs cannot automatically restart after reclamation — leave scheduling.automatic_restart unset or set it to false
 - `termination_action_requires_reclaimable_or_timed_vm`: scheduling.instance_termination_action applies to SPOT/FLEX_START VMs and to timed-run VMs (max_run_duration_seconds or termination_time) — configure one of those or remove the termination action
 - `flex_start_requires_max_run_duration`: FLEX_START VMs must bound their runtime — set scheduling.max_run_duration_seconds

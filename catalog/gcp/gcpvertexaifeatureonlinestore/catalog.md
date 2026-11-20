@@ -1,13 +1,13 @@
 # GCP Vertex AI Feature Online Store
 
-Serves your models' features in production at millisecond latency: when a request arrives for customer 42, the model asks the online store for customer 42's features and gets them back fresh. The store syncs the features it serves from Vertex AI feature groups or straight from BigQuery, on a schedule or continuously, and runs on either a managed Bigtable instance (large feature sets, autoscaling) or Google's Optimized serving (the lowest latency, optionally over Private Service Connect).
+Serves your models' features in production at millisecond latency: when a request arrives for customer 42, the model asks the online store for customer 42's features and gets them back fresh. The store syncs the features it serves from Vertex AI feature groups or straight from BigQuery, on a schedule or continuously, and runs on a managed Bigtable instance that autoscales with your traffic. It also manages online stores that already serve from Google's Optimized serving, which Google no longer creates.
 
 ## What Gets Created
 
 When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** — `aiplatform.googleapis.com` on the project
-- **Online store** — a `vertex.AiFeatureOnlineStore` with Bigtable or Optimized storage
+- **Online store** — a `vertex.AiFeatureOnlineStore` on Bigtable storage (or an existing store's Optimized storage)
 - **Feature views** — one `vertex.AiFeatureOnlineStoreFeatureview` per declared view
 
 ## Before You Deploy
@@ -77,7 +77,7 @@ When deploying as part of a multi-resource environment, reference each `GcpVerte
 
 These are the most important decisions when configuring an online store. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**Bigtable or Optimized** — Bigtable storage autoscales between node bounds and suits large feature sets served by entity key; Optimized storage serves from a dedicated endpoint at the lowest latency. The choice is fixed at creation, and both bill for capacity around the clock.
+**Bigtable for every new store** — Bigtable storage autoscales between node bounds and suits large feature sets served by entity key. Google no longer creates stores with Optimized serving; `optimized: true` manages an Optimized store that already exists, behind its dedicated endpoint and optionally over Private Service Connect. The storage kind is fixed at creation, and both bill for capacity around the clock.
 
 **What each view serves** — a view either selects features from feature groups (the registry path, one definition shared with training) or materializes a BigQuery table directly. Clients query a view by name.
 
@@ -104,8 +104,8 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 | `name` | The store's full resource name | Serving clients |
 | `feature_online_store_id` | The store's id | SDK calls |
 | `location` | The store's region | Regional clients |
-| `public_endpoint_domain_name` | The dedicated endpoint's domain | Optimized-store clients |
-| `service_attachment` | The PSC service attachment | A consumer's PSC forwarding rule |
+| `public_endpoint_domain_name` | The dedicated endpoint's domain (existing Optimized stores) | Optimized-store clients |
+| `service_attachment` | The PSC service attachment (existing Optimized stores) | A consumer's PSC forwarding rule |
 | `feature_view_names` | The views' full names | FetchFeatureValues requests |
 | `state` | `STABLE` or `UPDATING` | Rollout checks |
 
@@ -114,8 +114,6 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 **Bigtable serving** — a small autoscaled Bigtable store serving registry features on a cron. Start from the **Bigtable Serving** preset.
-
-**Optimized over PSC** — an Optimized store reachable only over Private Service Connect, encrypted under your key, with a continuously synced view. Start from the **Optimized Private** preset.
 
 ## Works With
 

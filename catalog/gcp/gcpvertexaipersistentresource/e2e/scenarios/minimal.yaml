@@ -16,15 +16,13 @@ metadata:
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
-    planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the in-place update: a label value
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the in-place update: the display name
   tags:
     - planton-e2e
 spec:
   location: us-central1
   persistentResourceId: pln-e2e-vpr-${E2E_RUN_ID}
   displayName: Planton OSS E2E persistent resource
-  labels:
-    e2e-act: first
   resourcePools:
     - machineSpec:
         machineType: n1-standard-4

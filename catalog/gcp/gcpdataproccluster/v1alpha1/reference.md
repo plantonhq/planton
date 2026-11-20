@@ -755,11 +755,13 @@ Size of the disk in GB. Leave unset for the API's default size.
 
 `string`
 
-Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
-"hyperdisk-balanced" (the class whose provisioned IOPS/throughput
-dials apply). Leave empty for the API's default.
+Disk type. Dataproc attaches only Hyperdisks: "HYPERDISK_BALANCED",
+"HYPERDISK_EXTREME", "HYPERDISK_ML", or "HYPERDISK_THROUGHPUT" (Google
+refuses persistent-disk types such as pd-standard). Hyperdisks need a
+machine series that supports them (N4, C3, C4 and newer; not E2). Leave
+empty for the API's default.
 
-- rule: disk_type must be pd-standard, pd-ssd, pd-balanced, or hyperdisk-balanced
+- rule: Dataproc attaches only Hyperdisks: disk_type must be HYPERDISK_BALANCED, HYPERDISK_EXTREME, HYPERDISK_ML, or HYPERDISK_THROUGHPUT
 
 ### spec.clusterConfig.masterConfig.diskConfig.attachedDisks[].provisionedIops
 
@@ -945,11 +947,13 @@ Size of the disk in GB. Leave unset for the API's default size.
 
 `string`
 
-Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
-"hyperdisk-balanced" (the class whose provisioned IOPS/throughput
-dials apply). Leave empty for the API's default.
+Disk type. Dataproc attaches only Hyperdisks: "HYPERDISK_BALANCED",
+"HYPERDISK_EXTREME", "HYPERDISK_ML", or "HYPERDISK_THROUGHPUT" (Google
+refuses persistent-disk types such as pd-standard). Hyperdisks need a
+machine series that supports them (N4, C3, C4 and newer; not E2). Leave
+empty for the API's default.
 
-- rule: disk_type must be pd-standard, pd-ssd, pd-balanced, or hyperdisk-balanced
+- rule: Dataproc attaches only Hyperdisks: disk_type must be HYPERDISK_BALANCED, HYPERDISK_EXTREME, HYPERDISK_ML, or HYPERDISK_THROUGHPUT
 
 ### spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].provisionedIops
 
@@ -1109,11 +1113,13 @@ Size of the disk in GB. Leave unset for the API's default size.
 
 `string`
 
-Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
-"hyperdisk-balanced" (the class whose provisioned IOPS/throughput
-dials apply). Leave empty for the API's default.
+Disk type. Dataproc attaches only Hyperdisks: "HYPERDISK_BALANCED",
+"HYPERDISK_EXTREME", "HYPERDISK_ML", or "HYPERDISK_THROUGHPUT" (Google
+refuses persistent-disk types such as pd-standard). Hyperdisks need a
+machine series that supports them (N4, C3, C4 and newer; not E2). Leave
+empty for the API's default.
 
-- rule: disk_type must be pd-standard, pd-ssd, pd-balanced, or hyperdisk-balanced
+- rule: Dataproc attaches only Hyperdisks: disk_type must be HYPERDISK_BALANCED, HYPERDISK_EXTREME, HYPERDISK_ML, or HYPERDISK_THROUGHPUT
 
 ### spec.clusterConfig.workerConfig.diskConfig.attachedDisks[].provisionedIops
 
@@ -1304,11 +1310,13 @@ Size of the disk in GB. Leave unset for the API's default size.
 
 `string`
 
-Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
-"hyperdisk-balanced" (the class whose provisioned IOPS/throughput
-dials apply). Leave empty for the API's default.
+Disk type. Dataproc attaches only Hyperdisks: "HYPERDISK_BALANCED",
+"HYPERDISK_EXTREME", "HYPERDISK_ML", or "HYPERDISK_THROUGHPUT" (Google
+refuses persistent-disk types such as pd-standard). Hyperdisks need a
+machine series that supports them (N4, C3, C4 and newer; not E2). Leave
+empty for the API's default.
 
-- rule: disk_type must be pd-standard, pd-ssd, pd-balanced, or hyperdisk-balanced
+- rule: Dataproc attaches only Hyperdisks: disk_type must be HYPERDISK_BALANCED, HYPERDISK_EXTREME, HYPERDISK_ML, or HYPERDISK_THROUGHPUT
 
 ### spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].provisionedIops
 
@@ -1469,11 +1477,13 @@ Size of the disk in GB. Leave unset for the API's default size.
 
 `string`
 
-Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
-"hyperdisk-balanced" (the class whose provisioned IOPS/throughput
-dials apply). Leave empty for the API's default.
+Disk type. Dataproc attaches only Hyperdisks: "HYPERDISK_BALANCED",
+"HYPERDISK_EXTREME", "HYPERDISK_ML", or "HYPERDISK_THROUGHPUT" (Google
+refuses persistent-disk types such as pd-standard). Hyperdisks need a
+machine series that supports them (N4, C3, C4 and newer; not E2). Leave
+empty for the API's default.
 
-- rule: disk_type must be pd-standard, pd-ssd, pd-balanced, or hyperdisk-balanced
+- rule: Dataproc attaches only Hyperdisks: disk_type must be HYPERDISK_BALANCED, HYPERDISK_EXTREME, HYPERDISK_ML, or HYPERDISK_THROUGHPUT
 
 ### spec.clusterConfig.secondaryWorkerConfig.diskConfig.attachedDisks[].provisionedIops
 
@@ -1616,11 +1626,13 @@ Size of the disk in GB. Leave unset for the API's default size.
 
 `string`
 
-Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
-"hyperdisk-balanced" (the class whose provisioned IOPS/throughput
-dials apply). Leave empty for the API's default.
+Disk type. Dataproc attaches only Hyperdisks: "HYPERDISK_BALANCED",
+"HYPERDISK_EXTREME", "HYPERDISK_ML", or "HYPERDISK_THROUGHPUT" (Google
+refuses persistent-disk types such as pd-standard). Hyperdisks need a
+machine series that supports them (N4, C3, C4 and newer; not E2). Leave
+empty for the API's default.
 
-- rule: disk_type must be pd-standard, pd-ssd, pd-balanced, or hyperdisk-balanced
+- rule: Dataproc attaches only Hyperdisks: disk_type must be HYPERDISK_BALANCED, HYPERDISK_EXTREME, HYPERDISK_ML, or HYPERDISK_THROUGHPUT
 
 ### spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].provisionedIops
 
@@ -2111,11 +2123,13 @@ Size of the disk in GB. Leave unset for the API's default size.
 
 `string`
 
-Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
-"hyperdisk-balanced" (the class whose provisioned IOPS/throughput
-dials apply). Leave empty for the API's default.
+Disk type. Dataproc attaches only Hyperdisks: "HYPERDISK_BALANCED",
+"HYPERDISK_EXTREME", "HYPERDISK_ML", or "HYPERDISK_THROUGHPUT" (Google
+refuses persistent-disk types such as pd-standard). Hyperdisks need a
+machine series that supports them (N4, C3, C4 and newer; not E2). Leave
+empty for the API's default.
 
-- rule: disk_type must be pd-standard, pd-ssd, pd-balanced, or hyperdisk-balanced
+- rule: Dataproc attaches only Hyperdisks: disk_type must be HYPERDISK_BALANCED, HYPERDISK_EXTREME, HYPERDISK_ML, or HYPERDISK_THROUGHPUT
 
 ### spec.clusterConfig.auxiliaryNodeGroups[].nodeGroupConfig.diskConfig.attachedDisks[].provisionedIops
 

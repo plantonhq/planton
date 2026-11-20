@@ -64,15 +64,18 @@ variable "spec" {
       zone = optional(string, "")
     }))
 
-    # True serves from Google's Optimized online serving (a dedicated
-    # endpoint, the lowest latency). Google's optimized block carries no
-    # settings, so the choice is a flag. Exactly one of bigtable or
-    # optimized.
+    # True marks an Optimized store: Google's Optimized online serving
+    # behind a dedicated endpoint. Google no longer creates stores with
+    # Optimized serving (it refuses with "Creating FeatureOnlineStore with
+    # Optimized serving is no longer supported"), so a new store uses
+    # bigtable; the flag describes and manages an Optimized store that
+    # already exists. Google's optimized block carries no settings, so it is
+    # a flag. Exactly one of bigtable or optimized.
     optimized = optional(bool, false)
 
-    # The store's dedicated serving endpoint. Set it to serve over Private
-    # Service Connect; omit to keep Google's default (a public dedicated
-    # endpoint on Optimized stores). Sent only when set.
+    # The dedicated serving endpoint of an existing Optimized store. Set it
+    # to serve that store over Private Service Connect; omit to keep
+    # Google's default (a public dedicated endpoint). Sent only when set.
     dedicated_serving_endpoint = optional(object({
       # Private Service Connect for the dedicated endpoint.
       private_service_connect_config = optional(object({

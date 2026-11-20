@@ -161,9 +161,9 @@ func (x *GcpVertexAiFeatureOnlineStoreBigtable) GetZone() string {
 	return ""
 }
 
-// GcpVertexAiFeatureOnlineStorePrivateServiceConnectConfig serves the
-// store's dedicated endpoint over Private Service Connect instead of the
-// public internet.
+// GcpVertexAiFeatureOnlineStorePrivateServiceConnectConfig serves an
+// Optimized store's dedicated endpoint over Private Service Connect instead
+// of the public internet.
 type GcpVertexAiFeatureOnlineStorePrivateServiceConnectConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// True serves the dedicated endpoint only through a PSC service
@@ -223,8 +223,10 @@ func (x *GcpVertexAiFeatureOnlineStorePrivateServiceConnectConfig) GetProjectAll
 
 // GcpVertexAiFeatureOnlineStoreDedicatedServingEndpoint shapes the
 // store's own serving endpoint, separate from the shared Vertex AI
-// endpoint. Optimized stores always get one (public by default); set this
-// block to put it behind Private Service Connect.
+// endpoint. Only an Optimized store has one (public by default), and Google
+// no longer creates Optimized stores, so the block shapes the endpoint of an
+// Optimized store that already exists: set it to put that endpoint behind
+// Private Service Connect.
 type GcpVertexAiFeatureOnlineStoreDedicatedServingEndpoint struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Private Service Connect for the dedicated endpoint.
@@ -606,9 +608,12 @@ func (x *GcpVertexAiFeatureOnlineStoreFeatureView) GetSyncConfig() *GcpVertexAiF
 // the catalog references a view.
 //
 // Storage is exactly one of two kinds: `bigtable` (a managed Bigtable
-// instance with autoscaling, for large feature sets) or `optimized` (Google's
-// serving infrastructure behind a dedicated endpoint, for the lowest
-// latency). Both bill for capacity around the clock.
+// instance with autoscaling) or `optimized` (Google's serving infrastructure
+// behind a dedicated endpoint). Google no longer creates stores with
+// Optimized serving -- it refuses with "Creating FeatureOnlineStore with
+// Optimized serving is no longer supported" -- so a new store uses
+// `bigtable`; `optimized` describes and manages an Optimized store that
+// already exists. Both bill for capacity around the clock.
 //
 // Immutable: feature_online_store_id, location, and the storage kind (a
 // change replaces the store and every view). Bigtable scaling, the
@@ -636,16 +641,19 @@ type GcpVertexAiFeatureOnlineStoreSpec struct {
 	// Serve from a managed Bigtable instance. Exactly one of bigtable or
 	// optimized.
 	Bigtable *GcpVertexAiFeatureOnlineStoreBigtable `protobuf:"bytes,5,opt,name=bigtable,proto3" json:"bigtable,omitempty"`
-	// True serves from Google's Optimized online serving (a dedicated
-	// endpoint, the lowest latency). Google's optimized block carries no
-	// settings, so the choice is a flag. Exactly one of bigtable or
-	// optimized.
+	// True marks an Optimized store: Google's Optimized online serving
+	// behind a dedicated endpoint. Google no longer creates stores with
+	// Optimized serving (it refuses with "Creating FeatureOnlineStore with
+	// Optimized serving is no longer supported"), so a new store uses
+	// bigtable; the flag describes and manages an Optimized store that
+	// already exists. Google's optimized block carries no settings, so it is
+	// a flag. Exactly one of bigtable or optimized.
 	Optimized bool `protobuf:"varint,6,opt,name=optimized,proto3" json:"optimized,omitempty"`
-	// The store's dedicated serving endpoint. Set it to serve over Private
-	// Service Connect; omit to keep Google's default (a public dedicated
-	// endpoint on Optimized stores). Private Service Connect applies only to
-	// an Optimized store: a Bigtable store serves through the shared Vertex
-	// AI endpoint. Sent only when set.
+	// The dedicated serving endpoint of an existing Optimized store. Set it
+	// to serve that store over Private Service Connect; omit to keep Google's
+	// default (a public dedicated endpoint). Private Service Connect applies
+	// only to an Optimized store: a Bigtable store, which every new store
+	// is, serves through the shared Vertex AI endpoint. Sent only when set.
 	DedicatedServingEndpoint *GcpVertexAiFeatureOnlineStoreDedicatedServingEndpoint `protobuf:"bytes,7,opt,name=dedicated_serving_endpoint,json=dedicatedServingEndpoint,proto3" json:"dedicated_serving_endpoint,omitempty"`
 	// Customer-managed encryption key protecting both the online and the
 	// offline data: a GcpKmsKey reference or a literal

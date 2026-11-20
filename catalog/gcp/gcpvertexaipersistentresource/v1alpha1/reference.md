@@ -21,8 +21,9 @@ network and encryption must match the resource's.
 Every replica bills from the moment it is provisioned until the resource
 is deleted, whether or not a job is running.
 
-Immutable: everything except the display name, labels, and each pool's
-replica_count -- a change to any other setting replaces the resource.
+Immutable: everything except the display name and each pool's
+replica_count -- a change to any other setting, labels included, replaces
+the resource and reprovisions its machines.
 
 ## Example
 
@@ -130,7 +131,8 @@ characters. Mutable in place.
 `map<string, string>`
 
 Labels on the resource. The platform attribution labels are merged in
-and win on key conflicts. Mutable in place.
+and win on key conflicts. A change replaces the resource: the provider
+recreates it rather than patching its labels.
 
 ### spec.resourcePools
 

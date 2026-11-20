@@ -11,7 +11,9 @@ import (
 
 // featureOnlineStore creates the online store -- exactly one of a managed
 // Bigtable instance or Optimized serving (the spec's CEL) -- and the
-// feature views it serves (feature_views.go).
+// feature views it serves (feature_views.go). A new store serves from
+// Bigtable: Google no longer creates Optimized stores, so the Optimized
+// block manages one that already exists.
 //
 // Send posture (parity with the Terraform module): the Optional+Computed
 // levers -- the Bigtable zone, the CPU utilization target, and the
@@ -55,7 +57,8 @@ func featureOnlineStore(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Pr
 	if spec.Bigtable != nil {
 		args.Bigtable = buildBigtable(spec.Bigtable)
 	}
-	// The spec's bool is the honest form of Google's empty optimized block.
+	// The spec's bool is the honest form of Google's empty optimized block,
+	// set only for an Optimized store that already exists.
 	if spec.Optimized {
 		args.Optimized = &vertex.AiFeatureOnlineStoreOptimizedArgs{}
 	}

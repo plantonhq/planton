@@ -10,9 +10,11 @@ resource "google_project_service" "aiplatform_api" {
 }
 
 # The online store: exactly one of a managed Bigtable instance or Optimized
-# serving (the spec's CEL). The id, location, and storage kind are
-# immutable; Bigtable scaling, the dedicated endpoint, the key, and labels
-# update in place.
+# serving (the spec's CEL). A new store serves from Bigtable -- Google no
+# longer creates Optimized stores -- and the optimized block manages one
+# that already exists. The id, location, and storage kind are immutable;
+# Bigtable scaling, the dedicated endpoint, the key, and labels update in
+# place.
 resource "google_vertex_ai_feature_online_store" "this" {
   project = local.project_id
   # The provider names the axis `region`; the spec keeps the Vertex
@@ -43,14 +45,15 @@ resource "google_vertex_ai_feature_online_store" "this" {
     }
   }
 
-  # The spec's bool is the honest form of Google's empty optimized block.
+  # The spec's bool is the honest form of Google's empty optimized block,
+  # set only for an Optimized store that already exists.
   dynamic "optimized" {
     for_each = var.spec.optimized ? [true] : []
     content {}
   }
 
-  # Optional+Computed: Optimized stores get a public dedicated endpoint by
-  # default; the block is sent only when the spec shapes it.
+  # Optional+Computed: an existing Optimized store has a public dedicated
+  # endpoint by default; the block is sent only when the spec shapes it.
   dynamic "dedicated_serving_endpoint" {
     for_each = var.spec.dedicated_serving_endpoint != null ? [var.spec.dedicated_serving_endpoint] : []
     content {

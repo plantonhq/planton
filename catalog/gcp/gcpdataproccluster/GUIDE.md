@@ -40,10 +40,12 @@ Dataproc pick the list's second type when the first was capacity-tight —
 the fallback working exactly as designed).
 
 Disks follow the same role-first thinking. `diskConfig.attachedDisks`
-adds persistent disks to every node of a role beyond the boot disk —
-for HDFS data or shuffle spill that should not share the boot volume,
-or for Hyperdisk tiers the boot disk cannot use — and is fixed at
-creation. Inside a flexibility policy each selection entry can carry its
+adds disks to every node of a role beyond the boot disk — for HDFS data
+or shuffle spill that should not share the boot volume — and is fixed at
+creation. Dataproc attaches only Hyperdisks (`HYPERDISK_BALANCED`,
+`HYPERDISK_EXTREME`, `HYPERDISK_ML`, `HYPERDISK_THROUGHPUT`); it refuses
+`pd-standard` and the other persistent-disk types, and a Hyperdisk needs
+a machine series that takes one (N4, C3, C4 and newer, never E2). Inside a flexibility policy each selection entry can carry its
 own `diskConfig`, so the fallback machine types get the boot disk and
 local-SSD count that fit them rather than inheriting the preferred
 type's shape. `gceConfig.confidentialInstanceConfig.confidentialInstanceType`

@@ -48,9 +48,9 @@ message GcpVertexAiFeatureOnlineStoreBigtable {
   string zone = 3;
 }
 
-// GcpVertexAiFeatureOnlineStorePrivateServiceConnectConfig serves the
-// store's dedicated endpoint over Private Service Connect instead of the
-// public internet.
+// GcpVertexAiFeatureOnlineStorePrivateServiceConnectConfig serves an
+// Optimized store's dedicated endpoint over Private Service Connect instead
+// of the public internet.
 message GcpVertexAiFeatureOnlineStorePrivateServiceConnectConfig {
   // True serves the dedicated endpoint only through a PSC service
   // attachment (the `service_attachment` output) that consumers target
@@ -64,8 +64,10 @@ message GcpVertexAiFeatureOnlineStorePrivateServiceConnectConfig {
 
 // GcpVertexAiFeatureOnlineStoreDedicatedServingEndpoint shapes the
 // store's own serving endpoint, separate from the shared Vertex AI
-// endpoint. Optimized stores always get one (public by default); set this
-// block to put it behind Private Service Connect.
+// endpoint. Only an Optimized store has one (public by default), and Google
+// no longer creates Optimized stores, so the block shapes the endpoint of an
+// Optimized store that already exists: set it to put that endpoint behind
+// Private Service Connect.
 message GcpVertexAiFeatureOnlineStoreDedicatedServingEndpoint {
   // Private Service Connect for the dedicated endpoint.
   GcpVertexAiFeatureOnlineStorePrivateServiceConnectConfig private_service_connect_config = 1;
@@ -197,9 +199,12 @@ message GcpVertexAiFeatureOnlineStoreFeatureView {
 // the catalog references a view.
 //
 // Storage is exactly one of two kinds: `bigtable` (a managed Bigtable
-// instance with autoscaling, for large feature sets) or `optimized` (Google's
-// serving infrastructure behind a dedicated endpoint, for the lowest
-// latency). Both bill for capacity around the clock.
+// instance with autoscaling) or `optimized` (Google's serving infrastructure
+// behind a dedicated endpoint). Google no longer creates stores with
+// Optimized serving -- it refuses with "Creating FeatureOnlineStore with
+// Optimized serving is no longer supported" -- so a new store uses
+// `bigtable`; `optimized` describes and manages an Optimized store that
+// already exists. Both bill for capacity around the clock.
 //
 // Immutable: feature_online_store_id, location, and the storage kind (a
 // change replaces the store and every view). Bigtable scaling, the
@@ -256,17 +261,20 @@ message GcpVertexAiFeatureOnlineStoreSpec {
   // optimized.
   GcpVertexAiFeatureOnlineStoreBigtable bigtable = 5;
 
-  // True serves from Google's Optimized online serving (a dedicated
-  // endpoint, the lowest latency). Google's optimized block carries no
-  // settings, so the choice is a flag. Exactly one of bigtable or
-  // optimized.
+  // True marks an Optimized store: Google's Optimized online serving
+  // behind a dedicated endpoint. Google no longer creates stores with
+  // Optimized serving (it refuses with "Creating FeatureOnlineStore with
+  // Optimized serving is no longer supported"), so a new store uses
+  // bigtable; the flag describes and manages an Optimized store that
+  // already exists. Google's optimized block carries no settings, so it is
+  // a flag. Exactly one of bigtable or optimized.
   bool optimized = 6;
 
-  // The store's dedicated serving endpoint. Set it to serve over Private
-  // Service Connect; omit to keep Google's default (a public dedicated
-  // endpoint on Optimized stores). Private Service Connect applies only to
-  // an Optimized store: a Bigtable store serves through the shared Vertex
-  // AI endpoint. Sent only when set.
+  // The dedicated serving endpoint of an existing Optimized store. Set it
+  // to serve that store over Private Service Connect; omit to keep Google's
+  // default (a public dedicated endpoint). Private Service Connect applies
+  // only to an Optimized store: a Bigtable store, which every new store
+  // is, serves through the shared Vertex AI endpoint. Sent only when set.
   GcpVertexAiFeatureOnlineStoreDedicatedServingEndpoint dedicated_serving_endpoint = 7;
 
   // Customer-managed encryption key protecting both the online and the

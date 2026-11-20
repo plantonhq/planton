@@ -1472,8 +1472,8 @@ var _ = ginkgo.Describe("GcpDataprocClusterSpec", func() {
 					DiskConfig: &GcpDataprocClusterDiskConfig{
 						BootDiskType: "pd-balanced",
 						AttachedDisks: []*GcpDataprocClusterAttachedDisk{
-							{DiskSizeGb: 500, DiskType: "pd-ssd"},
-							{DiskSizeGb: 1000, DiskType: "hyperdisk-balanced", ProvisionedIops: &iops},
+							{DiskSizeGb: 500, DiskType: "HYPERDISK_THROUGHPUT"},
+							{DiskSizeGb: 1000, DiskType: "HYPERDISK_BALANCED", ProvisionedIops: &iops},
 						},
 					},
 					InstanceFlexibilityPolicy: &GcpDataprocClusterInstanceFlexibilityPolicy{
@@ -1496,6 +1496,9 @@ var _ = ginkgo.Describe("GcpDataprocClusterSpec", func() {
 			}
 			gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 			msg.Spec.ClusterConfig.MasterConfig.DiskConfig.AttachedDisks[0] = &GcpDataprocClusterAttachedDisk{DiskType: "local-ssd"}
+			gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+			// Google refuses persistent-disk types on attached disks.
+			msg.Spec.ClusterConfig.MasterConfig.DiskConfig.AttachedDisks[0] = &GcpDataprocClusterAttachedDisk{DiskType: "pd-standard"}
 			gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 		})
 

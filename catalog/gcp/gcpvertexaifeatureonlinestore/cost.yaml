@@ -11,7 +11,7 @@ spec:
     - service_name: Vertex AI
       sku_meter: Feature Store online serving
       pricing_unit: node-hours
-      description: An online store bills its serving capacity around the clock from creation, requests or not -- Bigtable online serving per node-hour at the running node count (never below min_node_count), Optimized online serving per node-hour of its dedicated serving nodes (per cloud.google.com/vertex-ai/pricing, Vertex AI Feature Store section, read 2026-09-23).
+      description: An online store bills its serving capacity around the clock from creation, requests or not -- Bigtable online serving per node-hour at the running node count (never below min_node_count), an existing Optimized store's online serving per node-hour of its dedicated serving nodes (per cloud.google.com/vertex-ai/pricing, Vertex AI Feature Store section, read 2026-09-23).
     - service_name: Vertex AI
       sku_meter: Feature Store data processing
       pricing_unit: node-hours
@@ -32,7 +32,7 @@ spec:
     - field_path: optimized
       sku_meter: Feature Store online serving
       pricing_unit: node-hours
-      impact: Optimized serving bills its dedicated serving nodes around the clock; it buys the lowest latency, not the lowest cost.
+      impact: An existing Optimized store bills its dedicated serving nodes around the clock; Google no longer creates Optimized stores, so a new store's serving spend follows its Bigtable node bounds.
     - field_path: feature_views.sync_config.continuous
       sku_meter: Feature Store data processing
       pricing_unit: node-hours

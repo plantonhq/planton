@@ -10,12 +10,13 @@ import (
 // CertificateTemplatePredefinedValues block. Every inner block is sent only when the spec sets
 // it, so a nil p yields the empty block a template without predefined values sends.
 func x509Parameters(p *gcpprivatecacertificatetemplatev1alpha1.GcpPrivateCaCertificateTemplateX509Parameters) *certificateauthority.CertificateTemplatePredefinedValuesArgs {
-	args := &certificateauthority.CertificateTemplatePredefinedValuesArgs{}
-	if p.GetCaOptions() != nil {
-		args.CaOptions = caOptions(p.GetCaOptions())
-	}
-	if p.GetKeyUsage() != nil {
-		args.KeyUsage = keyUsage(p.GetKeyUsage())
+	// Google stores ca_options and key_usage on every template's predefined
+	// values and the provider reads both back, so both are always sent; an
+	// omitted one goes out in the form that states nothing (null_ca, every
+	// usage bit false), which is what Google echoes.
+	args := &certificateauthority.CertificateTemplatePredefinedValuesArgs{
+		CaOptions: caOptions(p.GetCaOptions()),
+		KeyUsage:  keyUsage(p.GetKeyUsage()),
 	}
 	if len(p.GetAiaOcspServers()) > 0 {
 		args.AiaOcspServers = pulumi.ToStringArray(p.GetAiaOcspServers())
@@ -60,13 +61,14 @@ func x509Parameters(p *gcpprivatecacertificatetemplatev1alpha1.GcpPrivateCaCerti
 func caOptions(o *gcpprivatecacertificatetemplatev1alpha1.GcpPrivateCaCertificateTemplateCaOptions) *certificateauthority.CertificateTemplatePredefinedValuesCaOptionsArgs {
 	args := &certificateauthority.CertificateTemplatePredefinedValuesCaOptionsArgs{}
 	// Unset is_ca omits the CA flag; the provider's template resource sends
-	// false unless null_ca is set, so unset maps to null_ca.
-	if o.IsCa != nil {
+	// false unless null_ca is set, so unset maps to null_ca. Omitted CA
+	// options are unset is_ca.
+	if o != nil && o.IsCa != nil {
 		args.IsCa = pulumi.Bool(o.GetIsCa())
 	} else {
 		args.NullCa = pulumi.Bool(true)
 	}
-	if o.MaxIssuerPathLength != nil {
+	if o != nil && o.MaxIssuerPathLength != nil {
 		if o.GetMaxIssuerPathLength() == 0 {
 			args.ZeroMaxIssuerPathLength = pulumi.Bool(true)
 		} else {
@@ -76,10 +78,12 @@ func caOptions(o *gcpprivatecacertificatetemplatev1alpha1.GcpPrivateCaCertificat
 	return args
 }
 
-// keyUsage maps the key usage groups, each sent only when the spec sets it.
+// keyUsage maps the key usage groups. Both groups are always sent; an omitted
+// group goes out with every bit false, which states nothing.
 func keyUsage(k *gcpprivatecacertificatetemplatev1alpha1.GcpPrivateCaCertificateTemplateKeyUsage) *certificateauthority.CertificateTemplatePredefinedValuesKeyUsageArgs {
 	args := &certificateauthority.CertificateTemplatePredefinedValuesKeyUsageArgs{}
-	if base := k.GetBaseKeyUsage(); base != nil {
+	{
+		base := k.GetBaseKeyUsage()
 		args.BaseKeyUsage = &certificateauthority.CertificateTemplatePredefinedValuesKeyUsageBaseKeyUsageArgs{
 			DigitalSignature:  pulumi.Bool(base.GetDigitalSignature()),
 			ContentCommitment: pulumi.Bool(base.GetContentCommitment()),
@@ -92,7 +96,8 @@ func keyUsage(k *gcpprivatecacertificatetemplatev1alpha1.GcpPrivateCaCertificate
 			DecipherOnly:      pulumi.Bool(base.GetDecipherOnly()),
 		}
 	}
-	if extended := k.GetExtendedKeyUsage(); extended != nil {
+	{
+		extended := k.GetExtendedKeyUsage()
 		args.ExtendedKeyUsage = &certificateauthority.CertificateTemplatePredefinedValuesKeyUsageExtendedKeyUsageArgs{
 			ServerAuth:      pulumi.Bool(extended.GetServerAuth()),
 			ClientAuth:      pulumi.Bool(extended.GetClientAuth()),

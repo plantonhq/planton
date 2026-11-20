@@ -18,6 +18,7 @@ metadata:
     planton.dev/e2e: "true"
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpvertexaifeatureonlinestore/e2e/prerequisites/gcpbigquerytable-features.yaml,catalog/gcp/gcpvertexaifeatureonlinestore/e2e/prerequisites/gcpvertexaifeaturegroup-customers.yaml"
+    planton.dev/e2e-upgrade-manifest: bigtable-registry-view.to.yaml # the in-place update: a label value
   tags:
     - planton-e2e
 spec:
@@ -27,6 +28,8 @@ spec:
     autoScaling:
       minNodeCount: 1
       maxNodeCount: 2
+  labels:
+    e2e-act: first
   featureViews:
     - featureViewId: customer_view
       labels:

@@ -17,9 +17,12 @@ folded in because they belong to exactly one store and nothing else in
 the catalog references a view.
 
 Storage is exactly one of two kinds: `bigtable` (a managed Bigtable
-instance with autoscaling, for large feature sets) or `optimized` (Google's
-serving infrastructure behind a dedicated endpoint, for the lowest
-latency). Both bill for capacity around the clock.
+instance with autoscaling) or `optimized` (Google's serving infrastructure
+behind a dedicated endpoint). Google no longer creates stores with
+Optimized serving -- it refuses with "Creating FeatureOnlineStore with
+Optimized serving is no longer supported" -- so a new store uses
+`bigtable`; `optimized` describes and manages an Optimized store that
+already exists. Both bill for capacity around the clock.
 
 Immutable: feature_online_store_id, location, and the storage kind (a
 change replaces the store and every view). Bigtable scaling, the
@@ -42,8 +45,9 @@ spec:
   featureOnlineStoreId: serving_store
   labels:
     team: ml
-  # Exactly one storage kind: a managed Bigtable instance (large feature
-  # sets, autoscaling) or optimized: true (lowest latency).
+  # Exactly one storage kind. A new store uses a managed Bigtable instance
+  # (autoscaling); Google no longer creates Optimized stores, so
+  # optimized: true describes one that already exists.
   bigtable:
     autoScaling:
       minNodeCount: 1
@@ -204,20 +208,23 @@ Google picks one in the store's region when empty. Sent only when set.
 
 `bool`
 
-True serves from Google's Optimized online serving (a dedicated
-endpoint, the lowest latency). Google's optimized block carries no
-settings, so the choice is a flag. Exactly one of bigtable or
-optimized.
+True marks an Optimized store: Google's Optimized online serving
+behind a dedicated endpoint. Google no longer creates stores with
+Optimized serving (it refuses with "Creating FeatureOnlineStore with
+Optimized serving is no longer supported"), so a new store uses
+bigtable; the flag describes and manages an Optimized store that
+already exists. Google's optimized block carries no settings, so it is
+a flag. Exactly one of bigtable or optimized.
 
 ### spec.dedicatedServingEndpoint
 
 `GcpVertexAiFeatureOnlineStoreDedicatedServingEndpoint`
 
-The store's dedicated serving endpoint. Set it to serve over Private
-Service Connect; omit to keep Google's default (a public dedicated
-endpoint on Optimized stores). Private Service Connect applies only to
-an Optimized store: a Bigtable store serves through the shared Vertex
-AI endpoint. Sent only when set.
+The dedicated serving endpoint of an existing Optimized store. Set it
+to serve that store over Private Service Connect; omit to keep Google's
+default (a public dedicated endpoint). Private Service Connect applies
+only to an Optimized store: a Bigtable store, which every new store
+is, serves through the shared Vertex AI endpoint. Sent only when set.
 
 ### spec.dedicatedServingEndpoint.privateServiceConnectConfig
 

@@ -18,8 +18,8 @@ data "google_project" "network" {
 }
 
 # The persistent resource: pools of machines Vertex AI keeps provisioned
-# for training jobs. Everything but the display name, labels, and each
-# pool's replica_count is immutable.
+# for training jobs. Everything but the display name and each pool's
+# replica_count is immutable; a label change recreates the resource too.
 resource "google_vertex_ai_persistent_resource" "this" {
   project      = local.project_id
   location     = var.spec.location

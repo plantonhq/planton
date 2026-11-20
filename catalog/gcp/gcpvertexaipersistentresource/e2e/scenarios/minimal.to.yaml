@@ -1,7 +1,7 @@
-# The second act of minimal.yaml: the same persistent resource with its
-# e2e-act label changed from first to second -- an update of the resource
-# that changes it in place while its pool keeps running (its id, location and
-# machine spec recreate it). Not a scenario of its own (the second-act
+# The second act of minimal.yaml: the same persistent resource with a new
+# display name -- an update of the resource that changes it in place while
+# its pool keeps running (its id, location, machine spec and labels recreate
+# it). Not a scenario of its own (the second-act
 # annotation keeps discovery from running it as a lane).
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpVertexAiPersistentResource
@@ -23,9 +23,7 @@ metadata:
 spec:
   location: us-central1
   persistentResourceId: pln-e2e-vpr-${E2E_RUN_ID}
-  displayName: Planton OSS E2E persistent resource
-  labels:
-    e2e-act: second
+  displayName: Planton OSS E2E persistent resource, renamed
   resourcePools:
     - machineSpec:
         machineType: n1-standard-4

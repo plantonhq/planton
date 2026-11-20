@@ -26,8 +26,12 @@ resource "google_privateca_certificate_template" "this" {
     content {
       aia_ocsp_servers = length(predefined_values.value.aia_ocsp_servers) > 0 ? predefined_values.value.aia_ocsp_servers : null
 
+      # Google stores ca_options and key_usage on every template's predefined
+      # values and the provider reads both back, so both are always sent; an
+      # omitted one goes out in the form that states nothing (null_ca, every
+      # usage bit false), which is what Google echoes.
       dynamic "ca_options" {
-        for_each = predefined_values.value.ca_options != null ? [predefined_values.value.ca_options] : []
+        for_each = [predefined_values.value.ca_options != null ? predefined_values.value.ca_options : { is_ca = null, max_issuer_path_length = null }]
         content {
           # Unset is_ca omits the CA flag; the template resource would send
           # false unless null_ca is set, so unset maps to null_ca.
@@ -40,39 +44,30 @@ resource "google_privateca_certificate_template" "this" {
         }
       }
 
-      dynamic "key_usage" {
-        for_each = predefined_values.value.key_usage != null ? [predefined_values.value.key_usage] : []
-        content {
-          dynamic "base_key_usage" {
-            for_each = key_usage.value.base_key_usage != null ? [key_usage.value.base_key_usage] : []
-            content {
-              digital_signature  = base_key_usage.value.digital_signature
-              content_commitment = base_key_usage.value.content_commitment
-              key_encipherment   = base_key_usage.value.key_encipherment
-              data_encipherment  = base_key_usage.value.data_encipherment
-              key_agreement      = base_key_usage.value.key_agreement
-              cert_sign          = base_key_usage.value.cert_sign
-              crl_sign           = base_key_usage.value.crl_sign
-              encipher_only      = base_key_usage.value.encipher_only
-              decipher_only      = base_key_usage.value.decipher_only
-            }
-          }
-          dynamic "extended_key_usage" {
-            for_each = key_usage.value.extended_key_usage != null ? [key_usage.value.extended_key_usage] : []
-            content {
-              server_auth      = extended_key_usage.value.server_auth
-              client_auth      = extended_key_usage.value.client_auth
-              code_signing     = extended_key_usage.value.code_signing
-              email_protection = extended_key_usage.value.email_protection
-              time_stamping    = extended_key_usage.value.time_stamping
-              ocsp_signing     = extended_key_usage.value.ocsp_signing
-            }
-          }
-          dynamic "unknown_extended_key_usages" {
-            for_each = key_usage.value.unknown_extended_key_usages
-            content {
-              object_id_path = unknown_extended_key_usages.value.object_id_path
-            }
+      key_usage {
+        base_key_usage {
+          digital_signature  = try(predefined_values.value.key_usage.base_key_usage.digital_signature, false)
+          content_commitment = try(predefined_values.value.key_usage.base_key_usage.content_commitment, false)
+          key_encipherment   = try(predefined_values.value.key_usage.base_key_usage.key_encipherment, false)
+          data_encipherment  = try(predefined_values.value.key_usage.base_key_usage.data_encipherment, false)
+          key_agreement      = try(predefined_values.value.key_usage.base_key_usage.key_agreement, false)
+          cert_sign          = try(predefined_values.value.key_usage.base_key_usage.cert_sign, false)
+          crl_sign           = try(predefined_values.value.key_usage.base_key_usage.crl_sign, false)
+          encipher_only      = try(predefined_values.value.key_usage.base_key_usage.encipher_only, false)
+          decipher_only      = try(predefined_values.value.key_usage.base_key_usage.decipher_only, false)
+        }
+        extended_key_usage {
+          server_auth      = try(predefined_values.value.key_usage.extended_key_usage.server_auth, false)
+          client_auth      = try(predefined_values.value.key_usage.extended_key_usage.client_auth, false)
+          code_signing     = try(predefined_values.value.key_usage.extended_key_usage.code_signing, false)
+          email_protection = try(predefined_values.value.key_usage.extended_key_usage.email_protection, false)
+          time_stamping    = try(predefined_values.value.key_usage.extended_key_usage.time_stamping, false)
+          ocsp_signing     = try(predefined_values.value.key_usage.extended_key_usage.ocsp_signing, false)
+        }
+        dynamic "unknown_extended_key_usages" {
+          for_each = try(predefined_values.value.key_usage.unknown_extended_key_usages, [])
+          content {
+            object_id_path = unknown_extended_key_usages.value.object_id_path
           }
         }
       }

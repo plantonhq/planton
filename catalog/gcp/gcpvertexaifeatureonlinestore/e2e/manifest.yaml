@@ -11,8 +11,9 @@ spec:
   featureOnlineStoreId: serving_store
   labels:
     team: ml
-  # Exactly one storage kind: a managed Bigtable instance (large feature
-  # sets, autoscaling) or optimized: true (lowest latency).
+  # Exactly one storage kind. A new store uses a managed Bigtable instance
+  # (autoscaling); Google no longer creates Optimized stores, so
+  # optimized: true describes one that already exists.
   bigtable:
     autoScaling:
       minNodeCount: 1

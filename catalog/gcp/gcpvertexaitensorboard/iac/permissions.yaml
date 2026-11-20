@@ -26,10 +26,11 @@ spec:
           - aiplatform.tensorboards.get
           - aiplatform.tensorboards.update
           - aiplatform.tensorboards.delete
+          - aiplatform.operations.list
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: Covers google_vertex_ai_tensorboard (Pulumi vertex.AiTensorboard) -- created and deleted through long-running operations the provider polls, patched for display name, description, and labels, read on every refresh. GCP defines no aiplatform.operations.get permission (IAM's testable-permissions inventory carries only aiplatform.operations.list); polling the long-running operations needs nothing beyond these.
+        notes: Covers google_vertex_ai_tensorboard (Pulumi vertex.AiTensorboard) -- created and deleted through long-running operations the provider polls, patched for display name, description, and labels, read on every refresh. GCP defines no aiplatform.operations.get permission (IAM's testable-permissions inventory carries only aiplatform.operations.list), and a TensorBoard's create operation is not readable with the tensorboard permissions alone -- Google refuses the provider's poll with 403 "The caller does not have permission" (measured), so the group holds aiplatform.operations.list.
       - purpose: ManageTensorboardExperimentsAndRuns
         permissions:
           - aiplatform.tensorboardExperiments.create

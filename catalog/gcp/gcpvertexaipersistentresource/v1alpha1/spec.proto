@@ -191,8 +191,9 @@ message GcpVertexAiPersistentResourcePscInterfaceConfig {
 // Every replica bills from the moment it is provisioned until the resource
 // is deleted, whether or not a job is running.
 //
-// Immutable: everything except the display name, labels, and each pool's
-// replica_count -- a change to any other setting replaces the resource.
+// Immutable: everything except the display name and each pool's
+// replica_count -- a change to any other setting, labels included, replaces
+// the resource and reprovisions its machines.
 message GcpVertexAiPersistentResourceSpec {
   option (buf.validate.message).cel = {
     id: "spec.network_literal_path"
@@ -230,7 +231,8 @@ message GcpVertexAiPersistentResourceSpec {
   string display_name = 4 [(buf.validate.field).string.max_len = 128];
 
   // Labels on the resource. The platform attribution labels are merged in
-  // and win on key conflicts. Mutable in place.
+  // and win on key conflicts. A change replaces the resource: the provider
+  // recreates it rather than patching its labels.
   map<string, string> labels = 5;
 
   // The pools of machines the resource keeps provisioned. At least one.

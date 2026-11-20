@@ -38,6 +38,7 @@ spec:
           - compute.instanceGroupManagers.update
           - compute.instanceGroupManagers.delete
           - compute.instanceGroupManagers.use
+          - compute.instanceGroups.create
           - compute.instanceGroups.get
           - compute.instances.create
           - compute.instances.delete
@@ -46,7 +47,7 @@ spec:
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: Covers google_compute_instance_group_manager / _region_instance_group_manager plus every sub-resource that authorizes THROUGH the manager -- per-instance configs (google_compute_per_instance_config / _region_) and resize requests (google_compute_resize_request / _region_) all check instanceGroupManagers.update, since GCP defines no compute.resizeRequests or per-instance-config permissions (verified against the IAM inventory; mirrors how node pools authorize under container.clusters.update). The manager creates and deletes VMs on the caller's behalf, so instances.create/delete are checked on sizing changes; zone/regionOperations.get polls the operations every mutation returns.
+        notes: Covers google_compute_instance_group_manager / _region_instance_group_manager plus every sub-resource that authorizes THROUGH the manager -- per-instance configs (google_compute_per_instance_config / _region_) and resize requests (google_compute_resize_request / _region_) all check instanceGroupManagers.update, since GCP defines no compute.resizeRequests or per-instance-config permissions (verified against the IAM inventory; mirrors how node pools authorize under container.clusters.update). Google creates the group the manager runs as the caller (compute.instanceGroups.create, measured). The manager creates and deletes VMs on the caller's behalf, so instances.create/delete are checked on sizing changes; zone/regionOperations.get polls the operations every mutation returns.
       - purpose: CreateGroupVms
         permissions:
           - compute.disks.create
@@ -90,13 +91,13 @@ spec:
         notes: Required only when spec.autoscaler is set (google_compute_autoscaler / _region_autoscaler). GCP defines NO compute.regionAutoscalers permissions (verified against the IAM inventory) -- regional autoscalers authorize under these same names.
       - purpose: UseHealthCheck
         permissions:
-          - compute.healthChecks.useReadOnly
+          - compute.healthChecks.use
         provenance: derived
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: auto_healing.health_check
-        notes: Required only when auto_healing references a health check by self link -- the group manager reads it to wire auto-healing.
+        notes: Required only when auto_healing references a health check by self link -- Google checks compute.healthChecks.use, not the read-only grant, when the group manager wires auto-healing (measured).
       - purpose: ActAsServiceAccount
         permissions:
           - iam.serviceAccounts.actAs

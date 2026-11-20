@@ -18,7 +18,8 @@ var numericProject = regexp.MustCompile(`^[0-9]+$`)
 
 // persistentResource creates the persistent resource: pools of machines
 // Vertex AI keeps provisioned for training jobs. Everything but the display
-// name, labels, and each pool's replica_count is immutable.
+// name and each pool's replica_count is immutable; a label change recreates
+// the resource too.
 //
 // Send posture (parity with the Terraform module): the Optional+Computed
 // levers -- a pool's id and its disk spec -- are sent only when set, and

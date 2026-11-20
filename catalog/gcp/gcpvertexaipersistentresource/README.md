@@ -106,7 +106,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 ## Important Notes
 
 - **It bills from provisioning until deletion.** Every replica runs, and bills, whether or not a job is using it -- that is what makes jobs start instantly.
-- **Almost everything is permanent.** Only the display name, labels, and each pool's `replicaCount` update in place; any other change replaces the resource and reprovisions every machine.
+- **Almost everything is permanent.** Only the display name and each pool's `replicaCount` update in place; any other change, labels included, replaces the resource and reprovisions every machine.
 - **Jobs must match it.** A job that runs on the resource must use the same network and encryption key, or Google rejects the job.
 
 ## Examples

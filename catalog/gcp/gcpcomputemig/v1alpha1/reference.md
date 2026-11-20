@@ -393,6 +393,7 @@ to it per update_policy. See GcpComputeMigTemplate for the
 replace-on-change semantics of each field.
 
 - rule: {"required":true}
+- rule: Compute Engine refuses scheduling.host_error_timeout_seconds on a Spot VM — remove it, or use the STANDARD provisioning model
 - rule: SPOT and FLEX_START VMs cannot automatically restart after reclamation — leave scheduling.automatic_restart unset or set it to false
 - rule: scheduling.instance_termination_action applies to SPOT/FLEX_START VMs and to timed-run VMs (max_run_duration_seconds or termination_time) — configure one of those or remove the termination action
 - rule: confidential VMs cannot live-migrate — set scheduling.on_host_maintenance to TERMINATE when confidential_instance_config is configured
@@ -1080,7 +1081,9 @@ How long Compute Engine waits, in seconds, before declaring a host
 failed and starting host-error recovery for the VM on it. A lower
 value recovers a hung host faster at the cost of more false
 positives; leave unset for Compute Engine's default recovery timing.
-Must be 90..330 in steps of 30 (90, 120, ..., 330).
+Must be 90..330 in steps of 30 (90, 120, ..., 330). Compute Engine
+refuses it on Spot VMs ("hostErrorTimeoutSeconds feature is not
+supported for preemptible instance").
 
 - rule: host_error_timeout_seconds must be a multiple of 30 between 90 and 330
 - rule: {"int32":{"lte":330,"gte":90}}

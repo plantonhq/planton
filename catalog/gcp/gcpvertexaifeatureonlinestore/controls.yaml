@@ -20,7 +20,6 @@ spec:
       evidence:
         type: spec_default
         reference: Unset means Google-managed encryption; a Cloud KMS key in the store's region encrypts both the online and the offline data under the customer-managed key. Both modules emit the block only when set.
-      notes: The 02-optimized-private preset references a GcpKmsKey.
     - control_id: enc-in-transit
       status: enforced_by_default
       evidence:
@@ -31,8 +30,8 @@ spec:
       field_path: dedicated_serving_endpoint
       evidence:
         type: spec_default
-        reference: Unset keeps Google's default -- a Bigtable store serves through the Vertex AI API under IAM, an Optimized store through a public dedicated endpoint that still requires IAM-authenticated calls; private_service_connect_config with enable_private_service_connect true serves only through a PSC service attachment.
-      notes: The 02-optimized-private preset enables PSC.
+        reference: Unset keeps Google's default -- a Bigtable store serves through the Vertex AI API under IAM, an existing Optimized store through a public dedicated endpoint that still requires IAM-authenticated calls; private_service_connect_config with enable_private_service_connect true serves only through a PSC service attachment.
+      notes: Every new store is a Bigtable store (Google no longer creates Optimized stores), which has no dedicated endpoint; PSC applies to an existing Optimized store.
     - control_id: restricted-ingress
       status: configurable
       field_path: dedicated_serving_endpoint.private_service_connect_config.project_allowlist
@@ -77,7 +76,7 @@ spec:
       field_path: bigtable.zone
       evidence:
         type: provider_default
-        reference: Optimized serving is a regional Google-managed service; a Bigtable store's managed instance runs in one zone Google picks unless zone names one.
+        reference: An existing Optimized store's serving is a regional Google-managed service; a Bigtable store's managed instance runs in one zone Google picks unless zone names one.
       notes: Recovery from a zonal outage on a Bigtable store is a resync into a store elsewhere; the GUIDE covers the storage choice.
     - control_id: deletion-protection
       status: configurable
@@ -85,7 +84,7 @@ spec:
       evidence:
         type: spec_default
         reference: Unset means DELETE -- the views and the store (with its managed Bigtable instance) are deleted on destroy; PREVENT makes destroy fail; ABANDON leaves the store serving. Fanned to every view.
-      notes: The 02-optimized-private preset sets PREVENT.
+      notes: The Bigtable Serving preset documents PREVENT once production traffic depends on the store.
     - control_id: managed-patching
       status: enforced_by_default
       evidence:

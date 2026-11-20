@@ -30,6 +30,13 @@ spec:
         reach: target
         privilege: ordinary
         notes: Covers google_vertex_ai_feature_group (Pulumi vertex.AiFeatureGroup) -- created and deleted through long-running operations the provider polls, patched for description, labels, and entity ID columns, read on every refresh. GCP defines no aiplatform.operations.get permission (IAM's testable-permissions inventory carries only aiplatform.operations.list); polling the long-running operations needs nothing beyond these.
+      - purpose: ReadBigQuerySource
+        permissions:
+          - bigquery.tables.get
+        provenance: derived
+        reach: target
+        privilege: ordinary
+        notes: Creating the group, Vertex AI checks that the caller can read the source BigQuery table ("Caller does not have the required IAM permission(s) to access the BigQuery source", measured). Grant it where the table lives; the Vertex AI service agent's own read access, which serving needs later, is a separate grant.
       - purpose: ManageFeatures
         permissions:
           - aiplatform.features.create

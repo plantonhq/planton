@@ -151,9 +151,11 @@ type GcpDataprocClusterAttachedDisk struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Size of the disk in GB. Leave unset for the API's default size.
 	DiskSizeGb int32 `protobuf:"varint,1,opt,name=disk_size_gb,json=diskSizeGb,proto3" json:"disk_size_gb,omitempty"`
-	// Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
-	// "hyperdisk-balanced" (the class whose provisioned IOPS/throughput
-	// dials apply). Leave empty for the API's default.
+	// Disk type. Dataproc attaches only Hyperdisks: "HYPERDISK_BALANCED",
+	// "HYPERDISK_EXTREME", "HYPERDISK_ML", or "HYPERDISK_THROUGHPUT" (Google
+	// refuses persistent-disk types such as pd-standard). Hyperdisks need a
+	// machine series that supports them (N4, C3, C4 and newer; not E2). Leave
+	// empty for the API's default.
 	DiskType string `protobuf:"bytes,2,opt,name=disk_type,json=diskType,proto3" json:"disk_type,omitempty"`
 	// Provisioned I/O operations per second, honored by disk types that
 	// support provisioned performance (hyperdisks).
@@ -3130,13 +3132,13 @@ const file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDesc = "" +
 	" boot_disk_provisioned_throughput\x18\x06 \x01(\x03B\a\xbaH\x04\"\x02(\x01H\x01R\x1dbootDiskProvisionedThroughput\x88\x01\x01\x12r\n" +
 	"\x0eattached_disks\x18\a \x03(\v2K.dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAttachedDiskR\rattachedDisksB\x1d\n" +
 	"\x1b_boot_disk_provisioned_iopsB#\n" +
-	"!_boot_disk_provisioned_throughput\"\xbd\x04\n" +
+	"!_boot_disk_provisioned_throughput\"\x8b\x05\n" +
 	"\x1eGcpDataprocClusterAttachedDisk\x12\x82\x01\n" +
 	"\fdisk_size_gb\x18\x01 \x01(\x05B`\xbaH]\xba\x01Z\n" +
 	"\x1dattached_disk_size_gb_minimum\x12 disk_size_gb must be at least 10\x1a\x17this == 0 || this >= 10R\n" +
-	"diskSizeGb\x12\xe7\x01\n" +
-	"\tdisk_type\x18\x02 \x01(\tB\xc9\x01\xbaH\xc5\x01\xba\x01\xc1\x01\n" +
-	"\x1eattached_disk_type_valid_value\x12Idisk_type must be pd-standard, pd-ssd, pd-balanced, or hyperdisk-balanced\x1aTthis == '' || this in ['pd-standard', 'pd-ssd', 'pd-balanced', 'hyperdisk-balanced']R\bdiskType\x127\n" +
+	"diskSizeGb\x12\xb5\x02\n" +
+	"\tdisk_type\x18\x02 \x01(\tB\x97\x02\xbaH\x93\x02\xba\x01\x8f\x02\n" +
+	"\x1eattached_disk_type_valid_value\x12\x81\x01Dataproc attaches only Hyperdisks: disk_type must be HYPERDISK_BALANCED, HYPERDISK_EXTREME, HYPERDISK_ML, or HYPERDISK_THROUGHPUT\x1aithis == '' || this in ['HYPERDISK_BALANCED', 'HYPERDISK_EXTREME', 'HYPERDISK_ML', 'HYPERDISK_THROUGHPUT']R\bdiskType\x127\n" +
 	"\x10provisioned_iops\x18\x03 \x01(\x03B\a\xbaH\x04\"\x02(\x01H\x00R\x0fprovisionedIops\x88\x01\x01\x12C\n" +
 	"\x16provisioned_throughput\x18\x04 \x01(\x03B\a\xbaH\x04\"\x02(\x01H\x01R\x15provisionedThroughput\x88\x01\x01B\x13\n" +
 	"\x11_provisioned_iopsB\x19\n" +

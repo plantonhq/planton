@@ -150,11 +150,24 @@ func standingResource(project string, harness harnessAccount, resource *cloudass
 	case "storage.googleapis.com/Bucket":
 		// Cloud Build's per-project source bucket, made on its first build;
 		// Cloud Functions' per-region source bucket, made on its first deploy.
+		// Dataproc's per-region staging and temp buckets, made with the first
+		// cluster in a region; Vertex AI's staging buckets, made by the service.
 		return strings.HasSuffix(name, "/"+project+"_cloudbuild") ||
-			strings.Contains(name, "/gcf-v2-sources-")
+			strings.Contains(name, "/gcf-v2-sources-") ||
+			strings.Contains(name, "/dataproc-staging-") ||
+			strings.Contains(name, "/dataproc-temp-") ||
+			strings.Contains(name, "/cloud-ai-platform-")
 	case "artifactregistry.googleapis.com/Repository":
 		// Cloud Functions' per-region image repository, made on its first deploy.
 		return strings.HasSuffix(name, "/repositories/gcf-artifacts")
+	case "dialogflow.googleapis.com/LocationSettings":
+		// Dialogflow's per-location settings, made with the first agent in a
+		// location and never removed.
+		return true
+	case "discoveryengine.googleapis.com/Collection":
+		// Discovery Engine's default collection, made with the first data
+		// store and never removed.
+		return strings.HasSuffix(name, "/collections/default_collection")
 	case "binaryauthorization.googleapis.com/Policy":
 		// Every project has exactly one Binary Authorization policy; a
 		// destroy resets it to Google's default rather than removing it.
@@ -215,12 +228,20 @@ type liveReaders map[string]liveReader
 
 const computeReaderKey = "compute.googleapis.com/*"
 
+// aiplatformReaderKey reads any Vertex AI type through its regional endpoint
+// ({location}-aiplatform.googleapis.com), named by the same path.
+const aiplatformReaderKey = "aiplatform.googleapis.com/*"
+
 func (r liveReaders) lookup(assetType string) (liveReader, bool) {
 	if read, ok := r[assetType]; ok {
 		return read, true
 	}
 	if strings.HasPrefix(assetType, "compute.googleapis.com/") {
 		read, ok := r[computeReaderKey]
+		return read, ok
+	}
+	if strings.HasPrefix(assetType, "aiplatform.googleapis.com/") {
+		read, ok := r[aiplatformReaderKey]
 		return read, ok
 	}
 	return nil, false
@@ -267,6 +288,22 @@ func newLiveReaders(ctx context.Context, t *testing.T, opts []option.ClientOptio
 			defer response.Body.Close()
 			return stillThere(googleapi.CheckResponse(response))
 		},
+		// projects/{n}/locations/{l}/...: the same path under the location's
+		// regional endpoint.
+		aiplatformReaderKey: func(ctx context.Context, name string) (bool, error) {
+			_, rest0, found := strings.Cut(name, "/locations/")
+			location, _, _ := strings.Cut(rest0, "/")
+			if !found || location == "" {
+				return false, fmt.Errorf("%s names no location", name)
+			}
+			return restReader(rest, "https://"+location+"-aiplatform.googleapis.com/v1/")(ctx, name)
+		},
+		// A certificate whose pool is gone reads 404; a revoked one in a live
+		// pool stays, and so does its pool.
+		"privateca.googleapis.com/Certificate":             restReader(rest, "https://privateca.googleapis.com/v1/"),
+		"privateca.googleapis.com/CaPool":                  restReader(rest, "https://privateca.googleapis.com/v1/"),
+		"privateca.googleapis.com/CertificateAuthority":    restReader(rest, "https://privateca.googleapis.com/v1/"),
+		"privateca.googleapis.com/CertificateTemplate":     restReader(rest, "https://privateca.googleapis.com/v1/"),
 		"binaryauthorization.googleapis.com/Attestor":      restReader(rest, "https://binaryauthorization.googleapis.com/v1/"),
 		"securitycenter.googleapis.com/NotificationConfig": restReader(rest, "https://securitycenter.googleapis.com/v2/"),
 		"secretmanager.googleapis.com/Secret":              restReader(rest, "https://secretmanager.googleapis.com/v1/"),

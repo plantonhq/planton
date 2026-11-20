@@ -451,8 +451,9 @@ func (x *GcpVertexAiPersistentResourcePscInterfaceConfig) GetDnsPeeringConfigs()
 // Every replica bills from the moment it is provisioned until the resource
 // is deleted, whether or not a job is running.
 //
-// Immutable: everything except the display name, labels, and each pool's
-// replica_count -- a change to any other setting replaces the resource.
+// Immutable: everything except the display name and each pool's
+// replica_count -- a change to any other setting, labels included, replaces
+// the resource and reprovisions its machines.
 type GcpVertexAiPersistentResourceSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The GCP project the resource lives in: a literal project ID or a
@@ -472,7 +473,8 @@ type GcpVertexAiPersistentResourceSpec struct {
 	// characters. Mutable in place.
 	DisplayName string `protobuf:"bytes,4,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
 	// Labels on the resource. The platform attribution labels are merged in
-	// and win on key conflicts. Mutable in place.
+	// and win on key conflicts. A change replaces the resource: the provider
+	// recreates it rather than patching its labels.
 	Labels map[string]string `protobuf:"bytes,5,rep,name=labels,proto3" json:"labels,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// The pools of machines the resource keeps provisioned. At least one.
 	ResourcePools []*GcpVertexAiPersistentResourceResourcePool `protobuf:"bytes,6,rep,name=resource_pools,json=resourcePools,proto3" json:"resource_pools,omitempty"`

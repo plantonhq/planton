@@ -4,11 +4,15 @@ The judgment this guide protects: an online store is standing capacity. Pick the
 
 ## Bigtable or Optimized
 
-`bigtable` gives the store a managed Cloud Bigtable instance that autoscales between `minNodeCount` and `maxNodeCount` (Google allows at most ten times the floor) toward a CPU target (10-80 percent, Google's default 50). It suits large feature sets and high request volumes served by entity key, and `enableDirectBigtableAccess` lets clients read the instance directly. `optimized: true` serves from Google's Optimized infrastructure behind a dedicated endpoint, the lowest-latency option; Google's optimized block has no settings, so the choice is a flag. Exactly one is set, and switching replaces the store and every view.
+A new store serves from Bigtable. Google no longer creates stores with Optimized serving: it refuses with `Creating FeatureOnlineStore with Optimized serving is no longer supported.`
+
+`bigtable` gives the store a managed Cloud Bigtable instance that autoscales between `minNodeCount` and `maxNodeCount` (Google allows at most ten times the floor) toward a CPU target (10-80 percent, Google's default 50). It suits large feature sets and high request volumes served by entity key, and `enableDirectBigtableAccess` lets clients read the instance directly.
+
+`optimized: true` describes an Optimized store that already exists: Google's Optimized infrastructure behind a dedicated endpoint. Such stores keep serving and stay manageable -- labels, the dedicated endpoint, the key, and the views update in place -- so the flag is there to adopt and manage them; Google's optimized block has no settings, so it is a flag. Exactly one of the two is set, and switching replaces the store and every view -- for an Optimized store, the replacement must be Bigtable.
 
 ## The dedicated endpoint
 
-Optimized stores always get a dedicated endpoint, public by default; the `public_endpoint_domain_name` output is where clients call. Set `dedicatedServingEndpoint.privateServiceConnectConfig` with `enablePrivateServiceConnect: true` to serve only over Private Service Connect: Google publishes a service attachment (the `service_attachment` output, populated once a view has synced) that consumer projects in `projectAllowlist` target with a forwarding rule. Leave the block unset to keep Google's default. Private Service Connect is an Optimized-store feature, so the spec refuses it on a Bigtable store.
+Only an Optimized store has a dedicated endpoint, public by default; the `public_endpoint_domain_name` output is where its clients call. On an existing Optimized store, set `dedicatedServingEndpoint.privateServiceConnectConfig` with `enablePrivateServiceConnect: true` to serve only over Private Service Connect: Google publishes a service attachment (the `service_attachment` output, populated once a view has synced) that consumer projects in `projectAllowlist` target with a forwarding rule. Leave the block unset to keep Google's default. Private Service Connect is an Optimized-store feature, so the spec refuses it on a Bigtable store -- which every new store is. A Bigtable store serves through the shared Vertex AI endpoint under IAM.
 
 ## Feature views are the product
 
