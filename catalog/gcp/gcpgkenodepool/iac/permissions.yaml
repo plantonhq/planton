@@ -31,12 +31,10 @@ spec:
         reach: target
         privilege: ordinary
         notes: "Covers google_container_node_pool -- the provider reads the parent cluster and polls the long-running operation every mutation returns. GCP defines NO container.nodePools.* IAM permissions (verified against IAM's testable-permissions inventory and the published container roles reference); node pool create/update/delete all authorize as container.clusters.update on the parent cluster. The provider also reads the pool's managed instance groups (its size and instance template) on create, refresh and destroy, which Google authorizes as compute.instanceGroupManagers.list and get on the project -- a live create was refused without them. Proven 2026-10-20 on dev by the least-privilege lane: an identity holding exactly the kind's rendered permissions deployed, updated and destroyed it."
-      - purpose: ActAsNodeServiceAccount
+      - purpose: ActAsDefaultNodeServiceAccount
         permissions:
           - iam.serviceAccounts.actAs
         provenance: derived
         reach: target
         privilege: uses_identity
-        condition:
-          spec_field_set: node_config.service_account
-        notes: Required when node_config.service_account pins a custom node identity (the 01-on-demand-autoscaling preset does) -- GKE demands actAs on that account before provisioning nodes running as it. Not needed when node identity is left to the provider default.
+        notes: A pool whose node_config names no service account runs its nodes as the project's Compute Engine default service account, and GKE demands actAs on the account nodes run as before creating them -- the check that refuses a Standard cluster's default pool without it (measured on GcpGkeCluster). A custom node identity (node_config.service_account) needs actAs on that account the same way. The manifest cannot condition a group on a field being unset, so the group is listed whatever node_config names.

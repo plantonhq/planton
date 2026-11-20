@@ -102,9 +102,9 @@ message GcpVertexAiPersistentResourceDiskSpec {
 // machines the persistent resource keeps provisioned. A training job
 // running on the resource names the pools its worker pools land on.
 //
-// Immutable: the pool's id, machine, disk, and autoscaling bounds (a
-// change replaces the whole persistent resource). replica_count updates in
-// place.
+// A change to any of the pool's settings replaces the whole persistent
+// resource; replica_count too, since the provider's in-place update is a PUT
+// Google does not serve.
 message GcpVertexAiPersistentResourceResourcePool {
   option (buf.validate.message).cel = {
     id: "resource_pool.replica_count_within_bounds"
@@ -121,7 +121,8 @@ message GcpVertexAiPersistentResourceResourcePool {
   GcpVertexAiPersistentResourceMachineSpec machine_spec = 2 [(buf.validate.field).required = true];
 
   // How many replicas the pool runs (and bills) whether or not a job is
-  // using them. Sent as a decimal string. Mutable in place.
+  // using them. Sent as a decimal string. A change replaces the resource
+  // (the provider cannot update it in place).
   optional int64 replica_count = 3 [(buf.validate.field).int64.gte = 1];
 
   // Autoscaling bounds for the pool. Omit for a fixed replica_count.
@@ -191,9 +192,10 @@ message GcpVertexAiPersistentResourcePscInterfaceConfig {
 // Every replica bills from the moment it is provisioned until the resource
 // is deleted, whether or not a job is running.
 //
-// Immutable: everything except the display name and each pool's
-// replica_count -- a change to any other setting, labels included, replaces
-// the resource and reprovisions its machines.
+// Every change replaces the resource and reprovisions its machines. Google
+// patches the display name and replica counts in place, but the provider
+// sends that update as a PUT Google does not serve, so the modules replace
+// the resource for those too; labels force replacement in the provider.
 message GcpVertexAiPersistentResourceSpec {
   option (buf.validate.message).cel = {
     id: "spec.network_literal_path"
@@ -227,7 +229,8 @@ message GcpVertexAiPersistentResourceSpec {
   ];
 
   // Human-readable name shown in the console -- up to 128 UTF-8
-  // characters. Mutable in place.
+  // characters. A change replaces the resource (the provider cannot update
+  // it in place).
   string display_name = 4 [(buf.validate.field).string.max_len = 128];
 
   // Labels on the resource. The platform attribution labels are merged in

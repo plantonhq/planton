@@ -16,7 +16,7 @@ metadata:
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
-    planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the in-place update: the display name
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the update: a new display name, which replaces the resource
   tags:
     - planton-e2e
 spec:

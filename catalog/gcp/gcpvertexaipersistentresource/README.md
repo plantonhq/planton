@@ -61,10 +61,10 @@ planton apply -f vertex-ai-persistent-resource.yaml
 |-------|------|---------|-------------|
 | `projectId` | `StringValueOrRef` | provider project | The project, as a literal or a `GcpProject` reference. |
 | `persistentResourceId` | `string` | `metadata.name` | RFC 1035, up to 63 characters. Immutable. |
-| `displayName`, `labels` | | | Descriptive metadata; mutable. |
+| `displayName`, `labels` | | | Descriptive metadata; a change replaces the resource. |
 | `resourcePools[].id` | `string` | Google-generated | The pool id a job's worker pool refers to. Immutable. |
 | `resourcePools[].machineSpec` | `object` | -- | `machineType`, `acceleratorType` (Google's list), `acceleratorCount`. Immutable. |
-| `resourcePools[].replicaCount` | `int64` | -- | Replicas kept running; mutable. |
+| `resourcePools[].replicaCount` | `int64` | -- | Replicas kept running; a change replaces the resource. |
 | `resourcePools[].autoscalingSpec` | `object` | fixed | `minReplicaCount` (at least 1), `maxReplicaCount`. Immutable. |
 | `resourcePools[].diskSpec` | `object` | Google's defaults | `bootDiskSizeGb` (default 100), `bootDiskType` (`pd-ssd`, `pd-standard`, `hyperdisk-balanced`). Immutable. |
 | `network` | `StringValueOrRef` | no peering | A `GcpVpcNetwork` reference or literal `projects/{project}/global/networks/{name}`; the modules resolve the project number Google requires. Immutable. |
@@ -106,7 +106,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 ## Important Notes
 
 - **It bills from provisioning until deletion.** Every replica runs, and bills, whether or not a job is using it -- that is what makes jobs start instantly.
-- **Almost everything is permanent.** Only the display name and each pool's `replicaCount` update in place; any other change, labels included, replaces the resource and reprovisions every machine.
+- **Almost everything is permanent.** Every change, the display name and replica counts included, replaces the resource and reprovisions every machine: the provider sends Google an update it does not serve, so the modules replace instead.
 - **Jobs must match it.** A job that runs on the resource must use the same network and encryption key, or Google rejects the job.
 
 ## Examples

@@ -17,9 +17,19 @@ data "google_project" "network" {
   project_id = local.network_project
 }
 
+# The provider updates a persistent resource with a PUT, and Google's API
+# takes only PATCH, so an in-place update always fails (404). A change to the
+# display name or a pool's replica count therefore replaces the resource,
+# visibly in the plan, as a change to anything else already does.
+resource "terraform_data" "replace_on_update" {
+  input = {
+    display_name   = local.display_name
+    replica_counts = [for pool in var.spec.resource_pools : pool.replica_count]
+  }
+}
+
 # The persistent resource: pools of machines Vertex AI keeps provisioned
-# for training jobs. Everything but the display name and each pool's
-# replica_count is immutable; a label change recreates the resource too.
+# for training jobs. Every change replaces it (terraform_data above).
 resource "google_vertex_ai_persistent_resource" "this" {
   project      = local.project_id
   location     = var.spec.location
@@ -102,6 +112,10 @@ resource "google_vertex_ai_persistent_resource" "this" {
     content {
       kms_key_name = encryption_spec.value
     }
+  }
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.replace_on_update]
   }
 
   depends_on = [google_project_service.aiplatform_api]

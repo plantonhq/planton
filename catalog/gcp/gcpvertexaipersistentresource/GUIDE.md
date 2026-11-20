@@ -8,7 +8,7 @@ Vertex AI custom training provisions machines per job, which takes minutes and c
 
 ## Pools
 
-Each `resourcePools[]` entry is a set of identical machines: `machineSpec` (a custom-training machine type and, optionally, an accelerator type and count Google pairs with it), a `replicaCount`, optional `autoscalingSpec` bounds (the floor must be at least 1 on a persistent resource), and optional boot disk settings. A pool's `id` is what a job's worker pool refers to; Google generates one when you leave it empty. Counts are whole numbers in the spec and travel to Google as decimal strings. Only `replicaCount` changes in place -- the machine, the disk, the autoscaling bounds, and the id are fixed.
+Each `resourcePools[]` entry is a set of identical machines: `machineSpec` (a custom-training machine type and, optionally, an accelerator type and count Google pairs with it), a `replicaCount`, optional `autoscalingSpec` bounds (the floor must be at least 1 on a persistent resource), and optional boot disk settings. A pool's `id` is what a job's worker pool refers to; Google generates one when you leave it empty. Counts are whole numbers in the spec and travel to Google as decimal strings. Every setting is fixed once created: a change to any of them, `replicaCount` and the display name included, replaces the resource and reprovisions its machines (Google would patch the count, but the provider sends that update as a PUT Google does not serve, so the modules replace instead).
 
 ## Networking is decided once
 

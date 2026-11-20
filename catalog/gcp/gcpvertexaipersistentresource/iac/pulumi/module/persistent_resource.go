@@ -17,9 +17,8 @@ import (
 var numericProject = regexp.MustCompile(`^[0-9]+$`)
 
 // persistentResource creates the persistent resource: pools of machines
-// Vertex AI keeps provisioned for training jobs. Everything but the display
-// name and each pool's replica_count is immutable; a label change recreates
-// the resource too.
+// Vertex AI keeps provisioned for training jobs. Every change replaces it
+// (see the ReplaceOnChanges below).
 //
 // Send posture (parity with the Terraform module): the Optional+Computed
 // levers -- a pool's id and its disk spec -- are sent only when set, and
@@ -114,7 +113,12 @@ func persistentResource(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Pr
 	createdResource, err := vertex.NewAiPersistentResource(ctx,
 		locals.GcpVertexAiPersistentResource.Metadata.Name, args,
 		pulumi.Provider(gcpProvider),
-		pulumi.DependsOn([]pulumi.Resource{createdAiplatformApi}))
+		pulumi.DependsOn([]pulumi.Resource{createdAiplatformApi}),
+		// The provider updates a persistent resource with a PUT, and Google's
+		// API takes only PATCH, so an in-place update always fails (404). A
+		// change to the display name or a pool's replica count therefore
+		// replaces the resource, as a change to anything else already does.
+		pulumi.ReplaceOnChanges([]string{"displayName", "resourcePools[*].replicaCount"}))
 	if err != nil {
 		return errors.Wrap(err, "failed to create vertex ai persistent resource")
 	}
