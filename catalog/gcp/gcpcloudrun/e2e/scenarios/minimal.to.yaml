@@ -1,0 +1,54 @@
+# The second act of minimal.yaml: the same public service with its E2E_ACT
+# environment variable changed from first to second -- a services.patch that
+# rolls a new revision of the same service in place (its name and region
+# recreate it). Not a scenario of its own (the second-act annotation keeps
+# discovery from running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudRun
+metadata:
+  name: planton-oss-e2e-cldrun-minimal
+  id: planton-oss-e2e-cldrun-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpcloudrun
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: minimal.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+  tags:
+    - planton-e2e
+spec:
+  serviceName: planton-oss-e2e-cldrun-min-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
+  region: us-central1
+  annotations:
+    planton-e2e/arm: service-annotations
+  revisionAnnotations:
+    planton-e2e/arm: revision-annotations
+  containers:
+    - image: us-docker.pkg.dev/cloudrun/container/hello:latest
+      env:
+        - name: E2E_ACT
+          value: second
+      ports:
+        containerPort: 8080
+      resources:
+        cpu: "1"
+        memory: 512Mi
+        startupCpuBoost: true
+      readinessProbe:
+        periodSeconds: 10
+        httpGet:
+          path: /
+  scaling:
+    minInstanceCount: 0
+    maxInstanceCount: 2
+  serviceScaling:
+    maxInstanceCount: 4
+  allowUnauthenticated: true
+  ingress: INGRESS_TRAFFIC_ALL
+  executionEnvironment: EXECUTION_ENVIRONMENT_GEN2
+  deletionProtection: false
+  deletionPolicy: DELETE

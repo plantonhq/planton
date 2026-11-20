@@ -16,6 +16,7 @@ metadata:
     e2e-catalog-kind: gcpvertexaifeatureonlinestore
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpvertexaifeatureonlinestore/e2e/prerequisites/gcpbigquerytable-features.yaml,catalog/gcp/gcpvertexaifeatureonlinestore/e2e/prerequisites/gcpvertexaifeaturegroup-customers.yaml"
   tags:
     - planton-e2e

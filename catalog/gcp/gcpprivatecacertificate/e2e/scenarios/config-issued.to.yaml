@@ -1,0 +1,58 @@
+# The second act of config-issued.yaml: the same issued certificate with its
+# e2e-act label changed from first to second -- a certificates.patch with the
+# labels mask, the one change a certificate takes in place (everything else
+# issues a new certificate). Not a scenario of its own (the second-act
+# annotation keeps discovery from running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPrivateCaCertificate
+metadata:
+  name: planton-oss-e2e-gcppcac-server
+  id: planton-oss-e2e-gcppcac-server
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpprivatecacertificate
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: config-issued.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  pool:
+    valueFrom:
+      kind: GcpPrivateCaPool
+      name: planton-oss-e2e-gcppcac-pool
+      fieldPath: status.outputs.name
+  certificateId: e2e-gcppcac-server-${E2E_RUN_ID}
+  certificateAuthority:
+    valueFrom:
+      kind: GcpPrivateCaCertificateAuthority
+      name: planton-oss-e2e-gcppcac-root
+      fieldPath: status.outputs.name
+  lifetime: 86400s
+  config:
+    subjectConfig:
+      subject:
+        commonName: server.e2e.example.com
+      subjectAltName:
+        dnsNames:
+          - server.e2e.example.com
+    x509Config:
+      caOptions:
+        isCa: false
+      keyUsage:
+        baseKeyUsage:
+          digitalSignature: true
+          keyEncipherment: true
+        extendedKeyUsage:
+          serverAuth: true
+    publicKey:
+      key: LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFcy9jMjdMT3BJdmJWU0RzalMvTWp6VDM3bk5IeQp1dUtmNVZ0eVE2SmNUTUltOEQyRzl4MmNRVXZteFdjZzFFVzQrbXpwZ0RKOXdWR1dDeitQclUrejNBPT0KLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg==
+  labels:
+    e2e-arm: config-issued
+    e2e-act: second
+  deletionPolicy: DELETE

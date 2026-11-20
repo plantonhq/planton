@@ -14,6 +14,8 @@ metadata:
     e2e-catalog-kind: gcpprivatecapool
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: enterprise-policy.to.yaml # the in-place update: the pool starts publishing CRLs
   tags:
     - planton-e2e
 spec:

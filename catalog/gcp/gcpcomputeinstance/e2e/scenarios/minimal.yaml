@@ -1,7 +1,6 @@
 # GcpComputeInstance scenario: the minimal VM — e2-micro on the chained
 # VPC → subnetwork prerequisites with an ephemeral external IP (the
-# access_config arm proven live). Instance names are project-scoped with
-# no reservation window, so the name stays fixed.
+# access_config arm proven live). The instance name carries the run id.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpComputeInstance
 metadata:
@@ -14,6 +13,9 @@ metadata:
     e2e-catalog-kind: gcpcomputeinstance
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-exclusive: gcp-project-vcpus # the lane project holds 12 vCPUs across all regions, so VM-running kinds never run side by side
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the in-place update: a label and a metadata value
   tags:
     - planton-e2e
 spec:
@@ -23,6 +25,7 @@ spec:
   # 2026-08-10). The VM chain is fully self-contained (own VPC →
   # subnetwork prerequisites), so its region is a free variable —
   # pinned to measured capacity reliability.
+  instanceName: planton-oss-e2e-vm-minimal-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   zone: us-east1-b
   machineType: e2-micro
   bootDisk:
@@ -41,3 +44,6 @@ spec:
           networkTier: PREMIUM
   labels:
     e2e-suite: gcp
+    e2e-act: first
+  metadata:
+    e2e-act: first

@@ -18,6 +18,11 @@ spec:
   # cloudsql.iam_authentication=on on the prerequisite instance) proves the
   # derived name exists under the account's identity and re-plans clean,
   # beside the BUILT_IN smoke.
+  #
+  # The minimal scenario's second act rotates the BUILT_IN user's password in
+  # place. The iam-service-account scenario carries no second act: an IAM
+  # database user has no updatable field (its name, type and account are
+  # immutable, and it holds no password), so it proves by deploy and destroy.
   status: pending_proof
   validated_provisioners: []
   timeout_minutes: 30

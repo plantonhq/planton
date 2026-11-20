@@ -14,11 +14,12 @@ metadata:
     e2e-catalog-kind: gcpvertexaidataset
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
   tags:
     - planton-e2e
 spec:
   location: us-central1
-  displayName: Planton OSS E2E tabular dataset
+  displayName: Planton OSS E2E tabular dataset ${E2E_RUN_ID} # Google assigns the id; the run id names this lane's copy, so lanes side by side and the sweep tell them apart
   metadataSchemaUri: gs://google-cloud-aiplatform/schema/dataset/metadata/tabular_1.0.0.yaml
   labels:
     data-domain: churn

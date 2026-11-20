@@ -24,6 +24,11 @@ spec:
   # destroy order is set -> rules -> addresses -> cluster -> subnet -> policy
   # -> network -- a resourceInUseByAnotherResource on teardown means the
   # fixture chain was listed out of order.
+  #
+  # No second act: the set's create, update and delete are one write (a
+  # PATCH of the cluster's endpoint list), so an update proves no permission
+  # create doesn't, and Google's audit log can't tell them apart. It carries
+  # no second act, as the IAM-member kinds don't.
   tier: 1
   status: pending_proof
   validated_provisioners: []

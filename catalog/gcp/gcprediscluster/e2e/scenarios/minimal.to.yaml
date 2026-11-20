@@ -1,0 +1,41 @@
+# The second act of minimal.yaml: the same one-shard cluster with its weekly
+# maintenance window moved from Sunday to Saturday, still at 03:00 -- a
+# clusters.patch of maintenancePolicy that changes it in place (its name,
+# region, security modes and PSC configs recreate it). Not a scenario of its
+# own (the second-act annotation keeps discovery from running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpRedisCluster
+metadata:
+  name: planton-oss-e2e-gcprcl-smoke
+  id: planton-oss-e2e-gcprcl-smoke
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcprediscluster
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: minimal.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+  tags:
+    - planton-e2e
+spec:
+  clusterName: e2e-rcl-${E2E_RUN_ID}
+  region: us-central1
+  shardCount: 1
+  replicaCount: 0
+  nodeType: REDIS_SHARED_CORE_NANO
+  pscConfigs:
+    - network:
+        valueFrom:
+          kind: GcpVpcNetwork
+          name: planton-oss-e2e-gcpvpcnetwork-prereq
+          fieldPath: status.outputs.network_id
+  # Weekly window on the hour, now on Saturday.
+  maintenancePolicy:
+    weeklyMaintenanceWindow:
+      day: SATURDAY
+      hour: 3
+  deletionProtectionEnabled: false
+  deletionPolicy: DELETE

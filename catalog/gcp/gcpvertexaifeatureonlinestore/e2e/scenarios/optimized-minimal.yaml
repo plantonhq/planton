@@ -15,9 +15,13 @@ metadata:
     e2e-catalog-kind: gcpvertexaifeatureonlinestore
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: optimized-minimal.to.yaml # the in-place update: a label value
   tags:
     - planton-e2e
 spec:
   location: us-central1
   featureOnlineStoreId: pln_e2e_vfos_opt_${E2E_RUN_ID_UNDERSCORE}
   optimized: true
+  labels:
+    e2e-act: first

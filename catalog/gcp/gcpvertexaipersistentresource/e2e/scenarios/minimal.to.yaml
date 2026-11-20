@@ -1,0 +1,33 @@
+# The second act of minimal.yaml: the same persistent resource with its
+# e2e-act label changed from first to second -- an update of the resource
+# that changes it in place while its pool keeps running (its id, location and
+# machine spec recreate it). Not a scenario of its own (the second-act
+# annotation keeps discovery from running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiPersistentResource
+metadata:
+  name: planton-oss-e2e-gcpvpr-minimal
+  id: planton-oss-e2e-gcpvpr-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpvertexaipersistentresource
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: minimal.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  persistentResourceId: pln-e2e-vpr-${E2E_RUN_ID}
+  displayName: Planton OSS E2E persistent resource
+  labels:
+    e2e-act: second
+  resourcePools:
+    - machineSpec:
+        machineType: n1-standard-4
+      replicaCount: 1
+  deletionPolicy: DELETE

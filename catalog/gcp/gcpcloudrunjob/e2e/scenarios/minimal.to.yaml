@@ -1,0 +1,41 @@
+# The second act of minimal.yaml: the same batch job with each execution
+# running two tasks instead of one -- a jobs.patch that changes the job in
+# place (its name and region recreate it). Tokens stay unarmed, so no
+# execution runs. Not a scenario of its own (the second-act annotation keeps
+# discovery from running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudRunJob
+metadata:
+  name: planton-oss-e2e-cldrunjob-minimal
+  id: planton-oss-e2e-cldrunjob-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpcloudrunjob
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: minimal.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+  tags:
+    - planton-e2e
+spec:
+  region: us-central1
+  jobName: planton-oss-e2e-cldrunjob-${E2E_RUN_ID}
+  executionLabels:
+    planton-e2e-arm: execution-labels
+  executionAnnotations:
+    planton-e2e/arm: execution-annotations
+  template:
+    containers:
+      - image: us-docker.pkg.dev/cloudrun/container/job:latest
+        resources:
+          cpu: "1"
+          memory: 512Mi
+    executionEnvironment: EXECUTION_ENVIRONMENT_GEN2
+    timeoutSeconds: 300
+    maxRetries: 1
+  taskCount: 2
+  deletionProtection: false
+  deletionPolicy: DELETE

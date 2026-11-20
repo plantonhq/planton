@@ -16,6 +16,8 @@ metadata:
     e2e-catalog-kind: gcpcomputemig
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-exclusive: gcp-project-vcpus # the lane project holds 12 vCPUs across all regions, so VM-running kinds never run side by side
     planton.dev/e2e-prerequisites: "GcpHealthCheck"
   tags:
     - planton-e2e
@@ -24,6 +26,7 @@ spec:
   # ZONE_RESOURCE_POOL_EXHAUSTED on 2026-08-11 (audit-log verified) —
   # the self-contained chain moves to measured capacity, the
   # session-034 connector precedent.
+  migName: planton-oss-e2e-mig-reg-${E2E_RUN_ID} # per kind and engine (34 characters, so the 36-character template prefix keeps the run id), so lanes side by side never share it
   region: us-east1
   template:
     machineType: e2-micro

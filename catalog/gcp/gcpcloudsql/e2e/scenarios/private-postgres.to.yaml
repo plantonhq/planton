@@ -1,0 +1,49 @@
+# The second act of private-postgres.yaml: the same private instance with its
+# daily backup window starting at 05:00 UTC instead of 03:00 -- an
+# instances.update of the settings' backup configuration that changes it in
+# place (its name, region and engine recreate it). Not a scenario of its own
+# (the second-act annotation keeps discovery from running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudSql
+metadata:
+  name: planton-oss-e2e-gcpsql-private
+  id: planton-oss-e2e-gcpsql-private
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpcloudsql
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: private-postgres.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+  tags:
+    - planton-e2e
+spec:
+  instanceName: planton-oss-e2e-sql-prv-${E2E_RUN_ID}
+  region: us-central1
+  databaseEngine: POSTGRESQL
+  databaseVersion: POSTGRES_15
+  tier: db-f1-micro
+  deletionProtection: false
+  deletionProtectionEnabled: false
+  deletionPolicy: DELETE
+  # Input-only opt-in: replicas (none here) would upgrade in place with the
+  # primary on a major-version change. Never stored by the API, so the proof
+  # is that it is accepted and re-plans clean.
+  includeReplicasForMajorVersionUpgrade: true
+  # Daily automated backups, now from 05:00 UTC.
+  backup:
+    enabled: true
+    startTime: "05:00"
+  network:
+    ipv4Enabled: false
+    privateNetwork:
+      valueFrom:
+        kind: GcpVpcNetwork
+        name: planton-oss-e2e-gcpvpc-prereq
+        fieldPath: status.outputs.network_id
+    enablePrivatePathForGoogleCloudServices: true
+    serverCaMode: GOOGLE_MANAGED_CAS_CA
+    serverCertificateRotationMode: AUTOMATIC_ROTATION_DURING_MAINTENANCE

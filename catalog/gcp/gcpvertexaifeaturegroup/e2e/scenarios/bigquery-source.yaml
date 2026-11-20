@@ -16,6 +16,8 @@ metadata:
     e2e-catalog-kind: gcpvertexaifeaturegroup
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: bigquery-source.to.yaml # the in-place update: the description
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpvertexaifeaturegroup/e2e/prerequisites/gcpbigquerytable-features.yaml"
   tags:
     - planton-e2e

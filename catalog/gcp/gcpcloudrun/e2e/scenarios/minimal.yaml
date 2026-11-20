@@ -3,9 +3,9 @@
 # public-invoker IAM grant, scale-to-zero, the startup CPU boost, a
 # readiness probe (traffic-gating without restart), service and revision
 # annotations, the service-wide scaling max, and the explicit teardown
-# policy. project_id is deliberately omitted (ambient project). Cloud Run
-# service names are project-scoped with no soft-delete reservation, so the
-# name stays fixed. deletion_protection must be false so DESTROY can run.
+# policy. project_id is deliberately omitted (ambient project). The service
+# name carries the run id. deletion_protection must be false so DESTROY can
+# run.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpCloudRun
 metadata:
@@ -18,9 +18,12 @@ metadata:
     e2e-catalog-kind: gcpcloudrun
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the in-place update: an environment variable's value
   tags:
     - planton-e2e
 spec:
+  serviceName: planton-oss-e2e-cldrun-min-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   region: us-central1
   annotations:
     planton-e2e/arm: service-annotations
@@ -28,6 +31,9 @@ spec:
     planton-e2e/arm: revision-annotations
   containers:
     - image: us-docker.pkg.dev/cloudrun/container/hello:latest
+      env:
+        - name: E2E_ACT
+          value: first
       ports:
         containerPort: 8080
       resources:

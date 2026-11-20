@@ -1,0 +1,26 @@
+# The second act of minimal.yaml: the same TensorBoard with a new
+# description -- a tensorboards.patch with the description mask that changes
+# it in place (its location and encryption recreate it). Not a scenario of
+# its own (the second-act annotation keeps discovery from running it as a
+# lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiTensorboard
+metadata:
+  name: planton-oss-e2e-gcpvtb-minimal
+  id: planton-oss-e2e-gcpvtb-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpvertexaitensorboard
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: minimal.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  displayName: planton-oss-e2e-vtb-minimal-${E2E_RUN_ID} # Google assigns the id; the run id names this lane's copy, so lanes side by side and the sweep tell them apart
+  description: E2E minimal TensorBoard, re-described in place; delete freely.

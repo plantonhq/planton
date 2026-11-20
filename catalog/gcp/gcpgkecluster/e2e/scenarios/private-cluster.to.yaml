@@ -1,0 +1,80 @@
+# The second act of private-cluster.yaml: the same cluster with its recurring
+# maintenance window starting at 04:00 UTC instead of 02:00, still six hours
+# every Saturday and Sunday (GKE wants 48 hours of availability in any 32
+# days, which one six-hour day a week misses) -- a SetMaintenancePolicy call
+# that patches the cluster in place (its name, location and network recreate
+# it).
+# Not a scenario of its own (the second-act annotation keeps discovery from
+# running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeCluster
+metadata:
+  name: planton-oss-e2e-gke-private
+  id: planton-oss-e2e-gke-private
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpgkecluster
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-exclusive: gcp-project-vcpus # the lane project holds 12 vCPUs across all regions, so VM-running kinds never run side by side
+    planton.dev/e2e-second-act: private-cluster.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+  tags:
+    - planton-e2e
+spec:
+  clusterName: planton-oss-e2e-gke-private-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
+  description: Ephemeral private regional GKE cluster created by the Planton E2E harness; safe to delete
+  # us-east1 with the whole GKE chain: this scenario's 3-zone regional
+  # default-pool transients hit the 2026-08-12 us-central1 GCE_STOCKOUT.
+  location: us-east1
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpvpcnetwork-prereq
+      fieldPath: status.outputs.network_self_link
+  subnetwork:
+    valueFrom:
+      kind: GcpSubnetwork
+      name: planton-oss-e2e-gcpsnw-gke-prereq
+      fieldPath: status.outputs.subnetwork_self_link
+  ipAllocation:
+    clusterSecondaryRangeName:
+      value: pods
+    servicesSecondaryRangeName:
+      value: services
+  datapathProvider: ADVANCED_DATAPATH
+  privateCluster:
+    enablePrivateNodes: true
+    masterIpv4CidrBlock: "172.16.0.16/28"
+  controlPlaneEndpoints:
+    dnsEndpointAllowExternalTraffic: true
+    enableK8sTokensViaDns: true
+  # The window moves: every Saturday and Sunday at 04:00 UTC for six hours.
+  maintenancePolicy:
+    recurringTimeWindow:
+      windowStartTime:
+        hours: 4
+      windowDuration: 6h
+      recurrence: FREQ=WEEKLY;BYDAY=SA,SU
+  rbacBindingConfig:
+    enableInsecureBindingSystemAuthenticated: false
+    enableInsecureBindingSystemUnauthenticated: false
+  nodePoolDefaults:
+    insecureKubeletReadonlyPortEnabled: "FALSE"
+    loggingVariant: DEFAULT
+  enableSecretManagerCsi: true
+  secretManagerRotation:
+    enabled: true
+    rotationInterval: "120s"
+  # Safe in this composition (pools are never inline) and proves the
+  # read-side performance switch live.
+  skipNodePoolRefresh: true
+  # The second read-side switch, proven together with the first: skips
+  # the per-pool IGM node-count queries. Its live evidence is the clean
+  # re-plan after apply (the idempotency gate).
+  ignoreNodeCountChanges: true
+  deletionPolicy: DELETE
+  deletionProtection: false

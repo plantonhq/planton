@@ -1,0 +1,52 @@
+# The second act of self-signed-root.yaml: the same self-signed root with its
+# e2e-act label changed from first to second -- a certificateAuthorities.patch
+# with the labels mask that changes it in place (its id, pool, subject and key
+# recreate it). Not a scenario of its own (the second-act annotation keeps
+# discovery from running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPrivateCaCertificateAuthority
+metadata:
+  name: planton-oss-e2e-gcppcaa-root
+  id: planton-oss-e2e-gcppcaa-root
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpprivatecacertificateauthority
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: self-signed-root.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  pool:
+    valueFrom:
+      kind: GcpPrivateCaPool
+      name: planton-oss-e2e-gcppcaa-pool
+      fieldPath: status.outputs.name
+  certificateAuthorityId: e2e-gcppcaa-self-${E2E_RUN_ID}
+  type: SELF_SIGNED
+  config:
+    subjectConfig:
+      subject:
+        commonName: Planton E2E Self-Signed Root
+        organization: Planton
+    x509Config:
+      caOptions:
+        isCa: true
+      keyUsage:
+        baseKeyUsage:
+          certSign: true
+          crlSign: true
+  keySpec:
+    algorithm: EC_P256_SHA256
+  lifetime: 2592000s
+  deletionProtection: false
+  skipGracePeriod: true
+  ignoreActiveCertificatesOnDeletion: true
+  labels:
+    e2e-arm: self-signed-root
+    e2e-act: second

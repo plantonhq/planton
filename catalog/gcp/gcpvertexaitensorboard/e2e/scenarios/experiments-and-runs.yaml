@@ -17,11 +17,12 @@ metadata:
     e2e-catalog-kind: gcpvertexaitensorboard
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
   tags:
     - planton-e2e
 spec:
   location: us-central1
-  displayName: Planton OSS E2E TensorBoard
+  displayName: Planton OSS E2E TensorBoard ${E2E_RUN_ID} # Google assigns the id; the run id names this lane's copy, so lanes side by side and the sweep tell them apart
   description: Experiments and runs declared up front
   experiments:
     - experimentId: churn-model

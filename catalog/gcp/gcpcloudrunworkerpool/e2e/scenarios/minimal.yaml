@@ -16,9 +16,12 @@ metadata:
     e2e-catalog-kind: gcpcloudrunworkerpool
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the in-place update: the manual instance count rises from 1 to 2
   tags:
     - planton-e2e
 spec:
+  workerPoolName: planton-oss-e2e-gcprunwp-min-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   region: us-central1
   containers:
     - image: us-docker.pkg.dev/cloudrun/container/worker-pool:latest

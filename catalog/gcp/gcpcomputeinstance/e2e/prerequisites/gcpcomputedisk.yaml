@@ -4,9 +4,9 @@
 # scenarios were relocated to us-east1-b on 2026-08-11 (audit-log-verified
 # us-central1 zonal stockout — see the scenarios), so this override pins
 # the disk beside them; the disk's published install profile keeps its own
-# zone for any future consumer. Disk names are project-scoped with no
-# soft-delete reservation, so the name stays fixed. project_id is omitted
-# and rides the harness-exported GOOGLE_PROJECT.
+# zone for any future consumer. The disk name carries the run id, so lanes
+# side by side never share it. project_id is omitted and rides the
+# harness-exported GOOGLE_PROJECT.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpComputeDisk
 metadata:
@@ -22,7 +22,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  diskName: planton-oss-e2e-disk-prereq
+  diskName: planton-oss-e2e-disk-prereq-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   zone: us-east1-b
   type: pd-balanced
   sizeGb: 20

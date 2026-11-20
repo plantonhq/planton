@@ -1,8 +1,8 @@
 # GcpGkeCluster install profile used when the cluster is an E2E PREREQUISITE
 # for another component (e.g. a node pool). The fastest cluster GKE can
 # create: ZONAL Standard control plane with GKE-managed pod/service ranges.
-# Cluster names are project-scoped with no soft-delete reservation, so the
-# name stays fixed. project_id is omitted and rides the harness-exported
+# The cluster name carries the run id, so kinds composing this cluster side
+# by side never share one. project_id is omitted and rides the harness-exported
 # GOOGLE_PROJECT. deletion_protection is explicitly false so the ephemeral
 # destroy just works.
 apiVersion: gcp.planton.dev/v1alpha1
@@ -20,6 +20,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
+  clusterName: planton-oss-e2e-gke-prereq-${E2E_RUN_ID} # per kind and engine, so kinds composing this cluster side by side never share one
   description: Ephemeral zonal GKE cluster serving as an E2E prerequisite; safe to delete
   # us-east1 with the whole GKE chain (2026-08-12 us-central1 GCE_STOCKOUT).
   location: us-east1-b

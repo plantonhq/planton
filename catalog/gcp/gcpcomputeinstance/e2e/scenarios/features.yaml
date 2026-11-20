@@ -17,6 +17,8 @@ metadata:
     e2e-catalog-kind: gcpcomputeinstance
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-exclusive: gcp-project-vcpus # the lane project holds 12 vCPUs across all regions, so VM-running kinds never run side by side
   tags:
     - planton-e2e
 spec:
@@ -26,6 +28,7 @@ spec:
   # 2026-08-10). The VM chain is fully self-contained (own VPC →
   # subnetwork prerequisites), so its region is a free variable —
   # pinned to measured capacity reliability.
+  instanceName: planton-oss-e2e-vm-features-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   zone: us-east1-b
   machineType: e2-small
   bootDisk:

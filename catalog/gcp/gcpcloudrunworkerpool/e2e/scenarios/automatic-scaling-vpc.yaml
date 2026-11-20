@@ -16,10 +16,11 @@ metadata:
     e2e-catalog-kind: gcpcloudrunworkerpool
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
   tags:
     - planton-e2e
 spec:
-  workerPoolName: planton-oss-e2e-gcprunwp-auto
+  workerPoolName: planton-oss-e2e-gcprunwp-auto-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   description: Ephemeral autoscaled worker pool created by the Planton E2E harness; safe to delete
   region: us-central1
   containers:

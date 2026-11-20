@@ -15,6 +15,8 @@ metadata:
     e2e-catalog-kind: gcpprivatecacertificate
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: config-issued.to.yaml # the in-place update: a label value
   tags:
     - planton-e2e
 spec:
@@ -51,4 +53,5 @@ spec:
       key: LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFcy9jMjdMT3BJdmJWU0RzalMvTWp6VDM3bk5IeQp1dUtmNVZ0eVE2SmNUTUltOEQyRzl4MmNRVXZteFdjZzFFVzQrbXpwZ0RKOXdWR1dDeitQclUrejNBPT0KLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg==
   labels:
     e2e-arm: config-issued
+    e2e-act: first
   deletionPolicy: DELETE

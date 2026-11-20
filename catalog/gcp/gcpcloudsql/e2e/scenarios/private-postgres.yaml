@@ -16,6 +16,8 @@ metadata:
     e2e-catalog-kind: gcpcloudsql
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: private-postgres.to.yaml # the in-place update: the daily backup starts at 05:00 instead of 03:00
   tags:
     - planton-e2e
 spec:
@@ -31,6 +33,11 @@ spec:
   # primary on a major-version change. Never stored by the API, so the proof
   # is that it is accepted and re-plans clean.
   includeReplicasForMajorVersionUpgrade: true
+  # Daily automated backups from 03:00 UTC; the second act moves the start
+  # time, the instance's in-place update.
+  backup:
+    enabled: true
+    startTime: "03:00"
   network:
     ipv4Enabled: false
     privateNetwork:

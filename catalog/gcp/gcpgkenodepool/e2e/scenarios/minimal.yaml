@@ -14,6 +14,8 @@ metadata:
     e2e-catalog-kind: gcpgkenodepool
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-exclusive: gcp-project-vcpus # the lane project holds 12 vCPUs across all regions, so VM-running kinds never run side by side
   tags:
     - planton-e2e
 spec:
@@ -27,4 +29,5 @@ spec:
       kind: GcpGkeCluster
       name: planton-oss-e2e-gke-prereq
       fieldPath: status.outputs.location
+  nodePoolName: planton-oss-e2e-np-minimal-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   nodeCount: 1

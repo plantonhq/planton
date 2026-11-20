@@ -1,0 +1,52 @@
+# The second act of minimal.yaml: the same running VM with its e2e-act label
+# and metadata value changed from first to second -- a setLabels and a
+# setMetadata call that patch it in place without a stop (its name, zone and
+# boot disk image recreate it). Not a scenario of its own (the second-act
+# annotation keeps discovery from running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpComputeInstance
+metadata:
+  name: planton-oss-e2e-gcpvm-minimal
+  id: planton-oss-e2e-gcpvm-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpcomputeinstance
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-exclusive: gcp-project-vcpus # the lane project holds 12 vCPUs across all regions, so VM-running kinds never run side by side
+    planton.dev/e2e-second-act: minimal.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+  tags:
+    - planton-e2e
+spec:
+  # us-east1: us-central1 zonal e2-micro/e2-small pools answered
+  # ZONE_RESOURCE_POOL_EXHAUSTED on 2026-08-11 (audit-log verified; the
+  # same stockout class hit the VPC-connector fleets there on
+  # 2026-08-10). The VM chain is fully self-contained (own VPC →
+  # subnetwork prerequisites), so its region is a free variable —
+  # pinned to measured capacity reliability.
+  instanceName: planton-oss-e2e-vm-minimal-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
+  zone: us-east1-b
+  machineType: e2-micro
+  bootDisk:
+    image:
+      value: debian-cloud/debian-12
+    sizeGb: 10
+    type: pd-balanced
+  networkInterfaces:
+    - subnetwork:
+        valueFrom:
+          kind: GcpSubnetwork
+          name: planton-oss-e2e-gcpsnw-vm-prereq
+          fieldPath: status.outputs.subnetwork_self_link
+      accessConfigs:
+        - ephemeral: true
+          networkTier: PREMIUM
+  labels:
+    e2e-suite: gcp
+    e2e-act: second
+  metadata:
+    e2e-act: second

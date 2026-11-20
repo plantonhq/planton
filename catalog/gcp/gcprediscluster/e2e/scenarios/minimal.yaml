@@ -18,6 +18,8 @@ metadata:
     e2e-catalog-kind: gcprediscluster
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the in-place update: the maintenance window moves from Sunday to Saturday
   tags:
     - planton-e2e
 spec:
@@ -32,5 +34,11 @@ spec:
           kind: GcpVpcNetwork
           name: planton-oss-e2e-gcpvpcnetwork-prereq
           fieldPath: status.outputs.network_id
+  # Weekly window on the hour (Google exposes the Redis Cluster window start
+  # by the hour only); the second act moves its day.
+  maintenancePolicy:
+    weeklyMaintenanceWindow:
+      day: SUNDAY
+      hour: 3
   deletionProtectionEnabled: false
   deletionPolicy: DELETE

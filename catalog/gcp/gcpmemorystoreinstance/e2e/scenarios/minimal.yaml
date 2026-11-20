@@ -18,6 +18,8 @@ metadata:
     e2e-catalog-kind: gcpmemorystoreinstance
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the in-place update: the maintenance window moves from Sunday to Saturday
   tags:
     - planton-e2e
 spec:

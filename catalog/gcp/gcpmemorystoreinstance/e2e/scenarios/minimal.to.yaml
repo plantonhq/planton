@@ -1,0 +1,45 @@
+# The second act of minimal.yaml: the same Valkey instance with its weekly
+# maintenance window moved from Sunday to Saturday, still at 03:00 -- an
+# instances.patch of maintenancePolicy that updates it in place (its name,
+# location, mode and PSC connections recreate it). Not a scenario of its own
+# (the second-act annotation keeps discovery from running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpMemorystoreInstance
+metadata:
+  name: planton-oss-e2e-gcpmsi-smoke
+  id: planton-oss-e2e-gcpmsi-smoke
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpmemorystoreinstance
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: minimal.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+  tags:
+    - planton-e2e
+spec:
+  instanceName: e2e-msi-${E2E_RUN_ID}
+  location: us-central1
+  shardCount: 1
+  mode: CLUSTER_DISABLED
+  nodeType: SHARED_CORE_NANO
+  pscAutoConnections:
+    - network:
+        valueFrom:
+          kind: GcpVpcNetwork
+          name: planton-oss-e2e-gcpvpcnetwork-prereq
+          fieldPath: status.outputs.network_id
+  # Weekly window on the hour — the API accepts only whole-hour start
+  # times (live 400 "Invalid start time, only hours are supported" on a
+  # minute-carrying window, 2026-08-12).
+  maintenancePolicy:
+    weeklyMaintenanceWindow:
+      day: SATURDAY
+      hour: 3
+  deletionProtectionEnabled: false
+  # Explicit DELETE so the ephemeral run's destroy is a live no-op-diff
+  # proof of the new deletion_policy wiring.
+  deletionPolicy: DELETE

@@ -13,6 +13,7 @@ metadata:
     e2e-catalog-kind: gcpservicenetworkingconnection
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-names-nothing: "the peering is the run-scoped network's own connection to Google's managed services; the kind has no name field"
   tags:
     - planton-e2e
 spec:

@@ -19,6 +19,9 @@ metadata:
     e2e-catalog-kind: gcpgkenodepool
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-exclusive: gcp-project-vcpus # the lane project holds 12 vCPUs across all regions, so VM-running kinds never run side by side
+    planton.dev/e2e-upgrade-manifest: autoscaling-spot.to.yaml # the in-place update: the autoscaler's maximum rises from 2 to 3
   tags:
     - planton-e2e
 spec:
@@ -32,7 +35,7 @@ spec:
       kind: GcpGkeCluster
       name: planton-oss-e2e-gke-prereq
       fieldPath: status.outputs.location
-  nodePoolName: planton-oss-e2e-spot-pool
+  nodePoolName: planton-oss-e2e-spot-pool-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   # Start with one node (the API's default initial size of 3 would exceed
   # maxNodes); the autoscaler owns the size from then on.
   initialNodeCount: 1

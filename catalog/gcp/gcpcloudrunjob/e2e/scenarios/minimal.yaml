@@ -17,6 +17,8 @@ metadata:
     e2e-catalog-kind: gcpcloudrunjob
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the in-place update: each execution runs two tasks instead of one
   tags:
     - planton-e2e
 spec:

@@ -22,6 +22,7 @@ metadata:
     e2e-catalog-kind: gcpcloudsql
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
   tags:
     - planton-e2e
 spec:

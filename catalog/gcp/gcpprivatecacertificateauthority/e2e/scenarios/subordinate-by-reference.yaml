@@ -15,6 +15,7 @@ metadata:
     e2e-catalog-kind: gcpprivatecacertificateauthority
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpprivatecacertificateauthority/e2e/prerequisites/root-pool.yaml,catalog/gcp/gcpprivatecacertificateauthority/e2e/prerequisites/root-ca.yaml"
   tags:
     - planton-e2e

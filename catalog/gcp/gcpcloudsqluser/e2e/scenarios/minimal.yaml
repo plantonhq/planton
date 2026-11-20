@@ -15,6 +15,8 @@ metadata:
     e2e-catalog-kind: gcpcloudsqluser
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the in-place update: the password rotates
   tags:
     - planton-e2e
 spec:
@@ -23,7 +25,7 @@ spec:
       kind: GcpCloudSql
       name: planton-oss-e2e-gcpsql-prereq
       fieldPath: status.outputs.instance_name
-  userName: e2e-app
+  userName: e2e-app-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   password: E2eAppPassword123!
   type: BUILT_IN
   databaseRoles:

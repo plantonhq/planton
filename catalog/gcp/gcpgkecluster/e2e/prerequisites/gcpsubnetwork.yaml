@@ -29,7 +29,7 @@ spec:
       kind: GcpVpcNetwork
       name: planton-oss-e2e-gcpvpcnetwork-prereq
       fieldPath: status.outputs.network_self_link
-  subnetworkName: planton-oss-e2e-gke-subnet
+  subnetworkName: planton-oss-e2e-gke-subnet-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   region: us-east1
   ipCidrRange: 10.210.0.0/20
   privateIpGoogleAccess: true

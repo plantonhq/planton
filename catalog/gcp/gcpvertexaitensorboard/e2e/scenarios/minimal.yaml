@@ -1,8 +1,8 @@
 # GcpVertexAiTensorboard scenario: the TensorBoard alone. project_id is
 # deliberately omitted: the TensorBoard rides the provider's default
 # project, which the harness exports as GOOGLE_PROJECT. Google assigns the
-# numeric id; the display name defaults to metadata.name. An empty
-# TensorBoard stores nothing and bills nothing.
+# numeric id; the display name carries the run id. An empty TensorBoard
+# stores nothing and bills nothing.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpVertexAiTensorboard
 metadata:
@@ -15,7 +15,11 @@ metadata:
     e2e-catalog-kind: gcpvertexaitensorboard
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the in-place update: the description
   tags:
     - planton-e2e
 spec:
   location: us-central1
+  displayName: planton-oss-e2e-vtb-minimal-${E2E_RUN_ID} # Google assigns the id; the run id names this lane's copy, so lanes side by side and the sweep tell them apart
+  description: E2E minimal TensorBoard; delete freely.
