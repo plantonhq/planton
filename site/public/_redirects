@@ -1,0 +1,7 @@
+# Redirects for the static export, read by Cloudflare's static assets (wrangler.jsonc).
+#
+# planton.ai/install.sh is the Planton CLI installer's public address, the one every Setup Prompt
+# and doc teaches. The installer itself lives where the CLI's release publishes it, stamped with
+# that release, so this forwards rather than keeping a copy that would fall behind. A 302, not a
+# 301: the address people paste is the permanent one, and where it points may move.
+/install.sh https://downloads.planton.ai/client-apps/planton/cli/install.sh 302
