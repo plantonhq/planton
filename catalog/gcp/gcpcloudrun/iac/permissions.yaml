@@ -19,7 +19,7 @@ spec:
         provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Covers google_project_service enabling run.googleapis.com on the target project so a fresh project works on the first deploy. disable_on_destroy is false in both modules -- tearing down one service must never disable the API for everything else -- so the disable permission is never needed. Proven 2026-10-20 on dev by the least-privilege lane: an identity holding exactly the kind's rendered permissions deployed, updated and destroyed it. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live)."
+        notes: "Covers google_project_service enabling run.googleapis.com on the target project so a fresh project works on the first deploy. disable_on_destroy is false in both modules -- tearing down one service must never disable the API for everything else -- so the disable permission is never needed. Proven 2026-10-20 on dev by the least-privilege lane: an identity holding exactly the kind's rendered permissions deployed, updated and destroyed it. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: ManageService
         permissions:
           - run.services.create
@@ -30,17 +30,17 @@ spec:
         provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Covers google_cloud_run_v2_service -- create, read/refresh, in-place updates (revision template, containers, scaling, traffic splits, ingress, IAP, deletion protection), and destroy. Service mutations on the Cloud Run Admin API v2 return long-running operations the provider polls, which authorize as run.operations.get. Proven 2026-10-20 on dev by the least-privilege lane: an identity holding exactly the kind's rendered permissions deployed, updated and destroyed it."
+        notes: "Covers google_cloud_run_v2_service -- create, read/refresh, in-place updates (revision template, containers, scaling, traffic splits, ingress, IAP, deletion protection), and destroy. Service mutations on the Cloud Run Admin API v2 return long-running operations the provider polls, which authorize as run.operations.get. Proven 2026-10-20 on dev by the least-privilege lane: an identity holding exactly the kind's rendered permissions deployed, updated and destroyed it. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: GrantPublicInvoker
         permissions:
           - run.services.setIamPolicy
           - run.services.getIamPolicy
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: allow_unauthenticated
-        notes: Covers google_cloud_run_v2_service_iam_member -- the roles/run.invoker grant to allUsers, created only when spec.allow_unauthenticated is true (the 01-public-api-service preset). IAM member resources read the current policy before modifying it, so getIamPolicy rides along. Not needed for authenticated-only services.
+        notes: Covers google_cloud_run_v2_service_iam_member -- the roles/run.invoker grant to allUsers, created only when spec.allow_unauthenticated is true (the 01-public-api-service preset). IAM member resources read the current policy before modifying it, so getIamPolicy rides along. Not needed for authenticated-only services. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ApplyResourceManagerTags
         permissions:
           - run.services.createTagBinding
@@ -57,7 +57,7 @@ spec:
         provenance: proven
         reach: target
         privilege: uses_identity
-        notes: "Cloud Run's deployment-permissions contract requires iam.serviceAccounts.actAs on the service identity for every create or update of google_cloud_run_v2_service -- on the referenced spec.service_account when one is named, or on the project's Compute Engine default service account when it is not. There is no shape of this component that escapes the requirement. Proven 2026-10-20 on dev by the least-privilege lane: an identity holding exactly the kind's rendered permissions deployed, updated and destroyed it."
+        notes: "Cloud Run's deployment-permissions contract requires iam.serviceAccounts.actAs on the service identity for every create or update of google_cloud_run_v2_service -- on the referenced spec.service_account when one is named, or on the project's Compute Engine default service account when it is not. There is no shape of this component that escapes the requirement. Proven 2026-10-20 on dev by the least-privilege lane: an identity holding exactly the kind's rendered permissions deployed, updated and destroyed it. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: ManageEnvSecrets
         permissions:
           - serviceusage.services.enable
@@ -76,25 +76,25 @@ spec:
           - secretmanager.versions.enable
           - secretmanager.versions.disable
           - secretmanager.versions.destroy
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: containers.env.secret_value
-        notes: Covers the secret the modules keep per env[].secret_value -- google_project_service enabling secretmanager.googleapis.com (disable_on_destroy false), google_secret_manager_secret (user-managed replication in the service's region(s), attribution labels), google_secret_manager_secret_version holding the value (a new value creates the new version before destroying the old; versions.access is the provider's read of the payload on refresh), and google_secret_manager_secret_iam_member granting roles/secretmanager.secretAccessor on that one secret to the runtime identity (IAM member resources read the policy before modifying it). Teardown deletes the secret, which destroys its versions. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers the secret the modules keep per env[].secret_value -- google_project_service enabling secretmanager.googleapis.com (disable_on_destroy false), google_secret_manager_secret (user-managed replication in the service's region(s), attribution labels), google_secret_manager_secret_version holding the value (a new value creates the new version before destroying the old; versions.access is the provider's read of the payload on refresh), and google_secret_manager_secret_iam_member granting roles/secretmanager.secretAccessor on that one secret to the runtime identity (IAM member resources read the policy before modifying it). Teardown deletes the secret, which destroys its versions. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ResolveDefaultRuntimeIdentity
         permissions:
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: containers.env.secret_value
-        notes: The data source the modules use to name the Compute Engine default service account (<project-number>-compute@developer.gserviceaccount.com) in the secretAccessor grant when spec.service_account is unset -- google_project reads the project to learn its number. Not exercised when spec.service_account names the runtime identity (the condition cannot express "unset", so the entry rides the secret_value condition).
+        notes: The data source the modules use to name the Compute Engine default service account (<project-number>-compute@developer.gserviceaccount.com) in the secretAccessor grant when spec.service_account is unset -- google_project reads the project to learn its number. Not exercised when spec.service_account names the runtime identity (the condition cannot express "unset", so the entry rides the secret_value condition). Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ReadDeployedImage
         permissions:
           - artifactregistry.repositories.downloadArtifacts
         provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Google's Cloud Run deploy guide requires the deploying identity to hold Artifact Registry Reader (roles/artifactregistry.reader) on the repository of the deployed image, separate from the Cloud Run service agent that pulls it when a revision starts; downloadArtifacts is the permission behind that role that the deploy exercises. Needed whenever the image lives in Artifact Registry (the manifest cannot express that as a field condition); scope it to the image's repository in a hardened deployment. Images from other registries do not exercise it. Proven 2026-10-20 on dev by the least-privilege lane: an identity holding exactly the kind's rendered permissions deployed, updated and destroyed it."
+        notes: "Google's Cloud Run deploy guide requires the deploying identity to hold Artifact Registry Reader (roles/artifactregistry.reader) on the repository of the deployed image, separate from the Cloud Run service agent that pulls it when a revision starts; downloadArtifacts is the permission behind that role that the deploy exercises. Needed whenever the image lives in Artifact Registry (the manifest cannot express that as a field condition); scope it to the image's repository in a hardened deployment. Images from other registries do not exercise it. Proven 2026-10-20 on dev by the least-privilege lane: an identity holding exactly the kind's rendered permissions deployed, updated and destroyed it. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
