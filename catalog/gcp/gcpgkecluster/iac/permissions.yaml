@@ -19,7 +19,7 @@ spec:
         provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Covers google_project_service enabling container.googleapis.com, monitoring.googleapis.com, and logging.googleapis.com (unless the spec turns logging off) on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. Proven 2026-10-20 on dev by the least-privilege lane: an identity holding exactly the kind's rendered permissions deployed, updated and destroyed it. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live)."
+        notes: "Covers google_project_service enabling container.googleapis.com, monitoring.googleapis.com, and logging.googleapis.com (unless the spec turns logging off) on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. Proven 2026-10-20 on dev by the least-privilege lane: an identity holding exactly the kind's rendered permissions deployed, updated and destroyed it. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: ManageCluster
         permissions:
           - container.clusters.create
@@ -30,11 +30,11 @@ spec:
         provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Covers google_container_cluster -- create, read/refresh, in-place updates, and destroy, plus polling the long-running operations every mutation returns. Proven 2026-10-20 on dev by the least-privilege lane: an identity holding exactly the kind's rendered permissions deployed, updated and destroyed it."
+        notes: "Covers google_container_cluster -- create, read/refresh, in-place updates, and destroy, plus polling the long-running operations every mutation returns. Proven 2026-10-20 on dev by the least-privilege lane: an identity holding exactly the kind's rendered permissions deployed, updated and destroyed it. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: ActAsDefaultNodeServiceAccount
         permissions:
           - iam.serviceAccounts.actAs
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: uses_identity
-        notes: A Standard cluster is created with a default node pool that runs as the project's Compute Engine default service account, so GKE demands actAs on that account before creating the cluster, even though the module removes the pool right after ("The user does not have access to service account ...-compute@developer.gserviceaccount.com", measured). An Autopilot cluster creates without it (measured); the manifest cannot condition a group on a field being unset, so the group is listed for both. A custom node service account (cluster_autoscaling.auto_provisioning_defaults.service_account) needs actAs on that account the same way.
+        notes: A Standard cluster is created with a default node pool that runs as the project's Compute Engine default service account, so GKE demands actAs on that account before creating the cluster, even though the module removes the pool right after ("The user does not have access to service account ...-compute@developer.gserviceaccount.com", measured). An Autopilot cluster creates without it (measured); the manifest cannot condition a group on a field being unset, so the group is listed for both. A custom node service account (cluster_autoscaling.auto_provisioning_defaults.service_account) needs actAs on that account the same way. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

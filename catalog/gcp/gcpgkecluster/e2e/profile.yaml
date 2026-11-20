@@ -3,10 +3,15 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpgkecluster
 spec:
-  # GKE control planes are the slowest resources in the harness: creates run
-  # 10-25 minutes and destroys 5-10, per scenario per engine. With three
-  # scenarios (minimal, private-cluster, autopilot), batch runs with a
-  # go test -timeout of at least 180m.
+  # Proven live on both engines (2026-11-20): a zonal Standard cluster, a
+  # regional private cluster and an Autopilot cluster, each deployed, the
+  # private cluster's maintenance window moved in place (SetMaintenancePolicy
+  # in Google's audit log) and destroyed by an identity holding only this
+  # kind's permissions manifest, with the re-plan clean. The short-lived
+  # default pool boots from pd-standard, so a regional cluster fits a fresh
+  # project's 250 GB regional SSD quota; a Standard cluster's creator needs
+  # actAs on the Compute Engine default account the pool runs as; the Logging
+  # and Monitoring APIs are enabled with the cluster.
   tier: 1
   # Live-proven 2026-08-12 on both engines at the full spec surface of the release then pinned:
   # 3 scenarios (minimal zonal, private-cluster regional incl. RBAC
@@ -26,6 +31,6 @@ spec:
   # also gained the fleet_membership output (empty without fleet_project);
   # the GcpGkeFleetScope bind-fleet-registered-cluster scenario proves it
   # end to end.
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 180
