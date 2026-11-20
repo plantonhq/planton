@@ -3,24 +3,16 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpcloudrunjob
 spec:
-  # Minimal scenario: a single-task hello job (~3-5 minutes per engine).
-  # Jobs do not hold serverless address reservations after destroy the way
-  # direct-VPC services do, so the minimal path is a clean create/destroy.
-  #
-  # The execution tokens (start/run) are LIVE-PROVEN via throwaway applies
-  # (2026-08-11), deliberately not scenario defaults (a token-armed create
-  # runs a REAL execution on every sweep). Measured behavior, both arms:
-  # the execution is created as <jobName>-<token> and surfaces in the
-  # latest_created_execution output; a start-token apply returned when the
-  # execution STARTED (~1m12s), a run-token apply blocked until it
-  # COMPLETED (~2m33s — deploy-and-verify semantics confirmed); destroying
-  # the job with a completed execution removed both cleanly.
+  # Proven live on both engines (2026-11-20): a minimal job and one reading a
+  # stored secret, each deployed, its task count raised in place (UpdateJob in
+  # Google's audit log) and destroyed by an identity holding only this kind's
+  # permissions manifest, with the re-plan clean.
   tier: 1
   #
   # Awaiting re-proof: the job gained Resource Manager tags; the earlier live
   # proof predates the change. Tags need org-level tagKeys/tagValues (the
   # standing org-fixture unblock condition), so the committed scenario stays
   # untagged and the next proof confirms the shape still re-plans clean.
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 30

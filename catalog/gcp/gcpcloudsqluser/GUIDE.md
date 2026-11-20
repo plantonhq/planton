@@ -42,6 +42,15 @@ that must already exist in the database. In-database GRANTs beyond that
 remain migration territory: the API manages the login, not its schema
 privileges.
 
+## The audit trail
+
+Cloud SQL writes no Admin Activity audit entry when a database user is
+created, changed or dropped, while every instance change has one. A
+project that needs a record of who created a user or rotated a password
+turns on Data Access audit logging (`DATA_WRITE`) for
+`cloudsql.googleapis.com`, which is off by default, and confirms the
+entries arrive before relying on them.
+
 ## Destroy stance
 
 PostgreSQL will not drop a user that still owns objects — reassign
