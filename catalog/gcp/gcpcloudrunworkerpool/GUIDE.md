@@ -102,3 +102,10 @@ PREVENT` is a second, independent guard; `ABANDON` walks away from a
 running (and billing) pool. `region`, `workerPoolName`, and a container's
 `dependsOn` are the only immutables -- everything else rolls a new
 revision in place.
+
+A pool with direct VPC egress leaves a Cloud Run-owned address
+(`serverless-ipv4-cloudrun-*`) in its subnet after it is deleted, and
+nobody but Cloud Run can release it. Cloud Run did after about two hours
+(1h49m, measured). Until then the subnet, and the network around it, can't
+be deleted, so tear a stack down knowing its network goes last, or give
+the network a teardown that retries for that long.

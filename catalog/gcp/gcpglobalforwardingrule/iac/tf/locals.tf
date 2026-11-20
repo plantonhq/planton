@@ -37,8 +37,14 @@ locals {
   ip_address = var.spec.ip_address != "" ? var.spec.ip_address : null
 
   # The middleware default (TCP) matches GCP's own default; null lets the
-  # API compute TCP when unset.
-  ip_protocol = var.spec.ip_protocol != "" ? var.spec.ip_protocol : null
+  # API compute TCP when unset. A Private Service Connect rule to a service
+  # attachment carries no protocol at all: Google refuses one there
+  # ("Invalid field set in Private Service Connect Forwarding Rule"), the
+  # default included.
+  ip_protocol = (
+    strcontains(var.spec.target, "/serviceAttachments/") ? null
+    : (var.spec.ip_protocol != "" ? var.spec.ip_protocol : null)
+  )
 
   ip_version = var.spec.ip_version != "" ? var.spec.ip_version : null
 

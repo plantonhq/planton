@@ -13,6 +13,10 @@ metadata:
     e2e-catalog-kind: gcpsubnetwork
   annotations:
     planton.dev/e2e: "true"
+    # Direct VPC egress leaves Cloud Run's serverless address in the subnet
+    # after the pool is deleted, and Cloud Run releases it on its own
+    # schedule (1h49m, measured 2026-11-20); the subnet's delete waits it out.
+    planton.dev/e2e-teardown-attempts: "130"
   tags:
     - planton-e2e
 spec:

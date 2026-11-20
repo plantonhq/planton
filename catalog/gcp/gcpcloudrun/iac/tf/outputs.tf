@@ -8,9 +8,20 @@ output "service_name" {
   value       = google_cloud_run_v2_service.main.name
 }
 
+# The service resource keeps the revision that was ready when its plan was
+# made, so after an update it would still name the previous revision. The
+# service read back after the apply names the one now serving.
+data "google_cloud_run_v2_service" "applied" {
+  name     = google_cloud_run_v2_service.main.name
+  location = google_cloud_run_v2_service.main.location
+  project  = google_cloud_run_v2_service.main.project
+
+  depends_on = [google_cloud_run_v2_service.main]
+}
+
 output "revision" {
   description = "Name of the latest ready revision"
-  value       = google_cloud_run_v2_service.main.latest_ready_revision
+  value       = data.google_cloud_run_v2_service.applied.latest_ready_revision
 }
 
 output "location" {

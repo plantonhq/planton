@@ -16,19 +16,19 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManagePersistentResource
         permissions:
           - aiplatform.persistentResources.create
           - aiplatform.persistentResources.get
           - aiplatform.persistentResources.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_vertex_ai_persistent_resource (Pulumi vertex.AiPersistentResource) -- created and deleted through long-running operations the provider polls, patched for display name, labels, and replica counts, read on every refresh. roles/aiplatform.admin contains all of them. GCP defines no aiplatform.persistentResources.update permission (roles/aiplatform.admin carries create, get, list, and delete only), so the in-place PATCH authorizes under a permission this list already holds; the live capture lane names which. GCP defines no aiplatform.operations.get permission (IAM's testable-permissions inventory carries only aiplatform.operations.list); polling the long-running operations needs nothing beyond these.
+        notes: Covers google_vertex_ai_persistent_resource (Pulumi vertex.AiPersistentResource) -- created and deleted through long-running operations the provider polls, patched for display name, labels, and replica counts, read on every refresh. roles/aiplatform.admin contains all of them. GCP defines no aiplatform.persistentResources.update permission (roles/aiplatform.admin carries create, get, list, and delete only), so the in-place PATCH authorizes under a permission this list already holds; the live capture lane names which. GCP defines no aiplatform.operations.get permission (IAM's testable-permissions inventory carries only aiplatform.operations.list); polling the long-running operations needs nothing beyond these. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ResolveNetworkProjectNumber
         permissions:
           - resourcemanager.projects.get

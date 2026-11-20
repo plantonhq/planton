@@ -2,6 +2,7 @@ package module
 
 import (
 	"strconv"
+	"strings"
 
 	"github.com/pkg/errors"
 	gcpglobalforwardingrulev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpglobalforwardingrule/v1alpha1"
@@ -44,8 +45,11 @@ func regionalForwardingRule(ctx *pulumi.Context, locals *Locals, opts []pulumi.R
 		args.IpAddress = pulumi.String(spec.IpAddress.GetValue())
 	}
 	// L3_DEFAULT (every protocol) is admitted here alone; the spec pairs it
-	// with all_ports.
-	if spec.IpProtocol != nil && spec.GetIpProtocol() != "" {
+	// with all_ports. A Private Service Connect rule to a service attachment
+	// carries no protocol at all: Google refuses one there ("Invalid field
+	// set in Private Service Connect Forwarding Rule"), the default included.
+	if spec.IpProtocol != nil && spec.GetIpProtocol() != "" &&
+		!strings.Contains(spec.Target.GetValue(), "/serviceAttachments/") {
 		args.IpProtocol = pulumi.String(spec.GetIpProtocol())
 	}
 	if spec.IpVersion != "" {

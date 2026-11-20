@@ -165,7 +165,10 @@ message GcpGlobalForwardingRuleSpec {
   ];
 
   // The IP protocol this rule matches (default TCP). All proxy-based load
-  // balancers and Private Service Connect use TCP; UDP, ESP, AH, SCTP, and
+  // balancers and Private Service Connect to Google APIs use TCP; a Private
+  // Service Connect rule to a service attachment carries no protocol (Google
+  // refuses one there, so the modules send none, the default included).
+  // UDP, ESP, AH, SCTP, and
   // ICMP exist for passthrough load balancing and protocol forwarding.
   // L3_DEFAULT — regional rules only — forwards every IP protocol at once
   // (the passthrough Network Load Balancer's multi-protocol form); it

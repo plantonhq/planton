@@ -3,21 +3,14 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpvertexaipersistentresource
 spec:
-  # Awaiting the live proof lane. The scenario proves in the harness
-  # project with roles/aiplatform.admin and custom-training CPU quota in
-  # us-central1; the module enables aiplatform.googleapis.com itself: one
-  # pool of one n1-standard-4 replica. Offline bar met: both modules build
-  # and validate, offline plans for the reference manifest, the scenario,
-  # and the GPU-autoscaling, VPC-peering, PSC-I, and CMEK arms are clean on
-  # the pinned provider, and the accounting is total. Live facts the proof
-  # lane confirms: (1) the resource reaches RUNNING and RE-PLANS CLEAN
-  # under the apply-idempotency gate on both engines -- the generated pool
-  # id and the boot disk defaults (Optional+Computed) show no diff, and the
-  # replica count travels as the decimal string Google returns; (2) the
-  # persistent_resource_id output matches the name; (3) destroy releases
-  # the machines and the verifier reads 404. Provisioning is the long pole
-  # (Google allocates the VM before RUNNING).
+  # Proven live on both engines (2026-11-20): one pool of one n1-standard-4,
+  # deployed, renamed (which replaces it) and destroyed by an identity holding
+  # only this kind's permissions manifest, with the re-plan clean. The
+  # provider updates a persistent resource with a PUT Google does not serve
+  # and treats labels as replacing, so every change replaces the resource;
+  # the modules replace delete-first, since the ID is held while the old one
+  # exists. Google's audit log shows the replacement, as declared.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 60
