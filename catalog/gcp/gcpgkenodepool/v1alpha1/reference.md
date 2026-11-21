@@ -1633,9 +1633,10 @@ Graceful node shutdown: the total time, in seconds, a node delays its
 shutdown so every pod (critical and non-critical) can terminate
 cleanly when the VM is reclaimed. Only configurable on Spot or
 preemptible pools (the ones that get reclaimed). Between 10 and
-10000; GKE's node system configuration guide lists 30 and 120 as the
-values it accepts. Unset: 30 seconds (GKE's default); sent only when
-set because the API fills the value itself.
+10000; GKE's node system configuration guide lists 0, 30 and 120 as the
+values it accepts for Spot graceful termination. Unset: 30 seconds
+(GKE's default); sent only when set because the API fills the value
+itself.
 
 - rule: {"int64":{"lte":"10000","gte":"10"}}
 

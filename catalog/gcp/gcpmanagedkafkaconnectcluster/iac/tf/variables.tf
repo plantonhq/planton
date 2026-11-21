@@ -52,7 +52,10 @@ variable "spec" {
       memory_bytes = optional(number, 0)
     })
 
-    # The VPC networks the workers reach -- at least one, at most 10.
+    # The VPC networks the workers reach -- at least one, at most 10. Google
+    # gives the workers an interface in each primary subnet through a network
+    # attachment it creates, and deleting the Connect cluster leaves that
+    # attachment behind, holding the subnet until it is deleted.
     network_configs = list(object({
       # The subnet the workers' interface is placed in: a GcpSubnetwork
       # reference (its self link, which the modules trim to the

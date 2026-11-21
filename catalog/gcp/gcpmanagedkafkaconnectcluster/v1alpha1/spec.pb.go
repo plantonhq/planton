@@ -185,7 +185,10 @@ type GcpManagedKafkaConnectClusterSpec struct {
 	KafkaCluster *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=kafka_cluster,json=kafkaCluster,proto3" json:"kafka_cluster,omitempty"`
 	// vCPUs and memory for the workers.
 	CapacityConfig *GcpManagedKafkaConnectClusterCapacity `protobuf:"bytes,5,opt,name=capacity_config,json=capacityConfig,proto3" json:"capacity_config,omitempty"`
-	// The VPC networks the workers reach -- at least one, at most 10.
+	// The VPC networks the workers reach -- at least one, at most 10. Google
+	// gives the workers an interface in each primary subnet through a network
+	// attachment it creates, and deleting the Connect cluster leaves that
+	// attachment behind, holding the subnet until it is deleted.
 	NetworkConfigs []*GcpManagedKafkaConnectClusterNetworkConfig `protobuf:"bytes,6,rep,name=network_configs,json=networkConfigs,proto3" json:"network_configs,omitempty"`
 	// Labels on the Connect cluster. The platform attribution labels are
 	// added on top and win on a key conflict.

@@ -128,7 +128,9 @@ message GcpVectorSearchCollectionAutoscalingSpec {
 message GcpVectorSearchCollectionDedicatedInfrastructure {
   // STORAGE_OPTIMIZED for large indexes where cost per vector matters more
   // than latency; PERFORMANCE_OPTIMIZED (Google's default) for
-  // latency-sensitive serving. Immutable: a change replaces the index.
+  // latency-sensitive serving. A STORAGE_OPTIMIZED index takes only the
+  // DOT_PRODUCT metric and no ScaNN options (Google refuses both).
+  // Immutable: a change replaces the index.
   string mode = 1 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string = {
@@ -157,6 +159,11 @@ message GcpVectorSearchCollectionIndex {
     id: "index.scann_not_on_storage_optimized"
     message: "feature_norm_type is a ScaNN option, and Google refuses ScaNN options on a STORAGE_OPTIMIZED index: leave it unset there"
     expression: "this.feature_norm_type == '' || !has(this.dedicated_infrastructure) || this.dedicated_infrastructure.mode != 'STORAGE_OPTIMIZED'"
+  };
+  option (buf.validate.message).cel = {
+    id: "index.storage_optimized_dot_product"
+    message: "a STORAGE_OPTIMIZED index supports only the DOT_PRODUCT distance metric: leave distance_metric unset or set DOT_PRODUCT, and unit-normalize the vectors before ingestion for cosine similarity"
+    expression: "this.distance_metric == '' || this.distance_metric == 'DOT_PRODUCT' || !has(this.dedicated_infrastructure) || this.dedicated_infrastructure.mode != 'STORAGE_OPTIMIZED'"
   };
 
   // The index's ID within the collection -- 1-63 characters, RFC 1035

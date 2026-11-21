@@ -272,6 +272,7 @@ fields, each keyed by its index_id. Add or remove an index by editing
 this list; for what changes in place see GcpVectorSearchCollectionIndex.
 
 - rule: feature_norm_type is a ScaNN option, and Google refuses ScaNN options on a STORAGE_OPTIMIZED index: leave it unset there
+- rule: a STORAGE_OPTIMIZED index supports only the DOT_PRODUCT distance metric: leave distance_metric unset or set DOT_PRODUCT, and unit-normalize the vectors before ingestion for cosine similarity
 
 ### spec.indexes[].indexId
 
@@ -364,7 +365,9 @@ pool.
 
 STORAGE_OPTIMIZED for large indexes where cost per vector matters more
 than latency; PERFORMANCE_OPTIMIZED (Google's default) for
-latency-sensitive serving. Immutable: a change replaces the index.
+latency-sensitive serving. A STORAGE_OPTIMIZED index takes only the
+DOT_PRODUCT metric and no ScaNN options (Google refuses both).
+Immutable: a change replaces the index.
 
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"in":["STORAGE_OPTIMIZED","PERFORMANCE_OPTIMIZED"]}}
 

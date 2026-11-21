@@ -29,3 +29,17 @@ import "context"
 type DependentsReleaser interface {
 	ReleaseDependents(ctx context.Context, tc *KindTestContext, class string) error
 }
+
+// DependencyTeardownPreparer removes what a cloud leaves holding a fixture
+// after the objects that made it are gone, which the fixture's own destroy
+// cannot remove: deleting a Managed Kafka Connect cluster leaves the network
+// attachment Google made on its subnetwork, and the subnetwork then refuses
+// deletion while the attachment exists. The runner calls it before every
+// destroy attempt of each dependency, with the dependency's kind and its
+// captured outputs. Implementations remove only objects nothing serves any
+// more (an attachment with no connection endpoints), never one in use, and
+// return an error only when such a removal fails; the destroy is attempted
+// either way.
+type DependencyTeardownPreparer interface {
+	PrepareDependencyDestroy(ctx context.Context, kindSlug string, outputs map[string]interface{}) error
+}

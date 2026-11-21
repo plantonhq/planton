@@ -454,7 +454,14 @@ against a stack the first destroy removed, "no stack named ... found"
 through the whole ladder; live-caught 2026-08-26 on a DLM role fixture).
 The Terraform path MASKS the class -- destroying an already-empty state
 succeeds -- so a duplicate that passes offline TF proofs still fails its
-first live Pulumi lane. The resolver also honors the same annotation
+first live Pulumi lane. A scenario that needs a whole chain of its own (a
+cluster on its own network, in the second project) ships each link as a
+consumer-scoped override (`prerequisites/<kind>.yaml`) and lists the KIND
+names: the chain then resolves to those files alone. Listing the same files
+by path deploys each one's own registry chain beside it as well -- a
+path-declared cluster also brought the registry's network and fixed-name
+subnetwork into the lane, which sent the kind to run alone (live-caught
+2026-11-21 on the GKE fleet chains). The resolver also honors the same annotation
 (kind names only) on each prerequisite's OWN install manifest, ordering the
 fixtures an install profile's `value_from` references compose BEFORE the
 declaring kind -- recursively and cycle-checked. All fixtures join the same
@@ -901,6 +908,15 @@ Google's service agent uploads it, so the release finds it by the lane's
 window, which the deployments' exclusive class keeps to one lane). Cloud
 Asset Inventory indexes none of the Dialogflow objects, so the sweep cannot
 see them; the release is the only net.
+
+**What holds a fixture after its users are gone is removed before its
+destroy.** A harness implementing `provider.DependencyTeardownPreparer` is
+called before every destroy attempt of each fixture, with the fixture's kind
+and outputs. The GCP harness deletes, before a subnetwork's destroy, every
+network attachment on it that serves no endpoint: deleting a Managed Kafka
+Connect cluster leaves the attachment Google made for its workers, which
+held its subnetwork for more than 25 minutes (measured 2026-11-21). An
+attachment still serving an endpoint is never touched.
 
 **VERIFY-CLEAN re-reads for two minutes.** A delete can finish before a read
 sees it (Dialogflow answered a security setting's read half a second after

@@ -111,6 +111,8 @@ var _ = ginkgo.Describe("GcpVectorSearchCollectionSpec", func() {
 		msg.Spec.Indexes[0].DedicatedInfrastructure.Mode = "STORAGE_OPTIMIZED"
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 		msg.Spec.Indexes[0].FeatureNormType = ""
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.Indexes[0].DistanceMetric = "DOT_PRODUCT"
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 	})
 

@@ -905,3 +905,48 @@ func (h *recordingHarness) VerifyDeployed(context.Context, string, map[string]in
 	return nil
 }
 func (h *recordingHarness) VerifyDestroyed(context.Context, string) error { return nil }
+
+// A dependency whose harness can prepare its teardown is prepared before every
+// destroy attempt, and a preparation error never stops the destroy.
+func TestTeardownDependencies_PreparesEachAttempt(t *testing.T) {
+	origDestroy, origRemove := pulumiDestroyFn, pulumiRemoveStackFn
+	origBackoff := dependencyDestroyBackoff
+	dependencyDestroyBackoff = 0
+	t.Cleanup(func() {
+		pulumiDestroyFn, pulumiRemoveStackFn = origDestroy, origRemove
+		dependencyDestroyBackoff = origBackoff
+	})
+
+	var order []string
+	destroys := 0
+	pulumiDestroyFn = func(moduleDir, stackName, backendURL, iacInputFilePath string, laneEnv ...string) (*PulumiResult, error) {
+		destroys++
+		order = append(order, "destroy")
+		if destroys == 1 {
+			return nil, errors.New("the subnetwork is already being used by a network attachment")
+		}
+		return nil, nil
+	}
+	pulumiRemoveStackFn = func(moduleDir, stackName, backendURL string) error { return nil }
+
+	prepared := 0
+	deployed := []DependencyState{{
+		Dependency: Dependency{KindSlug: "gcpsubnetwork", ManifestPath: filepath.Join(t.TempDir(), "absent.yaml")},
+		StackName:  "stack-subnet",
+		t:          t,
+		prepareDestroy: func() error {
+			prepared++
+			order = append(order, "prepare")
+			if prepared == 1 {
+				return errors.New("listing the network attachments")
+			}
+			return nil
+		},
+	}}
+	if err := TeardownDependencies(deployed); err != nil {
+		t.Fatalf("teardown failed: %v", err)
+	}
+	if got, want := strings.Join(order, ","), "prepare,destroy,prepare,destroy"; got != want {
+		t.Errorf("teardown order %q, want %q", got, want)
+	}
+}

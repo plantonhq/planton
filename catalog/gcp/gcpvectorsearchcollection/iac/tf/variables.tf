@@ -145,7 +145,9 @@ variable "spec" {
       dedicated_infrastructure = optional(object({
         # STORAGE_OPTIMIZED for large indexes where cost per vector matters more
         # than latency; PERFORMANCE_OPTIMIZED (Google's default) for
-        # latency-sensitive serving. Immutable: a change replaces the index.
+        # latency-sensitive serving. A STORAGE_OPTIMIZED index takes only the
+        # DOT_PRODUCT metric and no ScaNN options (Google refuses both).
+        # Immutable: a change replaces the index.
         mode = optional(string, "")
 
         # Replica bounds for the dedicated nodes.

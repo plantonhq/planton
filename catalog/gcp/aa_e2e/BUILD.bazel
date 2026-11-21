@@ -6,6 +6,7 @@ go_library(
         "dependents.go",
         "harness.go",
         "identity.go",
+        "teardown.go",
         "upgrade.go",
     ],
     importpath = "github.com/plantonhq/planton/catalog/gcp/aa_e2e",

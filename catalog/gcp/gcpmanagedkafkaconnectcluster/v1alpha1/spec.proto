@@ -114,7 +114,10 @@ message GcpManagedKafkaConnectClusterSpec {
   // vCPUs and memory for the workers.
   GcpManagedKafkaConnectClusterCapacity capacity_config = 5 [(buf.validate.field).required = true];
 
-  // The VPC networks the workers reach -- at least one, at most 10.
+  // The VPC networks the workers reach -- at least one, at most 10. Google
+  // gives the workers an interface in each primary subnet through a network
+  // attachment it creates, and deleting the Connect cluster leaves that
+  // attachment behind, holding the subnet until it is deleted.
   repeated GcpManagedKafkaConnectClusterNetworkConfig network_configs = 6 [
     (buf.validate.field).repeated.min_items = 1,
     (buf.validate.field).repeated.max_items = 10

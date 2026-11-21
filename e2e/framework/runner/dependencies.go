@@ -58,6 +58,11 @@ type DependencyState struct {
 	terraformCleanup func()
 	t                testing.TB
 
+	// prepareDestroy, when the dependency's harness implements
+	// provider.DependencyTeardownPreparer, removes what the cloud left holding
+	// this fixture before each destroy attempt (see TeardownDependencies).
+	prepareDestroy func() error
+
 	// ManifestName is the metadata.name of the deployed manifest. It keys this
 	// instance's outputs in DependencyOutputs so a reference can address one
 	// specific instance when an install profile deploys several of the same kind.
@@ -551,6 +556,7 @@ func DeployDependencies(ctx context.Context, t testing.TB, repoRoot, kindProvide
 			docDep.ManifestPath = resolvedManifestPath
 
 			state, err := deployDependency(ctx, t, repoRoot, kindProvider, docDep, backendURL, runID, harness, docIndex, accumulated)
+			attachTeardownPreparer(ctx, &state, kindProvider, harness)
 			if err == nil {
 				state.Referable, err = ReferableValues(state.Outputs, docDep.ManifestPath)
 				err = errors.Wrapf(err, "failed to read what dependents can reference from dependency %q", dep.KindSlug)
@@ -570,6 +576,24 @@ func DeployDependencies(ctx context.Context, t testing.TB, repoRoot, kindProvide
 		}
 	}
 	return deployed, nil
+}
+
+// attachTeardownPreparer gives a deployed dependency its harness's teardown
+// preparation, when that harness has one (provider.DependencyTeardownPreparer),
+// with the outputs the deploy captured (none when the deploy failed first).
+func attachTeardownPreparer(ctx context.Context, state *DependencyState, kindProvider string, kindHarness provider.Harness) {
+	depHarness, _, err := dependencyHarness(kindProvider, state.Dependency.KindSlug, kindHarness)
+	if err != nil {
+		return
+	}
+	preparer, ok := depHarness.(provider.DependencyTeardownPreparer)
+	if !ok {
+		return
+	}
+	slug, outputs := state.Dependency.KindSlug, state.Outputs
+	state.prepareDestroy = func() error {
+		return preparer.PrepareDependencyDestroy(ctx, slug, outputs)
+	}
 }
 
 // dependencyEngine picks the engine a prerequisite deploys on, whatever engine
@@ -807,6 +831,11 @@ func TeardownDependencies(deployed []DependencyState) error {
 
 		var destroyErr error
 		for attempt := 1; attempt <= attempts; attempt++ {
+			if dep.prepareDestroy != nil {
+				if err := dep.prepareDestroy(); err != nil {
+					lanef(dep.t, "  [deps] preparing dependency %s for destroy: %v", dep.Dependency.KindSlug, err)
+				}
+			}
 			if dep.Engine == "terraform" {
 				_, destroyErr = terraformDestroyFn(dep.t, dep.terraformOpts)
 			} else {

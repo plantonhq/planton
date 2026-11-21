@@ -147,7 +147,10 @@ vCPU. Billed per GiB-hour. Sent as a decimal string.
 
 `[]GcpManagedKafkaConnectClusterNetworkConfig` · required
 
-The VPC networks the workers reach -- at least one, at most 10.
+The VPC networks the workers reach -- at least one, at most 10. Google
+gives the workers an interface in each primary subnet through a network
+attachment it creates, and deleting the Connect cluster leaves that
+attachment behind, holding the subnet until it is deleted.
 
 - rule: {"repeated":{"minItems":"1","maxItems":"10"}}
 

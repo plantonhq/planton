@@ -317,18 +317,28 @@ func (h *Harness) releaseModelGardenModels(ctx context.Context, tc *provider.Kin
 		return errors.New("the Model Garden manifest names no location")
 	}
 	base := fmt.Sprintf("https://%s-aiplatform.googleapis.com/v1/projects/%s/locations/%s/models", location, h.services.Project, location)
-	var listing struct {
-		Models []struct {
-			Name           string          `json:"name"`
-			CreateTime     time.Time       `json:"createTime"`
-			DeployedModels json.RawMessage `json:"deployedModels"`
-		} `json:"models"`
+	type model struct {
+		Name           string          `json:"name"`
+		CreateTime     time.Time       `json:"createTime"`
+		DeployedModels json.RawMessage `json:"deployedModels"`
 	}
-	if _, err := h.restGet(ctx, base+"?pageSize=1000", &listing); err != nil {
-		return errors.Wrap(err, "listing the Vertex AI models")
+	// Vertex AI pages its model list at 100 at most.
+	var models []model
+	for pageToken := ""; ; {
+		var page struct {
+			Models        []model `json:"models"`
+			NextPageToken string  `json:"nextPageToken"`
+		}
+		if _, err := h.restGet(ctx, base+"?pageSize=100&pageToken="+pageToken, &page); err != nil {
+			return errors.Wrap(err, "listing the Vertex AI models")
+		}
+		models = append(models, page.Models...)
+		if pageToken = page.NextPageToken; pageToken == "" {
+			break
+		}
 	}
 	released := 0
-	for _, model := range listing.Models {
+	for _, model := range models {
 		if model.CreateTime.Before(audit.start) || len(model.DeployedModels) > 0 {
 			continue
 		}

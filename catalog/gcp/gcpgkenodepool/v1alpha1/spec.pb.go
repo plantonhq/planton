@@ -3021,9 +3021,10 @@ type GcpGkeNodePoolKubeletConfig struct {
 	// shutdown so every pod (critical and non-critical) can terminate
 	// cleanly when the VM is reclaimed. Only configurable on Spot or
 	// preemptible pools (the ones that get reclaimed). Between 10 and
-	// 10000; GKE's node system configuration guide lists 30 and 120 as the
-	// values it accepts. Unset: 30 seconds (GKE's default); sent only when
-	// set because the API fills the value itself.
+	// 10000; GKE's node system configuration guide lists 0, 30 and 120 as the
+	// values it accepts for Spot graceful termination. Unset: 30 seconds
+	// (GKE's default); sent only when set because the API fills the value
+	// itself.
 	ShutdownGracePeriodSeconds *int64 `protobuf:"varint,22,opt,name=shutdown_grace_period_seconds,json=shutdownGracePeriodSeconds,proto3,oneof" json:"shutdown_grace_period_seconds,omitempty"`
 	// The portion of shutdown_grace_period_seconds reserved for critical
 	// pods (system-node-critical and system-cluster-critical priority
