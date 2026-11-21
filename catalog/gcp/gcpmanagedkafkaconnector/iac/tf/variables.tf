@@ -49,7 +49,9 @@ variable "spec" {
     # plugin's own keys and converters. The values are plain text in four
     # places: the manifest, Planton's stored copy of it, the IaC module's
     # input, and the Connect cluster. Keep credentials out of them where the
-    # plugin offers Google IAM authentication instead.
+    # plugin offers Google IAM authentication instead. Google stores the
+    # connector id as Kafka Connect's own "name" key, so the modules send
+    # name = the connector id; a "name" written here is replaced by it.
     configs = optional(map(string), {})
 
     # Automatic restarts for failed tasks, with the backoffs you choose.

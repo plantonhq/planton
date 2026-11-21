@@ -8,7 +8,7 @@ spec:
   feature: configmanagement
   fleetDefaultMemberConfig:
     configmanagement:
-      management: MANAGEMENT_AUTOMATIC
+      version: "1.25.2"
       configSync:
         enabled: true
         sourceFormat: unstructured

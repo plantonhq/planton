@@ -40,7 +40,11 @@ Google keeps what the index has, nodes included. The collection's labels
 and the platform attribution labels land on every index and win on a key
 conflict. Choose `COSINE_DISTANCE` with `UNIT_L2_NORM` for embeddings
 that are not already normalized; `DOT_PRODUCT` (Google's default) for
-ones that are. A `STORAGE_OPTIMIZED` index takes only `DOT_PRODUCT` and
+ones that are. Google builds one index at a time per collection and refuses a
+second operation while one runs (409, "unable to queue the operation"):
+the Pulumi module creates the indexes one after another, while Terraform
+starts them together and Google refuses all but one, so a Terraform apply
+of a collection with several indexes needs a second apply for the rest. A `STORAGE_OPTIMIZED` index takes only `DOT_PRODUCT` and
 no ScaNN options such as the norm (Google refuses both): unit-normalize the
 vectors before ingestion there to get cosine similarity. Push into `filterFields` the fields searches filter on and
 into `storeFields` the ones results should return inline, so a hit needs

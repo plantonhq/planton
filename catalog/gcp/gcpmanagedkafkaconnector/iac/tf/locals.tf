@@ -16,6 +16,9 @@ locals {
   # Pulumi module applies.
   connector_id = var.spec.connector_id != "" ? var.spec.connector_id : var.metadata.name
 
-  configs         = length(var.spec.configs) > 0 ? var.spec.configs : null
+  # Google stores the connector id as Kafka Connect's own "name" config, so
+  # the module sends it too; leaving it out would re-plan its removal on
+  # every apply.
+  configs         = merge(var.spec.configs, { name = local.connector_id })
   deletion_policy = var.spec.deletion_policy != "" ? var.spec.deletion_policy : null
 }

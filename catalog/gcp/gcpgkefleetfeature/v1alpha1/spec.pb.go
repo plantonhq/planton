@@ -906,11 +906,15 @@ func (x *GcpGkeFleetFeatureMembershipConfig) GetPolicycontroller() *GcpGkeFleetF
 // Config Sync as a fleet-wide default.
 type GcpGkeFleetFeatureConfigManagement struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Upgrades: "MANAGEMENT_AUTOMATIC" lets Google keep Config Sync current;
-	// "MANAGEMENT_MANUAL" pins it to `version`. Empty takes Google's default.
+	// The provider's Config Sync upgrade lever. Google no longer accepts it
+	// in the fleet default ("Config Sync auto-upgrades is no longer
+	// supported, please remove the management field"), so it stays empty;
+	// pin a release with `version` instead.
 	Management string `protobuf:"bytes,1,opt,name=management,proto3" json:"management,omitempty"`
-	// The Config Sync version to install, e.g. "1.22.0"; meaningful with
-	// MANAGEMENT_MANUAL. Empty takes the current release.
+	// The Config Sync release to install, e.g. "1.25.2". Required: Google no
+	// longer upgrades Config Sync by itself, so it pins the current release
+	// when none is named and records it, and an unnamed release would plan
+	// its removal on every apply. Raise it to upgrade.
 	Version string `protobuf:"bytes,2,opt,name=version,proto3" json:"version,omitempty"`
 	// What to sync and how.
 	ConfigSync    *GcpGkeFleetFeatureConfigSync `protobuf:"bytes,3,opt,name=config_sync,json=configSync,proto3" json:"config_sync,omitempty"`
@@ -2401,13 +2405,14 @@ const file_catalog_gcp_gcpgkefleetfeature_v1alpha1_spec_proto_rawDesc = "" +
 	"\x10configmanagement\x18\x02 \x01(\v2Y.dev.planton.gcp.gcpgkefleetfeature.v1alpha1.GcpGkeFleetFeatureMembershipConfigManagementR\x10configmanagement\x12W\n" +
 	"\x04mesh\x18\x03 \x01(\v2C.dev.planton.gcp.gcpgkefleetfeature.v1alpha1.GcpGkeFleetFeatureMeshR\x04mesh\x12{\n" +
 	"\x10policycontroller\x18\x04 \x01(\v2O.dev.planton.gcp.gcpgkefleetfeature.v1alpha1.GcpGkeFleetFeaturePolicyControllerR\x10policycontroller:\xf8\x01\xbaH\xf4\x01\x1a\xf1\x01\n" +
-	"#membership_config.exactly_one_block\x12]a membership_configs entry carries exactly one of configmanagement, mesh, or policycontroller\x1ak(has(this.configmanagement) ? 1 : 0) + (has(this.mesh) ? 1 : 0) + (has(this.policycontroller) ? 1 : 0) == 1\"\xeb\x02\n" +
-	"\"GcpGkeFleetFeatureConfigManagement\x12\xbe\x01\n" +
+	"#membership_config.exactly_one_block\x12]a membership_configs entry carries exactly one of configmanagement, mesh, or policycontroller\x1ak(has(this.configmanagement) ? 1 : 0) + (has(this.mesh) ? 1 : 0) + (has(this.policycontroller) ? 1 : 0) == 1\"\x92\x03\n" +
+	"\"GcpGkeFleetFeatureConfigManagement\x12\xdc\x01\n" +
 	"\n" +
-	"management\x18\x01 \x01(\tB\x9d\x01\xbaH\x99\x01\xba\x01\x95\x01\n" +
-	"\x10management.valid\x12<management must be MANAGEMENT_AUTOMATIC or MANAGEMENT_MANUAL\x1aCthis == '' || this in ['MANAGEMENT_AUTOMATIC', 'MANAGEMENT_MANUAL']R\n" +
-	"management\x12\x18\n" +
-	"\aversion\x18\x02 \x01(\tR\aversion\x12j\n" +
+	"management\x18\x01 \x01(\tB\xbb\x01\xbaH\xb7\x01\xba\x01\xb3\x01\n" +
+	"\x1cmanagement.refused_by_google\x12\x86\x01leave management empty: Google no longer accepts a Config Sync upgrade mode in the fleet default -- pin a release with version instead\x1a\n" +
+	"this == ''R\n" +
+	"management\x12!\n" +
+	"\aversion\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\aversion\x12j\n" +
 	"\vconfig_sync\x18\x03 \x01(\v2I.dev.planton.gcp.gcpgkefleetfeature.v1alpha1.GcpGkeFleetFeatureConfigSyncR\n" +
 	"configSync\"\xff\x02\n" +
 	",GcpGkeFleetFeatureMembershipConfigManagement\x12\xbe\x01\n" +

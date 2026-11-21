@@ -18,6 +18,7 @@ Have every cluster in the fleet sync its Kubernetes configuration from one Git r
 
 | Field | Default | Why Change |
 |-------|---------|------------|
+| `fleetDefaultMemberConfig.configmanagement.version` | `1.25.2` | The Config Sync release; Google no longer upgrades it by itself, so raise it to upgrade. |
 | `fleetDefaultMemberConfig.configmanagement.configSync.git.syncRepo` | example repository | Your configuration repository. |
 | `fleetDefaultMemberConfig.configmanagement.configSync.git.secretType` | `none` | `gcpserviceaccount` (with `gcpServiceAccountEmail`), `ssh`, `token`, or `githubapp` for a private repository. |
 | `fleetDefaultMemberConfig.configmanagement.configSync.git.policyDir` | `clusters/all` | The directory to sync. |

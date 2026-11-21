@@ -88,8 +88,12 @@ func collection(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) 
 
 	// The folded indexes, one resource each, keyed by index_id. Every
 	// setting but labels is immutable on Google's side, so a change here
-	// replaces the index (rebuilt from the collection's data).
+	// replaces the index (rebuilt from the collection's data). Google runs
+	// one index operation at a time per collection and refuses a second
+	// ("unable to queue the operation"), so each index waits for the one
+	// before it.
 	indexNames := pulumi.StringArray{}
+	var previousIndex pulumi.Resource
 	for _, index := range spec.Indexes {
 		indexArgs := &vectorsearch.IndexArgs{
 			CollectionId: createdCollection.CollectionId,
@@ -128,13 +132,17 @@ func collection(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) 
 			indexArgs.DeletionPolicy = pulumi.String(spec.DeletionPolicy)
 		}
 
+		options := []pulumi.ResourceOption{pulumi.Provider(gcpProvider), pulumi.Parent(createdCollection)}
+		if previousIndex != nil {
+			options = append(options, pulumi.DependsOn([]pulumi.Resource{previousIndex}))
+		}
 		createdIndex, err := vectorsearch.NewIndex(ctx,
 			fmt.Sprintf("%s-%s", locals.GcpVectorSearchCollection.Metadata.Name, index.IndexId), indexArgs,
-			pulumi.Provider(gcpProvider),
-			pulumi.Parent(createdCollection))
+			options...)
 		if err != nil {
 			return errors.Wrapf(err, "failed to create vector search index %s", index.IndexId)
 		}
+		previousIndex = createdIndex
 		indexNames = append(indexNames, createdIndex.Name)
 	}
 

@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling gkehub.googleapis.com on the fleet host project. disable_on_destroy is false, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling gkehub.googleapis.com on the fleet host project. disable_on_destroy is false, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-21 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageFleet
         permissions:
           - gkehub.fleet.create
@@ -27,8 +27,8 @@ spec:
           - gkehub.fleet.update
           - gkehub.fleet.delete
           - gkehub.operations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         predefined_role: roles/gkehub.admin
-        notes: Covers google_gke_hub_fleet (Pulumi gkehub.Fleet) -- create, in-place updates of the display name and cluster defaults, and delete are long-running operations the provider polls (Google's GKE Hub roles and permissions page). The provider-default project lookup reads provider configuration only and needs no permission.
+        notes: Covers google_gke_hub_fleet (Pulumi gkehub.Fleet) -- create, in-place updates of the display name and cluster defaults, and delete are long-running operations the provider polls (Google's GKE Hub roles and permissions page). The provider-default project lookup reads provider configuration only and needs no permission. Proven 2026-11-21 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

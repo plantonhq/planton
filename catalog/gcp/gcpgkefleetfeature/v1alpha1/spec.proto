@@ -379,17 +379,21 @@ message GcpGkeFleetFeatureMembershipConfig {
 
 // Config Sync as a fleet-wide default.
 message GcpGkeFleetFeatureConfigManagement {
-  // Upgrades: "MANAGEMENT_AUTOMATIC" lets Google keep Config Sync current;
-  // "MANAGEMENT_MANUAL" pins it to `version`. Empty takes Google's default.
+  // The provider's Config Sync upgrade lever. Google no longer accepts it
+  // in the fleet default ("Config Sync auto-upgrades is no longer
+  // supported, please remove the management field"), so it stays empty;
+  // pin a release with `version` instead.
   string management = 1 [(buf.validate.field).cel = {
-    id: "management.valid"
-    expression: "this == '' || this in ['MANAGEMENT_AUTOMATIC', 'MANAGEMENT_MANUAL']"
-    message: "management must be MANAGEMENT_AUTOMATIC or MANAGEMENT_MANUAL"
+    id: "management.refused_by_google"
+    expression: "this == ''"
+    message: "leave management empty: Google no longer accepts a Config Sync upgrade mode in the fleet default -- pin a release with version instead"
   }];
 
-  // The Config Sync version to install, e.g. "1.22.0"; meaningful with
-  // MANAGEMENT_MANUAL. Empty takes the current release.
-  string version = 2;
+  // The Config Sync release to install, e.g. "1.25.2". Required: Google no
+  // longer upgrades Config Sync by itself, so it pins the current release
+  // when none is named and records it, and an unnamed release would plan
+  // its removal on every apply. Raise it to upgrade.
+  string version = 2 [(buf.validate.field).string.min_len = 1];
 
   // What to sync and how.
   GcpGkeFleetFeatureConfigSync config_sync = 3;

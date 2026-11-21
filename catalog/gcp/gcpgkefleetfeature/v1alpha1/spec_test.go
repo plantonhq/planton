@@ -99,7 +99,7 @@ var _ = ginkgo.Describe("GcpGkeFleetFeatureSpec", func() {
 
 	ginkgo.It("should accept member defaults and per-cluster overrides on the member features", func() {
 		gomega.Expect(validator.Validate(feature("configmanagement", &GcpGkeFleetFeatureSpec{
-			FleetDefaultMemberConfig: &GcpGkeFleetFeatureFleetDefaultMemberConfig{Configmanagement: &GcpGkeFleetFeatureConfigManagement{Management: "MANAGEMENT_AUTOMATIC", ConfigSync: gitSync()}},
+			FleetDefaultMemberConfig: &GcpGkeFleetFeatureFleetDefaultMemberConfig{Configmanagement: &GcpGkeFleetFeatureConfigManagement{Version: "1.25.2", ConfigSync: gitSync()}},
 			MembershipConfigs: []*GcpGkeFleetFeatureMembershipConfig{{
 				Membership: literal(membershipName),
 				Configmanagement: &GcpGkeFleetFeatureMembershipConfigManagement{ConfigSync: &GcpGkeFleetFeatureMembershipConfigSync{
@@ -277,5 +277,17 @@ var _ = ginkgo.Describe("GcpGkeFleetFeatureSpec", func() {
 		}
 		gomega.Expect(validator.Validate(feature("configmanagement", &GcpGkeFleetFeatureSpec{DeletionPolicy: "KEEP"}))).ToNot(gomega.Succeed())
 		gomega.Expect(validator.Validate(feature("configmanagement", &GcpGkeFleetFeatureSpec{Location: "Global"}))).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should refuse a Config Sync upgrade mode in the fleet default, which Google no longer accepts", func() {
+		gomega.Expect(validator.Validate(feature("configmanagement", &GcpGkeFleetFeatureSpec{
+			FleetDefaultMemberConfig: &GcpGkeFleetFeatureFleetDefaultMemberConfig{Configmanagement: &GcpGkeFleetFeatureConfigManagement{Management: "MANAGEMENT_AUTOMATIC", Version: "1.25.2", ConfigSync: gitSync()}},
+		}))).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should require the Config Sync release in the fleet default, which Google pins and records", func() {
+		gomega.Expect(validator.Validate(feature("configmanagement", &GcpGkeFleetFeatureSpec{
+			FleetDefaultMemberConfig: &GcpGkeFleetFeatureFleetDefaultMemberConfig{Configmanagement: &GcpGkeFleetFeatureConfigManagement{ConfigSync: gitSync()}},
+		}))).ToNot(gomega.Succeed())
 	})
 })

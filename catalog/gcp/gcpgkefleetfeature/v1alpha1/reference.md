@@ -73,7 +73,7 @@ spec:
   feature: configmanagement
   fleetDefaultMemberConfig:
     configmanagement:
-      management: MANAGEMENT_AUTOMATIC
+      version: "1.25.2"
       configSync:
         enabled: true
         sourceFormat: unstructured
@@ -128,7 +128,7 @@ spec:
 | `spec.fleetDefaultMemberConfig` | `GcpGkeFleetFeatureFleetDefaultMemberConfig` |  |  |  |
 | `spec.fleetDefaultMemberConfig.configmanagement` | `GcpGkeFleetFeatureConfigManagement` |  |  |  |
 | `spec.fleetDefaultMemberConfig.configmanagement.management` | `string` |  |  |  |
-| `spec.fleetDefaultMemberConfig.configmanagement.version` | `string` |  |  |  |
+| `spec.fleetDefaultMemberConfig.configmanagement.version` | `string` | yes |  |  |
 | `spec.fleetDefaultMemberConfig.configmanagement.configSync` | `GcpGkeFleetFeatureConfigSync` |  |  |  |
 | `spec.fleetDefaultMemberConfig.configmanagement.configSync.enabled` | `bool` |  |  |  |
 | `spec.fleetDefaultMemberConfig.configmanagement.configSync.git` | `GcpGkeFleetFeatureConfigSyncGit` |  |  |  |
@@ -502,17 +502,23 @@ Config Sync for every cluster (feature "configmanagement").
 
 `string`
 
-Upgrades: "MANAGEMENT_AUTOMATIC" lets Google keep Config Sync current;
-"MANAGEMENT_MANUAL" pins it to `version`. Empty takes Google's default.
+The provider's Config Sync upgrade lever. Google no longer accepts it
+in the fleet default ("Config Sync auto-upgrades is no longer
+supported, please remove the management field"), so it stays empty;
+pin a release with `version` instead.
 
-- rule: management must be MANAGEMENT_AUTOMATIC or MANAGEMENT_MANUAL
+- rule: leave management empty: Google no longer accepts a Config Sync upgrade mode in the fleet default -- pin a release with version instead
 
 ### spec.fleetDefaultMemberConfig.configmanagement.version
 
-`string`
+`string` · required
 
-The Config Sync version to install, e.g. "1.22.0"; meaningful with
-MANAGEMENT_MANUAL. Empty takes the current release.
+The Config Sync release to install, e.g. "1.25.2". Required: Google no
+longer upgrades Config Sync by itself, so it pins the current release
+when none is named and records it, and an unnamed release would plan
+its removal on every apply. Raise it to upgrade.
+
+- rule: {"string":{"minLen":"1"}}
 
 ### spec.fleetDefaultMemberConfig.configmanagement.configSync
 

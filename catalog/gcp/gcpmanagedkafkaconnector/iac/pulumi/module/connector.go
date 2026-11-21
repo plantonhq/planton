@@ -23,9 +23,15 @@ func connector(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) e
 	if spec.ProjectId.GetValue() != "" {
 		args.Project = pulumi.String(spec.ProjectId.GetValue())
 	}
-	if len(spec.Configs) > 0 {
-		args.Configs = pulumi.ToStringMap(spec.Configs)
+	// Google stores the connector id as Kafka Connect's own "name" config, so
+	// the module sends it too; leaving it out would re-plan its removal on
+	// every apply.
+	configs := map[string]string{}
+	for key, value := range spec.Configs {
+		configs[key] = value
 	}
+	configs["name"] = locals.ConnectorId
+	args.Configs = pulumi.ToStringMap(configs)
 
 	// Omitted, no policy is sent; declared (the spec requires at least one
 	// backoff), each backoff is sent only when set so Google's default

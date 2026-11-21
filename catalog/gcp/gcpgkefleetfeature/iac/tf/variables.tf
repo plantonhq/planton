@@ -130,13 +130,17 @@ variable "spec" {
     fleet_default_member_config = optional(object({
       # Config Sync for every cluster (feature "configmanagement").
       configmanagement = optional(object({
-        # Upgrades: "MANAGEMENT_AUTOMATIC" lets Google keep Config Sync current;
-        # "MANAGEMENT_MANUAL" pins it to `version`. Empty takes Google's default.
+        # The provider's Config Sync upgrade lever. Google no longer accepts it
+        # in the fleet default ("Config Sync auto-upgrades is no longer
+        # supported, please remove the management field"), so it stays empty;
+        # pin a release with `version` instead.
         management = optional(string, "")
 
-        # The Config Sync version to install, e.g. "1.22.0"; meaningful with
-        # MANAGEMENT_MANUAL. Empty takes the current release.
-        version = optional(string, "")
+        # The Config Sync release to install, e.g. "1.25.2". Required: Google no
+        # longer upgrades Config Sync by itself, so it pins the current release
+        # when none is named and records it, and an unnamed release would plan
+        # its removal on every apply. Raise it to upgrade.
+        version = string
 
         # What to sync and how.
         config_sync = optional(object({

@@ -3,22 +3,15 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpmanagedkafkacluster
 spec:
-  # Awaiting the live proof lane. Both scenarios prove in the harness
-  # project with roles/managedkafka.admin: the registry's prerequisite chain
-  # (a VPC and a /22 subnet) deploys first, then the cluster -- the smallest
-  # shape, and a tuned one with a larger broker disk, rebalance on scale-up,
-  # and user labels. Offline bar met: both modules build and validate,
-  # offline plans for the reference manifest, every scenario, and every
-  # fixture are clean on the pinned provider, and the accounting is total.
-  # Live facts the proof lane confirms: (1) the cluster creates (Google
-  # quotes up to about 30 minutes) and RE-PLANS CLEAN on both engines --
-  # capacity sent as decimal strings, the subnet trimmed from the
-  # GcpSubnetwork self link, broker_capacity_config and rebalance_config
-  # sent only when set; (2) the platform attribution labels land; (3) the
-  # bootstrap address (not an output until pulumi-gcp v10) reads back from
-  # the API for the record; (4) destroy deletes the cluster and the verifier
-  # reads 404.
+  # Proven live on both engines (2026-11-21), as an identity holding only this
+  # kind's permissions manifest: the smallest cluster Google sells (3 vCPU, 3
+  # GiB) and a tuned one (6 GiB, a 200 GiB broker disk, rebalance on scale-up,
+  # labels) on a run-scoped subnet fixture, deployed (about 20 to 30 minutes
+  # each), re-planned clean, and destroyed; user labels changed in place
+  # (ManagedKafka.UpdateCluster), judged from Google's Admin Activity log.
+  # Capacity sent as decimal strings and the subnet trimmed to Google's path
+  # form re-plan clean on both engines.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 120

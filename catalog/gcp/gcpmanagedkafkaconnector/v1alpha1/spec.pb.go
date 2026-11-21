@@ -129,7 +129,9 @@ type GcpManagedKafkaConnectorSpec struct {
 	// plugin's own keys and converters. The values are plain text in four
 	// places: the manifest, Planton's stored copy of it, the IaC module's
 	// input, and the Connect cluster. Keep credentials out of them where the
-	// plugin offers Google IAM authentication instead.
+	// plugin offers Google IAM authentication instead. Google stores the
+	// connector id as Kafka Connect's own "name" key, so the modules send
+	// name = the connector id; a "name" written here is replaced by it.
 	Configs map[string]string `protobuf:"bytes,5,rep,name=configs,proto3" json:"configs,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Automatic restarts for failed tasks, with the backoffs you choose.
 	// Omitted, the modules send no policy and Google's own handling of

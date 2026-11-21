@@ -16,7 +16,7 @@ func (v *subnetworkVerifier) IDOutputKey() string { return "subnetwork_self_link
 func (v *subnetworkVerifier) VerifyExists(ctx context.Context, svc *Services, outputs map[string]string) error {
 	name := outputs["subnetwork_name"]
 	region := outputs["region"]
-	subnetwork, err := svc.Compute.Subnetworks.Get(svc.Project, region, name).Context(ctx).Do()
+	subnetwork, err := svc.Compute.Subnetworks.Get(projectInSelfLink(outputs["subnetwork_self_link"], svc.Project), region, name).Context(ctx).Do()
 	if err != nil {
 		return errors.Wrapf(err, "subnetwork %s/%s not found after deploy", region, name)
 	}
@@ -30,7 +30,7 @@ func (v *subnetworkVerifier) VerifyExists(ctx context.Context, svc *Services, ou
 func (v *subnetworkVerifier) VerifyAbsent(ctx context.Context, svc *Services, outputs map[string]string) error {
 	name := outputs["subnetwork_name"]
 	region := outputs["region"]
-	_, err := svc.Compute.Subnetworks.Get(svc.Project, region, name).Context(ctx).Do()
+	_, err := svc.Compute.Subnetworks.Get(projectInSelfLink(outputs["subnetwork_self_link"], svc.Project), region, name).Context(ctx).Do()
 	if err != nil {
 		var apiErr *googleapi.Error
 		if errors.As(err, &apiErr) && apiErr.Code == 404 {

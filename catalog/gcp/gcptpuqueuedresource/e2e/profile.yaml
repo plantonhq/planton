@@ -21,6 +21,15 @@ spec:
   # every field recreates the request -- so an update would prove only
   # create and delete again. It carries no second act, as the IAM-member
   # kinds don't.
+  #
+  # Not performed: stock (2026-11-21). Google refused an on-demand v2-8 request with "Insufficient
+  # capacity. Try again in a different zone or at a later time." in
+  # us-central1-f and again in us-central1-b, on both engines -- a capacity
+  # event, not a quota or module defect (quota read live: v2 spot 48 and
+  # on-demand 16 per zone). The lane reached Google as its declared identity
+  # on its own network, with actAs on the default compute account now in the
+  # manifest. Re-run when a zone has v2-8 stock (us-central1-c and
+  # europe-west4-a offer it).
   tier: 1
   status: pending_proof
   validated_provisioners: []
