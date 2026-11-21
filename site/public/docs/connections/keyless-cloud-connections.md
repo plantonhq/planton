@@ -70,7 +70,7 @@ The journey is the same on every cloud, and the connection is created last, once
 1. **Name the connection and choose Keyless.** The connection's subject is built from your organization and the connection's name, so the trust can pin it before the connection exists.
 2. **Say where it deploys**: the account, project, or subscription.
 3. **Permissions**: choose what Planton may deploy. The setup gives the connection's own role exactly those permissions (see [What Planton May Deploy](/docs/connections/cloud-providers#what-planton-may-deploy)).
-4. **Set Up**: build the trust in your cloud, with the setup script the console fills in, or, on Google Cloud and Azure, with **Set It Up for Me**, one consent after which Planton builds it for you and discards its access. Every way ends in **Check the Trust**: Planton asks your cloud itself whether it now trusts the connection, and waits while the cloud spreads a new trust. **Next** opens once it does.
+4. **Set Up**: build the trust in your cloud. On AWS, **Launch Stack in AWS** builds it on AWS's own quick-create page; on Google Cloud and Azure, **Set It Up for Me** is one consent after which Planton builds it for you and discards its access; on every cloud, the setup script the console fills in is the other way. After a one-click door Planton checks the trust by itself; after the script, click **Check the Trust**. Either way Planton asks your cloud whether it now trusts the connection, waits while the cloud spreads a new trust, and **Next** opens once it does.
 5. **Review & Create**: click **Create**. The screen after it runs the connection's first Verify and says what it can deploy.
 
 The setups on this page are described for an example connection: organization `acme`, connections `acme-aws-prod`, `acme-gcp-prod`, and `acme-azure-prod`, AWS account `123456789012`, Google Cloud project `acme-prod`, and placeholder Azure IDs, each with **Everything Planton Can Deploy**. Copy your script from the console, not from this page. Your subject, account, names, and permissions differ, and your cloud matches the trust's values as exact strings. Each script prints every step as it starts (`Step 1 of 3: …`), in the same words the console shows beside it.
@@ -87,7 +87,7 @@ planton connect azure --subscription "Acme Prod"   # by ID or name
 
 - `--print-documents` prints the exact script and changes nothing, so you can read it first or run it yourself in your cloud's browser shell.
 - `-o json` prints the plan as data and changes nothing. A coding agent with the Planton skill shows you that plan and asks before it runs the command again with `--yes`. This is how the Setup Prompt connects your cloud ([Coding Agents](/docs/coding-agents)).
-- `planton connect gcp verify <name>` checks a connection again. `planton connect gcp cleanup <name>` prints what deleting it leaves in your cloud, and the script that removes it.
+- `planton connect gcp verify <name>` checks a connection again (the same under `aws` and `azure`). `planton connect gcp cleanup <name>` prints what deleting it leaves in your cloud, and the script that removes it.
 
 Install the CLI with [the one-line installer](/docs/cli).
 
@@ -112,14 +112,16 @@ Signed in to planton.ai, Planton Desktop finds the gcloud, AWS CLI or Azure CLI 
 4. **Account**: enter the **AWS Account ID** and the **Default Region**.
 5. **Permissions**: choose what Planton may deploy. **Everything Planton Can Deploy** (recommended) covers every AWS kind in Planton's catalog and what Planton itself uses the connection for; **Only What I Pick** shelves the kinds by AWS's own service groups for you to tick. **Organization Access** (AWS Organizations: its accounts and organizational units) and **Access Granting** (IAM users, roles, policies and keys across the account) stay off unless you turn them on; each says how many kinds need it. **Show the Policies** shows exactly what the role will hold.
 6. **Set Up**: build the role in your account.
-   - **Launch Stack in AWS** (the footer's button) opens AWS's own quick-create page with this connection's stack filled in. The step lists what AWS's page will ask, in order:
-     1. Sign in to the account you entered. The stack runs only there.
+   - **Launch Stack in AWS** (the button at the bottom of the step) opens AWS's own quick-create page with this connection's stack filled in. The step lists what AWS's page will ask, in order:
+     1. Sign in to the account you entered. The stack works only in that account.
      2. Tick **I acknowledge that AWS CloudFormation might create IAM resources with custom names.**
      3. Press **Create Stack**.
 
-     Planton then asks AWS whether the role trusts this connection, and moves on by itself once AWS says yes, usually within two minutes. If it takes longer than three, the step names the usual causes (signed in to another account, Create Stack not pressed, the stack rolled back) and opens the stack's own page in AWS.
+     There is nothing to click in Planton afterwards: it asks AWS by itself whether the role trusts this connection, and **Next** opens once AWS says yes, usually within two minutes. If it takes longer than three, the step names the usual causes (signed in to another account, Create Stack not pressed, the stack rolled back) and opens the stack's own page in AWS.
    - **Prefer to Run It Yourself? Show the Setup Script**: run the script the step shows, with the AWS CLI signed in to that account, then click **Check the Trust**.
-   - **Prefer the CloudFormation Console? Show the Template** (under the script): download the template, then in the CloudFormation console choose **Create stack**, **Upload a template file**. It builds exactly what **Launch Stack in AWS** builds. The stack and the script end with the same identity provider, role and policies; the stack also keeps a small Lambda function of its own, which registers or adopts the identity provider. Use one of the three.
+   - **Prefer the CloudFormation Console? Show the Template** (under the script): download the template, then in the CloudFormation console choose **Create stack**, **Upload a template file**, and when the stack is done click **Check the Trust**. It builds exactly what **Launch Stack in AWS** builds. The stack and the script end with the same identity provider, role and policies; the stack also keeps a small Lambda function of its own, which registers or adopts the identity provider. Use one of the three.
+
+   **Create It Now, Finish the Trust Later** is not a fourth way to build the role: it is for handing one of the three to someone else.
 
    If someone else administers the account, **Create It Now, Finish the Trust Later** creates the connection, and its page keeps the same setup and its check until the trust works. On a self-hosted Planton that doesn't host the templates, the step offers the script and the template only.
 7. **Review & Create**: click **Create**. The connection is created with the role the trust admits, and the next screen runs its first Verify and says what it can deploy.
@@ -139,7 +141,7 @@ For `acme-aws-prod` with **Everything Planton Can Deploy**, the script runs thre
 2. **Creates this connection's own role `planton-acme-acme-aws-prod`**, which only the tokens `planton.ai` signs for this connection can assume, or rewrites its trust policy to that when it exists. The trust policy accepts a token only when `planton.ai:aud` is `sts.amazonaws.com` and `planton.ai:sub` is this connection's subject. Sessions last at most one hour.
 3. **Writes the policies rendered from this connection's grant onto the role**, replacing the ones a previous grant put there: the managed policies `planton-acme-acme-aws-prod-1`, `-2` and so on, and an inline policy when they need one, rendered from your choice and Planton's catalog. An existing policy gets a new default version (the oldest kept version is removed when AWS's five are in use), and any of the connection's own policies a narrower choice no longer needs is detached and deleted, so the role holds exactly what you chose.
 
-It ends by printing the role's ARN, `arn:aws:iam::123456789012:role/planton-acme-acme-aws-prod`.
+It ends by printing the role's ARN, `arn:aws:iam::123456789012:role/planton-acme-acme-aws-prod`. There is nothing to paste back: Planton already knows it.
 
 ### Running It Again, and a Second Connection
 
@@ -282,7 +284,7 @@ A self-hosted Planton instance signs tokens as its own issuer, its own public ad
 
 ### Removing Access
 
-To end a keyless connection's access, delete its trust in your cloud: the IAM role on AWS, the OIDC provider (or the service account binding) on Google Cloud, or the federated identity credential on Azure. Your cloud then refuses Planton's tokens for that connection. Deleting the connection in Planton also stops Planton from signing tokens for it, and its delete dialog lists **What Stays in Your Cloud** with a script that removes exactly that. On AWS, leave the identity provider in place while other Planton connections in the account still use it.
+To end a keyless connection's access, delete its trust in your cloud: the IAM role on AWS, the OIDC provider (or the service account binding) on Google Cloud, or the federated identity credential on Azure. Your cloud then refuses Planton's tokens for that connection. Deleting the connection in Planton also stops Planton from signing tokens for it, and its delete dialog lists **What Stays in Your Cloud** with a script that removes exactly that. On AWS, leave the identity provider in place while other Planton connections in the account still use it. A role built by **Launch Stack in AWS** or the uploaded template belongs to its stack: delete the stack, which removes the role, its policies and the stack's own function, and keeps the identity provider (the delete dialog's script does exactly that).
 
 On Google Cloud and AWS you can also delete the connection's own role and policies (`planton_<org>_<slug>`; `planton-<org>-<slug>` and its `-1..N` policies); on Azure, its role assignment and role definition.
 

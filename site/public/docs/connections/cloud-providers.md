@@ -55,7 +55,7 @@ flowchart TB
 
 Your account trusts Planton's identity issuer directly. For each operation, Planton signs a short-lived token for this one connection, and your cloud exchanges it for short-lived credentials: an IAM role on AWS, a service account through Workload Identity Federation on Google Cloud, or an app registration through a federated identity credential on Azure. Planton stores no access key, key file, or client secret, so there is nothing to leak or rotate.
 
-You build the trust once, in your own account, before the connection exists: with a setup script the console fills in for you, or, on Google Cloud and Azure, with **Set It Up for Me**, one consent after which Planton builds the trust and discards its access. The wizard then asks your cloud whether it trusts the connection (**Check the Trust**), and the connection is created on the next step, once it does. See [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections) for the setup on each cloud, and [What Your Cloud Trusts](/docs/security/what-your-cloud-trusts) for exactly what the trust admits.
+You build the trust once, in your own account, before the connection exists: on AWS with **Launch Stack in AWS** (AWS's own quick-create page), on Google Cloud and Azure with **Set It Up for Me** (one consent after which Planton builds the trust and discards its access), or on any cloud with a setup script the console fills in for you. The wizard then asks your cloud whether it trusts the connection (by itself after a one-click door, through **Check the Trust** after the script), and the connection is created on the next step, once it does. See [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections) for the setup on each cloud, and [What Your Cloud Trusts](/docs/security/what-your-cloud-trusts) for exactly what the trust admits.
 
 **When to use**: Production accounts, and any account where you want no stored credential and trust you can read and revoke in your own cloud.
 
@@ -103,7 +103,7 @@ When the catalog adds a kind or needs more, the connection's page offers **Updat
 
 ## What Verify Tells You
 
-Every cloud connection's page has **Verify**, and the screen after **Create** runs it once on its own. It signs in through exactly the path a deploy uses, then asks your cloud what that identity is allowed to do. The answer is what Planton can deploy with the connection, counted against what you let it deploy, the connection's grant: **"171 of 186 GCP Kinds Can Deploy"**. A connection limited to the kinds you picked reads, for example, **All 12 Granted GCP Kinds Can Deploy**.
+Every cloud connection's page has **Verify**, and the screen after **Create** runs it once on its own. (DigitalOcean is the one cloud Verify can't ask about a token's scopes; it says so, below.) It signs in through exactly the path a deploy uses, then asks your cloud what that identity is allowed to do. The answer is what Planton can deploy with the connection, counted against what you let it deploy, the connection's grant: **"171 of 186 GCP Kinds Can Deploy"**. A connection limited to the kinds you picked reads, for example, **All 12 Granted GCP Kinds Can Deploy**.
 
 <!-- SCREENSHOT: Google Cloud connection - Verify's deployability answer
   Page: /orgs/{org}/connections/gcp/{connection} (Verify panel)
@@ -263,7 +263,7 @@ DigitalOcean connections use an API token to authenticate, or **Runner Identity*
 | Spaces Access ID | Access key for DigitalOcean Spaces (optional, for object storage) |
 | Spaces Secret Key | Secret key for DigitalOcean Spaces (optional) |
 
-Generate an API token from the DigitalOcean control panel under **API > Tokens/Keys**. For Spaces, create a separate Spaces access key under **API > Spaces Keys**.
+Generate an API token from the DigitalOcean control panel under **API > Tokens/Keys**, with the scopes the console's **Show the Token Recipe** lists. For Spaces, create a separate Spaces access key under **API > Spaces Keys**.
 
 From the terminal: `planton connect digitalocean --print-documents` prints the scopes the token needs and where to create it. Then pass the token in `DIGITALOCEAN_TOKEN` or on stdin, never as a flag, so it stays out of your shell history:
 
@@ -275,13 +275,13 @@ DIGITALOCEAN_TOKEN=dop_v1_... planton connect digitalocean --region nyc3
 
 ## Cloudflare
 
-Cloudflare connections can also use **Runner Identity** (a runner of your own that holds the credential). Stored in Planton, they support two authentication schemes. The recommended approach uses a scoped API token; the legacy approach uses a global API key with your account email.
+Cloudflare connections either store a credential in Planton or use **Runner Identity** (a runner of your own that holds the credential). A stored credential is one of two schemes. The recommended approach uses a scoped API token; the legacy approach uses a global API key with your account email.
 
 ### What You Need (Recommended)
 
 | Field | Description |
 |-------|-------------|
-| API Token | A scoped API token created in the Cloudflare dashboard |
+| API Token | A scoped API token created in the Cloudflare dashboard under **My Profile > API Tokens**, with the permissions the console's **Show the Token Recipe** lists |
 
 From the terminal: `planton connect cloudflare --print-documents` prints the permissions the token needs. Then pass the token in `CLOUDFLARE_API_TOKEN` or on stdin, never as a flag:
 

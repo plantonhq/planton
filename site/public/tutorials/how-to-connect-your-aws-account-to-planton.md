@@ -70,7 +70,7 @@ On the **Permissions** step, keep **Everything Planton Can Deploy** (recommended
 
 ### Step 4: Set Up the Trust in Your Account
 
-The **Set Up** step builds this connection's role in your account. The quickest way is **Launch Stack in AWS**: it opens AWS's own quick-create page with the stack filled in. Sign in to the account you entered, tick **I acknowledge that AWS CloudFormation might create IAM resources with custom names.**, and press **Create Stack**. Planton waits while AWS builds the role and moves on by itself once AWS trusts it, usually within two minutes.
+The **Set Up** step builds this connection's role in your account. The quickest way is **Launch Stack in AWS**: it opens AWS's own quick-create page with the stack filled in. Sign in to the account you entered and tick the box that reads **I acknowledge that AWS CloudFormation might create IAM resources with custom names.** Then press **Create Stack**. There is nothing to click in Planton afterwards: it waits while AWS builds the role, and **Next** opens once AWS trusts it, usually within two minutes.
 
 If you'd rather run it yourself, click **Prefer to Run It Yourself? Show the Setup Script**. The script has every value filled in; run it with the AWS CLI signed in to the account you entered (AWS CloudShell works). It runs three steps, announcing each as it starts:
 
@@ -190,7 +190,7 @@ You should see the connection metadata and spec. The `access_key_id` and `secret
 
 ## Path C: Runner Identity
 
-This approach provides the highest security posture. Instead of storing any credentials in Planton -- even as secret references -- you deploy a Planton Runner in your own infrastructure and let it authenticate using the AWS SDK's default credential chain. The runner can use IAM Roles for Service Accounts (IRSA) on EKS, an EC2 instance profile, an ECS task role, or environment variables. No sensitive values are ever transmitted to or stored in the Planton control plane.
+Credentials never leave your infrastructure. Instead of storing any credentials in Planton -- even as secret references -- you deploy a Planton Runner in your own infrastructure and let it authenticate using the AWS SDK's default credential chain. The runner can use IAM Roles for Service Accounts (IRSA) on EKS, an EC2 instance profile, an ECS task role, or environment variables. No sensitive values are ever transmitted to or stored in the Planton control plane.
 
 This approach requires a running Planton Runner. If you do not have one yet, the steps below walk you through enrollment.
 
