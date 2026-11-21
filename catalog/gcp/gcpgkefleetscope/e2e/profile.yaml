@@ -3,21 +3,17 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpgkefleetscope
 spec:
-  # Awaiting the live proof lane. Every scenario runs on the second test
-  # project's fleet (the consumer-scoped GcpGkeFleet prerequisite); the
-  # binding scenario's cluster chain lives there too. Offline bar met: both
-  # modules build and validate, offline plans for the reference manifest
-  # and every scenario are clean on the pinned provider, and the accounting
-  # is total. Live facts the proof lane confirms: (1) the scope, its
-  # namespaces, and its role bindings create and re-plan clean on both
-  # engines; (2) Google accepts role-binding principals that are not real
-  # identities (Kubernetes RBAC subjects are free-form) -- if it refuses,
-  # the scenario takes the harness identity's email; (3) the cluster's
-  # fleet_membership output names the membership Google created, and the
-  # binding accepts it; (4) the namespace appears on the bound cluster;
-  # (5) destroy removes bindings, namespaces, and the scope before the
-  # cluster fixture (the verifier accepts 404 or a delete time).
+  # Proven live on both engines (2026-11-21), as an identity holding only this
+  # kind's permissions manifest, granted in the second test project: a team
+  # scope with namespaces, namespace labels and role bindings, and a scope
+  # bound to a zonal GKE cluster registered through its fleetProject (a
+  # cluster chain in that project), each deployed, re-planned clean, and
+  # destroyed; the namespace labels changed in place (GkeHub.UpdateScope),
+  # judged from Google's Admin Activity log in the second project. A GKE
+  # cluster's fleet_membership output carries the //gkehub.googleapis.com/
+  # service prefix; the spec and both modules take it as it comes. Free-form
+  # role-binding principals are accepted.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 60

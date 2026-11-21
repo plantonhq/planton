@@ -3,21 +3,18 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpmanagedkafkaconnector
 spec:
-  # Awaiting the live proof lane. The scenario proves in the harness project
-  # with roles/managedkafka.admin and Pub/Sub admin: the consumer-scoped
-  # chain (VPC, subnet, Kafka cluster, Connect cluster) plus a Kafka topic
-  # and a Pub/Sub topic deploy first, then Google's Pub/Sub sink connector
-  # with a restart policy. Offline bar met: both modules build and validate,
-  # offline plans for the reference manifest, every scenario, and every
-  # fixture are clean on the pinned provider, and the accounting is total.
-  # Live facts the proof lane confirms: (1) the connector creates on the
-  # bare Connect cluster id both modules derive; (2) whether its tasks reach
-  # RUNNING depends on the Connect service agent's Pub/Sub publisher grant,
-  # which the lane records rather than patches (resource creation is what
-  # the kind proves); (3) configs and the restart policy re-plan clean; (4)
-  # destroy deletes the connector, then the chain -- two cluster creations
-  # dominate the timeout.
+  # Proven live on both engines (2026-11-21), as an identity holding only this
+  # kind's permissions manifest: a Pub/Sub sink connector on a Connect cluster
+  # chain (Kafka cluster, Connect cluster, a Kafka topic and a Pub/Sub topic
+  # as fixtures) deployed, re-planned clean, and destroyed; its tasks.max
+  # dropped from 3 to 2 in place (ManagedKafkaConnect.UpdateConnector), judged
+  # from Google's Admin Activity log. Google stores the connector id as Kafka
+  # Connect's own name config, so both modules send it; without it every
+  # re-plan showed its removal. The connector create accepts the bare Connect
+  # cluster id. Resource creation is what the kind proves; whether the sink's
+  # tasks reach RUNNING depends on the Managed Kafka service agent's grant on
+  # the sink topic, which the lane does not make.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 180

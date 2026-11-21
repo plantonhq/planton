@@ -14,6 +14,8 @@ Google creates a project's fleet implicitly the moment the first cluster registe
 
 Everything but the project updates in place. Destroy deletes the fleet, and Google refuses while memberships or scopes remain, so tear the children down first (a chart does this in reverse order). `deletionPolicy: PREVENT` guards a fleet teams depend on.
 
+Google turns on a few fleet features by itself once the fleet registers a membership or a scope -- `authorizer`, `metering`, `workloadidentity`, `fleetobservability` and `rbacrolebindingactuation` -- and deleting the fleet leaves them in the project (measured). They cost nothing; remove them through the GKE Hub API if the project must end empty, and Google turns them on again with the next fleet.
+
 ## What is not offered yet
 
 Fleet labels and the compliance posture default arrived in Google's provider 8.3, after the Pulumi SDK this catalog pins (pulumi-gcp v9.37.0). An argument one engine cannot send is never a one-engine field, so both wait for pulumi-gcp v10.

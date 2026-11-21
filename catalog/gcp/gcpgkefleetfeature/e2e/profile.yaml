@@ -3,20 +3,18 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpgkefleetfeature
 spec:
-  # Awaiting the live proof lane. Every scenario runs on the second test
-  # project's fleet (the consumer-scoped GcpGkeFleet prerequisite), so a
-  # fleet-wide default never reaches clusters other lanes create. Offline
-  # bar met: both modules build and validate, offline plans for the
-  # reference manifest and every scenario are clean on the pinned
-  # provider, and the accounting is total. Live facts the proof lane
-  # confirms: (1) each feature's API enables and the feature reads ACTIVE;
-  # (2) the Config Sync default and the Policy Controller default and
-  # per-cluster override re-plan clean on both engines; (3) Google accepts a
-  # per-cluster entry for a membership with no cluster behind it -- if it
-  # refuses, the scenario moves onto a cluster fixture chain like the
-  # scope's; (4) destroy turns each feature off (the verifier accepts 404 or
-  # a delete time).
+  # Proven live on both engines (2026-11-21), as an identity holding only this
+  # kind's permissions manifest, granted in the second test project:
+  # multi-cluster service discovery, Config Sync as the fleet default from
+  # Google's public samples repository, and Policy Controller as the fleet
+  # default with one per-cluster override on a membership with no cluster
+  # behind it, each deployed, re-planned clean, and destroyed; the
+  # fleet-default audit interval changed in place (GkeHub.UpdateFeature),
+  # judged from Google's Admin Activity log. Google no longer accepts a Config
+  # Sync upgrade mode in the fleet default and pins the current release
+  # itself, so the spec requires the release (1.25.2 measured); Google accepts
+  # a per-cluster Policy Controller entry for a membership with no cluster.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 20

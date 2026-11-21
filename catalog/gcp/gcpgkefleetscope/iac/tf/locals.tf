@@ -42,13 +42,14 @@ locals {
 
   # A cluster binding addresses its membership by location and ID, parsed
   # from the membership's full name
-  # ("projects/{p}/locations/{l}/memberships/{id}"); the binding lives in
-  # the scope's fleet project, which Google requires the membership to
-  # share.
+  # ("projects/{p}/locations/{l}/memberships/{id}"), with the service
+  # prefix a GKE cluster's fleet_membership output carries
+  # ("//gkehub.googleapis.com/") trimmed first; the binding lives in the
+  # scope's fleet project, which Google requires the membership to share.
   membership_bindings = {
     for binding in var.spec.membership_bindings : binding.membership_binding_id => {
-      location      = split("/", binding.membership)[3]
-      membership_id = split("/", binding.membership)[5]
+      location      = split("/", trimprefix(binding.membership, "//gkehub.googleapis.com/"))[3]
+      membership_id = split("/", trimprefix(binding.membership, "//gkehub.googleapis.com/"))[5]
       labels        = binding.labels
     }
   }

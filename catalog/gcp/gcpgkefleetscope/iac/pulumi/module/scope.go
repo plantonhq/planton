@@ -146,10 +146,12 @@ func scope(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) error
 }
 
 // parseMembershipName returns the location and ID of a membership's full
-// name, "projects/{p}/locations/{l}/memberships/{id}" -- the Terraform
-// module's split() twin.
+// name, "projects/{p}/locations/{l}/memberships/{id}", with the service
+// prefix a GKE cluster's fleet_membership output carries
+// ("//gkehub.googleapis.com/") trimmed first -- the Terraform module's
+// split() twin.
 func parseMembershipName(name string) (location, membershipId string, err error) {
-	parts := strings.Split(name, "/")
+	parts := strings.Split(strings.TrimPrefix(name, "//gkehub.googleapis.com/"), "/")
 	if len(parts) != 6 || parts[0] != "projects" || parts[2] != "locations" || parts[4] != "memberships" {
 		return "", "", errors.Errorf("membership %q is not projects/{project}/locations/{location}/memberships/{id}", name)
 	}

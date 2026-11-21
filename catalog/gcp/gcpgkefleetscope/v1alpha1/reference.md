@@ -283,7 +283,7 @@ binding in this scope's project. Immutable: a change replaces the
 binding.
 
 - references: GcpGkeFleetMembership (`status.outputs.name`), GcpGkeCluster (`status.outputs.fleet_membership`)
-- rule: membership must be a full membership name: projects/{project}/locations/{location}/memberships/{id}
+- rule: membership must be a full membership name: projects/{project}/locations/{location}/memberships/{id}, optionally prefixed with //gkehub.googleapis.com/ as a GKE cluster's fleet_membership output is
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpGkeFleetMembership, name: <that resource's name>, fieldPath: status.outputs.name}} -- a bare string does not parse
 

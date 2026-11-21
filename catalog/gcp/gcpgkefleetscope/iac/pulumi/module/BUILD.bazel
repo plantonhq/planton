@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "module",
@@ -22,4 +22,10 @@ go_library(
         "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/projects",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
     ],
+)
+
+go_test(
+    name = "module_test",
+    srcs = ["scope_test.go"],
+    embed = [":module"],
 )

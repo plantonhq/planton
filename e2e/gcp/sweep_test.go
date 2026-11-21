@@ -177,6 +177,16 @@ func standingResource(project string, harness harnessAccount, resource *cloudass
 		// deleted and kept for its own retention (a day in the lanes), then
 		// removed by Cloud SQL.
 		return true
+	case "gkehub.googleapis.com/Feature":
+		// The fleet features Google turns on by itself when a project's fleet
+		// first registers a membership or a scope, and which outlive the fleet;
+		// the fleet-feature kind's own features carry other names.
+		for _, feature := range []string{"authorizer", "metering", "workloadidentity", "fleetobservability", "rbacrolebindingactuation"} {
+			if strings.HasSuffix(name, "/features/"+feature) {
+				return true
+			}
+		}
+		return false
 	case "binaryauthorization.googleapis.com/Policy":
 		// Every project has exactly one Binary Authorization policy; a
 		// destroy resets it to Google's default rather than removing it.
@@ -313,6 +323,8 @@ func newLiveReaders(ctx context.Context, t *testing.T, opts []option.ClientOptio
 		"privateca.googleapis.com/CaPool":               restReader(rest, "https://privateca.googleapis.com/v1/"),
 		"privateca.googleapis.com/CertificateAuthority": restReader(rest, "https://privateca.googleapis.com/v1/"),
 		"privateca.googleapis.com/CertificateTemplate":  restReader(rest, "https://privateca.googleapis.com/v1/"),
+		// A deleted BigQuery reservation stays listed for a while.
+		"bigqueryreservation.googleapis.com/Reservation": restReader(rest, "https://bigqueryreservation.googleapis.com/v1/"),
 		// A service networking connection goes with its network: one a lane
 		// abandons on purpose (Cloud SQL's producer holds it for long after
 		// the instance) reads as gone once its network is.

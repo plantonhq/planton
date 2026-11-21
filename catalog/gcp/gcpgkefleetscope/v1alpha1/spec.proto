@@ -240,8 +240,8 @@ message GcpGkeFleetScopeMembershipBinding {
     },
     (buf.validate.field).cel = {
       id: "membership.format"
-      message: "membership must be a full membership name: projects/{project}/locations/{location}/memberships/{id}"
-      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/memberships/[^/]+$')"
+      message: "membership must be a full membership name: projects/{project}/locations/{location}/memberships/{id}, optionally prefixed with //gkehub.googleapis.com/ as a GKE cluster's fleet_membership output is"
+      expression: "!has(this.value) || this.value.matches('^(//gkehub\\\\.googleapis\\\\.com/)?projects/[^/]+/locations/[^/]+/memberships/[^/]+$')"
     }
   ];
 

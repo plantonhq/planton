@@ -141,6 +141,16 @@ var _ = ginkgo.Describe("GcpGkeFleetScopeSpec", func() {
 		msg.Spec.DeletionPolicy = "KEEP"
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
+
+	ginkgo.It("should accept a cluster's fleet_membership output, which carries the service prefix", func() {
+		msg := minimal()
+		msg.Spec.MembershipBindings = []*GcpGkeFleetScopeMembershipBinding{
+			{MembershipBindingId: "orders", Membership: literal("//gkehub.googleapis.com/projects/platform-host/locations/us-east1/memberships/orders")},
+		}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		msg.Spec.MembershipBindings[0].Membership = literal("//other.googleapis.com/projects/platform-host/locations/us-east1/memberships/orders")
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
 })
 
 // A cluster binding composes from either way a cluster joins a fleet: an

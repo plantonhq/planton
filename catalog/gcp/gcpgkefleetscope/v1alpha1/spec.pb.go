@@ -528,13 +528,13 @@ const file_catalog_gcp_gcpgkefleetscope_v1alpha1_spec_proto_rawDesc = "" +
 	"\vcustom_role\x18\x02 \x01(\tB\xb4\x01\xbaH\xb0\x01\xba\x01\xac\x01\n" +
 	"\x17custom_role.object_name\x12Mcustom_role must be a Kubernetes ClusterRole name: no / or %, and not . or ..\x1aBthis == '' || (this.matches('^[^/%]+$') && !(this in ['.', '..']))R\n" +
 	"customRole:\xa0\x01\xbaH\x9c\x01\x1a\x99\x01\n" +
-	"\x10role.exactly_one\x127a role is exactly one of predefined_role or custom_role\x1aL(this.predefined_role != '' ? 1 : 0) + (this.custom_role != '' ? 1 : 0) == 1\"\xf6\x06\n" +
+	"\x10role.exactly_one\x127a role is exactly one of predefined_role or custom_role\x1aL(this.predefined_role != '' ? 1 : 0) + (this.custom_role != '' ? 1 : 0) == 1\"\xf7\a\n" +
 	"!GcpGkeFleetScopeMembershipBinding\x12\x8a\x02\n" +
 	"\x15membership_binding_id\x18\x01 \x01(\tB\xd5\x01\xbaH\xd1\x01\xba\x01\xca\x01\n" +
-	"\x1cmembership_binding_id.format\x12tmembership_binding_id must be 1-63 lowercase letters, digits, or hyphens, starting and ending with a letter or digit\x1a4this.matches('^[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?$')\xc8\x01\x01R\x13membershipBindingId\x12\x96\x03\n" +
+	"\x1cmembership_binding_id.format\x12tmembership_binding_id must be 1-63 lowercase letters, digits, or hyphens, starting and ending with a letter or digit\x1a4this.matches('^[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?$')\xc8\x01\x01R\x13membershipBindingId\x12\x97\x04\n" +
 	"\n" +
-	"membership\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xc1\x02\xbaH\xdd\x01\xba\x01\xd6\x01\n" +
-	"\x11membership.format\x12cmembership must be a full membership name: projects/{project}/locations/{location}/memberships/{id}\x1a\\!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/memberships/[^/]+$')\xc8\x01\x01\x88\xd4a\xab\x19\x92\xd4a\x13status.outputs.name\xa2\xd4a\x18\b\xab\x19\x12\x13status.outputs.name\xa2\xd4a$\b\xbf\x17\x12\x1fstatus.outputs.fleet_membershipR\n" +
+	"membership\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xc2\x03\xbaH\xde\x02\xba\x01\xd7\x02\n" +
+	"\x11membership.format\x12\xc4\x01membership must be a full membership name: projects/{project}/locations/{location}/memberships/{id}, optionally prefixed with //gkehub.googleapis.com/ as a GKE cluster's fleet_membership output is\x1a{!has(this.value) || this.value.matches('^(//gkehub\\\\.googleapis\\\\.com/)?projects/[^/]+/locations/[^/]+/memberships/[^/]+$')\xc8\x01\x01\x88\xd4a\xab\x19\x92\xd4a\x13status.outputs.name\xa2\xd4a\x18\b\xab\x19\x12\x13status.outputs.name\xa2\xd4a$\b\xbf\x17\x12\x1fstatus.outputs.fleet_membershipR\n" +
 	"membership\x12p\n" +
 	"\x06labels\x18\x03 \x03(\v2X.dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeMembershipBinding.LabelsEntryR\x06labels\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +

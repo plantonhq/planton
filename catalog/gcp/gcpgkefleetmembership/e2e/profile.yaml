@@ -3,18 +3,13 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpgkefleetmembership
 spec:
-  # Awaiting the live proof lane. The scenario registers a second-project
-  # cluster (a fixture chain with no fleet_project) into the second
-  # project's fleet. Offline bar met: both modules build and validate,
-  # offline plans for the reference manifest and the scenario are clean on
-  # the pinned provider, and the accounting is total. Live facts the proof
-  # lane confirms: (1) the resource link both modules compose from the
-  # cluster's cluster_id is what Google stores, and the re-plan is clean on
-  # both engines; (2) the membership reads with the attribution labels;
-  # (3) destroy unregisters the cluster before the cluster fixture goes
-  # (the verifier accepts 404 or a delete time). The issuer arm (fleet
-  # Workload Identity) is proven offline.
+  # Proven live on both engines (2026-11-21), as an identity holding only this
+  # kind's permissions manifest, granted in the second test project: a zonal
+  # GKE cluster on its own network in that project (no fleetProject),
+  # registered into the project's fleet explicitly, re-planned clean, and
+  # destroyed; a user label changed in place (GkeHub.UpdateMembership), judged
+  # from Google's Admin Activity log in the second project.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 60

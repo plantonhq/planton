@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling gkehub.googleapis.com on the fleet host project. disable_on_destroy is false, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling gkehub.googleapis.com on the fleet host project. disable_on_destroy is false, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-21 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageScope
         permissions:
           - gkehub.scopes.create
@@ -27,37 +27,37 @@ spec:
           - gkehub.scopes.update
           - gkehub.scopes.delete
           - gkehub.operations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_gke_hub_scope (Pulumi gkehub.Scope) -- long-running create, label and namespace-label updates, and delete (Google's GKE Hub roles and permissions page).
+        notes: Covers google_gke_hub_scope (Pulumi gkehub.Scope) -- long-running create, label and namespace-label updates, and delete (Google's GKE Hub roles and permissions page). Proven 2026-11-21 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageScopeNamespaces
         permissions:
           - gkehub.namespaces.create
           - gkehub.namespaces.get
           - gkehub.namespaces.update
           - gkehub.namespaces.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_gke_hub_namespace, one per spec.namespaces entry.
+        notes: Covers google_gke_hub_namespace, one per spec.namespaces entry. Proven 2026-11-21 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageScopeRoleBindings
         permissions:
           - gkehub.rbacrolebindings.create
           - gkehub.rbacrolebindings.get
           - gkehub.rbacrolebindings.update
           - gkehub.rbacrolebindings.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_gke_hub_scope_rbac_role_binding, one per spec.rbac_role_bindings entry; principal and role changes update in place.
+        notes: Covers google_gke_hub_scope_rbac_role_binding, one per spec.rbac_role_bindings entry; principal and role changes update in place. Proven 2026-11-21 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageMembershipBindings
         permissions:
           - gkehub.membershipbindings.create
           - gkehub.membershipbindings.get
           - gkehub.membershipbindings.update
           - gkehub.membershipbindings.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_gke_hub_membership_binding, one per spec.membership_bindings entry; a binding lives under the bound membership.
+        notes: Covers google_gke_hub_membership_binding, one per spec.membership_bindings entry; a binding lives under the bound membership. Proven 2026-11-21 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
