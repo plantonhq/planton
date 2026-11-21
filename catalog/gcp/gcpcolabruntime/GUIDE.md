@@ -20,7 +20,7 @@ Google releases new Colab images. `autoUpgrade: true` upgrades the runtime when 
 
 ## One runtime per person
 
-Only the runtime user can connect notebooks. Declare one runtime per person (a team chart lists them), each referencing the template for their role.
+Only the runtime user can connect notebooks, and the runtime user is a person: Google refuses a service account ("Can not use service account as runtime user"), so automation that needs a notebook machine of its own uses a Colab schedule or a notebook execution job instead. Declare one runtime per person (a team chart lists them), each referencing the template for their role.
 
 ## Destroy
 

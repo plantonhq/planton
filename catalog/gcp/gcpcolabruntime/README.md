@@ -51,7 +51,7 @@ planton apply -f colab-runtime.yaml
 |-------|------|-------------|
 | `location` | `string` | The Colab Enterprise region (the template's). Immutable. |
 | `runtimeTemplate` | `StringValueOrRef` | A `GcpColabRuntimeTemplate` reference or literal template name. Immutable. |
-| `runtimeUser` | `string` | The email of the user the runtime belongs to. Immutable. |
+| `runtimeUser` | `string` | The email of the person the runtime belongs to; Google refuses a service account. Immutable. |
 
 ### Optional Fields
 
@@ -67,7 +67,7 @@ planton apply -f colab-runtime.yaml
 
 ### Validation Rules
 
-- `runtimeUser` is an email address; `desiredState` is `RUNNING` or `STOPPED`.
+- `runtimeUser` is a person's email address, never a service account; `desiredState` is `RUNNING` or `STOPPED`.
 
 ## Outputs
 

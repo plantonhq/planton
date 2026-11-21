@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-21 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: DeployModelGardenModel
         permissions:
           - aiplatform.endpoints.create
@@ -30,7 +30,7 @@ spec:
           - aiplatform.endpoints.update
           - aiplatform.models.upload
           - aiplatform.models.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_vertex_ai_endpoint_with_model_garden_deployment (Pulumi vertex.AiEndpointWithModelGardenDeployment) -- the one-step deploy uploads a Model, creates an Endpoint, and deploys to it; read/refresh reads the endpoint and its deployed models; destroy under deletion_policy DELETE undeploys the model, then deletes the endpoint; the uploaded model stays in the project's Model Registry, because the provider never deletes it (ABANDON and PREVENT call no API). A change to the replica bounds or autoscaling metrics is mutated in place on the deployed model (mutateDeployedModel), an endpoint write. Model Garden publisher models are public catalog entries -- GCP defines no aiplatform.publisherModels permission, so resolving the entry needs no grant. GCP defines no aiplatform.operations.get permission; polling the long-running operations needs nothing beyond these. roles/aiplatform.admin contains them all.
+        notes: Covers google_vertex_ai_endpoint_with_model_garden_deployment (Pulumi vertex.AiEndpointWithModelGardenDeployment) -- the one-step deploy uploads a Model, creates an Endpoint, and deploys to it; read/refresh reads the endpoint and its deployed models; destroy under deletion_policy DELETE undeploys the model, then deletes the endpoint; the uploaded model stays in the project's Model Registry, because the provider never deletes it (ABANDON and PREVENT call no API). A change to the replica bounds or autoscaling metrics is mutated in place on the deployed model (mutateDeployedModel), an endpoint write. Model Garden publisher models are public catalog entries -- GCP defines no aiplatform.publisherModels permission, so resolving the entry needs no grant. GCP defines no aiplatform.operations.get permission; polling the long-running operations needs nothing beyond these. roles/aiplatform.admin contains them all. Proven 2026-11-21 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

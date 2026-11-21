@@ -895,8 +895,12 @@ other's. The GCP classes are in `catalog/gcp/aa_e2e/dependents.go`: Autokey's ke
 the Dialogflow agent a chat engine creates (which outlives the engine and
 keeps its display name taken), and the extra chat engines a Dialogflow data
 store tool makes (which outlive the agent and keep its store from being
-deleted). Cloud Asset Inventory indexes none of the Dialogflow objects, so
-the sweep cannot see them; the release is the only net.
+deleted), and the model a Model Garden deployment uploads into the Model
+Registry (destroying the deployment deletes its endpoint, never the model;
+Google's service agent uploads it, so the release finds it by the lane's
+window, which the deployments' exclusive class keeps to one lane). Cloud
+Asset Inventory indexes none of the Dialogflow objects, so the sweep cannot
+see them; the release is the only net.
 
 **VERIFY-CLEAN re-reads for two minutes.** A delete can finish before a read
 sees it (Dialogflow answered a security setting's read half a second after

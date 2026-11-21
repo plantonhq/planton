@@ -13,6 +13,7 @@ metadata:
     e2e-catalog-kind: gcpvertexaimodelgardendeployment
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-release-dependents: model-garden-models # destroy never deletes the model Vertex AI uploaded
     planton.dev/e2e-second-act: dedicated-replicas.yaml
     planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants

@@ -121,7 +121,7 @@ var _ = ginkgo.Describe("GcpVertexAiAgentEngineSpec", func() {
 		msg.Spec.ContextSpec = &GcpVertexAiAgentEngineContextSpec{
 			MemoryBankConfig: &GcpVertexAiAgentEngineMemoryBankConfig{
 				GenerationConfig: &GcpVertexAiAgentEngineGenerationConfig{
-					Model: "projects/ai-project/locations/us-central1/publishers/google/models/gemini-2.5-flash",
+					Model: "projects/ai-project/locations/us-central1/publishers/google/models/gemini-3.5-flash",
 					GenerationTriggerConfig: &GcpVertexAiAgentEngineGenerationTriggerConfig{
 						GenerationRule: &GcpVertexAiAgentEngineGenerationRule{EventCount: proto.Int32(5), OverlapEventCount: proto.Int32(1)},
 					},
@@ -188,7 +188,7 @@ var _ = ginkgo.Describe("GcpVertexAiAgentEngineSpec", func() {
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 		msg.Spec.Agent = &GcpVertexAiAgentEngineAgent{
 			SourceCodeSpec: &GcpVertexAiAgentEngineSourceCodeSpec{
-				AgentConfigSource: &GcpVertexAiAgentEngineAgentConfigSource{AdkConfig: &GcpVertexAiAgentEngineAdkConfig{JsonConfig: `{"name":"root_agent","model":"gemini-2.5-flash"}`}},
+				AgentConfigSource: &GcpVertexAiAgentEngineAgentConfigSource{AdkConfig: &GcpVertexAiAgentEngineAdkConfig{JsonConfig: `{"name":"root_agent","model":"gemini-3.5-flash"}`}},
 				ImageSpec:         &GcpVertexAiAgentEngineImageSpec{BuildArgs: map[string]string{"PY": "3.12"}},
 			},
 		}
@@ -357,14 +357,14 @@ var _ = ginkgo.Describe("GcpVertexAiAgentEngineSpec", func() {
 		msg := minimal()
 		msg.Spec.ContextSpec = &GcpVertexAiAgentEngineContextSpec{MemoryBankConfig: &GcpVertexAiAgentEngineMemoryBankConfig{
 			GenerationConfig: &GcpVertexAiAgentEngineGenerationConfig{
-				Model: "projects/p/locations/us-central1/publishers/google/models/gemini-2.5-flash",
+				Model: "projects/p/locations/us-central1/publishers/google/models/gemini-3.5-flash",
 				GenerationTriggerConfig: &GcpVertexAiAgentEngineGenerationTriggerConfig{GenerationRule: &GcpVertexAiAgentEngineGenerationRule{
 					EventCount: proto.Int32(3), IdleDuration: "300s",
 				}},
 			},
 		}}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
-		msg.Spec.ContextSpec.MemoryBankConfig.GenerationConfig.Model = "gemini-2.5-flash"
+		msg.Spec.ContextSpec.MemoryBankConfig.GenerationConfig.Model = "gemini-3.5-flash"
 		msg.Spec.ContextSpec.MemoryBankConfig.GenerationConfig.GenerationTriggerConfig = nil
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})

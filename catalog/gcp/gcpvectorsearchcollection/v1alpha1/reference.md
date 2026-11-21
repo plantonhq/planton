@@ -271,6 +271,8 @@ The approximate-nearest-neighbor indexes over the collection's vector
 fields, each keyed by its index_id. Add or remove an index by editing
 this list; for what changes in place see GcpVectorSearchCollectionIndex.
 
+- rule: feature_norm_type is a ScaNN option, and Google refuses ScaNN options on a STORAGE_OPTIMIZED index: leave it unset there
+
 ### spec.indexes[].indexId
 
 `string` · required
@@ -325,7 +327,9 @@ Sent only when set. Immutable.
 
 Feature normalization the ScaNN index applies before search: NONE, or
 UNIT_L2_NORM to unit-normalize every vector (makes DOT_PRODUCT behave
-as cosine similarity). Sent only when set. Immutable.
+as cosine similarity). Sent only when set. Google refuses ScaNN options
+on a STORAGE_OPTIMIZED index ("dense_scann is not supported for
+STORAGE_OPTIMIZED mode"), so leave it unset there. Immutable.
 
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"in":["NONE","UNIT_L2_NORM"]}}
 

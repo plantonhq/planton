@@ -16,26 +16,26 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-21 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageRuntimeTemplate
         permissions:
           - aiplatform.notebookRuntimeTemplates.create
           - aiplatform.notebookRuntimeTemplates.get
           - aiplatform.notebookRuntimeTemplates.update
           - aiplatform.notebookRuntimeTemplates.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_colab_runtime_template (Pulumi colab.RuntimeTemplate) -- created and deleted through long-running operations the provider polls, patched for the display name, the key, and the software config. roles/aiplatform.admin contains all of them. GCP defines no aiplatform.operations.get permission (IAM's testable-permissions inventory carries only aiplatform.operations.list); polling the long-running operations needs nothing beyond these.
+        notes: Covers google_colab_runtime_template (Pulumi colab.RuntimeTemplate) -- created and deleted through long-running operations the provider polls, patched for the display name, the key, and the software config. roles/aiplatform.admin contains all of them. GCP defines no aiplatform.operations.get permission (IAM's testable-permissions inventory carries only aiplatform.operations.list); polling the long-running operations needs nothing beyond these. Proven 2026-11-21 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: UsePrivateNetwork
         permissions:
           - compute.subnetworks.use
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: network_spec
-        notes: Placing runtimes on a declared network and subnetwork requires using the subnetwork; the default network needs no grant.
+        notes: Placing runtimes on a declared network and subnetwork requires using the subnetwork; the default network needs no grant. Proven 2026-11-21 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

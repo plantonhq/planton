@@ -14,7 +14,7 @@ A production agent you build and ship as a container, running as its own service
 
 - An Agent Engine instance in `us-central1` running the `concierge:1.4.0` image on port 8080 as the referenced `GcpServiceAccount`
 - One to twenty instances at 4 CPU / 8 GiB, concurrency 9, with `PARTNER_API_KEY` from the referenced `GcpSecretManagerSecret`
-- A Memory Bank on `gemini-2.5-flash` and `text-embedding-005`, scoped by `user_id`, with two managed topics and one custom topic, third-person memories, and a 90-day TTL
+- A Memory Bank on `gemini-3.5-flash` and `text-embedding-005`, scoped by `user_id`, with two managed topics and one custom topic, third-person memories, and a 90-day TTL
 - `deletionPolicy: PREVENT`
 
 ## Customize

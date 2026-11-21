@@ -19,7 +19,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  zone: us-central1-f
+  zone: us-central1-b
   nodeId: e2e-tpu-spot-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   acceleratorType: v2-8
   runtimeVersion: tpu-ubuntu2204-base

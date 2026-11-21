@@ -54,7 +54,8 @@ type GcpColabRuntimeSpec struct {
 	// Immutable.
 	RuntimeTemplate *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=runtime_template,json=runtimeTemplate,proto3" json:"runtime_template,omitempty"`
 	// The email of the user the runtime belongs to -- only this user can
-	// connect notebooks to it. Immutable.
+	// connect notebooks to it. A person's account: Google refuses a service
+	// account ("Can not use service account as runtime user"). Immutable.
 	RuntimeUser string `protobuf:"bytes,5,opt,name=runtime_user,json=runtimeUser,proto3" json:"runtime_user,omitempty"`
 	// The name shown in Colab Enterprise -- up to 128 characters. Defaults to
 	// metadata.name. Immutable.
@@ -192,7 +193,7 @@ var File_catalog_gcp_gcpcolabruntime_v1alpha1_spec_proto protoreflect.FileDescri
 
 const file_catalog_gcp_gcpcolabruntime_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/gcp/gcpcolabruntime/v1alpha1/spec.proto\x12(dev.planton.gcp.gcpcolabruntime.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xbc\b\n" +
+	"/catalog/gcp/gcpcolabruntime/v1alpha1/spec.proto\x12(dev.planton.gcp.gcpcolabruntime.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xf2\t\n" +
 	"\x13GcpColabRuntimeSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12;\n" +
@@ -200,9 +201,9 @@ const file_catalog_gcp_gcpcolabruntime_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
 	"runtime_id\x18\x03 \x01(\tB\xd2\x01\xbaH\xce\x01\xba\x01\xca\x01\n" +
 	"\x11runtime_id.format\x12pruntime_id must be lowercase letters, digits, and hyphens, starting with a letter or digit, up to 128 characters\x1aCthis == '' || this.matches('^[a-z0-9]([a-z0-9-]{0,126}[a-z0-9])?$')R\truntimeId\x12\x81\x01\n" +
-	"\x10runtime_template\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\xbaH\x03\xc8\x01\x01\x88\xd4a\x8e\x19\x92\xd4a\x13status.outputs.nameR\x0fruntimeTemplate\x12-\n" +
-	"\fruntime_user\x18\x05 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02`\x01R\vruntimeUser\x12+\n" +
+	"\x10runtime_template\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\xbaH\x03\xc8\x01\x01\x88\xd4a\x8e\x19\x92\xd4a\x13status.outputs.nameR\x0fruntimeTemplate\x12\xe2\x01\n" +
+	"\fruntime_user\x18\x05 \x01(\tB\xbe\x01\xbaH\xba\x01\xba\x01\xaf\x01\n" +
+	"\"runtime_user.not_a_service_account\x12aruntime_user must be a person's account: Google refuses a service account as a Colab runtime user\x1a&!this.endsWith('.gserviceaccount.com')\xc8\x01\x01r\x02`\x01R\vruntimeUser\x12+\n" +
 	"\fdisplay_name\x18\x06 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x01R\vdisplayName\x12 \n" +
 	"\vdescription\x18\a \x01(\tR\vdescription\x12\x98\x01\n" +
 	"\rdesired_state\x18\b \x01(\tBs\xbaHp\xba\x01m\n" +

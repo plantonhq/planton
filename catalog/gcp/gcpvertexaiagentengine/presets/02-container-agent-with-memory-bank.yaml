@@ -41,7 +41,7 @@ spec:
   contextSpec:
     memoryBankConfig:
       generationConfig:
-        model: projects/my-gcp-project/locations/us-central1/publishers/google/models/gemini-2.5-flash
+        model: projects/my-gcp-project/locations/us-central1/publishers/google/models/gemini-3.5-flash
         generationTriggerConfig:
           generationRule:
             eventCount: 5

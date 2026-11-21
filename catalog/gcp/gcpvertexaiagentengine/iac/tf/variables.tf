@@ -138,8 +138,13 @@ variable "spec" {
           # "agent".
           entrypoint_module = optional(string, "")
 
-          # The callable in entrypoint_module that IS the agent. Google's default
-          # "root_agent" (the ADK convention).
+          # The object in entrypoint_module that Agent Engine serves. It must
+          # define at least one of query, async_query, stream_query,
+          # async_stream_query or bidi_stream_query, or the container never starts
+          # ("missing all methods") -- so an ADK agent is wrapped, e.g.
+          # app = vertexai.agent_engines.AdkApp(agent=root_agent), and this names
+          # "app". Google's default "root_agent" names a bare ADK agent, which has
+          # none of those methods.
           entrypoint_object = optional(string, "")
 
           # Path of the requirements file relative to the source root. Google's

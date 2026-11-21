@@ -53,10 +53,16 @@ message GcpColabRuntimeSpec {
   ];
 
   // The email of the user the runtime belongs to -- only this user can
-  // connect notebooks to it. Immutable.
+  // connect notebooks to it. A person's account: Google refuses a service
+  // account ("Can not use service account as runtime user"). Immutable.
   string runtime_user = 5 [
     (buf.validate.field).required = true,
-    (buf.validate.field).string.email = true
+    (buf.validate.field).string.email = true,
+    (buf.validate.field).cel = {
+      id: "runtime_user.not_a_service_account"
+      message: "runtime_user must be a person's account: Google refuses a service account as a Colab runtime user"
+      expression: "!this.endsWith('.gserviceaccount.com')"
+    }
   ];
 
   // The name shown in Colab Enterprise -- up to 128 characters. Defaults to

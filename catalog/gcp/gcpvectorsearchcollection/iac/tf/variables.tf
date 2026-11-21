@@ -127,7 +127,9 @@ variable "spec" {
 
       # Feature normalization the ScaNN index applies before search: NONE, or
       # UNIT_L2_NORM to unit-normalize every vector (makes DOT_PRODUCT behave
-      # as cosine similarity). Sent only when set. Immutable.
+      # as cosine similarity). Sent only when set. Google refuses ScaNN options
+      # on a STORAGE_OPTIMIZED index ("dense_scann is not supported for
+      # STORAGE_OPTIMIZED mode"), so leave it unset there. Immutable.
       feature_norm_type = optional(string, "")
 
       # Data-schema fields pushed into the index so searches can filter on

@@ -16,6 +16,13 @@ spec:
   # both engines -- the runtime id is sent and never read back; (3) the
   # verifier reads the runtime STOPPED with its user; (4) destroy deletes
   # it and the template fixture, and the verifier reads 404.
+  #
+  # A live attempt (2026-11-21) settled the open question: Google refuses a
+  # service account as a runtime user ("Can not use service account as
+  # runtime user"), so the spec refuses one too. The lane runs once
+  # PLANTON_E2E_GCP_COLAB_RUNTIME_USER names a person's account in the
+  # organization; until then it skips. The runtime template fixture now
+  # brings its own network, because the project has no "default" network.
   tier: 1
   status: pending_proof
   validated_provisioners: []

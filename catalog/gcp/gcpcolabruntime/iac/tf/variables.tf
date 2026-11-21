@@ -37,7 +37,8 @@ variable "spec" {
     runtime_template = string
 
     # The email of the user the runtime belongs to -- only this user can
-    # connect notebooks to it. Immutable.
+    # connect notebooks to it. A person's account: Google refuses a service
+    # account ("Can not use service account as runtime user"). Immutable.
     runtime_user = string
 
     # The name shown in Colab Enterprise -- up to 128 characters. Defaults to

@@ -1,9 +1,10 @@
 # GcpVectorSearchCollection scenario: a hybrid collection -- one dense field
 # with precomputed vectors (no embedding config) and one sparse field --
-# with two indexes: cosine over unit-normalized dense vectors with inline
+# with two indexes: cosine over the dense vectors with inline
 # filter and store fields, and a second index over the sparse field. Every
-# Optional+Computed index lever (metric, ScaNN norm, dedicated
-# infrastructure) is set here so the sweep sees it on the wire.
+# Optional+Computed index lever Google allows together (metric, dedicated
+# STORAGE_OPTIMIZED infrastructure) is set here so the sweep sees it on the
+# wire; Google refuses ScaNN options on a STORAGE_OPTIMIZED index.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpVectorSearchCollection
 metadata:
@@ -38,7 +39,6 @@ spec:
       indexField: dense
       displayName: Dense cosine
       distanceMetric: COSINE_DISTANCE
-      featureNormType: UNIT_L2_NORM
       filterFields:
         - category
       storeFields:

@@ -42,7 +42,7 @@ spec:
       pythonSpec:
         version: "3.12"
         entrypointModule: agent
-        entrypointObject: root_agent
+        entrypointObject: app
 ```
 
 ```shell

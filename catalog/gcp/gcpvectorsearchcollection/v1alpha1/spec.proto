@@ -153,6 +153,12 @@ message GcpVectorSearchCollectionDedicatedInfrastructure {
 // The collection's labels and the platform attribution labels are added to
 // the index's own and win on a key conflict.
 message GcpVectorSearchCollectionIndex {
+  option (buf.validate.message).cel = {
+    id: "index.scann_not_on_storage_optimized"
+    message: "feature_norm_type is a ScaNN option, and Google refuses ScaNN options on a STORAGE_OPTIMIZED index: leave it unset there"
+    expression: "this.feature_norm_type == '' || !has(this.dedicated_infrastructure) || this.dedicated_infrastructure.mode != 'STORAGE_OPTIMIZED'"
+  };
+
   // The index's ID within the collection -- 1-63 characters, RFC 1035
   // (lowercase letters, digits, hyphens; starts with a letter). Immutable.
   string index_id = 1 [
@@ -193,7 +199,9 @@ message GcpVectorSearchCollectionIndex {
 
   // Feature normalization the ScaNN index applies before search: NONE, or
   // UNIT_L2_NORM to unit-normalize every vector (makes DOT_PRODUCT behave
-  // as cosine similarity). Sent only when set. Immutable.
+  // as cosine similarity). Sent only when set. Google refuses ScaNN options
+  // on a STORAGE_OPTIMIZED index ("dense_scann is not supported for
+  // STORAGE_OPTIMIZED mode"), so leave it unset there. Immutable.
   string feature_norm_type = 7 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string = {

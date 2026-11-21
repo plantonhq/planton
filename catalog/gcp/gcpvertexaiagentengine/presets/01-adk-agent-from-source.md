@@ -21,7 +21,7 @@ Deploy an Agent Development Kit agent from its source code: Vertex AI builds the
 | Field | Default | Why Change |
 |-------|---------|------------|
 | `agent.sourceCodeSpec.inlineSource.sourceArchive` | the sample agent | Your archive: `tar czf - -C <source-root> . \| base64`. |
-| `agent.sourceCodeSpec.pythonSpec.entrypointModule` / `entrypointObject` | `agent` / `root_agent` | Where your agent object lives. |
+| `agent.sourceCodeSpec.pythonSpec.entrypointModule` / `entrypointObject` | `agent` / `app` | Where your served object lives: an ADK agent wrapped as `app = vertexai.agent_engines.AdkApp(agent=root_agent)`. |
 | `agent.agentFramework` | `google-adk` | `langchain`, `langgraph`, `llama-index`, `ag2`, or your own. |
 | `agent.deploymentSpec.minInstances` | `1` | Raise it to keep warm instances for steady traffic. One is the floor: Google's provider never sends 0, so the agent cannot scale to nothing between requests. |
 | `agent.serviceAccount` | none | A `GcpServiceAccount` reference to run as a custom identity. |

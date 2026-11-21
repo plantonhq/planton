@@ -16,47 +16,47 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-21 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageSchedule
         permissions:
           - aiplatform.schedules.create
           - aiplatform.schedules.get
           - aiplatform.schedules.update
           - aiplatform.schedules.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_colab_schedule (Pulumi colab.Schedule) -- created, patched for the timing fields and the pipeline request, read on every refresh, deleted.
+        notes: Covers google_colab_schedule (Pulumi colab.Schedule) -- created, patched for the timing fields and the pipeline request, read on every refresh, deleted. Proven 2026-11-21 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: CreateScheduledRuns
         permissions:
           - aiplatform.pipelineJobs.create
           - aiplatform.notebookExecutionJobs.create
           - aiplatform.notebookRuntimeTemplates.apply
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Creating a schedule checks that its caller may create the runs it will launch -- Google refused a notebook schedule's create with "Permission 'aiplatform.pipelineJobs.create' denied" (measured), even with no pipeline arm. A notebook run is a notebook execution job on the named runtime template, which Google's Colab Enterprise admin role grants as notebookExecutionJobs.create and notebookRuntimeTemplates.apply beside it.
+        notes: Creating a schedule checks that its caller may create the runs it will launch -- Google refused a notebook schedule's create with "Permission 'aiplatform.pipelineJobs.create' denied" (measured), even with no pipeline arm. A notebook run is a notebook execution job on the named runtime template, which Google's Colab Enterprise admin role grants as notebookExecutionJobs.create and notebookRuntimeTemplates.apply beside it. Proven 2026-11-21 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: PauseAndResumeSchedule
         permissions:
           - aiplatform.schedules.update
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: desired_state
-        notes: The client-side desired_state control calls pause or resume to match on every apply. GCP defines no aiplatform.schedules.pause or .resume permission (roles/aiplatform.colabEnterpriseAdmin carries schedules create, get, list, update, and delete), so both calls authorize as aiplatform.schedules.update.
+        notes: The client-side desired_state control calls pause or resume to match on every apply. GCP defines no aiplatform.schedules.pause or .resume permission (roles/aiplatform.colabEnterpriseAdmin carries schedules create, get, list, update, and delete), so both calls authorize as aiplatform.schedules.update. Proven 2026-11-21 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ActAsNotebookRunIdentity
         permissions:
           - iam.serviceAccounts.actAs
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: uses_identity
         condition:
           spec_field_set: notebook_execution_job.service_account
-        notes: Naming a service account for notebook runs requires acting as it (held on the account).
+        notes: Naming a service account for notebook runs requires acting as it (held on the account). Proven 2026-11-21 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ActAsPipelineRunIdentity
         permissions:
           - iam.serviceAccounts.actAs

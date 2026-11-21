@@ -110,8 +110,10 @@ Immutable.
 `string` · required
 
 The email of the user the runtime belongs to -- only this user can
-connect notebooks to it. Immutable.
+connect notebooks to it. A person's account: Google refuses a service
+account ("Can not use service account as runtime user"). Immutable.
 
+- rule: runtime_user must be a person's account: Google refuses a service account as a Colab runtime user
 - rule: {"required":true,"string":{"email":true}}
 
 ### spec.displayName

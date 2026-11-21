@@ -49,7 +49,7 @@ spec:
       pythonSpec:
         version: "3.12"
         entrypointModule: agent
-        entrypointObject: root_agent
+        entrypointObject: app
     deploymentSpec:
       minInstances: 1
       maxInstances: 5

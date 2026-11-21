@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling compute.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling compute.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-21 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageImage
         permissions:
           - compute.images.create
@@ -27,16 +27,16 @@ spec:
           - compute.images.delete
           - compute.images.setLabels
           - compute.globalOperations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_compute_image across its lifecycle -- create, label changes (the one in-place update), and delete -- plus polling the global operation every mutation returns.
+        notes: Covers google_compute_image across its lifecycle -- create, label changes (the one in-place update), and delete -- plus polling the global operation every mutation returns. Proven 2026-11-21 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ReadImageSources
         permissions:
           - compute.disks.useReadOnly
           - compute.images.useReadOnly
           - compute.snapshots.useReadOnly
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Each permission gates one source shape -- source_disk, source_image, and source_snapshot; a raw_disk tarball is read through Cloud Storage permissions on its object, not a compute permission.
+        notes: Each permission gates one source shape -- source_disk, source_image, and source_snapshot; a raw_disk tarball is read through Cloud Storage permissions on its object, not a compute permission. Proven 2026-11-21 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

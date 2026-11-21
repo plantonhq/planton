@@ -3,26 +3,15 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpvertexairagengineconfig
 spec:
-  # Awaiting the live proof lane. The scenario proves in the harness
-  # project with roles/aiplatform.admin: the Basic tier set on us-central1
-  # -- a per-location singleton Google already owns, so the create is a
-  # PATCH and a re-run cannot hit "already exists". Offline bar met: both
-  # modules build and validate, offline plans for the reference manifest,
-  # the scenario, and the SCALED / UNPROVISIONED arms are clean on the
-  # pinned provider, and the accounting is total. Live facts the proof
-  # lane confirms: (1) the tier lands as BASIC and RE-PLANS CLEAN under the
-  # apply-idempotency gate on both engines (three exclusive empty blocks,
-  # compared as a set); (2) the resource name is
-  # projects/{project}/locations/us-central1/ragEngineConfig on both
-  # engines; (3) the destroy PATCHes the location to UNPROVISIONED and the
-  # verifier reads that tier back -- there is no 404, because the
-  # singleton never goes away.
-  #
-  # No second act: the configuration's create, update and delete are one
-  # write (a PATCH of the location's singleton), so an update proves no
-  # permission create doesn't. It carries no second act, as the Redis
-  # endpoint set doesn't.
+  # Proven live on both engines (2026-11-21), as an identity holding only this
+  # kind's permissions manifest: the us-central1 configuration set to the
+  # Basic tier, re-planned clean (the empty tier block compares clean on both
+  # engines), and destroyed -- destroy sets the location to UNPROVISIONED,
+  # which the verifier reads, because the singleton never goes away. No second
+  # act: the configuration's create, update and delete are one write (a PATCH
+  # of the location's singleton), so an update proves no permission create
+  # doesn't.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 20

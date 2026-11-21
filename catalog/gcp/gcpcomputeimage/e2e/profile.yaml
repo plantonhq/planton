@@ -3,17 +3,16 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpcomputeimage
 spec:
-  # Awaiting the live proof lane. Both scenarios run in the harness
-  # project: a copy of Debian 12's public image in a family, and an image of
-  # a disk fixture. Offline bar met: both modules build and validate,
-  # offline plans for the reference manifest and both scenarios are clean
-  # on the pinned provider, and the accounting is total. Live facts the
-  # proof lane confirms: (1) the images read READY with the attribution
-  # labels and the family output; (2) the inherited guest OS features,
-  # licenses, and storage locations (Optional+Computed, unset) re-plan
-  # clean on both engines; (3) destroy deletes the image before the disk
-  # fixture.
+  # Proven live on both engines (2026-11-21), as an identity holding only this
+  # kind's permissions manifest: an image of a disk fixture and a copy of a
+  # named Debian 12 public image deployed, re-planned clean, and destroyed;
+  # the disk image's labels changed in place (images.setLabels), judged from
+  # Google's Admin Activity log. Two live findings shaped the spec: Google
+  # records the image a family path resolved to, so a family source re-planned
+  # a replacement on every apply (the spec now refuses it), and Google adds
+  # the source's guest OS features to any list, so a partial list did the same
+  # (the scenario takes the source's).
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 20

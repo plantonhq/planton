@@ -379,7 +379,9 @@ type GcpVectorSearchCollectionIndex struct {
 	DistanceMetric string `protobuf:"bytes,6,opt,name=distance_metric,json=distanceMetric,proto3" json:"distance_metric,omitempty"`
 	// Feature normalization the ScaNN index applies before search: NONE, or
 	// UNIT_L2_NORM to unit-normalize every vector (makes DOT_PRODUCT behave
-	// as cosine similarity). Sent only when set. Immutable.
+	// as cosine similarity). Sent only when set. Google refuses ScaNN options
+	// on a STORAGE_OPTIMIZED index ("dense_scann is not supported for
+	// STORAGE_OPTIMIZED mode"), so leave it unset there. Immutable.
 	FeatureNormType string `protobuf:"bytes,7,opt,name=feature_norm_type,json=featureNormType,proto3" json:"feature_norm_type,omitempty"`
 	// Data-schema fields pushed into the index so searches can filter on
 	// them inline, without a second lookup. Immutable.
@@ -707,7 +709,7 @@ const file_catalog_gcp_gcpvectorsearchcollection_v1alpha1_spec_proto_rawDesc = "
 	"\x12_max_replica_count\"\x84\x02\n" +
 	"0GcpVectorSearchCollectionDedicatedInfrastructure\x12F\n" +
 	"\x04mode\x18\x01 \x01(\tB2\xbaH/\xd8\x01\x01r*R\x11STORAGE_OPTIMIZEDR\x15PERFORMANCE_OPTIMIZEDR\x04mode\x12\x87\x01\n" +
-	"\x10autoscaling_spec\x18\x02 \x01(\v2\\.dev.planton.gcp.gcpvectorsearchcollection.v1alpha1.GcpVectorSearchCollectionAutoscalingSpecR\x0fautoscalingSpec\"\xb0\x06\n" +
+	"\x10autoscaling_spec\x18\x02 \x01(\v2\\.dev.planton.gcp.gcpvectorsearchcollection.v1alpha1.GcpVectorSearchCollectionAutoscalingSpecR\x0fautoscalingSpec\"\xdd\b\n" +
 	"\x1eGcpVectorSearchCollectionIndex\x12H\n" +
 	"\bindex_id\x18\x01 \x01(\tB-\xbaH*\xc8\x01\x01r%2#^[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?$R\aindexId\x12+\n" +
 	"\vindex_field\x18\x02 \x01(\tB\n" +
@@ -724,7 +726,8 @@ const file_catalog_gcp_gcpvectorsearchcollection_v1alpha1_spec_proto_rawDesc = "
 	" \x01(\v2d.dev.planton.gcp.gcpvectorsearchcollection.v1alpha1.GcpVectorSearchCollectionDedicatedInfrastructureR\x17dedicatedInfrastructure\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xb2\f\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xaa\x02\xbaH\xa6\x02\x1a\xa3\x02\n" +
+	"$index.scann_not_on_storage_optimized\x12xfeature_norm_type is a ScaNN option, and Google refuses ScaNN options on a STORAGE_OPTIMIZED index: leave it unset there\x1a\x80\x01this.feature_norm_type == '' || !has(this.dedicated_infrastructure) || this.dedicated_infrastructure.mode != 'STORAGE_OPTIMIZED'\"\xb2\f\n" +
 	"\x1dGcpVectorSearchCollectionSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12;\n" +

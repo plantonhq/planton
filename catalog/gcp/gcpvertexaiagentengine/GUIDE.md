@@ -12,14 +12,16 @@ source: an `inlineSource` archive (a base64 .tar.gz of the source root),
 a `developerConnectSource` repository at a Git ref, or an
 `agentConfigSource` -- an ADK agent described entirely by JSON config.
 Pair the source with one build recipe: `pythonSpec` (Vertex AI installs
-`requirements.txt` and imports `entrypointObject` from `entrypointModule`,
-`root_agent` from `agent` by ADK convention) or `imageSpec` (the
+`requirements.txt` and imports `entrypointObject` from `entrypointModule`)
+or `imageSpec` (the
 Dockerfile at the source root). The build runs as a Cloud Build in your
 project. `containerSpec` skips the build and runs an image you built that
 implements the Agent Engine serving contract; the project's Reasoning
 Engine service agent needs `roles/artifactregistry.reader` on the
 repository to pull it. `packageSpec` is the older
 pickled-object shape the Vertex AI SDK produced; it still works.
+
+The entrypoint object is what Agent Engine serves, so it must define at least one of `query`, `async_query`, `stream_query`, `async_stream_query` or `bidi_stream_query`; without one the container never starts ("missing all methods"). A bare ADK agent has none of them: wrap it, `app = vertexai.agent_engines.AdkApp(agent=root_agent)`, and name `app` as the entrypoint object. Memory Bank and the agent's own model take a current Gemini model: Google refuses Gemini 2.5 models for Memory Bank ("Gemini 2.5 models are not supported").
 
 An inline archive is input-only -- Google never reads it back -- so a new
 archive is detected by the manifest diff and redeploys the code in place.

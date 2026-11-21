@@ -3,22 +3,17 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpbigqueryreservation
 spec:
-  # Awaiting the live proof lane. Both scenarios prove in the harness
-  # project with roles/bigquery.resourceAdmin; the module enables
-  # bigqueryreservation.googleapis.com itself: a zero-baseline Standard
-  # reservation autoscaling to 50 slots with the harness project assigned
-  # for QUERY, and a zero-baseline Enterprise reservation joining a
-  # reservation group fixture. Offline bar met: both modules build and
-  # validate, offline plans for the reference manifest, every scenario, and
-  # every fixture are clean on the pinned provider, and the accounting is
-  # total. Live facts the proof lane confirms: (1) slot_capacity 0 with
-  # autoscaling is accepted and bills nothing idle; (2) the assignment
-  # reaches ACTIVE (or stays PENDING) with autoscale-only capacity --
-  # recorded either way; (3) the assignment's full name reads back and the
-  # verifier finds it in the reservation's assignment list; (4) reservation
-  # groups may be allowlisted -- a 403 there is recorded, not patched; (5)
-  # destroy deletes the assignments before the reservation.
+  # Proven live on both engines (2026-11-21), as an identity holding only this
+  # kind's permissions manifest: a zero-baseline STANDARD reservation
+  # autoscaling to 50 with the harness project assigned for QUERY, and a
+  # zero-baseline ENTERPRISE reservation in a group fixture, deployed,
+  # re-planned clean, and destroyed; the grouped reservation's autoscale
+  # ceiling rose in place (UpdateReservation), judged from Google's Admin
+  # Activity log. Two live findings shaped the kind: Google refuses a STANDARD
+  # reservation that shares idle slots, so the spec requires ignore_idle_slots
+  # on STANDARD, and Google stores a reservation's group by its short name, so
+  # both modules trim the group path.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 30

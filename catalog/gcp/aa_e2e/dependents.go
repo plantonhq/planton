@@ -41,6 +41,16 @@ const (
 	// keep holding the store. The release deletes the chat engines over this
 	// lane's own data stores (their ids carry the lane's run id).
 	releaseDataStoreToolChatEngines = "data-store-tool-chat-engines"
+
+	// releaseModelGardenModels: a Model Garden deployment makes Vertex AI
+	// upload the model into the project's Model Registry; destroying the
+	// deployment undeploys it and deletes the endpoint, but no provider call
+	// deletes the uploaded model. Google's service agent does the upload, so
+	// the lane's identity never appears on it in the audit log. Model Garden
+	// scenarios take the gcp-vertex-gpu-serving class, so one runs at a time:
+	// every undeployed model the project gained in the lane's window is the
+	// lane's, and the release deletes those.
+	releaseModelGardenModels = "model-garden-models"
 )
 
 // ReleaseDependents implements provider.DependentsReleaser.
@@ -56,9 +66,11 @@ func (h *Harness) ReleaseDependents(ctx context.Context, tc *provider.KindTestCo
 		return h.releaseChatEngineAgent(ctx, tc, manifestPath)
 	case releaseDataStoreToolChatEngines:
 		return h.releaseDataStoreToolChatEngines(ctx, tc)
+	case releaseModelGardenModels:
+		return h.releaseModelGardenModels(ctx, tc, manifestPath)
 	default:
-		return errors.Errorf("unknown release class %q: the GCP harness releases %q, %q and %q",
-			class, releaseAutokeyKey, releaseChatEngineAgent, releaseDataStoreToolChatEngines)
+		return errors.Errorf("unknown release class %q: the GCP harness releases %q, %q, %q and %q",
+			class, releaseAutokeyKey, releaseChatEngineAgent, releaseDataStoreToolChatEngines, releaseModelGardenModels)
 	}
 }
 
@@ -271,5 +283,60 @@ func (h *Harness) releaseDataStoreToolChatEngines(ctx context.Context, tc *provi
 		released++
 	}
 	lanef(tc, "  [release] the data store tool left %d chat engine(s) over this lane's stores; deleted", released)
+	return nil
+}
+
+// releaseModelGardenModels deletes the models Vertex AI uploaded for this
+// lane's deployments: every model in the deployment's location created since
+// the lane's identity was provisioned that no endpoint serves any more. The
+// scenario's exclusive class keeps any other Model Garden lane out of that
+// window. A lane with no recorded window (its identity never provisioned)
+// made nothing.
+func (h *Harness) releaseModelGardenModels(ctx context.Context, tc *provider.KindTestContext, manifestPath string) error {
+	h.mu.Lock()
+	audit := h.laneAudits[manifestPath]
+	h.mu.Unlock()
+	if audit == nil {
+		lanef(tc, "  [release] no lane window recorded, so no Model Garden model to release")
+		return nil
+	}
+	raw, err := os.ReadFile(manifestPath)
+	if err != nil {
+		return errors.Wrap(err, "reading the Model Garden manifest")
+	}
+	var manifest struct {
+		Spec struct {
+			Location string `json:"location"`
+		} `json:"spec"`
+	}
+	if err := yaml.Unmarshal(raw, &manifest); err != nil {
+		return errors.Wrap(err, "parsing the Model Garden manifest")
+	}
+	location := manifest.Spec.Location
+	if location == "" {
+		return errors.New("the Model Garden manifest names no location")
+	}
+	base := fmt.Sprintf("https://%s-aiplatform.googleapis.com/v1/projects/%s/locations/%s/models", location, h.services.Project, location)
+	var listing struct {
+		Models []struct {
+			Name           string          `json:"name"`
+			CreateTime     time.Time       `json:"createTime"`
+			DeployedModels json.RawMessage `json:"deployedModels"`
+		} `json:"models"`
+	}
+	if _, err := h.restGet(ctx, base+"?pageSize=1000", &listing); err != nil {
+		return errors.Wrap(err, "listing the Vertex AI models")
+	}
+	released := 0
+	for _, model := range listing.Models {
+		if model.CreateTime.Before(audit.start) || len(model.DeployedModels) > 0 {
+			continue
+		}
+		if err := h.restDelete(ctx, fmt.Sprintf("https://%s-aiplatform.googleapis.com/v1/%s", location, model.Name)); err != nil {
+			return errors.Wrapf(err, "deleting the model %s the deployment left", model.Name)
+		}
+		released++
+	}
+	lanef(tc, "  [release] the deployment left %d uploaded model(s) in the Model Registry; deleted", released)
 	return nil
 }

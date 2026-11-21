@@ -37,9 +37,7 @@ spec:
         provenance: derived
         reach: target
         privilege: uses_identity
-        condition:
-          spec_field_set: service_account
-        notes: Running the hosts as a named service account requires acting as it (held on the account).
+        notes: Running the hosts as a service account requires acting as it (held on the account) -- the one service_account names, or, when it is unset, the Compute Engine default account (PROJECT_NUMBER-compute@developer.gserviceaccount.com), which Google checks the same way (measured; Cloud TPU refuses the create with "needs to be granted the iam.serviceAccountUser role"). Listed unconditionally because a condition cannot name an unset field.
       - purpose: UseSubnetwork
         permissions:
           - compute.subnetworks.use

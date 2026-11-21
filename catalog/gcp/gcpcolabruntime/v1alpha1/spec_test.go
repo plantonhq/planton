@@ -69,6 +69,8 @@ var _ = ginkgo.Describe("GcpColabRuntimeSpec", func() {
 		msg = minimal()
 		msg.Spec.RuntimeUser = "alice"
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.RuntimeUser = "runner@my-project.iam.gserviceaccount.com"
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
 
 	ginkgo.It("should accept only RUNNING and STOPPED as a desired state", func() {

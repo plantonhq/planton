@@ -100,13 +100,17 @@ var _ = ginkgo.Describe("GcpVectorSearchCollectionSpec", func() {
 		msg.Spec.Indexes[0].FilterFields = []string{"title"}
 		msg.Spec.Indexes[0].StoreFields = []string{"title", "body"}
 		msg.Spec.Indexes[0].DedicatedInfrastructure = &GcpVectorSearchCollectionDedicatedInfrastructure{
-			Mode: "STORAGE_OPTIMIZED",
+			Mode: "PERFORMANCE_OPTIMIZED",
 			AutoscalingSpec: &GcpVectorSearchCollectionAutoscalingSpec{
 				MinReplicaCount: proto.Int32(2),
 				MaxReplicaCount: proto.Int32(4),
 			},
 		}
 		msg.Spec.DeletionPolicy = "PREVENT"
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		msg.Spec.Indexes[0].DedicatedInfrastructure.Mode = "STORAGE_OPTIMIZED"
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.Indexes[0].FeatureNormType = ""
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 	})
 
