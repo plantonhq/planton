@@ -108,7 +108,7 @@ If you do not see a repository you expect, check the App's repository access set
 Both identities work against GitHub Enterprise Server. For the sign-in on this machine, `gh auth login --hostname github.enterprise.corp` (or `GH_ENTERPRISE_TOKEN`) is what the connection names, and the connection records the server URL:
 
 ```yaml
-apiVersion: connect.planton.ai/v1
+apiVersion: connect.planton.ai/v1alpha1
 kind: GithubConnection
 metadata:
   name: github.account.priya@github.enterprise.corp

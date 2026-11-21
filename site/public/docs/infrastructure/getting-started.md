@@ -21,7 +21,7 @@ This guide walks you through deploying your first piece of infrastructure with I
 
 ## Step 1: Connect a Cloud Provider
 
-Before Infrastructure can provision infrastructure, it needs credentials for your cloud provider. Navigate to **Connect** in the web console and add your provider credentials.
+Before Infrastructure can provision infrastructure, it needs credentials for your cloud provider. Navigate to **Connections** in the web console and add your provider credentials.
 
 Each provider has its own connection type. AWS, GCP, and Azure connections can be keyless — your account trusts Planton's identity issuer, and no credential is stored (see [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections)) — or use access keys, service account keys, or service principals. Kubernetes connections use kubeconfig files.
 
