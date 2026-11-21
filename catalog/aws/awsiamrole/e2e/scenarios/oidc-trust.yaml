@@ -7,8 +7,11 @@
 # StringEquals and wildcard StringLike subjects ride separate statements),
 # and audiences stay unset to prove the sts.amazonaws.com default arm. The
 # evidence bar is GetRole echoing the composed AssumeRolePolicyDocument --
-# the Federated ARN, both statements, and the default audience -- per
-# engine. Full metadata is supplied for tagging/orphan cleanup.
+# the Federated ARN, both statements, condition keys on the bare issuer
+# (<host>/<path>:sub and :aud, no https:// -- the fixture's url carries the
+# scheme, so this proves the provider's output and the role both drop it),
+# and the default audience -- per engine. Full metadata is supplied for
+# tagging/orphan cleanup.
 apiVersion: aws.planton.dev/v1alpha1
 kind: AwsIamRole
 metadata:

@@ -5,5 +5,8 @@ output "provider_arn" {
 
 output "provider_url" {
   description = "The issuer URL AWS stored for this provider, with the https:// scheme stripped."
-  value       = aws_iam_openid_connect_provider.this.url
+  # The AWS provider hands the url back as it was configured, scheme included,
+  # while IAM's condition keys are the bare issuer (<host>/<path>:sub), so the
+  # scheme is stripped here for a role trust that references this output.
+  value = replace(aws_iam_openid_connect_provider.this.url, "/^https?:\\/\\//", "")
 }

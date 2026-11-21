@@ -1,6 +1,8 @@
 package module
 
 import (
+	"strings"
+
 	"github.com/pkg/errors"
 	"github.com/pulumi/pulumi-aws/sdk/v7/go/aws"
 	"github.com/pulumi/pulumi-aws/sdk/v7/go/aws/iam"
@@ -33,10 +35,17 @@ func oidcProvider(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) e
 		return errors.Wrap(err, "failed to create IAM OIDC provider")
 	}
 
-	// Export final outputs. createdProvider.Url is the issuer URL AWS stores with
-	// the scheme stripped, matching the provider-url segment of the ARN.
+	// Export final outputs. The provider hands Url back as it was configured,
+	// scheme included; provider_url is the bare issuer IAM's condition keys use
+	// (<host>/<path>:sub), matching the provider-url segment of the ARN.
 	ctx.Export(OpProviderArn, createdProvider.Arn)
-	ctx.Export(OpProviderUrl, createdProvider.Url)
+	ctx.Export(OpProviderUrl, createdProvider.Url.ApplyT(issuerWithoutScheme).(pulumi.StringOutput))
 
 	return nil
+}
+
+// issuerWithoutScheme is an issuer URL as IAM's condition keys name it: the
+// host and path, with no https:// (or http://) in front.
+func issuerWithoutScheme(url string) string {
+	return strings.TrimPrefix(strings.TrimPrefix(url, "https://"), "http://")
 }

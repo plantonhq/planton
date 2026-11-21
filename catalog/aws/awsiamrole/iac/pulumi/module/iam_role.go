@@ -158,7 +158,11 @@ func structToJSONString(s *structpb.Struct) (string, error) {
 // require a token to satisfy both at once.
 func composeOidcTrustPolicy(oidcTrust *iamrolev1.AwsIamRoleOidcTrust) (string, error) {
 	providerArn := oidcTrust.GetProviderArn().GetValue()
-	providerUrl := oidcTrust.GetProviderUrl().GetValue()
+	// IAM's condition keys are the bare issuer (<host>/<path>:sub). A provider
+	// URL handed over with its scheme (typed by hand, or read from a provider
+	// built before its output dropped the scheme) is stripped, or the condition
+	// would never match and every sign-in would be refused.
+	providerUrl := issuerWithoutScheme(oidcTrust.GetProviderUrl().GetValue())
 
 	// The audience condition defaults to sts.amazonaws.com — the audience EKS
 	// IRSA and GitHub Actions both present — so the common case needs no
@@ -209,4 +213,10 @@ func composeOidcTrustPolicy(oidcTrust *iamrolev1.AwsIamRoleOidcTrust) (string, e
 		return "", err
 	}
 	return string(bytes), nil
+}
+
+// issuerWithoutScheme is an issuer URL as IAM's condition keys name it: the
+// host and path, with no https:// (or http://) in front.
+func issuerWithoutScheme(url string) string {
+	return strings.TrimPrefix(strings.TrimPrefix(url, "https://"), "http://")
 }

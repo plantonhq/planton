@@ -20,6 +20,12 @@ locals {
     length(local.oidc_trust.audiences) > 0 ? local.oidc_trust.audiences : ["sts.amazonaws.com"]
   ) : []
 
+  # IAM's condition keys are the bare issuer (<host>/<path>:sub). A provider
+  # URL handed over with its scheme (typed by hand, or read from a provider
+  # built before its output dropped the scheme) is stripped, or the condition
+  # would never match and every sign-in would be refused.
+  oidc_issuer = local.oidc_trust == null ? "" : replace(local.oidc_trust.provider_url, "/^https?:\\/\\//", "")
+
   # One statement PER CONDITION OPERATOR: IAM ANDs condition operators inside
   # a statement and ORs across statements, so exact subjects (StringEquals)
   # and wildcard subjects (StringLike) must ride separate statements — mixing
@@ -36,8 +42,8 @@ locals {
       Action = "sts:AssumeRoleWithWebIdentity"
       Condition = {
         StringEquals = {
-          "${local.oidc_trust.provider_url}:sub" = local.oidc_trust.subjects
-          "${local.oidc_trust.provider_url}:aud" = local.oidc_audiences
+          "${local.oidc_issuer}:sub" = local.oidc_trust.subjects
+          "${local.oidc_issuer}:aud" = local.oidc_audiences
         }
       }
     }))] : [],
@@ -51,10 +57,10 @@ locals {
         # The audience stays an exact match even on the wildcard-subject
         # statement — only the subject pattern is fuzzy.
         StringEquals = {
-          "${local.oidc_trust.provider_url}:aud" = local.oidc_audiences
+          "${local.oidc_issuer}:aud" = local.oidc_audiences
         }
         StringLike = {
-          "${local.oidc_trust.provider_url}:sub" = local.oidc_trust.wildcard_subjects
+          "${local.oidc_issuer}:sub" = local.oidc_trust.wildcard_subjects
         }
       }
     }))] : []
