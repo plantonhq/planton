@@ -70,15 +70,17 @@ On the **Permissions** step, keep **Everything Planton Can Deploy** (recommended
 
 ### Step 4: Set Up the Trust in Your Account
 
-The **Set Up** step shows a setup script with every value filled in. Run it with the AWS CLI signed in to the account you entered (AWS CloudShell works). It runs three steps, announcing each as it starts:
+The **Set Up** step builds this connection's role in your account. The quickest way is **Launch Stack in AWS**: it opens AWS's own quick-create page with the stack filled in. Sign in to the account you entered and tick the box that reads **I acknowledge that AWS CloudFormation might create IAM resources with custom names.** Then press **Create Stack**. There is nothing to click in Planton afterwards: it waits while AWS builds the role, and **Next** opens once AWS trusts it, usually within two minutes.
+
+If you'd rather run it yourself, click **Prefer to Run It Yourself? Show the Setup Script**. The script has every value filled in; run it with the AWS CLI signed in to the account you entered (AWS CloudShell works). It runs three steps, announcing each as it starts:
 
 1. Registers Planton's issuer, `planton.ai`, as an IAM OIDC identity provider in your account, or keeps it when another Planton connection already did.
 2. Creates this connection's own role, `planton-<your organization>-prod-aws`, whose trust policy accepts only the tokens Planton signs for this connection.
 3. Writes the policies rendered from your grant onto the role.
 
-If your changes go through CloudFormation, click **Prefer CloudFormation? Show the Template** instead, download the template, and in the CloudFormation console choose **Create stack**, **Upload a template file**. It creates exactly what the script does; run one of the two.
+If your changes go through the CloudFormation console, click **Prefer the CloudFormation Console? Show the Template** instead, download the template, and choose **Create stack**, **Upload a template file**. It builds exactly what the stack builds; use one of the three.
 
-Then click **Check the Trust**. Planton asks AWS whether the role trusts this connection, and waits while AWS accepts the new role. Once AWS says yes, click **Next**.
+After the script or the template, click **Check the Trust**. Planton asks AWS whether the role trusts this connection, and waits while AWS accepts the new role. Once AWS says yes, click **Next**.
 
 If someone else administers the account, click **Create It Now, Finish the Trust Later** and hand them the script: the connection's page keeps the same setup and its check until the trust works.
 
@@ -126,14 +128,14 @@ Store the secret access key the same way. Use a distinct, descriptive name.
 planton secret set aws-secret-access-key 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'
 ```
 
-After these two commands, your AWS credentials are stored securely in Planton's config-manager. The connection you create next will reference them by slug -- the actual key values never appear in the connection spec.
+After these two commands, your AWS credentials are stored securely as Planton secrets. The connection you create next will reference them by slug -- the actual key values never appear in the connection spec.
 
 ### Step 4: Write the Connection Manifest
 
 Create a file named `aws-connection.yaml` with the following content:
 
 ```yaml
-apiVersion: connect.planton.ai/v1
+apiVersion: connect.planton.ai/v1alpha1
 kind: AwsProviderConnection
 metadata:
   name: my-aws-connection
@@ -164,8 +166,8 @@ Replace these values with your own:
 
 A few things to note about the field structure:
 
-- Fields like `account_id` and `region` accept either a direct **`value`** (as shown above) or a **`variable`** reference that points to an org-level variable in config-manager. Using variables is useful when multiple connections share the same account ID or region.
-- Fields like `access_key_id` and `secret_access_key` always use a **`secret`** reference that points to an org-level secret in config-manager. The actual credential value never appears in the YAML.
+- Fields like `account_id` and `region` accept either a direct **`value`** (as shown above) or a **`variable`** reference that points to an organization variable. Using variables is useful when multiple connections share the same account ID or region.
+- Fields like `access_key_id` and `secret_access_key` always use a **`secret`** reference that points to an organization secret. The actual credential value never appears in the YAML.
 - **`auth_mode: inline`** is the default and can be omitted, but including it makes the intent explicit.
 
 ### Step 5: Apply the Manifest
@@ -174,7 +176,7 @@ A few things to note about the field structure:
 planton apply -f aws-connection.yaml
 ```
 
-Planton validates that the referenced secrets exist in your organization's config-manager and creates the connection. A manifest without `grant` is refused with a message that says how to add it.
+Planton creates the connection; the secrets it references are read when the connection is used, so a missing one shows at Verify. A manifest without `grant` is refused with a message that says how to add it.
 
 ### Step 6: Verify the Connection
 
@@ -188,13 +190,13 @@ You should see the connection metadata and spec. The `access_key_id` and `secret
 
 ## Path C: Runner Identity
 
-This approach provides the highest security posture. Instead of storing any credentials in Planton -- even as secret references -- you deploy a Planton Runner in your own infrastructure and let it authenticate using the AWS SDK's default credential chain. The runner can use IAM Roles for Service Accounts (IRSA) on EKS, an EC2 instance profile, an ECS task role, or environment variables. No sensitive values are ever transmitted to or stored in the Planton control plane.
+Credentials never leave your infrastructure. Instead of storing any credentials in Planton -- even as secret references -- you deploy a Planton Runner in your own infrastructure and let it authenticate using the AWS SDK's default credential chain. The runner can use IAM Roles for Service Accounts (IRSA) on EKS, an EC2 instance profile, an ECS task role, or environment variables. No sensitive values are ever transmitted to or stored in the Planton control plane.
 
 This approach requires a running Planton Runner. If you do not have one yet, the steps below walk you through enrollment.
 
 ### Step 1: Create a Runner Token
 
-Create a runner token from the console's Runners area. The token is a named, revocable secret that authorizes runners to join your organization — it is never a runner's identity. A runner started with the token enrolls itself with the control plane on arrival and receives its own identity (a dedicated service account, an API key, and the mutual-TLS material for the runner-to-control-plane tunnel), stored locally on the machine where the runner runs.
+Create a runner token from the console's Runners area. The token is a named, revocable secret that authorizes runners to join your organization — it is never a runner's identity. A runner started with the token enrolls itself with the control plane on arrival and receives its own identity (a dedicated service account, an API key, and the certificate for its mutual-TLS connection to Planton), stored locally on the machine where the runner runs.
 
 ### Step 2: Deploy the Runner with AWS IAM Bindings
 
@@ -210,14 +212,14 @@ The runner uses the AWS SDK's default credential chain, so any method that makes
 
 ### Step 3: Start the Runner
 
-Start the runner with your runner token and a name (for example, `my-aws-runner`). On first start it enrolls itself — the registration appears in your Runners list at that moment — then establishes an outbound mTLS tunnel to the Planton control plane. It is now ready to receive and execute operations.
+Start the runner with your runner token and a name (for example, `my-aws-runner`). On first start it enrolls itself — the registration appears in your Runners list at that moment — then opens an outbound connection to Planton on port 443, secured with mutual TLS. It is now ready to receive and execute operations.
 
 ### Step 4: Write the Connection Manifest
 
 Create a file named `aws-runner-connection.yaml`:
 
 ```yaml
-apiVersion: connect.planton.ai/v1
+apiVersion: connect.planton.ai/v1alpha1
 kind: AwsProviderConnection
 metadata:
   name: aws-runner

@@ -55,7 +55,7 @@ flowchart TB
 
 Your account trusts Planton's identity issuer directly. For each operation, Planton signs a short-lived token for this one connection, and your cloud exchanges it for short-lived credentials: an IAM role on AWS, a service account through Workload Identity Federation on Google Cloud, or an app registration through a federated identity credential on Azure. Planton stores no access key, key file, or client secret, so there is nothing to leak or rotate.
 
-You build the trust once, in your own account, before the connection exists: with a setup script the console fills in for you, or, on Google Cloud and Azure, with **Set It Up for Me**, one consent after which Planton builds the trust and discards its access. The wizard then asks your cloud whether it trusts the connection (**Check the Trust**), and the connection is created on the next step, once it does. See [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections) for the setup on each cloud, and [What Your Cloud Trusts](/docs/security/what-your-cloud-trusts) for exactly what the trust admits.
+You build the trust once, in your own account, before the connection exists: on AWS with **Launch Stack in AWS** (AWS's own quick-create page), on Google Cloud and Azure with **Set It Up for Me** (one consent after which Planton builds the trust and discards its access), or on any cloud with a setup script the console fills in for you. The wizard then asks your cloud whether it trusts the connection (by itself after a one-click door, through **Check the Trust** after the script), and the connection is created on the next step, once it does. See [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections) for the setup on each cloud, and [What Your Cloud Trusts](/docs/security/what-your-cloud-trusts) for exactly what the trust admits.
 
 **When to use**: Production accounts, and any account where you want no stored credential and trust you can read and revoke in your own cloud.
 
@@ -103,16 +103,16 @@ When the catalog adds a kind or needs more, the connection's page offers **Updat
 
 ## What Verify Tells You
 
-Every cloud connection's page has **Verify**, and the screen after **Create** runs it once on its own. It signs in through exactly the path a deploy uses, then asks your cloud what that identity is allowed to do. The answer is what Planton can deploy with the connection, counted against what you let it deploy, the connection's grant: **"171 of 186 GCP Kinds Can Deploy"**. A connection limited to the kinds you picked reads, for example, **All 12 Granted GCP Kinds Can Deploy**.
+Every cloud connection's page has **Verify**, and the screen after **Create** runs it once on its own. (DigitalOcean is the one cloud Verify can't ask about a token's scopes; it says so, below.) It signs in through exactly the path a deploy uses, then asks your cloud what that identity is allowed to do. The answer is what Planton can deploy with the connection, counted against what you let it deploy, the connection's grant: **"171 of 186 GCP Kinds Can Deploy"**. A connection limited to the kinds you picked reads, for example, **All 12 Granted GCP Kinds Can Deploy**.
 
 <!-- SCREENSHOT: Google Cloud connection - Verify's deployability answer
   Page: /orgs/{org}/connections/gcp/{connection} (Verify panel)
   Action: Click Verify on a keyless GCP connection whose role is missing part of its grant (for example, a permission removed from the connection's role in the Google Cloud console), then open Can't Deploy Yet
-  Focus: The "N of M GCP Kinds Can Deploy" headline, the "The Cloud Is Missing Part of This Grant" notice with Apply the Grant Again and Copy Permissions for gcloud, and one blocked kind with its missing permissions
+  Focus: The "N of M GCP Kinds Can Deploy" headline, the "This Service Account Is Missing Part of the Grant" notice with Apply the Grant Again and Copy Missing Permissions, and one blocked kind with its missing permissions
   Alt: GCP connection Verify panel showing how many catalog kinds the connection can deploy, the way to apply the grant again, and a blocked kind's missing permissions
 -->
 
-- **Can't Deploy Yet** lists the kinds the connection's grant covers that its identity can't deploy yet, each with exactly the permissions it's missing. A newer catalog may need more than the identity holds, or someone removed a permission in your cloud. Above the list, one sentence says what is missing (on Google Cloud and Azure, from the connection's Planton Deployer role; on AWS, from the role's policies), and **Apply the Grant Again** gives your cloud the whole grant once more. The missing access is one click away in the form your cloud's own tool takes it, for example **Copy Permissions for gcloud**.
+- **Can't Deploy Yet** lists the kinds the connection's grant covers that its identity can't deploy yet, each with exactly the permissions it's missing. A newer catalog may need more than the identity holds, or someone removed a permission in your cloud. Above the list, one sentence says what is missing (on Google Cloud and Azure, from the connection's Planton Deployer role; on AWS, from the role's policies), and **Apply the Grant Again** gives your cloud the whole grant once more. The missing access is one click away in the form your cloud's own tool takes it, **Copy Missing Permissions** on Google Cloud, **Copy Missing Actions** on AWS and Azure.
 - **Can Deploy** lists every kind the identity can deploy. When some of these kinds' permissions were read from their modules' source and not yet proven in a live run, a note says so.
 - **Not in This Connection's Grant** lists what you chose to leave out. It never counts against the connection; **Add These Kinds** opens the grant with them ticked.
 
@@ -145,7 +145,7 @@ AWS connections support Keyless, Stored Key (an access key pair), Runner Identit
 1. Navigate to **Connections** and click the **AWS** card under Infrastructure.
 2. **Name your connection** — choose a descriptive name like "AWS Production" or "aws-dev-sandbox". The slug is derived from the name ("AWS Production" becomes `aws-production`), because a slug is lowercase letters and digits joined by single hyphens, like my-app-2.
 3. **Choose your authentication method**:
-   - **Keyless** — Enter your account ID and region, choose what Planton may deploy, then run the AWS CLI script the console gives you, or upload the same template in the CloudFormation console. The script registers Planton's identity issuer in your account and creates a role only this connection can assume; the connection is created once AWS confirms the role trusts it. See [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections#aws).
+   - **Keyless** — Enter your account ID and region, choose what Planton may deploy, then click **Launch Stack in AWS** to build the role on AWS's own quick-create page, or run the AWS CLI script the console gives you, or upload the same template in the CloudFormation console. The script registers Planton's identity issuer in your account and creates a role only this connection can assume; the connection is created once AWS confirms the role trusts it. See [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections#aws).
    - **Stored Key** — Identify the account and region, choose what Planton may deploy and attach the policies the Permissions step shows to the IAM user, then select the secrets that hold your Access Key ID and Secret Access Key (and a session token, for temporary credentials).
    - **Runner Identity** — Identify the account and region, choose what Planton may deploy, then select an existing runner or create a new one. The runner authenticates with its own AWS identity.
    - **Vault Broker** — Identify the account, choose what Planton may deploy, then point the connection at the Vault connection and secrets-engine role that issue its credentials.
@@ -252,7 +252,7 @@ For Keyless, skip the client secret: the console creates the app registration fo
 
 ## DigitalOcean
 
-DigitalOcean connections use an API token to authenticate. Optionally, you can provide Spaces credentials for object storage operations.
+DigitalOcean connections use an API token to authenticate, or **Runner Identity**: a runner of your own that holds the token. Optionally, you can provide Spaces credentials for object storage operations.
 
 ### What You Need
 
@@ -263,7 +263,7 @@ DigitalOcean connections use an API token to authenticate. Optionally, you can p
 | Spaces Access ID | Access key for DigitalOcean Spaces (optional, for object storage) |
 | Spaces Secret Key | Secret key for DigitalOcean Spaces (optional) |
 
-Generate an API token from the DigitalOcean control panel under **API > Tokens/Keys**. For Spaces, create a separate Spaces access key under **API > Spaces Keys**.
+Generate an API token from the DigitalOcean control panel under **API > Tokens/Keys**, with the scopes the console's **Show the Token Recipe** lists. For Spaces, create a separate Spaces access key under **API > Spaces Keys**.
 
 From the terminal: `planton connect digitalocean --print-documents` prints the scopes the token needs and where to create it. Then pass the token in `DIGITALOCEAN_TOKEN` or on stdin, never as a flag, so it stays out of your shell history:
 
@@ -275,13 +275,13 @@ DIGITALOCEAN_TOKEN=dop_v1_... planton connect digitalocean --region nyc3
 
 ## Cloudflare
 
-Cloudflare connections support two authentication schemes. The recommended approach uses a scoped API token; the legacy approach uses a global API key with your account email.
+Cloudflare connections either store a credential in Planton or use **Runner Identity** (a runner of your own that holds the credential). A stored credential is one of two schemes. The recommended approach uses a scoped API token; the legacy approach uses a global API key with your account email.
 
 ### What You Need (Recommended)
 
 | Field | Description |
 |-------|-------------|
-| API Token | A scoped API token created in the Cloudflare dashboard |
+| API Token | A scoped API token created in the Cloudflare dashboard under **My Profile > API Tokens**, with the permissions the console's **Show the Token Recipe** lists |
 
 From the terminal: `planton connect cloudflare --print-documents` prints the permissions the token needs. Then pass the token in `CLOUDFLARE_API_TOKEN` or on stdin, never as a flag:
 

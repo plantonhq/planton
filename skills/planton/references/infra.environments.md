@@ -211,7 +211,7 @@ means per instance type:
   whole organization:
 
   ```yaml
-  apiVersion: connect.planton.ai/v1
+  apiVersion: connect.planton.ai/v1alpha1
   kind: ProviderConnectionAuthorization
   metadata:
     name: <connection-slug>-authorization

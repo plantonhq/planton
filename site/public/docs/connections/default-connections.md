@@ -46,7 +46,7 @@ Resolution:
 
 ## Prerequisites
 
-A connection must be [authorized](/docs/connections/environment-mappings) for an environment before it can be set as the default for that environment. This ensures that defaults can only reference credentials that have been explicitly approved for use. If you try to set a default that isn't authorized, the operation fails.
+A connection must be [authorized](/docs/connections/environment-mappings) for an environment before it can be set as the default for that environment. This ensures that defaults can only reference credentials that have been explicitly approved for use. If you set a default for an environment the connection isn't authorized for, the default is saved and the CLI warns you, with the command that authorizes it.
 
 ## Setting Defaults via the Web Console
 
