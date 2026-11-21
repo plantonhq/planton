@@ -25,3 +25,8 @@ output "location" {
   description = "The location the model is deployed in"
   value       = google_vertex_ai_endpoint_with_model_garden_deployment.this.location
 }
+
+output "service_attachment" {
+  description = "The service attachment Google generated for the endpoint's Private Service Connect (empty without it)"
+  value       = try(google_vertex_ai_endpoint_with_model_garden_deployment.this.endpoint_config[0].private_service_connect_config[0].service_attachment, null)
+}

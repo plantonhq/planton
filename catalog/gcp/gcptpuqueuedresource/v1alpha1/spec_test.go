@@ -38,7 +38,7 @@ var _ = ginkgo.Describe("GcpTpuQueuedResourceSpec", func() {
 			Spec: &GcpTpuQueuedResourceSpec{
 				Zone: "us-central1-a",
 				NodeSpecs: []*GcpTpuQueuedResourceNodeSpec{
-					{Node: &GcpTpuQueuedResourceNode{RuntimeVersion: "tpu-ubuntu2204-base"}},
+					{NodeId: "train-node", Node: &GcpTpuQueuedResourceNode{RuntimeVersion: "tpu-ubuntu2204-base"}},
 				},
 			},
 		}
@@ -93,10 +93,16 @@ var _ = ginkgo.Describe("GcpTpuQueuedResourceSpec", func() {
 		}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 		msg.Spec.NodeSpecs = []*GcpTpuQueuedResourceNodeSpec{
-			{Node: &GcpTpuQueuedResourceNode{RuntimeVersion: "r"}},
-			{Node: &GcpTpuQueuedResourceNode{RuntimeVersion: "r"}},
+			{NodeId: "worker-a", Node: &GcpTpuQueuedResourceNode{RuntimeVersion: "r"}},
+			{NodeId: "worker-b", Node: &GcpTpuQueuedResourceNode{RuntimeVersion: "r"}},
 		}
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should require every node to be named", func() {
+		msg := minimal()
+		msg.Spec.NodeSpecs[0].NodeId = ""
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
 
 	ginkgo.It("should reject malformed ids and an unknown deletion policy", func() {

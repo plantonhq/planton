@@ -17,6 +17,8 @@ This directory contains the Pulumi implementation for a Colab Enterprise runtime
 - **Optional+Computed settings** -- sent only when set; `DiskSizeGb` as a decimal string.
 - **Lifted wrappers** -- `IdleShutdownConfig`, `EucConfig`, `ShieldedVmConfig`, `EncryptionSpec` only when their spec field is set.
 - **`Subnetwork`** -- a `GcpSubnetwork` self-link trimmed to its relative path.
+- **`Location`** -- `ReplaceOnChanges` makes a changed location replace the template -- the Terraform module's `terraform_data` tracker.
+- **Fixed at creation** -- the provider never sends a changed idle timeout, and turning EUC or Secure Boot off sends nothing; a different value needs a new template.
 
 ## Usage
 

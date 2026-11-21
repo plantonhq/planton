@@ -14,14 +14,19 @@ variable "metadata" {
 variable "spec" {
   description = "GcpModelArmorFloorSetting specification"
   type = object({
-    # Whose floor this is. Omit for the provider's default project.
+    # Whose floor this is. Omit for the provider's default project: an empty
+    # scope and a project_id naming that same project are the same floor.
+    # A deploy whose provider has no default project is refused by both
+    # engines before anything is sent. Changing the scope replaces the
+    # floor (see above).
     scope = optional(object({
       # Project floor: a literal project ID or a GcpProject reference.
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       project_id = optional(string, "")
 
-      # Folder floor: the folder's numeric ID -- a literal or a GcpFolder
-      # reference. Every project and folder beneath it inherits the floor.
+      # Folder floor: the folder's numeric ID, without the folders/ prefix --
+      # a literal or a GcpFolder reference. Every project and folder beneath
+      # it inherits the floor.
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       folder_id = optional(string, "")
 
@@ -32,7 +37,8 @@ variable "spec" {
 
     # The location of the floor setting. Google manages floor settings at
     # "global", the default; set a region only if Google documents a
-    # regional floor for your case.
+    # regional floor for your case. Changing it replaces the floor (see
+    # above).
     location = optional(string, "")
 
     # Turn the floor on. While false the floor is recorded but nothing is
@@ -42,28 +48,34 @@ variable "spec" {
 
     # The Google services whose traffic the floor screens directly:
     #   "AI_PLATFORM"       -- Vertex AI model calls (configure the behavior
-    #                          in ai_platform_floor_setting)
+    #                          in ai_platform_floor_setting, required with it)
     #   "GOOGLE_MCP_SERVER" -- Google-hosted MCP servers (configure it in
-    #                          google_mcp_server_floor_setting)
-    # Empty: the floor only governs templates.
+    #                          google_mcp_server_floor_setting, required with
+    #                          it)
+    # Each service and its setting come together: a service without its
+    # setting, or a setting without its service, is refused. Empty: the
+    # floor only governs templates.
     integrated_services = optional(list(string), [])
 
-    # The minimum filters. Required: a floor with no filters sets no
-    # minimum.
+    # The minimum filters. Required, but an empty block is accepted and sets
+    # no minimum: a filter constrains templates and traffic only once its
+    # own block is set.
     filter_config = object({
       # Malicious URL detection.
       malicious_uri_filter_settings = optional(object({
-        # "ENABLED" or "DISABLED".
+        # "ENABLED" or "DISABLED". Unset is Google's default, which is disabled.
         filter_enforcement = optional(string, "")
       }))
 
       # Prompt injection and jailbreak detection.
       pi_and_jailbreak_filter_settings = optional(object({
-        # "ENABLED" or "DISABLED".
+        # "ENABLED" or "DISABLED". Unset is Google's default, which is disabled.
         filter_enforcement = optional(string, "")
 
-        # The weakest threshold a template may use: "LOW_AND_ABOVE" (strictest),
-        # "MEDIUM_AND_ABOVE", or "HIGH".
+        # The weakest threshold a template may use, and the threshold integrated
+        # services' traffic is screened at: "LOW_AND_ABOVE" (strictest),
+        # "MEDIUM_AND_ABOVE", or "HIGH". Unset is Google's default, which is
+        # LOW_AND_ABOVE.
         confidence_level = optional(string, "")
       }))
 
@@ -74,8 +86,10 @@ variable "spec" {
           # "SEXUALLY_EXPLICIT", "HATE_SPEECH", "HARASSMENT", or "DANGEROUS".
           filter_type = string
 
-          # The weakest threshold a template may use for this category:
-          # "LOW_AND_ABOVE" (strictest), "MEDIUM_AND_ABOVE", or "HIGH".
+          # The weakest threshold a template may use for this category, and the
+          # threshold integrated services' traffic is screened at:
+          # "LOW_AND_ABOVE" (strictest), "MEDIUM_AND_ABOVE", or "HIGH". Unset is
+          # Google's default, which is LOW_AND_ABOVE.
           confidence_level = optional(string, "")
         }))
       }))
@@ -84,7 +98,7 @@ variable "spec" {
       sdp_settings = optional(object({
         # Google's predefined sensitive-data detectors.
         basic_config = optional(object({
-          # "ENABLED" or "DISABLED".
+          # "ENABLED" or "DISABLED". Unset is Google's default, which is disabled.
           filter_enforcement = optional(string, "")
         }))
 
@@ -102,7 +116,8 @@ variable "spec" {
       }))
     })
 
-    # How the floor treats Vertex AI traffic when AI_PLATFORM is integrated.
+    # How the floor treats Vertex AI traffic. Set exactly when AI_PLATFORM
+    # is in integrated_services.
     ai_platform_floor_setting = optional(object({
       # What happens when the floor's filters trip on the service's traffic:
       #   "INSPECT_ONLY"      -- the verdict is recorded and the call proceeds
@@ -115,8 +130,8 @@ variable "spec" {
       enable_cloud_logging = optional(bool, false)
     }))
 
-    # How the floor treats Google MCP server traffic when GOOGLE_MCP_SERVER
-    # is integrated.
+    # How the floor treats Google MCP server traffic. Set exactly when
+    # GOOGLE_MCP_SERVER is in integrated_services.
     google_mcp_server_floor_setting = optional(object({
       # What happens when the floor's filters trip on the service's traffic:
       #   "INSPECT_ONLY"      -- the verdict is recorded and the call proceeds

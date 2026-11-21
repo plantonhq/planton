@@ -14,7 +14,7 @@ A production deployment of a Model Garden publisher model on an explicit GPU sha
 
 - An uploaded Model (`gemma-2b`) served by Model Garden's vLLM image on `/generate`, health on `/ping`
 - Dedicated resources: `g2-standard-12` + `NVIDIA_L4`, 1-2 Spot replicas, scaling at 70% accelerator duty cycle
-- A dedicated endpoint (`{endpoint}.us-central1-{project}.prediction.vertexai.goog`)
+- A dedicated endpoint (`{endpoint_name}.us-central1-{project_number}.prediction.vertexai.goog`)
 - `deletionPolicy: PREVENT`
 
 ## Customize
@@ -28,4 +28,4 @@ A production deployment of a Model Garden publisher model on an explicit GPU sha
 | `endpointConfig.dedicatedEndpointEnabled` | `true` | `false` to serve from the shared regional host. |
 | `endpointConfig.privateServiceConnectConfig` | none | Expose the endpoint over Private Service Connect to allowlisted projects. |
 
-Every field is immutable; change anything and the deployment is replaced (the endpoint ID changes). The GPU bills from the moment the replica is ready; `minReplicaCount` is the committed spend.
+The replica bounds and autoscaling metrics change in place and keep the endpoint; change anything else and the deployment is replaced (the endpoint ID changes). The GPU bills from the moment the replica is ready; `minReplicaCount` is the committed spend.

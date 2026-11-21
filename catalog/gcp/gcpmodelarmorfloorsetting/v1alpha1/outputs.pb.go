@@ -28,7 +28,10 @@ type GcpModelArmorFloorSettingOutputs struct {
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// The parent the floor governs: projects/{id}, folders/{id}, or
 	// organizations/{id}.
-	Parent        string `protobuf:"bytes,2,opt,name=parent,proto3" json:"parent,omitempty"`
+	Parent string `protobuf:"bytes,2,opt,name=parent,proto3" json:"parent,omitempty"`
+	// The location the floor is managed at ("global" unless the spec names
+	// another).
+	Location      string `protobuf:"bytes,3,opt,name=location,proto3" json:"location,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -77,14 +80,22 @@ func (x *GcpModelArmorFloorSettingOutputs) GetParent() string {
 	return ""
 }
 
+func (x *GcpModelArmorFloorSettingOutputs) GetLocation() string {
+	if x != nil {
+		return x.Location
+	}
+	return ""
+}
+
 var File_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/gcp/gcpmodelarmorfloorsetting/v1alpha1/outputs.proto\x122dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1\"N\n" +
+	"<catalog/gcp/gcpmodelarmorfloorsetting/v1alpha1/outputs.proto\x122dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1\"j\n" +
 	" GcpModelArmorFloorSettingOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x16\n" +
-	"\x06parent\x18\x02 \x01(\tR\x06parentB\xa2\x03\n" +
+	"\x06parent\x18\x02 \x01(\tR\x06parent\x12\x1a\n" +
+	"\blocation\x18\x03 \x01(\tR\blocationB\xa2\x03\n" +
 	"6com.dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1B\fOutputsProtoP\x01Zmgithub.com/plantonhq/planton/catalog/gcp/gcpmodelarmorfloorsetting/v1alpha1;gcpmodelarmorfloorsettingv1alpha1\xa2\x02\x04DPGG\xaa\x022Dev.Planton.Gcp.Gcpmodelarmorfloorsetting.V1alpha1\xca\x022Dev\\Planton\\Gcp\\Gcpmodelarmorfloorsetting\\V1alpha1\xe2\x02>Dev\\Planton\\Gcp\\Gcpmodelarmorfloorsetting\\V1alpha1\\GPBMetadata\xea\x026Dev::Planton::Gcp::Gcpmodelarmorfloorsetting::V1alpha1b\x06proto3"
 
 var (

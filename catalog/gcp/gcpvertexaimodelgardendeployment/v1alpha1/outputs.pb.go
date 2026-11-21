@@ -39,9 +39,15 @@ type GcpVertexAiModelGardenDeploymentOutputs struct {
 	// The display name Vertex AI gave the deployed model.
 	DeployedModelDisplayName string `protobuf:"bytes,4,opt,name=deployed_model_display_name,json=deployedModelDisplayName,proto3" json:"deployed_model_display_name,omitempty"`
 	// The location the model is deployed in.
-	Location      string `protobuf:"bytes,5,opt,name=location,proto3" json:"location,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	Location string `protobuf:"bytes,5,opt,name=location,proto3" json:"location,omitempty"`
+	// The service attachment Google generated for the endpoint's Private
+	// Service Connect, as
+	// projects/{project}/regions/{region}/serviceAttachments/{name} -- what a
+	// consumer's forwarding rule targets. Empty unless
+	// endpoint_config.private_service_connect_config is on.
+	ServiceAttachment string `protobuf:"bytes,6,opt,name=service_attachment,json=serviceAttachment,proto3" json:"service_attachment,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *GcpVertexAiModelGardenDeploymentOutputs) Reset() {
@@ -109,18 +115,26 @@ func (x *GcpVertexAiModelGardenDeploymentOutputs) GetLocation() string {
 	return ""
 }
 
+func (x *GcpVertexAiModelGardenDeploymentOutputs) GetServiceAttachment() string {
+	if x != nil {
+		return x.ServiceAttachment
+	}
+	return ""
+}
+
 var File_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/gcp/gcpvertexaimodelgardendeployment/v1alpha1/outputs.proto\x129dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1\"\xf6\x01\n" +
+	"Ccatalog/gcp/gcpvertexaimodelgardendeployment/v1alpha1/outputs.proto\x129dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1\"\xa5\x02\n" +
 	"'GcpVertexAiModelGardenDeploymentOutputs\x12\x1f\n" +
 	"\vendpoint_id\x18\x01 \x01(\tR\n" +
 	"endpointId\x12#\n" +
 	"\rendpoint_name\x18\x02 \x01(\tR\fendpointName\x12*\n" +
 	"\x11deployed_model_id\x18\x03 \x01(\tR\x0fdeployedModelId\x12=\n" +
 	"\x1bdeployed_model_display_name\x18\x04 \x01(\tR\x18deployedModelDisplayName\x12\x1a\n" +
-	"\blocation\x18\x05 \x01(\tR\blocationB\xd3\x03\n" +
+	"\blocation\x18\x05 \x01(\tR\blocation\x12-\n" +
+	"\x12service_attachment\x18\x06 \x01(\tR\x11serviceAttachmentB\xd3\x03\n" +
 	"=com.dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1B\fOutputsProtoP\x01Z{github.com/plantonhq/planton/catalog/gcp/gcpvertexaimodelgardendeployment/v1alpha1;gcpvertexaimodelgardendeploymentv1alpha1\xa2\x02\x04DPGG\xaa\x029Dev.Planton.Gcp.Gcpvertexaimodelgardendeployment.V1alpha1\xca\x029Dev\\Planton\\Gcp\\Gcpvertexaimodelgardendeployment\\V1alpha1\xe2\x02EDev\\Planton\\Gcp\\Gcpvertexaimodelgardendeployment\\V1alpha1\\GPBMetadata\xea\x02=Dev::Planton::Gcp::Gcpvertexaimodelgardendeployment::V1alpha1b\x06proto3"
 
 var (

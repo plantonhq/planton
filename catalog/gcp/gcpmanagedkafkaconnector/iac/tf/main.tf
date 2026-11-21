@@ -7,8 +7,9 @@ resource "google_managed_kafka_connector" "this" {
   connector_id    = local.connector_id
   configs         = local.configs
 
-  # Omitted, failed tasks stay failed; declared, each backoff is sent only
-  # when set so Google's default fills the other.
+  # Omitted, no policy is sent; declared (the spec requires at least one
+  # backoff), each backoff is sent only when set so Google's default fills
+  # the other.
   dynamic "task_restart_policy" {
     for_each = var.spec.task_restart_policy != null ? [var.spec.task_restart_policy] : []
     content {

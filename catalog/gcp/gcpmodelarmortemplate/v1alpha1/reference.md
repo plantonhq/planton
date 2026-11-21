@@ -125,8 +125,9 @@ application calls Model Armor's endpoint for this location. Immutable.
 
 The template's id -- the last segment of its resource name, what an
 application passes to Model Armor. Letters, digits, hyphens, and
-underscores, up to 63 characters. Defaults to metadata.name.
-Immutable.
+underscores, up to 63 characters. Defaults to metadata.name, which
+must then fit the same rule: both engines refuse a metadata.name that
+does not before anything is sent. Immutable.
 
 - rule: template_id must be 1-63 letters, digits, hyphens, or underscores
 
@@ -141,8 +142,10 @@ and win on key conflicts.
 
 `GcpModelArmorTemplateFilterConfig` · required
 
-Which filters run and how sensitive each one is. Required: a template
-with no filter configuration screens nothing.
+Which filters run and how sensitive each one is. Required, but an empty
+block is accepted and screens nothing: a filter runs only once its own
+block is set with filter_enforcement ENABLED (the Responsible AI
+filters run once listed).
 
 - rule: {"required":true}
 
@@ -185,6 +188,7 @@ How confident Model Armor must be before it flags a prompt:
                         the most false positives
   "MEDIUM_AND_ABOVE" -- the balanced choice
   "HIGH"             -- flags only clear attempts
+Unset is Google's default, which is LOW_AND_ABOVE.
 
 - rule: confidence_level must be LOW_AND_ABOVE, MEDIUM_AND_ABOVE, or HIGH
 
@@ -220,6 +224,7 @@ The content category: "SEXUALLY_EXPLICIT", "HATE_SPEECH",
 
 How confident Model Armor must be before it flags content in this
 category: "LOW_AND_ABOVE" (strictest), "MEDIUM_AND_ABOVE", or "HIGH".
+Unset is Google's default, which is LOW_AND_ABOVE.
 
 - rule: confidence_level must be LOW_AND_ABOVE, MEDIUM_AND_ABOVE, or HIGH
 
@@ -243,7 +248,7 @@ government IDs, credentials, and similar). The quick start.
 
 `string`
 
-"ENABLED" or "DISABLED".
+"ENABLED" or "DISABLED". Unset leaves Google's default (disabled).
 
 - rule: filter_enforcement must be ENABLED or DISABLED
 
@@ -254,6 +259,8 @@ government IDs, credentials, and similar). The quick start.
 Your own Sensitive Data Protection templates: an inspect template
 decides what counts as sensitive, and an optional de-identify template
 decides how findings are redacted in the sanitized text.
+
+- rule: deidentify_template needs inspect_template: the inspect template decides what the de-identify template redacts
 
 ### spec.filterConfig.sdpSettings.advancedConfig.inspectTemplate
 
@@ -348,7 +355,7 @@ What happens when a filter trips:
   "INSPECT_ONLY"      -- the verdict is reported and the traffic
                          passes (a safe way to tune a new template)
   "INSPECT_AND_BLOCK" -- the traffic is blocked
-Unset keeps Google's default.
+Unset keeps Google's default, which is INSPECT_AND_BLOCK.
 
 - rule: enforcement_type must be INSPECT_ONLY or INSPECT_AND_BLOCK
 

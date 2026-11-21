@@ -2,9 +2,18 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpgkefleetfeature.v1alpha1;
 
-// GcpGkeFleetFeatureOutputs carries the feature's identity.
+// GcpGkeFleetFeatureOutputs carries the feature's identity and the state
+// Google reports for it.
 message GcpGkeFleetFeatureOutputs {
   // Full resource name:
   // projects/{project}/locations/{location}/features/{feature}.
   string name = 1;
+
+  // The feature's lifecycle state in the fleet: ENABLING, ACTIVE,
+  // DISABLING, UPDATING, or SERVICE_UPDATING.
+  string resource_state = 2;
+
+  // The feature's health as Google reports it: OK, WARNING, or ERROR.
+  // Empty until Google has assessed the feature.
+  string state_code = 3;
 }

@@ -13,9 +13,9 @@ This directory contains the Pulumi implementation for a Model Armor template fro
 
 ## Send Posture (parity with Terraform)
 
-- **`TemplateId`** -- `spec.template_id`, defaulting to `metadata.name`.
+- **`TemplateId`** -- `spec.template_id`, defaulting to `metadata.name`; an id outside 1-63 letters, digits, hyphens, or underscores is refused before anything is sent, with the Terraform module's sentence.
 - **Filter settings** -- each emitted only when its spec message is set; optional strings only when set.
-- **`TemplateMetadata`** -- emitted only when set; bools as declared, codes and strings only when set; `MultiLanguageDetection` only when the lifted bool is true.
+- **`TemplateMetadata`** -- emitted only when set; bools only when true (Google's default for each is false), codes and strings only when set; `MultiLanguageDetection` only when the lifted bool is true.
 - **`DeletionPolicy`** -- sent only when set.
 
 ## Usage

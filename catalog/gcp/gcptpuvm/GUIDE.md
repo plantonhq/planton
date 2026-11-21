@@ -26,7 +26,7 @@ When a create fails for lack of capacity, a `GcpTpuQueuedResource` asks for the 
 
 ## Networking
 
-`networkConfig` (one interface) or `networkConfigs` (several, for multi-NIC hosts) picks the network and subnetwork (default: the `default` network). With `enableExternalIps: false`, the subnetwork needs Private Google Access or Cloud NAT to reach Google APIs and package mirrors. `cidrBlock` (a /29) pins where addresses come from; `tags` let firewall rules target the hosts.
+`networkConfig` (one interface) or `networkConfigs` (several, for multi-NIC hosts) picks the network and subnetwork (default: the project's network named `default`, which many organizations never create -- a project without it must name a network). With `enableExternalIps: false`, the subnetwork needs Private Google Access or Cloud NAT to reach Google APIs and package mirrors. `cidrBlock` (a /29) pins where addresses come from; `tags` let firewall rules target the hosts.
 
 ## Identity, disks, and startup
 

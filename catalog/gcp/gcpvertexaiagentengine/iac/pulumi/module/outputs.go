@@ -8,4 +8,5 @@ const (
 	OpLocation          = "location"
 	OpCreateTime        = "create_time"
 	OpUpdateTime        = "update_time"
+	OpEffectiveIdentity = "effective_identity"
 )

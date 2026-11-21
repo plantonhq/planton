@@ -59,7 +59,7 @@ planton apply -f managed-kafka-connect-cluster.yaml
 | Field | Type | Description |
 |-------|------|-------------|
 | `location` | `string` | The region the workers run in. Immutable. |
-| `kafkaCluster` | `StringValueOrRef` | The Kafka cluster -- a `GcpManagedKafkaCluster` reference or a full path. |
+| `kafkaCluster` | `StringValueOrRef` | The Kafka cluster -- a `GcpManagedKafkaCluster` reference or a full path. Immutable: a change replaces the Connect cluster and deletes its connectors. |
 | `capacityConfig.vcpuCount` | `int64` | At least 3. |
 | `capacityConfig.memoryBytes` | `int64` | At least 3 GiB, at a 1:1 to 1:8 vCPU:GiB ratio. |
 | `networkConfigs[].primarySubnet` | `StringValueOrRef` | 1-10 subnets for the workers' interface. |
@@ -69,7 +69,7 @@ planton apply -f managed-kafka-connect-cluster.yaml
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `projectId` | `StringValueOrRef` | provider project | The project. |
-| `connectClusterId` | `string` | `metadata.name` | Immutable. |
+| `connectClusterId` | `string` | `metadata.name` | RFC 1035, 1-63 characters. Immutable. |
 | `networkConfigs[].dnsDomainNames` | `[]string` | none | Extra DNS domains the workers resolve -- a MirrorMaker 2 source cluster's domain. |
 | `labels` | `map<string,string>` | `{}` | Labels; attribution labels win. |
 | `deletionPolicy` | `string` | `DELETE` | `DELETE`, `PREVENT`, or `ABANDON`. |
@@ -78,6 +78,7 @@ planton apply -f managed-kafka-connect-cluster.yaml
 
 - `vcpuCount` at least 3; `memoryBytes` at least 3 GiB and 1-8 GiB per vCPU.
 - A literal `kafkaCluster` is the full path `projects/{p}/locations/{l}/clusters/{c}`.
+- `connectClusterId` follows RFC 1035; a literal primary subnet is in the Connect cluster's region.
 - 1-10 network configs.
 
 ## Outputs

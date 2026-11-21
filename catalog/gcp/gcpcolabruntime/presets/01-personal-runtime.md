@@ -19,4 +19,4 @@ A runtime waiting for one person on the team's standard template, which they sta
 |-------|---------|------------|
 | `runtimeUser` | `alice@example.com` | The person the runtime belongs to. |
 | `runtimeTemplate` | `standard-cpu` | A GPU or private template for other roles. |
-| `desiredState` | unset | `STOPPED` to park it until needed (enforced on every apply). |
+| `desiredState` | unset | `STOPPED` to park it until needed (applied when it changes; a user can still start it in Colab Enterprise). |

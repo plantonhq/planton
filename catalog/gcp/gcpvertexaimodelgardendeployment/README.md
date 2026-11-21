@@ -1,6 +1,6 @@
 # GCP Vertex AI Model Garden Deployment
 
-Deploys a Model Garden or Hugging Face model to a Vertex AI endpoint in one step: Vertex AI uploads the model, creates an endpoint, and deploys the model to it on the compute you declare (or on Model Garden's recommended shape when you declare none). Name a publisher model like `publishers/google/models/gemma@gemma-1.1-2b-it` or a Hugging Face id like `Qwen/Qwen3-0.6B`, accept the license, and you have a serving endpoint. Every field is immutable -- a change redeploys -- and the replicas bill from the moment they are ready.
+Deploys a Model Garden or Hugging Face model to a Vertex AI endpoint in one step: Vertex AI uploads the model, creates an endpoint, and deploys the model to it on the compute you declare (or on Model Garden's recommended shape when you declare none). Name a publisher model like `publishers/google/models/gemma@gemma-1.1-2b-it` or a Hugging Face id like `Qwen/Qwen3-0.6B`, accept the license, and you have a serving endpoint. Only the replica bounds and autoscaling change in place -- any other change redeploys -- and the replicas bill from the moment they are ready.
 
 ## What Gets Created
 
@@ -82,6 +82,7 @@ planton apply -f model-garden-deployment.yaml
 | `deployed_model_id` | `string` | The deployed model's numeric ID on the endpoint |
 | `deployed_model_display_name` | `string` | The display name Vertex AI gave the deployed model |
 | `location` | `string` | The deployment's location |
+| `service_attachment` | `string` | The Private Service Connect service attachment consumers' forwarding rules target (empty without PSC) |
 
 ## Deployment Methods
 
@@ -95,7 +96,8 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 ## Important Notes
 
-- **Everything is immutable.** Any change undeploys the model, deletes the endpoint, and redeploys; the endpoint ID changes and clients pointed at the old one break. Roll forward with a second block and cut traffic over.
+- **Almost everything is immutable.** `minReplicaCount`, `maxReplicaCount`, `requiredReplicaCount`, and `autoscalingMetricSpecs` under `dedicatedResources` change in place and keep the endpoint. Any other change -- the Hugging Face token included -- undeploys the model, deletes the endpoint, and redeploys; the endpoint ID changes and clients pointed at the old one break. Roll forward with a second block and cut traffic over.
+- **Destroy keeps the uploaded model.** It undeploys the model and deletes the endpoint; Google's provider makes no call that deletes the uploaded Model resource.
 - **Replicas bill from ready.** `minReplicaCount` is the committed spend; there is no scale-to-zero.
 - **Omit `deployConfig` to accept Model Garden's recommendation** -- the fastest way to a working endpoint, at whatever machine shape the model recommends.
 - **The Hugging Face token lands in engine state in plain text.** Google's provider does not mark `huggingFaceAccessToken` sensitive, so Terraform state and Pulumi state carry it as written; Planton treats the spec field as a secret (it is never logged or shown), and the state backend's own encryption is what protects it at rest. Use a read-only, model-scoped token.

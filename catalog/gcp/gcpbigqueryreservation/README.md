@@ -52,17 +52,16 @@ planton apply -f bigquery-reservation.yaml
 
 ### Required Fields
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `slotCapacity` | `int64` | Baseline slots, billed always; 0 is valid with autoscaling. |
+None: an empty spec is a zero-baseline reservation in `US`.
 
 ### Optional Fields
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
+| `slotCapacity` | `int64` | `0` | Baseline slots, billed always; 0 is valid with autoscaling. |
 | `projectId` | `StringValueOrRef` | provider project | The admin project. |
-| `location` | `string` | `US` | Multi-region or region. Immutable. |
-| `reservationName` | `string` | `metadata.name` | Letters, digits, dashes. Immutable. |
+| `location` | `string` | `US` | `US` or `EU` in upper case, or a region in lower case. Immutable. |
+| `reservationName` | `string` | `metadata.name` | Lowercase letters, digits, dashes; starts with a letter, at most 64; not `none`. Immutable. |
 | `edition` | `string` | Google's choice | `STANDARD`, `ENTERPRISE`, `ENTERPRISE_PLUS`. Immutable. |
 | `autoscaleMaxSlots` | `int64` | off | Slots autoscaling may add above the baseline. |
 | `ignoreIdleSlots` | `bool` | `false` | `true` caps queries at this reservation's own slots. |
@@ -76,6 +75,9 @@ planton apply -f bigquery-reservation.yaml
 ### Validation Rules
 
 - Each assignment has exactly one assignee and is unique by assignee, job type, and principal.
+- `CONTINUOUS` assignments never share a reservation with other job types.
+- A literal folder is its bare numeric ID; a literal group path is in the reservation's project and location.
+- `location` is `US`, `EU`, or a lowercase region; `reservationName` follows Google's rule and is never `none`.
 - Job types, editions, and the numeric organization id follow Google's forms; principals start with `principal://`.
 - Slot counts are non-negative.
 
@@ -100,7 +102,9 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 ## Important Notes
 
-- **Assignments are immutable.** Any change to an assignment replaces it; its jobs fall back to on-demand for the moment in between.
+- **Assignments are immutable.** A changed assignment is the old one deleted and a new one created; in between, its jobs fall back to the next assignment up the hierarchy (project, folder, organization), then to on-demand.
+- **The deletion policy is on every assignment.** Under `PREVENT` no assignment can be removed or changed -- apply `DELETE` on its own first; under `ABANDON` a removed or changed assignment stays in GCP, still routing its jobs here.
+- **One assignment per job type and location.** Google allows each assignee one assignment per job type in a location, across every reservation: move an assignee by removing its assignment in one apply and adding it elsewhere in the next.
 - **Assigning needs rights on both sides.** Creating an assignment needs `bigquery.reservationAssignments.create` on the admin project and on the assignee.
 - **On-demand pinning is not here.** Assigning a project to BigQuery's built-in `none` reservation (to force on-demand pricing) is a standalone assignment this block does not express.
 

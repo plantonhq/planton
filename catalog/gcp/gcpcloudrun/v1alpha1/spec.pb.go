@@ -346,6 +346,14 @@ type GcpCloudRunSpec struct {
 	//	"PREVENT"     -- destroy operations fail while this is set
 	//	"ABANDON"     -- the service is removed from management but left
 	//	                 running in GCP
+	//
+	// ABANDON covers the service only. The Secret Manager secrets this
+	// component keeps for env[].secret_value, their versions, and the
+	// service identity's access grant on them are still deleted on both
+	// engines, so the abandoned service can no longer read those secrets:
+	// its next instance start fails. A service meant to outlive this
+	// resource should take every secret through value_from_secret, from a
+	// Secret Manager secret you own.
 	DeletionPolicy string `protobuf:"bytes,36,opt,name=deletion_policy,json=deletionPolicy,proto3" json:"deletion_policy,omitempty"`
 	// Sandbox templates the instance's supervisor container (the one with
 	// sandbox_launcher) may launch on demand: isolated, short-lived
@@ -1065,7 +1073,8 @@ type GcpCloudRunEnvVar struct {
 	// identity secretAccessor on that secret alone, and points the variable at
 	// that exact version -- the revision carries a reference, never the value.
 	// A changed value adds a version and stamps a new revision, so rotation is
-	// a deploy; destroying the service removes the secret.
+	// a deploy; destroying the service removes the secret, under every
+	// deletion_policy (ABANDON included -- see deletion_policy).
 	SecretValue   string `protobuf:"bytes,4,opt,name=secret_value,json=secretValue,proto3" json:"secret_value,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

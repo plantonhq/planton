@@ -85,6 +85,7 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 | `name` | The image's name | Tooling |
 | `disk_size_gb` | The image's size | Sizing boot disks |
 | `image_id` | `projects/{project}/global/images/{name}` | A GKE node pool's secondary boot disk image |
+| `archive_size_bytes` | The image archive's size in bytes | Storage cost tracking |
 
 ## Common Patterns
 

@@ -23,14 +23,20 @@ variable "spec" {
     # The region the workers run in, e.g. "us-central1". Immutable.
     location = string
 
-    # The Connect cluster's ID. Defaults to metadata.name. Immutable.
+    # The Connect cluster's ID -- 1-63 characters, RFC 1035 (lowercase
+    # letters, digits, hyphens; starts with a letter). Defaults to
+    # metadata.name, which must then fit the same rule. Immutable.
     connect_cluster_id = optional(string, "")
 
     # The Kafka cluster the workers attach to (their internal topics and the
     # connectors' default cluster): a GcpManagedKafkaCluster reference (its
     # name output) or a literal full path
-    # projects/{project}/locations/{location}/clusters/{cluster}. Mutable in
-    # place.
+    # projects/{project}/locations/{location}/clusters/{cluster}. Immutable:
+    # Google fixes the Kafka cluster once the workers attach to it, so moving
+    # them to another Kafka cluster means a new Connect cluster -- the
+    # modules replace it, and the connectors on it are deleted with the old
+    # one. Their GcpManagedKafkaConnector blocks create them again on their
+    # next apply.
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     kafka_cluster = string
 
@@ -41,8 +47,8 @@ variable "spec" {
       vcpu_count = optional(number, 0)
 
       # Memory for the Connect workers, in BYTES as a plain number -- at least
-      # 3 GiB (3221225472), at a vCPU:GiB ratio between 1:1 and 1:8. Billed per
-      # GiB-hour. Sent as a decimal string.
+      # Google's 3 GiB minimum (3221225472), and between 1 GiB and 8 GiB per
+      # vCPU. Billed per GiB-hour. Sent as a decimal string.
       memory_bytes = optional(number, 0)
     })
 
@@ -52,7 +58,8 @@ variable "spec" {
       # reference (its self link, which the modules trim to the
       # projects/{project}/regions/{region}/subnetworks/{subnet} form Google
       # requires) or a literal in either form. It must be in the Connect
-      # cluster's region, and its CIDR range must be private (RFC 1918).
+      # cluster's region, and its CIDR range must be private (RFC 1918) and at
+      # least a /22 (1024 addresses).
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       primary_subnet = string
 

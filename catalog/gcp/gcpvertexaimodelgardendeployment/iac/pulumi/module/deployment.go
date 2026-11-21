@@ -94,6 +94,7 @@ func deployment(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) 
 	ctx.Export(OpDeployedModelId, createdDeployment.DeployedModelId)
 	ctx.Export(OpDeployedModelDisplayName, createdDeployment.DeployedModelDisplayName)
 	ctx.Export(OpLocation, createdDeployment.Location)
+	ctx.Export(OpServiceAttachment, createdDeployment.EndpointConfig.PrivateServiceConnectConfig().ServiceAttachment())
 	return nil
 }
 

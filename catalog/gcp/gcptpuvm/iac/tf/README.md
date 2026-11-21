@@ -15,7 +15,7 @@ This directory contains the Terraform implementation for a Cloud TPU VM from the
 | `variables.tf` | `metadata` and `spec` variable definitions (generated from the spec; the tfvars converter flattens refs to plain strings) |
 | `locals.tf` | Ambient project fallback, the node id defaulted from `metadata.name`, null-for-empty optionals, network interfaces normalized, the `planton-ai_*` labels |
 | `main.tf` | `google_project_service`, `google_tpu_v2_vm` (`provider = google-beta`) |
-| `outputs.tf` | `name`, `node_id`, `zone` |
+| `outputs.tf` | `name`, `node_id`, `zone`, `state`, `health`, `worker_internal_ips`, `worker_external_ips` |
 
 ## Send Posture
 

@@ -73,7 +73,8 @@ type GcpTpuVmSpec struct {
 	// block. Unset: Google chooses. Immutable.
 	CidrBlock string `protobuf:"bytes,8,opt,name=cidr_block,json=cidrBlock,proto3" json:"cidr_block,omitempty"`
 	// The TPU's network. Set this or network_configs. Unset: the project's
-	// default network and subnetwork. Immutable.
+	// network and subnetwork named "default", which many organizations never
+	// create -- a project without them must set this. Immutable.
 	NetworkConfig *GcpTpuVmNetworkConfig `protobuf:"bytes,9,opt,name=network_config,json=networkConfig,proto3" json:"network_config,omitempty"`
 	// Several network interfaces, one per entry, for multi-NIC TPU VMs.
 	// Set this or network_config. Immutable.
@@ -325,11 +326,15 @@ func (x *GcpTpuVmAcceleratorConfig) GetTopology() string {
 type GcpTpuVmNetworkConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The VPC network: a GcpVpcNetwork reference or a literal
-	// projects/{project}/global/networks/{name}. Unset: "default".
+	// projects/{project}/global/networks/{name}. Unset: the project's network
+	// named "default", which many organizations never create (or delete) --
+	// a project without it must name a network here.
 	Network *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=network,proto3" json:"network,omitempty"`
 	// The subnetwork in the TPU's region: a GcpSubnetwork reference or a
 	// literal projects/{project}/regions/{region}/subnetworks/{name}. Unset:
-	// "default".
+	// the subnetwork named "default" in the region, which exists only where
+	// the project's "default" network does -- a project without it must
+	// name a subnetwork here.
 	Subnetwork *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=subnetwork,proto3" json:"subnetwork,omitempty"`
 	// Give the TPU workers external IP addresses. Without them the
 	// subnetwork needs Private Google Access (or Cloud NAT) to reach

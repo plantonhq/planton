@@ -10,7 +10,12 @@ import (
 func Resources(ctx *pulumi.Context, iacInput *gcpcolabschedulev1alpha1.GcpColabScheduleIacInput) error {
 	locals := initializeLocals(ctx, iacInput)
 
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig, iacInput.Target.GetSpec().GetProjectId().GetValue())
+	gcpProvider, err := pulumigoogleprovider.GetInRegion(ctx, iacInput.ProviderConfig,
+		iacInput.Target.GetSpec().GetProjectId().GetValue(),
+		// The provider fills each run request's parent from its own region
+		// before every create and update, and fails with none; the region
+		// is the schedule's location (GetInRegion).
+		iacInput.Target.GetSpec().GetLocation())
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

@@ -19,6 +19,10 @@ manifest.
 Immutable: project_id, location, connect_cluster, connector_id (a change
 replaces the connector). configs and the restart policy update in place.
 
+project_id and location name the Connect cluster's project and region:
+the modules send them beside the Connect cluster's bare ID, so they must
+be the Connect cluster's own.
+
 ## Example
 
 ```yaml
@@ -77,7 +81,8 @@ used.
 
 `string` · required
 
-The Connect cluster's region, e.g. "us-central1". Immutable.
+The Connect cluster's region, e.g. "us-central1" -- the region the
+Connect cluster runs in. Immutable.
 
 - rule: {"required":true,"string":{"pattern":"^[a-z]+-[a-z]+[0-9]+$"}}
 
@@ -99,30 +104,40 @@ Immutable.
 
 `string`
 
-The connector's ID, the name Kafka Connect shows for it. Defaults to
-metadata.name. Immutable.
+The connector's ID, the name Kafka Connect shows for it -- 1-63
+characters, RFC 1035 (lowercase letters, digits, hyphens; starts with a
+letter). Defaults to metadata.name, which must then fit the same rule.
+Immutable.
+
+- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?$"}}
 
 ### spec.configs
 
 `map<string, string>`
 
-The connector's Kafka Connect configuration, keyed by property:
-"connector.class" picks the plugin (for example
+The connector's Kafka Connect configuration, keyed by property --
+required, because "connector.class" picks the plugin (for example
 com.google.pubsub.kafka.sink.CloudPubSubSinkConnector,
 com.wepay.kafka.connect.bigquery.BigQuerySinkConnector,
 io.aiven.kafka.connect.gcs.GcsSinkConnector,
 org.apache.kafka.connect.mirror.MirrorSourceConnector), "tasks.max"
-its parallelism, "topics" what a sink reads, plus the plugin's own
-keys and converters. The values are stored in plain text on the
-Connect cluster; keep credentials out of them where the plugin offers
-Google IAM authentication instead.
+its parallelism, "topics" the topics a sink reads (for a MirrorMaker 2
+source, a regular expression of the topics it replicates), plus the
+plugin's own keys and converters. The values are plain text in four
+places: the manifest, Planton's stored copy of it, the IaC module's
+input, and the Connect cluster. Keep credentials out of them where the
+plugin offers Google IAM authentication instead.
 
 ### spec.taskRestartPolicy
 
 `GcpManagedKafkaConnectorTaskRestartPolicy`
 
-Automatic restarts for failed tasks. Omit to leave failed tasks
-stopped.
+Automatic restarts for failed tasks, with the backoffs you choose.
+Omitted, the modules send no policy and Google's own handling of
+failed tasks applies.
+
+- rule: A restart policy needs a minimum backoff, a maximum backoff, or both; remove the policy to send none.
+- rule: The minimum backoff must not be longer than the maximum backoff.
 
 ### spec.taskRestartPolicy.minimumBackoff
 
@@ -130,7 +145,7 @@ stopped.
 
 The shortest wait before retrying a failed task -- a duration in
 seconds with up to nine fractional digits and an "s" suffix, e.g.
-"60s". Empty leaves Google's default.
+"60s". At most maximum_backoff. Empty leaves Google's default.
 
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^[0-9]+(\\.[0-9]{1,9})?s$"}}
 
@@ -153,6 +168,12 @@ What happens to the connector when this resource is destroyed:
   "ABANDON"     -- it leaves management and keeps running
 
 - rule: deletion_policy must be one of: DELETE, PREVENT, ABANDON
+
+## Validation Rules
+
+- `spec.connector_class_set`: configs must name the plugin in "connector.class"; Kafka Connect cannot run a connector without it.
+- `spec.connect_cluster_path_matches_location`: A literal Connect cluster path must be in this connector's location: projects/{project}/locations/{location}/connectClusters/{connect_cluster}.
+- `spec.connect_cluster_path_matches_project`: A literal Connect cluster path must be in this connector's project_id.
 
 ## Outputs
 

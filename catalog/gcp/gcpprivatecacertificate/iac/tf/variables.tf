@@ -64,7 +64,9 @@ variable "spec" {
       subject_config = object({
         # The distinguished name. common_name is required.
         subject = object({
-          # The common name (CN), e.g. "Example Root CA" or a host name.
+          # The common name (CN), e.g. a host name such as
+          # "api.internal.example.com" or a workload's name. TLS clients check the
+          # subject alternative names, not the common name.
           common_name = string
 
           # Two-letter country code (C), e.g. "US".
@@ -181,17 +183,19 @@ variable "spec" {
         }))
 
         # The basic constraints extension: whether the certificate is a CA and
-        # how many CA levels may sit below it. Omit to leave the extension to
-        # Google's default (for a leaf certificate, is_ca false).
+        # how many CA levels may sit below it. Omitting the block sends no basic
+        # constraints at all, leaving the extension to the pool and the
+        # template. A block with is_ca unset is a different request: the block
+        # is sent without a CA flag. A leaf certificate states is_ca false.
         ca_options = optional(object({
-          # true makes a CA certificate (CA:TRUE), false states CA:FALSE; unset
-          # leaves the CA flag out of the extension.
+          # false states CA:FALSE -- what a leaf certificate (a server, a client,
+          # a workload) says. true makes a CA certificate (CA:TRUE). Unset sends
+          # the block without a CA flag.
           is_ca = optional(bool)
 
-          # The path length constraint: how many CA levels may sit below this
-          # certificate. 0 means it may sign only leaf certificates -- a
-          # subordinate that issues workload certificates; unset means no limit
-          # is stated.
+          # The path length constraint, which only a CA certificate carries: how
+          # many CA levels may sit below it (0 lets it sign only leaf
+          # certificates). A leaf certificate leaves it unset.
           max_issuer_path_length = optional(number)
         }))
 
@@ -228,8 +232,8 @@ variable "spec" {
         })), [])
 
         # The name constraints extension (RFC 5280 section 4.2.1.10): the names
-        # certificates below a CA may and may not carry. Meaningful on CA
-        # certificates.
+        # certificates signed below a CA may and may not carry. Only a CA
+        # certificate uses it; a leaf certificate leaves it out.
         name_constraints = optional(object({
           # Whether the constraints are marked critical. RFC 5280 requires true on
           # a CA certificate that carries them.

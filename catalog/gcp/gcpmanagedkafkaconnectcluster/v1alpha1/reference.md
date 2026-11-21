@@ -17,9 +17,9 @@ BigQuery, Cloud Storage, another Kafka cluster through MirrorMaker 2).
 The connectors themselves are GcpManagedKafkaConnector blocks, owned by
 the teams whose data they move.
 
-Immutable: project_id, location, connect_cluster_id (a change replaces
-the Connect cluster and every connector on it). The attached Kafka
-cluster, capacity, networks, and labels update in place.
+Immutable: project_id, location, connect_cluster_id, kafka_cluster (a
+change replaces the Connect cluster and deletes every connector on it).
+Capacity, networks, and labels update in place.
 
 ## Example
 
@@ -90,7 +90,11 @@ The region the workers run in, e.g. "us-central1". Immutable.
 
 `string`
 
-The Connect cluster's ID. Defaults to metadata.name. Immutable.
+The Connect cluster's ID -- 1-63 characters, RFC 1035 (lowercase
+letters, digits, hyphens; starts with a letter). Defaults to
+metadata.name, which must then fit the same rule. Immutable.
+
+- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?$"}}
 
 ### spec.kafkaCluster
 
@@ -99,8 +103,12 @@ The Connect cluster's ID. Defaults to metadata.name. Immutable.
 The Kafka cluster the workers attach to (their internal topics and the
 connectors' default cluster): a GcpManagedKafkaCluster reference (its
 name output) or a literal full path
-projects/{project}/locations/{location}/clusters/{cluster}. Mutable in
-place.
+projects/{project}/locations/{location}/clusters/{cluster}. Immutable:
+Google fixes the Kafka cluster once the workers attach to it, so moving
+them to another Kafka cluster means a new Connect cluster -- the
+modules replace it, and the connectors on it are deleted with the old
+one. Their GcpManagedKafkaConnector blocks create them again on their
+next apply.
 
 - references: GcpManagedKafkaCluster (`status.outputs.name`)
 - rule: a literal kafka_cluster must be the full path projects/{project}/locations/{location}/clusters/{cluster}
@@ -114,7 +122,7 @@ place.
 vCPUs and memory for the workers.
 
 - rule: {"required":true}
-- rule: memory_bytes must keep a vCPU:GiB ratio between 1:1 and 1:8 (vcpu_count x 1073741824 to vcpu_count x 8589934592)
+- rule: Memory must be between 1 GiB and 8 GiB per vCPU: memory_bytes from vcpu_count x 1073741824 to vcpu_count x 8589934592.
 
 ### spec.capacityConfig.vcpuCount
 
@@ -130,8 +138,8 @@ Sent as a decimal string.
 `int64`
 
 Memory for the Connect workers, in BYTES as a plain number -- at least
-3 GiB (3221225472), at a vCPU:GiB ratio between 1:1 and 1:8. Billed per
-GiB-hour. Sent as a decimal string.
+Google's 3 GiB minimum (3221225472), and between 1 GiB and 8 GiB per
+vCPU. Billed per GiB-hour. Sent as a decimal string.
 
 - rule: {"int64":{"gte":"3221225472"}}
 
@@ -151,7 +159,8 @@ The subnet the workers' interface is placed in: a GcpSubnetwork
 reference (its self link, which the modules trim to the
 projects/{project}/regions/{region}/subnetworks/{subnet} form Google
 requires) or a literal in either form. It must be in the Connect
-cluster's region, and its CIDR range must be private (RFC 1918).
+cluster's region, and its CIDR range must be private (RFC 1918) and at
+least a /22 (1024 addresses).
 
 - references: GcpSubnetwork (`status.outputs.subnetwork_self_link`)
 - rule: {"required":true}
@@ -184,6 +193,10 @@ What happens to the Connect cluster when this resource is destroyed:
                    billing) in GCP
 
 - rule: deletion_policy must be one of: DELETE, PREVENT, ABANDON
+
+## Validation Rules
+
+- `spec.subnets_in_connect_cluster_region`: Each literal primary subnet must be in the Connect cluster's region: its path must contain /regions/{location}/.
 
 ## Outputs
 

@@ -46,6 +46,9 @@ spec:
     topics: orders
     cps.project: my-project
     cps.topic: orders-events
+  taskRestartPolicy:
+    minimumBackoff: 60s
+    maximumBackoff: 1800s
 ```
 
 ```shell
@@ -60,20 +63,22 @@ planton apply -f managed-kafka-connector.yaml
 |-------|------|-------------|
 | `location` | `string` | The Connect cluster's region. Immutable. |
 | `connectCluster` | `StringValueOrRef` | The Connect cluster -- a reference or its full path or bare id. Immutable. |
+| `configs` | `map<string,string>` | The Kafka Connect configuration: `connector.class` (required), `tasks.max`, `topics`, and the plugin's keys. |
 
 ### Optional Fields
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `projectId` | `StringValueOrRef` | provider project | The project. |
-| `connectorId` | `string` | `metadata.name` | Immutable. |
-| `configs` | `map<string,string>` | none | The Kafka Connect configuration: `connector.class`, `tasks.max`, `topics`, and the plugin's keys. |
-| `taskRestartPolicy` | `object` | no restarts | `minimumBackoff` and `maximumBackoff` durations (`60s`). |
+| `connectorId` | `string` | `metadata.name` | RFC 1035, 1-63 characters. Immutable. |
+| `taskRestartPolicy` | `object` | none sent | `minimumBackoff` and `maximumBackoff` durations (`60s`), at least one of them. |
 | `deletionPolicy` | `string` | `DELETE` | `DELETE`, `PREVENT`, or `ABANDON`. |
 
 ### Validation Rules
 
-- Backoffs are durations in seconds with an `s` suffix, up to nine fractional digits.
+- `configs` names the plugin in `connector.class`.
+- Backoffs are durations in seconds with an `s` suffix, up to nine fractional digits; a declared policy names at least one, and the minimum is never above the maximum.
+- A literal full Connect cluster path must name this connector's `location` (and its `projectId`, when set).
 
 ## Outputs
 
@@ -94,8 +99,8 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 ## Important Notes
 
-- **Set a restart policy.** Without `taskRestartPolicy`, a failed task stays failed until someone restarts it.
-- **Configs are plain text.** Connector configuration is stored as written; prefer plugins that authenticate with Google IAM over credentials in `configs`.
+- **Set a restart policy to choose the backoffs.** Without `taskRestartPolicy`, no policy is sent and Google's own handling of failed tasks applies.
+- **Configs are plain text** -- in the manifest, in Planton's stored copy, in the module's input, and on the Connect cluster; prefer plugins that authenticate with Google IAM over credentials in `configs`.
 - **The service agent needs access.** Connectors act as the Managed Kafka service agent -- grant it publisher on a Pub/Sub topic, data editor on a BigQuery dataset, object creator on a bucket.
 
 ## Examples

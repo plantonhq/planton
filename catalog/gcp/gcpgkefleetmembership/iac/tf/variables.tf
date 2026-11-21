@@ -35,7 +35,8 @@ variable "spec" {
     # literal path. Both modules send it as Google's resource link,
     # "//container.googleapis.com/projects/{p}/locations/{l}/clusters/{name}".
     # Omit it only for a cluster outside Google Cloud that registers through
-    # its own Connect agent. Immutable.
+    # its own Connect agent. A literal is that path, optionally with the
+    # //container.googleapis.com/ prefix. Immutable.
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     gke_cluster = optional(string, "")
 

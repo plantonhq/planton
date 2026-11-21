@@ -9,7 +9,7 @@ This directory contains the Pulumi implementation for a GKE fleet feature from t
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `feature` |
 | `module/locals.go` | IaC input, attribution labels, the label merge |
 | `module/feature.go` | The feature-to-API table, the feature, the spec and member-default builders, the per-cluster entries, the outputs |
-| `module/outputs.go` | Output key constant (`name`) |
+| `module/outputs.go` | Output key constants (`name`, `resource_state`, `state_code`) |
 
 ## Send Posture (parity with Terraform)
 

@@ -13,7 +13,7 @@ When you deploy this Infra Component, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Model Armor admin permissions on the project.
+- **GCP Provider Connection** -- an active connection in the Connect module with `roles/modelarmor.admin` on the project.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Optional Dependencies
@@ -50,7 +50,7 @@ planton apply -f model-armor-template.yaml
 | Field | Type | Description |
 |-------|------|-------------|
 | `location` | `string` | A region (`us-central1`) or multi-region (`us`, `eu`) where prompts are screened. Immutable. |
-| `filterConfig` | `object` | Which filters run: `piAndJailbreakFilterSettings`, `raiSettings.raiFilters[]`, `sdpSettings` (`basicConfig` or `advancedConfig`), `maliciousUriFilterSettings`. A filter is off unless its block is set. |
+| `filterConfig` | `object` | Which filters run: `piAndJailbreakFilterSettings`, `raiSettings.raiFilters[]`, `sdpSettings` (`basicConfig` or `advancedConfig`), `maliciousUriFilterSettings`. A filter is off unless its block is set with `filterEnforcement: ENABLED` (a Responsible AI category runs once listed); an empty `filterConfig` is accepted and screens nothing. |
 
 ### Optional Fields
 
@@ -66,7 +66,8 @@ planton apply -f model-armor-template.yaml
 
 - Confidence levels are `LOW_AND_ABOVE`, `MEDIUM_AND_ABOVE`, or `HIGH`; enforcement switches are `ENABLED` or `DISABLED`.
 - Each Responsible AI category appears at most once.
-- `sdpSettings` takes `basicConfig` or `advancedConfig`, never both; advanced templates are full `projects/.../inspectTemplates/...` and `.../deidentifyTemplates/...` names.
+- `sdpSettings` takes at most one of `basicConfig` or `advancedConfig`; advanced templates are full `projects/.../inspectTemplates/...` and `.../deidentifyTemplates/...` names, and a de-identify template needs an inspect template beside it.
+- `templateId`, or `metadata.name` when it is unset, is 1-63 letters, digits, hyphens, or underscores; both engines refuse a `metadata.name` that is not.
 - `filterVersionSelector` takes exactly one of `alias` and `version` (`v1`, `v2`, ...).
 
 ## Outputs

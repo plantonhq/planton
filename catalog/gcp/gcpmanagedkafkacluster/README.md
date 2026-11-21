@@ -59,7 +59,7 @@ planton apply -f managed-kafka-cluster.yaml
 |-------|------|-------------|
 | `location` | `string` | The region the brokers run in. Immutable. |
 | `capacityConfig.vcpuCount` | `int64` | vCPUs across the cluster, at least 3. |
-| `capacityConfig.memoryBytes` | `int64` | Memory in bytes, 1-8 GiB per vCPU. |
+| `capacityConfig.memoryBytes` | `int64` | Memory in bytes, at least 3 GiB and 1-8 GiB per vCPU. |
 | `networkConfigs[].subnet` | `StringValueOrRef` | 1-10 subnets, one per VPC network; a `GcpSubnetwork` reference or a `projects/.../subnetworks/...` literal. |
 
 ### Optional Fields
@@ -77,7 +77,7 @@ planton apply -f managed-kafka-cluster.yaml
 
 ### Validation Rules
 
-- `capacityConfig.vcpuCount` is at least 3, and `memoryBytes` is between 1 GiB and 8 GiB per vCPU.
+- `capacityConfig.vcpuCount` is at least 3, and `memoryBytes` is at least 3 GiB and between 1 GiB and 8 GiB per vCPU.
 - `networkConfigs` holds 1-10 entries; `tlsConfig.caPools` at most 10, each a `GcpPrivateCaPool` reference or a full CA pool name.
 - `brokerDiskSizeGib`, when set, is at least 100; `rebalanceMode` takes only Google's two modes.
 - `clusterId` follows RFC 1035.
@@ -102,10 +102,11 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 ## Important Notes
 
-- **The bootstrap address is read, not wired.** Google fixes a cluster's bootstrap address for its lifetime, but its format can differ between clusters, and the pinned Pulumi SDK cannot read it yet -- so it is not an output. Read it once with `gcloud managed-kafka clusters describe CLUSTER --location=LOCATION --format="value(bootstrapAddress)"` (port 9092 for Google IAM over SASL, 9192 for mTLS).
+- **The bootstrap address is read, not wired.** Google fixes a cluster's bootstrap address for its lifetime, but its format can differ between clusters, and the pinned Pulumi SDK cannot read it yet -- so it is not an output. Read it once with `gcloud managed-kafka clusters describe CLUSTER --location=LOCATION --project=PROJECT --format="value(bootstrapAddress)"` (port 9092 for Google IAM over SASL, 9192 for mTLS).
 - **Internet access waits for the Pulumi SDK.** Google's public cluster access (`public_cluster_config`, new in provider 8.3) is not yet in the pinned pulumi-gcp SDK, so it is held out of the spec on both engines until pulumi-gcp v10 -- clients connect from an attached VPC.
 - **Creation is slow.** Google quotes up to about 30 minutes for a new cluster.
-- **The key and the id are forever.** `kmsKey`, `clusterId`, and `location` cannot change -- a change replaces the cluster and every message in it.
+- **The key and the id are forever.** `projectId`, `kmsKey`, `clusterId`, and `location` cannot change -- a change replaces the cluster and every message in it.
+- **Deleting the cluster deletes what lives in it.** Every topic, message, and ACL goes with it; topic and ACL blocks that name it are left pointing at nothing.
 
 ## Examples
 

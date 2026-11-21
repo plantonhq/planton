@@ -5,7 +5,8 @@ package dev.planton.gcp.gcpbigqueryconnection.v1alpha1;
 // GcpBigQueryConnectionOutputs captures the connection's identity and
 // the Google-owned identities its arm created -- the principals you grant
 // access to the data the connection reads. Only the declared arm's values
-// are populated.
+// are populated. The service-account outputs are bare emails: an IAM
+// member names one as serviceAccount:{email}.
 message GcpBigQueryConnectionOutputs {
   // Full resource name --
   // projects/{project}/locations/{location}/connections/{connection_id}.

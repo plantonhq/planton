@@ -31,13 +31,18 @@ const (
 // Immutable: project_id, location, cluster, topic_id, replication_factor
 // (a change replaces the topic and DELETES its messages). partition_count
 // grows in place but never shrinks; configs update in place.
+//
+// project_id and location name the cluster's project and region: the
+// modules send them beside the cluster's bare ID, so they must be the
+// cluster's own.
 type GcpManagedKafkaTopicSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The GCP project the cluster lives in: a literal project ID or a
 	// GcpProject reference. If omitted, the provider's default project is
 	// used.
 	ProjectId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
-	// The cluster's region, e.g. "us-central1". Immutable.
+	// The cluster's region, e.g. "us-central1" -- the region the cluster
+	// runs in, not a choice of the topic's. Immutable.
 	Location string `protobuf:"bytes,2,opt,name=location,proto3" json:"location,omitempty"`
 	// The cluster the topic lives on. A GcpManagedKafkaCluster reference
 	// resolves to its full resource path (name output); a literal takes the
@@ -47,22 +52,26 @@ type GcpManagedKafkaTopicSpec struct {
 	// The topic's name as producers and consumers see it -- Kafka's own
 	// rule: letters, digits, dots, underscores, hyphens, at most 249
 	// characters (avoid mixing dots and underscores; Kafka treats them as
-	// colliding in metric names). Defaults to metadata.name. Immutable.
+	// colliding in metric names). Defaults to metadata.name, which must then
+	// fit the same rule. Immutable.
 	TopicId string `protobuf:"bytes,4,opt,name=topic_id,json=topicId,proto3" json:"topic_id,omitempty"`
 	// How many partitions the topic has -- the unit of consumer parallelism.
-	// Can be raised in place, never lowered; raising it changes which
-	// partition a keyed message lands on, so per-key ordering is only
-	// guaranteed for messages written after the change. Empty leaves
-	// Google's default.
+	// Required by Google. Can be raised in place, never lowered: a lower
+	// number plans as an update and Google refuses it at apply (no spec
+	// rule can see the stored count). Raising it changes which partition a
+	// keyed message lands on, so per-key ordering is only guaranteed for
+	// messages written after the change.
 	PartitionCount int32 `protobuf:"varint,5,opt,name=partition_count,json=partitionCount,proto3" json:"partition_count,omitempty"`
-	// How many copies of each partition the cluster keeps. Google
-	// recommends 3 for high availability (the brokers span three zones).
-	// Immutable.
+	// How many copies of each partition the cluster keeps. Required: there
+	// is no default. Google recommends 3 for high availability (the brokers
+	// span three zones). Immutable.
 	ReplicationFactor int32 `protobuf:"varint,6,opt,name=replication_factor,json=replicationFactor,proto3" json:"replication_factor,omitempty"`
 	// Topic-level overrides of the cluster's defaults, keyed by Kafka topic
 	// property, e.g. "cleanup.policy" = "compact", "retention.ms" =
 	// "604800000", "compression.type" = "producer". Keys absent here follow
-	// the cluster default.
+	// the cluster default. The map is replaced whole: removing a key returns
+	// it to the cluster's default on the next apply. Every value must be
+	// non-empty.
 	Configs map[string]string `protobuf:"bytes,7,rep,name=configs,proto3" json:"configs,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// What happens to the topic when this resource is destroyed:
 	//
@@ -164,22 +173,24 @@ var File_catalog_gcp_gcpmanagedkafkatopic_v1alpha1_spec_proto protoreflect.FileD
 
 const file_catalog_gcp_gcpmanagedkafkatopic_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/gcp/gcpmanagedkafkatopic/v1alpha1/spec.proto\x12-dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xd5\x06\n" +
+	"4catalog/gcp/gcpmanagedkafkatopic/v1alpha1/spec.proto\x12-dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xf2\f\n" +
 	"\x18GcpManagedKafkaTopicSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12;\n" +
 	"\blocation\x18\x02 \x01(\tB\x1f\xbaH\x1c\xc8\x01\x01r\x172\x15^[a-z]+-[a-z]+[0-9]+$R\blocation\x12p\n" +
 	"\acluster\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\xbaH\x03\xc8\x01\x01\x88\xd4a\xf7\x18\x92\xd4a\x13status.outputs.nameR\acluster\x12<\n" +
-	"\btopic_id\x18\x04 \x01(\tB!\xbaH\x1e\xd8\x01\x01r\x192\x17^[a-zA-Z0-9._-]{1,249}$R\atopicId\x123\n" +
-	"\x0fpartition_count\x18\x05 \x01(\x05B\n" +
-	"\xbaH\a\xd8\x01\x01\x1a\x02(\x01R\x0epartitionCount\x126\n" +
-	"\x12replication_factor\x18\x06 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01R\x11replicationFactor\x12n\n" +
-	"\aconfigs\x18\a \x03(\v2T.dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1.GcpManagedKafkaTopicSpec.ConfigsEntryR\aconfigs\x12\xbb\x01\n" +
+	"\btopic_id\x18\x04 \x01(\tB!\xbaH\x1e\xd8\x01\x01r\x192\x17^[a-zA-Z0-9._-]{1,249}$R\atopicId\x120\n" +
+	"\x0fpartition_count\x18\x05 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01R\x0epartitionCount\x126\n" +
+	"\x12replication_factor\x18\x06 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01R\x11replicationFactor\x12\x88\x02\n" +
+	"\aconfigs\x18\a \x03(\v2T.dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1.GcpManagedKafkaTopicSpec.ConfigsEntryB\x97\x01\xbaH\x93\x01\xba\x01\x8f\x01\n" +
+	"\x18configs.non_empty_values\x12WEvery topic config needs a value; remove the key to return it to the cluster's default.\x1a\x1athis.all(k, this[k] != '')R\aconfigs\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\b \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
 	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a:\n" +
 	"\fConfigsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xfc\x02\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x82\x05\xbaH\xfe\x04\x1a\xc5\x02\n" +
+	"\"spec.cluster_path_matches_location\x12tA literal cluster path must be in this topic's location: projects/{project}/locations/{location}/clusters/{cluster}.\x1a\xa8\x01!has(this.cluster.value) || !this.cluster.value.startsWith('projects/') || this.cluster.value.matches('^projects/[^/]+/locations/' + this.location + '/clusters/[^/]+$')\x1a\xb3\x02\n" +
+	"!spec.cluster_path_matches_project\x12:A literal cluster path must be in this topic's project_id.\x1a\xd1\x01!has(this.cluster.value) || !this.cluster.value.startsWith('projects/') || !has(this.project_id.value) || this.project_id.value == '' || this.cluster.value.startsWith('projects/' + this.project_id.value + '/')B\xfc\x02\n" +
 	"1com.dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1B\tSpecProtoP\x01Zcgithub.com/plantonhq/planton/catalog/gcp/gcpmanagedkafkatopic/v1alpha1;gcpmanagedkafkatopicv1alpha1\xa2\x02\x04DPGG\xaa\x02-Dev.Planton.Gcp.Gcpmanagedkafkatopic.V1alpha1\xca\x02-Dev\\Planton\\Gcp\\Gcpmanagedkafkatopic\\V1alpha1\xe2\x029Dev\\Planton\\Gcp\\Gcpmanagedkafkatopic\\V1alpha1\\GPBMetadata\xea\x021Dev::Planton::Gcp::Gcpmanagedkafkatopic::V1alpha1b\x06proto3"
 
 var (

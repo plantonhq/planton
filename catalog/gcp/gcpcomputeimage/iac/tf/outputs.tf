@@ -21,6 +21,11 @@ output "disk_size_gb" {
   value       = google_compute_image.this.disk_size_gb
 }
 
+output "archive_size_bytes" {
+  description = "Size in bytes of the image's tar.gz archive in Cloud Storage -- what the image's storage bills on"
+  value       = google_compute_image.this.archive_size_bytes
+}
+
 output "image_id" {
   description = "The image's resource ID, projects/{project}/global/images/{name} -- the relative form GKE secondary boot disks consume"
   value       = google_compute_image.this.id

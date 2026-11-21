@@ -21,11 +21,16 @@ variable "spec" {
     project_id = optional(string, "")
 
     # The location of the group and its reservations: a multi-region (US,
-    # EU) or a region. Empty means US (Google's default). Immutable.
+    # EU) or a region. Empty means US (Google's default). Write US and EU in
+    # upper case and a region in lower case: the provider never reads the
+    # location back, so another spelling is another location to it, and
+    # replaces the group. Immutable.
     location = optional(string, "")
 
-    # The group's name -- letters, digits, and dashes. Defaults to
-    # metadata.name. Immutable.
+    # The group's name -- Google's rule: lowercase letters, digits, and
+    # dashes, starting with a letter, not ending with a dash, at most 64
+    # characters. Defaults to metadata.name, which must then fit the same
+    # rule. Immutable.
     reservation_group_name = optional(string, "")
 
     # What happens to the group when this resource is destroyed:

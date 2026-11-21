@@ -39,6 +39,8 @@ spec:
   aclEntries:
     - principal: User:orders-api@my-project.iam.gserviceaccount.com
       operation: WRITE
+    - principal: User:orders-api@my-project.iam.gserviceaccount.com
+      operation: DESCRIBE
     - principal: User:billing-worker@my-project.iam.gserviceaccount.com
       operation: READ
 ```
@@ -69,7 +71,8 @@ planton apply -f managed-kafka-acl.yaml
 
 ### Validation Rules
 
-- `aclId` follows Google's resource-pattern grammar.
+- `aclId` follows Google's resource-pattern grammar, including the `allTopics`, `allConsumerGroups`, and `allTransactionalIds` wildcard IDs.
+- A literal full cluster path must name this ACL's `location` (and its `projectId`, when set).
 - Principals start with `User:`; operations and permission types take only Google's values; `host` is `*`.
 - 1-100 entries.
 

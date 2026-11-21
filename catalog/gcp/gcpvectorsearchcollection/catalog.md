@@ -72,7 +72,7 @@ These are the most important decisions when configuring a collection. Explore th
 
 **Who computes the vectors** — a dense field with `vertexEmbeddingConfig` is embedded by Vertex AI from a text template over the object's fields on every write; without it, your pipeline writes the vectors. A `sparseVector: true` field holds lexical (keyword) vectors for hybrid search.
 
-**Indexes are immutable** — every index setting but labels replaces the index when changed, and the replacement is rebuilt from the collection's data. Pick the metric (`DOT_PRODUCT` or `COSINE_DISTANCE`), the fields to filter and store inline, and the infrastructure once.
+**Indexes are mostly immutable** — an index's display name, description, labels, and replica bounds change in place; every other index setting replaces the index when changed, and the replacement is rebuilt from the collection's data. Pick the metric (`DOT_PRODUCT` or `COSINE_DISTANCE`), the fields to filter and store inline, and the infrastructure once.
 
 **Pooled or dedicated** — an index serves from Google's pooled infrastructure by default, billing per query; `dedicatedInfrastructure` gives it its own autoscaled nodes for latency-sensitive serving, billing per node-hour.
 

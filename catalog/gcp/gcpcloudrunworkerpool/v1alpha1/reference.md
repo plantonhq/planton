@@ -381,7 +381,8 @@ region, stores the value as a version, grants the pool's runtime
 identity secretAccessor on that secret alone, and points the variable at
 that exact version -- the revision carries a reference, never the value.
 A changed value adds a version and stamps a new revision, so rotation is
-a deploy; destroying the worker pool removes the secret.
+a deploy; destroying the worker pool removes the secret, under every
+deletion_policy (ABANDON included -- see deletion_policy).
 
 ### spec.containers[].resources
 
@@ -1227,6 +1228,12 @@ What happens to the worker pool when this resource is destroyed
   "" / "DELETE" -- the worker pool is deleted (default)
   "PREVENT"     -- destroy fails
   "ABANDON"     -- the worker pool leaves management but keeps running
+ABANDON covers the worker pool only. The Secret Manager secrets this
+component keeps for env[].secret_value, their versions, and the pool
+identity's access grant on them are still deleted on both engines, so
+the abandoned pool can no longer read those secrets: its next instance
+start fails. A pool meant to outlive this resource should take every
+secret through value_from_secret, from a Secret Manager secret you own.
 
 - rule: deletion_policy must be one of: DELETE, PREVENT, ABANDON
 

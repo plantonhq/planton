@@ -23,8 +23,14 @@ import "shared/foreignkey/v1/foreign_key.proto";
 //
 // A schedule can be paused and resumed (desired_state) and bounded by a
 // time window and a run count. Mutable in place: everything except
-// location, the project, and the notebook arm (a change to the notebook
-// run REPLACES the schedule; the pipeline arm updates in place).
+// location, the project, and the notebook arm. A location change replaces
+// the schedule (both modules force it). Switching arms, or changing the
+// notebook run's machine_type, gpu_partition_size, or tpu_topology,
+// replaces it too. Every other notebook-run setting is fixed once
+// created: Google's provider never sends a change to it, so the change
+// shows on every plan and Google keeps the first value -- create a new
+// schedule (and pause the old one) for a different notebook run. The
+// pipeline arm updates in place.
 message GcpColabScheduleSpec {
   option (buf.validate.message).cel = {
     id: "exactly_one_run"
@@ -41,7 +47,9 @@ message GcpColabScheduleSpec {
   ];
 
   // The Vertex AI region the schedule and its runs live in, e.g.
-  // "us-central1". Changing it needs a new schedule.
+  // "us-central1". Both modules also make it the provider's region, which
+  // is where the provider sends each run request. Changing it replaces the
+  // schedule.
   string location = 2 [
     (buf.validate.field).required = true,
     (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9]+$"
@@ -95,7 +103,13 @@ message GcpColabScheduleSpec {
   // Whether the schedule launches runs:
   //   "ACTIVE" -- runs launch on the cron (the default)
   //   "PAUSED" -- nothing launches; resume by setting ACTIVE again
-  // The block pauses or resumes the schedule to match on every apply.
+  // The schedule is paused or resumed to match when it is created and on
+  // a deploy that changes this setting -- not on every deploy: a schedule
+  // paused by hand stays paused until this setting changes. A schedule
+  // created PAUSED is created active and paused right after, so a tick
+  // falling in that moment can still launch a run. Any deploy that changes
+  // a schedule Google has COMPLETED, with this ACTIVE, asks Google to
+  // resume it.
   string desired_state = 11 [(buf.validate.field).cel = {
     id: "desired_state.valid"
     message: "desired_state must be ACTIVE or PAUSED"
@@ -103,8 +117,9 @@ message GcpColabScheduleSpec {
   }];
 
   // The Colab Enterprise notebook run each tick launches. Exactly one of
-  // notebook_execution_job or pipeline_job. A change replaces the
-  // schedule.
+  // notebook_execution_job or pipeline_job. Fixed once created (see the
+  // message comment): only a machine_type, gpu_partition_size, or
+  // tpu_topology change reaches Google, as a replacement.
   GcpColabScheduleNotebookExecutionJob notebook_execution_job = 12;
 
   // The Vertex AI Pipelines run each tick launches. Exactly one of
@@ -319,7 +334,10 @@ message GcpColabScheduleReservationAffinity {
   bool use_reservation_pool = 4;
 }
 
-// GcpColabScheduleNetworkSpec is the network a notebook run joins.
+// GcpColabScheduleNetworkSpec is the network a notebook run joins. The
+// schedule is a timer, not a resource in the network: its references say
+// which network the runs will join, so they never place the schedule
+// inside the network.
 message GcpColabScheduleNetworkSpec {
   // Give the run a public internet path. Default false.
   bool enable_internet_access = 1;
@@ -328,6 +346,7 @@ message GcpColabScheduleNetworkSpec {
   // projects/{project}/global/networks/{name}.
   dev.planton.shared.foreignkey.v1.StringValueOrRef network = 2 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpVpcNetwork,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_id"
   ];
 
@@ -335,6 +354,7 @@ message GcpColabScheduleNetworkSpec {
   // projects/{project}/regions/{region}/subnetworks/{name}.
   dev.planton.shared.foreignkey.v1.StringValueOrRef subnetwork = 3 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpSubnetwork,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetwork_self_link"
   ];
 }

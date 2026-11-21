@@ -31,7 +31,10 @@ type GcpVertexAiAgentEngineContainerSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Container image URI in Artifact Registry, e.g.
 	// us-central1-docker.pkg.dev/{project}/{repo}/agent:latest. The image
-	// must implement the Agent Engine serving contract.
+	// must implement the Agent Engine serving contract, and the project's
+	// Reasoning Engine service agent
+	// (service-<project number>@gcp-sa-aiplatform-re.iam.gserviceaccount.com)
+	// needs roles/artifactregistry.reader on the repository to pull it.
 	ImageUri string `protobuf:"bytes,1,opt,name=image_uri,json=imageUri,proto3" json:"image_uri,omitempty"`
 	// Port the container listens on (Google's default 8080). Sent only when
 	// set.
@@ -696,7 +699,9 @@ func (x *GcpVertexAiAgentEngineBuildSpec) GetWorkerPool() *v1.StringValueOrRef {
 // agent's container.
 type GcpVertexAiAgentEngineEnvVar struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Variable name.
+	// Variable name. GOOGLE_CLOUD_AGENT_ENGINE_ENABLE_TELEMETRY is Agent
+	// Engine's own: Google's provider drops it when reading the agent back,
+	// so declaring it would show a change on every deploy.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// Literal value, written into the agent where anyone who can view it
 	// reads it. Fine for configuration; never a credential -- a credential
@@ -919,7 +924,8 @@ type GcpVertexAiAgentEngineSecretEnvVar_Value struct {
 	// variable at that exact version -- the agent carries a reference,
 	// never the value. A changed value adds a version and redeploys the
 	// agent, so rotation is a deploy; destroying the agent removes the
-	// secret. The secret's id is
+	// secret, under every deletion_policy (ABANDON included -- see
+	// deletion_policy). The secret's id is
 	// agentengine_<location>_<metadata.name>_<variable> ('.' in the name
 	// becomes '-'). Not available with identity_type AGENT_IDENTITY (see
 	// the rule on GcpVertexAiAgentEngineAgent).
@@ -1176,9 +1182,11 @@ type GcpVertexAiAgentEngineDeploymentSpec struct {
 	// each from a secret you own (secret_ref) or from a value this
 	// component stores for you (value).
 	SecretEnv []*GcpVertexAiAgentEngineSecretEnvVar `protobuf:"bytes,2,rep,name=secret_env,json=secretEnv,proto3" json:"secret_env,omitempty"`
-	// Instances kept running at all times (0-10; Google's default 1). Zero
-	// scales the agent to nothing between requests at the cost of cold
-	// starts. Sent only when set.
+	// Instances kept running at all times, 1-75 (Google's default 1). Google
+	// accepts 0, but Google's provider leaves an explicit 0 out of every
+	// request on both engines, so the agent keeps Google's default of one
+	// instance running (and billing) around the clock and every deploy shows
+	// the change again; 0 is refused for that reason. Sent only when set.
 	MinInstances *int32 `protobuf:"varint,3,opt,name=min_instances,json=minInstances,proto3,oneof" json:"min_instances,omitempty"`
 	// Most instances the agent may scale to (1-1000; 1-100 when VPC Service
 	// Controls or a PSC interface is on; Google's default 100). Sent only
@@ -1313,7 +1321,8 @@ type GcpVertexAiAgentEngineAgent struct {
 	ContainerSpec *GcpVertexAiAgentEngineContainerSpec `protobuf:"bytes,5,opt,name=container_spec,json=containerSpec,proto3" json:"container_spec,omitempty"`
 	// Build the agent from source. Mutually exclusive with container_spec.
 	SourceCodeSpec *GcpVertexAiAgentEngineSourceCodeSpec `protobuf:"bytes,6,opt,name=source_code_spec,json=sourceCodeSpec,proto3" json:"source_code_spec,omitempty"`
-	// The legacy pickled-object package.
+	// The legacy pickled-object package. Mutually exclusive with
+	// container_spec and source_code_spec.
 	PackageSpec *GcpVertexAiAgentEnginePackageSpec `protobuf:"bytes,7,opt,name=package_spec,json=packageSpec,proto3" json:"package_spec,omitempty"`
 	// Cloud Build settings for the source build.
 	BuildSpec *GcpVertexAiAgentEngineBuildSpec `protobuf:"bytes,8,opt,name=build_spec,json=buildSpec,proto3" json:"build_spec,omitempty"`
@@ -3225,7 +3234,8 @@ type GcpVertexAiAgentEngineSpec struct {
 	// Customer-managed encryption key protecting the agent's data: a
 	// GcpKmsKey reference or a literal
 	// projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}.
-	// Omit to use Google-managed encryption. Immutable.
+	// The key must be in the agent's location. Omit to use Google-managed
+	// encryption. Immutable: a different key replaces the agent.
 	KmsKeyName *v1.StringValueOrRef `protobuf:"bytes,6,opt,name=kms_key_name,json=kmsKeyName,proto3" json:"kms_key_name,omitempty"`
 	// The agent: its code, identity, and deployment shape. Google's API
 	// calls this block `spec`; the catalog names it for what it holds, so a
@@ -3235,9 +3245,21 @@ type GcpVertexAiAgentEngineSpec struct {
 	ContextSpec *GcpVertexAiAgentEngineContextSpec `protobuf:"bytes,8,opt,name=context_spec,json=contextSpec,proto3" json:"context_spec,omitempty"`
 	// What happens to the agent when this resource is destroyed:
 	//
-	//	"" / "DELETE" -- the agent and its memories are deleted
+	//	"" / "DELETE" -- the agent is deleted without force: Google refuses
+	//	                 while the agent still holds child resources such as
+	//	                 sessions or memories, and the destroy fails
+	//	"FORCE"       -- the agent is deleted with force, together with its
+	//	                 sessions and memories
 	//	"PREVENT"     -- destroy fails
 	//	"ABANDON"     -- the agent leaves management and keeps running
+	//
+	// ABANDON covers the agent only. The Secret Manager secrets this
+	// component keeps for deployment_spec.secret_env[].value, their
+	// versions, and the agent identity's access grant on them are still
+	// deleted on both engines, so the abandoned agent can no longer read
+	// those secrets: its next instance start fails. An agent meant to
+	// outlive this resource should take every secret through secret_ref,
+	// from a Secret Manager secret you own.
 	DeletionPolicy string `protobuf:"bytes,9,opt,name=deletion_policy,json=deletionPolicy,proto3" json:"deletion_policy,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
@@ -3396,9 +3418,10 @@ const file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_rawDesc = "" +
 	"\x1fGcpVertexAiAgentEngineBuildSpec\x12\xd5\x02\n" +
 	"\vworker_pool\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xff\x01\xbaH\xdf\x01\xba\x01\xdb\x01\n" +
 	"\x12worker_pool.format\x12gworker_pool must be a full worker pool name: projects/{project}/locations/{location}/workerPools/{pool}\x1a\\!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/workerPools/[^/]+$')\x88\xd4a\xbc\x19\x92\xd4a\x13status.outputs.nameR\n" +
-	"workerPool\"v\n" +
-	"\x1cGcpVertexAiAgentEngineEnvVar\x128\n" +
-	"\x04name\x18\x01 \x01(\tB$\xbaH!\xc8\x01\x01r\x1c2\x1a^[A-Za-z_][A-Za-z0-9_.-]*$R\x04name\x12\x1c\n" +
+	"workerPool\"\xca\x02\n" +
+	"\x1cGcpVertexAiAgentEngineEnvVar\x12\x8b\x02\n" +
+	"\x04name\x18\x01 \x01(\tB\xf6\x01\xbaH\xf2\x01\xba\x01\xcd\x01\n" +
+	"\x11name.not_reserved\x12\x81\x01GOOGLE_CLOUD_AGENT_ENGINE_ENABLE_TELEMETRY is managed by Agent Engine itself: declared here, it shows as a change on every deploy\x1a4this != 'GOOGLE_CLOUD_AGENT_ENGINE_ENABLE_TELEMETRY'\xc8\x01\x01r\x1c2\x1a^[A-Za-z_][A-Za-z0-9_.-]*$R\x04name\x12\x1c\n" +
 	"\x05value\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05value\"\x98\x02\n" +
 	"\x1fGcpVertexAiAgentEngineSecretRef\x12\xda\x01\n" +
 	"\x06secret\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x8d\x01\xbaH\x03\xc8\x01\x01\xaa\xa6\x1dbSecret Manager secret NAME/identifier only -- the secret material itself never appears in the spec\x88\xd4a\xce\x18\x92\xd4a\x18status.outputs.secret_idR\x06secret\x12\x18\n" +
@@ -3421,15 +3444,14 @@ const file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_rawDesc = "" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\fagentGateway\"\xc6\x02\n" +
 	"(GcpVertexAiAgentEngineAgentGatewayConfig\x12\x89\x01\n" +
 	"\x16client_to_agent_config\x18\x01 \x01(\v2T.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGatewayTargetR\x13clientToAgentConfig\x12\x8d\x01\n" +
-	"\x18agent_to_anywhere_config\x18\x02 \x01(\v2T.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGatewayTargetR\x15agentToAnywhereConfig\"\xb6\n" +
-	"\n" +
+	"\x18agent_to_anywhere_config\x18\x02 \x01(\v2T.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGatewayTargetR\x15agentToAnywhereConfig\"\x8e\f\n" +
 	"$GcpVertexAiAgentEngineDeploymentSpec\x12o\n" +
 	"\x03env\x18\x01 \x03(\v2M.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineEnvVarB\x0eҦ\x1d\n" +
 	"secret_envR\x03env\x12r\n" +
 	"\n" +
-	"secret_env\x18\x02 \x03(\v2S.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSecretEnvVarR\tsecretEnv\x123\n" +
-	"\rmin_instances\x18\x03 \x01(\x05B\t\xbaH\x06\x1a\x04\x18\n" +
-	"(\x00H\x00R\fminInstances\x88\x01\x01\x124\n" +
+	"secret_env\x18\x02 \x03(\v2S.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSecretEnvVarR\tsecretEnv\x12\x8a\x02\n" +
+	"\rmin_instances\x18\x03 \x01(\x05B\xdf\x01\xbaH\xdb\x01\xba\x01\xd7\x01\n" +
+	"\x13min_instances.range\x12\xa6\x01min_instances must be 1 to 75: Google's provider never sends 0, so an agent set to 0 keeps Google's default of 1 instance running and shows the change on every deploy\x1a\x17this >= 1 && this <= 75H\x00R\fminInstances\x88\x01\x01\x124\n" +
 	"\rmax_instances\x18\x04 \x01(\x05B\n" +
 	"\xbaH\a\x1a\x05\x18\xe8\a(\x01H\x01R\fmaxInstances\x88\x01\x01\x12A\n" +
 	"\x15container_concurrency\x18\x05 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01H\x02R\x14containerConcurrency\x88\x01\x01\x12\x92\x01\n" +
@@ -3443,7 +3465,7 @@ const file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_rawDesc = "" +
 	"$deployment_spec.resource_limits_keys\x124resource_limits accepts only the keys cpu and memory\x1a3this.resource_limits.all(k, k in ['cpu', 'memory'])B\x10\n" +
 	"\x0e_min_instancesB\x10\n" +
 	"\x0e_max_instancesB\x18\n" +
-	"\x16_container_concurrency\"\x83\x0e\n" +
+	"\x16_container_concurrency\"\xec\x0f\n" +
 	"\x1bGcpVertexAiAgentEngineAgent\x12'\n" +
 	"\x0fagent_framework\x18\x01 \x01(\tR\x0eagentFramework\x12#\n" +
 	"\rclass_methods\x18\x02 \x01(\tR\fclassMethods\x12N\n" +
@@ -3454,8 +3476,9 @@ const file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_rawDesc = "" +
 	"\fpackage_spec\x18\a \x01(\v2R.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEnginePackageSpecR\vpackageSpec\x12o\n" +
 	"\n" +
 	"build_spec\x18\b \x01(\v2P.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineBuildSpecR\tbuildSpec\x12~\n" +
-	"\x0fdeployment_spec\x18\t \x01(\v2U.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpecR\x0edeploymentSpec:\xe3\x06\xbaH\xdf\x06\x1a\x8f\x01\n" +
-	"\x1aagent.container_xor_source\x126container_spec and source_code_spec cannot both be set\x1a9!(has(this.container_spec) && has(this.source_code_spec))\x1a\xba\x01\n" +
+	"\x0fdeployment_spec\x18\t \x01(\v2U.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpecR\x0edeploymentSpec:\xcc\b\xbaH\xc8\b\x1a\x8f\x01\n" +
+	"\x1aagent.container_xor_source\x126container_spec and source_code_spec cannot both be set\x1a9!(has(this.container_spec) && has(this.source_code_spec))\x1a\xe6\x01\n" +
+	"\x13agent.package_alone\x12xpackage_spec cannot be combined with container_spec or source_code_spec: the agent's code comes from exactly one of them\x1aU!has(this.package_spec) || (!has(this.container_spec) && !has(this.source_code_spec))\x1a\xba\x01\n" +
 	",agent.agent_identity_forbids_service_account\x12Dservice_account must not be set when identity_type is AGENT_IDENTITY\x1aDthis.identity_type != 'AGENT_IDENTITY' || !has(this.service_account)\x1a\x8d\x04\n" +
 	"1agent.agent_identity_forbids_stored_secret_values\x12\xd4\x02secret_env entries cannot carry a value when identity_type is AGENT_IDENTITY: the agent's identity exists only after Google creates the agent, and the agent reads its secrets during that create, so the stored secret could never be granted in time -- use secret_ref to a secret readable by the agents' identities, or run as a service account\x1a\x80\x01this.identity_type != 'AGENT_IDENTITY' || !has(this.deployment_spec) || !this.deployment_spec.secret_env.exists(e, has(e.value))\"\x9f\x04\n" +
 	"$GcpVertexAiAgentEngineGenerationRule\x12-\n" +
@@ -3586,7 +3609,7 @@ const file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_rawDesc = "" +
 	"\x19structured_memory_configs\x18\x05 \x03(\v2].dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineStructuredMemoryConfigR\x17structuredMemoryConfigs\x12\x8f\x01\n" +
 	"\x15customization_configs\x18\x06 \x03(\v2Z.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineCustomizationConfigR\x14customizationConfigs\"\xab\x01\n" +
 	"!GcpVertexAiAgentEngineContextSpec\x12\x85\x01\n" +
-	"\x12memory_bank_config\x18\x01 \x01(\v2W.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineMemoryBankConfigR\x10memoryBankConfig\"\xd0\a\n" +
+	"\x12memory_bank_config\x18\x01 \x01(\v2W.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineMemoryBankConfigR\x10memoryBankConfig\"\xe0\a\n" +
 	"\x1aGcpVertexAiAgentEngineSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12;\n" +
@@ -3597,9 +3620,9 @@ const file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_rawDesc = "" +
 	"\fkms_key_name\x18\x06 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\n" +
 	"kmsKeyName\x12b\n" +
 	"\x05agent\x18\a \x01(\v2L.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineAgentR\x05agent\x12u\n" +
-	"\fcontext_spec\x18\b \x01(\v2R.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContextSpecR\vcontextSpec\x12\xbb\x01\n" +
-	"\x0fdeletion_policy\x18\t \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
-	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a9\n" +
+	"\fcontext_spec\x18\b \x01(\v2R.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContextSpecR\vcontextSpec\x12\xcb\x01\n" +
+	"\x0fdeletion_policy\x18\t \x01(\tB\xa1\x01\xbaH\x9d\x01\xba\x01\x99\x01\n" +
+	"\x15valid_deletion_policy\x12?deletion_policy must be one of: DELETE, FORCE, PREVENT, ABANDON\x1a?this == '' || this in ['DELETE', 'FORCE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x8a\x03\n" +

@@ -1,6 +1,6 @@
 # GcpBigQueryConnection Guide
 
-The judgment this guide protects: a connection is an identity, not a pipe. What it can reach is exactly what you grant the identity it creates -- so create the connection, then grant, and never hand BigQuery a broader credential than the one query or model needs.
+The judgment this guide protects: a connection is an identity, not a pipe. Every arm but `cloudSpanner` creates one; its service-account outputs are bare emails, so an IAM grant names `serviceAccount:{email}`. What it can reach is exactly what you grant the identity it creates -- so create the connection, then grant, and never hand BigQuery a broader credential than the one query or model needs.
 
 ## Choosing the arm
 
@@ -13,4 +13,4 @@ The judgment this guide protects: a connection is an identity, not a pipe. What 
 
 ## Location
 
-A dataset uses only connections in its own location. Cloud SQL must be in the same place, except that Cloud SQL us-central1 pairs with BigQuery `US` and europe-west1 with `EU`; Spanner connections take the instance's region; Omni uses `aws-us-east-1` or `azure-eastus2` style locations. Location, the id, and the connector id never change after creation.
+A dataset uses only connections in its own location. Cloud SQL must be in the same place, except that Cloud SQL us-central1 pairs with BigQuery `US` and europe-west1 with `EU`; Spanner connections take the instance's region; Omni uses `aws-us-east-1` or `azure-eastus2` style locations. `location` is required -- Google has no default -- and is written `US` or `EU` in upper case, every other location in lower case. Location, the id, and the connector id never change after creation.

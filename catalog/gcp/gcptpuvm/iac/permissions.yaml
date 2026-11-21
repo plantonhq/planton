@@ -48,4 +48,13 @@ spec:
         privilege: ordinary
         condition:
           spec_field_set: network_config
-        notes: Placing the TPU on a declared subnetwork requires using it; the same holds for each entry of network_configs.
+        notes: Placing the TPU on a declared subnetwork requires using it.
+      - purpose: UseSubnetworks
+        permissions:
+          - compute.subnetworks.use
+        provenance: derived
+        reach: target
+        privilege: ordinary
+        condition:
+          spec_field_set: network_configs
+        notes: Each extra network interface in network_configs places the TPU on its subnetwork, which requires using it -- the same permission as network_config, carried by its own condition because a condition names one field.

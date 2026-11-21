@@ -2,7 +2,7 @@
 
 ## Use Case
 
-A screen for a customer-facing assistant: every content category, strict injection detection, personal data found and redacted through your own Sensitive Data Protection templates, malicious links blocked, and a friendly message instead of the blocked text.
+A screen for a customer-facing assistant whose thresholds have already been tuned in inspect-only mode (this preset blocks from its first apply): every content category, strict injection detection, personal data found and redacted through your own Sensitive Data Protection templates, malicious links blocked, and a friendly message instead of the blocked text.
 
 ## When to Use
 
@@ -20,7 +20,8 @@ A screen for a customer-facing assistant: every content category, strict injecti
 
 | Field | Default | Why Change |
 |-------|---------|------------|
+| `projectId` | `my-gcp-project` | Your project ID, or a `GcpProject` reference; the Sensitive Data Protection template names carry it too. |
 | `filterConfig.sdpSettings.advancedConfig` | your templates | Point at your own Sensitive Data Protection templates, or use `basicConfig` for Google's detectors. |
-| `raiSettings.raiFilters[].confidenceLevel` | per category | Loosen a category your product legitimately discusses. |
+| `filterConfig.raiSettings.raiFilters[].confidenceLevel` | per category | Loosen a category your product legitimately discusses. |
 | `templateMetadata.custom*ErrorMessage` | generic apology | Your product's voice. |
-| `filterVersionSelector` | stable alias | `version: v2` to pin verdicts for audits. |
+| `templateMetadata.filterVersionSelector` | stable alias | `version: v2` to pin verdicts for audits. |

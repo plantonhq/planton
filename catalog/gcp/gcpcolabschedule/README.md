@@ -72,10 +72,10 @@ planton apply -f colab-schedule.yaml
 | `startTime` / `endTime` | `string` | now / none | RFC 3339 window. |
 | `maxRunCount` | `int64` | unlimited | Complete after this many runs. |
 | `maxConcurrentActiveRunCount` | `int64` | none | Pipeline schedules only: runs in flight at once. |
-| `desiredState` | `string` | `ACTIVE` | `ACTIVE` or `PAUSED`; enforced on every apply. |
+| `desiredState` | `string` | `ACTIVE` | `ACTIVE` or `PAUSED`; applied at creation and whenever it changes, never re-asserted. |
 | `deletionPolicy` | `string` | `DELETE` | `DELETE`, `PREVENT`, or `ABANDON`. |
 
-**`notebookExecutionJob`** (a change replaces the schedule): exactly one source (`gcsNotebookSource` or `dataformRepositorySource`), exactly one machine (`notebookRuntimeTemplateResourceName` or `customEnvironmentSpec`), exactly one identity (`executionUser` or `serviceAccount`), `gcsOutputUri` (required), plus `displayName`, `executionTimeout`, `kernelName`, `labels`, `kmsKeyName`, `workbenchRuntime`.
+**`notebookExecutionJob`** (fixed once created: a `customEnvironmentSpec.machineSpec` `machineType`, `gpuPartitionSize`, or `tpuTopology` change replaces the schedule, and every other change is never sent): exactly one source (`gcsNotebookSource` or `dataformRepositorySource`), exactly one machine (`notebookRuntimeTemplateResourceName` or `customEnvironmentSpec`), exactly one identity (`executionUser` or `serviceAccount`), `gcsOutputUri` (required), plus `displayName`, `executionTimeout`, `kernelName`, `labels`, `kmsKeyName`, `workbenchRuntime`.
 
 **`pipelineJob`** (updates in place): `pipelineSpec` (compiled JSON) or `templateUri`, `runtimeConfig` (`gcsOutputDirectory`, `failurePolicy`, `parameterValues`), `serviceAccount`, `network` (peering; the modules resolve the project number Google requires), `reservedIpRanges`, `pscInterfaceConfig`, `preflightValidations`, `labels`, `kmsKeyName`, `displayName`.
 
@@ -91,6 +91,9 @@ planton apply -f colab-schedule.yaml
 | `name` | `string` | `projects/{project}/locations/{location}/schedules/{schedule_id}` |
 | `schedule_id` | `string` | The id Google assigned |
 | `location` | `string` | The schedule's region |
+| `state` | `string` | `ACTIVE`, `PAUSED`, or `COMPLETED` at the end of the deploy (a snapshot) |
+| `next_run_time` | `string` | When Google will next start a run, as of the deploy |
+| `started_run_count` | `string` | Runs started so far, as of the deploy |
 
 ## Deployment Methods
 
@@ -105,8 +108,9 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 ## Important Notes
 
 - **Unattended runs should use a service account.** `executionUser` runs as a person and stops working when they leave.
-- **The notebook run is immutable.** Changing it replaces the schedule (history restarts); pipeline runs update in place.
-- **`desiredState` is enforced on every apply.** A schedule paused in the console resumes on the next apply if the manifest says `ACTIVE`.
+- **The notebook run is fixed once created.** Switching arms, or changing the notebook run's `machineType`, `gpuPartitionSize`, or `tpuTopology`, replaces the schedule; every other notebook-run change is never sent by Google's provider, so it shows on every plan while Google keeps the first value. For a different notebook run, create a new schedule and pause the old one. Pipeline runs update in place.
+- **A location change replaces the schedule.** Both modules force the replacement, and both make the location the provider's region, which is where each run request is sent.
+- **`desiredState` is applied when it changes, not on every apply.** A schedule paused in the console stays paused until the setting changes.
 - **Destroy stops future runs only.** Runs already launched and their outputs stay; `ABANDON` keeps the schedule launching runs outside management.
 
 ## Examples

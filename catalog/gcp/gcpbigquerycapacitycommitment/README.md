@@ -33,6 +33,7 @@ spec:
   location: US
   slotCount: 100
   plan: ANNUAL
+  renewalPlan: NONE
   edition: ENTERPRISE
   deletionPolicy: ABANDON
 ```
@@ -48,23 +49,25 @@ planton apply -f bigquery-capacity-commitment.yaml
 | Field | Type | Description |
 |-------|------|-------------|
 | `slotCount` | `int64` | Slots committed. Immutable. |
-| `plan` | `string` | The commitment plan -- `ANNUAL` or `THREE_YEAR` with editions. |
+| `plan` | `string` | The commitment plan -- `ANNUAL` or `THREE_YEAR` with editions (Google's `CommitmentPlan` values). Moves only to a longer plan. |
 
 ### Optional Fields
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `projectId` | `StringValueOrRef` | provider project | The admin project. |
-| `location` | `string` | `US` | Immutable. |
+| `location` | `string` | `US` | `US` or `EU` in upper case, or a region in lower case. Immutable. |
 | `capacityCommitmentId` | `string` | `metadata.name` | Lowercase letters, digits, dashes. Immutable. |
-| `renewalPlan` | `string` | Google's default | The plan the commitment renews into. |
+| `renewalPlan` | `string` | Google's default | `NONE` ends the commitment at its term (needs `edition`); `ANNUAL` or `THREE_YEAR` renew it. |
 | `edition` | `string` | Google's choice | `STANDARD`, `ENTERPRISE`, `ENTERPRISE_PLUS`. Immutable. |
-| `enforceSingleAdminProjectPerOrg` | `bool` | `false` | Fail if another project in the organization holds a commitment. Immutable. |
+| `enforceSingleAdminProjectPerOrg` | `bool` | `false` | Google's single-admin-project guard -- never sent by the pinned provider, so it guards nothing; changing it replaces the commitment. Immutable. |
 | `deletionPolicy` | `string` | `DELETE` | `DELETE` (refused before the term ends), `PREVENT`, or `ABANDON`. |
 
 ### Validation Rules
 
 - `slotCount` is at least 1 and `plan` is required.
+- `plan` and `renewalPlan` take Google's `CommitmentPlan` values; `NONE` is a renewal plan only, and needs `edition`.
+- `location` is `US`, `EU`, or a lowercase region.
 - `capacityCommitmentId` is lowercase letters, digits, and dashes, 1-64 characters, not starting or ending with a dash.
 - `edition` takes only Google's three editions.
 
@@ -74,8 +77,8 @@ planton apply -f bigquery-capacity-commitment.yaml
 |--------|------|-------------|
 | `name` | `string` | `projects/{project}/locations/{location}/capacityCommitments/{id}` |
 | `state` | `string` | `PENDING`, `ACTIVE`, or `FAILED` |
-| `commitment_start_time` | `string` | When the current term started |
-| `commitment_end_time` | `string` | When it ends -- the earliest a delete succeeds |
+| `commitment_start_time` | `string` | When the original commitment started; renewals don't move it |
+| `commitment_end_time` | `string` | When the current term ends -- a delete before it fails; a renewal moves it |
 
 ## Deployment Methods
 
@@ -90,7 +93,9 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 ## Important Notes
 
 - **This spends money for a year or more.** Review `slotCount`, `plan`, and `edition` before applying -- none can be taken back.
-- **Destroy fails before the term ends.** Use `deletionPolicy: ABANDON` so the block can leave management while the commitment runs out its term.
+- **A commitment cannot be deleted before its term ends.** Use `deletionPolicy: ABANDON` so the block can leave management; the commitment then keeps billing to the end of its term with `renewalPlan: NONE`, and through every renewal otherwise.
+- **A replacing change is never a resize.** Under `ABANDON` it leaves the old commitment billing and attempts a new purchase; under `DELETE` the apply fails while the term runs.
+- **`NONE` ends it; the manifest then re-buys it.** Once Google removes a commitment at the end of its term, remove the block -- a deploy of the unchanged manifest buys a new one.
 - **Commitments are pooled.** Every reservation in the same admin project and location draws on them; they belong to no single reservation.
 
 ## Examples

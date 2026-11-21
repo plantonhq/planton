@@ -68,9 +68,10 @@ planton apply -f model-armor-floor-setting.yaml
 
 ### Validation Rules
 
-- `scope` names at most one of project, folder, organization; `organizationId` is numeric without the `organizations/` prefix.
+- `scope` names at most one of project, folder, organization; a literal `folderId` and `organizationId` are numeric, without the `folders/` or `organizations/` prefix. An empty scope deploys to the provider's default project; both engines refuse a provider with none.
 - `integratedServices` holds each service at most once.
-- An integrated service setting needs `enforcementType`.
+- An integrated service setting needs `enforcementType`, and each integrated service and its setting come together (`AI_PLATFORM` with `aiPlatformFloorSetting`, `GOOGLE_MCP_SERVER` with `googleMcpServerFloorSetting`).
+- A de-identify template needs an inspect template beside it.
 - The filter rules match `GcpModelArmorTemplate`'s.
 
 ## Outputs
@@ -79,6 +80,7 @@ planton apply -f model-armor-floor-setting.yaml
 |--------|------|-------------|
 | `name` | `string` | `{parent}/locations/{location}/floorSetting` |
 | `parent` | `string` | `projects/{id}`, `folders/{id}`, or `organizations/{id}` |
+| `location` | `string` | Where the floor is managed (`global` unless set) |
 
 ## Deployment Methods
 
@@ -93,7 +95,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 ## Important Notes
 
 - **Destroy does not remove the floor.** Google cannot delete a floor setting: destroying this block only stops managing it, and the last applied floor stays in force. To relax a floor, apply it with `enableFloorSettingEnforcement: false` first, then destroy.
-- **One floor per scope.** Applying overwrites whatever floor the project, folder, or organization had; two blocks for the same scope fight each other.
+- **One floor per scope.** Applying overwrites whatever floor the project, folder, or organization had; two blocks for the same scope fight each other. An empty scope and a `projectId` naming the provider's project are the same scope. Changing `scope` or `location` plans a replacement, and the old floor stays in force.
 - **Roll out inspect-only.** `INSPECT_ONLY` on an integrated service records verdicts without blocking any model call -- see what would be blocked before switching to `INSPECT_AND_BLOCK`.
 - **Templates below the floor are flagged or refused.** Raise templates first, then the floor.
 

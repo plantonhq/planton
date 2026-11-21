@@ -58,16 +58,21 @@ variable "spec" {
     cidr_block = optional(string, "")
 
     # The TPU's network. Set this or network_configs. Unset: the project's
-    # default network and subnetwork. Immutable.
+    # network and subnetwork named "default", which many organizations never
+    # create -- a project without them must set this. Immutable.
     network_config = optional(object({
       # The VPC network: a GcpVpcNetwork reference or a literal
-      # projects/{project}/global/networks/{name}. Unset: "default".
+      # projects/{project}/global/networks/{name}. Unset: the project's network
+      # named "default", which many organizations never create (or delete) --
+      # a project without it must name a network here.
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       network = optional(string, "")
 
       # The subnetwork in the TPU's region: a GcpSubnetwork reference or a
       # literal projects/{project}/regions/{region}/subnetworks/{name}. Unset:
-      # "default".
+      # the subnetwork named "default" in the region, which exists only where
+      # the project's "default" network does -- a project without it must
+      # name a subnetwork here.
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       subnetwork = optional(string, "")
 
@@ -89,13 +94,17 @@ variable "spec" {
     # Set this or network_config. Immutable.
     network_configs = optional(list(object({
       # The VPC network: a GcpVpcNetwork reference or a literal
-      # projects/{project}/global/networks/{name}. Unset: "default".
+      # projects/{project}/global/networks/{name}. Unset: the project's network
+      # named "default", which many organizations never create (or delete) --
+      # a project without it must name a network here.
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       network = optional(string, "")
 
       # The subnetwork in the TPU's region: a GcpSubnetwork reference or a
       # literal projects/{project}/regions/{region}/subnetworks/{name}. Unset:
-      # "default".
+      # the subnetwork named "default" in the region, which exists only where
+      # the project's "default" network does -- a project without it must
+      # name a subnetwork here.
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       subnetwork = optional(string, "")
 

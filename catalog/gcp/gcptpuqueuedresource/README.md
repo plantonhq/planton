@@ -49,7 +49,7 @@ planton apply -f tpu-queued-resource.yaml
 | Field | Type | Description |
 |-------|------|-------------|
 | `zone` | `string` | The zone capacity is requested in. Immutable. |
-| `nodeSpecs` | `object[]` | One entry per node: `nodeId` (optional; Google generates one), `node.runtimeVersion` (required), `node.acceleratorType` (default `v2-8`), `node.description`, `node.networkConfig`. |
+| `nodeSpecs` | `object[]` | One entry per node: `nodeId` (required: the node's name in the project), `node.runtimeVersion` (required), `node.acceleratorType` (default `v2-8`), `node.description`, `node.networkConfig`. |
 
 ### Optional Fields
 
@@ -61,7 +61,7 @@ planton apply -f tpu-queued-resource.yaml
 
 ### Validation Rules
 
-- At least one node; `nodeId` values are unique.
+- At least one node; every node has a `nodeId`, and the values are unique.
 - Ids are lowercase letters, digits, and hyphens, starting with a letter.
 
 ## Outputs
@@ -85,7 +85,8 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 ## Important Notes
 
 - **Everything is immutable.** Any change replaces the request and the nodes it created.
-- **The nodes belong to the request.** Destroying it deletes them; `ABANDON` leaves them running (and billing).
+- **Destroy fails while TPUs are up.** Google deletes a request without force only once its nodes are gone or while it is `ACCEPTED`, `FAILED`, or `SUSPENDED`, and the provider sends no force: destroying an `ACTIVE`, `PROVISIONING`, or `WAITING_FOR_RESOURCES` request fails while its TPUs keep billing. Delete it with `gcloud compute tpus queued-resources delete --force`, then destroy. Every change replaces the request, so it fails the same way. `ABANDON` leaves the request and its nodes running (and billing).
+- **Name a network if the project has no `default`.** Unset, a node joins the project's network named `default`, which many organizations never create.
 - **A waiting request is normal.** Google provisions the nodes when it has capacity; watch the request's state in the console or with `gcloud compute tpus queued-resources describe`.
 - **At the pinned provider a request carries no spot, reservation, labels, service account, or disks.** Those need a `GcpTpuVm`.
 

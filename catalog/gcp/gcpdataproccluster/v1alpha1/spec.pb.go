@@ -32,7 +32,8 @@ const (
 type GcpDataprocClusterDiskConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Size of the boot disk in GB. Minimum 10 GB.
-	// If not specified, GCP defaults to 500 GB for master and worker nodes.
+	// If not specified, Dataproc uses 500 GB for every node role: masters,
+	// workers and secondary workers.
 	BootDiskSizeGb int32 `protobuf:"varint,1,opt,name=boot_disk_size_gb,json=bootDiskSizeGb,proto3" json:"boot_disk_size_gb,omitempty"`
 	// Boot disk type: "pd-standard" (GCP default), "pd-ssd", "pd-balanced",
 	// or "hyperdisk-balanced" (the class whose provisioned IOPS/throughput
@@ -49,11 +50,13 @@ type GcpDataprocClusterDiskConfig struct {
 	LocalSsdInterface string `protobuf:"bytes,4,opt,name=local_ssd_interface,json=localSsdInterface,proto3" json:"local_ssd_interface,omitempty"`
 	// Provisioned I/O operations per second for the boot disk — the IOPS
 	// dial decoupled from disk size, honored by disk types that support
-	// provisioned performance (hyperdisks).
+	// provisioned performance (Dataproc takes it only on hyperdisk-balanced).
+	// Unset: Compute Engine's default for the disk's type and size.
 	BootDiskProvisionedIops *int64 `protobuf:"varint,5,opt,name=boot_disk_provisioned_iops,json=bootDiskProvisionedIops,proto3,oneof" json:"boot_disk_provisioned_iops,omitempty"`
 	// Provisioned throughput in MB/s for the boot disk — the bandwidth
 	// dial decoupled from disk size, honored by disk types that support
-	// provisioned performance (hyperdisks).
+	// provisioned performance (Dataproc takes it only on hyperdisk-balanced).
+	// Unset: Compute Engine's default for the disk's type and size.
 	BootDiskProvisionedThroughput *int64 `protobuf:"varint,6,opt,name=boot_disk_provisioned_throughput,json=bootDiskProvisionedThroughput,proto3,oneof" json:"boot_disk_provisioned_throughput,omitempty"`
 	// Additional persistent disks attached to every node of this role,
 	// beyond the boot disk — for HDFS data or shuffle spill that should not
@@ -149,7 +152,8 @@ func (x *GcpDataprocClusterDiskConfig) GetAttachedDisks() []*GcpDataprocClusterA
 // attached to every node of a role.
 type GcpDataprocClusterAttachedDisk struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Size of the disk in GB. Leave unset for the API's default size.
+	// Size of the disk in GB. Leave unset for the API's default size;
+	// Dataproc's reference names no number for it.
 	DiskSizeGb int32 `protobuf:"varint,1,opt,name=disk_size_gb,json=diskSizeGb,proto3" json:"disk_size_gb,omitempty"`
 	// Disk type. Dataproc attaches only Hyperdisks: "HYPERDISK_BALANCED",
 	// "HYPERDISK_EXTREME", "HYPERDISK_ML", or "HYPERDISK_THROUGHPUT" (Google
@@ -158,10 +162,12 @@ type GcpDataprocClusterAttachedDisk struct {
 	// empty for the API's default.
 	DiskType string `protobuf:"bytes,2,opt,name=disk_type,json=diskType,proto3" json:"disk_type,omitempty"`
 	// Provisioned I/O operations per second, honored by disk types that
-	// support provisioned performance (hyperdisks).
+	// support provisioned performance (hyperdisks). Unset: Compute Engine's
+	// default for the disk's type and size.
 	ProvisionedIops *int64 `protobuf:"varint,3,opt,name=provisioned_iops,json=provisionedIops,proto3,oneof" json:"provisioned_iops,omitempty"`
 	// Provisioned throughput in MB/s, honored by disk types that support
-	// provisioned performance (hyperdisks).
+	// provisioned performance (hyperdisks). Unset: Compute Engine's default
+	// for the disk's type and size.
 	ProvisionedThroughput *int64 `protobuf:"varint,4,opt,name=provisioned_throughput,json=provisionedThroughput,proto3,oneof" json:"provisioned_throughput,omitempty"`
 	unknownFields         protoimpl.UnknownFields
 	sizeCache             protoimpl.SizeCache
@@ -368,7 +374,9 @@ type GcpDataprocClusterConfidentialInstanceConfig struct {
 	//	             protection and attestation (N2D)
 	//	"TDX"     -- Intel Trust Domain Extensions (C3)
 	//
-	// The machine type must support the chosen technology. Immutable.
+	// The machine type must support the chosen technology. Unset, with
+	// enable_confidential_compute unset too, the nodes are ordinary VMs.
+	// Immutable.
 	ConfidentialInstanceType string `protobuf:"bytes,2,opt,name=confidential_instance_type,json=confidentialInstanceType,proto3" json:"confidential_instance_type,omitempty"`
 	unknownFields            protoimpl.UnknownFields
 	sizeCache                protoimpl.SizeCache
@@ -738,7 +746,8 @@ type GcpDataprocClusterMasterConfig struct {
 	// Typically not needed for masters unless running single-node ML workloads.
 	Accelerators []*GcpDataprocClusterAccelerator `protobuf:"bytes,4,rep,name=accelerators,proto3" json:"accelerators,omitempty"`
 	// Minimum CPU platform for the instances (e.g., "Intel Cascade Lake").
-	// Forces nodes onto a specific or newer CPU generation.
+	// Forces nodes onto a specific or newer CPU generation. Unset: any CPU
+	// platform the machine type runs on in the zone.
 	MinCpuPlatform string `protobuf:"bytes,5,opt,name=min_cpu_platform,json=minCpuPlatform,proto3" json:"min_cpu_platform,omitempty"`
 	// Custom Dataproc image URI. If not specified, GCP uses the image
 	// determined by software_config.image_version.
@@ -857,6 +866,7 @@ type GcpDataprocClusterWorkerConfig struct {
 	// Common for Spark ML workloads using GPU-accelerated libraries.
 	Accelerators []*GcpDataprocClusterAccelerator `protobuf:"bytes,4,rep,name=accelerators,proto3" json:"accelerators,omitempty"`
 	// Minimum CPU platform for the instances.
+	// Unset: any CPU platform the machine type runs on in the zone.
 	MinCpuPlatform string `protobuf:"bytes,5,opt,name=min_cpu_platform,json=minCpuPlatform,proto3" json:"min_cpu_platform,omitempty"`
 	// Custom Dataproc image URI.
 	ImageUri string `protobuf:"bytes,6,opt,name=image_uri,json=imageUri,proto3" json:"image_uri,omitempty"`
@@ -1978,6 +1988,7 @@ type GcpDataprocClusterAuxiliaryNodeGroupConfig struct {
 	// Compute Engine machine type for the group's instances.
 	MachineType string `protobuf:"bytes,2,opt,name=machine_type,json=machineType,proto3" json:"machine_type,omitempty"`
 	// Minimum CPU platform for the group's instances.
+	// Unset: any CPU platform the machine type runs on in the zone.
 	MinCpuPlatform string `protobuf:"bytes,3,opt,name=min_cpu_platform,json=minCpuPlatform,proto3" json:"min_cpu_platform,omitempty"`
 	// Boot disk and local SSD configuration.
 	DiskConfig *GcpDataprocClusterDiskConfig `protobuf:"bytes,4,opt,name=disk_config,json=diskConfig,proto3" json:"disk_config,omitempty"`
@@ -2193,7 +2204,8 @@ type GcpDataprocClusterConfig struct {
 	ClusterType string `protobuf:"bytes,18,opt,name=cluster_type,json=clusterType,proto3" json:"cluster_type,omitempty"`
 	// The execution engine. DEFAULT runs open-source Spark as-is;
 	// LIGHTNING enables the Lightning Engine (Google's accelerated Spark
-	// runtime, premium tier). Immutable after creation.
+	// runtime, premium tier). Unset works the same as DEFAULT. Immutable
+	// after creation.
 	Engine        string `protobuf:"bytes,19,opt,name=engine,proto3" json:"engine,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -2492,6 +2504,7 @@ type GcpDataprocClusterNodePoolConfig struct {
 	// Number of local SSDs attached to each node.
 	LocalSsdCount int32 `protobuf:"varint,4,opt,name=local_ssd_count,json=localSsdCount,proto3" json:"local_ssd_count,omitempty"`
 	// Minimum CPU platform for the pool's nodes.
+	// Unset: any CPU platform the machine type runs on in the zone.
 	MinCpuPlatform string `protobuf:"bytes,5,opt,name=min_cpu_platform,json=minCpuPlatform,proto3" json:"min_cpu_platform,omitempty"`
 	// Use legacy preemptible VMs for the pool. Mutually exclusive with spot.
 	Preemptible bool `protobuf:"varint,6,opt,name=preemptible,proto3" json:"preemptible,omitempty"`
@@ -2835,6 +2848,7 @@ type GcpDataprocClusterAuxiliaryServicesConfig struct {
 	// Persistent Hive metastore for the virtual cluster's jobs.
 	MetastoreConfig *GcpDataprocClusterMetastoreConfig `protobuf:"bytes,1,opt,name=metastore_config,json=metastoreConfig,proto3" json:"metastore_config,omitempty"`
 	// Persistent Spark History Server hosted on another Dataproc cluster.
+	// Unset: none, so job history lives and dies with this cluster.
 	SparkHistoryServerConfig *GcpDataprocClusterSparkHistoryServerConfig `protobuf:"bytes,2,opt,name=spark_history_server_config,json=sparkHistoryServerConfig,proto3" json:"spark_history_server_config,omitempty"`
 	unknownFields            protoimpl.UnknownFields
 	sizeCache                protoimpl.SizeCache

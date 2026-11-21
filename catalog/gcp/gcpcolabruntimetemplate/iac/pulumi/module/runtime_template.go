@@ -126,7 +126,12 @@ func runtimeTemplate(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provi
 
 	createdTemplate, err := colab.NewRuntimeTemplate(ctx, metadata.Name, args,
 		pulumi.Provider(gcpProvider),
-		pulumi.DependsOn([]pulumi.Resource{createdApi}))
+		pulumi.DependsOn([]pulumi.Resource{createdApi}),
+		// Google's provider plans a changed location as an in-place update
+		// of the template at its old path; a location change replaces the
+		// template instead, visibly in the preview -- the Terraform
+		// module's terraform_data tracker.
+		pulumi.ReplaceOnChanges([]string{"location"}))
 	if err != nil {
 		return errors.Wrap(err, "failed to create colab runtime template")
 	}

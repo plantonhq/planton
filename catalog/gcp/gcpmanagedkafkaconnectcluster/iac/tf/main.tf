@@ -9,9 +9,17 @@ resource "google_project_service" "managedkafka_api" {
   disable_on_destroy         = false
 }
 
-# The Connect cluster. project, location, and connect_cluster_id are
-# immutable; the attached Kafka cluster, capacity, networks, and labels
-# update in place.
+# Google fixes a Connect cluster's Kafka cluster at creation ("Required.
+# Immutable." in its API), but the provider plans a change to kafka_cluster
+# as an in-place update that Google refuses at apply. This tracker makes a
+# change to it replace the Connect cluster instead, visibly in the plan.
+resource "terraform_data" "kafka_cluster" {
+  input = var.spec.kafka_cluster
+}
+
+# The Connect cluster. project, location, connect_cluster_id, and the
+# attached Kafka cluster (through the tracker above) are immutable;
+# capacity, networks, and labels update in place.
 resource "google_managed_kafka_connect_cluster" "this" {
   project            = local.project_id
   location           = var.spec.location
@@ -42,6 +50,10 @@ resource "google_managed_kafka_connect_cluster" "this" {
   # Client-side destroy behavior: DELETE (default), PREVENT, or ABANDON.
   # Sent only when set so the provider default stays in charge otherwise.
   deletion_policy = local.deletion_policy
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.kafka_cluster]
+  }
 
   depends_on = [google_project_service.managedkafka_api]
 }

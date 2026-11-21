@@ -15,7 +15,7 @@ This directory contains the Terraform implementation for a GKE fleet feature fro
 | `variables.tf` | `metadata` and `spec` variable definitions (generated from the spec; the tfvars converter flattens refs to plain strings) |
 | `locals.tf` | Project, location default, the feature-to-API table, attribution labels, per-cluster entries keyed by membership name |
 | `main.tf` | The two API enablements, the feature with its spec and member defaults, the per-cluster entries |
-| `outputs.tf` | `name` |
+| `outputs.tf` | `name`, `resource_state`, `state_code` (each state read from its one-element list, empty until Google reports it) |
 
 ## Send Posture
 

@@ -40,8 +40,9 @@ message GcpModelArmorTemplateSpec {
 
   // The template's id -- the last segment of its resource name, what an
   // application passes to Model Armor. Letters, digits, hyphens, and
-  // underscores, up to 63 characters. Defaults to metadata.name.
-  // Immutable.
+  // underscores, up to 63 characters. Defaults to metadata.name, which
+  // must then fit the same rule: both engines refuse a metadata.name that
+  // does not before anything is sent. Immutable.
   string template_id = 3 [(buf.validate.field).cel = {
     id: "template_id.format"
     message: "template_id must be 1-63 letters, digits, hyphens, or underscores"
@@ -52,8 +53,10 @@ message GcpModelArmorTemplateSpec {
   // and win on key conflicts.
   map<string, string> labels = 4;
 
-  // Which filters run and how sensitive each one is. Required: a template
-  // with no filter configuration screens nothing.
+  // Which filters run and how sensitive each one is. Required, but an empty
+  // block is accepted and screens nothing: a filter runs only once its own
+  // block is set with filter_enforcement ENABLED (the Responsible AI
+  // filters run once listed).
   GcpModelArmorTemplateFilterConfig filter_config = 5 [(buf.validate.field).required = true];
 
   // How the template behaves around the filters: whether it blocks or only
@@ -74,7 +77,8 @@ message GcpModelArmorTemplateSpec {
 }
 
 // GcpModelArmorTemplateFilterConfig selects the filters. Each filter is
-// off unless its message is set.
+// off unless its message is set, and a set message whose
+// filter_enforcement is unset is still off (Google's default is disabled).
 message GcpModelArmorTemplateFilterConfig {
   // Malicious URL detection: flags links to known phishing and malware
   // sites in prompts and responses.
@@ -119,6 +123,7 @@ message GcpModelArmorTemplatePiAndJailbreakFilterSettings {
   //                         the most false positives
   //   "MEDIUM_AND_ABOVE" -- the balanced choice
   //   "HIGH"             -- flags only clear attempts
+  // Unset is Google's default, which is LOW_AND_ABOVE.
   string confidence_level = 2 [(buf.validate.field).cel = {
     id: "confidence_level.valid"
     message: "confidence_level must be LOW_AND_ABOVE, MEDIUM_AND_ABOVE, or HIGH"
@@ -159,6 +164,7 @@ message GcpModelArmorTemplateRaiFilter {
 
   // How confident Model Armor must be before it flags content in this
   // category: "LOW_AND_ABOVE" (strictest), "MEDIUM_AND_ABOVE", or "HIGH".
+  // Unset is Google's default, which is LOW_AND_ABOVE.
   string confidence_level = 2 [(buf.validate.field).cel = {
     id: "confidence_level.valid"
     message: "confidence_level must be LOW_AND_ABOVE, MEDIUM_AND_ABOVE, or HIGH"
@@ -167,11 +173,11 @@ message GcpModelArmorTemplateRaiFilter {
 }
 
 // GcpModelArmorTemplateSdpSettings configures Sensitive Data Protection
-// screening -- either Google's basic detector set or your own Sensitive
-// Data Protection templates, never both.
+// screening -- Google's basic detector set or your own Sensitive Data
+// Protection templates: at most one of the two.
 message GcpModelArmorTemplateSdpSettings {
   option (buf.validate.message).cel = {
-    id: "sdp_settings.basic_xor_advanced"
+    id: "sdp_settings.at_most_one"
     message: "set at most one of basic_config or advanced_config"
     expression: "!(has(this.basic_config) && has(this.advanced_config))"
   };
@@ -189,7 +195,7 @@ message GcpModelArmorTemplateSdpSettings {
 // GcpModelArmorTemplateSdpBasicConfig switches Google's basic
 // sensitive-data detectors.
 message GcpModelArmorTemplateSdpBasicConfig {
-  // "ENABLED" or "DISABLED".
+  // "ENABLED" or "DISABLED". Unset leaves Google's default (disabled).
   string filter_enforcement = 1 [(buf.validate.field).cel = {
     id: "filter_enforcement.valid"
     message: "filter_enforcement must be ENABLED or DISABLED"
@@ -199,7 +205,14 @@ message GcpModelArmorTemplateSdpBasicConfig {
 
 // GcpModelArmorTemplateSdpAdvancedConfig names Sensitive Data Protection
 // templates. The Model Armor service agent needs permission to use them.
+// A de-identify template needs an inspect template beside it.
 message GcpModelArmorTemplateSdpAdvancedConfig {
+  option (buf.validate.message).cel = {
+    id: "advanced_config.deidentify_needs_inspect"
+    message: "deidentify_template needs inspect_template: the inspect template decides what the de-identify template redacts"
+    expression: "this.deidentify_template == '' || this.inspect_template != ''"
+  };
+
   // Inspect template:
   // projects/{project}/locations/{location}/inspectTemplates/{template}.
   // With only an inspect template, Model Armor reports findings.
@@ -222,6 +235,8 @@ message GcpModelArmorTemplateSdpAdvancedConfig {
 
 // GcpModelArmorTemplateMetadata shapes the template's behavior around its
 // filters. Every field is optional; unset fields keep Google's defaults.
+// Each bool is sent only when true, and Google's default for each is
+// false, so an empty block and an omitted one mean the same.
 message GcpModelArmorTemplateMetadata {
   // Log template create, update, and delete operations to Cloud Logging.
   bool log_template_operations = 1;
@@ -259,7 +274,7 @@ message GcpModelArmorTemplateMetadata {
   //   "INSPECT_ONLY"      -- the verdict is reported and the traffic
   //                          passes (a safe way to tune a new template)
   //   "INSPECT_AND_BLOCK" -- the traffic is blocked
-  // Unset keeps Google's default.
+  // Unset keeps Google's default, which is INSPECT_AND_BLOCK.
   string enforcement_type = 9 [(buf.validate.field).cel = {
     id: "enforcement_type.valid"
     message: "enforcement_type must be INSPECT_ONLY or INSPECT_AND_BLOCK"

@@ -1,6 +1,6 @@
 # GCP Managed Kafka Connector
 
-Declares one data pipeline between Kafka and another system — Pub/Sub, BigQuery, Cloud Storage, or another Kafka cluster — in the manifest of the team whose data it moves, running on a shared Connect cluster with automatic task restarts.
+Declares one data pipeline between Kafka and another system — Pub/Sub, BigQuery, Cloud Storage, or another Kafka cluster — in the manifest of the team whose data it moves, running on a shared Connect cluster, with a task restart policy whose backoffs you choose.
 
 ## What Gets Created
 

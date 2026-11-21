@@ -21,7 +21,9 @@ variable "spec" {
     project_id = optional(string, "")
 
     # The Colab Enterprise region, e.g. "us-central1". Runtimes created from
-    # the template run here. Changing it needs a new template.
+    # the template run here. Changing it replaces the template: both modules
+    # force the replacement, since Google's provider would otherwise try to
+    # move it in place.
     location = string
 
     # The template's id -- the last segment of its resource name. Lowercase
@@ -36,8 +38,11 @@ variable "spec" {
     # Immutable.
     description = optional(string, "")
 
-    # Labels on the template. The platform attribution labels are merged in
-    # and win on key conflicts. A label change replaces the template.
+    # Labels on the template. The platform attribution labels (the
+    # organization and environment among them) are merged in and win on key
+    # conflicts. A label change replaces the template -- moving the resource
+    # to another environment changes its attribution labels, so it replaces
+    # the template too.
     labels = optional(map(string), {})
 
     # The machine every runtime gets. Omit for Google's default machine.
@@ -70,7 +75,8 @@ variable "spec" {
     # internet access.
     network_spec = optional(object({
       # Give runtimes a public internet path. Turn off for runtimes that must
-      # stay private; then the subnetwork needs Private Google Access.
+      # stay private; then name the subnetwork, which needs Private Google
+      # Access.
       enable_internet_access = optional(bool, false)
 
       # The VPC network: a GcpVpcNetwork reference or a literal
@@ -88,16 +94,22 @@ variable "spec" {
     # Shut an idle runtime down after this long -- the main cost control for
     # interactive notebooks. A duration in seconds ending in "s": "0s"
     # disables idle shutdown; otherwise between 600s (10 minutes) and 86400s
-    # (24 hours). Unset keeps Google's default idle shutdown.
+    # (24 hours). Unset keeps Google's default idle shutdown. Fixed at
+    # creation: Google's provider never sends a changed value, so a change
+    # shows on every plan and Google keeps the first one -- create a new
+    # template for a different timeout.
     idle_timeout = optional(string, "")
 
     # Block the user's own Google credentials inside the runtime, so
     # notebooks act only as the runtime's service identity. Sent only when
-    # set.
+    # true. Fixed at creation: turning it off later sends nothing, and
+    # Google keeps it on -- create a new template instead.
     euc_disabled = optional(bool, false)
 
     # Boot runtimes with Secure Boot (Shielded VM), refusing unsigned boot
-    # components. Sent only when true.
+    # components. Sent only when true. Fixed at creation: turning it off
+    # later sends nothing, and Google keeps it on -- create a new template
+    # instead.
     enable_secure_boot = optional(bool, false)
 
     # Compute Engine network tags applied to every runtime -- the handle VPC

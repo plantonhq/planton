@@ -45,9 +45,10 @@ const (
 //
 //   - The scope lives in a fleet: Google requires the fleet first, so
 //     project_id references the GcpGkeFleet by default.
-//   - scope_id and every child's ID are create-time decisions; labels,
-//     namespace labels, role-binding principals and roles, and a cluster
-//     binding's target update in place.
+//   - scope_id, every child's ID, and a cluster binding's membership are
+//     create-time decisions (a changed membership replaces its binding);
+//     labels, namespace labels, and role-binding principals and roles
+//     update in place.
 //   - Destroy deletes the bindings, the namespaces (removing them from
 //     every bound cluster), and the scope.
 type GcpGkeFleetScopeSpec struct {
@@ -345,7 +346,8 @@ type GcpGkeFleetScopeRole struct {
 	// The name of a Kubernetes ClusterRole on the bound clusters. Google
 	// honors it only when the fleet's rbacrolebindingactuation feature
 	// (GcpGkeFleetFeature with feature "rbacrolebindingactuation") lists it
-	// in allowed_custom_roles.
+	// in allowed_custom_roles. A Kubernetes object name: no "/" or "%", and
+	// not "." or "..".
 	CustomRole    string `protobuf:"bytes,2,opt,name=custom_role,json=customRole,proto3" json:"custom_role,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -405,8 +407,10 @@ type GcpGkeFleetScopeMembershipBinding struct {
 	// ("projects/{p}/locations/{l}/memberships/{id}"): a GcpGkeFleetMembership
 	// reference, a GcpGkeCluster reference (its fleet_membership output, for
 	// a cluster that joined through fleet_project), or the literal name. The
-	// membership must be in this scope's fleet. Both modules derive the
-	// binding's project, location, and membership ID from it. Immutable.
+	// membership must be in this scope's fleet project: both modules derive
+	// the binding's location and membership ID from it, and create the
+	// binding in this scope's project. Immutable: a change replaces the
+	// binding.
 	Membership *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=membership,proto3" json:"membership,omitempty"`
 	// Labels on the binding resource. The platform attribution labels are
 	// added on top and win on key conflicts.
@@ -517,11 +521,12 @@ const file_catalog_gcp_gcpgkefleetscope_v1alpha1_spec_proto_rawDesc = "" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x9b\x02\xbaH\x97\x02\x1a\x94\x02\n" +
-	"'rbac_role_binding.exactly_one_principal\x129a role binding names exactly one principal: user or group\x1a\xad\x01((has(this.user) && (has(this.user.value) || has(this.user.value_from))) ? 1 : 0) + ((has(this.group) && (has(this.group.value) || has(this.group.value_from))) ? 1 : 0) == 1\"\x82\x03\n" +
+	"'rbac_role_binding.exactly_one_principal\x129a role binding names exactly one principal: user or group\x1a\xad\x01((has(this.user) && (has(this.user.value) || has(this.user.value_from))) ? 1 : 0) + ((has(this.group) && (has(this.group.value) || has(this.group.value_from))) ? 1 : 0) == 1\"\xba\x04\n" +
 	"\x14GcpGkeFleetScopeRole\x12\xa5\x01\n" +
 	"\x0fpredefined_role\x18\x01 \x01(\tB|\xbaHy\xba\x01v\n" +
-	"\x15predefined_role.valid\x12,predefined_role must be ADMIN, EDIT, or VIEW\x1a/this == '' || this in ['ADMIN', 'EDIT', 'VIEW']R\x0epredefinedRole\x12\x1f\n" +
-	"\vcustom_role\x18\x02 \x01(\tR\n" +
+	"\x15predefined_role.valid\x12,predefined_role must be ADMIN, EDIT, or VIEW\x1a/this == '' || this in ['ADMIN', 'EDIT', 'VIEW']R\x0epredefinedRole\x12\xd6\x01\n" +
+	"\vcustom_role\x18\x02 \x01(\tB\xb4\x01\xbaH\xb0\x01\xba\x01\xac\x01\n" +
+	"\x17custom_role.object_name\x12Mcustom_role must be a Kubernetes ClusterRole name: no / or %, and not . or ..\x1aBthis == '' || (this.matches('^[^/%]+$') && !(this in ['.', '..']))R\n" +
 	"customRole:\xa0\x01\xbaH\x9c\x01\x1a\x99\x01\n" +
 	"\x10role.exactly_one\x127a role is exactly one of predefined_role or custom_role\x1aL(this.predefined_role != '' ? 1 : 0) + (this.custom_role != '' ? 1 : 0) == 1\"\xf6\x06\n" +
 	"!GcpGkeFleetScopeMembershipBinding\x12\x8a\x02\n" +

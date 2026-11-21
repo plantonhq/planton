@@ -62,7 +62,7 @@ These are the most important decisions when configuring a deployment. Explore th
 
 **Which compute** — omit `deployConfig` to accept Model Garden's recommended machine and one replica, or declare `dedicatedResources`: the machine type, accelerator type and count, replica bounds, Spot, and the metrics autoscaling follows. `minReplicaCount` is the committed spend.
 
-**Everything is immutable** — a new model version, machine, or endpoint setting replaces the whole deployment and the endpoint ID changes. Treat a deployment as a versioned artifact and roll forward with a second block.
+**Almost everything is immutable** — the replica bounds and autoscaling metrics change in place, but a new model version, machine, token, or endpoint setting replaces the whole deployment and the endpoint ID changes. Treat a deployment as a versioned artifact and roll forward with a second block.
 
 ## Outputs and Dependencies
 
@@ -84,6 +84,7 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 | `deployed_model_id` | The deployed model's ID | Traffic splits; undeploy tooling |
 | `deployed_model_display_name` | The deployed model's display name | Dashboards |
 | `location` | The deployment's location | Regional clients |
+| `service_attachment` | The endpoint's Private Service Connect service attachment | A consumer's forwarding rule |
 
 ## Common Patterns
 

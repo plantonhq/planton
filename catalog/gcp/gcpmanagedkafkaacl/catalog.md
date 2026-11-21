@@ -83,6 +83,7 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 |--------|-------------|-----------------------|
 | `name` | The ACL's full resource name | Audit |
 | `resource_type` | The resource type Google derived | Review |
+| `resource_name` | The resource name Google derived | Review |
 | `pattern_type` | LITERAL or PREFIXED | Review |
 
 ## Common Patterns

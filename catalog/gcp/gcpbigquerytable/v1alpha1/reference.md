@@ -522,7 +522,8 @@ Maximum number of bad records to tolerate before failing the query.
 
 Connection (projects/{p}/locations/{l}/connections/{c}) whose
 credential reads the source — this is what upgrades a plain external
-table to a BigLake table. Plain string until a connection kind exists.
+table to a BigLake table. A plain string: write the full name a
+GcpBigQueryConnection exports as its name output.
 
 ### spec.externalDataConfiguration.referenceFileSchemaUri
 
@@ -948,8 +949,8 @@ Immutable.
 `string` · required
 
 Connection (projects/{p}/locations/{l}/connections/{c}) whose
-credential accesses the storage. Plain string until a connection kind
-exists.
+credential accesses the storage. A plain string: write the full name a
+GcpBigQueryConnection exports as its name output.
 
 - rule: {"required":true}
 

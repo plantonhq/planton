@@ -375,13 +375,18 @@ func (*GcpGkeNodePoolSpec_Autoscaling) isGcpGkeNodePoolSpec_NodePoolSize() {}
 type GcpGkeNodePoolNodeDrainConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Grace period each node gets to finish draining before it is removed,
-	// seconds format, e.g. "300s".
+	// seconds format, e.g. "300s". Google's API reference names no default:
+	// unset leaves the period to GKE.
 	GraceTerminationDuration string `protobuf:"bytes,1,opt,name=grace_termination_duration,json=graceTerminationDuration,proto3" json:"grace_termination_duration,omitempty"`
 	// How long the drain waits on a blocking PodDisruptionBudget before
-	// proceeding anyway, seconds format, e.g. "3600s".
+	// proceeding anyway, seconds format, e.g. "3600s". Google's API reference
+	// names no default: unset leaves the timeout to GKE.
 	PdbTimeoutDuration string `protobuf:"bytes,2,opt,name=pdb_timeout_duration,json=pdbTimeoutDuration,proto3" json:"pdb_timeout_duration,omitempty"`
 	// Honor PodDisruptionBudgets while the pool is being deleted (bounded
-	// by pdb_timeout_duration) instead of evicting immediately.
+	// by pdb_timeout_duration) instead of evicting immediately. Unset: GKE
+	// does not respect PodDisruptionBudgets when it deletes a node pool. When
+	// set, GKE respects them for up to one hour. It never applies when the
+	// whole cluster is deleted.
 	RespectPdbDuringNodePoolDeletion *bool `protobuf:"varint,3,opt,name=respect_pdb_during_node_pool_deletion,json=respectPdbDuringNodePoolDeletion,proto3,oneof" json:"respect_pdb_during_node_pool_deletion,omitempty"`
 	unknownFields                    protoimpl.UnknownFields
 	sizeCache                        protoimpl.SizeCache
@@ -457,7 +462,8 @@ type GcpGkeNodePoolAutoscaling struct {
 	TotalMaxNodes *uint32 `protobuf:"varint,4,opt,name=total_max_nodes,json=totalMaxNodes,proto3,oneof" json:"total_max_nodes,omitempty"`
 	// Scale-up algorithm: BALANCED spreads new nodes to even out zone sizes;
 	// ANY prioritizes unused reservations and reduces Spot preemption risk —
-	// prefer ANY for Spot pools.
+	// prefer ANY for Spot pools. Unset: BALANCED for on-demand and
+	// reservation pools, ANY for Spot and flex-start pools (GKE's defaults).
 	LocationPolicy string `protobuf:"bytes,5,opt,name=location_policy,json=locationPolicy,proto3" json:"location_policy,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
@@ -673,7 +679,9 @@ type GcpGkeNodePoolBlueGreenSettings struct {
 	// How the blue pool drains, batch by batch.
 	StandardRolloutPolicy *GcpGkeNodePoolStandardRolloutPolicy `protobuf:"bytes,1,opt,name=standard_rollout_policy,json=standardRolloutPolicy,proto3" json:"standard_rollout_policy,omitempty"`
 	// Time after the entire blue pool is drained before it is deleted —
-	// the rollback window. Duration in seconds format, e.g. "3600s".
+	// the rollback window. Duration in seconds format, e.g. "3600s". Unset:
+	// one hour ("3600s"). A total soak (this plus every batch soak) that
+	// reaches seven days deletes the blue pool at once.
 	NodePoolSoakDuration string `protobuf:"bytes,2,opt,name=node_pool_soak_duration,json=nodePoolSoakDuration,proto3" json:"node_pool_soak_duration,omitempty"`
 	unknownFields        protoimpl.UnknownFields
 	sizeCache            protoimpl.SizeCache
@@ -732,7 +740,7 @@ type GcpGkeNodePoolStandardRolloutPolicy struct {
 	// Number of blue nodes drained per batch.
 	BatchNodeCount *uint32 `protobuf:"varint,2,opt,name=batch_node_count,json=batchNodeCount,proto3,oneof" json:"batch_node_count,omitempty"`
 	// Soak time after each batch drains before the next starts. Duration in
-	// seconds format, e.g. "600s".
+	// seconds format, e.g. "600s". Unset: zero seconds.
 	BatchSoakDuration string `protobuf:"bytes,3,opt,name=batch_soak_duration,json=batchSoakDuration,proto3" json:"batch_soak_duration,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
@@ -2939,48 +2947,58 @@ type GcpGkeNodePoolKubeletConfig struct {
 	// (latency-sensitive workloads); "none" (default) shares cores.
 	CpuManagerPolicy string `protobuf:"bytes,1,opt,name=cpu_manager_policy,json=cpuManagerPolicy,proto3" json:"cpu_manager_policy,omitempty"`
 	// Enforce CPU CFS quota for containers with CPU limits. Disabling trades
-	// throttling for potential node CPU contention.
+	// throttling for potential node CPU contention. Unset: true (GKE's
+	// default), so pod CPU limits are enforced.
 	CpuCfsQuota *bool `protobuf:"varint,2,opt,name=cpu_cfs_quota,json=cpuCfsQuota,proto3,oneof" json:"cpu_cfs_quota,omitempty"`
 	// CFS quota period, e.g. "100ms" (kubelet default) — shorter periods
 	// smooth throttling for latency-sensitive workloads.
 	CpuCfsQuotaPeriod string `protobuf:"bytes,3,opt,name=cpu_cfs_quota_period,json=cpuCfsQuotaPeriod,proto3" json:"cpu_cfs_quota_period,omitempty"`
 	// Maximum processes per pod — a fork-bomb fence for multi-tenant pools.
+	// Unset: GKE sets no per-pod limit.
 	PodPidsLimit *int64 `protobuf:"varint,4,opt,name=pod_pids_limit,json=podPidsLimit,proto3,oneof" json:"pod_pids_limit,omitempty"`
 	// The kubelet's insecure read-only port 10255: FALSE closes it (the
 	// hardened posture new clusters default to); TRUE keeps it open for
 	// legacy monitoring agents that still scrape it.
 	InsecureKubeletReadonlyPortEnabled string `protobuf:"bytes,5,opt,name=insecure_kubelet_readonly_port_enabled,json=insecureKubeletReadonlyPortEnabled,proto3" json:"insecure_kubelet_readonly_port_enabled,omitempty"`
-	// Parallel image pulls (kubelet default serializes fewer) — speeds up
-	// busy nodes that churn many images.
+	// Parallel image pulls, 2 to 5 — more speeds up busy nodes that churn
+	// many images. Unset: 2 or 3, chosen by GKE from the boot disk type.
 	MaxParallelImagePulls *int64 `protobuf:"varint,6,opt,name=max_parallel_image_pulls,json=maxParallelImagePulls,proto3,oneof" json:"max_parallel_image_pulls,omitempty"`
 	// Container log file size before rotation, e.g. "10Mi" (10Mi-500Mi).
+	// Unset: "10Mi". Size times files may not exceed 1% of the node's
+	// storage.
 	ContainerLogMaxSize string `protobuf:"bytes,7,opt,name=container_log_max_size,json=containerLogMaxSize,proto3" json:"container_log_max_size,omitempty"`
-	// Rotated container log files kept per container (2-10).
+	// Rotated container log files kept per container (2-10). Unset: 5.
 	ContainerLogMaxFiles *int64 `protobuf:"varint,8,opt,name=container_log_max_files,json=containerLogMaxFiles,proto3,oneof" json:"container_log_max_files,omitempty"`
 	// Disk usage percent below which image GC never runs (must be lower
-	// than the high threshold).
+	// than the high threshold). Unset: 80.
 	ImageGcLowThresholdPercent *int64 `protobuf:"varint,9,opt,name=image_gc_low_threshold_percent,json=imageGcLowThresholdPercent,proto3,oneof" json:"image_gc_low_threshold_percent,omitempty"`
-	// Disk usage percent above which image GC always runs.
+	// Disk usage percent above which image GC always runs. Unset: 85.
 	ImageGcHighThresholdPercent *int64 `protobuf:"varint,10,opt,name=image_gc_high_threshold_percent,json=imageGcHighThresholdPercent,proto3,oneof" json:"image_gc_high_threshold_percent,omitempty"`
 	// Minimum age an unused image must reach before GC may remove it,
-	// seconds format, e.g. "120s".
+	// seconds format, e.g. "120s". Unset: two minutes, which is also the
+	// most GKE accepts.
 	ImageMinimumGcAge string `protobuf:"bytes,11,opt,name=image_minimum_gc_age,json=imageMinimumGcAge,proto3" json:"image_minimum_gc_age,omitempty"`
 	// Maximum age an unused image may reach before GC removes it regardless
-	// of disk pressure, seconds format, e.g. "86400s".
+	// of disk pressure, seconds format, e.g. "86400s". Unset: "0s", which
+	// turns age-based collection off.
 	ImageMaximumGcAge string `protobuf:"bytes,12,opt,name=image_maximum_gc_age,json=imageMaximumGcAge,proto3" json:"image_maximum_gc_age,omitempty"`
 	// Sysctl patterns pods may set as unsafe sysctls (e.g. "net.*",
 	// "kernel.shm*") — gate carefully: unsafe sysctls affect the whole
 	// node, not just the pod that sets them.
 	AllowedUnsafeSysctls []string `protobuf:"bytes,13,rep,name=allowed_unsafe_sysctls,json=allowedUnsafeSysctls,proto3" json:"allowed_unsafe_sysctls,omitempty"`
 	// Maximum seconds the kubelet grants a pod to terminate during
-	// soft-eviction (caps the pod's own grace period in that path).
+	// soft-eviction (caps the pod's own grace period in that path). GKE
+	// accepts 0 to 300. Unset: 0.
 	EvictionMaxPodGracePeriodSeconds *int64 `protobuf:"varint,14,opt,name=eviction_max_pod_grace_period_seconds,json=evictionMaxPodGracePeriodSeconds,proto3,oneof" json:"eviction_max_pod_grace_period_seconds,omitempty"`
 	// Kill only the offending process instead of the whole container on
 	// OOM — for containers running multiple processes where one leaking
-	// process should not take down its siblings.
+	// process should not take down its siblings. Unset: true on cgroup v1
+	// nodes, false on cgroup v2 nodes.
 	SingleProcessOomKill *bool `protobuf:"varint,15,opt,name=single_process_oom_kill,json=singleProcessOomKill,proto3,oneof" json:"single_process_oom_kill,omitempty"`
 	// Soft eviction thresholds: the kubelet starts graceful pod eviction
 	// when a signal stays past its threshold for the paired grace period.
+	// Unset: GKE sets no soft thresholds (nor grace periods or minimum
+	// reclaims), so only hard eviction applies.
 	EvictionSoft *GcpGkeNodePoolEvictionSignals `protobuf:"bytes,16,opt,name=eviction_soft,json=evictionSoft,proto3" json:"eviction_soft,omitempty"`
 	// Grace periods paired with eviction_soft: how long a signal must stay
 	// past its threshold before eviction starts (durations like "90s").
@@ -3003,14 +3021,16 @@ type GcpGkeNodePoolKubeletConfig struct {
 	// shutdown so every pod (critical and non-critical) can terminate
 	// cleanly when the VM is reclaimed. Only configurable on Spot or
 	// preemptible pools (the ones that get reclaimed). Between 10 and
-	// 10000. Leave unset for GKE's default; sent only when set because the
-	// API fills the value itself.
+	// 10000; GKE's node system configuration guide lists 30 and 120 as the
+	// values it accepts. Unset: 30 seconds (GKE's default); sent only when
+	// set because the API fills the value itself.
 	ShutdownGracePeriodSeconds *int64 `protobuf:"varint,22,opt,name=shutdown_grace_period_seconds,json=shutdownGracePeriodSeconds,proto3,oneof" json:"shutdown_grace_period_seconds,omitempty"`
 	// The portion of shutdown_grace_period_seconds reserved for critical
 	// pods (system-node-critical and system-cluster-critical priority
 	// classes) after ordinary pods have been given their share. Must not
 	// exceed shutdown_grace_period_seconds. Spot or preemptible pools only.
-	// Sent only when set because the API fills the value itself.
+	// Unset: 15 seconds (GKE's default). Sent only when set because the API
+	// fills the value itself.
 	ShutdownGracePeriodCriticalPodsSeconds *int64 `protobuf:"varint,23,opt,name=shutdown_grace_period_critical_pods_seconds,json=shutdownGracePeriodCriticalPodsSeconds,proto3,oneof" json:"shutdown_grace_period_critical_pods_seconds,omitempty"`
 	unknownFields                          protoimpl.UnknownFields
 	sizeCache                              protoimpl.SizeCache
@@ -3492,7 +3512,8 @@ func (x *GcpGkeNodePoolEvictionMinimumReclaim) GetPidAvailable() string {
 type GcpGkeNodePoolCrashLoopBackOff struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Maximum backoff delay between restarts of a crashing container,
-	// seconds format (e.g. "300s"; kubelet default caps at 300s).
+	// seconds format (e.g. "300s"). Unset: five minutes, which is also the
+	// most GKE accepts.
 	MaxContainerRestartPeriod string `protobuf:"bytes,1,opt,name=max_container_restart_period,json=maxContainerRestartPeriod,proto3" json:"max_container_restart_period,omitempty"`
 	unknownFields             protoimpl.UnknownFields
 	sizeCache                 protoimpl.SizeCache
@@ -3654,11 +3675,13 @@ type GcpGkeNodePoolLinuxNodeConfig struct {
 	// Hugepage pre-allocation for DPDK/database workloads.
 	HugepagesConfig *GcpGkeNodePoolHugepagesConfig `protobuf:"bytes,3,opt,name=hugepages_config,json=hugepagesConfig,proto3" json:"hugepages_config,omitempty"`
 	// Kernel transparent hugepage mode for anonymous memory:
-	// ALWAYS, MADVISE (only regions that request it), or NEVER.
+	// ALWAYS, MADVISE (only regions that request it), or NEVER. Unset: GKE
+	// leaves the kernel's own setting, which is MADVISE.
 	TransparentHugepageEnabled string `protobuf:"bytes,4,opt,name=transparent_hugepage_enabled,json=transparentHugepageEnabled,proto3" json:"transparent_hugepage_enabled,omitempty"`
 	// Kernel defrag behavior when allocating transparent hugepages:
 	// ALWAYS (stall to reclaim), DEFER (kick background reclaim),
-	// DEFER_WITH_MADVISE, MADVISE, or NEVER.
+	// DEFER_WITH_MADVISE, MADVISE, or NEVER. Unset: GKE leaves the kernel's
+	// own setting.
 	TransparentHugepageDefrag string `protobuf:"bytes,5,opt,name=transparent_hugepage_defrag,json=transparentHugepageDefrag,proto3" json:"transparent_hugepage_defrag,omitempty"`
 	// Signed-kernel-module enforcement: ENFORCE_SIGNED_MODULES rejects
 	// unsigned module loads (the hardened posture);
@@ -3666,7 +3689,7 @@ type GcpGkeNodePoolLinuxNodeConfig struct {
 	NodeKernelModuleLoadingPolicy string `protobuf:"bytes,6,opt,name=node_kernel_module_loading_policy,json=nodeKernelModuleLoadingPolicy,proto3" json:"node_kernel_module_loading_policy,omitempty"`
 	// PTP/KVM paravirtual clock sync for sub-millisecond time accuracy —
 	// for workloads needing precise cross-node timestamps (trading,
-	// distributed tracing at fine granularity).
+	// distributed tracing at fine granularity). Unset: false.
 	EnablePtpKvmTimeSync *bool `protobuf:"varint,7,opt,name=enable_ptp_kvm_time_sync,json=enablePtpKvmTimeSync,proto3,oneof" json:"enable_ptp_kvm_time_sync,omitempty"`
 	// Swap on the nodes (Kubernetes swap support): sizing profile plus
 	// encryption. Swap trades OOM kills for latency under memory pressure;
@@ -4084,9 +4107,12 @@ func (x *GcpGkeNodePoolSwapEncryption) GetDisabled() bool {
 // GcpGkeNodePoolHugepagesConfig pre-allocates hugepages on every node.
 type GcpGkeNodePoolHugepagesConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Number of 2MB hugepages.
+	// Number of 2MB hugepages to pre-allocate. Unset: 0. All hugepages may
+	// take at most 60% of a node's memory under 30 GB, 80% above.
 	HugepageSize_2M *int64 `protobuf:"varint,1,opt,name=hugepage_size_2m,json=hugepageSize2m,proto3,oneof" json:"hugepage_size_2m,omitempty"`
-	// Number of 1GB hugepages.
+	// Number of 1GB hugepages to pre-allocate. Unset: 0. Only some machine
+	// families offer them (A3, C2D, C3, C3D, C4, C4A, C4D, C4N, H3, M2, M3,
+	// M4, Z3 and others).
 	HugepageSize_1G *int64 `protobuf:"varint,2,opt,name=hugepage_size_1g,json=hugepageSize1g,proto3,oneof" json:"hugepage_size_1g,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache

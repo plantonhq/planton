@@ -25,8 +25,14 @@ message GcpBigQueryReservationAssignee {
   ];
 
   // A folder: its numeric ID, literal or a GcpFolder reference. The
-  // modules send folders/{id}.
+  // modules send folders/{id}, so a literal is the bare number, without
+  // the folders/ prefix.
   dev.planton.shared.foreignkey.v1.StringValueOrRef folder_id = 2 [
+    (buf.validate.field).cel = {
+      id: "folder_id.numeric"
+      message: "A literal folder must be its numeric ID, without the folders/ prefix."
+      expression: "!has(this.value) || this.value == '' || this.value.matches('^[0-9]+$')"
+    },
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpFolder,
     (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.folder_id"
@@ -43,9 +49,16 @@ message GcpBigQueryReservationAssignee {
 
 // GcpBigQueryReservationAssignment routes one kind of job from an assignee
 // to this reservation (`google_bigquery_reservation_assignment`). Every
-// field is immutable: a change replaces the assignment. Jobs of an
-// assignee with no assignment for their job type run on on-demand
-// capacity.
+// field is immutable: a changed assignment is the old one deleted and a new
+// one created. Jobs of an assignee with no assignment for their job type
+// fall back to the next assignment up the hierarchy (project, folder,
+// organization), then to on-demand capacity.
+//
+// Google allows one assignment per assignee for each job type and
+// location, across every reservation: the same project assigned for QUERY
+// on two reservations in one location is refused at the second apply, so
+// moving an assignee to another reservation means removing its assignment
+// here in one apply and adding it there in the next.
 message GcpBigQueryReservationAssignment {
   // Whose jobs use the reservation.
   GcpBigQueryReservationAssignee assignee = 1 [(buf.validate.field).required = true];
@@ -53,7 +66,8 @@ message GcpBigQueryReservationAssignment {
   // Which jobs:
   //   QUERY      -- interactive and batch queries, and scripts
   //   PIPELINE   -- load, export, and copy jobs
-  //   CONTINUOUS -- continuous queries
+  //   CONTINUOUS -- continuous queries (a reservation with a CONTINUOUS
+  //                 assignment holds no other job type)
   string job_type = 2 [
     (buf.validate.field).required = true,
     (buf.validate.field).string = {
@@ -95,11 +109,30 @@ message GcpBigQueryReservationAssignment {
 // Immutable: project_id, location, reservation_name, edition (a change
 // replaces the reservation). Capacity, autoscaling, concurrency, idle-slot
 // sharing, the group, the secondary location, and labels update in place.
+// Google refuses to delete a reservation that still has assignments.
 message GcpBigQueryReservationSpec {
+  // A literal and a reference that resolve to the same project count as
+  // two rows here, though Google sees one assignment: write each assignee
+  // one way.
   option (buf.validate.message).cel = {
     id: "spec.assignments_unique"
     expression: "this.assignments.all(a, this.assignments.filter(b, b.job_type == a.job_type && b.principal == a.principal && b.assignee.organization_id == a.assignee.organization_id && b.assignee.project_id.value == a.assignee.project_id.value && b.assignee.project_id.value_from.name == a.assignee.project_id.value_from.name && b.assignee.folder_id.value == a.assignee.folder_id.value && b.assignee.folder_id.value_from.name == a.assignee.folder_id.value_from.name).size() == 1)"
     message: "each assignment must be unique by assignee, job_type, and principal"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.continuous_assignments_alone"
+    expression: "!this.assignments.exists(a, a.job_type == 'CONTINUOUS') || this.assignments.all(a, a.job_type == 'CONTINUOUS')"
+    message: "Google does not mix CONTINUOUS assignments with other job types on one reservation; give continuous queries a reservation of their own."
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.group_path_matches_location"
+    expression: "!has(this.reservation_group.value) || !this.reservation_group.value.startsWith('projects/') || this.reservation_group.value.contains('/locations/' + (this.location == '' ? 'US' : this.location) + '/')"
+    message: "A literal reservation group path must be in this reservation's location (US when location is empty)."
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.group_path_matches_project"
+    expression: "!has(this.reservation_group.value) || !this.reservation_group.value.startsWith('projects/') || !has(this.project_id.value) || this.project_id.value == '' || this.reservation_group.value.startsWith('projects/' + this.project_id.value + '/')"
+    message: "A literal reservation group path must be in this reservation's admin project."
   };
 
   // The administration project the reservation lives in and bills to: a
@@ -112,21 +145,35 @@ message GcpBigQueryReservationSpec {
 
   // Where the slots are: a multi-region (US, EU) or a region
   // (asia-northeast1). Assigned projects' jobs use the reservation only
-  // for data in this location. Empty means US (Google's default).
-  // Immutable.
-  string location = 2;
+  // for data in this location. Empty means US (Google's default). Write US
+  // and EU in upper case and a region in lower case: the provider never
+  // reads the location back, so another spelling is another location to
+  // it, and replaces the reservation. Immutable.
+  string location = 2 [(buf.validate.field).cel = {
+    id: "location.spelling"
+    message: "location must be US or EU in upper case, or a region in lower case such as us-central1."
+    expression: "this == '' || this in ['US', 'EU'] || this.matches('^[a-z]+-[a-z]+[0-9]+$')"
+  }];
 
-  // The reservation's name -- letters, digits, and dashes. Defaults to
-  // metadata.name. Immutable.
+  // The reservation's name -- Google's rule: lowercase letters, digits,
+  // and dashes, starting with a letter, not ending with a dash, at most 64
+  // characters. "none" is Google's own name for on-demand capacity and is
+  // refused. Defaults to metadata.name, which must then fit the same rule.
+  // Immutable.
   string reservation_name = 3 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
-    (buf.validate.field).string.pattern = "^[a-zA-Z0-9-]+$"
+    (buf.validate.field).string.pattern = "^[a-z](?:[-a-z0-9]{0,62}[a-z0-9])?$",
+    (buf.validate.field).string.not_in = "none"
   ];
 
   // Baseline slots, always allocated and billed -- 0 is valid with
   // autoscaling, for pay-while-used capacity. Queries may exceed it by
   // borrowing idle slots unless ignore_idle_slots is set. Mutable in
-  // place.
+  // place: an increase takes effect every few minutes; a decrease is
+  // limited to once an hour after a recent change while the baseline
+  // exceeds the committed slots. Baseline slots of this reservation and
+  // its siblings beyond the admin project's committed slots are billed at
+  // the autoscale rate.
   int64 slot_capacity = 4 [(buf.validate.field).int64.gte = 0];
 
   // The BigQuery edition, which sets the features and the per-slot price:
@@ -146,8 +193,8 @@ message GcpBigQueryReservationSpec {
     }
   ];
 
-  // The most slots autoscaling may add on top of slot_capacity (a
-  // multiple of 50). 0 or empty turns autoscaling off.
+  // The most slots autoscaling may add on top of slot_capacity. 0 or empty
+  // turns autoscaling off.
   int64 autoscale_max_slots = 6 [(buf.validate.field).int64.gte = 0];
 
   // true caps queries at this reservation's own slots; false (Google's
@@ -161,7 +208,8 @@ message GcpBigQueryReservationSpec {
 
   // The group the reservation belongs to, which pools idle slots among its
   // members before other reservations: a GcpBigQueryReservationGroup
-  // reference (its name output) or a literal group name or full path.
+  // reference (its name output) or a literal group name or full path. The
+  // group is in the reservation's admin project and location.
   dev.planton.shared.foreignkey.v1.StringValueOrRef reservation_group = 9 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpBigQueryReservationGroup,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
@@ -180,12 +228,16 @@ message GcpBigQueryReservationSpec {
   // The projects, folders, or organization whose jobs use the
   // reservation, each for one job type. Each is unique by assignee,
   // job_type, and principal. An assignment is PENDING until the
-  // reservation has capacity to give.
+  // reservation has capacity to give. The deletion policy is stamped on
+  // every assignment: under PREVENT no assignment can be removed or
+  // changed (apply DELETE on its own first); under ABANDON a removed or
+  // changed assignment is left in GCP, still routing its jobs here.
   repeated GcpBigQueryReservationAssignment assignments = 12;
 
   // What happens to the reservation and its assignments when this
   // resource is destroyed:
-  //   "" / "DELETE" -- deleted (assigned jobs fall back to on-demand)
+  //   "" / "DELETE" -- deleted (assigned jobs fall back to the next
+  //                    assignment up the hierarchy, then to on-demand)
   //   "PREVENT"     -- destroy fails
   //   "ABANDON"     -- they leave management and keep running (and
   //                    billing) in GCP

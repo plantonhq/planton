@@ -55,7 +55,7 @@ planton apply -f document-ai-processor.yaml
 | `projectId` | `StringValueOrRef` | provider project | The project, as a literal or a `GcpProject` reference. |
 | `displayName` | `string` | `metadata.name` | Unique among the project's processors in the location. Immutable. |
 | `kmsKeyName` | `StringValueOrRef` | Google-managed | A `GcpKmsKey` reference or literal key path. Immutable. |
-| `defaultVersion` | `string` | Google's default | The short id of the version that serves requests naming none, e.g. `pretrained-ocr-v2.1-2024-08-07`. Never `stable` or `rc`. |
+| `defaultVersion` | `string` | Google's default (a cleared pin keeps answering) | The short id of the version that serves requests naming none, e.g. `pretrained-ocr-v2.1-2024-08-07`. Never `stable` or `rc`. |
 | `deletionPolicy` | `string` | `DELETE` | `DELETE`, `PREVENT`, or `ABANDON`. |
 
 ### Validation Rules
@@ -84,7 +84,8 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 ## Important Notes
 
-- **Everything but the default version is permanent.** Changing the type, location, display name, or key replaces the processor -- and its id and endpoint change with it.
+- **Everything but the default version is permanent.** Changing the type, location, display name, or key replaces the processor -- and its id and endpoint change with it. A trained version pinned in `defaultVersion` does not exist on the new processor, so clear or change it in the same change.
+- **A pinned default cannot be cleared.** Removing `defaultVersion` leaves the last pinned version answering; pin another version to change it.
 - **Pin a concrete default version.** The `stable` and `rc` channel aliases never settle (Google answers with the version they resolve to), so the block refuses them; a pinned version also makes extraction results reproducible.
 - **Destroy keeps nothing.** Under `DELETE` the processor and any version you trained are deleted; `PREVENT` guards a processor with custom-trained versions.
 - **Some types need an allowlist or a specific location.** Check `fetchProcessorTypes` for your project before choosing one.

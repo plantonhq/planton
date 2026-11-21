@@ -26,4 +26,4 @@ A document store for semantic search where Vector Search computes the embeddings
 | `indexes[].filterFields` | none | Fields to filter on inline (e.g. a `category`). |
 | `deletionPolicy` | `DELETE` | `PREVENT` once the collection holds data you cannot regenerate. |
 
-Every index setting but labels is immutable: change the metric, the fields, or the infrastructure and the index is replaced and rebuilt from the collection's data.
+An index's display name, description, labels, and replica bounds change in place; change the metric, the fields, or the infrastructure mode and the index is replaced and rebuilt from the collection's data.

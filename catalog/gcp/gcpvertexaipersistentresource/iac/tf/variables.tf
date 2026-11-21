@@ -32,11 +32,13 @@ variable "spec" {
     persistent_resource_id = optional(string, "")
 
     # Human-readable name shown in the console -- up to 128 UTF-8
-    # characters. Mutable in place.
+    # characters. A change replaces the resource (the provider cannot update
+    # it in place).
     display_name = optional(string, "")
 
     # Labels on the resource. The platform attribution labels are merged in
-    # and win on key conflicts. Mutable in place.
+    # and win on key conflicts. A change replaces the resource: the provider
+    # recreates it rather than patching its labels.
     labels = optional(map(string), {})
 
     # The pools of machines the resource keeps provisioned. At least one.
@@ -50,8 +52,8 @@ variable "spec" {
       machine_spec = object({
         # The Compute Engine machine type, e.g. "n1-standard-4", "a2-highgpu-1g",
         # "ct5lp-hightpu-4t" -- any type Vertex AI custom training supports.
-        # Immutable.
-        machine_type = optional(string, "")
+        # Required. Immutable.
+        machine_type = string
 
         # The accelerator attached to every replica (NVIDIA_TESLA_T4,
         # NVIDIA_L4, NVIDIA_TESLA_A100, NVIDIA_A100_80GB, NVIDIA_H100_80GB,
@@ -61,13 +63,15 @@ variable "spec" {
         # must be one Google pairs with it. Empty attaches none. Immutable.
         accelerator_type = optional(string, "")
 
-        # How many accelerators each replica carries, set together with
-        # accelerator_type. Sent only when set. Immutable.
+        # How many accelerators each replica carries -- at least 1 when
+        # accelerator_type is set, 0 (unset) when it is not. Sent only when set.
+        # Immutable.
         accelerator_count = optional(number, 0)
       })
 
       # How many replicas the pool runs (and bills) whether or not a job is
-      # using them. Sent as a decimal string. Mutable in place.
+      # using them. Sent as a decimal string. A change replaces the resource
+      # (the provider cannot update it in place).
       replica_count = optional(number)
 
       # Autoscaling bounds for the pool. Omit for a fixed replica_count.
@@ -100,9 +104,11 @@ variable "spec" {
     # services: a GcpVpcNetwork reference or a literal
     # projects/{project}/global/networks/{name}. Google requires the project
     # NUMBER in that path; both modules resolve a project ID to its number
-    # (one project lookup at plan time). The network must already have VPC
-    # Network Peering for Vertex AI (private services access) configured.
-    # Omit for no peering. Immutable.
+    # (one project lookup at plan time). A literal is that path or the
+    # network's full https://www.googleapis.com/compute/v1/ self-link; a bare
+    # network name is refused. The network must already have VPC Network
+    # Peering for Vertex AI (private services access) configured. Omit for
+    # no peering. Immutable.
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     network = optional(string, "")
 

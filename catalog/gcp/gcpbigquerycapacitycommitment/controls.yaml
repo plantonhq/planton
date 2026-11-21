@@ -65,8 +65,8 @@ spec:
       field_path: deletion_policy
       evidence:
         type: spec_default
-        reference: "Unset means DELETE, which Google refuses before the term ends (the destroy fails); PREVENT always fails; ABANDON leaves the commitment to run out its term."
-      notes: "Every preset sets ABANDON."
+        reference: "Unset means DELETE, which Google refuses before the term ends (the destroy fails); PREVENT always fails; ABANDON leaves the commitment billing in GCP, to the end of its term when renewal_plan is NONE and through every renewal otherwise."
+      notes: "Every preset sets ABANDON with renewal_plan NONE, so an abandoned commitment ends at its term."
     - control_id: managed-patching
       status: not_applicable
       notes: "No software surface exists."

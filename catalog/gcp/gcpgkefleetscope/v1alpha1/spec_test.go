@@ -113,6 +113,17 @@ var _ = ginkgo.Describe("GcpGkeFleetScopeSpec", func() {
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
 
+	ginkgo.It("should accept a ClusterRole name and refuse one Kubernetes cannot hold", func() {
+		msg := full()
+		msg.Spec.RbacRoleBindings[0].Role = &GcpGkeFleetScopeRole{CustomRole: "system:aggregate-to-edit"}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		for _, role := range []string{"team/deployer", "..", "deploy%er"} {
+			msg := full()
+			msg.Spec.RbacRoleBindings[0].Role = &GcpGkeFleetScopeRole{CustomRole: role}
+			gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), role)
+		}
+	})
+
 	ginkgo.It("should require a membership, as a full name when literal", func() {
 		msg := full()
 		msg.Spec.MembershipBindings[1].Membership = literal("orders-ew4")

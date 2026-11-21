@@ -38,18 +38,57 @@ var _ = ginkgo.Describe("GcpManagedKafkaConnectorSpec", func() {
 			Spec: &GcpManagedKafkaConnectorSpec{
 				Location:       "us-central1",
 				ConnectCluster: litRef("events-connect"),
+				Configs:        map[string]string{"connector.class": "com.google.pubsub.kafka.sink.CloudPubSubSinkConnector"},
 			},
 		}
 	}
 
-	ginkgo.It("should accept a connector with only its Connect cluster", func() {
+	ginkgo.It("should accept a connector with only its Connect cluster and plugin", func() {
 		gomega.Expect(validator.Validate(minimal())).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should refuse a connector that names no plugin", func() {
+		msg := minimal()
+		msg.Spec.Configs = nil
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.Configs = map[string]string{"tasks.max": "1"}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.Configs = map[string]string{"connector.class": ""}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should refuse an empty restart policy and a minimum above the maximum", func() {
+		msg := minimal()
+		msg.Spec.TaskRestartPolicy = &GcpManagedKafkaConnectorTaskRestartPolicy{}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.TaskRestartPolicy = &GcpManagedKafkaConnectorTaskRestartPolicy{MinimumBackoff: "1800s", MaximumBackoff: "60s"}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.TaskRestartPolicy = &GcpManagedKafkaConnectorTaskRestartPolicy{MinimumBackoff: "60s", MaximumBackoff: "60s"}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "equal backoffs")
+		msg.Spec.TaskRestartPolicy = &GcpManagedKafkaConnectorTaskRestartPolicy{MaximumBackoff: "60s"}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "one backoff, Google's default for the other")
+	})
+
+	ginkgo.It("should refuse a connector ID outside RFC 1035", func() {
+		msg := minimal()
+		msg.Spec.ConnectorId = "Orders_To_PubSub"
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should refuse a literal Connect cluster path in another location or project", func() {
+		msg := minimal()
+		msg.Spec.ConnectCluster = litRef("projects/p/locations/us-east1/connectClusters/events-connect")
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.ConnectCluster = litRef("projects/p/locations/us-central1/connectClusters/events-connect")
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		msg.Spec.ProjectId = litRef("q")
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
 
 	ginkgo.It("should accept every field set", func() {
 		msg := minimal()
 		msg.Spec.ProjectId = litRef("data-project")
-		msg.Spec.ConnectCluster = litRef("projects/p/locations/us-central1/connectClusters/events-connect")
+		msg.Spec.ConnectCluster = litRef("projects/data-project/locations/us-central1/connectClusters/events-connect")
 		msg.Spec.ConnectorId = "orders-to-pubsub"
 		msg.Spec.Configs = map[string]string{
 			"connector.class": "com.google.pubsub.kafka.sink.CloudPubSubSinkConnector",

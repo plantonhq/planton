@@ -2,7 +2,7 @@
 
 ## Use Case
 
-A production event backbone: 12 vCPU and 48 GiB, a 1 TB broker disk, reachable from two VPC networks (its own and a Shared VPC host), encrypted with your key, rebalanced on scale-up, and protected from destroy.
+A production event backbone: 12 vCPU and 48 GiB, a 1000 GiB broker disk, reachable from two VPC networks (its own and a Shared VPC host), encrypted with your key, rebalanced on scale-up, and protected from destroy.
 
 ## When to Use
 
@@ -18,6 +18,7 @@ A production event backbone: 12 vCPU and 48 GiB, a 1 TB broker disk, reachable f
 
 | Field | Default | Why Change |
 |-------|---------|------------|
+| `projectId` | `my-gcp-project` | A stand-in: name your project, or reference a GcpProject. |
 | `kmsKey` | `events` key | Must be in the cluster's region; grant the Managed Kafka service agent encrypt/decrypt first. Fixed at creation. |
 | `capacityConfig` | 12 vCPU, 48 GiB | Size to peak throughput; scales in place. |
-| `networkConfigs` | two subnets | One subnet per network your clients use, up to ten. |
+| `networkConfigs` | two subnets | Stand-in paths (`my-gcp-project`, `shared-vpc-host`): one subnet per network your clients use, up to ten, each in the cluster's region. |

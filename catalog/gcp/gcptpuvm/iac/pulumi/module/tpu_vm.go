@@ -142,6 +142,29 @@ func tpuVm(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) error
 	ctx.Export(OpName, createdVm.ID())
 	ctx.Export(OpNodeId, createdVm.Name)
 	ctx.Export(OpZone, createdVm.Zone)
+	ctx.Export(OpState, createdVm.State)
+	ctx.Export(OpHealth, createdVm.Health)
+	// Worker 0 first: the endpoint a runtime client reaches first.
+	ctx.Export(OpWorkerInternalIps, createdVm.NetworkEndpoints.ApplyT(func(endpoints []tpu.V2VmNetworkEndpoint) []string {
+		ips := []string{}
+		for _, endpoint := range endpoints {
+			if endpoint.IpAddress != nil {
+				ips = append(ips, *endpoint.IpAddress)
+			}
+		}
+		return ips
+	}).(pulumi.StringArrayOutput))
+	ctx.Export(OpWorkerExternalIps, createdVm.NetworkEndpoints.ApplyT(func(endpoints []tpu.V2VmNetworkEndpoint) []string {
+		ips := []string{}
+		for _, endpoint := range endpoints {
+			for _, access := range endpoint.AccessConfigs {
+				if access.ExternalIp != nil && *access.ExternalIp != "" {
+					ips = append(ips, *access.ExternalIp)
+				}
+			}
+		}
+		return ips
+	}).(pulumi.StringArrayOutput))
 	return nil
 }
 

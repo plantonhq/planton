@@ -128,7 +128,12 @@ services where per-region ceremony is pure overhead.
 itself fails until the manifest opts out. `deletionPolicy` layers the
 engine-side stance under it: PREVENT fails any destroying plan before it
 starts; ABANDON drops the service from state and leaves it serving —
-break-glass for state surgery, not an operating mode. Deleting a service
+break-glass for state surgery, not an operating mode. ABANDON keeps the
+service only: the secrets this component stores for `secretValue`, their
+versions, and the identity's grant on them are deleted on both engines, so
+the abandoned service's next instance start can no longer read them. A
+service meant to outlive its manifest takes its secrets through
+`valueFromSecret`, from a Secret Manager secret you own. Deleting a service
 tears down its endpoint AND every revision; the URL is gone the moment
 the destroy lands.
 

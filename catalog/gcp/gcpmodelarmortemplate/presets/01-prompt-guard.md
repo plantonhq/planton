@@ -18,6 +18,7 @@ The first safety screen for any AI application: detect prompt-injection and jail
 
 | Field | Default | Why Change |
 |-------|---------|------------|
+| `projectId` | `my-gcp-project` | Your project ID, or a `GcpProject` reference. |
 | `location` | `us-central1` | Where your traffic may be inspected (`us`, `eu`, or another region). |
 | `templateMetadata.enforcementType` | `INSPECT_ONLY` | `INSPECT_AND_BLOCK` once the false-positive rate is acceptable. |
 | `filterConfig.piAndJailbreakFilterSettings.confidenceLevel` | `MEDIUM_AND_ABOVE` | `LOW_AND_ABOVE` to catch more, `HIGH` to flag only clear attempts. |

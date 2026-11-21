@@ -45,7 +45,10 @@ variable "spec" {
     data_schema = optional(string, "")
 
     # The searchable vector fields. Only fields declared here can be
-    # indexed and searched.
+    # indexed and searched. They update in place: adding, removing, or
+    # reshaping one changes the collection's schema, and emptying the list
+    # asks Google to drop every vector field. A field an index serves stays
+    # declared while the index exists.
     vector_schemas = optional(list(object({
       # The field's name -- alphanumeric characters, underscores, and hyphens.
       # An index names this field as its index_field.
@@ -96,7 +99,7 @@ variable "spec" {
 
     # The approximate-nearest-neighbor indexes over the collection's vector
     # fields, each keyed by its index_id. Add or remove an index by editing
-    # this list; any other change to an index replaces it.
+    # this list; for what changes in place see GcpVectorSearchCollectionIndex.
     indexes = optional(list(object({
       # The index's ID within the collection -- 1-63 characters, RFC 1035
       # (lowercase letters, digits, hyphens; starts with a letter). Immutable.
@@ -106,13 +109,15 @@ variable "spec" {
       # Immutable.
       index_field = string
 
-      # Human-readable name shown in the console.
+      # Human-readable name shown in the console. Changes in place.
       display_name = optional(string, "")
 
-      # Free-text description of the index.
+      # Free-text description of the index. Changes in place.
       description = optional(string, "")
 
-      # Labels on the index -- the one mutable setting.
+      # Labels on the index. The collection's labels and the platform
+      # attribution labels are merged in and win on a key conflict. Change in
+      # place.
       labels = optional(map(string), {})
 
       # How similarity is measured: DOT_PRODUCT (Google's default; the right
@@ -144,12 +149,14 @@ variable "spec" {
         # Replica bounds for the dedicated nodes.
         autoscaling_spec = optional(object({
           # Fewest replicas kept serving (1-1000; Google defaults to 2 when unset
-          # or 0). Sent only when set.
+          # or 0). Sent only when set. Changes in place.
           min_replica_count = optional(number)
 
           # Most replicas the index may scale to (at least min_replica_count, at
-          # most 1000; Google defaults to the greater of min_replica_count and 2).
-          # Sent only when set.
+          # most 1000). Unset, the default depends on the API version the engine
+          # calls: the greater of min_replica_count and 2 under Terraform (Google's
+          # v1 API), 5 under Pulumi (Google's v1beta API) -- set it to get the
+          # same ceiling on both. Sent only when set. Changes in place.
           max_replica_count = optional(number)
         }))
       }))

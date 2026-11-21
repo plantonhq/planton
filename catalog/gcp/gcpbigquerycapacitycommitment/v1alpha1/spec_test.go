@@ -55,6 +55,35 @@ var _ = ginkgo.Describe("GcpBigQueryCapacityCommitmentSpec", func() {
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 	})
 
+	ginkgo.It("should accept NONE as a renewal plan with an edition", func() {
+		msg := minimal()
+		msg.Spec.RenewalPlan = "NONE"
+		msg.Spec.Edition = "ENTERPRISE"
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should refuse NONE without an edition, and NONE or an unknown value as the plan", func() {
+		msg := minimal()
+		msg.Spec.RenewalPlan = "NONE"
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		for _, plan := range []string{"NONE", "COMMITMENT_PLAN_UNSPECIFIED", "annual", "YEARLY"} {
+			msg := minimal()
+			msg.Spec.Plan = plan
+			gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), plan)
+		}
+		msg = minimal()
+		msg.Spec.RenewalPlan = "COMMITMENT_PLAN_UNSPECIFIED"
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should refuse a location in the wrong case", func() {
+		msg := minimal()
+		msg.Spec.Location = "us"
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.Location = "asia-northeast1"
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
 	ginkgo.It("should require slots and a plan", func() {
 		msg := minimal()
 		msg.Spec.SlotCount = 0

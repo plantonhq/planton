@@ -18,5 +18,6 @@ A changelog or state topic where only the latest value per key matters: Kafka co
 
 | Field | Default | Why Change |
 |-------|---------|------------|
+| `projectId`, `cluster` | `my-gcp-project`, `events` | Stand-ins: name the cluster's project, or reference the GcpManagedKafkaCluster (`valueFrom`) and its project. |
 | `configs.cleanup.policy` | `compact` | `compact,delete` also expires old keys by retention. |
 | `configs.min.compaction.lag.ms` | 1 hour | How long an overwritten value stays readable. |

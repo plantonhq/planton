@@ -24,4 +24,11 @@ message GcpVertexAiModelGardenDeploymentOutputs {
 
   // The location the model is deployed in.
   string location = 5;
+
+  // The service attachment Google generated for the endpoint's Private
+  // Service Connect, as
+  // projects/{project}/regions/{region}/serviceAttachments/{name} -- what a
+  // consumer's forwarding rule targets. Empty unless
+  // endpoint_config.private_service_connect_config is on.
+  string service_attachment = 6;
 }

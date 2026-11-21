@@ -8,6 +8,6 @@ spec:
   location: US
   slotCount: 100
   plan: ANNUAL
-  renewalPlan: ANNUAL
+  renewalPlan: NONE
   edition: ENTERPRISE
   deletionPolicy: ABANDON

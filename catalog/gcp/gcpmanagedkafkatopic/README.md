@@ -51,6 +51,7 @@ planton apply -f managed-kafka-topic.yaml
 |-------|------|-------------|
 | `location` | `string` | The cluster's region. Immutable. |
 | `cluster` | `StringValueOrRef` | The cluster -- a `GcpManagedKafkaCluster` reference or its full path or bare id. Immutable. |
+| `partitionCount` | `int32` | At least 1. Grows in place, never shrinks. |
 | `replicationFactor` | `int32` | Copies of each partition; Google recommends 3. Immutable. |
 
 ### Optional Fields
@@ -59,13 +60,14 @@ planton apply -f managed-kafka-topic.yaml
 |-------|------|---------|-------------|
 | `projectId` | `StringValueOrRef` | provider project | The cluster's project. |
 | `topicId` | `string` | `metadata.name` | The topic name clients use (Kafka's rule: letters, digits, `.`, `_`, `-`, at most 249). Immutable. |
-| `partitionCount` | `int32` | Google's default | Grows in place, never shrinks. |
-| `configs` | `map<string,string>` | cluster defaults | Topic-level overrides (`cleanup.policy`, `retention.ms`, ...). |
+| `configs` | `map<string,string>` | cluster defaults | Topic-level overrides (`cleanup.policy`, `retention.ms`, ...). Replaced whole: a removed key returns to the cluster default. |
 | `deletionPolicy` | `string` | `DELETE` | `DELETE`, `PREVENT`, or `ABANDON`. |
 
 ### Validation Rules
 
-- `replicationFactor` is at least 1; `partitionCount`, when set, at least 1.
+- `replicationFactor` and `partitionCount` are each at least 1.
+- Every `configs` value is non-empty.
+- A literal full cluster path must name this topic's `location` (and its `projectId`, when set).
 - `topicId` follows Kafka's topic-name rule.
 
 ## Outputs
@@ -87,8 +89,8 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 ## Important Notes
 
-- **Replacement deletes messages.** `topicId`, `replicationFactor`, and the cluster are immutable -- changing one replaces the topic and its data.
-- **Partitions only grow.** Raising `partitionCount` moves keys to different partitions for new messages, so per-key ordering holds only after the change.
+- **Replacement deletes messages.** `projectId`, `location`, `topicId`, `replicationFactor`, and the cluster are immutable -- changing one replaces the topic and its data.
+- **Partitions only grow.** Google refuses a lower `partitionCount` at apply. Raising `partitionCount` moves keys to different partitions for new messages, so per-key ordering holds only after the change.
 - **Access is a separate block.** Grant producers and consumers with `GcpManagedKafkaAcl` on `topic/{name}` (and the consumer group).
 
 ## Examples

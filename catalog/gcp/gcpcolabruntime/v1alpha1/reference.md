@@ -16,9 +16,10 @@ hire, a runtime per course participant) and lets the block start or stop
 them on purpose: desired_state STOPPED keeps the disk and stops the
 compute bill.
 
-Immutable: location, runtime_id, runtime_user, runtime_template,
-display_name, and description. Mutable in place: desired_state and
-auto_upgrade.
+Replaced on change: location, runtime_id, runtime_user,
+runtime_template, display_name, and description -- a replacement under
+DELETE deletes the old runtime's disk, and the notebooks kept only
+there with it. Mutable in place: desired_state and auto_upgrade.
 
 ## Example
 
@@ -135,8 +136,11 @@ What the runtime is for. Immutable.
 Whether the runtime should be running:
   "RUNNING" -- started (the default); compute bills
   "STOPPED" -- stopped; the disk stays and bills, compute does not
-The block starts or stops the runtime to match on every apply. Unset
-leaves the runtime running.
+The runtime is started or stopped to match when it is created and
+whenever this setting changes. It is not re-asserted on later deploys:
+a user can start a STOPPED runtime in Colab Enterprise, and it keeps
+running (and billing) until idle shutdown stops it or this setting
+changes. Unset is RUNNING, so clearing STOPPED starts the runtime.
 
 - rule: desired_state must be RUNNING or STOPPED
 
@@ -144,8 +148,11 @@ leaves the runtime running.
 
 `bool`
 
-Upgrade the runtime to the latest Colab image whenever it is started
-and Google reports it upgradable.
+Upgrade the runtime to the latest Colab image when Google reports it
+upgradable. The upgrade runs only during a deploy that changes this
+runtime, never on its own; and a user-defined runtime past its
+expiration time is upgraded by such a deploy whether or not this is
+set.
 
 ### spec.deletionPolicy
 
@@ -167,6 +174,7 @@ Reference an output from another manifest as `valueFrom: {kind: GcpColabRuntime,
 | `status.outputs.name` | `string` | Full resource name: projects/{project}/locations/{location}/notebookRuntimes/{runtime_id}. |
 | `status.outputs.runtime_id` | `string` | The runtime's id (the last segment of name). |
 | `status.outputs.location` | `string` | The region the runtime lives in. |
+| `status.outputs.state` | `string` | The runtime's state as Google reported it at the end of the deploy, e.g. RUNNING or STOPPED. A snapshot: a runtime a user starts or idle shutdown stops later reads as it was until the next deploy. |
 
 ## References
 

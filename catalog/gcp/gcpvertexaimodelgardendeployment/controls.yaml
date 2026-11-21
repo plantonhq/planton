@@ -80,8 +80,8 @@ spec:
       field_path: deletion_policy
       evidence:
         type: spec_default
-        reference: Unset means DELETE -- the model is undeployed and the endpoint and uploaded model deleted; PREVENT makes any destroying plan fail; ABANDON removes the deployment from management while it keeps serving and billing.
-      notes: The 02-gemma-l4-vllm-dedicated-endpoint preset sets PREVENT. Because every field is immutable, ANY change is a destroy-and-recreate and is subject to this policy.
+        reference: Unset means DELETE -- the model is undeployed and the endpoint deleted (the provider makes no call that deletes the uploaded model); PREVENT makes any destroying plan fail; ABANDON removes the deployment from management while it keeps serving and billing.
+      notes: The 02-gemma-l4-vllm-dedicated-endpoint preset sets PREVENT. Every change except the replica bounds and autoscaling metrics is a destroy-and-recreate and is subject to this policy.
     - control_id: managed-patching
       status: enforced_by_default
       evidence:

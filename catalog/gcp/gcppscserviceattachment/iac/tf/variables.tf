@@ -79,7 +79,9 @@ variable "spec" {
     })), [])
 
     # Consumer projects (IDs or numbers, or GcpProject references) refused
-    # even under ACCEPT_AUTOMATIC. Compared as a set.
+    # even under ACCEPT_AUTOMATIC. Google checks each one exists and refuses
+    # a project it can't find ("Must be a valid project ID"). Compared as a
+    # set.
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     consumer_reject_lists = optional(list(string), [])
 
@@ -98,7 +100,10 @@ variable "spec" {
     enable_proxy_protocol = optional(bool, false)
 
     # Domain name registered with Cloud DNS for the connected endpoints, e.g.
-    # "p.mycompany.com." (with the trailing dot). At most one. Immutable.
+    # "p.mycompany.com." (with the trailing dot). Google refuses a domain the
+    # producer has not validated (Cloud DNS "DNS for VPC-hosted services"
+    # validation) -- set it only for a domain you own and have validated.
+    # At most one. Immutable.
     domain_names = optional(list(string), [])
 
     # How many consumer spokes a connected PSC endpoint may be propagated to

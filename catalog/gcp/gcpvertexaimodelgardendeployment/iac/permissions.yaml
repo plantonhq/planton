@@ -27,10 +27,10 @@ spec:
           - aiplatform.endpoints.deploy
           - aiplatform.endpoints.undeploy
           - aiplatform.endpoints.delete
+          - aiplatform.endpoints.update
           - aiplatform.models.upload
           - aiplatform.models.get
-          - aiplatform.models.delete
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: Covers google_vertex_ai_endpoint_with_model_garden_deployment (Pulumi vertex.AiEndpointWithModelGardenDeployment) -- the one-step deploy uploads a Model, creates an Endpoint, and deploys to it; read/refresh reads the endpoint and its deployed models; destroy under deletion_policy DELETE undeploys, then deletes the endpoint and the model (ABANDON and PREVENT call no API). Model Garden publisher models are public catalog entries -- GCP defines no aiplatform.publisherModels permission, so resolving the entry needs no grant. GCP defines no aiplatform.operations.get permission; polling the long-running operations needs nothing beyond these. roles/aiplatform.admin contains them all.
+        notes: Covers google_vertex_ai_endpoint_with_model_garden_deployment (Pulumi vertex.AiEndpointWithModelGardenDeployment) -- the one-step deploy uploads a Model, creates an Endpoint, and deploys to it; read/refresh reads the endpoint and its deployed models; destroy under deletion_policy DELETE undeploys the model, then deletes the endpoint; the uploaded model stays in the project's Model Registry, because the provider never deletes it (ABANDON and PREVENT call no API). A change to the replica bounds or autoscaling metrics is mutated in place on the deployed model (mutateDeployedModel), an endpoint write. Model Garden publisher models are public catalog entries -- GCP defines no aiplatform.publisherModels permission, so resolving the entry needs no grant. GCP defines no aiplatform.operations.get permission; polling the long-running operations needs nothing beyond these. roles/aiplatform.admin contains them all.

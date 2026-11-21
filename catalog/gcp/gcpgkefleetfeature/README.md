@@ -87,12 +87,16 @@ planton apply -f gke-fleet-feature.yaml
 - Each settings block is accepted only on its feature (`mesh` on `servicemesh`); Google's API holds one spec per feature.
 - `membershipConfigs` only on `configmanagement`, `servicemesh`, and `policycontroller`; exactly one block per entry; a membership at most once.
 - Config Sync syncs from `git` or `oci`, with a required `secretType` and `syncRepo`; Policy Controller requires `installSpec`; Mesh requires `management`.
+- A per-cluster Config Sync override sets `enabled` (`true` or `false`): an unset value would be sent as false and remove Config Sync.
+- `clusterupgrade.upstreamFleets` names exactly one fleet.
 
 ## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
 | `name` | `string` | `projects/{project}/locations/{location}/features/{feature}` |
+| `resource_state` | `string` | `ENABLING`, `ACTIVE`, `DISABLING`, `UPDATING`, or `SERVICE_UPDATING` |
+| `state_code` | `string` | `OK`, `WARNING`, or `ERROR`; empty until Google assesses the feature |
 
 ## Deployment Methods
 
@@ -106,7 +110,8 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 ## Important Notes
 
-- **Creating adopts.** A feature that is already on is taken over: its settings become this block's.
+- **Creating adopts.** A feature that is already on is taken over: its settings become this block's. Undeclared settings survive the first apply and go on the next; two blocks naming one feature fight, and destroying either turns it off for both.
+- **Fleet-wide `false` and `0` never reach Google.** In `fleetDefaultMemberConfig`, Config Sync `enabled: false`, `preventDrift: false`, an audit interval of `0`, and empty metrics backends are dropped by the provider -- to keep Config Sync off fleet-wide, declare no `configSync`.
 - **Destroy turns the feature off**, except `rbacrolebindingactuation`, which Google never deletes -- destroy empties its allowlist.
 - **Turned-down levers are not offered:** Hierarchy Controller (Config Sync 1.20 removed it) and Policy Controller through Config Management (Config Sync 1.21) -- use the `policycontroller` feature.
 - **Cost.** Config Management, Policy Controller, team management, and upgrade sequencing carry no charge of their own; Managed Service Mesh and Multi Cluster Ingress have their own SKUs.

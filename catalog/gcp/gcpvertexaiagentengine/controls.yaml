@@ -87,7 +87,7 @@ spec:
       field_path: deletion_policy
       evidence:
         type: spec_default
-        reference: Unset means DELETE -- the agent and its sessions and memories are deleted; PREVENT makes any destroying plan fail; ABANDON removes the agent from management while it keeps running.
+        reference: Unset means DELETE -- the agent is deleted without force, which Google refuses while it holds sessions or memories; FORCE deletes it with them; PREVENT makes any destroying plan fail; ABANDON removes the agent from management while it keeps running, and the secrets this component stores for it are still deleted.
       notes: The 02-container-agent-with-memory-bank preset sets PREVENT.
     - control_id: managed-patching
       status: enforced_by_default

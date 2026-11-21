@@ -23,11 +23,14 @@ variable "spec" {
     # The cluster the connections belong to. A GcpRedisCluster reference
     # resolves to its full resource path (name output); a literal takes
     # either the full path or the bare cluster name. The modules derive the
-    # bare name Google's resource expects.
+    # bare name Google's resource expects. Fixed: a changed cluster is
+    # planned in place and never sent, so a set on another cluster is a new
+    # set.
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     cluster = string
 
-    # The cluster's region (e.g. "us-central1").
+    # The cluster's region (e.g. "us-central1"). Fixed: a changed region is
+    # planned in place and never sent.
     region = string
 
     # One entry per consumer VPC, each carrying a connection per cluster
@@ -81,8 +84,10 @@ variable "spec" {
     }))
 
     # What happens to the registration when this resource is destroyed:
-    #   "" / "DELETE" -- the connections are deregistered (the forwarding
-    #                    rules themselves belong to their own blocks)
+    #   "" / "DELETE" -- every user-created connection on the cluster is
+    #                    deregistered, including any this set did not
+    #                    declare (the forwarding rules themselves belong to
+    #                    their own blocks)
     #   "PREVENT"     -- destroy fails
     #   "ABANDON"     -- the registration leaves management but stays on
     #                    the cluster

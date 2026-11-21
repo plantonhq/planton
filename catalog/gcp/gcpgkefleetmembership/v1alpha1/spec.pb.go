@@ -69,7 +69,8 @@ type GcpGkeFleetMembershipSpec struct {
 	// literal path. Both modules send it as Google's resource link,
 	// "//container.googleapis.com/projects/{p}/locations/{l}/clusters/{name}".
 	// Omit it only for a cluster outside Google Cloud that registers through
-	// its own Connect agent. Immutable.
+	// its own Connect agent. A literal is that path, optionally with the
+	// //container.googleapis.com/ prefix. Immutable.
 	GkeCluster *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=gke_cluster,json=gkeCluster,proto3" json:"gke_cluster,omitempty"`
 	// The cluster's OIDC issuer, which turns on fleet Workload Identity for
 	// this membership: Google then trusts tokens from this issuer within the
@@ -176,15 +177,16 @@ var File_catalog_gcp_gcpgkefleetmembership_v1alpha1_spec_proto protoreflect.File
 
 const file_catalog_gcp_gcpgkefleetmembership_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcpgkefleetmembership/v1alpha1/spec.proto\x12.dev.planton.gcp.gcpgkefleetmembership.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xb5\t\n" +
+	"5catalog/gcp/gcpgkefleetmembership/v1alpha1/spec.proto\x12.dev.planton.gcp.gcpgkefleetmembership.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xf4\v\n" +
 	"\x19GcpGkeFleetMembershipSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xa8\x19\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\xf6\x01\n" +
 	"\rmembership_id\x18\x02 \x01(\tB\xd0\x01\xbaH\xcc\x01\xba\x01\xc8\x01\n" +
 	"\x14membership_id.format\x12lmembership_id must be 1-63 lowercase letters, digits, or hyphens, starting and ending with a letter or digit\x1aBthis == '' || this.matches('^[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?$')R\fmembershipId\x12\x90\x01\n" +
 	"\blocation\x18\x03 \x01(\tBt\xbaHq\xba\x01n\n" +
-	"\x0flocation.format\x12#location must be global or a region\x1a6this == '' || this.matches('^[a-z]+(-[a-z]+[0-9]+)?$')R\blocation\x12{\n" +
-	"\vgke_cluster\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\x88\xd4a\xbf\x17\x92\xd4a\x19status.outputs.cluster_id\x98\xd4a\x01R\n" +
+	"\x0flocation.format\x12#location must be global or a region\x1a6this == '' || this.matches('^[a-z]+(-[a-z]+[0-9]+)?$')R\blocation\x12\xb9\x03\n" +
+	"\vgke_cluster\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xe3\x02\xbaH\xb9\x02\xba\x01\xb5\x02\n" +
+	"\x12gke_cluster.format\x12\x8c\x01A literal GKE cluster must be projects/{project}/locations/{location}/clusters/{name}, optionally prefixed with //container.googleapis.com/.\x1a\x8f\x01!has(this.value) || this.value == '' || this.value.matches('^(//container[.]googleapis[.]com/)?projects/[^/]+/locations/[^/]+/clusters/[^/]+$')\x88\xd4a\xbf\x17\x92\xd4a\x19status.outputs.cluster_id\x98\xd4a\x01R\n" +
 	"gkeCluster\x12\xaf\x01\n" +
 	"\x06issuer\x18\x05 \x01(\tB\x96\x01\xbaH\x92\x01\xba\x01\x8e\x01\n" +
 	"\rissuer.format\x12;issuer must be an https:// URL shorter than 2000 characters\x1a@this == '' || (this.startsWith('https://') && size(this) < 2000)R\x06issuer\x12m\n" +

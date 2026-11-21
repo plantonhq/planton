@@ -70,7 +70,7 @@ These are the most important decisions when configuring this component. Explore 
 
 **Edition** — `STANDARD` is autoscale-only; `ENTERPRISE` adds commitments and more features; `ENTERPRISE_PLUS` adds managed disaster recovery. It cannot change.
 
-**Assignments** — route a project, folder, or organization — or one principal inside them — onto the reservation per job type; anything unassigned runs on-demand.
+**Assignments** — route a project, folder, or organization — or one principal inside them — onto the reservation per job type; anything unassigned falls back to the next assignment up the hierarchy, then runs on-demand.
 
 ## Outputs and Dependencies
 

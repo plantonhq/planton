@@ -31,11 +31,12 @@ const (
 // already meets the team's rules: the right machine and GPU, a private
 // network, customer-managed encryption, idle shutdown to cap spend.
 //
-// Immutable: location, runtime_template_id, description, labels (a label
-// change REPLACES the template -- Google fixes a template's labels at
-// creation), network_tags, and every machine, disk, network, idle,
-// end-user-credential, and Shielded VM setting. Mutable in place:
-// display_name, kms_key_name, and software_config.
+// Replaced on change: location, runtime_template_id, description, labels
+// (Google fixes a template's labels at creation), network_tags, and every
+// machine, disk, and network setting. Fixed at creation, and never
+// changed by a deploy: idle_timeout, euc_disabled, and enable_secure_boot
+// (see each field) -- a different value needs a new template. Mutable in
+// place: display_name, kms_key_name, and software_config.
 type GcpColabRuntimeTemplateSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The GCP project the template lives in: a literal project ID or a
@@ -43,7 +44,9 @@ type GcpColabRuntimeTemplateSpec struct {
 	// used.
 	ProjectId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// The Colab Enterprise region, e.g. "us-central1". Runtimes created from
-	// the template run here. Changing it needs a new template.
+	// the template run here. Changing it replaces the template: both modules
+	// force the replacement, since Google's provider would otherwise try to
+	// move it in place.
 	Location string `protobuf:"bytes,2,opt,name=location,proto3" json:"location,omitempty"`
 	// The template's id -- the last segment of its resource name. Lowercase
 	// letters, digits, and hyphens. Defaults to metadata.name. Immutable.
@@ -54,8 +57,11 @@ type GcpColabRuntimeTemplateSpec struct {
 	// What the template is for (e.g. "GPU runtime for the vision team").
 	// Immutable.
 	Description string `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
-	// Labels on the template. The platform attribution labels are merged in
-	// and win on key conflicts. A label change replaces the template.
+	// Labels on the template. The platform attribution labels (the
+	// organization and environment among them) are merged in and win on key
+	// conflicts. A label change replaces the template -- moving the resource
+	// to another environment changes its attribution labels, so it replaces
+	// the template too.
 	Labels map[string]string `protobuf:"bytes,6,rep,name=labels,proto3" json:"labels,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// The machine every runtime gets. Omit for Google's default machine.
 	MachineSpec *GcpColabRuntimeTemplateMachineSpec `protobuf:"bytes,7,opt,name=machine_spec,json=machineSpec,proto3" json:"machine_spec,omitempty"`
@@ -68,14 +74,20 @@ type GcpColabRuntimeTemplateSpec struct {
 	// Shut an idle runtime down after this long -- the main cost control for
 	// interactive notebooks. A duration in seconds ending in "s": "0s"
 	// disables idle shutdown; otherwise between 600s (10 minutes) and 86400s
-	// (24 hours). Unset keeps Google's default idle shutdown.
+	// (24 hours). Unset keeps Google's default idle shutdown. Fixed at
+	// creation: Google's provider never sends a changed value, so a change
+	// shows on every plan and Google keeps the first one -- create a new
+	// template for a different timeout.
 	IdleTimeout string `protobuf:"bytes,10,opt,name=idle_timeout,json=idleTimeout,proto3" json:"idle_timeout,omitempty"`
 	// Block the user's own Google credentials inside the runtime, so
 	// notebooks act only as the runtime's service identity. Sent only when
-	// set.
+	// true. Fixed at creation: turning it off later sends nothing, and
+	// Google keeps it on -- create a new template instead.
 	EucDisabled bool `protobuf:"varint,11,opt,name=euc_disabled,json=eucDisabled,proto3" json:"euc_disabled,omitempty"`
 	// Boot runtimes with Secure Boot (Shielded VM), refusing unsigned boot
-	// components. Sent only when true.
+	// components. Sent only when true. Fixed at creation: turning it off
+	// later sends nothing, and Google keeps it on -- create a new template
+	// instead.
 	EnableSecureBoot bool `protobuf:"varint,12,opt,name=enable_secure_boot,json=enableSecureBoot,proto3" json:"enable_secure_boot,omitempty"`
 	// Compute Engine network tags applied to every runtime -- the handle VPC
 	// firewall rules target. Immutable.
@@ -368,11 +380,15 @@ func (x *GcpColabRuntimeTemplateDataPersistentDiskSpec) GetDiskSizeGb() int64 {
 	return 0
 }
 
-// GcpColabRuntimeTemplateNetworkSpec is the network a runtime joins.
+// GcpColabRuntimeTemplateNetworkSpec is the network a runtime joins. The
+// template is a recipe, not a resource in the network: its references say
+// which network the runtimes will join, so they never place the template
+// inside the network.
 type GcpColabRuntimeTemplateNetworkSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Give runtimes a public internet path. Turn off for runtimes that must
-	// stay private; then the subnetwork needs Private Google Access.
+	// stay private; then name the subnetwork, which needs Private Google
+	// Access.
 	EnableInternetAccess bool `protobuf:"varint,1,opt,name=enable_internet_access,json=enableInternetAccess,proto3" json:"enable_internet_access,omitempty"`
 	// The VPC network: a GcpVpcNetwork reference or a literal
 	// projects/{project}/global/networks/{name}. Unset: the project's
@@ -724,13 +740,14 @@ const file_catalog_gcp_gcpcolabruntimetemplate_v1alpha1_spec_proto_rawDesc = "" 
 	"\fdisk_size_gb\x18\x02 \x01(\x03Bq\xbaHn\xba\x01k\n" +
 	"\x12disk_size_gb.range\x12)disk_size_gb must be between 10 and 65536\x1a*this == 0 || (this >= 10 && this <= 65536)R\n" +
 	"diskSizeGb:~\xbaH{\x1ay\n" +
-	")data_persistent_disk_spec.size_needs_type\x12\x1cdisk_size_gb needs disk_type\x1a.this.disk_size_gb == 0 || this.disk_type != ''\"\xcf\x02\n" +
+	")data_persistent_disk_spec.size_needs_type\x12\x1cdisk_size_gb needs disk_type\x1a.this.disk_size_gb == 0 || this.disk_type != ''\"\xf7\x04\n" +
 	"\"GcpColabRuntimeTemplateNetworkSpec\x124\n" +
-	"\x16enable_internet_access\x18\x01 \x01(\bR\x14enableInternetAccess\x12p\n" +
-	"\anetwork\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc2\x17\x92\xd4a\x19status.outputs.network_idR\anetwork\x12\x80\x01\n" +
+	"\x16enable_internet_access\x18\x01 \x01(\bR\x14enableInternetAccess\x12t\n" +
+	"\anetwork\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\x88\xd4a\xc2\x17\x92\xd4a\x19status.outputs.network_id\x98\xd4a\x01R\anetwork\x12\x84\x01\n" +
 	"\n" +
-	"subnetwork\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\x88\xd4a\xc3\x17\x92\xd4a#status.outputs.subnetwork_self_linkR\n" +
-	"subnetwork\"\xa0\x03\n" +
+	"subnetwork\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB0\x88\xd4a\xc3\x17\x92\xd4a#status.outputs.subnetwork_self_link\x98\xd4a\x01R\n" +
+	"subnetwork:\x9d\x02\xbaH\x99\x02\x1a\x96\x02\n" +
+	"%network_spec.private_needs_subnetwork\x12\xb7\x01a network_spec without internet access must name a subnetwork: Google's provider never sends enable_internet_access false on its own, so the runtimes would keep a public internet path\x1a3this.enable_internet_access || has(this.subnetwork)\"\xa0\x03\n" +
 	"%GcpColabRuntimeTemplateSoftwareConfig\x12a\n" +
 	"\x03env\x18\x01 \x03(\v2O.dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplateEnvVarR\x03env\x12\x9d\x01\n" +
 	"\x1apost_startup_script_config\x18\x02 \x01(\v2`.dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplatePostStartupScriptConfigR\x17postStartupScriptConfig\x12t\n" +

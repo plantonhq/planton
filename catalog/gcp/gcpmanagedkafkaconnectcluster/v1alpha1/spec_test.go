@@ -90,6 +90,31 @@ var _ = ginkgo.Describe("GcpManagedKafkaConnectClusterSpec", func() {
 		msg = minimal()
 		msg.Spec.CapacityConfig = &GcpManagedKafkaConnectClusterCapacity{VcpuCount: 3, MemoryBytes: 25 * gib}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg = minimal()
+		msg.Spec.CapacityConfig = &GcpManagedKafkaConnectClusterCapacity{VcpuCount: 3, MemoryBytes: 24 * gib}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "the inclusive 1:8 upper bound")
+		msg.Spec.CapacityConfig = &GcpManagedKafkaConnectClusterCapacity{VcpuCount: 1 << 40, MemoryBytes: 3 * gib}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "a vCPU count large enough to overflow a product")
+	})
+
+	ginkgo.It("should reject a literal primary subnet outside the Connect cluster's region", func() {
+		msg := minimal()
+		msg.Spec.NetworkConfigs[0].PrimarySubnet = litRef("projects/p/regions/us-east1/subnetworks/connect")
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.NetworkConfigs[0].PrimarySubnet = valueFrom("connect-subnet")
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "a GcpSubnetwork reference")
+	})
+
+	ginkgo.It("should reject a Connect cluster ID outside RFC 1035 and a malformed location", func() {
+		msg := minimal()
+		msg.Spec.ConnectClusterId = "Events_Connect"
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg = minimal()
+		msg.Spec.ConnectClusterId = "1events"
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg = minimal()
+		msg.Spec.Location = "US"
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
 
 	ginkgo.It("should require a network and cap networks at 10", func() {

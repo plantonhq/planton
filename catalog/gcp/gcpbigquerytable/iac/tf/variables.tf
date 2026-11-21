@@ -184,7 +184,8 @@ variable "spec" {
 
       # Connection (projects/{p}/locations/{l}/connections/{c}) whose
       # credential reads the source — this is what upgrades a plain external
-      # table to a BigLake table. Plain string until a connection kind exists.
+      # table to a BigLake table. A plain string: write the full name a
+      # GcpBigQueryConnection exports as its name output.
       connection_id = optional(string, "")
 
       # Reference file providing the table schema for AVRO/PARQUET/ORC.
@@ -384,8 +385,8 @@ variable "spec" {
     # Immutable.
     biglake_configuration = optional(object({
       # Connection (projects/{p}/locations/{l}/connections/{c}) whose
-      # credential accesses the storage. Plain string until a connection kind
-      # exists.
+      # credential accesses the storage. A plain string: write the full name a
+      # GcpBigQueryConnection exports as its name output.
       connection_id = string
 
       # Fully qualified storage location prefix, e.g. gs://bucket/path.

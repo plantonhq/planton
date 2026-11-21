@@ -24,7 +24,8 @@ Every processor has versions: Google's pretrained releases and, for custom extra
 
 - **Pin a concrete version** such as `pretrained-ocr-v2.1-2024-08-07`. Results stay reproducible when Google ships a new release, and you upgrade deliberately by changing the id.
 - **Never `stable` or `rc`.** Those channel aliases are answered with whatever version they currently resolve to, so a declared alias never matches what Google stores and every deploy would set the default again. The block refuses them.
-- Changing the id re-points the default in place. Destroying the block leaves the last default set -- Google has no "unset".
+- Changing the id re-points the default in place. Clearing it, or destroying the block, leaves the last default answering -- Google has no "unset"; pin another version to change it.
+- A change that replaces the processor (type, location, display name, key) sets the same `defaultVersion` on the new processor. A pretrained version of the same type carries over; a version you trained belongs to the old processor and does not exist on the new one, so the deploy fails setting it -- clear or change `defaultVersion` in the same change.
 
 ## Encryption and destroy
 

@@ -74,14 +74,15 @@ func floorSetting(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider
 	}
 	// Google wants exactly one of inspect_only / inspect_and_block; the spec
 	// carries the choice as enforcement_type and only the chosen flag is
-	// sent.
+	// sent -- the Terraform module tests each value the same way.
 	if s := spec.AiPlatformFloorSetting; s != nil {
 		setting := &modelarmor.FloorsettingAiPlatformFloorSettingArgs{
 			EnableCloudLogging: pulumi.Bool(s.EnableCloudLogging),
 		}
-		if s.EnforcementType == "INSPECT_ONLY" {
+		switch s.EnforcementType {
+		case "INSPECT_ONLY":
 			setting.InspectOnly = pulumi.Bool(true)
-		} else {
+		case "INSPECT_AND_BLOCK":
 			setting.InspectAndBlock = pulumi.Bool(true)
 		}
 		args.AiPlatformFloorSetting = setting
@@ -90,9 +91,10 @@ func floorSetting(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider
 		setting := &modelarmor.FloorsettingGoogleMcpServerFloorSettingArgs{
 			EnableCloudLogging: pulumi.Bool(s.EnableCloudLogging),
 		}
-		if s.EnforcementType == "INSPECT_ONLY" {
+		switch s.EnforcementType {
+		case "INSPECT_ONLY":
 			setting.InspectOnly = pulumi.Bool(true)
-		} else {
+		case "INSPECT_AND_BLOCK":
 			setting.InspectAndBlock = pulumi.Bool(true)
 		}
 		args.GoogleMcpServerFloorSetting = setting
@@ -117,6 +119,7 @@ func floorSetting(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider
 
 	ctx.Export(OpName, createdFloor.ID())
 	ctx.Export(OpParent, createdFloor.Parent)
+	ctx.Export(OpLocation, createdFloor.Location)
 	return nil
 }
 

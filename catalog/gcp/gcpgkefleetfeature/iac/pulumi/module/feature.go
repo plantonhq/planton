@@ -125,6 +125,21 @@ func feature(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 	}
 
 	ctx.Export(OpName, createdFeature.ID())
+	// Google reports both states as one-element lists; an absent element
+	// (before Google has assessed the feature) exports "" -- the Terraform
+	// module's try().
+	ctx.Export(OpResourceState, createdFeature.ResourceStates.ApplyT(func(states []gkehub.FeatureResourceState) string {
+		if len(states) > 0 && states[0].State != nil {
+			return *states[0].State
+		}
+		return ""
+	}).(pulumi.StringOutput))
+	ctx.Export(OpStateCode, createdFeature.States.ApplyT(func(states []gkehub.FeatureStateType) string {
+		if len(states) > 0 && len(states[0].States) > 0 && states[0].States[0].Code != nil {
+			return *states[0].States[0].Code
+		}
+		return ""
+	}).(pulumi.StringOutput))
 	return nil
 }
 

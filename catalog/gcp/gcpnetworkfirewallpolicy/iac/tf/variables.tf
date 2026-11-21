@@ -193,7 +193,10 @@ variable "spec" {
         # INTERNET (outside Google Cloud), INTRA_VPC (inside this network),
         # NON_INTERNET (any non-internet source), VPC_NETWORKS (the networks in
         # src_networks), or UNSPECIFIED. Unset means the rule does not narrow on
-        # context (Google's default); both engines send it only when set.
+        # context (Google's default); both engines send it only when set. It
+        # narrows a source and is never one: Google refuses an INGRESS rule whose
+        # only source is a network context, so pair INTRA_VPC with the network's
+        # ranges in src_ip_ranges.
         src_network_context = optional(string)
 
         # Where the traffic is going, as a class: INTERNET, INTRA_VPC,

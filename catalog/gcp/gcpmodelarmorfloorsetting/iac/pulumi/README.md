@@ -9,11 +9,11 @@ This directory contains the Pulumi implementation for a Model Armor floor settin
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `floorSetting` |
 | `module/locals.go` | IaC input holder |
 | `module/floor_setting.go` | Scope selection, API enablement for project floors, the filter configuration and service settings, the outputs |
-| `module/outputs.go` | Output key constants (`name`, `parent`) |
+| `module/outputs.go` | Output key constants (`name`, `parent`, `location`) |
 
 ## Send Posture (parity with Terraform)
 
-- **`Parent`** -- from the one scope arm set; an empty scope uses the provider's project from `organizations.GetClientConfig`.
+- **`Parent`** -- from the one scope arm set; an empty scope uses the provider's project from `organizations.GetClientConfig`, and a provider with no default project is refused before any floor is sent -- the Terraform module refuses it with the same sentence.
 - **`Location`** -- `spec.location`, defaulting to `global`.
 - **`InspectOnly` / `InspectAndBlock`** -- only the flag `enforcement_type` names.
 - **`FloorSettingMetadata`** -- only when `enable_multi_language_detection` is true.

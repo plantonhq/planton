@@ -16,7 +16,8 @@ This directory contains the Pulumi implementation for a Managed Kafka Connect cl
 - **`connect_cluster_id`** -- defaulting to `metadata.name`.
 - **Capacity** -- the int64 counts sent as decimal strings.
 - **`primary_subnet`** -- a `GcpSubnetwork` self link trimmed of the compute API prefix; `dns_domain_names` sent only when listed.
-- **`additional_subnets`** -- not offered: deprecated by Google in favor of more network configs.
+- **`additional_subnets`** -- not offered: deprecated by Google, because the workers reach any endpoint accessible from the primary subnet.
+- **`kafkaCluster`** -- Google fixes it at creation while the provider would update it in place, so `ReplaceOnChanges` (with delete-before-replace, since the ID is kept) replaces the Connect cluster when it changes (the Terraform module's `terraform_data` tracker).
 - **Labels** -- user labels merged under the attribution labels.
 
 ## Usage

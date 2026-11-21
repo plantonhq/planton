@@ -41,7 +41,7 @@ spec:
   location: US
   slotCount: 500
   plan: ANNUAL
-  renewalPlan: ANNUAL
+  renewalPlan: NONE
   edition: ENTERPRISE
   deletionPolicy: ABANDON
 ```
@@ -50,7 +50,7 @@ spec:
 planton apply -f bigquery-capacity-commitment.yaml
 ```
 
-This commits to 500 Enterprise slots in `US` for a year, renewing annually. An Infra Job tracks the provisioning in real time.
+This commits to 500 Enterprise slots in `US` for a year, ending at the term. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -62,9 +62,9 @@ These are the most important decisions when configuring this component. Explore 
 
 **Slots and term** — `slotCount` and `plan` are what you buy; `ANNUAL` and `THREE_YEAR` are the editions-era plans.
 
-**Renewal** — `renewalPlan` decides what happens at the end of the term; changing it extends the commitment.
+**Renewal** — `renewalPlan` decides what happens at the end of the term: `NONE` ends the commitment, `ANNUAL` or `THREE_YEAR` renew it; changing it extends the commitment. Keep `plan` equal to it.
 
-**Destroy** — `ABANDON` is the honest setting — Google will not delete a commitment before its term ends.
+**Destroy** — a commitment cannot be deleted before its term ends. `ABANDON` lets the block leave management while the commitment keeps billing — to the end of its term with `NONE`, through every renewal otherwise.
 
 ## Outputs and Dependencies
 
@@ -81,15 +81,15 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 | Output | Description | Common Downstream Use |
 |--------|-------------|-----------------------|
 | `name` | The commitment's full name | Audit |
-| `commitment_end_time` | When the term ends | Renewal planning |
+| `commitment_end_time` | When the current term ends (a renewal moves it) | Renewal planning |
 
 ## Common Patterns
 
 Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
-**Annual commitment** — 100 Enterprise slots for a year, renewing annually. Start from the **Annual Enterprise Commitment** preset.
+**Annual commitment** — 100 Enterprise slots for a year, ending at the term. Start from the **Annual Enterprise Commitment** preset.
 
-**Long-term commitment** — Enterprise Plus slots for three years, guarded to one admin project per organization. Start from the **Three-Year Commitment** preset.
+**Long-term commitment** — Enterprise Plus slots for three years, ending at the term. Start from the **Three-Year Commitment** preset.
 
 ## Works With
 

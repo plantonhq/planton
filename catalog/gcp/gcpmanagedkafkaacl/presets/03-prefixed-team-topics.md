@@ -17,5 +17,6 @@ A team namespace: one principal may do everything on every topic whose name star
 
 | Field | Default | Why Change |
 |-------|---------|------------|
+| `projectId`, `cluster`, principals | `my-gcp-project`, `events`, the service accounts | Stand-ins: name the cluster's project, reference the GcpManagedKafkaCluster (`valueFrom`), and name your own service accounts. |
 | `aclId` | `topicPrefixed/payments.` | The prefix your topic naming convention uses. |
-| `operation` | `ALL` | Narrow to READ/WRITE/DESCRIBE when the principal should not create or delete topics. |
+| `aclEntries[].operation` | `ALL` | Narrow to READ/WRITE/DESCRIBE when the principal should not create or delete topics. |

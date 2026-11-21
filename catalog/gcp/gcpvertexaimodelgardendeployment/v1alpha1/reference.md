@@ -14,13 +14,15 @@ Face model to a Vertex AI endpoint in one step
 uploads the model, creates an endpoint, and deploys the model to it on
 the compute declared here.
 
-EVERYTHING in this spec is immutable. Google offers no in-place update
-on this resource, so any change -- a new model version, a bigger
-machine, an extra replica -- undeploys the model, deletes the endpoint,
-and redeploys from scratch; the endpoint ID changes and clients pointed
-at the old one break. Treat a deployment as a versioned artifact: roll
-forward by declaring a second block and cutting traffic over, not by
-editing this one in place. deletion_policy is the only mutable lever.
+Five levers change in place, keeping the endpoint and its ID: under
+deploy_config.dedicated_resources, min_replica_count,
+max_replica_count, required_replica_count, and autoscaling_metric_specs
+-- plus deletion_policy. Every other change -- a new model version, a
+bigger machine, a different token -- undeploys the model, deletes the
+endpoint, and redeploys from scratch; the endpoint ID changes and
+clients pointed at the old one break. Treat a deployment as a versioned
+artifact: roll forward by declaring a second block and cutting traffic
+over, not by editing this one.
 
 A deployed model bills its machine (and accelerator) hours from the
 moment it is ready until it is undeployed, whether or not it serves a
@@ -244,7 +246,10 @@ deploy until this is true.
 `string` · sensitive
 
 Hugging Face read token used to pull the artifacts of a gated Hugging
-Face model. Stored as a secret; never logged.
+Face model. Stored as a secret; never logged. The token is part of the
+deployment: a different token -- including a new value of the secret
+it is resolved from -- replaces the deployment on the next deploy, and
+the endpoint ID changes.
 
 ### spec.modelConfig.huggingFaceCacheEnabled
 
@@ -879,12 +884,17 @@ Host to connect to; defaults to the container's IP.
 The compute the model is deployed on. Omit to accept Model Garden's
 recommended shape for the model.
 
+- rule: fast_tryout_enabled and system_labels need dedicated_resources: without them Google's provider reads dedicated resources back from Google and plans a replacement on every deploy
+
 ### spec.deployConfig.dedicatedResources
 
 `GcpVertexAiModelGardenDeploymentDedicatedResources`
 
-Machine shape and replica bounds.
+Machine shape and replica bounds. Google reserves quota for the
+ceiling: max_replica_count times the machine's cores and accelerators
+count against the project's Vertex AI quotas.
 
+- rule: dedicated_resources needs machine_spec.machine_type: left blank, Google falls back to a small CPU machine most models cannot serve from
 - rule: max_replica_count must be at least min_replica_count
 
 ### spec.deployConfig.dedicatedResources.machineSpec
@@ -900,8 +910,11 @@ The machine each replica runs on.
 `string`
 
 Compute Engine machine type, e.g. "g2-standard-12" (with an L4) or
-"a2-highgpu-1g" (with an A100). Google picks a default for the model
-when the whole deploy_config is omitted.
+"a2-highgpu-1g" (with an A100). Required under dedicated_resources:
+left blank there, Google's provider sends no machine at all and
+Google falls back to a small CPU machine most models cannot serve
+from. Model Garden picks the model's recommended machine only when
+the whole deploy_config is omitted.
 
 ### spec.deployConfig.dedicatedResources.machineSpec.acceleratorType
 
@@ -1005,7 +1018,10 @@ time.
 
 `[]GcpVertexAiModelGardenDeploymentAutoscalingMetricSpec`
 
-Metrics that drive autoscaling between the replica bounds.
+Metrics that drive autoscaling between the replica bounds, at most one
+entry per metric.
+
+- rule: each metric_name may appear only once in autoscaling_metric_specs
 
 ### spec.deployConfig.dedicatedResources.autoscalingMetricSpecs[].metricName
 
@@ -1055,15 +1071,17 @@ Display name of the created endpoint; Google picks one when empty.
 `bool`
 
 Give the endpoint its own DNS name
-({endpoint}.{region}-{project}.prediction.vertexai.goog) isolated from
-the shared regional host. Once on, the shared host no longer serves
-it.
+({endpoint_name}.{region}-{project_number}.prediction.vertexai.goog)
+isolated from the shared regional host. Once on, the shared host no
+longer serves it.
 
 ### spec.endpointConfig.privateServiceConnectConfig
 
 `GcpVertexAiModelGardenDeploymentPrivateServiceConnectConfig`
 
 Expose the endpoint through Private Service Connect.
+
+- rule: project_allowlist and psc_automation_config apply only with enable_private_service_connect true
 
 ### spec.endpointConfig.privateServiceConnectConfig.enablePrivateServiceConnect
 
@@ -1117,8 +1135,9 @@ resolves to its network_id output.
 `string`
 
 What happens to the deployment when this resource is destroyed:
-  "" / "DELETE" -- the model is undeployed and the endpoint and model
-                   are deleted
+  "" / "DELETE" -- the model is undeployed and the endpoint deleted;
+                   Google's provider makes no call that deletes the
+                   uploaded Model resource
   "PREVENT"     -- destroy fails
   "ABANDON"     -- the deployment leaves management and keeps serving
                    (and billing)
@@ -1140,6 +1159,7 @@ Reference an output from another manifest as `valueFrom: {kind: GcpVertexAiModel
 | `status.outputs.deployed_model_id` | `string` | The numeric ID Vertex AI assigned to the model at the time it was deployed to the endpoint; what an undeploy names. |
 | `status.outputs.deployed_model_display_name` | `string` | The display name Vertex AI gave the deployed model. |
 | `status.outputs.location` | `string` | The location the model is deployed in. |
+| `status.outputs.service_attachment` | `string` | The service attachment Google generated for the endpoint's Private Service Connect, as projects/{project}/regions/{region}/serviceAttachments/{name} -- what a consumer's forwarding rule targets. Empty unless endpoint_config.private_service_connect_config is on. |
 
 ## References
 

@@ -4451,14 +4451,15 @@ func TestOutputsConformance(t *testing.T) {
 		},
 		{
 			// GcpModelArmorFloorSetting: the floor's full name (the
-			// verifier's key) and the parent it governs.
+			// verifier's key), the parent it governs, and its location.
 			name: "GcpModelArmorFloorSetting",
 			kind: catalogkind.CatalogKind_GcpModelArmorFloorSetting,
 			rawOutputs: map[string]interface{}{
-				"name":   "projects/my-project/locations/global/floorSetting",
-				"parent": "projects/my-project",
+				"name":     "projects/my-project/locations/global/floorSetting",
+				"parent":   "projects/my-project",
+				"location": "global",
 			},
-			mustPopulate: []string{"name", "parent"},
+			mustPopulate: []string{"name", "parent", "location"},
 		},
 		{
 			// GcpDocumentAiProcessor: the processor's full name (the
@@ -4489,39 +4490,49 @@ func TestOutputsConformance(t *testing.T) {
 		},
 		{
 			// GcpColabRuntime: the runtime's full name (the verifier's key),
-			// its id, and its region.
+			// its id, its region, and its state at the end of the deploy.
 			name: "GcpColabRuntime",
 			kind: catalogkind.CatalogKind_GcpColabRuntime,
 			rawOutputs: map[string]interface{}{
 				"name":       "projects/my-project/locations/us-central1/notebookRuntimes/alice-notebooks",
 				"runtime_id": "alice-notebooks",
 				"location":   "us-central1",
+				"state":      "STOPPED",
 			},
-			mustPopulate: []string{"name", "runtime_id", "location"},
+			mustPopulate: []string{"name", "runtime_id", "location", "state"},
 		},
 		{
 			// GcpColabSchedule: the schedule's full name (the verifier's key),
-			// the id Google assigned, and its region.
+			// the id Google assigned, its region, and its state, next run,
+			// and started-run count at the end of the deploy.
 			name: "GcpColabSchedule",
 			kind: catalogkind.CatalogKind_GcpColabSchedule,
 			rawOutputs: map[string]interface{}{
-				"name":        "projects/my-project/locations/us-central1/schedules/1234567890",
-				"schedule_id": "1234567890",
-				"location":    "us-central1",
+				"name":              "projects/my-project/locations/us-central1/schedules/1234567890",
+				"schedule_id":       "1234567890",
+				"location":          "us-central1",
+				"state":             "PAUSED",
+				"next_run_time":     "2026-11-22T06:00:00Z",
+				"started_run_count": "0",
 			},
-			mustPopulate: []string{"name", "schedule_id", "location"},
+			mustPopulate: []string{"name", "schedule_id", "location", "state", "next_run_time", "started_run_count"},
 		},
 		{
-			// GcpTpuVm: the TPU's full name (the verifier's key), its id, and
-			// its zone.
+			// GcpTpuVm: the TPU's full name (the verifier's key), its id, its
+			// zone, its state and health at the end of the deploy, and every
+			// worker's addresses (lists).
 			name: "GcpTpuVm",
 			kind: catalogkind.CatalogKind_GcpTpuVm,
 			rawOutputs: map[string]interface{}{
-				"name":    "projects/my-project/locations/us-central1-f/nodes/train-v2",
-				"node_id": "train-v2",
-				"zone":    "us-central1-f",
+				"name":                "projects/my-project/locations/us-central1-f/nodes/train-v2",
+				"node_id":             "train-v2",
+				"zone":                "us-central1-f",
+				"state":               "READY",
+				"health":              "HEALTHY",
+				"worker_internal_ips": []interface{}{"10.128.0.5"},
+				"worker_external_ips": []interface{}{"34.10.20.30"},
 			},
-			mustPopulate: []string{"name", "node_id", "zone"},
+			mustPopulate: []string{"name", "node_id", "zone", "state", "health", "worker_internal_ips", "worker_external_ips"},
 		},
 		{
 			// GcpTpuQueuedResource: the request's full name (the verifier's
@@ -4880,13 +4891,16 @@ func TestOutputsConformance(t *testing.T) {
 			mustPopulate: []string{"project_id", "name", "uid"},
 		},
 		{
-			// GcpGkeFleetFeature: the feature's full name.
+			// GcpGkeFleetFeature: the feature's full name and the state
+			// Google reports for it.
 			name: "GcpGkeFleetFeature",
 			kind: catalogkind.CatalogKind_GcpGkeFleetFeature,
 			rawOutputs: map[string]interface{}{
-				"name": "projects/platform-host/locations/global/features/configmanagement",
+				"name":           "projects/platform-host/locations/global/features/configmanagement",
+				"resource_state": "ACTIVE",
+				"state_code":     "OK",
 			},
-			mustPopulate: []string{"name"},
+			mustPopulate: []string{"name", "resource_state", "state_code"},
 		},
 		{
 			// GcpGkeFleetScope: the scope's name, ID, and uid.
@@ -4913,17 +4927,18 @@ func TestOutputsConformance(t *testing.T) {
 		},
 		{
 			// GcpComputeImage: the self link consumers boot from, the
-			// family, and the size.
+			// family, the size, and the archive size storage bills on.
 			name: "GcpComputeImage",
 			kind: catalogkind.CatalogKind_GcpComputeImage,
 			rawOutputs: map[string]interface{}{
-				"name":         "web-base-20261001",
-				"self_link":    "https://www.googleapis.com/compute/v1/projects/images-prod/global/images/web-base-20261001",
-				"family":       "web-base",
-				"disk_size_gb": 20,
-				"image_id":     "projects/images-prod/global/images/web-base-20261001",
+				"name":               "web-base-20261001",
+				"self_link":          "https://www.googleapis.com/compute/v1/projects/images-prod/global/images/web-base-20261001",
+				"family":             "web-base",
+				"disk_size_gb":       20,
+				"image_id":           "projects/images-prod/global/images/web-base-20261001",
+				"archive_size_bytes": int64(4294967296),
 			},
-			mustPopulate: []string{"name", "self_link", "family", "disk_size_gb", "image_id"},
+			mustPopulate: []string{"name", "self_link", "family", "disk_size_gb", "image_id", "archive_size_bytes"},
 		},
 		{
 			// GcpCloudBuildWorkerPool: the pool name triggers and Cloud
@@ -5086,8 +5101,9 @@ func TestOutputsConformance(t *testing.T) {
 				"deployed_model_id":           "9876543210987654321",
 				"deployed_model_display_name": "qwen-small",
 				"location":                    "us-central1",
+				"service_attachment":          "projects/tenant-project/regions/us-central1/serviceAttachments/sa-1234567890123456789",
 			},
-			mustPopulate: []string{"endpoint_id", "endpoint_name", "deployed_model_id", "deployed_model_display_name", "location"},
+			mustPopulate: []string{"endpoint_id", "endpoint_name", "deployed_model_id", "deployed_model_display_name", "location", "service_attachment"},
 		},
 		{
 			// GcpVertexAiAgentEngine: the agent's full resource name (the
@@ -5101,8 +5117,9 @@ func TestOutputsConformance(t *testing.T) {
 				"location":            "us-central1",
 				"create_time":         "2026-09-22T10:00:00Z",
 				"update_time":         "2026-09-22T10:05:00Z",
+				"effective_identity":  "service-123456789012@gcp-sa-aiplatform-re.iam.gserviceaccount.com",
 			},
-			mustPopulate: []string{"name", "reasoning_engine_id", "location", "create_time", "update_time"},
+			mustPopulate: []string{"name", "reasoning_engine_id", "location", "create_time", "update_time", "effective_identity"},
 		},
 		{
 			// GcpFirebaseProject: flat scalar outputs from both engines -- the

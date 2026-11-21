@@ -25,7 +25,8 @@ const (
 
 // GcpManagedKafkaClusterCapacity sizes the whole cluster
 // (`capacity_config`). Google spreads the vCPUs and memory across the
-// brokers it runs; both scale in place.
+// brokers it runs; both scale in place. The rule that binds is the ratio:
+// from 1 GiB to 8 GiB of memory per vCPU.
 type GcpManagedKafkaClusterCapacity struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// vCPUs provisioned across the cluster -- at least 3. Billed per
@@ -34,8 +35,9 @@ type GcpManagedKafkaClusterCapacity struct {
 	// rebalance_mode).
 	VcpuCount int64 `protobuf:"varint,1,opt,name=vcpu_count,json=vcpuCount,proto3" json:"vcpu_count,omitempty"`
 	// Memory provisioned across the cluster, in BYTES as a plain number
-	// (3 GiB = 3221225472) -- between 1 GiB and 8 GiB per vCPU. Billed per
-	// GiB-hour. Sent as a decimal string. Mutable in place.
+	// (3 GiB = 3221225472) -- at least Google's 3 GiB minimum, and between
+	// 1 GiB and 8 GiB per vCPU. Billed per GiB-hour. Sent as a decimal
+	// string. Mutable in place.
 	MemoryBytes   int64 `protobuf:"varint,2,opt,name=memory_bytes,json=memoryBytes,proto3" json:"memory_bytes,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -143,13 +145,16 @@ func (x *GcpManagedKafkaClusterNetworkConfig) GetSubnet() *v1.StringValueOrRef {
 // (`tls_config`). Declaring the message -- even empty -- makes the modules
 // send the block; an EMPTY message is how an earlier mTLS configuration is
 // cleared (Google keeps the last one otherwise). Omitting the message
-// leaves whatever Google has.
+// leaves whatever Google has. On create, an empty message and an omitted
+// one are the same request: no TLS settings reach Google.
 type GcpManagedKafkaClusterTlsConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// How the Distinguished Name of a client certificate becomes the short
 	// principal name ACLs match (Kafka's ssl.principal.mapping.rules broker
 	// setting, same syntax). Empty keeps Kafka's default behavior. Changing
-	// it triggers a rolling restart of the brokers.
+	// it triggers a rolling restart of the brokers. The rules shape only
+	// principals from client certificates, so they take effect once
+	// ca_pools enables mTLS.
 	SslPrincipalMappingRules string `protobuf:"bytes,1,opt,name=ssl_principal_mapping_rules,json=sslPrincipalMappingRules,proto3" json:"ssl_principal_mapping_rules,omitempty"`
 	// Certificate Authority Service CA pools whose certificates the brokers
 	// trust for client authentication -- GcpPrivateCaPool references (their
@@ -221,13 +226,17 @@ func (x *GcpManagedKafkaClusterTlsConfig) GetCaPools() []*v1.StringValueOrRef {
 // lifetime but its format can differ between clusters, and the pinned
 // Pulumi SDK cannot read it yet, so it is not an output: read it once with
 // `gcloud managed-kafka clusters describe CLUSTER --location=LOCATION
-// --format="value(bootstrapAddress)"`. Internet (public) access is not yet
+// --project=PROJECT --format="value(bootstrapAddress)"`. Internet (public) access is not yet
 // offered here for the same SDK reason; clients reach the cluster from an
 // attached VPC.
 //
 // Immutable: project_id, location, cluster_id, kms_key (a change replaces
-// the cluster and its data). Capacity, networks, rebalancing, TLS, and
-// labels update in place.
+// the cluster and its data). Capacity, the broker disk size, networks,
+// rebalancing, TLS, and labels update in place.
+//
+// Deleting the cluster deletes every topic, message, and ACL in it (they
+// are its children in Google's API). A GcpManagedKafkaTopic or
+// GcpManagedKafkaAcl block that names it is then left pointing at nothing.
 type GcpManagedKafkaClusterSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The GCP project the cluster lives in: a literal project ID or a
@@ -237,13 +246,13 @@ type GcpManagedKafkaClusterSpec struct {
 	// The region the brokers run in, e.g. "us-central1". Immutable.
 	Location string `protobuf:"bytes,2,opt,name=location,proto3" json:"location,omitempty"`
 	// The cluster's ID -- 1-63 characters, RFC 1035 (lowercase letters,
-	// digits, hyphens; starts with a letter). Defaults to metadata.name.
-	// Immutable.
+	// digits, hyphens; starts with a letter). Defaults to metadata.name,
+	// which must then fit the same rule. Immutable.
 	ClusterId string `protobuf:"bytes,3,opt,name=cluster_id,json=clusterId,proto3" json:"cluster_id,omitempty"`
 	// vCPUs and memory for the whole cluster.
 	CapacityConfig *GcpManagedKafkaClusterCapacity `protobuf:"bytes,4,opt,name=capacity_config,json=capacityConfig,proto3" json:"capacity_config,omitempty"`
 	// Disk per broker in GiB -- at least 100. Empty leaves Google's default.
-	// Sent as a decimal string.
+	// Sent as a decimal string. Mutable in place.
 	BrokerDiskSizeGib int64 `protobuf:"varint,5,opt,name=broker_disk_size_gib,json=brokerDiskSizeGib,proto3" json:"broker_disk_size_gib,omitempty"`
 	// The VPC networks the cluster is reachable from -- at least one, at
 	// most 10, one subnet per network.
@@ -391,20 +400,19 @@ var File_catalog_gcp_gcpmanagedkafkacluster_v1alpha1_spec_proto protoreflect.Fil
 
 const file_catalog_gcp_gcpmanagedkafkacluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/gcp/gcpmanagedkafkacluster/v1alpha1/spec.proto\x12/dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x89\x03\n" +
+	"6catalog/gcp/gcpmanagedkafkacluster/v1alpha1/spec.proto\x12/dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xb4\x03\n" +
 	"\x1eGcpManagedKafkaClusterCapacity\x12&\n" +
 	"\n" +
 	"vcpu_count\x18\x01 \x01(\x03B\a\xbaH\x04\"\x02(\x03R\tvcpuCount\x12.\n" +
-	"\fmemory_bytes\x18\x02 \x01(\x03B\v\xbaH\b\"\x06(\x80\x80\x80\x80\x04R\vmemoryBytes:\x8e\x02\xbaH\x8a\x02\x1a\x87\x02\n" +
-	"\x18capacity.memory_per_vcpu\x12jmemory_bytes must be between 1 GiB and 8 GiB per vCPU (vcpu_count x 1073741824 to vcpu_count x 8589934592)\x1a\x7fthis.vcpu_count < 3 || (this.memory_bytes >= this.vcpu_count * 1073741824 && this.memory_bytes <= this.vcpu_count * 8589934592)\"\xa5\x01\n" +
+	"\fmemory_bytes\x18\x02 \x01(\x03B\v\xbaH\b\"\x06(\x80\x80\x80\x80\fR\vmemoryBytes:\xb9\x02\xbaH\xb5\x02\x1a\xb2\x02\n" +
+	"\x18capacity.memory_per_vcpu\x12vMemory must be between 1 GiB and 8 GiB per vCPU: memory_bytes from vcpu_count x 1073741824 to vcpu_count x 8589934592.\x1a\x9d\x01this.vcpu_count < 3 || this.memory_bytes < 1 || (this.memory_bytes / 1073741824 >= this.vcpu_count && (this.memory_bytes - 1) / 8589934592 < this.vcpu_count)\"\xa5\x01\n" +
 	"#GcpManagedKafkaClusterNetworkConfig\x12~\n" +
 	"\x06subnet\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB2\xbaH\x03\xc8\x01\x01\x88\xd4a\xc3\x17\x92\xd4a#status.outputs.subnetwork_self_linkR\x06subnet\"\xb5\x03\n" +
 	"\x1fGcpManagedKafkaClusterTlsConfig\x12=\n" +
 	"\x1bssl_principal_mapping_rules\x18\x01 \x01(\tR\x18sslPrincipalMappingRules\x12\xd2\x02\n" +
 	"\bca_pools\x18\x02 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x82\x02\xbaH\xde\x01\xba\x01\xd5\x01\n" +
 	"\x17ca_pools_literal_format\x12Pa literal CA pool must be projects/{project}/locations/{location}/caPools/{pool}\x1ahthis.all(pool, !has(pool.value) || pool.value.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$'))\x92\x01\x02\x10\n" +
-	"\x88\xd4a\x9e\x19\x92\xd4a\x13status.outputs.name\x98\xd4a\x01R\acaPools\"\x8d\n" +
-	"\n" +
+	"\x88\xd4a\x9e\x19\x92\xd4a\x13status.outputs.name\x98\xd4a\x01R\acaPools\"\xb3\x0e\n" +
 	"\x1aGcpManagedKafkaClusterSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12;\n" +
@@ -427,7 +435,9 @@ const file_catalog_gcp_gcpmanagedkafkacluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x8a\x03\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xa3\x04\xbaH\x9f\x04\x1a\x9d\x02\n" +
+	"\x1espec.subnets_in_cluster_region\x12`Each literal subnet must be in the cluster's region: its path must contain /regions/{location}/.\x1a\x98\x01this.network_configs.all(n, !has(n.subnet.value) || !n.subnet.value.contains('/regions/') || n.subnet.value.contains('/regions/' + this.location + '/'))\x1a\xfc\x01\n" +
+	"\x1espec.kms_key_in_cluster_region\x12`A literal KMS key must be in the cluster's region: its path must contain /locations/{location}/.\x1ax!has(this.kms_key.value) || this.kms_key.value == '' || this.kms_key.value.contains('/locations/' + this.location + '/')B\x8a\x03\n" +
 	"3com.dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1B\tSpecProtoP\x01Zggithub.com/plantonhq/planton/catalog/gcp/gcpmanagedkafkacluster/v1alpha1;gcpmanagedkafkaclusterv1alpha1\xa2\x02\x04DPGG\xaa\x02/Dev.Planton.Gcp.Gcpmanagedkafkacluster.V1alpha1\xca\x02/Dev\\Planton\\Gcp\\Gcpmanagedkafkacluster\\V1alpha1\xe2\x02;Dev\\Planton\\Gcp\\Gcpmanagedkafkacluster\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Gcp::Gcpmanagedkafkacluster::V1alpha1b\x06proto3"
 
 var (

@@ -118,9 +118,18 @@ message GcpComputeImageSpec {
   // GcpKmsKey or a GcpKmsKeyHandle (Autokey serves images). The Compute
   // Engine service agent
   // (service-<project-number>@compute-system.iam.gserviceaccount.com)
-  // must hold roles/cloudkms.cryptoKeyEncrypterDecrypter on the key. When
-  // omitted, Google-managed encryption is used. Immutable.
+  // must hold roles/cloudkms.cryptoKeyEncrypterDecrypter on the key, and
+  // the key must be in the image's storage location. A literal names the
+  // key, never a key version: the provider reads the key back without its
+  // /cryptoKeyVersions/ suffix, so a version would replace the image on
+  // every apply. When omitted, Google-managed encryption is used.
+  // Immutable.
   dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key = 9 [
+    (buf.validate.field).cel = {
+      id: "kms_key.no_version"
+      message: "A literal kms_key names the key, not a key version: drop the /cryptoKeyVersions/... suffix."
+      expression: "!has(this.value) || !this.value.contains('/cryptoKeyVersions/')"
+    },
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id",
     (dev.planton.shared.foreignkey.v1.candidate) = {
@@ -154,14 +163,36 @@ message GcpComputeImageSpec {
   // source's size. Immutable.
   optional int64 disk_size_gb = 14 [(buf.validate.field).int64.gt = 0];
 
-  // Guest OS features VMs booted from this image may use, e.g.
-  // ["UEFI_COMPATIBLE", "SECURE_BOOT", "GVNIC", "VIRTIO_SCSI_MULTIQUEUE",
-  // "SEV_CAPABLE", "SEV_SNP_CAPABLE", "TDX_CAPABLE", "IDPF",
-  // "MULTI_IP_SUBNET", "SUSPEND_RESUME_COMPATIBLE", "WINDOWS"]. The
-  // accepted set evolves with GCP -- see "Enabling guest operating system
-  // features" in the Compute Engine docs. Unset inherits the source's
-  // features. Immutable.
-  repeated string guest_os_features = 15;
+  // Guest OS features VMs booted from this image may use -- the values
+  // the provider accepts: "UEFI_COMPATIBLE", "SECURE_BOOT", "GVNIC",
+  // "VIRTIO_SCSI_MULTIQUEUE", "SEV_CAPABLE", "SEV_SNP_CAPABLE",
+  // "SEV_LIVE_MIGRATABLE", "SEV_LIVE_MIGRATABLE_V2", "SNP_SVSM_CAPABLE",
+  // "TDX_CAPABLE", "IDPF", "MULTI_IP_SUBNET", "SUSPEND_RESUME_COMPATIBLE",
+  // "WINDOWS". See "Enabling guest operating system features" in the
+  // Compute Engine docs. Unset inherits the source's features. Immutable.
+  repeated string guest_os_features = 15 [(buf.validate.field).repeated = {
+    unique: true
+    items: {
+      string: {
+        in: [
+          "UEFI_COMPATIBLE",
+          "SECURE_BOOT",
+          "GVNIC",
+          "VIRTIO_SCSI_MULTIQUEUE",
+          "SEV_CAPABLE",
+          "SEV_SNP_CAPABLE",
+          "SEV_LIVE_MIGRATABLE",
+          "SEV_LIVE_MIGRATABLE_V2",
+          "SNP_SVSM_CAPABLE",
+          "TDX_CAPABLE",
+          "IDPF",
+          "MULTI_IP_SUBNET",
+          "SUSPEND_RESUME_COMPATIBLE",
+          "WINDOWS"
+        ]
+      }
+    }
+  }];
 
   // License URIs the image carries, e.g. a Windows Server or SQL Server
   // license. Unset inherits the source's licenses; set explicitly when
@@ -170,9 +201,9 @@ message GcpComputeImageSpec {
   repeated string licenses = 16;
 
   // Where the image's data is stored: one multi-region ("us", "eu",
-  // "asia") or one region. Unset takes the multi-region nearest the
-  // source. Immutable.
-  repeated string storage_locations = 17;
+  // "asia") or one region -- at most one location. Unset takes the
+  // multi-region nearest the source. Immutable.
+  repeated string storage_locations = 17 [(buf.validate.field).repeated.max_items = 1];
 
   // The UEFI Secure Boot keys VMs booted from this image start with. Unset
   // takes Google's default certificates. Immutable.
@@ -201,10 +232,19 @@ message GcpComputeImageSpec {
 
 // A raw disk tarball in Cloud Storage.
 message GcpComputeImageRawDisk {
-  // The tarball's full Cloud Storage URL, e.g.
-  // "https://storage.googleapis.com/my-bucket/images/web-base.tar.gz".
+  // Where the archive is: its full Cloud Storage URL, e.g.
+  // "https://storage.googleapis.com/my-bucket/images/web-base.tar.gz" (a
+  // gs:// URI is not accepted), or an Artifact Registry package version,
+  // projects/{project}/locations/{location}/repositories/{repo}/packages/{package}/versions/{version}.
   // The archive holds one file named disk.raw. Required.
-  string source = 1 [(buf.validate.field).required = true];
+  string source = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "source.format"
+      message: "raw_disk.source must be an https://storage.googleapis.com/... URL or an Artifact Registry package version path."
+      expression: "this.startsWith('https://storage.googleapis.com/') || this.matches('^projects/[^/]+/locations/[^/]+/repositories/[^/]+/packages/[^/]+/versions/[^/]+$')"
+    }
+  ];
 
   // The archive's SHA-1 checksum, base64-encoded; Google verifies it when
   // set.

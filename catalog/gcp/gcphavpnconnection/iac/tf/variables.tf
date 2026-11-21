@@ -156,13 +156,16 @@ variable "spec" {
           # Encryption algorithms.
           encryption = optional(list(string), [])
 
-          # Integrity algorithms.
+          # Integrity algorithms. Leave empty when every encryption algorithm is
+          # AES-GCM (AEAD).
           integrity = optional(list(string), [])
 
           # Pseudo-random functions.
           prf = optional(list(string), [])
 
-          # Diffie-Hellman groups.
+          # Diffie-Hellman groups. Google's supported set is narrower than IKE's:
+          # GROUP-14 is refused at create ("The specified Diffie-Hellman (DH) -
+          # GROUP-14 is not supported"), so check Cloud VPN's supported IKE ciphers.
           dh = optional(list(string), [])
         }))
 
@@ -215,10 +218,10 @@ variable "spec" {
         peer_asn = number
 
         # The peer's address on the tunnel: the other usable address of
-        # interface_ip_range (e.g. "169.254.10.2" for 169.254.10.1/30). Google
-        # derives it from the interface range when empty, so it is normally left
-        # unset; set it only when the device insists on a specific address.
-        # Sent only when set. Immutable.
+        # interface_ip_range (e.g. "169.254.10.2" for 169.254.10.1/30). Left unset,
+        # the modules send exactly that address: Google refuses an IPv4 session
+        # whose peer address is missing. Set it only when the device insists on a
+        # specific address. Immutable.
         peer_ip_address = optional(string)
 
         # The priority (MED) of routes advertised to this peer: where the peer

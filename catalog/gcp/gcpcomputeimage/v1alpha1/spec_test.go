@@ -147,6 +147,36 @@ var _ = ginkgo.Describe("GcpComputeImageSpec", func() {
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
 
+	ginkgo.It("should accept a raw disk from Artifact Registry and refuse a gs:// URI", func() {
+		msg := fromDisk()
+		msg.Spec.SourceDisk = nil
+		msg.Spec.RawDisk = &GcpComputeImageRawDisk{Source: "projects/p/locations/us/repositories/images/packages/web-base/versions/1"}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		msg.Spec.RawDisk = &GcpComputeImageRawDisk{Source: "gs://images/web.tar.gz"}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should refuse an unknown or repeated guest OS feature and more than one storage location", func() {
+		msg := fromDisk()
+		msg.Spec.GuestOsFeatures = []string{"UEFI_COMPATIBLE", "SEV_LIVE_MIGRATABLE_V2", "SNP_SVSM_CAPABLE"}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		msg.Spec.GuestOsFeatures = []string{"uefi_compatible"}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.GuestOsFeatures = []string{"GVNIC", "GVNIC"}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg = fromDisk()
+		msg.Spec.StorageLocations = []string{"us", "eu"}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should refuse a literal key that names a key version", func() {
+		msg := fromDisk()
+		msg.Spec.KmsKey = literal("projects/p/locations/us/keyRings/r/cryptoKeys/k/cryptoKeyVersions/1")
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.KmsKey = literal("projects/p/locations/us/keyRings/r/cryptoKeys/k")
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
 	ginkgo.It("should reject a non-positive size and an unknown deletion policy", func() {
 		msg := fromDisk()
 		msg.Spec.DiskSizeGb = proto.Int64(0)

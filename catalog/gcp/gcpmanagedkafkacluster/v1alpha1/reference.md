@@ -24,13 +24,17 @@ The bootstrap address clients connect to is fixed for the cluster's
 lifetime but its format can differ between clusters, and the pinned
 Pulumi SDK cannot read it yet, so it is not an output: read it once with
 `gcloud managed-kafka clusters describe CLUSTER --location=LOCATION
---format="value(bootstrapAddress)"`. Internet (public) access is not yet
+--project=PROJECT --format="value(bootstrapAddress)"`. Internet (public) access is not yet
 offered here for the same SDK reason; clients reach the cluster from an
 attached VPC.
 
 Immutable: project_id, location, cluster_id, kms_key (a change replaces
-the cluster and its data). Capacity, networks, rebalancing, TLS, and
-labels update in place.
+the cluster and its data). Capacity, the broker disk size, networks,
+rebalancing, TLS, and labels update in place.
+
+Deleting the cluster deletes every topic, message, and ACL in it (they
+are its children in Google's API). A GcpManagedKafkaTopic or
+GcpManagedKafkaAcl block that names it is then left pointing at nothing.
 
 ## Example
 
@@ -105,8 +109,8 @@ The region the brokers run in, e.g. "us-central1". Immutable.
 `string`
 
 The cluster's ID -- 1-63 characters, RFC 1035 (lowercase letters,
-digits, hyphens; starts with a letter). Defaults to metadata.name.
-Immutable.
+digits, hyphens; starts with a letter). Defaults to metadata.name,
+which must then fit the same rule. Immutable.
 
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?$"}}
 
@@ -117,7 +121,7 @@ Immutable.
 vCPUs and memory for the whole cluster.
 
 - rule: {"required":true}
-- rule: memory_bytes must be between 1 GiB and 8 GiB per vCPU (vcpu_count x 1073741824 to vcpu_count x 8589934592)
+- rule: Memory must be between 1 GiB and 8 GiB per vCPU: memory_bytes from vcpu_count x 1073741824 to vcpu_count x 8589934592.
 
 ### spec.capacityConfig.vcpuCount
 
@@ -135,17 +139,18 @@ rebalance_mode).
 `int64`
 
 Memory provisioned across the cluster, in BYTES as a plain number
-(3 GiB = 3221225472) -- between 1 GiB and 8 GiB per vCPU. Billed per
-GiB-hour. Sent as a decimal string. Mutable in place.
+(3 GiB = 3221225472) -- at least Google's 3 GiB minimum, and between
+1 GiB and 8 GiB per vCPU. Billed per GiB-hour. Sent as a decimal
+string. Mutable in place.
 
-- rule: {"int64":{"gte":"1073741824"}}
+- rule: {"int64":{"gte":"3221225472"}}
 
 ### spec.brokerDiskSizeGib
 
 `int64`
 
 Disk per broker in GiB -- at least 100. Empty leaves Google's default.
-Sent as a decimal string.
+Sent as a decimal string. Mutable in place.
 
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE","int64":{"gte":"100"}}
 
@@ -214,7 +219,9 @@ declaring, and emptying it differ.
 How the Distinguished Name of a client certificate becomes the short
 principal name ACLs match (Kafka's ssl.principal.mapping.rules broker
 setting, same syntax). Empty keeps Kafka's default behavior. Changing
-it triggers a rolling restart of the brokers.
+it triggers a rolling restart of the brokers. The rules shape only
+principals from client certificates, so they take effect once
+ca_pools enables mTLS.
 
 ### spec.tlsConfig.caPools
 
@@ -249,6 +256,11 @@ What happens to the cluster when this resource is destroyed:
                    (and billing) in GCP
 
 - rule: deletion_policy must be one of: DELETE, PREVENT, ABANDON
+
+## Validation Rules
+
+- `spec.subnets_in_cluster_region`: Each literal subnet must be in the cluster's region: its path must contain /regions/{location}/.
+- `spec.kms_key_in_cluster_region`: A literal KMS key must be in the cluster's region: its path must contain /locations/{location}/.
 
 ## Outputs
 

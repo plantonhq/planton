@@ -150,7 +150,9 @@ variable "spec" {
           #   "SEV_SNP" -- AMD SEV with Secure Nested Paging: adds integrity
           #                protection and attestation (N2D)
           #   "TDX"     -- Intel Trust Domain Extensions (C3)
-          # The machine type must support the chosen technology. Immutable.
+          # The machine type must support the chosen technology. Unset, with
+          # enable_confidential_compute unset too, the nodes are ordinary VMs.
+          # Immutable.
           confidential_instance_type = optional(string, "")
         }))
 
@@ -177,7 +179,8 @@ variable "spec" {
         # Boot disk and local SSD configuration.
         disk_config = optional(object({
           # Size of the boot disk in GB. Minimum 10 GB.
-          # If not specified, GCP defaults to 500 GB for master and worker nodes.
+          # If not specified, Dataproc uses 500 GB for every node role: masters,
+          # workers and secondary workers.
           boot_disk_size_gb = optional(number, 0)
 
           # Boot disk type: "pd-standard" (GCP default), "pd-ssd", "pd-balanced",
@@ -198,12 +201,14 @@ variable "spec" {
 
           # Provisioned I/O operations per second for the boot disk — the IOPS
           # dial decoupled from disk size, honored by disk types that support
-          # provisioned performance (hyperdisks).
+          # provisioned performance (Dataproc takes it only on hyperdisk-balanced).
+          # Unset: Compute Engine's default for the disk's type and size.
           boot_disk_provisioned_iops = optional(number)
 
           # Provisioned throughput in MB/s for the boot disk — the bandwidth
           # dial decoupled from disk size, honored by disk types that support
-          # provisioned performance (hyperdisks).
+          # provisioned performance (Dataproc takes it only on hyperdisk-balanced).
+          # Unset: Compute Engine's default for the disk's type and size.
           boot_disk_provisioned_throughput = optional(number)
 
           # Additional persistent disks attached to every node of this role,
@@ -213,20 +218,25 @@ variable "spec" {
           # whole set is fixed at cluster creation (ForceNew). Not available on
           # auxiliary (driver) node groups.
           attached_disks = optional(list(object({
-            # Size of the disk in GB. Leave unset for the API's default size.
+            # Size of the disk in GB. Leave unset for the API's default size;
+            # Dataproc's reference names no number for it.
             disk_size_gb = optional(number, 0)
 
-            # Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
-            # "hyperdisk-balanced" (the class whose provisioned IOPS/throughput
-            # dials apply). Leave empty for the API's default.
+            # Disk type. Dataproc attaches only Hyperdisks: "HYPERDISK_BALANCED",
+            # "HYPERDISK_EXTREME", "HYPERDISK_ML", or "HYPERDISK_THROUGHPUT" (Google
+            # refuses persistent-disk types such as pd-standard). Hyperdisks need a
+            # machine series that supports them (N4, C3, C4 and newer; not E2). Leave
+            # empty for the API's default.
             disk_type = optional(string, "")
 
             # Provisioned I/O operations per second, honored by disk types that
-            # support provisioned performance (hyperdisks).
+            # support provisioned performance (hyperdisks). Unset: Compute Engine's
+            # default for the disk's type and size.
             provisioned_iops = optional(number)
 
             # Provisioned throughput in MB/s, honored by disk types that support
-            # provisioned performance (hyperdisks).
+            # provisioned performance (hyperdisks). Unset: Compute Engine's default
+            # for the disk's type and size.
             provisioned_throughput = optional(number)
           })), [])
         }))
@@ -243,7 +253,8 @@ variable "spec" {
         })), [])
 
         # Minimum CPU platform for the instances (e.g., "Intel Cascade Lake").
-        # Forces nodes onto a specific or newer CPU generation.
+        # Forces nodes onto a specific or newer CPU generation. Unset: any CPU
+        # platform the machine type runs on in the zone.
         min_cpu_platform = optional(string, "")
 
         # Custom Dataproc image URI. If not specified, GCP uses the image
@@ -276,7 +287,8 @@ variable "spec" {
             # disk_config. Immutable.
             disk_config = optional(object({
               # Size of the boot disk in GB. Minimum 10 GB.
-              # If not specified, GCP defaults to 500 GB for master and worker nodes.
+              # If not specified, Dataproc uses 500 GB for every node role: masters,
+              # workers and secondary workers.
               boot_disk_size_gb = optional(number, 0)
 
               # Boot disk type: "pd-standard" (GCP default), "pd-ssd", "pd-balanced",
@@ -297,12 +309,14 @@ variable "spec" {
 
               # Provisioned I/O operations per second for the boot disk — the IOPS
               # dial decoupled from disk size, honored by disk types that support
-              # provisioned performance (hyperdisks).
+              # provisioned performance (Dataproc takes it only on hyperdisk-balanced).
+              # Unset: Compute Engine's default for the disk's type and size.
               boot_disk_provisioned_iops = optional(number)
 
               # Provisioned throughput in MB/s for the boot disk — the bandwidth
               # dial decoupled from disk size, honored by disk types that support
-              # provisioned performance (hyperdisks).
+              # provisioned performance (Dataproc takes it only on hyperdisk-balanced).
+              # Unset: Compute Engine's default for the disk's type and size.
               boot_disk_provisioned_throughput = optional(number)
 
               # Additional persistent disks attached to every node of this role,
@@ -312,20 +326,25 @@ variable "spec" {
               # whole set is fixed at cluster creation (ForceNew). Not available on
               # auxiliary (driver) node groups.
               attached_disks = optional(list(object({
-                # Size of the disk in GB. Leave unset for the API's default size.
+                # Size of the disk in GB. Leave unset for the API's default size;
+                # Dataproc's reference names no number for it.
                 disk_size_gb = optional(number, 0)
 
-                # Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
-                # "hyperdisk-balanced" (the class whose provisioned IOPS/throughput
-                # dials apply). Leave empty for the API's default.
+                # Disk type. Dataproc attaches only Hyperdisks: "HYPERDISK_BALANCED",
+                # "HYPERDISK_EXTREME", "HYPERDISK_ML", or "HYPERDISK_THROUGHPUT" (Google
+                # refuses persistent-disk types such as pd-standard). Hyperdisks need a
+                # machine series that supports them (N4, C3, C4 and newer; not E2). Leave
+                # empty for the API's default.
                 disk_type = optional(string, "")
 
                 # Provisioned I/O operations per second, honored by disk types that
-                # support provisioned performance (hyperdisks).
+                # support provisioned performance (hyperdisks). Unset: Compute Engine's
+                # default for the disk's type and size.
                 provisioned_iops = optional(number)
 
                 # Provisioned throughput in MB/s, honored by disk types that support
-                # provisioned performance (hyperdisks).
+                # provisioned performance (hyperdisks). Unset: Compute Engine's default
+                # for the disk's type and size.
                 provisioned_throughput = optional(number)
               })), [])
             }))
@@ -363,7 +382,8 @@ variable "spec" {
         # Boot disk and local SSD configuration.
         disk_config = optional(object({
           # Size of the boot disk in GB. Minimum 10 GB.
-          # If not specified, GCP defaults to 500 GB for master and worker nodes.
+          # If not specified, Dataproc uses 500 GB for every node role: masters,
+          # workers and secondary workers.
           boot_disk_size_gb = optional(number, 0)
 
           # Boot disk type: "pd-standard" (GCP default), "pd-ssd", "pd-balanced",
@@ -384,12 +404,14 @@ variable "spec" {
 
           # Provisioned I/O operations per second for the boot disk — the IOPS
           # dial decoupled from disk size, honored by disk types that support
-          # provisioned performance (hyperdisks).
+          # provisioned performance (Dataproc takes it only on hyperdisk-balanced).
+          # Unset: Compute Engine's default for the disk's type and size.
           boot_disk_provisioned_iops = optional(number)
 
           # Provisioned throughput in MB/s for the boot disk — the bandwidth
           # dial decoupled from disk size, honored by disk types that support
-          # provisioned performance (hyperdisks).
+          # provisioned performance (Dataproc takes it only on hyperdisk-balanced).
+          # Unset: Compute Engine's default for the disk's type and size.
           boot_disk_provisioned_throughput = optional(number)
 
           # Additional persistent disks attached to every node of this role,
@@ -399,20 +421,25 @@ variable "spec" {
           # whole set is fixed at cluster creation (ForceNew). Not available on
           # auxiliary (driver) node groups.
           attached_disks = optional(list(object({
-            # Size of the disk in GB. Leave unset for the API's default size.
+            # Size of the disk in GB. Leave unset for the API's default size;
+            # Dataproc's reference names no number for it.
             disk_size_gb = optional(number, 0)
 
-            # Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
-            # "hyperdisk-balanced" (the class whose provisioned IOPS/throughput
-            # dials apply). Leave empty for the API's default.
+            # Disk type. Dataproc attaches only Hyperdisks: "HYPERDISK_BALANCED",
+            # "HYPERDISK_EXTREME", "HYPERDISK_ML", or "HYPERDISK_THROUGHPUT" (Google
+            # refuses persistent-disk types such as pd-standard). Hyperdisks need a
+            # machine series that supports them (N4, C3, C4 and newer; not E2). Leave
+            # empty for the API's default.
             disk_type = optional(string, "")
 
             # Provisioned I/O operations per second, honored by disk types that
-            # support provisioned performance (hyperdisks).
+            # support provisioned performance (hyperdisks). Unset: Compute Engine's
+            # default for the disk's type and size.
             provisioned_iops = optional(number)
 
             # Provisioned throughput in MB/s, honored by disk types that support
-            # provisioned performance (hyperdisks).
+            # provisioned performance (hyperdisks). Unset: Compute Engine's default
+            # for the disk's type and size.
             provisioned_throughput = optional(number)
           })), [])
         }))
@@ -429,6 +456,7 @@ variable "spec" {
         })), [])
 
         # Minimum CPU platform for the instances.
+        # Unset: any CPU platform the machine type runs on in the zone.
         min_cpu_platform = optional(string, "")
 
         # Custom Dataproc image URI.
@@ -464,7 +492,8 @@ variable "spec" {
             # disk_config. Immutable.
             disk_config = optional(object({
               # Size of the boot disk in GB. Minimum 10 GB.
-              # If not specified, GCP defaults to 500 GB for master and worker nodes.
+              # If not specified, Dataproc uses 500 GB for every node role: masters,
+              # workers and secondary workers.
               boot_disk_size_gb = optional(number, 0)
 
               # Boot disk type: "pd-standard" (GCP default), "pd-ssd", "pd-balanced",
@@ -485,12 +514,14 @@ variable "spec" {
 
               # Provisioned I/O operations per second for the boot disk — the IOPS
               # dial decoupled from disk size, honored by disk types that support
-              # provisioned performance (hyperdisks).
+              # provisioned performance (Dataproc takes it only on hyperdisk-balanced).
+              # Unset: Compute Engine's default for the disk's type and size.
               boot_disk_provisioned_iops = optional(number)
 
               # Provisioned throughput in MB/s for the boot disk — the bandwidth
               # dial decoupled from disk size, honored by disk types that support
-              # provisioned performance (hyperdisks).
+              # provisioned performance (Dataproc takes it only on hyperdisk-balanced).
+              # Unset: Compute Engine's default for the disk's type and size.
               boot_disk_provisioned_throughput = optional(number)
 
               # Additional persistent disks attached to every node of this role,
@@ -500,20 +531,25 @@ variable "spec" {
               # whole set is fixed at cluster creation (ForceNew). Not available on
               # auxiliary (driver) node groups.
               attached_disks = optional(list(object({
-                # Size of the disk in GB. Leave unset for the API's default size.
+                # Size of the disk in GB. Leave unset for the API's default size;
+                # Dataproc's reference names no number for it.
                 disk_size_gb = optional(number, 0)
 
-                # Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
-                # "hyperdisk-balanced" (the class whose provisioned IOPS/throughput
-                # dials apply). Leave empty for the API's default.
+                # Disk type. Dataproc attaches only Hyperdisks: "HYPERDISK_BALANCED",
+                # "HYPERDISK_EXTREME", "HYPERDISK_ML", or "HYPERDISK_THROUGHPUT" (Google
+                # refuses persistent-disk types such as pd-standard). Hyperdisks need a
+                # machine series that supports them (N4, C3, C4 and newer; not E2). Leave
+                # empty for the API's default.
                 disk_type = optional(string, "")
 
                 # Provisioned I/O operations per second, honored by disk types that
-                # support provisioned performance (hyperdisks).
+                # support provisioned performance (hyperdisks). Unset: Compute Engine's
+                # default for the disk's type and size.
                 provisioned_iops = optional(number)
 
                 # Provisioned throughput in MB/s, honored by disk types that support
-                # provisioned performance (hyperdisks).
+                # provisioned performance (hyperdisks). Unset: Compute Engine's default
+                # for the disk's type and size.
                 provisioned_throughput = optional(number)
               })), [])
             }))
@@ -553,7 +589,8 @@ variable "spec" {
         # config unless an instance_flexibility_policy overrides it.
         disk_config = optional(object({
           # Size of the boot disk in GB. Minimum 10 GB.
-          # If not specified, GCP defaults to 500 GB for master and worker nodes.
+          # If not specified, Dataproc uses 500 GB for every node role: masters,
+          # workers and secondary workers.
           boot_disk_size_gb = optional(number, 0)
 
           # Boot disk type: "pd-standard" (GCP default), "pd-ssd", "pd-balanced",
@@ -574,12 +611,14 @@ variable "spec" {
 
           # Provisioned I/O operations per second for the boot disk — the IOPS
           # dial decoupled from disk size, honored by disk types that support
-          # provisioned performance (hyperdisks).
+          # provisioned performance (Dataproc takes it only on hyperdisk-balanced).
+          # Unset: Compute Engine's default for the disk's type and size.
           boot_disk_provisioned_iops = optional(number)
 
           # Provisioned throughput in MB/s for the boot disk — the bandwidth
           # dial decoupled from disk size, honored by disk types that support
-          # provisioned performance (hyperdisks).
+          # provisioned performance (Dataproc takes it only on hyperdisk-balanced).
+          # Unset: Compute Engine's default for the disk's type and size.
           boot_disk_provisioned_throughput = optional(number)
 
           # Additional persistent disks attached to every node of this role,
@@ -589,20 +628,25 @@ variable "spec" {
           # whole set is fixed at cluster creation (ForceNew). Not available on
           # auxiliary (driver) node groups.
           attached_disks = optional(list(object({
-            # Size of the disk in GB. Leave unset for the API's default size.
+            # Size of the disk in GB. Leave unset for the API's default size;
+            # Dataproc's reference names no number for it.
             disk_size_gb = optional(number, 0)
 
-            # Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
-            # "hyperdisk-balanced" (the class whose provisioned IOPS/throughput
-            # dials apply). Leave empty for the API's default.
+            # Disk type. Dataproc attaches only Hyperdisks: "HYPERDISK_BALANCED",
+            # "HYPERDISK_EXTREME", "HYPERDISK_ML", or "HYPERDISK_THROUGHPUT" (Google
+            # refuses persistent-disk types such as pd-standard). Hyperdisks need a
+            # machine series that supports them (N4, C3, C4 and newer; not E2). Leave
+            # empty for the API's default.
             disk_type = optional(string, "")
 
             # Provisioned I/O operations per second, honored by disk types that
-            # support provisioned performance (hyperdisks).
+            # support provisioned performance (hyperdisks). Unset: Compute Engine's
+            # default for the disk's type and size.
             provisioned_iops = optional(number)
 
             # Provisioned throughput in MB/s, honored by disk types that support
-            # provisioned performance (hyperdisks).
+            # provisioned performance (hyperdisks). Unset: Compute Engine's default
+            # for the disk's type and size.
             provisioned_throughput = optional(number)
           })), [])
         }))
@@ -628,7 +672,8 @@ variable "spec" {
             # disk_config. Immutable.
             disk_config = optional(object({
               # Size of the boot disk in GB. Minimum 10 GB.
-              # If not specified, GCP defaults to 500 GB for master and worker nodes.
+              # If not specified, Dataproc uses 500 GB for every node role: masters,
+              # workers and secondary workers.
               boot_disk_size_gb = optional(number, 0)
 
               # Boot disk type: "pd-standard" (GCP default), "pd-ssd", "pd-balanced",
@@ -649,12 +694,14 @@ variable "spec" {
 
               # Provisioned I/O operations per second for the boot disk — the IOPS
               # dial decoupled from disk size, honored by disk types that support
-              # provisioned performance (hyperdisks).
+              # provisioned performance (Dataproc takes it only on hyperdisk-balanced).
+              # Unset: Compute Engine's default for the disk's type and size.
               boot_disk_provisioned_iops = optional(number)
 
               # Provisioned throughput in MB/s for the boot disk — the bandwidth
               # dial decoupled from disk size, honored by disk types that support
-              # provisioned performance (hyperdisks).
+              # provisioned performance (Dataproc takes it only on hyperdisk-balanced).
+              # Unset: Compute Engine's default for the disk's type and size.
               boot_disk_provisioned_throughput = optional(number)
 
               # Additional persistent disks attached to every node of this role,
@@ -664,20 +711,25 @@ variable "spec" {
               # whole set is fixed at cluster creation (ForceNew). Not available on
               # auxiliary (driver) node groups.
               attached_disks = optional(list(object({
-                # Size of the disk in GB. Leave unset for the API's default size.
+                # Size of the disk in GB. Leave unset for the API's default size;
+                # Dataproc's reference names no number for it.
                 disk_size_gb = optional(number, 0)
 
-                # Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
-                # "hyperdisk-balanced" (the class whose provisioned IOPS/throughput
-                # dials apply). Leave empty for the API's default.
+                # Disk type. Dataproc attaches only Hyperdisks: "HYPERDISK_BALANCED",
+                # "HYPERDISK_EXTREME", "HYPERDISK_ML", or "HYPERDISK_THROUGHPUT" (Google
+                # refuses persistent-disk types such as pd-standard). Hyperdisks need a
+                # machine series that supports them (N4, C3, C4 and newer; not E2). Leave
+                # empty for the API's default.
                 disk_type = optional(string, "")
 
                 # Provisioned I/O operations per second, honored by disk types that
-                # support provisioned performance (hyperdisks).
+                # support provisioned performance (hyperdisks). Unset: Compute Engine's
+                # default for the disk's type and size.
                 provisioned_iops = optional(number)
 
                 # Provisioned throughput in MB/s, honored by disk types that support
-                # provisioned performance (hyperdisks).
+                # provisioned performance (hyperdisks). Unset: Compute Engine's default
+                # for the disk's type and size.
                 provisioned_throughput = optional(number)
               })), [])
             }))
@@ -882,12 +934,14 @@ variable "spec" {
           machine_type = optional(string, "")
 
           # Minimum CPU platform for the group's instances.
+          # Unset: any CPU platform the machine type runs on in the zone.
           min_cpu_platform = optional(string, "")
 
           # Boot disk and local SSD configuration.
           disk_config = optional(object({
             # Size of the boot disk in GB. Minimum 10 GB.
-            # If not specified, GCP defaults to 500 GB for master and worker nodes.
+            # If not specified, Dataproc uses 500 GB for every node role: masters,
+            # workers and secondary workers.
             boot_disk_size_gb = optional(number, 0)
 
             # Boot disk type: "pd-standard" (GCP default), "pd-ssd", "pd-balanced",
@@ -908,12 +962,14 @@ variable "spec" {
 
             # Provisioned I/O operations per second for the boot disk — the IOPS
             # dial decoupled from disk size, honored by disk types that support
-            # provisioned performance (hyperdisks).
+            # provisioned performance (Dataproc takes it only on hyperdisk-balanced).
+            # Unset: Compute Engine's default for the disk's type and size.
             boot_disk_provisioned_iops = optional(number)
 
             # Provisioned throughput in MB/s for the boot disk — the bandwidth
             # dial decoupled from disk size, honored by disk types that support
-            # provisioned performance (hyperdisks).
+            # provisioned performance (Dataproc takes it only on hyperdisk-balanced).
+            # Unset: Compute Engine's default for the disk's type and size.
             boot_disk_provisioned_throughput = optional(number)
 
             # Additional persistent disks attached to every node of this role,
@@ -923,20 +979,25 @@ variable "spec" {
             # whole set is fixed at cluster creation (ForceNew). Not available on
             # auxiliary (driver) node groups.
             attached_disks = optional(list(object({
-              # Size of the disk in GB. Leave unset for the API's default size.
+              # Size of the disk in GB. Leave unset for the API's default size;
+              # Dataproc's reference names no number for it.
               disk_size_gb = optional(number, 0)
 
-              # Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
-              # "hyperdisk-balanced" (the class whose provisioned IOPS/throughput
-              # dials apply). Leave empty for the API's default.
+              # Disk type. Dataproc attaches only Hyperdisks: "HYPERDISK_BALANCED",
+              # "HYPERDISK_EXTREME", "HYPERDISK_ML", or "HYPERDISK_THROUGHPUT" (Google
+              # refuses persistent-disk types such as pd-standard). Hyperdisks need a
+              # machine series that supports them (N4, C3, C4 and newer; not E2). Leave
+              # empty for the API's default.
               disk_type = optional(string, "")
 
               # Provisioned I/O operations per second, honored by disk types that
-              # support provisioned performance (hyperdisks).
+              # support provisioned performance (hyperdisks). Unset: Compute Engine's
+              # default for the disk's type and size.
               provisioned_iops = optional(number)
 
               # Provisioned throughput in MB/s, honored by disk types that support
-              # provisioned performance (hyperdisks).
+              # provisioned performance (hyperdisks). Unset: Compute Engine's default
+              # for the disk's type and size.
               provisioned_throughput = optional(number)
             })), [])
           }))
@@ -966,7 +1027,8 @@ variable "spec" {
 
       # The execution engine. DEFAULT runs open-source Spark as-is;
       # LIGHTNING enables the Lightning Engine (Google's accelerated Spark
-      # runtime, premium tier). Immutable after creation.
+      # runtime, premium tier). Unset works the same as DEFAULT. Immutable
+      # after creation.
       engine = optional(string, "")
     }))
 
@@ -1034,6 +1096,7 @@ variable "spec" {
               local_ssd_count = optional(number, 0)
 
               # Minimum CPU platform for the pool's nodes.
+              # Unset: any CPU platform the machine type runs on in the zone.
               min_cpu_platform = optional(string, "")
 
               # Use legacy preemptible VMs for the pool. Mutually exclusive with spot.
@@ -1069,6 +1132,7 @@ variable "spec" {
         }))
 
         # Persistent Spark History Server hosted on another Dataproc cluster.
+        # Unset: none, so job history lives and dies with this cluster.
         spark_history_server_config = optional(object({
           # The Dataproc cluster hosting the Spark History Server. Resolves to
           # the cluster's fully qualified resource name

@@ -162,11 +162,13 @@ variable "spec" {
         }))
 
         # The basic constraints extension: whether the certificate is a CA and
-        # how many CA levels may sit below it. Omit to leave the extension to
-        # Google's default (for a leaf certificate, is_ca false).
+        # how many CA levels may sit below it. Required on an authority, with
+        # is_ca set (config.is_ca_required): an authority's certificate states
+        # its CA flag.
         ca_options = optional(object({
-          # true makes a CA certificate (CA:TRUE), false states CA:FALSE; unset
-          # leaves the CA flag out of the extension.
+          # true makes a CA certificate (CA:TRUE) -- what every authority sets.
+          # Required on an authority (config.is_ca_required); false would state
+          # CA:FALSE on a certificate meant to sign others.
           is_ca = optional(bool)
 
           # The path length constraint: how many CA levels may sit below this
@@ -278,14 +280,21 @@ variable "spec" {
       certificate_authority = optional(string, "")
 
       # An external issuer's PEM certificate chain, issuer first, not
-      # including this authority's own certificate. With pem_ca_certificate,
-      # it activates the authority from an outside CA.
+      # including this authority's own certificate. Set it together with
+      # pem_ca_certificate, in the same apply: the pair activates the authority
+      # from an outside CA, and the chain alone carries no certificate to
+      # activate with.
       pem_issuer_chain = optional(list(string), [])
     }))
 
-    # The CA certificate an outside CA signed from this authority's CSR
-    # (read the CSR from Google after the first apply), PEM. With
-    # subordinate_config.pem_issuer_chain, it activates the authority.
+    # The CA certificate an outside CA signed from this authority's CSR,
+    # PEM. Read the CSR after the first apply with
+    # `gcloud privateca subordinates get-csr {id} --pool={pool}
+    # --location={location}`. With subordinate_config.pem_issuer_chain, it
+    # activates the authority. Updates in place, but it is read only by the
+    # activation, which runs when subordinate_config changes on an authority
+    # still AWAITING_USER_ACTIVATION: set both in the same apply. Once the
+    # authority is active, a changed value reaches nothing at Google.
     pem_ca_certificate = optional(string, "")
 
     # The Cloud Storage bucket the authority publishes its CA certificate

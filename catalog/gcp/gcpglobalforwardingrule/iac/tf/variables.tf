@@ -90,13 +90,19 @@ variable "spec" {
     # literal IP ("34.120.1.2") or an address resource URL. When omitted,
     # Google Cloud assigns an ephemeral IP — fine for testing, but production
     # frontends should reserve a static address so DNS never has to chase a
-    # new VIP. Required for Private Service Connect rules to Google APIs.
-    # Immutable.
+    # new VIP. Required for Private Service Connect rules to Google APIs. A
+    # Private Service Connect rule to a service attachment takes the address
+    # resource (its self link), not a literal IP: Google refuses an IP there
+    # ("Invalid value for field 'resource.IPAddress' ... The URL is
+    # malformed"). Immutable.
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     ip_address = optional(string, "")
 
     # The IP protocol this rule matches (default TCP). All proxy-based load
-    # balancers and Private Service Connect use TCP; UDP, ESP, AH, SCTP, and
+    # balancers and Private Service Connect to Google APIs use TCP; a Private
+    # Service Connect rule to a service attachment carries no protocol (Google
+    # refuses one there, so the modules send none, the default included).
+    # UDP, ESP, AH, SCTP, and
     # ICMP exist for passthrough load balancing and protocol forwarding.
     # L3_DEFAULT — regional rules only — forwards every IP protocol at once
     # (the passthrough Network Load Balancer's multi-protocol form); it

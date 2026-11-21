@@ -74,9 +74,11 @@ resource "google_model_armor_template" "this" {
   dynamic "template_metadata" {
     for_each = local.template_metadata != null ? [local.template_metadata] : []
     content {
-      log_template_operations            = template_metadata.value.log_template_operations
-      log_sanitize_operations            = template_metadata.value.log_sanitize_operations
-      ignore_partial_invocation_failures = template_metadata.value.ignore_partial_invocation_failures
+      # Each bool is sent only when true; Google's default for each is
+      # false -- identical to the Pulumi module.
+      log_template_operations            = template_metadata.value.log_template_operations ? true : null
+      log_sanitize_operations            = template_metadata.value.log_sanitize_operations ? true : null
+      ignore_partial_invocation_failures = template_metadata.value.ignore_partial_invocation_failures ? true : null
 
       custom_prompt_safety_error_code          = template_metadata.value.custom_prompt_safety_error_code != 0 ? template_metadata.value.custom_prompt_safety_error_code : null
       custom_prompt_safety_error_message       = template_metadata.value.custom_prompt_safety_error_message != "" ? template_metadata.value.custom_prompt_safety_error_message : null
@@ -100,6 +102,13 @@ resource "google_model_armor_template" "this" {
           version = filter_version_selector.value.version != "" ? filter_version_selector.value.version : null
         }
       }
+    }
+  }
+
+  lifecycle {
+    precondition {
+      condition     = can(regex("^[A-Za-z0-9_-]{1,63}$", local.template_id))
+      error_message = "The template id \"${local.template_id}\" is not 1-63 letters, digits, hyphens, or underscores -- set spec.template_id, or give the resource a metadata.name that fits."
     }
   }
 

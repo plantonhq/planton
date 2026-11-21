@@ -9,6 +9,14 @@ resource "google_project_service" "aiplatform_api" {
   disable_on_destroy         = false
 }
 
+# Google's provider plans a changed location as an in-place update of the
+# template at its old path. This tracker makes a location change replace
+# the template instead, visibly in the plan -- the Pulumi module's
+# ReplaceOnChanges.
+resource "terraform_data" "location" {
+  input = var.spec.location
+}
+
 # The runtime template. The display name, the key, and the software update
 # in place; everything else (labels included) is fixed at creation.
 # Optional+Computed settings are sent only when set so Google's defaults
@@ -109,6 +117,10 @@ resource "google_colab_runtime_template" "this" {
         }
       }
     }
+  }
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.location]
   }
 
   depends_on = [google_project_service.aiplatform_api]

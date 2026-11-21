@@ -17,5 +17,6 @@ Capacity that survives a regional outage: an Enterprise Plus reservation in `us-
 
 | Field | Default | Why Change |
 |-------|---------|------------|
+| `projectId`, assignee | `bq-admin-project`, `reporting-project` | Stand-ins: name your admin project and the project whose jobs use the slots, or reference GcpProjects. |
 | `secondaryLocation` | `us-east4` | Pair it with the region your datasets replicate to. |
 | `edition` | `ENTERPRISE_PLUS` | Required for managed disaster recovery. |

@@ -518,8 +518,9 @@ variable "spec" {
 
       # HTTP request headers whose values join each log entry (e.g.
       # "X-Request-Id", "User-Agent") — for tracing a request across services
-      # without instrumenting the backend. Requires enable and an HTTP-family
-      # protocol (HTTP, HTTPS, HTTP2, GRPC). Header names are case-insensitive
+      # without instrumenting the backend. Requires enable, an HTTP-family
+      # protocol (HTTP, HTTPS, HTTP2, GRPC), and a managed load-balancing scheme:
+      # Google refuses it on the classic EXTERNAL scheme. Header names are case-insensitive
       # in HTTP; each entry is one name.
       request_headers = optional(list(string), [])
 

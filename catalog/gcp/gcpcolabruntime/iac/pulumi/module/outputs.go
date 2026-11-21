@@ -6,4 +6,5 @@ const (
 	OpName      = "name"
 	OpRuntimeId = "runtime_id"
 	OpLocation  = "location"
+	OpState     = "state"
 )

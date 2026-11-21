@@ -18,5 +18,6 @@ A business event stream: 12 partitions for parallel consumers, a copy in each of
 
 | Field | Default | Why Change |
 |-------|---------|------------|
+| `projectId`, `cluster` | `my-gcp-project`, `events` | Stand-ins: name the cluster's project, or reference the GcpManagedKafkaCluster (`valueFrom`) and its project. |
 | `partitionCount` | `12` | Match your peak consumer parallelism; it can grow later, never shrink. |
 | `configs.retention.ms` | 7 days | How far back consumers can replay. |

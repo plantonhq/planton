@@ -33,7 +33,15 @@ const (
 //
 // One request can ask for several nodes at once (one node_specs entry per
 // node), which Google provisions together. The nodes belong to the
-// request: destroying the request deletes them.
+// request, but destroying it deletes them only when nothing is running:
+// Google deletes a queued request without force only once its nodes are
+// already gone or while it is ACCEPTED, FAILED, or SUSPENDED, and Google's
+// provider sends no force. Destroying an ACTIVE request (or one still
+// PROVISIONING or WAITING_FOR_RESOURCES) therefore fails while its TPUs
+// keep running and billing; delete the request with force outside the
+// manifest (gcloud compute tpus queued-resources delete --force) and the
+// next destroy completes. Every change replaces the request, so a change
+// to such a request fails the same way.
 //
 // Google publishes this resource only in its beta Terraform provider; the
 // module uses google-beta for it under the catalog's recorded admission.
@@ -56,8 +64,9 @@ type GcpTpuQueuedResourceSpec struct {
 	NodeSpecs []*GcpTpuQueuedResourceNodeSpec `protobuf:"bytes,4,rep,name=node_specs,json=nodeSpecs,proto3" json:"node_specs,omitempty"`
 	// What happens to the request when this resource is destroyed:
 	//
-	//	"" / "DELETE" -- the request is deleted, and with it every node it
-	//	                 provisioned
+	//	"" / "DELETE" -- the request is deleted without force: Google refuses
+	//	                 while it is ACTIVE, PROVISIONING, or
+	//	                 WAITING_FOR_RESOURCES (see the message comment)
 	//	"PREVENT"     -- destroy fails
 	//	"ABANDON"     -- the request leaves management; its nodes keep
 	//	                 running (and billing)
@@ -136,9 +145,12 @@ func (x *GcpTpuQueuedResourceSpec) GetDeletionPolicy() string {
 // modules from the request's project and zone.
 type GcpTpuQueuedResourceNodeSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The node's id once provisioned -- its name in the project. Lowercase
-	// letters, digits, and hyphens, starting with a letter. Unset: Google
-	// generates one.
+	// The node's id once provisioned -- its name in the project, what
+	// `gcloud compute tpus tpu-vm ssh` takes. Lowercase letters, digits, and
+	// hyphens, starting with a letter. Required: Google's provider neither
+	// reads back an id Google generates nor lets it change in place, so an
+	// unnamed node would plan a replacement of the whole request on every
+	// deploy.
 	NodeId string `protobuf:"bytes,1,opt,name=node_id,json=nodeId,proto3" json:"node_id,omitempty"`
 	// The node itself.
 	Node          *GcpTpuQueuedResourceNode `protobuf:"bytes,2,opt,name=node,proto3" json:"node,omitempty"`
@@ -201,8 +213,9 @@ type GcpTpuQueuedResourceNode struct {
 	AcceleratorType string `protobuf:"bytes,2,opt,name=accelerator_type,json=acceleratorType,proto3" json:"accelerator_type,omitempty"`
 	// What the node is for.
 	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
-	// The node's network. Unset: the project's default network and
-	// subnetwork.
+	// The node's network. Unset: the project's network and subnetwork named
+	// "default", which many organizations never create -- a project without
+	// them must set this.
 	NetworkConfig *GcpTpuQueuedResourceNetworkConfig `protobuf:"bytes,4,opt,name=network_config,json=networkConfig,proto3" json:"network_config,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -271,11 +284,15 @@ func (x *GcpTpuQueuedResourceNode) GetNetworkConfig() *GcpTpuQueuedResourceNetwo
 type GcpTpuQueuedResourceNetworkConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The VPC network: a GcpVpcNetwork reference or a literal
-	// projects/{project}/global/networks/{name}. Unset: "default".
+	// projects/{project}/global/networks/{name}. Unset: the project's network
+	// named "default", which many organizations never create (or delete) --
+	// a project without it must name a network here.
 	Network *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=network,proto3" json:"network,omitempty"`
 	// The subnetwork in the zone's region: a GcpSubnetwork reference or a
 	// literal projects/{project}/regions/{region}/subnetworks/{name}. Unset:
-	// "default".
+	// the subnetwork named "default" in the region, which exists only where
+	// the project's "default" network does -- a project without it must
+	// name a subnetwork here.
 	Subnetwork *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=subnetwork,proto3" json:"subnetwork,omitempty"`
 	// Give the node's workers external IP addresses. Without them the
 	// subnetwork needs Private Google Access (or Cloud NAT).
@@ -357,21 +374,21 @@ var File_catalog_gcp_gcptpuqueuedresource_v1alpha1_spec_proto protoreflect.FileD
 
 const file_catalog_gcp_gcptpuqueuedresource_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/gcp/gcptpuqueuedresource/v1alpha1/spec.proto\x12-dev.planton.gcp.gcptpuqueuedresource.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x8e\a\n" +
+	"4catalog/gcp/gcptpuqueuedresource/v1alpha1/spec.proto\x12-dev.planton.gcp.gcptpuqueuedresource.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xf0\x06\n" +
 	"\x18GcpTpuQueuedResourceSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x129\n" +
 	"\x04zone\x18\x02 \x01(\tB%\xbaH\"\xc8\x01\x01r\x1d2\x1b^[a-z]+-[a-z]+[0-9]+-[a-z]$R\x04zone\x12\x83\x02\n" +
 	"\x12queued_resource_id\x18\x03 \x01(\tB\xd4\x01\xbaH\xd0\x01\xba\x01\xcc\x01\n" +
-	"\x19queued_resource_id.format\x12nqueued_resource_id must be lowercase letters, digits, and hyphens, starting with a letter, up to 63 characters\x1a?this == '' || this.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')R\x10queuedResourceId\x12\xfb\x01\n" +
+	"\x19queued_resource_id.format\x12nqueued_resource_id must be lowercase letters, digits, and hyphens, starting with a letter, up to 63 characters\x1a?this == '' || this.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')R\x10queuedResourceId\x12\xdd\x01\n" +
 	"\n" +
-	"node_specs\x18\x04 \x03(\v2K.dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceNodeSpecB\x8e\x01\xbaH\x8a\x01\xba\x01\x81\x01\n" +
-	"\x19node_specs.unique_node_id\x12(node_id must be unique across node_specs\x1a:this.filter(n, n.node_id != '').map(n, n.node_id).unique()\x92\x01\x02\b\x01R\tnodeSpecs\x12\xbb\x01\n" +
+	"node_specs\x18\x04 \x03(\v2K.dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceNodeSpecBq\xbaHn\xba\x01f\n" +
+	"\x19node_specs.unique_node_id\x12(node_id must be unique across node_specs\x1a\x1fthis.map(n, n.node_id).unique()\x92\x01\x02\b\x01R\tnodeSpecs\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\x05 \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
-	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\"\xde\x02\n" +
-	"\x1cGcpTpuQueuedResourceNodeSpec\x12\xd8\x01\n" +
-	"\anode_id\x18\x01 \x01(\tB\xbe\x01\xbaH\xba\x01\xba\x01\xb6\x01\n" +
-	"\x0enode_id.format\x12cnode_id must be lowercase letters, digits, and hyphens, starting with a letter, up to 63 characters\x1a?this == '' || this.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')R\x06nodeId\x12c\n" +
+	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\"\xe1\x02\n" +
+	"\x1cGcpTpuQueuedResourceNodeSpec\x12\xdb\x01\n" +
+	"\anode_id\x18\x01 \x01(\tB\xc1\x01\xbaH\xbd\x01\xba\x01\xb6\x01\n" +
+	"\x0enode_id.format\x12cnode_id must be lowercase letters, digits, and hyphens, starting with a letter, up to 63 characters\x1a?this == '' || this.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')\xc8\x01\x01R\x06nodeId\x12c\n" +
 	"\x04node\x18\x02 \x01(\v2G.dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceNodeB\x06\xbaH\x03\xc8\x01\x01R\x04node\"\x91\x02\n" +
 	"\x18GcpTpuQueuedResourceNode\x12/\n" +
 	"\x0fruntime_version\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0eruntimeVersion\x12)\n" +

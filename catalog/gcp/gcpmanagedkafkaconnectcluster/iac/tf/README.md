@@ -14,7 +14,7 @@ This directory contains the Terraform implementation for a Managed Kafka Connect
 | `provider.tf` | Terraform block and Google provider configuration |
 | `variables.tf` | `metadata` and `spec` variable definitions (generated from the spec; the tfvars converter flattens refs to plain strings) |
 | `locals.tf` | Ambient project fallback, the id defaulted from `metadata.name`, subnet self links trimmed, the attribution label merge |
-| `main.tf` | `google_project_service`, `google_managed_kafka_connect_cluster` |
+| `main.tf` | `google_project_service`, a `terraform_data` tracker of the Kafka cluster, `google_managed_kafka_connect_cluster` |
 | `outputs.tf` | `name`, `connect_cluster_id`, `location` |
 
 ## Send Posture
@@ -22,7 +22,8 @@ This directory contains the Terraform implementation for a Managed Kafka Connect
 - **`connect_cluster_id`** -- defaulting to `metadata.name`.
 - **Capacity** -- the int64 counts sent as decimal strings.
 - **`primary_subnet`** -- a `GcpSubnetwork` self link trimmed of the compute API prefix; `dns_domain_names` sent only when listed.
-- **`additional_subnets`** -- not offered: deprecated by Google in favor of more network configs.
+- **`additional_subnets`** -- not offered: deprecated by Google, because the workers reach any endpoint accessible from the primary subnet.
+- **`kafka_cluster`** -- Google fixes it at creation while the provider would update it in place, so a `terraform_data` tracker replaces the Connect cluster when it changes (the Pulumi module's `ReplaceOnChanges`).
 - **Labels** -- user labels merged under the attribution labels.
 
 ## Usage

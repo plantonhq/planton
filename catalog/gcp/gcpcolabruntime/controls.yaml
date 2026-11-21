@@ -79,5 +79,5 @@ spec:
       field_path: auto_upgrade
       evidence:
         type: spec_default
-        reference: Unset leaves the runtime on its image until the user upgrades; auto_upgrade true upgrades it to Google's latest image whenever it starts and Google reports it upgradable.
+        reference: Unset leaves the runtime on its image until the user upgrades; auto_upgrade true upgrades it to Google's latest image when Google reports it upgradable, during a deploy that changes the runtime.
       notes: The 02-parked-gpu preset sets it.

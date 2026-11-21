@@ -55,11 +55,11 @@ planton apply -f compute-image.yaml
 | `imageName` | `string` | `metadata.name` | One name per build, e.g. `web-base-20261001`. |
 | `description` | `string` | -- | |
 | `family` | `string` | -- | The stable name consumers boot from. |
-| `sourceDisk` / `sourceImage` / `sourceSnapshot` / `rawDisk` | one of | -- | Exactly one source. `rawDisk` is `source` (a Cloud Storage URL), `sha1`, `containerType` (`TAR`). |
-| `kmsKey` / `kmsKeyServiceAccount` | `string` / ref | Google-managed | Customer-managed key (`GcpKmsKey` or `GcpKmsKeyHandle`). |
+| `sourceDisk` / `sourceImage` / `sourceSnapshot` / `rawDisk` | one of | -- | Exactly one source. `rawDisk` is `source` (an `https://storage.googleapis.com/` URL or an Artifact Registry package version), `sha1`, `containerType` (`TAR`). |
+| `kmsKey` / `kmsKeyServiceAccount` | `string` / ref | Google-managed | Customer-managed key (`GcpKmsKey` or `GcpKmsKeyHandle`), in the image's storage location; a literal names the key, never a key version. |
 | `sourceDiskEncryption` / `sourceImageEncryption` / `sourceSnapshotEncryption` | object | -- | The key a CMEK-encrypted source was encrypted with; only with that source. |
 | `diskSizeGb` | `int64` | the source's size | |
-| `guestOsFeatures` / `licenses` / `storageLocations` | `string[]` | inherited / nearest multi-region | |
+| `guestOsFeatures` / `licenses` / `storageLocations` | `string[]` | inherited / nearest multi-region | Guest OS features from the provider's list; one storage location at most. |
 | `shieldedInstanceInitialState` | object | Google's certificates | Secure Boot `pk`, `keks`, `dbs`, `dbxs` (`content`, `fileType` `X509` or `BIN`). |
 | `resourceManagerTags` | `map` | -- | `tagKeys/{id}` to `tagValues/{id}`. |
 | `labels` | `map` | -- | The one setting that updates in place. |
@@ -69,6 +69,7 @@ planton apply -f compute-image.yaml
 
 - Exactly one source; a source decryption key only with its source; `kmsKeyServiceAccount` only with `kmsKey`.
 - `imageName` and `family` are 1-63 lowercase letters, digits, or hyphens, starting with a letter.
+- `guestOsFeatures` take the provider's values; `storageLocations` holds at most one location; a literal `kmsKey` carries no `/cryptoKeyVersions/` suffix; `rawDisk.source` is an `https://storage.googleapis.com/` URL or an Artifact Registry package version.
 
 ## Outputs
 
@@ -79,6 +80,7 @@ planton apply -f compute-image.yaml
 | `family` | `string` | The image's family, or empty |
 | `disk_size_gb` | `int32` | The image's size in GB |
 | `image_id` | `string` | `projects/{project}/global/images/{name}` -- the relative form GKE node pools' secondary boot disks consume |
+| `archive_size_bytes` | `int64` | Size of the image's tar.gz archive in Cloud Storage -- what its storage bills on |
 
 ## Deployment Methods
 

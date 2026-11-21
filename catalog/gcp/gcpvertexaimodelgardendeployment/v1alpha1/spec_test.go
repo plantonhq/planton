@@ -170,6 +170,7 @@ var _ = ginkgo.Describe("GcpVertexAiModelGardenDeploymentSpec", func() {
 		msg = minimal()
 		msg.Spec.DeployConfig = &GcpVertexAiModelGardenDeploymentDeployConfig{
 			DedicatedResources: &GcpVertexAiModelGardenDeploymentDedicatedResources{
+				MachineSpec:     &GcpVertexAiModelGardenDeploymentMachineSpec{MachineType: "g2-standard-12"},
 				MinReplicaCount: 3,
 				MaxReplicaCount: proto.Int32(2),
 			},
@@ -177,7 +178,10 @@ var _ = ginkgo.Describe("GcpVertexAiModelGardenDeploymentSpec", func() {
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 		msg = minimal()
 		msg.Spec.DeployConfig = &GcpVertexAiModelGardenDeploymentDeployConfig{
-			DedicatedResources: &GcpVertexAiModelGardenDeploymentDedicatedResources{MinReplicaCount: 0},
+			DedicatedResources: &GcpVertexAiModelGardenDeploymentDedicatedResources{
+				MachineSpec:     &GcpVertexAiModelGardenDeploymentMachineSpec{MachineType: "g2-standard-12"},
+				MinReplicaCount: 0,
+			},
 		}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
@@ -228,5 +232,62 @@ var _ = ginkgo.Describe("GcpVertexAiModelGardenDeploymentSpec", func() {
 		msg := minimal()
 		msg.Spec.DeletionPolicy = "KEEP"
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	dedicated := func() *GcpVertexAiModelGardenDeploymentDedicatedResources {
+		return &GcpVertexAiModelGardenDeploymentDedicatedResources{
+			MachineSpec:     &GcpVertexAiModelGardenDeploymentMachineSpec{MachineType: "g2-standard-12", AcceleratorType: "NVIDIA_L4", AcceleratorCount: proto.Int32(1)},
+			MinReplicaCount: 1,
+		}
+	}
+
+	ginkgo.It("should require a machine type under dedicated resources", func() {
+		msg := minimal()
+		msg.Spec.DeployConfig = &GcpVertexAiModelGardenDeploymentDeployConfig{DedicatedResources: dedicated()}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		msg.Spec.DeployConfig.DedicatedResources.MachineSpec = nil
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.DeployConfig.DedicatedResources.MachineSpec = &GcpVertexAiModelGardenDeploymentMachineSpec{}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should require dedicated resources beside fast tryout and system labels", func() {
+		msg := minimal()
+		msg.Spec.DeployConfig = &GcpVertexAiModelGardenDeploymentDeployConfig{FastTryoutEnabled: true}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.DeployConfig = &GcpVertexAiModelGardenDeploymentDeployConfig{SystemLabels: map[string]string{"source": "model-garden"}}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.DeployConfig.DedicatedResources = dedicated()
+		msg.Spec.DeployConfig.FastTryoutEnabled = true
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should allow one autoscaling entry per metric", func() {
+		metric := "aiplatform.googleapis.com/prediction/online/accelerator/duty_cycle"
+		msg := minimal()
+		msg.Spec.DeployConfig = &GcpVertexAiModelGardenDeploymentDeployConfig{DedicatedResources: dedicated()}
+		msg.Spec.DeployConfig.DedicatedResources.AutoscalingMetricSpecs = []*GcpVertexAiModelGardenDeploymentAutoscalingMetricSpec{
+			{MetricName: metric, Target: proto.Int32(60)},
+			{MetricName: metric, Target: proto.Int32(80)},
+		}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.DeployConfig.DedicatedResources.AutoscalingMetricSpecs[1].MetricName = "aiplatform.googleapis.com/prediction/online/cpu/utilization"
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should accept Private Service Connect lists only with Private Service Connect on", func() {
+		msg := minimal()
+		msg.Spec.EndpointConfig = &GcpVertexAiModelGardenDeploymentEndpointConfig{
+			PrivateServiceConnectConfig: &GcpVertexAiModelGardenDeploymentPrivateServiceConnectConfig{
+				ProjectAllowlist: []*foreignkeyv1.StringValueOrRef{litRef("consumer-project")},
+			},
+		}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.EndpointConfig.PrivateServiceConnectConfig = &GcpVertexAiModelGardenDeploymentPrivateServiceConnectConfig{
+			PscAutomationConfig: &GcpVertexAiModelGardenDeploymentPscAutomationConfig{ProjectId: litRef("consumer-project"), Network: nameRef("consumer-vpc")},
+		}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.EndpointConfig.PrivateServiceConnectConfig.EnablePrivateServiceConnect = true
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 	})
 })

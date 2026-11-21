@@ -50,12 +50,18 @@ variable "spec" {
     # Whether the runtime should be running:
     #   "RUNNING" -- started (the default); compute bills
     #   "STOPPED" -- stopped; the disk stays and bills, compute does not
-    # The block starts or stops the runtime to match on every apply. Unset
-    # leaves the runtime running.
+    # The runtime is started or stopped to match when it is created and
+    # whenever this setting changes. It is not re-asserted on later deploys:
+    # a user can start a STOPPED runtime in Colab Enterprise, and it keeps
+    # running (and billing) until idle shutdown stops it or this setting
+    # changes. Unset is RUNNING, so clearing STOPPED starts the runtime.
     desired_state = optional(string, "")
 
-    # Upgrade the runtime to the latest Colab image whenever it is started
-    # and Google reports it upgradable.
+    # Upgrade the runtime to the latest Colab image when Google reports it
+    # upgradable. The upgrade runs only during a deploy that changes this
+    # runtime, never on its own; and a user-defined runtime past its
+    # expiration time is upgraded by such a deploy whether or not this is
+    # set.
     auto_upgrade = optional(bool, false)
 
     # What happens to the runtime when this resource is destroyed:

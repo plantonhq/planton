@@ -24,7 +24,8 @@ const (
 // GcpBigQueryConnectionOutputs captures the connection's identity and
 // the Google-owned identities its arm created -- the principals you grant
 // access to the data the connection reads. Only the declared arm's values
-// are populated.
+// are populated. The service-account outputs are bare emails: an IAM
+// member names one as serviceAccount:{email}.
 type GcpBigQueryConnectionOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name --

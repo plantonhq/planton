@@ -78,6 +78,18 @@ var _ = ginkgo.Describe("GcpGkeFleetMembershipSpec", func() {
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
 
+	ginkgo.It("should accept a literal cluster with or without Google's resource-link prefix, and refuse any other form", func() {
+		msg := minimal()
+		msg.Spec.GkeCluster = literal("//container.googleapis.com/projects/orders-prod/locations/us-central1/clusters/orders")
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		for _, cluster := range []string{"orders", "projects/orders-prod/zones/us-central1-a/clusters/orders",
+			"https://container.googleapis.com/v1/projects/orders-prod/locations/us-central1/clusters/orders"} {
+			msg := minimal()
+			msg.Spec.GkeCluster = literal(cluster)
+			gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), cluster)
+		}
+	})
+
 	ginkgo.It("should reject an unknown deletion policy", func() {
 		msg := minimal()
 		msg.Spec.DeletionPolicy = "KEEP"

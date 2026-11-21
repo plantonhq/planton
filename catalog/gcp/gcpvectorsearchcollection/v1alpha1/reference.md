@@ -21,8 +21,13 @@ data-plane concern -- applications write it through the Vector Search
 API or its SDKs -- and is deliberately not part of this block.
 
 Immutable: collection_id, location, and the encryption key. The data
-schema, description, display name, and labels update in place; every
-index setting but labels replaces that index.
+schema, vector fields, description, display name, and labels update in
+place; for each index see GcpVectorSearchCollectionIndex.
+
+This is Vector Search's collection API. GcpVertexAiIndex,
+GcpVertexAiIndexEndpoint, and GcpVertexAiDeployedIndex are the separate,
+older Vertex AI Vector Search API (an index built from Cloud Storage
+files and deployed to an endpoint); the two do not share resources.
 
 ## Example
 
@@ -164,7 +169,10 @@ referenced from a text_template.
 `[]GcpVectorSearchCollectionVectorSchema`
 
 The searchable vector fields. Only fields declared here can be
-indexed and searched.
+indexed and searched. They update in place: adding, removing, or
+reshaping one changes the collection's schema, and emptying the list
+asks Google to drop every vector field. A field an index serves stays
+declared while the index exists.
 
 - rule: a vector field is exactly one of dense_vector or sparse_vector
 
@@ -183,6 +191,8 @@ An index names this field as its index_field.
 
 A dense vector field, optionally with Vertex AI computing the
 embeddings.
+
+- rule: a dense vector field needs its dimensions, or vertex_embedding_config so Vertex AI computes its vectors: an empty dense_vector reaches Google with no shape
 
 ### spec.vectorSchemas[].denseVector.dimensions
 
@@ -259,7 +269,7 @@ in the same region. Omit to use Google-managed encryption. Immutable.
 
 The approximate-nearest-neighbor indexes over the collection's vector
 fields, each keyed by its index_id. Add or remove an index by editing
-this list; any other change to an index replaces it.
+this list; for what changes in place see GcpVectorSearchCollectionIndex.
 
 ### spec.indexes[].indexId
 
@@ -283,19 +293,21 @@ Immutable.
 
 `string`
 
-Human-readable name shown in the console.
+Human-readable name shown in the console. Changes in place.
 
 ### spec.indexes[].description
 
 `string`
 
-Free-text description of the index.
+Free-text description of the index. Changes in place.
 
 ### spec.indexes[].labels
 
 `map<string, string>`
 
-Labels on the index -- the one mutable setting.
+Labels on the index. The collection's labels and the platform
+attribution labels are merged in and win on a key conflict. Change in
+place.
 
 ### spec.indexes[].distanceMetric
 
@@ -358,12 +370,14 @@ latency-sensitive serving. Immutable: a change replaces the index.
 
 Replica bounds for the dedicated nodes.
 
+- rule: max_replica_count must be at least min_replica_count
+
 ### spec.indexes[].dedicatedInfrastructure.autoscalingSpec.minReplicaCount
 
 `int32` · optional (explicit presence)
 
 Fewest replicas kept serving (1-1000; Google defaults to 2 when unset
-or 0). Sent only when set.
+or 0). Sent only when set. Changes in place.
 
 - rule: {"int32":{"lte":1000,"gte":1}}
 
@@ -372,8 +386,10 @@ or 0). Sent only when set.
 `int32` · optional (explicit presence)
 
 Most replicas the index may scale to (at least min_replica_count, at
-most 1000; Google defaults to the greater of min_replica_count and 2).
-Sent only when set.
+most 1000). Unset, the default depends on the API version the engine
+calls: the greater of min_replica_count and 2 under Terraform (Google's
+v1 API), 5 under Pulumi (Google's v1beta API) -- set it to get the
+same ceiling on both. Sent only when set. Changes in place.
 
 - rule: {"int32":{"lte":1000,"gte":1}}
 
@@ -389,6 +405,12 @@ destroyed:
   "ABANDON"     -- everything leaves management and stays in GCP
 
 - rule: deletion_policy must be one of: DELETE, PREVENT, ABANDON
+
+## Validation Rules
+
+- `vector_schemas.unique_field_name`: each vector field_name may appear only once in vector_schemas
+- `indexes.unique_index_id`: each index_id may appear only once in indexes
+- `indexes.index_field_declared`: every index's index_field must name a field declared in vector_schemas
 
 ## Outputs
 

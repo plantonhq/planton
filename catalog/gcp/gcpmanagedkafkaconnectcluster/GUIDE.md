@@ -4,7 +4,7 @@ The judgment this guide protects: a Connect cluster is shared compute for many t
 
 ## Attachment
 
-`kafkaCluster` names the Managed Kafka cluster the workers belong to -- where Kafka Connect keeps its internal config, offset, and status topics, and the default cluster connectors read and write. A reference to a `GcpManagedKafkaCluster` yields its full path; a literal must be that path. Attaching needs `managedkafka.clusters.attachConnectCluster` on the Kafka cluster.
+`kafkaCluster` names the Managed Kafka cluster the workers belong to -- where Kafka Connect keeps its internal config, offset, and status topics, and the default cluster connectors read and write. A reference to a `GcpManagedKafkaCluster` yields its full path; a literal must be that path. Google fixes the attachment at creation, so changing `kafkaCluster` replaces the Connect cluster: the connectors on it are deleted with the old one, and their blocks create them again on their next apply. Attaching needs `managedkafka.clusters.attachConnectCluster` on the Kafka cluster.
 
 ## Capacity
 

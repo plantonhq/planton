@@ -46,6 +46,7 @@ planton apply -f bigquery-connection.yaml
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `location` | `string` | `US`, `EU`, a region, `aws-*`, or `azure-*` -- per arm; Google has no default. Immutable. |
 | one arm | -- | Exactly one of `aws`, `azure`, `cloudResource`, `cloudSpanner`, `cloudSql`, `configuration`, `spark`. |
 
 ### Optional Fields
@@ -53,10 +54,9 @@ planton apply -f bigquery-connection.yaml
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `projectId` | `StringValueOrRef` | provider project | The project. |
-| `location` | `string` | Google's default | `US`, `EU`, a region, `aws-*`, or `azure-*` -- per arm. Immutable. |
 | `connectionId` | `string` | `metadata.name` | Immutable. |
 | `friendlyName` / `description` | `string` | none | Console text. |
-| `kmsKeyName` | `StringValueOrRef` | Google-managed | CMEK for the stored credential. |
+| `kmsKeyName` | `StringValueOrRef` | Google-managed | CMEK for the stored credential (Cloud SQL, or the Connector framework when it has one). |
 | `cloudSql` | `object` | -- | `instanceId` (`GcpCloudSql` reference), `database`, `type` (`POSTGRES`/`MYSQL`), `credential.username`/`password`. |
 | `cloudSpanner` | `object` | -- | `database` (`project/instance/database`), `databaseRole`, `useParallelism`, `useDataBoost`, `maxParallelism`. |
 | `cloudResource` | `bool` | `false` | Declares the Google-managed service account arm. |
@@ -69,6 +69,7 @@ planton apply -f bigquery-connection.yaml
 ### Validation Rules
 
 - Exactly one arm is set.
+- `location` is required: `US` or `EU` in upper case, every other location in lower case.
 - Spanner: `useDataBoost` requires `useParallelism`; `maxParallelism` requires both; `databaseRole` starts with a letter.
 - Cloud SQL `type` is `POSTGRES` or `MYSQL`; resource paths (Spanner database, network attachment, Metastore service, Dataproc cluster) take their documented form.
 
@@ -98,7 +99,8 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 ## Important Notes
 
-- **The identity is the point.** Most arms create a Google-owned identity; the connection works only after you grant it access -- storage.objectViewer on a bucket, Vertex AI user for remote models, the AWS role's trust policy.
+- **The identity is the point.** Every arm but `cloudSpanner` creates a Google-owned identity; the connection works only after you grant it access -- storage.objectViewer on a bucket, Vertex AI user for remote models, the AWS role's trust policy. The service-account outputs are bare emails: an IAM member writes `serviceAccount:` in front.
+- **Spanner takes `project/instance/database`.** A `GcpSpannerDatabase`'s `database_id` output is the full `projects/...` path, so write the Spanner database as a literal.
 - **Location rules differ by arm.** Cloud SQL must match (with us-central1 pairing with `US` and europe-west1 with `EU`), Spanner matches its instance region, Omni uses `aws-{region}` or `azure-{region}`.
 - **Passwords are managed secrets.** `cloudSql.credential.password` and `configuration.usernamePassword.password` are sensitive; BigQuery stores them and never returns them.
 

@@ -189,10 +189,13 @@ Immutable.
 
 `string` · required
 
-The tarball's full Cloud Storage URL, e.g.
-"https://storage.googleapis.com/my-bucket/images/web-base.tar.gz".
+Where the archive is: its full Cloud Storage URL, e.g.
+"https://storage.googleapis.com/my-bucket/images/web-base.tar.gz" (a
+gs:// URI is not accepted), or an Artifact Registry package version,
+projects/{project}/locations/{location}/repositories/{repo}/packages/{package}/versions/{version}.
 The archive holds one file named disk.raw. Required.
 
+- rule: raw_disk.source must be an https://storage.googleapis.com/... URL or an Artifact Registry package version path.
 - rule: {"required":true}
 
 ### spec.rawDisk.sha1
@@ -219,10 +222,15 @@ Customer-managed encryption key (CMEK) for the image, referenced as a
 GcpKmsKey or a GcpKmsKeyHandle (Autokey serves images). The Compute
 Engine service agent
 (service-<project-number>@compute-system.iam.gserviceaccount.com)
-must hold roles/cloudkms.cryptoKeyEncrypterDecrypter on the key. When
-omitted, Google-managed encryption is used. Immutable.
+must hold roles/cloudkms.cryptoKeyEncrypterDecrypter on the key, and
+the key must be in the image's storage location. A literal names the
+key, never a key version: the provider reads the key back without its
+/cryptoKeyVersions/ suffix, so a version would replace the image on
+every apply. When omitted, Google-managed encryption is used.
+Immutable.
 
 - references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
+- rule: A literal kms_key names the key, not a key version: drop the /cryptoKeyVersions/... suffix.
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
 ### spec.kmsKeyServiceAccount
@@ -324,13 +332,15 @@ source's size. Immutable.
 
 `[]string`
 
-Guest OS features VMs booted from this image may use, e.g.
-["UEFI_COMPATIBLE", "SECURE_BOOT", "GVNIC", "VIRTIO_SCSI_MULTIQUEUE",
-"SEV_CAPABLE", "SEV_SNP_CAPABLE", "TDX_CAPABLE", "IDPF",
-"MULTI_IP_SUBNET", "SUSPEND_RESUME_COMPATIBLE", "WINDOWS"]. The
-accepted set evolves with GCP -- see "Enabling guest operating system
-features" in the Compute Engine docs. Unset inherits the source's
-features. Immutable.
+Guest OS features VMs booted from this image may use -- the values
+the provider accepts: "UEFI_COMPATIBLE", "SECURE_BOOT", "GVNIC",
+"VIRTIO_SCSI_MULTIQUEUE", "SEV_CAPABLE", "SEV_SNP_CAPABLE",
+"SEV_LIVE_MIGRATABLE", "SEV_LIVE_MIGRATABLE_V2", "SNP_SVSM_CAPABLE",
+"TDX_CAPABLE", "IDPF", "MULTI_IP_SUBNET", "SUSPEND_RESUME_COMPATIBLE",
+"WINDOWS". See "Enabling guest operating system features" in the
+Compute Engine docs. Unset inherits the source's features. Immutable.
+
+- rule: {"repeated":{"unique":true,"items":{"string":{"in":["UEFI_COMPATIBLE","SECURE_BOOT","GVNIC","VIRTIO_SCSI_MULTIQUEUE","SEV_CAPABLE","SEV_SNP_CAPABLE","SEV_LIVE_MIGRATABLE","SEV_LIVE_MIGRATABLE_V2","SNP_SVSM_CAPABLE","TDX_CAPABLE","IDPF","MULTI_IP_SUBNET","SUSPEND_RESUME_COMPATIBLE","WINDOWS"]}}}}
 
 ### spec.licenses
 
@@ -346,8 +356,10 @@ Immutable.
 `[]string`
 
 Where the image's data is stored: one multi-region ("us", "eu",
-"asia") or one region. Unset takes the multi-region nearest the
-source. Immutable.
+"asia") or one region -- at most one location. Unset takes the
+multi-region nearest the source. Immutable.
+
+- rule: {"repeated":{"maxItems":"1"}}
 
 ### spec.shieldedInstanceInitialState
 
@@ -495,6 +507,7 @@ Reference an output from another manifest as `valueFrom: {kind: GcpComputeImage,
 | `status.outputs.family` | `string` | The image's family, or empty when it has none. Consumers that should always boot the newest build use "projects/{project}/global/images/family/{family}". |
 | `status.outputs.disk_size_gb` | `int32` | The image's size in GB. |
 | `status.outputs.image_id` | `string` | The image's resource ID: projects/{project}/global/images/{name} -- the relative form, without self_link's https://www.googleapis.com/compute/v1/ prefix. Consume self_link where a field takes an image URL (a disk's image, an instance's boot disk, a managed instance group's source_image, another image's source_image); consume image_id where Google documents the relative form only, such as a GKE node pool's secondary boot disk image. |
+| `status.outputs.archive_size_bytes` | `int64` | Size in bytes of the image's tar.gz archive in Cloud Storage -- what the image's storage bills on. |
 
 ## References
 

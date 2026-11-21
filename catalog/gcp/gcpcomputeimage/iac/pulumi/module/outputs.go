@@ -8,4 +8,6 @@ const (
 	OpFamily     = "family"
 	OpDiskSizeGb = "disk_size_gb"
 	OpImageId    = "image_id"
+
+	OpArchiveSizeBytes = "archive_size_bytes"
 )

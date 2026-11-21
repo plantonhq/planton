@@ -86,8 +86,12 @@ type GcpComputeImageSpec struct {
 	// GcpKmsKey or a GcpKmsKeyHandle (Autokey serves images). The Compute
 	// Engine service agent
 	// (service-<project-number>@compute-system.iam.gserviceaccount.com)
-	// must hold roles/cloudkms.cryptoKeyEncrypterDecrypter on the key. When
-	// omitted, Google-managed encryption is used. Immutable.
+	// must hold roles/cloudkms.cryptoKeyEncrypterDecrypter on the key, and
+	// the key must be in the image's storage location. A literal names the
+	// key, never a key version: the provider reads the key back without its
+	// /cryptoKeyVersions/ suffix, so a version would replace the image on
+	// every apply. When omitted, Google-managed encryption is used.
+	// Immutable.
 	KmsKey *v1.StringValueOrRef `protobuf:"bytes,9,opt,name=kms_key,json=kmsKey,proto3" json:"kms_key,omitempty"`
 	// Service account used for the encryption request of kms_key. When
 	// omitted, the Compute Engine service agent is used. Only meaningful
@@ -105,13 +109,13 @@ type GcpComputeImageSpec struct {
 	// The image's size in GB, at least the source's size. Unset takes the
 	// source's size. Immutable.
 	DiskSizeGb *int64 `protobuf:"varint,14,opt,name=disk_size_gb,json=diskSizeGb,proto3,oneof" json:"disk_size_gb,omitempty"`
-	// Guest OS features VMs booted from this image may use, e.g.
-	// ["UEFI_COMPATIBLE", "SECURE_BOOT", "GVNIC", "VIRTIO_SCSI_MULTIQUEUE",
-	// "SEV_CAPABLE", "SEV_SNP_CAPABLE", "TDX_CAPABLE", "IDPF",
-	// "MULTI_IP_SUBNET", "SUSPEND_RESUME_COMPATIBLE", "WINDOWS"]. The
-	// accepted set evolves with GCP -- see "Enabling guest operating system
-	// features" in the Compute Engine docs. Unset inherits the source's
-	// features. Immutable.
+	// Guest OS features VMs booted from this image may use -- the values
+	// the provider accepts: "UEFI_COMPATIBLE", "SECURE_BOOT", "GVNIC",
+	// "VIRTIO_SCSI_MULTIQUEUE", "SEV_CAPABLE", "SEV_SNP_CAPABLE",
+	// "SEV_LIVE_MIGRATABLE", "SEV_LIVE_MIGRATABLE_V2", "SNP_SVSM_CAPABLE",
+	// "TDX_CAPABLE", "IDPF", "MULTI_IP_SUBNET", "SUSPEND_RESUME_COMPATIBLE",
+	// "WINDOWS". See "Enabling guest operating system features" in the
+	// Compute Engine docs. Unset inherits the source's features. Immutable.
 	GuestOsFeatures []string `protobuf:"bytes,15,rep,name=guest_os_features,json=guestOsFeatures,proto3" json:"guest_os_features,omitempty"`
 	// License URIs the image carries, e.g. a Windows Server or SQL Server
 	// license. Unset inherits the source's licenses; set explicitly when
@@ -119,8 +123,8 @@ type GcpComputeImageSpec struct {
 	// Immutable.
 	Licenses []string `protobuf:"bytes,16,rep,name=licenses,proto3" json:"licenses,omitempty"`
 	// Where the image's data is stored: one multi-region ("us", "eu",
-	// "asia") or one region. Unset takes the multi-region nearest the
-	// source. Immutable.
+	// "asia") or one region -- at most one location. Unset takes the
+	// multi-region nearest the source. Immutable.
 	StorageLocations []string `protobuf:"bytes,17,rep,name=storage_locations,json=storageLocations,proto3" json:"storage_locations,omitempty"`
 	// The UEFI Secure Boot keys VMs booted from this image start with. Unset
 	// takes Google's default certificates. Immutable.
@@ -323,8 +327,10 @@ func (x *GcpComputeImageSpec) GetDeletionPolicy() string {
 // A raw disk tarball in Cloud Storage.
 type GcpComputeImageRawDisk struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The tarball's full Cloud Storage URL, e.g.
-	// "https://storage.googleapis.com/my-bucket/images/web-base.tar.gz".
+	// Where the archive is: its full Cloud Storage URL, e.g.
+	// "https://storage.googleapis.com/my-bucket/images/web-base.tar.gz" (a
+	// gs:// URI is not accepted), or an Artifact Registry package version,
+	// projects/{project}/locations/{location}/repositories/{repo}/packages/{package}/versions/{version}.
 	// The archive holds one file named disk.raw. Required.
 	Source string `protobuf:"bytes,1,opt,name=source,proto3" json:"source,omitempty"`
 	// The archive's SHA-1 checksum, base64-encoded; Google verifies it when
@@ -583,7 +589,7 @@ var File_catalog_gcp_gcpcomputeimage_v1alpha1_spec_proto protoreflect.FileDescri
 
 const file_catalog_gcp_gcpcomputeimage_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/gcp/gcpcomputeimage/v1alpha1/spec.proto\x12(dev.planton.gcp.gcpcomputeimage.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xd9\x1e\n" +
+	"/catalog/gcp/gcpcomputeimage/v1alpha1/spec.proto\x12(dev.planton.gcp.gcpcomputeimage.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x94\"\n" +
 	"\x13GcpComputeImageSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x81\x02\n" +
@@ -597,18 +603,19 @@ const file_catalog_gcp_gcpcomputeimage_v1alpha1_spec_proto_rawDesc = "" +
 	"sourceDisk\x12x\n" +
 	"\fsource_image\x18\x06 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xac\x19\x92\xd4a\x18status.outputs.self_linkR\vsourceImage\x12'\n" +
 	"\x0fsource_snapshot\x18\a \x01(\tR\x0esourceSnapshot\x12[\n" +
-	"\braw_disk\x18\b \x01(\v2@.dev.planton.gcp.gcpcomputeimage.v1alpha1.GcpComputeImageRawDiskR\arawDisk\x12\xa8\x01\n" +
-	"\akms_key\x18\t \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB[\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\x06kmsKey\x125\n" +
+	"\braw_disk\x18\b \x01(\v2@.dev.planton.gcp.gcpcomputeimage.v1alpha1.GcpComputeImageRawDiskR\arawDisk\x12\xe3\x02\n" +
+	"\akms_key\x18\t \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x95\x02\xbaH\xb6\x01\xba\x01\xb2\x01\n" +
+	"\x12kms_key.no_version\x12[A literal kms_key names the key, not a key version: drop the /cryptoKeyVersions/... suffix.\x1a?!has(this.value) || !this.value.contains('/cryptoKeyVersions/')\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\x06kmsKey\x125\n" +
 	"\x17kms_key_service_account\x18\n" +
 	" \x01(\tR\x14kmsKeyServiceAccount\x12\x7f\n" +
 	"\x16source_disk_encryption\x18\v \x01(\v2I.dev.planton.gcp.gcpcomputeimage.v1alpha1.GcpComputeImageSourceEncryptionR\x14sourceDiskEncryption\x12\x81\x01\n" +
 	"\x17source_image_encryption\x18\f \x01(\v2I.dev.planton.gcp.gcpcomputeimage.v1alpha1.GcpComputeImageSourceEncryptionR\x15sourceImageEncryption\x12\x87\x01\n" +
 	"\x1asource_snapshot_encryption\x18\r \x01(\v2I.dev.planton.gcp.gcpcomputeimage.v1alpha1.GcpComputeImageSourceEncryptionR\x18sourceSnapshotEncryption\x12.\n" +
 	"\fdisk_size_gb\x18\x0e \x01(\x03B\a\xbaH\x04\"\x02 \x00H\x00R\n" +
-	"diskSizeGb\x88\x01\x01\x12*\n" +
-	"\x11guest_os_features\x18\x0f \x03(\tR\x0fguestOsFeatures\x12\x1a\n" +
-	"\blicenses\x18\x10 \x03(\tR\blicenses\x12+\n" +
-	"\x11storage_locations\x18\x11 \x03(\tR\x10storageLocations\x12\x9c\x01\n" +
+	"diskSizeGb\x88\x01\x01\x12\x9f\x02\n" +
+	"\x11guest_os_features\x18\x0f \x03(\tB\xf2\x01\xbaH\xee\x01\x92\x01\xea\x01\x18\x01\"\xe5\x01r\xe2\x01R\x0fUEFI_COMPATIBLER\vSECURE_BOOTR\x05GVNICR\x16VIRTIO_SCSI_MULTIQUEUER\vSEV_CAPABLER\x0fSEV_SNP_CAPABLER\x13SEV_LIVE_MIGRATABLER\x16SEV_LIVE_MIGRATABLE_V2R\x10SNP_SVSM_CAPABLER\vTDX_CAPABLER\x04IDPFR\x0fMULTI_IP_SUBNETR\x19SUSPEND_RESUME_COMPATIBLER\aWINDOWSR\x0fguestOsFeatures\x12\x1a\n" +
+	"\blicenses\x18\x10 \x03(\tR\blicenses\x125\n" +
+	"\x11storage_locations\x18\x11 \x03(\tB\b\xbaH\x05\x92\x01\x02\x10\x01R\x10storageLocations\x12\x9c\x01\n" +
 	"\x1fshielded_instance_initial_state\x18\x12 \x01(\v2U.dev.planton.gcp.gcpcomputeimage.v1alpha1.GcpComputeImageShieldedInstanceInitialStateR\x1cshieldedInstanceInitialState\x12\x8a\x01\n" +
 	"\x15resource_manager_tags\x18\x13 \x03(\v2V.dev.planton.gcp.gcpcomputeimage.v1alpha1.GcpComputeImageSpec.ResourceManagerTagsEntryR\x13resourceManagerTags\x12a\n" +
 	"\x06labels\x18\x14 \x03(\v2I.dev.planton.gcp.gcpcomputeimage.v1alpha1.GcpComputeImageSpec.LabelsEntryR\x06labels\x12\xbb\x01\n" +
@@ -627,9 +634,10 @@ const file_catalog_gcp_gcpcomputeimage_v1alpha1_spec_proto_rawDesc = "" +
 	"-source_image_encryption_requires_source_image\x12@source_image_encryption is only valid together with source_image\x1a\x85\x01!has(this.source_image_encryption) || (has(this.source_image) && (has(this.source_image.value) || has(this.source_image.value_from)))\x1a\xc2\x01\n" +
 	"3source_snapshot_encryption_requires_source_snapshot\x12Fsource_snapshot_encryption is only valid together with source_snapshot\x1aC!has(this.source_snapshot_encryption) || this.source_snapshot != ''\x1a\xe4\x01\n" +
 	"(kms_key_service_account_requires_kms_key\x12@kms_key_service_account is only meaningful together with kms_key\x1avthis.kms_key_service_account == '' || (has(this.kms_key) && (has(this.kms_key.value) || has(this.kms_key.value_from)))B\x0f\n" +
-	"\r_disk_size_gb\"\xca\x01\n" +
-	"\x16GcpComputeImageRawDisk\x12\x1e\n" +
-	"\x06source\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06source\x12\x12\n" +
+	"\r_disk_size_gb\"\xeb\x03\n" +
+	"\x16GcpComputeImageRawDisk\x12\xbe\x02\n" +
+	"\x06source\x18\x01 \x01(\tB\xa5\x02\xbaH\xa1\x02\xba\x01\x9a\x02\n" +
+	"\rsource.format\x12oraw_disk.source must be an https://storage.googleapis.com/... URL or an Artifact Registry package version path.\x1a\x97\x01this.startsWith('https://storage.googleapis.com/') || this.matches('^projects/[^/]+/locations/[^/]+/repositories/[^/]+/packages/[^/]+/versions/[^/]+$')\xc8\x01\x01R\x06source\x12\x12\n" +
 	"\x04sha1\x18\x02 \x01(\tR\x04sha1\x12|\n" +
 	"\x0econtainer_type\x18\x03 \x01(\tBU\xbaHR\xba\x01O\n" +
 	"\x14container_type.valid\x12\x1acontainer_type must be TAR\x1a\x1bthis == '' || this == 'TAR'R\rcontainerType\"\xcb\x01\n" +

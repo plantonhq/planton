@@ -24,15 +24,16 @@ const (
 )
 
 // GcpManagedKafkaConnectClusterCapacity sizes the Connect workers
-// (`capacity_config`). Both values scale in place.
+// (`capacity_config`). Both values scale in place. The rule that binds is
+// the ratio: from 1 GiB to 8 GiB of memory per vCPU.
 type GcpManagedKafkaConnectClusterCapacity struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// vCPUs for the Connect workers -- at least 3. Billed per vCPU-hour.
 	// Sent as a decimal string.
 	VcpuCount int64 `protobuf:"varint,1,opt,name=vcpu_count,json=vcpuCount,proto3" json:"vcpu_count,omitempty"`
 	// Memory for the Connect workers, in BYTES as a plain number -- at least
-	// 3 GiB (3221225472), at a vCPU:GiB ratio between 1:1 and 1:8. Billed per
-	// GiB-hour. Sent as a decimal string.
+	// Google's 3 GiB minimum (3221225472), and between 1 GiB and 8 GiB per
+	// vCPU. Billed per GiB-hour. Sent as a decimal string.
 	MemoryBytes   int64 `protobuf:"varint,2,opt,name=memory_bytes,json=memoryBytes,proto3" json:"memory_bytes,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -92,7 +93,8 @@ type GcpManagedKafkaConnectClusterNetworkConfig struct {
 	// reference (its self link, which the modules trim to the
 	// projects/{project}/regions/{region}/subnetworks/{subnet} form Google
 	// requires) or a literal in either form. It must be in the Connect
-	// cluster's region, and its CIDR range must be private (RFC 1918).
+	// cluster's region, and its CIDR range must be private (RFC 1918) and at
+	// least a /22 (1024 addresses).
 	PrimarySubnet *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=primary_subnet,json=primarySubnet,proto3" json:"primary_subnet,omitempty"`
 	// Extra DNS domains from this network the workers may resolve. For
 	// MirrorMaker 2, add the target Kafka cluster's DNS domain -- the
@@ -156,9 +158,9 @@ func (x *GcpManagedKafkaConnectClusterNetworkConfig) GetDnsDomainNames() []strin
 // The connectors themselves are GcpManagedKafkaConnector blocks, owned by
 // the teams whose data they move.
 //
-// Immutable: project_id, location, connect_cluster_id (a change replaces
-// the Connect cluster and every connector on it). The attached Kafka
-// cluster, capacity, networks, and labels update in place.
+// Immutable: project_id, location, connect_cluster_id, kafka_cluster (a
+// change replaces the Connect cluster and deletes every connector on it).
+// Capacity, networks, and labels update in place.
 type GcpManagedKafkaConnectClusterSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The GCP project the Connect cluster lives in: a literal project ID or
@@ -167,13 +169,19 @@ type GcpManagedKafkaConnectClusterSpec struct {
 	ProjectId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// The region the workers run in, e.g. "us-central1". Immutable.
 	Location string `protobuf:"bytes,2,opt,name=location,proto3" json:"location,omitempty"`
-	// The Connect cluster's ID. Defaults to metadata.name. Immutable.
+	// The Connect cluster's ID -- 1-63 characters, RFC 1035 (lowercase
+	// letters, digits, hyphens; starts with a letter). Defaults to
+	// metadata.name, which must then fit the same rule. Immutable.
 	ConnectClusterId string `protobuf:"bytes,3,opt,name=connect_cluster_id,json=connectClusterId,proto3" json:"connect_cluster_id,omitempty"`
 	// The Kafka cluster the workers attach to (their internal topics and the
 	// connectors' default cluster): a GcpManagedKafkaCluster reference (its
 	// name output) or a literal full path
-	// projects/{project}/locations/{location}/clusters/{cluster}. Mutable in
-	// place.
+	// projects/{project}/locations/{location}/clusters/{cluster}. Immutable:
+	// Google fixes the Kafka cluster once the workers attach to it, so moving
+	// them to another Kafka cluster means a new Connect cluster -- the
+	// modules replace it, and the connectors on it are deleted with the old
+	// one. Their GcpManagedKafkaConnector blocks create them again on their
+	// next apply.
 	KafkaCluster *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=kafka_cluster,json=kafkaCluster,proto3" json:"kafka_cluster,omitempty"`
 	// vCPUs and memory for the workers.
 	CapacityConfig *GcpManagedKafkaConnectClusterCapacity `protobuf:"bytes,5,opt,name=capacity_config,json=capacityConfig,proto3" json:"capacity_config,omitempty"`
@@ -283,21 +291,20 @@ var File_catalog_gcp_gcpmanagedkafkaconnectcluster_v1alpha1_spec_proto protorefl
 
 const file_catalog_gcp_gcpmanagedkafkaconnectcluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/gcp/gcpmanagedkafkaconnectcluster/v1alpha1/spec.proto\x126dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x96\x03\n" +
+	"=catalog/gcp/gcpmanagedkafkaconnectcluster/v1alpha1/spec.proto\x126dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xbb\x03\n" +
 	"%GcpManagedKafkaConnectClusterCapacity\x12&\n" +
 	"\n" +
 	"vcpu_count\x18\x01 \x01(\x03B\a\xbaH\x04\"\x02(\x03R\tvcpuCount\x12.\n" +
-	"\fmemory_bytes\x18\x02 \x01(\x03B\v\xbaH\b\"\x06(\x80\x80\x80\x80\fR\vmemoryBytes:\x94\x02\xbaH\x90\x02\x1a\x8d\x02\n" +
-	"\x18capacity.memory_per_vcpu\x12pmemory_bytes must keep a vCPU:GiB ratio between 1:1 and 1:8 (vcpu_count x 1073741824 to vcpu_count x 8589934592)\x1a\x7fthis.vcpu_count < 3 || (this.memory_bytes >= this.vcpu_count * 1073741824 && this.memory_bytes <= this.vcpu_count * 8589934592)\"\xe6\x01\n" +
+	"\fmemory_bytes\x18\x02 \x01(\x03B\v\xbaH\b\"\x06(\x80\x80\x80\x80\fR\vmemoryBytes:\xb9\x02\xbaH\xb5\x02\x1a\xb2\x02\n" +
+	"\x18capacity.memory_per_vcpu\x12vMemory must be between 1 GiB and 8 GiB per vCPU: memory_bytes from vcpu_count x 1073741824 to vcpu_count x 8589934592.\x1a\x9d\x01this.vcpu_count < 3 || this.memory_bytes < 1 || (this.memory_bytes / 1073741824 >= this.vcpu_count && (this.memory_bytes - 1) / 8589934592 < this.vcpu_count)\"\xe6\x01\n" +
 	"*GcpManagedKafkaConnectClusterNetworkConfig\x12\x8d\x01\n" +
 	"\x0eprimary_subnet\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB2\xbaH\x03\xc8\x01\x01\x88\xd4a\xc3\x17\x92\xd4a#status.outputs.subnetwork_self_linkR\rprimarySubnet\x12(\n" +
-	"\x10dns_domain_names\x18\x02 \x03(\tR\x0ednsDomainNames\"\x8e\n" +
-	"\n" +
+	"\x10dns_domain_names\x18\x02 \x03(\tR\x0ednsDomainNames\"\x94\r\n" +
 	"!GcpManagedKafkaConnectClusterSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12;\n" +
-	"\blocation\x18\x02 \x01(\tB\x1f\xbaH\x1c\xc8\x01\x01r\x172\x15^[a-z]+-[a-z]+[0-9]+$R\blocation\x12,\n" +
-	"\x12connect_cluster_id\x18\x03 \x01(\tR\x10connectClusterId\x12\xe3\x02\n" +
+	"\blocation\x18\x02 \x01(\tB\x1f\xbaH\x1c\xc8\x01\x01r\x172\x15^[a-z]+-[a-z]+[0-9]+$R\blocation\x12[\n" +
+	"\x12connect_cluster_id\x18\x03 \x01(\tB-\xbaH*\xd8\x01\x01r%2#^[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?$R\x10connectClusterId\x12\xe3\x02\n" +
 	"\rkafka_cluster\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x89\x02\xbaH\xe5\x01\xba\x01\xde\x01\n" +
 	"\x17kafka_cluster.full_path\x12ha literal kafka_cluster must be the full path projects/{project}/locations/{location}/clusters/{cluster}\x1aY!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/clusters/[^/]+$')\xc8\x01\x01\x88\xd4a\xf7\x18\x92\xd4a\x13status.outputs.name\x98\xd4a\x01R\fkafkaCluster\x12\x8e\x01\n" +
 	"\x0fcapacity_config\x18\x05 \x01(\v2].dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1.GcpManagedKafkaConnectClusterCapacityB\x06\xbaH\x03\xc8\x01\x01R\x0ecapacityConfig\x12\x97\x01\n" +
@@ -309,7 +316,8 @@ const file_catalog_gcp_gcpmanagedkafkaconnectcluster_v1alpha1_spec_proto_rawDesc
 	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xbb\x03\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xd4\x02\xbaH\xd0\x02\x1a\xcd\x02\n" +
+	"&spec.subnets_in_connect_cluster_region\x12pEach literal primary subnet must be in the Connect cluster's region: its path must contain /regions/{location}/.\x1a\xb0\x01this.network_configs.all(n, !has(n.primary_subnet.value) || !n.primary_subnet.value.contains('/regions/') || n.primary_subnet.value.contains('/regions/' + this.location + '/'))B\xbb\x03\n" +
 	":com.dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1B\tSpecProtoP\x01Zugithub.com/plantonhq/planton/catalog/gcp/gcpmanagedkafkaconnectcluster/v1alpha1;gcpmanagedkafkaconnectclusterv1alpha1\xa2\x02\x04DPGG\xaa\x026Dev.Planton.Gcp.Gcpmanagedkafkaconnectcluster.V1alpha1\xca\x026Dev\\Planton\\Gcp\\Gcpmanagedkafkaconnectcluster\\V1alpha1\xe2\x02BDev\\Planton\\Gcp\\Gcpmanagedkafkaconnectcluster\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Gcp::Gcpmanagedkafkaconnectcluster::V1alpha1b\x06proto3"
 
 var (

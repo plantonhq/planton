@@ -17,6 +17,13 @@ resources:
         arg: gcp_config.access_config.network_configs.primary_subnet
       - spec: spec.network_configs.dns_domain_names
         arg: gcp_config.access_config.network_configs.dns_domain_names
+  terraform_data:
+    internal: >-
+      the module's kafka_cluster tracker (OpenTofu's built-in store) -- Google
+      fixes a Connect cluster's Kafka cluster at creation, while the provider
+      plans a change to it as an in-place update Google refuses, so the
+      tracker makes that change replace the Connect cluster; it has no
+      provider surface
   google_project_service:
     internal: >-
       API enablement plumbing -- the module enables the owning API so a

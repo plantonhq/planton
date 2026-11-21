@@ -74,8 +74,10 @@ variable "spec" {
     optimized = optional(bool, false)
 
     # The dedicated serving endpoint of an existing Optimized store. Set it
-    # to serve that store over Private Service Connect; omit to keep
-    # Google's default (a public dedicated endpoint). Sent only when set.
+    # to serve that store over Private Service Connect; omit to keep Google's
+    # default (a public dedicated endpoint). Private Service Connect applies
+    # only to an Optimized store: a Bigtable store, which every new store
+    # is, serves through the shared Vertex AI endpoint. Sent only when set.
     dedicated_serving_endpoint = optional(object({
       # Private Service Connect for the dedicated endpoint.
       private_service_connect_config = optional(object({
@@ -124,8 +126,9 @@ variable "spec" {
         # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
         uri = string
 
-        # The columns that form the entity ID the view serves by. Google
-        # supports exactly one today.
+        # The column that forms the entity ID the view serves by. Google
+        # accepts exactly one column on a BigQuery-sourced view, so the list
+        # holds one name.
         entity_id_columns = list(string)
       }))
 

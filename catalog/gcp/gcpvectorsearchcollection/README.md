@@ -70,7 +70,7 @@ planton apply -f vector-search-collection.yaml
 | `dataSchema` | `string` | none | JSON Schema of the non-vector fields, as a compact JSON string. |
 | `vectorSchemas[]` | `[]object` | none | Searchable vector fields: `fieldName` plus exactly one of `denseVector` (`dimensions`, optional `vertexEmbeddingConfig`) or `sparseVector: true`. |
 | `kmsKeyName` | `StringValueOrRef` | Google-managed | A `GcpKmsKey` reference or literal key path. Immutable. |
-| `indexes[]` | `[]object` | none | `indexId`, `indexField`, optional `displayName`, `description`, `labels`, `distanceMetric` (`DOT_PRODUCT` / `COSINE_DISTANCE`), `featureNormType` (`NONE` / `UNIT_L2_NORM`), `filterFields`, `storeFields`, `dedicatedInfrastructure { mode, autoscalingSpec { minReplicaCount, maxReplicaCount } }`. Everything but labels is immutable. |
+| `indexes[]` | `[]object` | none | `indexId`, `indexField`, optional `displayName`, `description`, `labels`, `distanceMetric` (`DOT_PRODUCT` / `COSINE_DISTANCE`), `featureNormType` (`NONE` / `UNIT_L2_NORM`), `filterFields`, `storeFields`, `dedicatedInfrastructure { mode, autoscalingSpec { minReplicaCount, maxReplicaCount } }`. The display name, description, labels, and replica bounds change in place; the rest replaces the index. |
 | `deletionPolicy` | `string` | `DELETE` | `DELETE`, `PREVENT`, or `ABANDON`; fanned to every index. |
 
 ### Validation Rules
@@ -101,7 +101,8 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 ## Important Notes
 
-- **An index change replaces the index.** Every index setting but labels is immutable; the replacement is rebuilt from the collection's data, and searches against it wait for the rebuild.
+- **Most index changes replace the index.** Only the display name, description, labels, and replica bounds change in place; any other change rebuilds the index from the collection's data, and searches against it wait for the rebuild.
+- **Field names and index IDs are unique,** and every index serves a declared vector field. A dense field states its `dimensions` or a `vertexEmbeddingConfig`; an empty one would reach Google with no shape.
 - **Data is not part of this block.** Objects are written by applications through the Vector Search API or its SDKs; this block declares the store and its indexes.
 - **Dedicated infrastructure bills per node-hour** from creation; the pooled default bills per query and storage.
 

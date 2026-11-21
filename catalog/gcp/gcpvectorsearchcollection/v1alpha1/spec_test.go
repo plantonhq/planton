@@ -174,4 +174,39 @@ var _ = ginkgo.Describe("GcpVectorSearchCollectionSpec", func() {
 		msg.Spec.DeletionPolicy = "KEEP"
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
+
+	ginkgo.It("should require a dense field to state its dimensions or an embedding config", func() {
+		msg := minimal()
+		msg.Spec.VectorSchemas[0].DenseVector = &GcpVectorSearchCollectionDenseVector{}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.VectorSchemas[0].DenseVector = &GcpVectorSearchCollectionDenseVector{Dimensions: proto.Int32(768)}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should require unique field names and index ids", func() {
+		msg := minimal()
+		msg.Spec.VectorSchemas = append(msg.Spec.VectorSchemas, denseField())
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg = minimal()
+		msg.Spec.Indexes = append(msg.Spec.Indexes, &GcpVectorSearchCollectionIndex{IndexId: "docs-ann", IndexField: "text_embedding"})
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.Indexes[1].IndexId = "docs-ann-cosine"
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should require every index to serve a declared vector field", func() {
+		msg := minimal()
+		msg.Spec.Indexes[0].IndexField = "title_embedding"
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should hold the replica ceiling at or above the minimum", func() {
+		msg := minimal()
+		msg.Spec.Indexes[0].DedicatedInfrastructure = &GcpVectorSearchCollectionDedicatedInfrastructure{
+			AutoscalingSpec: &GcpVectorSearchCollectionAutoscalingSpec{MinReplicaCount: proto.Int32(4), MaxReplicaCount: proto.Int32(2)},
+		}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.Indexes[0].DedicatedInfrastructure.AutoscalingSpec.MaxReplicaCount = proto.Int32(4)
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
 })

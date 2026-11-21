@@ -33,7 +33,8 @@ type GcpBigQueryReservationAssignee struct {
 	// send projects/{id}.
 	ProjectId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// A folder: its numeric ID, literal or a GcpFolder reference. The
-	// modules send folders/{id}.
+	// modules send folders/{id}, so a literal is the bare number, without
+	// the folders/ prefix.
 	FolderId *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=folder_id,json=folderId,proto3" json:"folder_id,omitempty"`
 	// An organization: the numeric organization ID, without the
 	// organizations/ prefix. The modules send organizations/{id}.
@@ -95,9 +96,16 @@ func (x *GcpBigQueryReservationAssignee) GetOrganizationId() string {
 
 // GcpBigQueryReservationAssignment routes one kind of job from an assignee
 // to this reservation (`google_bigquery_reservation_assignment`). Every
-// field is immutable: a change replaces the assignment. Jobs of an
-// assignee with no assignment for their job type run on on-demand
-// capacity.
+// field is immutable: a changed assignment is the old one deleted and a new
+// one created. Jobs of an assignee with no assignment for their job type
+// fall back to the next assignment up the hierarchy (project, folder,
+// organization), then to on-demand capacity.
+//
+// Google allows one assignment per assignee for each job type and
+// location, across every reservation: the same project assigned for QUERY
+// on two reservations in one location is refused at the second apply, so
+// moving an assignee to another reservation means removing its assignment
+// here in one apply and adding it there in the next.
 type GcpBigQueryReservationAssignment struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Whose jobs use the reservation.
@@ -106,7 +114,8 @@ type GcpBigQueryReservationAssignment struct {
 	//
 	//	QUERY      -- interactive and batch queries, and scripts
 	//	PIPELINE   -- load, export, and copy jobs
-	//	CONTINUOUS -- continuous queries
+	//	CONTINUOUS -- continuous queries (a reservation with a CONTINUOUS
+	//	              assignment holds no other job type)
 	JobType string `protobuf:"bytes,2,opt,name=job_type,json=jobType,proto3" json:"job_type,omitempty"`
 	// Narrow the assignment to one principal's jobs: jobs that principal
 	// runs use this reservation, everyone else's fall back to the
@@ -190,6 +199,7 @@ func (x *GcpBigQueryReservationAssignment) GetPrincipal() string {
 // Immutable: project_id, location, reservation_name, edition (a change
 // replaces the reservation). Capacity, autoscaling, concurrency, idle-slot
 // sharing, the group, the secondary location, and labels update in place.
+// Google refuses to delete a reservation that still has assignments.
 type GcpBigQueryReservationSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The administration project the reservation lives in and bills to: a
@@ -198,16 +208,25 @@ type GcpBigQueryReservationSpec struct {
 	ProjectId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// Where the slots are: a multi-region (US, EU) or a region
 	// (asia-northeast1). Assigned projects' jobs use the reservation only
-	// for data in this location. Empty means US (Google's default).
-	// Immutable.
+	// for data in this location. Empty means US (Google's default). Write US
+	// and EU in upper case and a region in lower case: the provider never
+	// reads the location back, so another spelling is another location to
+	// it, and replaces the reservation. Immutable.
 	Location string `protobuf:"bytes,2,opt,name=location,proto3" json:"location,omitempty"`
-	// The reservation's name -- letters, digits, and dashes. Defaults to
-	// metadata.name. Immutable.
+	// The reservation's name -- Google's rule: lowercase letters, digits,
+	// and dashes, starting with a letter, not ending with a dash, at most 64
+	// characters. "none" is Google's own name for on-demand capacity and is
+	// refused. Defaults to metadata.name, which must then fit the same rule.
+	// Immutable.
 	ReservationName string `protobuf:"bytes,3,opt,name=reservation_name,json=reservationName,proto3" json:"reservation_name,omitempty"`
 	// Baseline slots, always allocated and billed -- 0 is valid with
 	// autoscaling, for pay-while-used capacity. Queries may exceed it by
 	// borrowing idle slots unless ignore_idle_slots is set. Mutable in
-	// place.
+	// place: an increase takes effect every few minutes; a decrease is
+	// limited to once an hour after a recent change while the baseline
+	// exceeds the committed slots. Baseline slots of this reservation and
+	// its siblings beyond the admin project's committed slots are billed at
+	// the autoscale rate.
 	SlotCapacity int64 `protobuf:"varint,4,opt,name=slot_capacity,json=slotCapacity,proto3" json:"slot_capacity,omitempty"`
 	// The BigQuery edition, which sets the features and the per-slot price:
 	//
@@ -218,8 +237,8 @@ type GcpBigQueryReservationSpec struct {
 	//
 	// Empty lets Google choose. Immutable.
 	Edition string `protobuf:"bytes,5,opt,name=edition,proto3" json:"edition,omitempty"`
-	// The most slots autoscaling may add on top of slot_capacity (a
-	// multiple of 50). 0 or empty turns autoscaling off.
+	// The most slots autoscaling may add on top of slot_capacity. 0 or empty
+	// turns autoscaling off.
 	AutoscaleMaxSlots int64 `protobuf:"varint,6,opt,name=autoscale_max_slots,json=autoscaleMaxSlots,proto3" json:"autoscale_max_slots,omitempty"`
 	// true caps queries at this reservation's own slots; false (Google's
 	// default) lets them borrow idle slots from other reservations in the
@@ -230,7 +249,8 @@ type GcpBigQueryReservationSpec struct {
 	Concurrency int64 `protobuf:"varint,8,opt,name=concurrency,proto3" json:"concurrency,omitempty"`
 	// The group the reservation belongs to, which pools idle slots among its
 	// members before other reservations: a GcpBigQueryReservationGroup
-	// reference (its name output) or a literal group name or full path.
+	// reference (its name output) or a literal group name or full path. The
+	// group is in the reservation's admin project and location.
 	ReservationGroup *v1.StringValueOrRef `protobuf:"bytes,9,opt,name=reservation_group,json=reservationGroup,proto3" json:"reservation_group,omitempty"`
 	// Managed disaster recovery: the location of a secondary replica
 	// (Enterprise Plus). Setting it on create makes a failover reservation;
@@ -243,12 +263,16 @@ type GcpBigQueryReservationSpec struct {
 	// The projects, folders, or organization whose jobs use the
 	// reservation, each for one job type. Each is unique by assignee,
 	// job_type, and principal. An assignment is PENDING until the
-	// reservation has capacity to give.
+	// reservation has capacity to give. The deletion policy is stamped on
+	// every assignment: under PREVENT no assignment can be removed or
+	// changed (apply DELETE on its own first); under ABANDON a removed or
+	// changed assignment is left in GCP, still routing its jobs here.
 	Assignments []*GcpBigQueryReservationAssignment `protobuf:"bytes,12,rep,name=assignments,proto3" json:"assignments,omitempty"`
 	// What happens to the reservation and its assignments when this
 	// resource is destroyed:
 	//
-	//	"" / "DELETE" -- deleted (assigned jobs fall back to on-demand)
+	//	"" / "DELETE" -- deleted (assigned jobs fall back to the next
+	//	                 assignment up the hierarchy, then to on-demand)
 	//	"PREVENT"     -- destroy fails
 	//	"ABANDON"     -- they leave management and keep running (and
 	//	                 billing) in GCP
@@ -382,11 +406,12 @@ var File_catalog_gcp_gcpbigqueryreservation_v1alpha1_spec_proto protoreflect.Fil
 
 const file_catalog_gcp_gcpbigqueryreservation_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/gcp/gcpbigqueryreservation/v1alpha1/spec.proto\x12/dev.planton.gcp.gcpbigqueryreservation.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xa8\x06\n" +
+	"6catalog/gcp/gcpbigqueryreservation/v1alpha1/spec.proto\x12/dev.planton.gcp.gcpbigqueryreservation.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xd4\a\n" +
 	"\x1eGcpBigQueryReservationAssignee\x12y\n" +
 	"\n" +
-	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_id\x98\xd4a\x01R\tprojectId\x12v\n" +
-	"\tfolder_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB%\x88\xd4a\xe2\x18\x92\xd4a\x18status.outputs.folder_id\x98\xd4a\x01R\bfolderId\x12\xcb\x01\n" +
+	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_id\x98\xd4a\x01R\tprojectId\x12\xa1\x02\n" +
+	"\tfolder_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xcf\x01\xbaH\xa6\x01\xba\x01\xa2\x01\n" +
+	"\x11folder_id.numeric\x12EA literal folder must be its numeric ID, without the folders/ prefix.\x1aF!has(this.value) || this.value == '' || this.value.matches('^[0-9]+$')\x88\xd4a\xe2\x18\x92\xd4a\x18status.outputs.folder_id\x98\xd4a\x01R\bfolderId\x12\xcb\x01\n" +
 	"\x0forganization_id\x18\x03 \x01(\tB\xa1\x01\xbaH\x9d\x01\xba\x01\x99\x01\n" +
 	"\x17organization_id.numeric\x12Vorganization_id must be the numeric organization ID, without the organizations/ prefix\x1a&this == '' || this.matches('^[0-9]+$')R\x0eorganizationId:\xc4\x02\xbaH\xc0\x02\x1a\xbd\x02\n" +
 	"\x14exactly_one_assignee\x12<set exactly one of project_id, folder_id, or organization_id\x1a\xe6\x01[has(this.project_id) && (this.project_id.value != '' || has(this.project_id.value_from)), has(this.folder_id) && (this.folder_id.value != '' || has(this.folder_id.value_from)), this.organization_id != ''].filter(x, x).size() == 1\"\x93\x02\n" +
@@ -394,12 +419,13 @@ const file_catalog_gcp_gcpbigqueryreservation_v1alpha1_spec_proto_rawDesc = "" +
 	"\bassignee\x18\x01 \x01(\v2O.dev.planton.gcp.gcpbigqueryreservation.v1alpha1.GcpBigQueryReservationAssigneeB\x06\xbaH\x03\xc8\x01\x01R\bassignee\x12@\n" +
 	"\bjob_type\x18\x02 \x01(\tB%\xbaH\"\xc8\x01\x01r\x1dR\x05QUERYR\bPIPELINER\n" +
 	"CONTINUOUSR\ajobType\x128\n" +
-	"\tprincipal\x18\x03 \x01(\tB\x1a\xbaH\x17\xd8\x01\x01r\x122\x10^principal://.+$R\tprincipal\"\xc5\r\n" +
+	"\tprincipal\x18\x03 \x01(\tB\x1a\xbaH\x17\xd8\x01\x01r\x122\x10^principal://.+$R\tprincipal\"\xff\x16\n" +
 	"\x1aGcpBigQueryReservationSpec\x12u\n" +
 	"\n" +
-	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x1a\n" +
-	"\blocation\x18\x02 \x01(\tR\blocation\x12D\n" +
-	"\x10reservation_name\x18\x03 \x01(\tB\x19\xbaH\x16\xd8\x01\x01r\x112\x0f^[a-zA-Z0-9-]+$R\x0freservationName\x12,\n" +
+	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\xde\x01\n" +
+	"\blocation\x18\x02 \x01(\tB\xc1\x01\xbaH\xbd\x01\xba\x01\xb9\x01\n" +
+	"\x11location.spelling\x12Wlocation must be US or EU in upper case, or a region in lower case such as us-central1.\x1aKthis == '' || this in ['US', 'EU'] || this.matches('^[a-z]+-[a-z]+[0-9]+$')R\blocation\x12^\n" +
+	"\x10reservation_name\x18\x03 \x01(\tB3\xbaH0\xd8\x01\x01r+2#^[a-z](?:[-a-z0-9]{0,62}[a-z0-9])?$Z\x04noneR\x0freservationName\x12,\n" +
 	"\rslot_capacity\x18\x04 \x01(\x03B\a\xbaH\x04\"\x02(\x00R\fslotCapacity\x12I\n" +
 	"\aedition\x18\x05 \x01(\tB/\xbaH,\xd8\x01\x01r'R\bSTANDARDR\n" +
 	"ENTERPRISER\x0fENTERPRISE_PLUSR\aedition\x127\n" +
@@ -415,8 +441,11 @@ const file_catalog_gcp_gcpbigqueryreservation_v1alpha1_spec_proto_rawDesc = "" +
 	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xb7\x04\xbaH\xb3\x04\x1a\xb0\x04\n" +
-	"\x17spec.assignments_unique\x12Ceach assignment must be unique by assignee, job_type, and principal\x1a\xcf\x03this.assignments.all(a, this.assignments.filter(b, b.job_type == a.job_type && b.principal == a.principal && b.assignee.organization_id == a.assignee.organization_id && b.assignee.project_id.value == a.assignee.project_id.value && b.assignee.project_id.value_from.name == a.assignee.project_id.value_from.name && b.assignee.folder_id.value == a.assignee.folder_id.value && b.assignee.folder_id.value_from.name == a.assignee.folder_id.value_from.name).size() == 1)B\x8a\x03\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x92\f\xbaH\x8e\f\x1a\xb0\x04\n" +
+	"\x17spec.assignments_unique\x12Ceach assignment must be unique by assignee, job_type, and principal\x1a\xcf\x03this.assignments.all(a, this.assignments.filter(b, b.job_type == a.job_type && b.principal == a.principal && b.assignee.organization_id == a.assignee.organization_id && b.assignee.project_id.value == a.assignee.project_id.value && b.assignee.project_id.value_from.name == a.assignee.project_id.value_from.name && b.assignee.folder_id.value == a.assignee.folder_id.value && b.assignee.folder_id.value_from.name == a.assignee.folder_id.value_from.name).size() == 1)\x1a\x9d\x02\n" +
+	"!spec.continuous_assignments_alone\x12\x87\x01Google does not mix CONTINUOUS assignments with other job types on one reservation; give continuous queries a reservation of their own.\x1an!this.assignments.exists(a, a.job_type == 'CONTINUOUS') || this.assignments.all(a, a.job_type == 'CONTINUOUS')\x1a\xd3\x02\n" +
+	" spec.group_path_matches_location\x12dA literal reservation group path must be in this reservation's location (US when location is empty).\x1a\xc8\x01!has(this.reservation_group.value) || !this.reservation_group.value.startsWith('projects/') || this.reservation_group.value.contains('/locations/' + (this.location == '' ? 'US' : this.location) + '/')\x1a\xe2\x02\n" +
+	"\x1fspec.group_path_matches_project\x12MA literal reservation group path must be in this reservation's admin project.\x1a\xef\x01!has(this.reservation_group.value) || !this.reservation_group.value.startsWith('projects/') || !has(this.project_id.value) || this.project_id.value == '' || this.reservation_group.value.startsWith('projects/' + this.project_id.value + '/')B\x8a\x03\n" +
 	"3com.dev.planton.gcp.gcpbigqueryreservation.v1alpha1B\tSpecProtoP\x01Zggithub.com/plantonhq/planton/catalog/gcp/gcpbigqueryreservation/v1alpha1;gcpbigqueryreservationv1alpha1\xa2\x02\x04DPGG\xaa\x02/Dev.Planton.Gcp.Gcpbigqueryreservation.V1alpha1\xca\x02/Dev\\Planton\\Gcp\\Gcpbigqueryreservation\\V1alpha1\xe2\x02;Dev\\Planton\\Gcp\\Gcpbigqueryreservation\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Gcp::Gcpbigqueryreservation::V1alpha1b\x06proto3"
 
 var (

@@ -100,6 +100,7 @@ func agentEngine(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider)
 	ctx.Export(OpLocation, createdEngine.Region)
 	ctx.Export(OpCreateTime, createdEngine.CreateTime)
 	ctx.Export(OpUpdateTime, createdEngine.UpdateTime)
+	ctx.Export(OpEffectiveIdentity, createdEngine.Spec.EffectiveIdentity())
 	return nil
 }
 

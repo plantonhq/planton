@@ -15,7 +15,7 @@ This directory contains the Terraform implementation for a Colab Enterprise runt
 | `variables.tf` | `metadata` and `spec` variable definitions (generated from the spec; the tfvars converter flattens refs to plain strings) |
 | `locals.tf` | Ambient project fallback, the runtime id and display name defaulted from `metadata.name`, null-for-empty optionals |
 | `main.tf` | `google_project_service`, `google_colab_runtime` |
-| `outputs.tf` | `name`, `runtime_id`, `location` |
+| `outputs.tf` | `name`, `runtime_id`, `location`, `state` |
 
 ## Send Posture
 

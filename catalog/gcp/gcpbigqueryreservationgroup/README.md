@@ -50,13 +50,14 @@ planton apply -f bigquery-reservation-group.yaml
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `projectId` | `StringValueOrRef` | provider project | The admin project. |
-| `location` | `string` | `US` | Immutable. |
-| `reservationGroupName` | `string` | `metadata.name` | Letters, digits, dashes. Immutable. |
+| `location` | `string` | `US` | `US` or `EU` in upper case, or a region in lower case. Immutable. |
+| `reservationGroupName` | `string` | `metadata.name` | Lowercase letters, digits, dashes; starts with a letter, at most 64. Immutable. |
 | `deletionPolicy` | `string` | `DELETE` | `DELETE`, `PREVENT`, or `ABANDON`. |
 
 ### Validation Rules
 
-- `reservationGroupName` is letters, digits, and dashes.
+- `reservationGroupName` follows Google's rule: lowercase letters, digits, and dashes, starting with a letter, not ending with a dash, at most 64 characters.
+- `location` is `US`, `EU`, or a lowercase region.
 
 ## Outputs
 

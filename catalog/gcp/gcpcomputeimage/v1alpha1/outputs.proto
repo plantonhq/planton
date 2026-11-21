@@ -27,4 +27,8 @@ message GcpComputeImageOutputs {
   // source_image); consume image_id where Google documents the relative
   // form only, such as a GKE node pool's secondary boot disk image.
   string image_id = 5;
+
+  // Size in bytes of the image's tar.gz archive in Cloud Storage -- what
+  // the image's storage bills on.
+  int64 archive_size_bytes = 6;
 }

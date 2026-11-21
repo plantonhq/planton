@@ -45,7 +45,10 @@ import "shared/foreignkey/v1/foreign_key.proto";
 // Important behavioral notes:
 //
 //   - Creating a feature that is already on adopts it: the existing
-//     feature's settings are replaced by this block's.
+//     feature's settings are replaced by this block's. Settings the block
+//     does not declare survive the first apply and are removed on the
+//     next. Two blocks naming the same feature in one fleet fight over it,
+//     and destroying either turns the feature off for both.
 //   - Destroy turns the feature off and removes its per-cluster settings,
 //     except "rbacrolebindingactuation", which Google never deletes:
 //     destroy empties its allowlist instead.
@@ -241,9 +244,11 @@ message GcpGkeFleetFeatureLogRoutingConfig {
 message GcpGkeFleetFeatureClusterUpgrade {
   // The upstream fleet whose completed upgrades this fleet consumes: its
   // host project's ID or number, as a literal or a GcpGkeFleet reference.
-  // Google accepts at most one today; the list leaves room for more.
+  // Exactly one: Google accepts at most one upstream fleet, and its API
+  // keeps the field a list only to leave room for more.
   repeated dev.planton.shared.foreignkey.v1.StringValueOrRef upstream_fleets = 1 [
     (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.max_items = 1,
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpGkeFleet,
     (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
@@ -416,8 +421,11 @@ message GcpGkeFleetFeatureConfigSync {
     message: "config_sync syncs from git or oci, not both"
   };
 
-  // true installs Config Sync and applies these settings; false removes it
-  // and ignores the rest. Unset installs it exactly when git or oci is set.
+  // true installs Config Sync on every cluster and applies these settings.
+  // false is never sent to Google in the fleet-wide default (the provider
+  // drops it), so it cannot keep Config Sync off: a git or oci source still
+  // installs it. To keep Config Sync off fleet-wide, declare no
+  // config_sync. Unset installs it exactly when git or oci is set.
   optional bool enabled = 1;
 
   // Sync from a Git repository.
@@ -435,8 +443,9 @@ message GcpGkeFleetFeatureConfigSync {
   ];
 
   // true turns on Config Sync's admission webhook, which refuses manual
-  // changes to synced objects; false turns it off. Unset takes Google's
-  // default.
+  // changes to synced objects. false is never sent to Google in the
+  // fleet-wide default (the provider drops it), so it leaves Google's
+  // current setting; unset does the same.
   optional bool prevent_drift = 5;
 
   // The repository's layout: "unstructured" (any layout; the recommended
@@ -457,9 +466,10 @@ message GcpGkeFleetFeatureMembershipConfigSync {
     message: "config_sync syncs from git or oci, not both"
   };
 
-  // true installs Config Sync and applies these settings; false removes it
-  // and ignores the rest. Unset installs it exactly when git or oci is set.
-  optional bool enabled = 1;
+  // Required. true installs Config Sync on this cluster and applies these
+  // settings; false removes it and ignores the rest. The provider sends an
+  // unset value as false, so leaving it out would remove Config Sync.
+  optional bool enabled = 1 [(buf.validate.field).required = true];
 
   // Sync from a Git repository.
   GcpGkeFleetFeatureConfigSyncGit git = 2;
@@ -475,7 +485,7 @@ message GcpGkeFleetFeatureMembershipConfigSync {
   ];
 
   // true turns on the admission webhook that refuses manual changes to
-  // synced objects. Unset takes Google's default.
+  // synced objects. The provider sends an unset value as false (off).
   optional bool prevent_drift = 5;
 
   // The repository's layout: "unstructured" or "hierarchy".
@@ -650,12 +660,14 @@ message GcpGkeFleetFeaturePolicyControllerHubConfig {
     }
   ];
 
-  // Seconds between audit scans; 0 turns auditing off. Unset takes
-  // Google's default.
+  // Seconds between audit scans. Unset takes Google's default. 0 is never
+  // sent to Google (the provider drops it), so it leaves Google's current
+  // interval rather than turning auditing off.
   optional int64 audit_interval_seconds = 2 [(buf.validate.field).int64.gte = 0];
 
   // How many violations a constraint stores. Unset takes Google's default
-  // (20).
+  // (20). In the fleet-wide default, 0 is never sent to Google (the
+  // provider drops it).
   optional int64 constraint_violation_limit = 3 [(buf.validate.field).int64.gte = 0];
 
   // Namespaces Policy Controller never checks; they need not exist yet.
@@ -671,8 +683,9 @@ message GcpGkeFleetFeaturePolicyControllerHubConfig {
   // checked (referential rules).
   bool referential_rules_enabled = 7;
 
-  // Where Policy Controller exports metrics. Unset takes Google's default;
-  // set with no backends to turn metrics export off.
+  // Where Policy Controller exports metrics. Unset takes Google's default.
+  // In the fleet-wide default an empty backends list is never sent to
+  // Google (the provider drops it), so it cannot turn export off there.
   GcpGkeFleetFeaturePolicyControllerMonitoring monitoring = 8;
 
   // Sizing and placement for Policy Controller's components.
@@ -684,7 +697,8 @@ message GcpGkeFleetFeaturePolicyControllerHubConfig {
 
 // Policy Controller metrics export.
 message GcpGkeFleetFeaturePolicyControllerMonitoring {
-  // "PROMETHEUS" and/or "CLOUD_MONITORING". Empty turns export off.
+  // "PROMETHEUS" and/or "CLOUD_MONITORING". An empty list is never sent in
+  // the fleet-wide default (see monitoring).
   repeated string backends = 1 [(buf.validate.field).repeated = {
     unique: true
     items: {
@@ -710,7 +724,8 @@ message GcpGkeFleetFeaturePolicyControllerDeploymentConfig {
     }
   ];
 
-  // Pod replicas. Unset takes Google's default.
+  // Pod replicas. Unset takes Google's default. In the fleet-wide default,
+  // 0 is never sent to Google (the provider drops it).
   optional int64 replica_count = 2 [(buf.validate.field).int64.gte = 0];
 
   // "ANTI_AFFINITY" spreads replicas across nodes; "NO_AFFINITY" does not.

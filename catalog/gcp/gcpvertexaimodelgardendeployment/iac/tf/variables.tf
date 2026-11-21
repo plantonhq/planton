@@ -47,7 +47,10 @@ variable "spec" {
       accept_eula = optional(bool, false)
 
       # Hugging Face read token used to pull the artifacts of a gated Hugging
-      # Face model. Stored as a secret; never logged.
+      # Face model. Stored as a secret; never logged. The token is part of the
+      # deployment: a different token -- including a new value of the secret
+      # it is resolved from -- replaces the deployment on the next deploy, and
+      # the endpoint ID changes.
       hugging_face_access_token = optional(string, "")
 
       # Deploy from Google's cached copy of the Hugging Face model instead of
@@ -335,13 +338,18 @@ variable "spec" {
     # The compute the model is deployed on. Omit to accept Model Garden's
     # recommended shape for the model.
     deploy_config = optional(object({
-      # Machine shape and replica bounds.
+      # Machine shape and replica bounds. Google reserves quota for the
+      # ceiling: max_replica_count times the machine's cores and accelerators
+      # count against the project's Vertex AI quotas.
       dedicated_resources = optional(object({
         # The machine each replica runs on.
         machine_spec = optional(object({
           # Compute Engine machine type, e.g. "g2-standard-12" (with an L4) or
-          # "a2-highgpu-1g" (with an A100). Google picks a default for the model
-          # when the whole deploy_config is omitted.
+          # "a2-highgpu-1g" (with an A100). Required under dedicated_resources:
+          # left blank there, Google's provider sends no machine at all and
+          # Google falls back to a small CPU machine most models cannot serve
+          # from. Model Garden picks the model's recommended machine only when
+          # the whole deploy_config is omitted.
           machine_type = optional(string, "")
 
           # Accelerator attached to each replica, e.g. "NVIDIA_L4",
@@ -391,7 +399,8 @@ variable "spec" {
         # time.
         spot = optional(bool, false)
 
-        # Metrics that drive autoscaling between the replica bounds.
+        # Metrics that drive autoscaling between the replica bounds, at most one
+        # entry per metric.
         autoscaling_metric_specs = optional(list(object({
           # The metric:
           # "aiplatform.googleapis.com/prediction/online/accelerator/duty_cycle"
@@ -417,9 +426,9 @@ variable "spec" {
       endpoint_display_name = optional(string, "")
 
       # Give the endpoint its own DNS name
-      # ({endpoint}.{region}-{project}.prediction.vertexai.goog) isolated from
-      # the shared regional host. Once on, the shared host no longer serves
-      # it.
+      # ({endpoint_name}.{region}-{project_number}.prediction.vertexai.goog)
+      # isolated from the shared regional host. Once on, the shared host no
+      # longer serves it.
       dedicated_endpoint_enabled = optional(bool, false)
 
       # Expose the endpoint through Private Service Connect.
@@ -451,8 +460,9 @@ variable "spec" {
     }))
 
     # What happens to the deployment when this resource is destroyed:
-    #   "" / "DELETE" -- the model is undeployed and the endpoint and model
-    #                    are deleted
+    #   "" / "DELETE" -- the model is undeployed and the endpoint deleted;
+    #                    Google's provider makes no call that deletes the
+    #                    uploaded Model resource
     #   "PREVENT"     -- destroy fails
     #   "ABANDON"     -- the deployment leaves management and keeps serving
     #                    (and billing)

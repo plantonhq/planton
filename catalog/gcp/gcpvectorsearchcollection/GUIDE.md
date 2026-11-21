@@ -12,7 +12,9 @@ Applications write data objects (and, for fields without an embedding
 config, their vectors) through the Vector Search API or its SDKs, and run
 similarity searches against an index. Field names in `dataSchema` and
 `vectorSchemas` are the names those objects carry, so change them as you
-would a database schema -- deliberately, with the writers.
+would a database schema -- deliberately, with the writers. Vector fields
+update in place: emptying `vectorSchemas` asks Google to drop every vector
+field, and every index's `indexField` must name a declared field.
 
 ## Who computes the vectors
 
@@ -26,13 +28,17 @@ you already have. A `sparseVector: true` field holds lexical vectors
 (SPLADE, BM25-style) for hybrid search; Google's sparse field has no
 settings, so the declaration is a flag.
 
-## Indexes are immutable
+## Indexes are mostly immutable
 
-Every index setting but labels -- the field, the metric, the ScaNN norm,
-the filter and store fields, the dedicated infrastructure -- is fixed at
+An index's display name, description, labels, and replica bounds change in
+place. Every other index setting -- the field, the metric, the ScaNN norm,
+the filter and store fields, the infrastructure mode -- is fixed at
 creation. Changing one replaces the index, and the replacement is rebuilt
 from the collection's data while searches against the old one are
-interrupted. Choose `COSINE_DISTANCE` with `UNIT_L2_NORM` for embeddings
+interrupted. Removing a metric, norm, or dedicated block sends nothing:
+Google keeps what the index has, nodes included. The collection's labels
+and the platform attribution labels land on every index and win on a key
+conflict. Choose `COSINE_DISTANCE` with `UNIT_L2_NORM` for embeddings
 that are not already normalized; `DOT_PRODUCT` (Google's default) for
 ones that are. Push into `filterFields` the fields searches filter on and
 into `storeFields` the ones results should return inline, so a hit needs
@@ -45,7 +51,9 @@ per query and per GiB indexed. `dedicatedInfrastructure` gives it its own
 nodes -- `PERFORMANCE_OPTIMIZED` for latency, `STORAGE_OPTIMIZED` for cost
 per vector -- autoscaling between `minReplicaCount` and `maxReplicaCount`
 and billing per node-hour from creation, queries or not. The minimum is
-the committed spend.
+the committed spend, and both bounds change in place. Set
+`maxReplicaCount`: unset, its default is the greater of the minimum and 2
+under Terraform (Google's v1 API) but 5 under Pulumi (the v1beta API).
 
 ## Encryption and destroy
 

@@ -9,5 +9,5 @@ spec:
   slotCount: 500
   plan: THREE_YEAR
   edition: ENTERPRISE_PLUS
-  enforceSingleAdminProjectPerOrg: true
+  renewalPlan: NONE
   deletionPolicy: ABANDON

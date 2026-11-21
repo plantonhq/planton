@@ -70,7 +70,8 @@ variable "spec" {
     clusterupgrade = optional(object({
       # The upstream fleet whose completed upgrades this fleet consumes: its
       # host project's ID or number, as a literal or a GcpGkeFleet reference.
-      # Google accepts at most one today; the list leaves room for more.
+      # Exactly one: Google accepts at most one upstream fleet, and its API
+      # keeps the field a list only to leave room for more.
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       upstream_fleets = list(string)
 
@@ -139,8 +140,11 @@ variable "spec" {
 
         # What to sync and how.
         config_sync = optional(object({
-          # true installs Config Sync and applies these settings; false removes it
-          # and ignores the rest. Unset installs it exactly when git or oci is set.
+          # true installs Config Sync on every cluster and applies these settings.
+          # false is never sent to Google in the fleet-wide default (the provider
+          # drops it), so it cannot keep Config Sync off: a git or oci source still
+          # installs it. To keep Config Sync off fleet-wide, declare no
+          # config_sync. Unset installs it exactly when git or oci is set.
           enabled = optional(bool)
 
           # Sync from a Git repository.
@@ -209,8 +213,9 @@ variable "spec" {
           metrics_gcp_service_account_email = optional(string, "")
 
           # true turns on Config Sync's admission webhook, which refuses manual
-          # changes to synced objects; false turns it off. Unset takes Google's
-          # default.
+          # changes to synced objects. false is never sent to Google in the
+          # fleet-wide default (the provider drops it), so it leaves Google's
+          # current setting; unset does the same.
           prevent_drift = optional(bool)
 
           # The repository's layout: "unstructured" (any layout; the recommended
@@ -244,12 +249,14 @@ variable "spec" {
           # Required.
           install_spec = string
 
-          # Seconds between audit scans; 0 turns auditing off. Unset takes
-          # Google's default.
+          # Seconds between audit scans. Unset takes Google's default. 0 is never
+          # sent to Google (the provider drops it), so it leaves Google's current
+          # interval rather than turning auditing off.
           audit_interval_seconds = optional(number)
 
           # How many violations a constraint stores. Unset takes Google's default
-          # (20).
+          # (20). In the fleet-wide default, 0 is never sent to Google (the
+          # provider drops it).
           constraint_violation_limit = optional(number)
 
           # Namespaces Policy Controller never checks; they need not exist yet.
@@ -265,10 +272,12 @@ variable "spec" {
           # checked (referential rules).
           referential_rules_enabled = optional(bool, false)
 
-          # Where Policy Controller exports metrics. Unset takes Google's default;
-          # set with no backends to turn metrics export off.
+          # Where Policy Controller exports metrics. Unset takes Google's default.
+          # In the fleet-wide default an empty backends list is never sent to
+          # Google (the provider drops it), so it cannot turn export off there.
           monitoring = optional(object({
-            # "PROMETHEUS" and/or "CLOUD_MONITORING". Empty turns export off.
+            # "PROMETHEUS" and/or "CLOUD_MONITORING". An empty list is never sent in
+            # the fleet-wide default (see monitoring).
             backends = optional(list(string), [])
           }))
 
@@ -277,7 +286,8 @@ variable "spec" {
             # The component: "admission", "audit", or "mutation". Required.
             component = string
 
-            # Pod replicas. Unset takes Google's default.
+            # Pod replicas. Unset takes Google's default. In the fleet-wide default,
+            # 0 is never sent to Google (the provider drops it).
             replica_count = optional(number)
 
             # "ANTI_AFFINITY" spreads replicas across nodes; "NO_AFFINITY" does not.
@@ -367,9 +377,10 @@ variable "spec" {
 
         # What this cluster syncs and how.
         config_sync = optional(object({
-          # true installs Config Sync and applies these settings; false removes it
-          # and ignores the rest. Unset installs it exactly when git or oci is set.
-          enabled = optional(bool)
+          # Required. true installs Config Sync on this cluster and applies these
+          # settings; false removes it and ignores the rest. The provider sends an
+          # unset value as false, so leaving it out would remove Config Sync.
+          enabled = bool
 
           # Sync from a Git repository.
           git = optional(object({
@@ -436,7 +447,7 @@ variable "spec" {
           metrics_gcp_service_account_email = optional(string, "")
 
           # true turns on the admission webhook that refuses manual changes to
-          # synced objects. Unset takes Google's default.
+          # synced objects. The provider sends an unset value as false (off).
           prevent_drift = optional(bool)
 
           # The repository's layout: "unstructured" or "hierarchy".
@@ -500,12 +511,14 @@ variable "spec" {
           # Required.
           install_spec = string
 
-          # Seconds between audit scans; 0 turns auditing off. Unset takes
-          # Google's default.
+          # Seconds between audit scans. Unset takes Google's default. 0 is never
+          # sent to Google (the provider drops it), so it leaves Google's current
+          # interval rather than turning auditing off.
           audit_interval_seconds = optional(number)
 
           # How many violations a constraint stores. Unset takes Google's default
-          # (20).
+          # (20). In the fleet-wide default, 0 is never sent to Google (the
+          # provider drops it).
           constraint_violation_limit = optional(number)
 
           # Namespaces Policy Controller never checks; they need not exist yet.
@@ -521,10 +534,12 @@ variable "spec" {
           # checked (referential rules).
           referential_rules_enabled = optional(bool, false)
 
-          # Where Policy Controller exports metrics. Unset takes Google's default;
-          # set with no backends to turn metrics export off.
+          # Where Policy Controller exports metrics. Unset takes Google's default.
+          # In the fleet-wide default an empty backends list is never sent to
+          # Google (the provider drops it), so it cannot turn export off there.
           monitoring = optional(object({
-            # "PROMETHEUS" and/or "CLOUD_MONITORING". Empty turns export off.
+            # "PROMETHEUS" and/or "CLOUD_MONITORING". An empty list is never sent in
+            # the fleet-wide default (see monitoring).
             backends = optional(list(string), [])
           }))
 
@@ -533,7 +548,8 @@ variable "spec" {
             # The component: "admission", "audit", or "mutation". Required.
             component = string
 
-            # Pod replicas. Unset takes Google's default.
+            # Pod replicas. Unset takes Google's default. In the fleet-wide default,
+            # 0 is never sent to Google (the provider drops it).
             replica_count = optional(number)
 
             # "ANTI_AFFINITY" spreads replicas across nodes; "NO_AFFINITY" does not.

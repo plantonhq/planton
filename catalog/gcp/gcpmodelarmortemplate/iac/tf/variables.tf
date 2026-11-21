@@ -28,16 +28,19 @@ variable "spec" {
 
     # The template's id -- the last segment of its resource name, what an
     # application passes to Model Armor. Letters, digits, hyphens, and
-    # underscores, up to 63 characters. Defaults to metadata.name.
-    # Immutable.
+    # underscores, up to 63 characters. Defaults to metadata.name, which
+    # must then fit the same rule: both engines refuse a metadata.name that
+    # does not before anything is sent. Immutable.
     template_id = optional(string, "")
 
     # Labels on the template. The platform attribution labels are merged in
     # and win on key conflicts.
     labels = optional(map(string), {})
 
-    # Which filters run and how sensitive each one is. Required: a template
-    # with no filter configuration screens nothing.
+    # Which filters run and how sensitive each one is. Required, but an empty
+    # block is accepted and screens nothing: a filter runs only once its own
+    # block is set with filter_enforcement ENABLED (the Responsible AI
+    # filters run once listed).
     filter_config = object({
       # Malicious URL detection: flags links to known phishing and malware
       # sites in prompts and responses.
@@ -57,6 +60,7 @@ variable "spec" {
         #                         the most false positives
         #   "MEDIUM_AND_ABOVE" -- the balanced choice
         #   "HIGH"             -- flags only clear attempts
+        # Unset is Google's default, which is LOW_AND_ABOVE.
         confidence_level = optional(string, "")
       }))
 
@@ -72,6 +76,7 @@ variable "spec" {
 
           # How confident Model Armor must be before it flags content in this
           # category: "LOW_AND_ABOVE" (strictest), "MEDIUM_AND_ABOVE", or "HIGH".
+          # Unset is Google's default, which is LOW_AND_ABOVE.
           confidence_level = optional(string, "")
         }))
       }))
@@ -82,7 +87,7 @@ variable "spec" {
         # Google's predefined set of sensitive-data detectors (card numbers,
         # government IDs, credentials, and similar). The quick start.
         basic_config = optional(object({
-          # "ENABLED" or "DISABLED".
+          # "ENABLED" or "DISABLED". Unset leaves Google's default (disabled).
           filter_enforcement = optional(string, "")
         }))
 
@@ -144,7 +149,7 @@ variable "spec" {
       #   "INSPECT_ONLY"      -- the verdict is reported and the traffic
       #                          passes (a safe way to tune a new template)
       #   "INSPECT_AND_BLOCK" -- the traffic is blocked
-      # Unset keeps Google's default.
+      # Unset keeps Google's default, which is INSPECT_AND_BLOCK.
       enforcement_type = optional(string, "")
 
       # Which version of Google's filters the template runs. Omit to follow

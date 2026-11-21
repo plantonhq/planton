@@ -99,7 +99,11 @@ them (re-evaluated at pulumi-gcp v10 GA).
 `deletionProtection` defaults to true: a destroy fails until the manifest
 flips it, and both engines send the value explicitly. `deletionPolicy:
 PREVENT` is a second, independent guard; `ABANDON` walks away from a
-running (and billing) pool. `region`, `workerPoolName`, and a container's
+running (and billing) pool. ABANDON keeps the pool only: the secrets this
+component stores for `secretValue`, their versions, and the identity's grant
+on them are deleted on both engines, so the abandoned pool's next instance
+start can no longer read them. A pool meant to outlive its manifest takes its
+secrets through `valueFromSecret`, from a Secret Manager secret you own. `region`, `workerPoolName`, and a container's
 `dependsOn` are the only immutables -- everything else rolls a new
 revision in place.
 

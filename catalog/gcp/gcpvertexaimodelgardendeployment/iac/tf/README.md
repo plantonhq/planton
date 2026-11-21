@@ -18,7 +18,7 @@ enablement) and one `google_vertex_ai_endpoint_with_model_garden_deployment`.
 | `variables.tf` | `metadata` and `spec` variable definitions (generated from the spec; the tfvars converter flattens refs to plain strings) |
 | `locals.tf` | Ambient project fallback and null-for-empty optionals |
 | `main.tf` | `google_project_service`, `google_vertex_ai_endpoint_with_model_garden_deployment` |
-| `outputs.tf` | `endpoint_id`, `endpoint_name`, `deployed_model_id`, `deployed_model_display_name`, `location` |
+| `outputs.tf` | `endpoint_id`, `endpoint_name`, `deployed_model_id`, `deployed_model_display_name`, `location`, `service_attachment` |
 
 ## Send Posture
 

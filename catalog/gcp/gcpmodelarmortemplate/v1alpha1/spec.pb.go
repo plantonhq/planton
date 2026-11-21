@@ -51,14 +51,17 @@ type GcpModelArmorTemplateSpec struct {
 	Location string `protobuf:"bytes,2,opt,name=location,proto3" json:"location,omitempty"`
 	// The template's id -- the last segment of its resource name, what an
 	// application passes to Model Armor. Letters, digits, hyphens, and
-	// underscores, up to 63 characters. Defaults to metadata.name.
-	// Immutable.
+	// underscores, up to 63 characters. Defaults to metadata.name, which
+	// must then fit the same rule: both engines refuse a metadata.name that
+	// does not before anything is sent. Immutable.
 	TemplateId string `protobuf:"bytes,3,opt,name=template_id,json=templateId,proto3" json:"template_id,omitempty"`
 	// Labels on the template. The platform attribution labels are merged in
 	// and win on key conflicts.
 	Labels map[string]string `protobuf:"bytes,4,rep,name=labels,proto3" json:"labels,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	// Which filters run and how sensitive each one is. Required: a template
-	// with no filter configuration screens nothing.
+	// Which filters run and how sensitive each one is. Required, but an empty
+	// block is accepted and screens nothing: a filter runs only once its own
+	// block is set with filter_enforcement ENABLED (the Responsible AI
+	// filters run once listed).
 	FilterConfig *GcpModelArmorTemplateFilterConfig `protobuf:"bytes,5,opt,name=filter_config,json=filterConfig,proto3" json:"filter_config,omitempty"`
 	// How the template behaves around the filters: whether it blocks or only
 	// reports, what an end user sees when a prompt or response is blocked,
@@ -155,7 +158,8 @@ func (x *GcpModelArmorTemplateSpec) GetDeletionPolicy() string {
 }
 
 // GcpModelArmorTemplateFilterConfig selects the filters. Each filter is
-// off unless its message is set.
+// off unless its message is set, and a set message whose
+// filter_enforcement is unset is still off (Google's default is disabled).
 type GcpModelArmorTemplateFilterConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Malicious URL detection: flags links to known phishing and malware
@@ -291,6 +295,8 @@ type GcpModelArmorTemplatePiAndJailbreakFilterSettings struct {
 	//	                      the most false positives
 	//	"MEDIUM_AND_ABOVE" -- the balanced choice
 	//	"HIGH"             -- flags only clear attempts
+	//
+	// Unset is Google's default, which is LOW_AND_ABOVE.
 	ConfidenceLevel string `protobuf:"bytes,2,opt,name=confidence_level,json=confidenceLevel,proto3" json:"confidence_level,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
@@ -396,6 +402,7 @@ type GcpModelArmorTemplateRaiFilter struct {
 	FilterType string `protobuf:"bytes,1,opt,name=filter_type,json=filterType,proto3" json:"filter_type,omitempty"`
 	// How confident Model Armor must be before it flags content in this
 	// category: "LOW_AND_ABOVE" (strictest), "MEDIUM_AND_ABOVE", or "HIGH".
+	// Unset is Google's default, which is LOW_AND_ABOVE.
 	ConfidenceLevel string `protobuf:"bytes,2,opt,name=confidence_level,json=confidenceLevel,proto3" json:"confidence_level,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
@@ -446,8 +453,8 @@ func (x *GcpModelArmorTemplateRaiFilter) GetConfidenceLevel() string {
 }
 
 // GcpModelArmorTemplateSdpSettings configures Sensitive Data Protection
-// screening -- either Google's basic detector set or your own Sensitive
-// Data Protection templates, never both.
+// screening -- Google's basic detector set or your own Sensitive Data
+// Protection templates: at most one of the two.
 type GcpModelArmorTemplateSdpSettings struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Google's predefined set of sensitive-data detectors (card numbers,
@@ -509,7 +516,7 @@ func (x *GcpModelArmorTemplateSdpSettings) GetAdvancedConfig() *GcpModelArmorTem
 // sensitive-data detectors.
 type GcpModelArmorTemplateSdpBasicConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// "ENABLED" or "DISABLED".
+	// "ENABLED" or "DISABLED". Unset leaves Google's default (disabled).
 	FilterEnforcement string `protobuf:"bytes,1,opt,name=filter_enforcement,json=filterEnforcement,proto3" json:"filter_enforcement,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
@@ -554,6 +561,7 @@ func (x *GcpModelArmorTemplateSdpBasicConfig) GetFilterEnforcement() string {
 
 // GcpModelArmorTemplateSdpAdvancedConfig names Sensitive Data Protection
 // templates. The Model Armor service agent needs permission to use them.
+// A de-identify template needs an inspect template beside it.
 type GcpModelArmorTemplateSdpAdvancedConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Inspect template:
@@ -615,6 +623,8 @@ func (x *GcpModelArmorTemplateSdpAdvancedConfig) GetDeidentifyTemplate() string 
 
 // GcpModelArmorTemplateMetadata shapes the template's behavior around its
 // filters. Every field is optional; unset fields keep Google's defaults.
+// Each bool is sent only when true, and Google's default for each is
+// false, so an empty block and an omitted one mean the same.
 type GcpModelArmorTemplateMetadata struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Log template create, update, and delete operations to Cloud Logging.
@@ -647,7 +657,7 @@ type GcpModelArmorTemplateMetadata struct {
 	//	                       passes (a safe way to tune a new template)
 	//	"INSPECT_AND_BLOCK" -- the traffic is blocked
 	//
-	// Unset keeps Google's default.
+	// Unset keeps Google's default, which is INSPECT_AND_BLOCK.
 	EnforcementType string `protobuf:"bytes,9,opt,name=enforcement_type,json=enforcementType,proto3" json:"enforcement_type,omitempty"`
 	// Which version of Google's filters the template runs. Omit to follow
 	// Google's default.
@@ -857,19 +867,20 @@ const file_catalog_gcp_gcpmodelarmortemplate_v1alpha1_spec_proto_rawDesc = "" +
 	"HARASSMENTR\tDANGEROUSR\n" +
 	"filterType\x12\xd4\x01\n" +
 	"\x10confidence_level\x18\x02 \x01(\tB\xa8\x01\xbaH\xa4\x01\xba\x01\xa0\x01\n" +
-	"\x16confidence_level.valid\x12Aconfidence_level must be LOW_AND_ABOVE, MEDIUM_AND_ABOVE, or HIGH\x1aCthis == '' || this in ['LOW_AND_ABOVE', 'MEDIUM_AND_ABOVE', 'HIGH']R\x0fconfidenceLevel\"\xb2\x03\n" +
+	"\x16confidence_level.valid\x12Aconfidence_level must be LOW_AND_ABOVE, MEDIUM_AND_ABOVE, or HIGH\x1aCthis == '' || this in ['LOW_AND_ABOVE', 'MEDIUM_AND_ABOVE', 'HIGH']R\x0fconfidenceLevel\"\xab\x03\n" +
 	" GcpModelArmorTemplateSdpSettings\x12v\n" +
 	"\fbasic_config\x18\x01 \x01(\v2S.dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplateSdpBasicConfigR\vbasicConfig\x12\x7f\n" +
-	"\x0fadvanced_config\x18\x02 \x01(\v2V.dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplateSdpAdvancedConfigR\x0eadvancedConfig:\x94\x01\xbaH\x90\x01\x1a\x8d\x01\n" +
-	"\x1fsdp_settings.basic_xor_advanced\x122set at most one of basic_config or advanced_config\x1a6!(has(this.basic_config) && has(this.advanced_config))\"\xd6\x01\n" +
+	"\x0fadvanced_config\x18\x02 \x01(\v2V.dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplateSdpAdvancedConfigR\x0eadvancedConfig:\x8d\x01\xbaH\x89\x01\x1a\x86\x01\n" +
+	"\x18sdp_settings.at_most_one\x122set at most one of basic_config or advanced_config\x1a6!(has(this.basic_config) && has(this.advanced_config))\"\xd6\x01\n" +
 	"#GcpModelArmorTemplateSdpBasicConfig\x12\xae\x01\n" +
 	"\x12filter_enforcement\x18\x01 \x01(\tB\x7f\xbaH|\xba\x01y\n" +
-	"\x18filter_enforcement.valid\x12.filter_enforcement must be ENABLED or DISABLED\x1a-this == '' || this in ['ENABLED', 'DISABLED']R\x11filterEnforcement\"\xc4\x04\n" +
+	"\x18filter_enforcement.valid\x12.filter_enforcement must be ENABLED or DISABLED\x1a-this == '' || this in ['ENABLED', 'DISABLED']R\x11filterEnforcement\"\xa7\x06\n" +
 	"&GcpModelArmorTemplateSdpAdvancedConfig\x12\x82\x02\n" +
 	"\x10inspect_template\x18\x01 \x01(\tB\xd6\x01\xbaH\xd2\x01\xba\x01\xce\x01\n" +
 	"\x17inspect_template.format\x12\\inspect_template must be projects/{project}/locations/{location}/inspectTemplates/{template}\x1aUthis == '' || this.matches('^projects/[^/]+/locations/[^/]+/inspectTemplates/[^/]+$')R\x0finspectTemplate\x12\x94\x02\n" +
 	"\x13deidentify_template\x18\x02 \x01(\tB\xe2\x01\xbaH\xde\x01\xba\x01\xda\x01\n" +
-	"\x1adeidentify_template.format\x12bdeidentify_template must be projects/{project}/locations/{location}/deidentifyTemplates/{template}\x1aXthis == '' || this.matches('^projects/[^/]+/locations/[^/]+/deidentifyTemplates/[^/]+$')R\x12deidentifyTemplate\"\xba\a\n" +
+	"\x1adeidentify_template.format\x12bdeidentify_template must be projects/{project}/locations/{location}/deidentifyTemplates/{template}\x1aXthis == '' || this.matches('^projects/[^/]+/locations/[^/]+/deidentifyTemplates/[^/]+$')R\x12deidentifyTemplate:\xe0\x01\xbaH\xdc\x01\x1a\xd9\x01\n" +
+	"(advanced_config.deidentify_needs_inspect\x12ndeidentify_template needs inspect_template: the inspect template decides what the de-identify template redacts\x1a=this.deidentify_template == '' || this.inspect_template != ''\"\xba\a\n" +
 	"\x1dGcpModelArmorTemplateMetadata\x126\n" +
 	"\x17log_template_operations\x18\x01 \x01(\bR\x15logTemplateOperations\x126\n" +
 	"\x17log_sanitize_operations\x18\x02 \x01(\bR\x15logSanitizeOperations\x12E\n" +

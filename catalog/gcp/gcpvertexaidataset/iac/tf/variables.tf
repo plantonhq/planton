@@ -41,7 +41,7 @@ variable "spec" {
     #                          object tracking)
     #   time_series_1.0.0.yaml forecasting data
     # e.g. "gs://google-cloud-aiplatform/schema/dataset/metadata/image_1.0.0.yaml".
-    # Immutable.
+    # Only these five full URIs are accepted. Immutable.
     metadata_schema_uri = string
 
     # Labels on the dataset. The platform attribution labels are merged in

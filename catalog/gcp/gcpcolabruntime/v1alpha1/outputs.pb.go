@@ -30,7 +30,11 @@ type GcpColabRuntimeOutputs struct {
 	// The runtime's id (the last segment of name).
 	RuntimeId string `protobuf:"bytes,2,opt,name=runtime_id,json=runtimeId,proto3" json:"runtime_id,omitempty"`
 	// The region the runtime lives in.
-	Location      string `protobuf:"bytes,3,opt,name=location,proto3" json:"location,omitempty"`
+	Location string `protobuf:"bytes,3,opt,name=location,proto3" json:"location,omitempty"`
+	// The runtime's state as Google reported it at the end of the deploy,
+	// e.g. RUNNING or STOPPED. A snapshot: a runtime a user starts or idle
+	// shutdown stops later reads as it was until the next deploy.
+	State         string `protobuf:"bytes,4,opt,name=state,proto3" json:"state,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -86,16 +90,24 @@ func (x *GcpColabRuntimeOutputs) GetLocation() string {
 	return ""
 }
 
+func (x *GcpColabRuntimeOutputs) GetState() string {
+	if x != nil {
+		return x.State
+	}
+	return ""
+}
+
 var File_catalog_gcp_gcpcolabruntime_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpcolabruntime_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/gcp/gcpcolabruntime/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcpcolabruntime.v1alpha1\"g\n" +
+	"2catalog/gcp/gcpcolabruntime/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcpcolabruntime.v1alpha1\"}\n" +
 	"\x16GcpColabRuntimeOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1d\n" +
 	"\n" +
 	"runtime_id\x18\x02 \x01(\tR\truntimeId\x12\x1a\n" +
-	"\blocation\x18\x03 \x01(\tR\blocationB\xdc\x02\n" +
+	"\blocation\x18\x03 \x01(\tR\blocation\x12\x14\n" +
+	"\x05state\x18\x04 \x01(\tR\x05stateB\xdc\x02\n" +
 	",com.dev.planton.gcp.gcpcolabruntime.v1alpha1B\fOutputsProtoP\x01ZYgithub.com/plantonhq/planton/catalog/gcp/gcpcolabruntime/v1alpha1;gcpcolabruntimev1alpha1\xa2\x02\x04DPGG\xaa\x02(Dev.Planton.Gcp.Gcpcolabruntime.V1alpha1\xca\x02(Dev\\Planton\\Gcp\\Gcpcolabruntime\\V1alpha1\xe2\x024Dev\\Planton\\Gcp\\Gcpcolabruntime\\V1alpha1\\GPBMetadata\xea\x02,Dev::Planton::Gcp::Gcpcolabruntime::V1alpha1b\x06proto3"
 
 var (

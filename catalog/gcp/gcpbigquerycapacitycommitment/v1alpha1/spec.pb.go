@@ -30,14 +30,22 @@ const (
 // the same admin project and location draws on them, so a commitment
 // belongs to no single reservation.
 //
-// THIS IS A PURCHASE. Creating one starts a billed term. Google refuses to
-// delete a commitment before its term ends, so destroying this resource
-// fails until then -- set deletion_policy to ABANDON when the block should
-// be able to leave management early, and plan renewals with renewal_plan.
+// THIS IS A PURCHASE. Creating one starts a billed term. A commitment
+// cannot be deleted before its term ends: Google refuses the delete, so
+// destroying this resource with DELETE fails until then. Set
+// deletion_policy to ABANDON when the block should be able to leave
+// management early, and decide with renewal_plan whether the commitment
+// ends at its term (NONE) or renews.
 //
 // Immutable: project_id, location, capacity_commitment_id, slot_count,
 // edition, enforce_single_admin_project_per_org (a change would buy a new
 // commitment). plan (to a longer one) and renewal_plan update in place.
+//
+// A replacing change is never a resize. Under ABANDON it leaves this
+// commitment billing to the end of its term, unmanaged, and attempts a new
+// purchase; under DELETE the apply fails while the term runs. More slots
+// is a second commitment; fewer is Google's split into two commitments,
+// then a delete of one after its end time.
 type GcpBigQueryCapacityCommitmentSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The administration project the commitment is bought in: a literal
@@ -45,8 +53,12 @@ type GcpBigQueryCapacityCommitmentSpec struct {
 	// default project is used.
 	ProjectId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// Where the slots are: a multi-region (US, EU) or a region. Only
-	// reservations in the same location use them. Empty means US (Google's
-	// default). Immutable.
+	// reservations in the same admin project and location use them; a
+	// commitment in another project or location does nothing for them. Empty
+	// means US (Google's default). Write US and EU in upper case and a region
+	// in lower case: the provider never reads the location back, so another
+	// spelling is another location to it, and replaces (re-buys) the
+	// commitment. Immutable.
 	Location string `protobuf:"bytes,2,opt,name=location,proto3" json:"location,omitempty"`
 	// The commitment's ID -- lowercase letters, digits, and dashes, not
 	// starting or ending with a dash, at most 64 characters. Defaults to
@@ -59,27 +71,46 @@ type GcpBigQueryCapacityCommitmentSpec struct {
 	// editions the plans on offer are ANNUAL (one year) and THREE_YEAR; the
 	// FLEX, MONTHLY, TRIAL, and *_FLAT_RATE plans belong to the legacy
 	// flat-rate model. A plan can move to a longer term in place, never a
-	// shorter one.
+	// shorter one: Google refuses a shorter plan. After a renewal Google
+	// reports the renewal plan as the commitment's plan, so keep plan equal
+	// to renewal_plan, or update plan after each renewal -- otherwise the
+	// next deploy re-commits to a longer plan or fails on a shorter one.
 	Plan string `protobuf:"bytes,5,opt,name=plan,proto3" json:"plan,omitempty"`
-	// The plan the commitment converts to when its term ends (for plans
-	// that renew), e.g. ANNUAL to renew for another year. Changing it
-	// extends the committed period. Empty leaves Google's default.
+	// What the commitment becomes when its term ends:
+	//
+	//	NONE       -- it ends: Google removes it at the end of its term (it
+	//	              needs edition set). Once Google removes it, remove this
+	//	              block, or destroy it with ABANDON before the term ends:
+	//	              a deploy of the unchanged manifest after the term buys
+	//	              a new commitment.
+	//	ANNUAL     -- it renews for another year, and keeps renewing
+	//	THREE_YEAR -- it renews for three years
+	//
+	// (and the legacy flat-rate plans). Changing it extends the committed
+	// period. Empty leaves Google's default, and ANNUAL commitments renew by
+	// default.
 	RenewalPlan string `protobuf:"bytes,6,opt,name=renewal_plan,json=renewalPlan,proto3" json:"renewal_plan,omitempty"`
 	// The edition the slots are for: STANDARD, ENTERPRISE, or
 	// ENTERPRISE_PLUS -- it must match the reservations that draw on the
 	// commitment. Empty lets Google choose. Immutable.
 	Edition string `protobuf:"bytes,7,opt,name=edition,proto3" json:"edition,omitempty"`
-	// Fail the purchase if another project in the organization already
-	// holds a capacity commitment -- a guard for organizations that keep
-	// every commitment in one admin project. Immutable.
+	// Google's guard that fails the purchase if another project in the
+	// organization already holds a capacity commitment. The pinned provider
+	// records this value but never sends it to Google (Google takes it as a
+	// query parameter of the create call, which the provider leaves out), so
+	// it guards nothing; changing it still replaces -- re-buys -- the
+	// commitment. Leave it unset. Immutable.
 	EnforceSingleAdminProjectPerOrg bool `protobuf:"varint,8,opt,name=enforce_single_admin_project_per_org,json=enforceSingleAdminProjectPerOrg,proto3" json:"enforce_single_admin_project_per_org,omitempty"`
 	// What happens to the commitment when this resource is destroyed:
 	//
 	//	"" / "DELETE" -- deleted, which Google refuses before the term ends
 	//	                 (the destroy then fails)
 	//	"PREVENT"     -- destroy fails
-	//	"ABANDON"     -- the commitment leaves management and runs out its
-	//	                 term (and billing) in GCP
+	//	"ABANDON"     -- the commitment leaves management and keeps billing
+	//	                 in GCP: to the end of its term when renewal_plan is
+	//	                 NONE, and through every renewal otherwise
+	//
+	// The policy also governs a replacing change (see the message comment).
 	DeletionPolicy string `protobuf:"bytes,9,opt,name=deletion_policy,json=deletionPolicy,proto3" json:"deletion_policy,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
@@ -182,21 +213,26 @@ var File_catalog_gcp_gcpbigquerycapacitycommitment_v1alpha1_spec_proto protorefl
 
 const file_catalog_gcp_gcpbigquerycapacitycommitment_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/gcp/gcpbigquerycapacitycommitment/v1alpha1/spec.proto\x126dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xdd\x05\n" +
+	"=catalog/gcp/gcpbigquerycapacitycommitment/v1alpha1/spec.proto\x126dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xaa\n" +
+	"\n" +
 	"!GcpBigQueryCapacityCommitmentSpec\x12u\n" +
 	"\n" +
-	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x1a\n" +
-	"\blocation\x18\x02 \x01(\tR\blocation\x12f\n" +
+	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\xde\x01\n" +
+	"\blocation\x18\x02 \x01(\tB\xc1\x01\xbaH\xbd\x01\xba\x01\xb9\x01\n" +
+	"\x11location.spelling\x12Wlocation must be US or EU in upper case, or a region in lower case such as us-central1.\x1aKthis == '' || this in ['US', 'EU'] || this.matches('^[a-z]+-[a-z]+[0-9]+$')R\blocation\x12f\n" +
 	"\x16capacity_commitment_id\x18\x03 \x01(\tB0\xbaH-\xd8\x01\x01r(2&^[a-z0-9](?:[-a-z0-9]{0,62}[a-z0-9])?$R\x14capacityCommitmentId\x12&\n" +
 	"\n" +
-	"slot_count\x18\x04 \x01(\x03B\a\xbaH\x04\"\x02(\x01R\tslotCount\x12\x1a\n" +
-	"\x04plan\x18\x05 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04plan\x12!\n" +
-	"\frenewal_plan\x18\x06 \x01(\tR\vrenewalPlan\x12I\n" +
+	"slot_count\x18\x04 \x01(\x03B\a\xbaH\x04\"\x02(\x01R\tslotCount\x12{\n" +
+	"\x04plan\x18\x05 \x01(\tBg\xbaHd\xc8\x01\x01r_R\x04FLEXR\x0eFLEX_FLAT_RATER\x05TRIALR\aMONTHLYR\x11MONTHLY_FLAT_RATER\x06ANNUALR\x10ANNUAL_FLAT_RATER\n" +
+	"THREE_YEARR\x04plan\x12\x90\x01\n" +
+	"\frenewal_plan\x18\x06 \x01(\tBm\xbaHj\xd8\x01\x01reR\x04FLEXR\x0eFLEX_FLAT_RATER\x05TRIALR\aMONTHLYR\x11MONTHLY_FLAT_RATER\x06ANNUALR\x10ANNUAL_FLAT_RATER\n" +
+	"THREE_YEARR\x04NONER\vrenewalPlan\x12I\n" +
 	"\aedition\x18\a \x01(\tB/\xbaH,\xd8\x01\x01r'R\bSTANDARDR\n" +
 	"ENTERPRISER\x0fENTERPRISE_PLUSR\aedition\x12M\n" +
 	"$enforce_single_admin_project_per_org\x18\b \x01(\bR\x1fenforceSingleAdminProjectPerOrg\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\t \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
-	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicyB\xbb\x03\n" +
+	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy:\xb4\x01\xbaH\xb0\x01\x1a\xad\x01\n" +
+	"\x1fspec.renewal_none_needs_edition\x12Wrenewal_plan NONE needs an edition: Google accepts NONE only for an edition commitment.\x1a1this.renewal_plan != 'NONE' || this.edition != ''B\xbb\x03\n" +
 	":com.dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1B\tSpecProtoP\x01Zugithub.com/plantonhq/planton/catalog/gcp/gcpbigquerycapacitycommitment/v1alpha1;gcpbigquerycapacitycommitmentv1alpha1\xa2\x02\x04DPGG\xaa\x026Dev.Planton.Gcp.Gcpbigquerycapacitycommitment.V1alpha1\xca\x026Dev\\Planton\\Gcp\\Gcpbigquerycapacitycommitment\\V1alpha1\xe2\x02BDev\\Planton\\Gcp\\Gcpbigquerycapacitycommitment\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Gcp::Gcpbigquerycapacitycommitment::V1alpha1b\x06proto3"
 
 var (

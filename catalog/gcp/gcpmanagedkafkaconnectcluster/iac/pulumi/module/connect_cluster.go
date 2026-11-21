@@ -82,7 +82,17 @@ func connectCluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provid
 
 	created, err := managedkafka.NewConnectCluster(ctx, resourceName, args,
 		pulumi.Provider(gcpProvider),
-		pulumi.DependsOn([]pulumi.Resource{createdApi}))
+		pulumi.DependsOn([]pulumi.Resource{createdApi}),
+		// Google fixes a Connect cluster's Kafka cluster at creation
+		// ("Required. Immutable." in its API), but the provider plans a
+		// change to it as an in-place update that Google refuses at apply.
+		// A change to kafkaCluster therefore replaces the Connect cluster,
+		// visibly in the preview -- the Terraform module's terraform_data
+		// tracker.
+		pulumi.ReplaceOnChanges([]string{"kafkaCluster"}),
+		// The replacement keeps the Connect cluster's ID, which Google holds
+		// while the old one exists, so the old one goes first.
+		pulumi.DeleteBeforeReplace(true))
 	if err != nil {
 		return errors.Wrap(err, "failed to create managed kafka connect cluster")
 	}

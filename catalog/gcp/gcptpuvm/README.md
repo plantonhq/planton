@@ -62,7 +62,7 @@ planton apply -f tpu-vm.yaml
 | `acceleratorConfig` | `object` | none | The slice by `type` (`V2` ... `V6E`) and `topology` (`2x2`, `2x2x1`). Immutable. |
 | `description` | `string` | none | Mutable. |
 | `cidrBlock` | `string` | Google chooses | A /29 block. Immutable. |
-| `networkConfig` / `networkConfigs` | `object` / `object[]` | default network | One interface or several: `network`, `subnetwork`, `enableExternalIps`, `canIpForward`, `queueCount`. Immutable. |
+| `networkConfig` / `networkConfigs` | `object` / `object[]` | the project's `default` network (name one if the project has none) | One interface or several: `network`, `subnetwork`, `enableExternalIps`, `canIpForward`, `queueCount`. Immutable. |
 | `serviceAccount` | `object` | Compute default | `email` (`GcpServiceAccount` ref), `scopes`. Immutable. |
 | `schedulingConfig` | `object` | on-demand | `spot`, `preemptible`, `reserved`. Immutable. |
 | `dataDisks` | `object[]` | none | `sourceDisk` (`GcpComputeDisk` ref), `mode` (`READ_WRITE` / `READ_ONLY`). Mutable. |
@@ -82,6 +82,8 @@ planton apply -f tpu-vm.yaml
 | `name` | `string` | `projects/{project}/locations/{zone}/nodes/{node_id}` |
 | `node_id` | `string` | The TPU's id (for `gcloud compute tpus tpu-vm ssh`) |
 | `zone` | `string` | The TPU's zone |
+| `state`, `health` | `string` | Google's state and health for the TPU at the end of the deploy (a snapshot) |
+| `worker_internal_ips`, `worker_external_ips` | `string[]` | Every worker's internal IP, worker 0 first, and the external IPs of the workers that have one |
 
 ## Deployment Methods
 

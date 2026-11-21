@@ -24,3 +24,8 @@ output "update_time" {
   description = "RFC 3339 timestamp of the agent's last update"
   value       = google_vertex_ai_reasoning_engine.this.update_time
 }
+
+output "effective_identity" {
+  description = "The identity the agent runs as, as Google resolved it"
+  value       = try(google_vertex_ai_reasoning_engine.this.spec[0].effective_identity, null)
+}

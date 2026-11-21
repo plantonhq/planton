@@ -16,7 +16,7 @@ variable "spec" {
   type = object({
     # The GCP project the cluster is created in: a literal project ID or a
     # GcpProject reference. If omitted, the provider's default project is
-    # used.
+    # used. Immutable: a change replaces the cluster.
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     project_id = optional(string, "")
 
@@ -49,7 +49,9 @@ variable "spec" {
     #   REDIS_STANDARD_LARGE   -- ~13 GB, balanced
     #   REDIS_HIGHMEM_XLARGE   -- ~58 GB
     #   REDIS_HIGHMEM_2XLARGE  -- ~116 GB
-    # If unset, Google picks REDIS_HIGHMEM_MEDIUM. Updates in place.
+    # If unset at creation, Google picks REDIS_HIGHMEM_MEDIUM; removing it
+    # later keeps the current type (write the type you want instead).
+    # Updates in place.
     node_type = optional(string, "")
 
     # Native Redis configuration parameters Google lets a cluster tune, as
@@ -76,8 +78,11 @@ variable "spec" {
     #                         network is the boundary)
     #   AUTH_MODE_IAM_AUTH -- clients present an IAM access token as the
     #                         Redis password; access is governed by IAM
-    # Immutable. Sent explicitly on both engines so the choice never
-    # depends on a provider default.
+    # Fixed at creation by the provider, which replaces the cluster on a
+    # change; Google itself does not mark it immutable. Both engines send it
+    # explicitly, and a blank sends AUTH_MODE_DISABLED -- so removing the
+    # field from an IAM cluster plans a replacement with an unauthenticated
+    # cluster.
     authorization_mode = optional(string, "")
 
     # TLS for client connections:
@@ -86,7 +91,11 @@ variable "spec" {
     #   TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION -- TLS; clients verify
     #                                                    the server's
     #                                                    certificate
-    # Immutable. Sent explicitly on both engines.
+    # Fixed at creation by the provider, which replaces the cluster on a
+    # change; Google itself does not mark it immutable. Both engines send it
+    # explicitly, and a blank sends TRANSIT_ENCRYPTION_MODE_DISABLED -- so
+    # removing the field from a TLS cluster plans a replacement with a
+    # plaintext cluster.
     transit_encryption_mode = optional(string, "")
 
     # Which certificate authority signs the server certificate when TLS is
@@ -103,6 +112,8 @@ variable "spec" {
     #                                                    Authority Service
     #                                                    (server_ca_pool)
     # Meaningful only with TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION.
+    # Removing it after creation keeps the current mode; there is no way back
+    # to "Google's choice", so write the mode you want.
     server_ca_mode = optional(string, "")
 
     # The Certificate Authority Service pool that signs the server
@@ -120,7 +131,9 @@ variable "spec" {
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     kms_key = optional(string, "")
 
-    # Whether and how data survives a restart. Unset means in-memory only.
+    # Whether and how data survives a restart. Unset at creation means
+    # in-memory only. Removing the block later keeps Google's current mode:
+    # write mode DISABLED to turn persistence off.
     persistence_config = optional(object({
       # Persistence mode:
       #   DISABLED -- in-memory only (Google's default); a restart loses data
@@ -128,7 +141,10 @@ variable "spec" {
       #   AOF      -- append-only write log (aof_config)
       mode = optional(string, "")
 
-      # Snapshot schedule. Only meaningful when mode is RDB.
+      # Snapshot schedule. Only meaningful when mode is RDB. Write the block
+      # in full when switching to RDB: a field left out keeps Google's current
+      # value. The snapshot anchor (rdb_snapshot_start_time), once set, cannot
+      # be cleared.
       rdb_config = optional(object({
         # How often RDB snapshots are taken. If unset, Google defaults to
         # TWENTY_FOUR_HOURS.
@@ -140,7 +156,9 @@ variable "spec" {
         rdb_snapshot_start_time = optional(string, "")
       }))
 
-      # Flush policy. Only meaningful when mode is AOF.
+      # Flush policy. Only meaningful when mode is AOF. Write the block in
+      # full when switching to AOF: a field left out keeps Google's current
+      # value (write append_fsync EVERYSEC to return to Google's default).
       aof_config = optional(object({
         # How often the AOF buffer is flushed to disk (Redis appendfsync):
         #   NO       -- the OS decides (fastest; risks the last seconds of writes)
@@ -151,7 +169,9 @@ variable "spec" {
     }))
 
     # How nodes spread across the region's zones. Unset means MULTI_ZONE.
-    # Immutable.
+    # Fixed at creation: the provider plans a change in place and sends
+    # nothing, so a changed value re-plans on every deploy. A different
+    # distribution is a new cluster.
     zone_distribution_config = optional(object({
       # MULTI_ZONE (Google's default) spreads primaries and replicas across
       # zones so a zonal outage keeps the cluster serving; SINGLE_ZONE puts
@@ -165,7 +185,7 @@ variable "spec" {
     }))
 
     # The weekly window Google may apply maintenance in. Unset lets Google
-    # choose.
+    # choose; removing the block clears the window and Google picks again.
     maintenance_policy = optional(object({
       # The weekly window.
       weekly_maintenance_window = object({
@@ -179,7 +199,7 @@ variable "spec" {
 
     # Daily backups into the cluster's managed backup collection. Unset
     # means no automated backups (on-demand backups stay available through
-    # the console and gcloud).
+    # the console and gcloud); removing the block stops automated backups.
     automated_backup_config = optional(object({
       # Hour of day (0-23, UTC) the daily backup starts.
       start_hour = optional(number, 0)
@@ -191,8 +211,10 @@ variable "spec" {
 
     # Cross-region disaster recovery: make this cluster a PRIMARY that
     # replicates to secondaries in other regions, or a SECONDARY that
-    # replicates from a primary. Unset (or role NONE) is a standalone
-    # cluster.
+    # replicates from a primary. Unset at creation (or role NONE) is a
+    # standalone cluster. Removing the block later keeps the role Google
+    # holds: write cluster_role NONE, with no primary or secondaries, to
+    # leave a pair.
     cross_cluster_replication_config = optional(object({
       # This cluster's role:
       #   NONE      -- not replicating across regions (Google's default)
@@ -221,7 +243,8 @@ variable "spec" {
     }))
 
     # Seed the new cluster from RDB files in Cloud Storage at creation.
-    # Mutually exclusive with managed_backup_source. Immutable.
+    # Mutually exclusive with managed_backup_source. Immutable: keep the
+    # block for the cluster's life, since removing it replaces the cluster.
     gcs_source = optional(object({
       # Cloud Storage URIs of the RDB files (gs://bucket/path.rdb). The
       # Memorystore service agent needs read access to the objects.
@@ -229,7 +252,8 @@ variable "spec" {
     }))
 
     # Seed the new cluster from a managed backup at creation. Mutually
-    # exclusive with gcs_source. Immutable.
+    # exclusive with gcs_source. Immutable: keep the block for the cluster's
+    # life, since removing it replaces the cluster.
     managed_backup_source = optional(object({
       # Full resource path of the backup
       # (projects/{project}/locations/{region}/backupCollections/{collection}/backups/{backup});
@@ -243,15 +267,20 @@ variable "spec" {
     labels = optional(map(string), {})
 
     # Whether deletion protection is on. Defaults to true (Google's own
-    # posture): destroying the cluster fails until this is set to false.
-    # Both engines send the value explicitly so a manifest that never
-    # mentions it behaves the same everywhere. Updates in place.
+    # posture). Google enforces it, so it guards only a DELETE destroy: under
+    # deletion_policy DELETE a destroy fails until this is set to false and
+    # that change is applied on its own first (a change made in the same
+    # destroy run never reaches Google). PREVENT and ABANDON are decided
+    # before Google is called, so protection never stops an ABANDON. Both
+    # engines send the value explicitly so a manifest that never mentions it
+    # behaves the same everywhere. Updates in place.
     deletion_protection_enabled = optional(bool)
 
-    # Self-service maintenance: setting this to a newer version from the
-    # cluster's available maintenance versions applies the update on your
-    # schedule instead of waiting for Google's rollout. Update-only and
-    # forward-only; leave unset to follow Google's rollout.
+    # Self-service maintenance: used only to request an update on an
+    # existing cluster, to a version chosen from the
+    # available_maintenance_versions output. Setting it applies that update
+    # on your schedule instead of waiting for Google's rollout. Forward-only;
+    # leave unset at creation and to follow Google's rollout.
     maintenance_version = optional(string, "")
 
     # A Memorystore for Redis Cluster ACL policy attached to the cluster:
@@ -263,13 +292,16 @@ variable "spec" {
     # every node.
     acl_policy = optional(string, "")
 
-    # What happens to the cluster when this resource is destroyed
-    # (evaluated after deletion_protection_enabled allows the destroy):
+    # What happens to the cluster when this resource is destroyed. PREVENT
+    # and ABANDON are decided before Google is called; deletion protection
+    # applies only to DELETE, and must be turned off and applied before a
+    # DELETE destroy can succeed:
     #   "" / "DELETE" -- the cluster is deleted and its data lost
     #   "PREVENT"     -- destroy fails; a second guard for a cache whose
     #                    loss would stampede the backing store
     #   "ABANDON"     -- the cluster leaves management but keeps running
-    #                    (and billing) in GCP
+    #                    (and billing) in GCP, even with deletion protection
+    #                    on
     deletion_policy = optional(string, "")
   })
 }

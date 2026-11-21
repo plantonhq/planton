@@ -26,13 +26,21 @@ resources:
       - arg: create_notebook_execution_job_request.parent
         reason: >-
           derived -- left unset by both modules so the provider fills
-          projects/{project}/locations/{location} from the schedule's own
-          project and location
+          projects/{project}/locations/{region} from the schedule's project
+          and the provider's region, which both modules set to the
+          schedule's location
       - arg: create_pipeline_job_request.parent
         reason: >-
           derived -- left unset by both modules so the provider fills
-          projects/{project}/locations/{location} from the schedule's own
-          project and location
+          projects/{project}/locations/{region} from the schedule's project
+          and the provider's region, which both modules set to the
+          schedule's location
+  terraform_data:
+    internal: >-
+      the module's location tracker (OpenTofu's built-in store) -- the
+      provider plans a changed location as an in-place update of the
+      schedule at its old path, so the tracker makes that change replace the
+      schedule; it has no provider surface
   google_project_service:
     internal: >-
       API enablement plumbing -- the module enables the owning API so a

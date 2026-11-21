@@ -8,4 +8,5 @@ const (
 	OpDeployedModelId          = "deployed_model_id"
 	OpDeployedModelDisplayName = "deployed_model_display_name"
 	OpLocation                 = "location"
+	OpServiceAttachment        = "service_attachment"
 )

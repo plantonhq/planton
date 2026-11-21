@@ -52,10 +52,25 @@ var _ = ginkgo.Describe("GcpBigQueryReservationGroupSpec", func() {
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 	})
 
-	ginkgo.It("should reject a malformed name and an unknown deletion policy", func() {
+	ginkgo.It("should reject a location in the wrong case", func() {
+		for _, loc := range []string{"us", "eu", "Europe-West1"} {
+			msg := minimal()
+			msg.Spec.Location = loc
+			gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), loc)
+		}
 		msg := minimal()
-		msg.Spec.ReservationGroupName = "tier_1"
-		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.Location = "europe-west1"
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject a malformed name and an unknown deletion policy", func() {
+		for _, name := range []string{"tier_1", "Tier-1", "1tier", "tier-",
+			"a234567890123456789012345678901234567890123456789012345678901234x"} {
+			msg := minimal()
+			msg.Spec.ReservationGroupName = name
+			gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), name)
+		}
+		msg := minimal()
 		msg = minimal()
 		msg.Spec.DeletionPolicy = "KEEP"
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())

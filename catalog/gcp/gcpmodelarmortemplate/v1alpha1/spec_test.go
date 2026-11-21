@@ -1,6 +1,7 @@
 package gcpmodelarmortemplatev1alpha1
 
 import (
+	"strings"
 	"testing"
 
 	"buf.build/go/protovalidate"
@@ -150,6 +151,77 @@ var _ = ginkgo.Describe("GcpModelArmorTemplateSpec", func() {
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 		msg = minimal()
 		msg.Spec.DeletionPolicy = "KEEP"
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should accept a de-identify template only beside an inspect template", func() {
+		msg := minimal()
+		msg.Spec.FilterConfig.SdpSettings = &GcpModelArmorTemplateSdpSettings{AdvancedConfig: &GcpModelArmorTemplateSdpAdvancedConfig{
+			DeidentifyTemplate: "projects/p/locations/us/deidentifyTemplates/redact",
+		}}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.FilterConfig.SdpSettings.AdvancedConfig.InspectTemplate = "projects/p/locations/us/inspectTemplates/pii"
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		msg.Spec.FilterConfig.SdpSettings.AdvancedConfig.DeidentifyTemplate = ""
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject a malformed de-identify template name", func() {
+		msg := minimal()
+		msg.Spec.FilterConfig.SdpSettings = &GcpModelArmorTemplateSdpSettings{AdvancedConfig: &GcpModelArmorTemplateSdpAdvancedConfig{
+			InspectTemplate:    "projects/p/locations/us/inspectTemplates/pii",
+			DeidentifyTemplate: "redact",
+		}}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should accept basic Sensitive Data Protection alone and an empty block", func() {
+		msg := minimal()
+		msg.Spec.FilterConfig.SdpSettings = &GcpModelArmorTemplateSdpSettings{BasicConfig: &GcpModelArmorTemplateSdpBasicConfig{FilterEnforcement: "ENABLED"}}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		msg.Spec.FilterConfig.SdpSettings = &GcpModelArmorTemplateSdpSettings{}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject unknown malicious URL and basic Sensitive Data Protection enforcement", func() {
+		msg := minimal()
+		msg.Spec.FilterConfig.MaliciousUriFilterSettings = &GcpModelArmorTemplateMaliciousUriFilterSettings{FilterEnforcement: "ON"}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg = minimal()
+		msg.Spec.FilterConfig.SdpSettings = &GcpModelArmorTemplateSdpSettings{BasicConfig: &GcpModelArmorTemplateSdpBasicConfig{FilterEnforcement: "ON"}}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject an unknown Responsible AI category or confidence", func() {
+		msg := minimal()
+		msg.Spec.FilterConfig.RaiSettings = &GcpModelArmorTemplateRaiSettings{RaiFilters: []*GcpModelArmorTemplateRaiFilter{{FilterType: "VIOLENCE"}}}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg = minimal()
+		msg.Spec.FilterConfig.RaiSettings = &GcpModelArmorTemplateRaiSettings{RaiFilters: []*GcpModelArmorTemplateRaiFilter{{FilterType: "DANGEROUS", ConfidenceLevel: "MEDIUM"}}}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject a bad filter version alias or version", func() {
+		msg := minimal()
+		msg.Spec.TemplateMetadata = &GcpModelArmorTemplateMetadata{FilterVersionSelector: &GcpModelArmorTemplateFilterVersionSelector{Alias: "STABLE"}}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.TemplateMetadata.FilterVersionSelector = &GcpModelArmorTemplateFilterVersionSelector{Version: "V2"}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should hold the template id to 63 characters", func() {
+		msg := minimal()
+		msg.Spec.TemplateId = strings.Repeat("a", 63)
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		msg.Spec.TemplateId = strings.Repeat("a", 64)
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject a malformed location", func() {
+		msg := minimal()
+		msg.Spec.Location = "US-Central1"
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.Location = "us-central1-a"
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
 })

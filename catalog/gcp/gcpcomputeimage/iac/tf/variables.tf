@@ -56,8 +56,10 @@ variable "spec" {
     # Source: a raw disk tarball in Cloud Storage. Exactly one source.
     # Immutable.
     raw_disk = optional(object({
-      # The tarball's full Cloud Storage URL, e.g.
-      # "https://storage.googleapis.com/my-bucket/images/web-base.tar.gz".
+      # Where the archive is: its full Cloud Storage URL, e.g.
+      # "https://storage.googleapis.com/my-bucket/images/web-base.tar.gz" (a
+      # gs:// URI is not accepted), or an Artifact Registry package version,
+      # projects/{project}/locations/{location}/repositories/{repo}/packages/{package}/versions/{version}.
       # The archive holds one file named disk.raw. Required.
       source = string
 
@@ -74,8 +76,12 @@ variable "spec" {
     # GcpKmsKey or a GcpKmsKeyHandle (Autokey serves images). The Compute
     # Engine service agent
     # (service-<project-number>@compute-system.iam.gserviceaccount.com)
-    # must hold roles/cloudkms.cryptoKeyEncrypterDecrypter on the key. When
-    # omitted, Google-managed encryption is used. Immutable.
+    # must hold roles/cloudkms.cryptoKeyEncrypterDecrypter on the key, and
+    # the key must be in the image's storage location. A literal names the
+    # key, never a key version: the provider reads the key back without its
+    # /cryptoKeyVersions/ suffix, so a version would replace the image on
+    # every apply. When omitted, Google-managed encryption is used.
+    # Immutable.
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     kms_key = optional(string, "")
 
@@ -130,13 +136,13 @@ variable "spec" {
     # source's size. Immutable.
     disk_size_gb = optional(number)
 
-    # Guest OS features VMs booted from this image may use, e.g.
-    # ["UEFI_COMPATIBLE", "SECURE_BOOT", "GVNIC", "VIRTIO_SCSI_MULTIQUEUE",
-    # "SEV_CAPABLE", "SEV_SNP_CAPABLE", "TDX_CAPABLE", "IDPF",
-    # "MULTI_IP_SUBNET", "SUSPEND_RESUME_COMPATIBLE", "WINDOWS"]. The
-    # accepted set evolves with GCP -- see "Enabling guest operating system
-    # features" in the Compute Engine docs. Unset inherits the source's
-    # features. Immutable.
+    # Guest OS features VMs booted from this image may use -- the values
+    # the provider accepts: "UEFI_COMPATIBLE", "SECURE_BOOT", "GVNIC",
+    # "VIRTIO_SCSI_MULTIQUEUE", "SEV_CAPABLE", "SEV_SNP_CAPABLE",
+    # "SEV_LIVE_MIGRATABLE", "SEV_LIVE_MIGRATABLE_V2", "SNP_SVSM_CAPABLE",
+    # "TDX_CAPABLE", "IDPF", "MULTI_IP_SUBNET", "SUSPEND_RESUME_COMPATIBLE",
+    # "WINDOWS". See "Enabling guest operating system features" in the
+    # Compute Engine docs. Unset inherits the source's features. Immutable.
     guest_os_features = optional(list(string), [])
 
     # License URIs the image carries, e.g. a Windows Server or SQL Server
@@ -146,8 +152,8 @@ variable "spec" {
     licenses = optional(list(string), [])
 
     # Where the image's data is stored: one multi-region ("us", "eu",
-    # "asia") or one region. Unset takes the multi-region nearest the
-    # source. Immutable.
+    # "asia") or one region -- at most one location. Unset takes the
+    # multi-region nearest the source. Immutable.
     storage_locations = optional(list(string), [])
 
     # The UEFI Secure Boot keys VMs booted from this image start with. Unset

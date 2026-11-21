@@ -24,13 +24,14 @@ const (
 )
 
 // GcpManagedKafkaConnectorTaskRestartPolicy restarts failed connector tasks
-// with exponential backoff (`task_restart_policy`). Without it, a failed
-// task stays failed until someone restarts it.
+// with exponential backoff (`task_restart_policy`). A declared policy names
+// at least one backoff: an empty one sends the same request as no policy
+// at all.
 type GcpManagedKafkaConnectorTaskRestartPolicy struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The shortest wait before retrying a failed task -- a duration in
 	// seconds with up to nine fractional digits and an "s" suffix, e.g.
-	// "60s". Empty leaves Google's default.
+	// "60s". At most maximum_backoff. Empty leaves Google's default.
 	MinimumBackoff string `protobuf:"bytes,1,opt,name=minimum_backoff,json=minimumBackoff,proto3" json:"minimum_backoff,omitempty"`
 	// The longest wait between retries -- the backoff's upper bound, same
 	// format, e.g. "1800s". Empty leaves Google's default.
@@ -93,13 +94,18 @@ func (x *GcpManagedKafkaConnectorTaskRestartPolicy) GetMaximumBackoff() string {
 //
 // Immutable: project_id, location, connect_cluster, connector_id (a change
 // replaces the connector). configs and the restart policy update in place.
+//
+// project_id and location name the Connect cluster's project and region:
+// the modules send them beside the Connect cluster's bare ID, so they must
+// be the Connect cluster's own.
 type GcpManagedKafkaConnectorSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The GCP project the Connect cluster lives in: a literal project ID or
 	// a GcpProject reference. If omitted, the provider's default project is
 	// used.
 	ProjectId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
-	// The Connect cluster's region, e.g. "us-central1". Immutable.
+	// The Connect cluster's region, e.g. "us-central1" -- the region the
+	// Connect cluster runs in. Immutable.
 	Location string `protobuf:"bytes,2,opt,name=location,proto3" json:"location,omitempty"`
 	// The Connect cluster that runs the connector. A
 	// GcpManagedKafkaConnectCluster reference resolves to its full resource
@@ -107,22 +113,27 @@ type GcpManagedKafkaConnectorSpec struct {
 	// cluster ID. The modules derive the bare ID Google's resource expects.
 	// Immutable.
 	ConnectCluster *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=connect_cluster,json=connectCluster,proto3" json:"connect_cluster,omitempty"`
-	// The connector's ID, the name Kafka Connect shows for it. Defaults to
-	// metadata.name. Immutable.
+	// The connector's ID, the name Kafka Connect shows for it -- 1-63
+	// characters, RFC 1035 (lowercase letters, digits, hyphens; starts with a
+	// letter). Defaults to metadata.name, which must then fit the same rule.
+	// Immutable.
 	ConnectorId string `protobuf:"bytes,4,opt,name=connector_id,json=connectorId,proto3" json:"connector_id,omitempty"`
-	// The connector's Kafka Connect configuration, keyed by property:
-	// "connector.class" picks the plugin (for example
+	// The connector's Kafka Connect configuration, keyed by property --
+	// required, because "connector.class" picks the plugin (for example
 	// com.google.pubsub.kafka.sink.CloudPubSubSinkConnector,
 	// com.wepay.kafka.connect.bigquery.BigQuerySinkConnector,
 	// io.aiven.kafka.connect.gcs.GcsSinkConnector,
 	// org.apache.kafka.connect.mirror.MirrorSourceConnector), "tasks.max"
-	// its parallelism, "topics" what a sink reads, plus the plugin's own
-	// keys and converters. The values are stored in plain text on the
-	// Connect cluster; keep credentials out of them where the plugin offers
-	// Google IAM authentication instead.
+	// its parallelism, "topics" the topics a sink reads (for a MirrorMaker 2
+	// source, a regular expression of the topics it replicates), plus the
+	// plugin's own keys and converters. The values are plain text in four
+	// places: the manifest, Planton's stored copy of it, the IaC module's
+	// input, and the Connect cluster. Keep credentials out of them where the
+	// plugin offers Google IAM authentication instead.
 	Configs map[string]string `protobuf:"bytes,5,rep,name=configs,proto3" json:"configs,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	// Automatic restarts for failed tasks. Omit to leave failed tasks
-	// stopped.
+	// Automatic restarts for failed tasks, with the backoffs you choose.
+	// Omitted, the modules send no policy and Google's own handling of
+	// failed tasks applies.
 	TaskRestartPolicy *GcpManagedKafkaConnectorTaskRestartPolicy `protobuf:"bytes,6,opt,name=task_restart_policy,json=taskRestartPolicy,proto3" json:"task_restart_policy,omitempty"`
 	// What happens to the connector when this resource is destroyed:
 	//
@@ -217,23 +228,28 @@ var File_catalog_gcp_gcpmanagedkafkaconnector_v1alpha1_spec_proto protoreflect.F
 
 const file_catalog_gcp_gcpmanagedkafkaconnector_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/gcp/gcpmanagedkafkaconnector/v1alpha1/spec.proto\x121dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xc5\x01\n" +
+	"8catalog/gcp/gcpmanagedkafkaconnector/v1alpha1/spec.proto\x121dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x84\x05\n" +
 	")GcpManagedKafkaConnectorTaskRestartPolicy\x12K\n" +
 	"\x0fminimum_backoff\x18\x01 \x01(\tB\"\xbaH\x1f\xd8\x01\x01r\x1a2\x18^[0-9]+(\\.[0-9]{1,9})?s$R\x0eminimumBackoff\x12K\n" +
-	"\x0fmaximum_backoff\x18\x02 \x01(\tB\"\xbaH\x1f\xd8\x01\x01r\x1a2\x18^[0-9]+(\\.[0-9]{1,9})?s$R\x0emaximumBackoff\"\xf7\x06\n" +
+	"\x0fmaximum_backoff\x18\x02 \x01(\tB\"\xbaH\x1f\xd8\x01\x01r\x1a2\x18^[0-9]+(\\.[0-9]{1,9})?s$R\x0emaximumBackoff:\xbc\x03\xbaH\xb8\x03\x1a\xc6\x01\n" +
+	"#task_restart_policy.names_a_backoff\x12eA restart policy needs a minimum backoff, a maximum backoff, or both; remove the policy to send none.\x1a8this.minimum_backoff != '' || this.maximum_backoff != ''\x1a\xec\x01\n" +
+	"*task_restart_policy.minimum_within_maximum\x12@The minimum backoff must not be longer than the maximum backoff.\x1a|this.minimum_backoff == '' || this.maximum_backoff == '' || duration(this.minimum_backoff) <= duration(this.maximum_backoff)\"\xe8\x0e\n" +
 	"\x1cGcpManagedKafkaConnectorSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12;\n" +
 	"\blocation\x18\x02 \x01(\tB\x1f\xbaH\x1c\xc8\x01\x01r\x172\x15^[a-z]+-[a-z]+[0-9]+$R\blocation\x12\x7f\n" +
-	"\x0fconnect_cluster\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\xbaH\x03\xc8\x01\x01\x88\xd4a\xf9\x18\x92\xd4a\x13status.outputs.nameR\x0econnectCluster\x12!\n" +
-	"\fconnector_id\x18\x04 \x01(\tR\vconnectorId\x12v\n" +
+	"\x0fconnect_cluster\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\xbaH\x03\xc8\x01\x01\x88\xd4a\xf9\x18\x92\xd4a\x13status.outputs.nameR\x0econnectCluster\x12P\n" +
+	"\fconnector_id\x18\x04 \x01(\tB-\xbaH*\xd8\x01\x01r%2#^[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?$R\vconnectorId\x12v\n" +
 	"\aconfigs\x18\x05 \x03(\v2\\.dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnectorSpec.ConfigsEntryR\aconfigs\x12\x8c\x01\n" +
 	"\x13task_restart_policy\x18\x06 \x01(\v2\\.dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnectorTaskRestartPolicyR\x11taskRestartPolicy\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\a \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
 	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a:\n" +
 	"\fConfigsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x98\x03\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xbf\a\xbaH\xbb\a\x1a\xcb\x01\n" +
+	"\x18spec.connector_class_set\x12cconfigs must name the plugin in \"connector.class\"; Kafka Connect cannot run a connector without it.\x1aJ'connector.class' in this.configs && this.configs['connector.class'] != ''\x1a\x88\x03\n" +
+	"*spec.connect_cluster_path_matches_location\x12\x8f\x01A literal Connect cluster path must be in this connector's location: projects/{project}/locations/{location}/connectClusters/{connect_cluster}.\x1a\xc7\x01!has(this.connect_cluster.value) || !this.connect_cluster.value.startsWith('projects/') || this.connect_cluster.value.matches('^projects/[^/]+/locations/' + this.location + '/connectClusters/[^/]+$')\x1a\xdf\x02\n" +
+	")spec.connect_cluster_path_matches_project\x12FA literal Connect cluster path must be in this connector's project_id.\x1a\xe9\x01!has(this.connect_cluster.value) || !this.connect_cluster.value.startsWith('projects/') || !has(this.project_id.value) || this.project_id.value == '' || this.connect_cluster.value.startsWith('projects/' + this.project_id.value + '/')B\x98\x03\n" +
 	"5com.dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1B\tSpecProtoP\x01Zkgithub.com/plantonhq/planton/catalog/gcp/gcpmanagedkafkaconnector/v1alpha1;gcpmanagedkafkaconnectorv1alpha1\xa2\x02\x04DPGG\xaa\x021Dev.Planton.Gcp.Gcpmanagedkafkaconnector.V1alpha1\xca\x021Dev\\Planton\\Gcp\\Gcpmanagedkafkaconnector\\V1alpha1\xe2\x02=Dev\\Planton\\Gcp\\Gcpmanagedkafkaconnector\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Gcp::Gcpmanagedkafkaconnector::V1alpha1b\x06proto3"
 
 var (

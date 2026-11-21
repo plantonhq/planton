@@ -41,9 +41,10 @@ variable "spec" {
     # merged in and win on key conflicts.
     labels = optional(map(string), {})
 
-    # The BigQuery table or view the features come from. Google's API has no
-    # other source type today.
-    big_query = optional(object({
+    # The BigQuery table or view the features come from. Required: Google's
+    # API has no other source type, and a group without one has no data to
+    # register features against. Immutable.
+    big_query = object({
       # The BigQuery table or view holding the feature data: a GcpBigQueryTable
       # reference (its {project}.{dataset}.{table} name), a literal
       # "project.dataset.table", or the bq:// form Google stores
@@ -59,7 +60,7 @@ variable "spec" {
       # key an online store serves by). Empty means the single column
       # `entity_id`. Mutable in place.
       entity_id_columns = optional(list(string), [])
-    }))
+    })
 
     # The source columns registered as features, each keyed by feature_id.
     # Add or remove a feature by editing this list.

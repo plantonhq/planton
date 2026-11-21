@@ -17,4 +17,5 @@ The second ACL every consumer needs: READ on the consumer group it joins, so it 
 
 | Field | Default | Why Change |
 |-------|---------|------------|
+| `projectId`, `cluster`, principals | `my-gcp-project`, `events`, the service accounts | Stand-ins: name the cluster's project, reference the GcpManagedKafkaCluster (`valueFrom`), and name your own service accounts. |
 | `aclId` | `consumerGroup/billing` | Use the group id your consumer configures. |

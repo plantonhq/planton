@@ -20,9 +20,12 @@ procedures.
 Set exactly ONE arm: aws, azure, cloud_resource, cloud_spanner,
 cloud_sql, configuration, or spark.
 
-Most arms create an identity Google owns that you must then grant
-access to -- the cloud_resource and Spark service accounts, the AWS
-identity, the Azure application -- all of them outputs.
+Every arm but cloud_spanner creates an identity Google owns that you
+must then grant access to -- the cloud_resource, Spark, and Cloud SQL
+service accounts, the Connector framework's service account, the AWS
+identity, the Azure application -- all of them outputs. A Spanner
+connection reads as the caller (or its database_role) and has no
+identity of its own.
 
 Immutable: project_id, location, connection_id, the connector id (a
 change replaces the connection). Descriptions, the key, and each arm's
@@ -58,7 +61,7 @@ spec:
 | Path | Type | Required | Default | References |
 |---|---|---|---|---|
 | `spec.projectId` | `string \| valueFrom` |  |  | GcpProject (`status.outputs.project_id`) |
-| `spec.location` | `string` |  |  |  |
+| `spec.location` | `string` | yes |  |  |
 | `spec.connectionId` | `string` |  |  |  |
 | `spec.friendlyName` | `string` |  |  |  |
 | `spec.description` | `string` |  |  |  |
@@ -112,15 +115,18 @@ used.
 
 ### spec.location
 
-`string`
+`string` · required
 
 Where the connection lives, and so which datasets can use it: a
 BigQuery multi-region (US, EU) or a region (us-central1,
 europe-west1). Each arm has its own rule -- Cloud SQL must match (with
 us-central1 -> US and europe-west1 -> EU allowed), Spanner matches the
 instance's region, AWS uses aws-{region} (e.g. aws-us-east-1) and
-Azure azure-{region} (e.g. azure-eastus2). Empty leaves Google's
-default. Immutable.
+Azure azure-{region} (e.g. azure-eastus2). Required: Google's API has
+no default location for a connection. Write US and EU in upper case
+and every other location in lower case. Immutable.
+
+- rule: {"required":true,"string":{"pattern":"^(US|EU|[a-z]+(-[a-z0-9]+)+)$"}}
 
 ### spec.connectionId
 
@@ -147,6 +153,9 @@ A free-text description.
 A Cloud KMS key encrypting the connection's stored credential (CMEK):
 a GcpKmsKey reference or a literal
 projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}.
+Only a stored credential is encrypted with it -- the Cloud SQL arm's
+user and password, or the Connector framework's when one is set; on
+an arm that stores no credential the key has nothing to encrypt.
 Empty uses Google-managed keys.
 
 - references: GcpKmsKey (`status.outputs.key_id`)
@@ -213,7 +222,10 @@ A Cloud Spanner database.
 `string` · required
 
 The database, as project/instance/database (slashes, no
-"projects/" prefix).
+"projects/" prefix) -- Google's form for this field. A
+GcpSpannerDatabase's database_id output is the full
+projects/{project}/instances/{instance}/databases/{database} path, so
+write this one as a literal.
 
 - rule: {"required":true,"string":{"pattern":"^[^/]+/[^/]+/[^/]+$"}}
 

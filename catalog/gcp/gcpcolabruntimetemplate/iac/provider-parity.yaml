@@ -24,6 +24,12 @@ resources:
         arg: shielded_vm_config.enable_secure_boot
       - spec: spec.kms_key_name
         arg: encryption_spec.kms_key_name
+  terraform_data:
+    internal: >-
+      the module's location tracker (OpenTofu's built-in store) -- the
+      provider plans a changed location as an in-place update of the
+      runtime template at its old path, so the tracker makes that change replace the
+      runtime template; it has no provider surface
   google_project_service:
     internal: >-
       API enablement plumbing -- the module enables the owning API so a

@@ -10,25 +10,56 @@ import "shared/foreignkey/v1/foreign_key.proto";
 // the minimum safety screening everything beneath it must meet, and the
 // switch that makes Google's own AI services enforce it.
 //
-// A floor does two things. It sets the weakest filters any Model Armor
-// template in its scope may carry (a template below the floor is flagged
-// or refused once enforcement is on). And through integrated_services it
-// screens traffic to Vertex AI (Gemini generateContent calls) and Google's
-// MCP servers directly, with no application change -- the way to put every
-// model call in a project behind Model Armor at once.
+// A floor does two things, both only while enable_floor_setting_enforcement
+// is true. It sets the weakest filters any Model Armor template in its
+// scope may carry. And through integrated_services it screens traffic to
+// Vertex AI (Gemini generateContent calls) and Google's MCP servers
+// directly, with no application change -- the way to put every model call
+// in a project behind Model Armor at once. The same thresholds that bound
+// templates are the ones the integrated services' traffic is screened at.
 //
 // Google keeps exactly one floor setting per project, folder, and
 // organization. Applying this block overwrites that setting. Destroying it
 // does NOT remove it: Google cannot delete a floor setting, so destroy only
 // stops managing it and the last applied floor stays in force. To relax a
 // floor, apply it with enable_floor_setting_enforcement false first.
+//
+// A changed scope or location names a different floor, so both engines
+// plan a replacement: the old floor is only dropped from management and
+// stays in force in Google Cloud, and the new scope's floor is written.
 message GcpModelArmorFloorSettingSpec {
-  // Whose floor this is. Omit for the provider's default project.
+  option (buf.validate.message).cel = {
+    id: "ai_platform_floor_setting.needs_service"
+    message: "ai_platform_floor_setting applies only to integrated Vertex AI traffic: add AI_PLATFORM to integrated_services, or remove the setting"
+    expression: "!has(this.ai_platform_floor_setting) || 'AI_PLATFORM' in this.integrated_services"
+  };
+  option (buf.validate.message).cel = {
+    id: "integrated_services.ai_platform_needs_setting"
+    message: "AI_PLATFORM is integrated but ai_platform_floor_setting is not set: set it to choose INSPECT_ONLY or INSPECT_AND_BLOCK for Vertex AI traffic"
+    expression: "!('AI_PLATFORM' in this.integrated_services) || has(this.ai_platform_floor_setting)"
+  };
+  option (buf.validate.message).cel = {
+    id: "google_mcp_server_floor_setting.needs_service"
+    message: "google_mcp_server_floor_setting applies only to integrated MCP server traffic: add GOOGLE_MCP_SERVER to integrated_services, or remove the setting"
+    expression: "!has(this.google_mcp_server_floor_setting) || 'GOOGLE_MCP_SERVER' in this.integrated_services"
+  };
+  option (buf.validate.message).cel = {
+    id: "integrated_services.google_mcp_server_needs_setting"
+    message: "GOOGLE_MCP_SERVER is integrated but google_mcp_server_floor_setting is not set: set it to choose INSPECT_ONLY or INSPECT_AND_BLOCK for MCP server traffic"
+    expression: "!('GOOGLE_MCP_SERVER' in this.integrated_services) || has(this.google_mcp_server_floor_setting)"
+  };
+
+  // Whose floor this is. Omit for the provider's default project: an empty
+  // scope and a project_id naming that same project are the same floor.
+  // A deploy whose provider has no default project is refused by both
+  // engines before anything is sent. Changing the scope replaces the
+  // floor (see above).
   GcpModelArmorFloorSettingScope scope = 1;
 
   // The location of the floor setting. Google manages floor settings at
   // "global", the default; set a region only if Google documents a
-  // regional floor for your case.
+  // regional floor for your case. Changing it replaces the floor (see
+  // above).
   string location = 2 [(buf.validate.field).cel = {
     id: "location.format"
     message: "location must be global, a region, or a multi-region"
@@ -42,10 +73,13 @@ message GcpModelArmorFloorSettingSpec {
 
   // The Google services whose traffic the floor screens directly:
   //   "AI_PLATFORM"       -- Vertex AI model calls (configure the behavior
-  //                          in ai_platform_floor_setting)
+  //                          in ai_platform_floor_setting, required with it)
   //   "GOOGLE_MCP_SERVER" -- Google-hosted MCP servers (configure it in
-  //                          google_mcp_server_floor_setting)
-  // Empty: the floor only governs templates.
+  //                          google_mcp_server_floor_setting, required with
+  //                          it)
+  // Each service and its setting come together: a service without its
+  // setting, or a setting without its service, is refused. Empty: the
+  // floor only governs templates.
   repeated string integrated_services = 4 [
     (buf.validate.field).repeated.unique = true,
     (buf.validate.field).repeated.items.string = {
@@ -56,15 +90,17 @@ message GcpModelArmorFloorSettingSpec {
     }
   ];
 
-  // The minimum filters. Required: a floor with no filters sets no
-  // minimum.
+  // The minimum filters. Required, but an empty block is accepted and sets
+  // no minimum: a filter constrains templates and traffic only once its
+  // own block is set.
   GcpModelArmorFloorSettingFilterConfig filter_config = 5 [(buf.validate.field).required = true];
 
-  // How the floor treats Vertex AI traffic when AI_PLATFORM is integrated.
+  // How the floor treats Vertex AI traffic. Set exactly when AI_PLATFORM
+  // is in integrated_services.
   GcpModelArmorFloorSettingServiceSetting ai_platform_floor_setting = 6;
 
-  // How the floor treats Google MCP server traffic when GOOGLE_MCP_SERVER
-  // is integrated.
+  // How the floor treats Google MCP server traffic. Set exactly when
+  // GOOGLE_MCP_SERVER is in integrated_services.
   GcpModelArmorFloorSettingServiceSetting google_mcp_server_floor_setting = 7;
 
   // Screen prompts in languages other than English under the floor. Sent
@@ -78,6 +114,11 @@ message GcpModelArmorFloorSettingSpec {
 // (projects/{id} | folders/{id} | organizations/{id}).
 message GcpModelArmorFloorSettingScope {
   option (buf.validate.message).cel = {
+    id: "folder_id.numeric"
+    message: "folder_id must be the numeric folder ID, without the folders/ prefix"
+    expression: "!has(this.folder_id) || !has(this.folder_id.value) || this.folder_id.value == '' || this.folder_id.value.matches('^[0-9]+$')"
+  };
+  option (buf.validate.message).cel = {
     id: "at_most_one_scope"
     message: "set at most one of project_id, folder_id, or organization_id (empty means the provider's default project)"
     expression: "[has(this.project_id) && (this.project_id.value != '' || has(this.project_id.value_from)), has(this.folder_id) && (this.folder_id.value != '' || has(this.folder_id.value_from)), this.organization_id != ''].filter(x, x).size() <= 1"
@@ -89,8 +130,9 @@ message GcpModelArmorFloorSettingScope {
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
   ];
 
-  // Folder floor: the folder's numeric ID -- a literal or a GcpFolder
-  // reference. Every project and folder beneath it inherits the floor.
+  // Folder floor: the folder's numeric ID, without the folders/ prefix --
+  // a literal or a GcpFolder reference. Every project and folder beneath
+  // it inherits the floor.
   dev.planton.shared.foreignkey.v1.StringValueOrRef folder_id = 2 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpFolder,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.folder_id"
@@ -128,7 +170,8 @@ message GcpModelArmorFloorSettingServiceSetting {
 }
 
 // GcpModelArmorFloorSettingFilterConfig selects the minimum filters. Each
-// filter is unconstrained unless its message is set.
+// filter is unconstrained unless its message is set; a set filter whose
+// filter_enforcement is unset takes Google's default, which is disabled.
 message GcpModelArmorFloorSettingFilterConfig {
   // Malicious URL detection.
   GcpModelArmorFloorSettingMaliciousUriFilterSettings malicious_uri_filter_settings = 1;
@@ -146,7 +189,7 @@ message GcpModelArmorFloorSettingFilterConfig {
 // GcpModelArmorFloorSettingMaliciousUriFilterSettings requires or relaxes
 // the malicious URL filter.
 message GcpModelArmorFloorSettingMaliciousUriFilterSettings {
-  // "ENABLED" or "DISABLED".
+  // "ENABLED" or "DISABLED". Unset is Google's default, which is disabled.
   string filter_enforcement = 1 [(buf.validate.field).cel = {
     id: "filter_enforcement.valid"
     message: "filter_enforcement must be ENABLED or DISABLED"
@@ -157,15 +200,17 @@ message GcpModelArmorFloorSettingMaliciousUriFilterSettings {
 // GcpModelArmorFloorSettingPiAndJailbreakFilterSettings requires the
 // prompt injection and jailbreak filter at a minimum threshold.
 message GcpModelArmorFloorSettingPiAndJailbreakFilterSettings {
-  // "ENABLED" or "DISABLED".
+  // "ENABLED" or "DISABLED". Unset is Google's default, which is disabled.
   string filter_enforcement = 1 [(buf.validate.field).cel = {
     id: "filter_enforcement.valid"
     message: "filter_enforcement must be ENABLED or DISABLED"
     expression: "this == '' || this in ['ENABLED', 'DISABLED']"
   }];
 
-  // The weakest threshold a template may use: "LOW_AND_ABOVE" (strictest),
-  // "MEDIUM_AND_ABOVE", or "HIGH".
+  // The weakest threshold a template may use, and the threshold integrated
+  // services' traffic is screened at: "LOW_AND_ABOVE" (strictest),
+  // "MEDIUM_AND_ABOVE", or "HIGH". Unset is Google's default, which is
+  // LOW_AND_ABOVE.
   string confidence_level = 2 [(buf.validate.field).cel = {
     id: "confidence_level.valid"
     message: "confidence_level must be LOW_AND_ABOVE, MEDIUM_AND_ABOVE, or HIGH"
@@ -202,8 +247,10 @@ message GcpModelArmorFloorSettingRaiFilter {
     }
   ];
 
-  // The weakest threshold a template may use for this category:
-  // "LOW_AND_ABOVE" (strictest), "MEDIUM_AND_ABOVE", or "HIGH".
+  // The weakest threshold a template may use for this category, and the
+  // threshold integrated services' traffic is screened at:
+  // "LOW_AND_ABOVE" (strictest), "MEDIUM_AND_ABOVE", or "HIGH". Unset is
+  // Google's default, which is LOW_AND_ABOVE.
   string confidence_level = 2 [(buf.validate.field).cel = {
     id: "confidence_level.valid"
     message: "confidence_level must be LOW_AND_ABOVE, MEDIUM_AND_ABOVE, or HIGH"
@@ -212,10 +259,11 @@ message GcpModelArmorFloorSettingRaiFilter {
 }
 
 // GcpModelArmorFloorSettingSdpSettings requires Sensitive Data Protection
-// screening -- Google's basic detectors or your own templates, never both.
+// screening -- Google's basic detectors or your own templates: at most one
+// of the two.
 message GcpModelArmorFloorSettingSdpSettings {
   option (buf.validate.message).cel = {
-    id: "sdp_settings.basic_xor_advanced"
+    id: "sdp_settings.at_most_one"
     message: "set at most one of basic_config or advanced_config"
     expression: "!(has(this.basic_config) && has(this.advanced_config))"
   };
@@ -229,7 +277,7 @@ message GcpModelArmorFloorSettingSdpSettings {
 
 // GcpModelArmorFloorSettingSdpBasicConfig switches the basic detectors.
 message GcpModelArmorFloorSettingSdpBasicConfig {
-  // "ENABLED" or "DISABLED".
+  // "ENABLED" or "DISABLED". Unset is Google's default, which is disabled.
   string filter_enforcement = 1 [(buf.validate.field).cel = {
     id: "filter_enforcement.valid"
     message: "filter_enforcement must be ENABLED or DISABLED"
@@ -238,8 +286,15 @@ message GcpModelArmorFloorSettingSdpBasicConfig {
 }
 
 // GcpModelArmorFloorSettingSdpAdvancedConfig names Sensitive Data
-// Protection templates.
+// Protection templates. A de-identify template needs an inspect template
+// beside it.
 message GcpModelArmorFloorSettingSdpAdvancedConfig {
+  option (buf.validate.message).cel = {
+    id: "advanced_config.deidentify_needs_inspect"
+    message: "deidentify_template needs inspect_template: the inspect template decides what the de-identify template redacts"
+    expression: "this.deidentify_template == '' || this.inspect_template != ''"
+  };
+
   // Inspect template:
   // projects/{project}/locations/{location}/inspectTemplates/{template}.
   string inspect_template = 1 [(buf.validate.field).cel = {

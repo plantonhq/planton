@@ -1023,7 +1023,8 @@ type GcpBigQueryTableExternalDataConfiguration struct {
 	MaxBadRecords int32 `protobuf:"varint,8,opt,name=max_bad_records,json=maxBadRecords,proto3" json:"max_bad_records,omitempty"`
 	// Connection (projects/{p}/locations/{l}/connections/{c}) whose
 	// credential reads the source — this is what upgrades a plain external
-	// table to a BigLake table. Plain string until a connection kind exists.
+	// table to a BigLake table. A plain string: write the full name a
+	// GcpBigQueryConnection exports as its name output.
 	ConnectionId string `protobuf:"bytes,9,opt,name=connection_id,json=connectionId,proto3" json:"connection_id,omitempty"`
 	// Reference file providing the table schema for AVRO/PARQUET/ORC.
 	ReferenceFileSchemaUri string `protobuf:"bytes,10,opt,name=reference_file_schema_uri,json=referenceFileSchemaUri,proto3" json:"reference_file_schema_uri,omitempty"`
@@ -1603,8 +1604,8 @@ func (x *GcpBigQueryTableReplicationInfo) GetReplicationIntervalMs() int64 {
 type GcpBigQueryTableBiglakeConfiguration struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Connection (projects/{p}/locations/{l}/connections/{c}) whose
-	// credential accesses the storage. Plain string until a connection kind
-	// exists.
+	// credential accesses the storage. A plain string: write the full name a
+	// GcpBigQueryConnection exports as its name output.
 	ConnectionId string `protobuf:"bytes,1,opt,name=connection_id,json=connectionId,proto3" json:"connection_id,omitempty"`
 	// Fully qualified storage location prefix, e.g. gs://bucket/path.
 	StorageUri string `protobuf:"bytes,2,opt,name=storage_uri,json=storageUri,proto3" json:"storage_uri,omitempty"`

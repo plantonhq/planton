@@ -158,8 +158,12 @@ variable "spec" {
     # Delete the linked Vertex AI Search engine (gen_app_builder_settings)
     # when the agent is destroyed. Google creates that engine when a data
     # store is connected to the agent, outside any declaration; this is the
-    # only way it goes away with the agent. Refused when the engine is a
-    # kind reference, because that block owns the engine's lifecycle.
+    # only way it goes away with the agent. It removes the one engine the
+    # agent records: a data store tool can make Google create more than one
+    # (<agent-id>-chat-<n>), and the others outlive the agent and keep its data
+    # store from being deleted until they are deleted by hand. Refused when
+    # the engine is a kind reference, because that block owns the engine's
+    # lifecycle.
     delete_chat_engine_on_destroy = optional(bool, false)
 
     # Git integration for exporting and restoring agent content.
@@ -424,7 +428,9 @@ variable "spec" {
 
     # Tools, keyed by display name.
     tools = optional(list(object({
-      # The tool's human-readable name, unique within the agent.
+      # The tool's human-readable name, unique within the agent. "escalate" is
+      # taken: Google refuses it as "a system operation and cannot be used by
+      # tools" (measured live), so a hand-off tool needs another name.
       display_name = string
 
       # What the tool does and when to use it -- the model reads this to decide
@@ -572,7 +578,8 @@ variable "spec" {
 
         # The frozen definition.
         tool = object({
-          # The tool's display name at the time of the snapshot.
+          # The tool's display name at the time of the snapshot; "escalate" is
+          # refused here too (a system operation Google keeps from tools).
           display_name = string
 
           # What the tool does and when to use it -- the model reads this.
@@ -763,7 +770,9 @@ variable "spec" {
       # in place.
       language_code = string
 
-      # Generative fallback.
+      # Generative fallback. Left unset, it is sent empty, which is what Google
+      # holds for an agent that declares none: no prompt is overwritten, and the
+      # re-plan stays clean.
       fallback_settings = optional(object({
         # The display name of the prompt template in use.
         selected_prompt = optional(string, "")

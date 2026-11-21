@@ -98,6 +98,7 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 | `reasoning_engine_id` | The numeric ID | Dashboards; IAM bindings |
 | `location` | The agent's location | Regional clients |
 | `create_time`, `update_time` | Timestamps | Audit |
+| `effective_identity` | The identity the agent runs as, as Google resolved it | The principal a `GcpSecretManagerSecret` or other resource grants access to |
 
 ## Common Patterns
 

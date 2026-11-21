@@ -162,6 +162,13 @@ type GcpCloudRunWorkerPoolSpec struct {
 	//	"" / "DELETE" -- the worker pool is deleted (default)
 	//	"PREVENT"     -- destroy fails
 	//	"ABANDON"     -- the worker pool leaves management but keeps running
+	//
+	// ABANDON covers the worker pool only. The Secret Manager secrets this
+	// component keeps for env[].secret_value, their versions, and the pool
+	// identity's access grant on them are still deleted on both engines, so
+	// the abandoned pool can no longer read those secrets: its next instance
+	// start fails. A pool meant to outlive this resource should take every
+	// secret through value_from_secret, from a Secret Manager secret you own.
 	DeletionPolicy string `protobuf:"bytes,24,opt,name=deletion_policy,json=deletionPolicy,proto3" json:"deletion_policy,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
@@ -703,7 +710,8 @@ type GcpCloudRunWorkerPoolEnvVar struct {
 	// identity secretAccessor on that secret alone, and points the variable at
 	// that exact version -- the revision carries a reference, never the value.
 	// A changed value adds a version and stamps a new revision, so rotation is
-	// a deploy; destroying the worker pool removes the secret.
+	// a deploy; destroying the worker pool removes the secret, under every
+	// deletion_policy (ABANDON included -- see deletion_policy).
 	SecretValue   string `protobuf:"bytes,4,opt,name=secret_value,json=secretValue,proto3" json:"secret_value,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

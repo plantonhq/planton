@@ -21,12 +21,19 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpGkeFleetFeatureOutputs carries the feature's identity.
+// GcpGkeFleetFeatureOutputs carries the feature's identity and the state
+// Google reports for it.
 type GcpGkeFleetFeatureOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// projects/{project}/locations/{location}/features/{feature}.
-	Name          string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The feature's lifecycle state in the fleet: ENABLING, ACTIVE,
+	// DISABLING, UPDATING, or SERVICE_UPDATING.
+	ResourceState string `protobuf:"bytes,2,opt,name=resource_state,json=resourceState,proto3" json:"resource_state,omitempty"`
+	// The feature's health as Google reports it: OK, WARNING, or ERROR.
+	// Empty until Google has assessed the feature.
+	StateCode     string `protobuf:"bytes,3,opt,name=state_code,json=stateCode,proto3" json:"state_code,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -68,13 +75,30 @@ func (x *GcpGkeFleetFeatureOutputs) GetName() string {
 	return ""
 }
 
+func (x *GcpGkeFleetFeatureOutputs) GetResourceState() string {
+	if x != nil {
+		return x.ResourceState
+	}
+	return ""
+}
+
+func (x *GcpGkeFleetFeatureOutputs) GetStateCode() string {
+	if x != nil {
+		return x.StateCode
+	}
+	return ""
+}
+
 var File_catalog_gcp_gcpgkefleetfeature_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpgkefleetfeature_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcpgkefleetfeature/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpgkefleetfeature.v1alpha1\"/\n" +
+	"5catalog/gcp/gcpgkefleetfeature/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpgkefleetfeature.v1alpha1\"u\n" +
 	"\x19GcpGkeFleetFeatureOutputs\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04nameB\xf1\x02\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12%\n" +
+	"\x0eresource_state\x18\x02 \x01(\tR\rresourceState\x12\x1d\n" +
+	"\n" +
+	"state_code\x18\x03 \x01(\tR\tstateCodeB\xf1\x02\n" +
 	"/com.dev.planton.gcp.gcpgkefleetfeature.v1alpha1B\fOutputsProtoP\x01Z_github.com/plantonhq/planton/catalog/gcp/gcpgkefleetfeature/v1alpha1;gcpgkefleetfeaturev1alpha1\xa2\x02\x04DPGG\xaa\x02+Dev.Planton.Gcp.Gcpgkefleetfeature.V1alpha1\xca\x02+Dev\\Planton\\Gcp\\Gcpgkefleetfeature\\V1alpha1\xe2\x027Dev\\Planton\\Gcp\\Gcpgkefleetfeature\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Gcp::Gcpgkefleetfeature::V1alpha1b\x06proto3"
 
 var (

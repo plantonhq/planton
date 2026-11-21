@@ -31,9 +31,10 @@ const (
 // them on purpose: desired_state STOPPED keeps the disk and stops the
 // compute bill.
 //
-// Immutable: location, runtime_id, runtime_user, runtime_template,
-// display_name, and description. Mutable in place: desired_state and
-// auto_upgrade.
+// Replaced on change: location, runtime_id, runtime_user,
+// runtime_template, display_name, and description -- a replacement under
+// DELETE deletes the old runtime's disk, and the notebooks kept only
+// there with it. Mutable in place: desired_state and auto_upgrade.
 type GcpColabRuntimeSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The GCP project the runtime lives in: a literal project ID or a
@@ -65,11 +66,17 @@ type GcpColabRuntimeSpec struct {
 	//	"RUNNING" -- started (the default); compute bills
 	//	"STOPPED" -- stopped; the disk stays and bills, compute does not
 	//
-	// The block starts or stops the runtime to match on every apply. Unset
-	// leaves the runtime running.
+	// The runtime is started or stopped to match when it is created and
+	// whenever this setting changes. It is not re-asserted on later deploys:
+	// a user can start a STOPPED runtime in Colab Enterprise, and it keeps
+	// running (and billing) until idle shutdown stops it or this setting
+	// changes. Unset is RUNNING, so clearing STOPPED starts the runtime.
 	DesiredState string `protobuf:"bytes,8,opt,name=desired_state,json=desiredState,proto3" json:"desired_state,omitempty"`
-	// Upgrade the runtime to the latest Colab image whenever it is started
-	// and Google reports it upgradable.
+	// Upgrade the runtime to the latest Colab image when Google reports it
+	// upgradable. The upgrade runs only during a deploy that changes this
+	// runtime, never on its own; and a user-defined runtime past its
+	// expiration time is upgraded by such a deploy whether or not this is
+	// set.
 	AutoUpgrade bool `protobuf:"varint,9,opt,name=auto_upgrade,json=autoUpgrade,proto3" json:"auto_upgrade,omitempty"`
 	// What happens to the runtime when this resource is destroyed:
 	//

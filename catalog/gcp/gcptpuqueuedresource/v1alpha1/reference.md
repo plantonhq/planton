@@ -18,7 +18,15 @@ into running TPUs when Google can place them.
 
 One request can ask for several nodes at once (one node_specs entry per
 node), which Google provisions together. The nodes belong to the
-request: destroying the request deletes them.
+request, but destroying it deletes them only when nothing is running:
+Google deletes a queued request without force only once its nodes are
+already gone or while it is ACCEPTED, FAILED, or SUSPENDED, and Google's
+provider sends no force. Destroying an ACTIVE request (or one still
+PROVISIONING or WAITING_FOR_RESOURCES) therefore fails while its TPUs
+keep running and billing; delete the request with force outside the
+manifest (gcloud compute tpus queued-resources delete --force) and the
+next destroy completes. Every change replaces the request, so a change
+to such a request fails the same way.
 
 Google publishes this resource only in its beta Terraform provider; the
 module uses google-beta for it under the catalog's recorded admission.
@@ -54,7 +62,7 @@ spec:
 | `spec.zone` | `string` | yes |  |  |
 | `spec.queuedResourceId` | `string` |  |  |  |
 | `spec.nodeSpecs` | `[]GcpTpuQueuedResourceNodeSpec` | yes |  |  |
-| `spec.nodeSpecs[].nodeId` | `string` |  |  |  |
+| `spec.nodeSpecs[].nodeId` | `string` | yes |  |  |
 | `spec.nodeSpecs[].node` | `GcpTpuQueuedResourceNode` | yes |  |  |
 | `spec.nodeSpecs[].node.runtimeVersion` | `string` | yes |  |  |
 | `spec.nodeSpecs[].node.acceleratorType` | `string` |  |  |  |
@@ -109,13 +117,17 @@ The TPU nodes requested, provisioned together once capacity exists.
 
 ### spec.nodeSpecs[].nodeId
 
-`string`
+`string` · required
 
-The node's id once provisioned -- its name in the project. Lowercase
-letters, digits, and hyphens, starting with a letter. Unset: Google
-generates one.
+The node's id once provisioned -- its name in the project, what
+`gcloud compute tpus tpu-vm ssh` takes. Lowercase letters, digits, and
+hyphens, starting with a letter. Required: Google's provider neither
+reads back an id Google generates nor lets it change in place, so an
+unnamed node would plan a replacement of the whole request on every
+deploy.
 
 - rule: node_id must be lowercase letters, digits, and hyphens, starting with a letter, up to 63 characters
+- rule: {"required":true}
 
 ### spec.nodeSpecs[].node
 
@@ -151,15 +163,18 @@ What the node is for.
 
 `GcpTpuQueuedResourceNetworkConfig`
 
-The node's network. Unset: the project's default network and
-subnetwork.
+The node's network. Unset: the project's network and subnetwork named
+"default", which many organizations never create -- a project without
+them must set this.
 
 ### spec.nodeSpecs[].node.networkConfig.network
 
 `string | valueFrom`
 
 The VPC network: a GcpVpcNetwork reference or a literal
-projects/{project}/global/networks/{name}. Unset: "default".
+projects/{project}/global/networks/{name}. Unset: the project's network
+named "default", which many organizations never create (or delete) --
+a project without it must name a network here.
 
 - references: GcpVpcNetwork (`status.outputs.network_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpVpcNetwork, name: <that resource's name>, fieldPath: status.outputs.network_id}} -- a bare string does not parse
@@ -170,7 +185,9 @@ projects/{project}/global/networks/{name}. Unset: "default".
 
 The subnetwork in the zone's region: a GcpSubnetwork reference or a
 literal projects/{project}/regions/{region}/subnetworks/{name}. Unset:
-"default".
+the subnetwork named "default" in the region, which exists only where
+the project's "default" network does -- a project without it must
+name a subnetwork here.
 
 - references: GcpSubnetwork (`status.outputs.subnetwork_self_link`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpSubnetwork, name: <that resource's name>, fieldPath: status.outputs.subnetwork_self_link}} -- a bare string does not parse
@@ -201,8 +218,9 @@ The number of queues on the interface. Unset: Google's default.
 `string`
 
 What happens to the request when this resource is destroyed:
-  "" / "DELETE" -- the request is deleted, and with it every node it
-                   provisioned
+  "" / "DELETE" -- the request is deleted without force: Google refuses
+                   while it is ACTIVE, PROVISIONING, or
+                   WAITING_FOR_RESOURCES (see the message comment)
   "PREVENT"     -- destroy fails
   "ABANDON"     -- the request leaves management; its nodes keep
                    running (and billing)

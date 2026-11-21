@@ -20,7 +20,7 @@ This directory contains the Terraform implementation for a BigQuery capacity com
 ## Send Posture
 
 - **`capacity_commitment_id`** -- defaulting to `metadata.name` rather than a Google-generated id.
-- **`enforce_single_admin_project_per_org`** -- the spec's bool sent as the provider's string `"true"` when set, omitted otherwise.
+- **`enforce_single_admin_project_per_org`** -- the spec's bool passed as the provider's string `"true"` when set, omitted otherwise. The provider never sends it to Google (Google takes it as a create-call query parameter the provider leaves out), so it guards nothing; changing it still replaces the commitment.
 - **`renewal_plan`, `edition`, `location`** -- sent only when set.
 
 ## Usage

@@ -30,9 +30,19 @@ type GcpColabScheduleOutputs struct {
 	// The id Google assigned the schedule (the last segment of name).
 	ScheduleId string `protobuf:"bytes,2,opt,name=schedule_id,json=scheduleId,proto3" json:"schedule_id,omitempty"`
 	// The region the schedule lives in.
-	Location      string `protobuf:"bytes,3,opt,name=location,proto3" json:"location,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	Location string `protobuf:"bytes,3,opt,name=location,proto3" json:"location,omitempty"`
+	// The schedule's state as Google reported it at the end of the deploy:
+	// ACTIVE, PAUSED, or COMPLETED. A snapshot: a schedule paused by hand
+	// later reads as it was until the next deploy.
+	State string `protobuf:"bytes,4,opt,name=state,proto3" json:"state,omitempty"`
+	// RFC 3339 time Google will next start a run, as of the end of the
+	// deploy.
+	NextRunTime string `protobuf:"bytes,5,opt,name=next_run_time,json=nextRunTime,proto3" json:"next_run_time,omitempty"`
+	// How many runs the schedule had started, as of the end of the deploy
+	// (a decimal count).
+	StartedRunCount string `protobuf:"bytes,6,opt,name=started_run_count,json=startedRunCount,proto3" json:"started_run_count,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *GcpColabScheduleOutputs) Reset() {
@@ -86,16 +96,40 @@ func (x *GcpColabScheduleOutputs) GetLocation() string {
 	return ""
 }
 
+func (x *GcpColabScheduleOutputs) GetState() string {
+	if x != nil {
+		return x.State
+	}
+	return ""
+}
+
+func (x *GcpColabScheduleOutputs) GetNextRunTime() string {
+	if x != nil {
+		return x.NextRunTime
+	}
+	return ""
+}
+
+func (x *GcpColabScheduleOutputs) GetStartedRunCount() string {
+	if x != nil {
+		return x.StartedRunCount
+	}
+	return ""
+}
+
 var File_catalog_gcp_gcpcolabschedule_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpcolabschedule_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcpcolabschedule/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpcolabschedule.v1alpha1\"j\n" +
+	"3catalog/gcp/gcpcolabschedule/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpcolabschedule.v1alpha1\"\xd0\x01\n" +
 	"\x17GcpColabScheduleOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1f\n" +
 	"\vschedule_id\x18\x02 \x01(\tR\n" +
 	"scheduleId\x12\x1a\n" +
-	"\blocation\x18\x03 \x01(\tR\blocationB\xe3\x02\n" +
+	"\blocation\x18\x03 \x01(\tR\blocation\x12\x14\n" +
+	"\x05state\x18\x04 \x01(\tR\x05state\x12\"\n" +
+	"\rnext_run_time\x18\x05 \x01(\tR\vnextRunTime\x12*\n" +
+	"\x11started_run_count\x18\x06 \x01(\tR\x0fstartedRunCountB\xe3\x02\n" +
 	"-com.dev.planton.gcp.gcpcolabschedule.v1alpha1B\fOutputsProtoP\x01Z[github.com/plantonhq/planton/catalog/gcp/gcpcolabschedule/v1alpha1;gcpcolabschedulev1alpha1\xa2\x02\x04DPGG\xaa\x02)Dev.Planton.Gcp.Gcpcolabschedule.V1alpha1\xca\x02)Dev\\Planton\\Gcp\\Gcpcolabschedule\\V1alpha1\xe2\x025Dev\\Planton\\Gcp\\Gcpcolabschedule\\V1alpha1\\GPBMetadata\xea\x02-Dev::Planton::Gcp::Gcpcolabschedule::V1alpha1b\x06proto3"
 
 var (

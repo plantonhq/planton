@@ -25,6 +25,7 @@ lower the price of the baseline; a reservation group
 Immutable: project_id, location, reservation_name, edition (a change
 replaces the reservation). Capacity, autoscaling, concurrency, idle-slot
 sharing, the group, the secondary location, and labels update in place.
+Google refuses to delete a reservation that still has assignments.
 
 ## Example
 
@@ -98,17 +99,24 @@ provider's default project is used.
 
 Where the slots are: a multi-region (US, EU) or a region
 (asia-northeast1). Assigned projects' jobs use the reservation only
-for data in this location. Empty means US (Google's default).
-Immutable.
+for data in this location. Empty means US (Google's default). Write US
+and EU in upper case and a region in lower case: the provider never
+reads the location back, so another spelling is another location to
+it, and replaces the reservation. Immutable.
+
+- rule: location must be US or EU in upper case, or a region in lower case such as us-central1.
 
 ### spec.reservationName
 
 `string`
 
-The reservation's name -- letters, digits, and dashes. Defaults to
-metadata.name. Immutable.
+The reservation's name -- Google's rule: lowercase letters, digits,
+and dashes, starting with a letter, not ending with a dash, at most 64
+characters. "none" is Google's own name for on-demand capacity and is
+refused. Defaults to metadata.name, which must then fit the same rule.
+Immutable.
 
-- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^[a-zA-Z0-9-]+$"}}
+- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^[a-z](?:[-a-z0-9]{0,62}[a-z0-9])?$","notIn":["none"]}}
 
 ### spec.slotCapacity
 
@@ -117,7 +125,11 @@ metadata.name. Immutable.
 Baseline slots, always allocated and billed -- 0 is valid with
 autoscaling, for pay-while-used capacity. Queries may exceed it by
 borrowing idle slots unless ignore_idle_slots is set. Mutable in
-place.
+place: an increase takes effect every few minutes; a decrease is
+limited to once an hour after a recent change while the baseline
+exceeds the committed slots. Baseline slots of this reservation and
+its siblings beyond the admin project's committed slots are billed at
+the autoscale rate.
 
 - rule: {"int64":{"gte":"0"}}
 
@@ -138,8 +150,8 @@ Empty lets Google choose. Immutable.
 
 `int64`
 
-The most slots autoscaling may add on top of slot_capacity (a
-multiple of 50). 0 or empty turns autoscaling off.
+The most slots autoscaling may add on top of slot_capacity. 0 or empty
+turns autoscaling off.
 
 - rule: {"int64":{"gte":"0"}}
 
@@ -166,7 +178,8 @@ it automatically from the reservation's slots.
 
 The group the reservation belongs to, which pools idle slots among its
 members before other reservations: a GcpBigQueryReservationGroup
-reference (its name output) or a literal group name or full path.
+reference (its name output) or a literal group name or full path. The
+group is in the reservation's admin project and location.
 
 - references: GcpBigQueryReservationGroup (`status.outputs.name`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpBigQueryReservationGroup, name: <that resource's name>, fieldPath: status.outputs.name}} -- a bare string does not parse
@@ -194,7 +207,10 @@ on top and win on a key conflict.
 The projects, folders, or organization whose jobs use the
 reservation, each for one job type. Each is unique by assignee,
 job_type, and principal. An assignment is PENDING until the
-reservation has capacity to give.
+reservation has capacity to give. The deletion policy is stamped on
+every assignment: under PREVENT no assignment can be removed or
+changed (apply DELETE on its own first); under ABANDON a removed or
+changed assignment is left in GCP, still routing its jobs here.
 
 ### spec.assignments[].assignee
 
@@ -220,9 +236,11 @@ send projects/{id}.
 `string | valueFrom`
 
 A folder: its numeric ID, literal or a GcpFolder reference. The
-modules send folders/{id}.
+modules send folders/{id}, so a literal is the bare number, without
+the folders/ prefix.
 
 - references: GcpFolder (`status.outputs.folder_id`)
+- rule: A literal folder must be its numeric ID, without the folders/ prefix.
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpFolder, name: <that resource's name>, fieldPath: status.outputs.folder_id}} -- a bare string does not parse
 
 ### spec.assignments[].assignee.organizationId
@@ -241,7 +259,8 @@ organizations/ prefix. The modules send organizations/{id}.
 Which jobs:
   QUERY      -- interactive and batch queries, and scripts
   PIPELINE   -- load, export, and copy jobs
-  CONTINUOUS -- continuous queries
+  CONTINUOUS -- continuous queries (a reservation with a CONTINUOUS
+                assignment holds no other job type)
 
 - rule: {"required":true,"string":{"in":["QUERY","PIPELINE","CONTINUOUS"]}}
 
@@ -265,7 +284,8 @@ Empty covers every principal.
 
 What happens to the reservation and its assignments when this
 resource is destroyed:
-  "" / "DELETE" -- deleted (assigned jobs fall back to on-demand)
+  "" / "DELETE" -- deleted (assigned jobs fall back to the next
+                   assignment up the hierarchy, then to on-demand)
   "PREVENT"     -- destroy fails
   "ABANDON"     -- they leave management and keep running (and
                    billing) in GCP
@@ -275,6 +295,9 @@ resource is destroyed:
 ## Validation Rules
 
 - `spec.assignments_unique`: each assignment must be unique by assignee, job_type, and principal
+- `spec.continuous_assignments_alone`: Google does not mix CONTINUOUS assignments with other job types on one reservation; give continuous queries a reservation of their own.
+- `spec.group_path_matches_location`: A literal reservation group path must be in this reservation's location (US when location is empty).
+- `spec.group_path_matches_project`: A literal reservation group path must be in this reservation's admin project.
 
 ## Outputs
 

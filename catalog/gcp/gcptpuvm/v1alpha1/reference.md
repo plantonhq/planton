@@ -188,14 +188,17 @@ block. Unset: Google chooses. Immutable.
 `GcpTpuVmNetworkConfig`
 
 The TPU's network. Set this or network_configs. Unset: the project's
-default network and subnetwork. Immutable.
+network and subnetwork named "default", which many organizations never
+create -- a project without them must set this. Immutable.
 
 ### spec.networkConfig.network
 
 `string | valueFrom`
 
 The VPC network: a GcpVpcNetwork reference or a literal
-projects/{project}/global/networks/{name}. Unset: "default".
+projects/{project}/global/networks/{name}. Unset: the project's network
+named "default", which many organizations never create (or delete) --
+a project without it must name a network here.
 
 - references: GcpVpcNetwork (`status.outputs.network_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpVpcNetwork, name: <that resource's name>, fieldPath: status.outputs.network_id}} -- a bare string does not parse
@@ -206,7 +209,9 @@ projects/{project}/global/networks/{name}. Unset: "default".
 
 The subnetwork in the TPU's region: a GcpSubnetwork reference or a
 literal projects/{project}/regions/{region}/subnetworks/{name}. Unset:
-"default".
+the subnetwork named "default" in the region, which exists only where
+the project's "default" network does -- a project without it must
+name a subnetwork here.
 
 - references: GcpSubnetwork (`status.outputs.subnetwork_self_link`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpSubnetwork, name: <that resource's name>, fieldPath: status.outputs.subnetwork_self_link}} -- a bare string does not parse
@@ -247,7 +252,9 @@ Set this or network_config. Immutable.
 `string | valueFrom`
 
 The VPC network: a GcpVpcNetwork reference or a literal
-projects/{project}/global/networks/{name}. Unset: "default".
+projects/{project}/global/networks/{name}. Unset: the project's network
+named "default", which many organizations never create (or delete) --
+a project without it must name a network here.
 
 - references: GcpVpcNetwork (`status.outputs.network_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpVpcNetwork, name: <that resource's name>, fieldPath: status.outputs.network_id}} -- a bare string does not parse
@@ -258,7 +265,9 @@ projects/{project}/global/networks/{name}. Unset: "default".
 
 The subnetwork in the TPU's region: a GcpSubnetwork reference or a
 literal projects/{project}/regions/{region}/subnetworks/{name}. Unset:
-"default".
+the subnetwork named "default" in the region, which exists only where
+the project's "default" network does -- a project without it must
+name a subnetwork here.
 
 - references: GcpSubnetwork (`status.outputs.subnetwork_self_link`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpSubnetwork, name: <that resource's name>, fieldPath: status.outputs.subnetwork_self_link}} -- a bare string does not parse
@@ -422,6 +431,10 @@ Reference an output from another manifest as `valueFrom: {kind: GcpTpuVm, name: 
 | `status.outputs.name` | `string` | Full resource name: projects/{project}/locations/{zone}/nodes/{node_id}. |
 | `status.outputs.node_id` | `string` | The TPU's id (the last segment of name) -- what `gcloud compute tpus tpu-vm ssh` and the TPU client libraries take. |
 | `status.outputs.zone` | `string` | The zone the TPU runs in. |
+| `status.outputs.state` | `string` | The TPU's state as Google reported it at the end of the deploy, e.g. READY, CREATING, PREEMPTED, or STOPPED. A snapshot: a Spot TPU that Google reclaims later reads as it was until the next deploy. |
+| `status.outputs.health` | `string` | The TPU's health as Google reported it at the end of the deploy, e.g. HEALTHY or UNHEALTHY_MAINTENANCE (empty while Google reports none). |
+| `status.outputs.worker_internal_ips` | `[]string` | The internal IP address of every TPU worker, worker 0 first -- the one a runtime client reaches first. |
+| `status.outputs.worker_external_ips` | `[]string` | The external IP address of every TPU worker that has one, in worker order (empty when external IPs are off). |
 
 ## References
 

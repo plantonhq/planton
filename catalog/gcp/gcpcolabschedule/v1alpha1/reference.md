@@ -26,8 +26,14 @@ Both are Google's Schedules API; the provider files it under Colab.
 
 A schedule can be paused and resumed (desired_state) and bounded by a
 time window and a run count. Mutable in place: everything except
-location, the project, and the notebook arm (a change to the notebook
-run REPLACES the schedule; the pipeline arm updates in place).
+location, the project, and the notebook arm. A location change replaces
+the schedule (both modules force it). Switching arms, or changing the
+notebook run's machine_type, gpu_partition_size, or tpu_topology,
+replaces it too. Every other notebook-run setting is fixed once
+created: Google's provider never sends a change to it, so the change
+shows on every plan and Google keeps the first value -- create a new
+schedule (and pause the old one) for a different notebook run. The
+pipeline arm updates in place.
 
 ## Example
 
@@ -156,7 +162,9 @@ used.
 `string` · required
 
 The Vertex AI region the schedule and its runs live in, e.g.
-"us-central1". Changing it needs a new schedule.
+"us-central1". Both modules also make it the provider's region, which
+is where the provider sends each run request. Changing it replaces the
+schedule.
 
 - rule: {"required":true,"string":{"pattern":"^[a-z]+-[a-z]+[0-9]+$"}}
 
@@ -239,7 +247,13 @@ max_concurrent_run_count.
 Whether the schedule launches runs:
   "ACTIVE" -- runs launch on the cron (the default)
   "PAUSED" -- nothing launches; resume by setting ACTIVE again
-The block pauses or resumes the schedule to match on every apply.
+The schedule is paused or resumed to match when it is created and on
+a deploy that changes this setting -- not on every deploy: a schedule
+paused by hand stays paused until this setting changes. A schedule
+created PAUSED is created active and paused right after, so a tick
+falling in that moment can still launch a run. Any deploy that changes
+a schedule Google has COMPLETED, with this ACTIVE, asks Google to
+resume it.
 
 - rule: desired_state must be ACTIVE or PAUSED
 
@@ -248,8 +262,9 @@ The block pauses or resumes the schedule to match on every apply.
 `GcpColabScheduleNotebookExecutionJob`
 
 The Colab Enterprise notebook run each tick launches. Exactly one of
-notebook_execution_job or pipeline_job. A change replaces the
-schedule.
+notebook_execution_job or pipeline_job. Fixed once created (see the
+message comment): only a machine_type, gpu_partition_size, or
+tpu_topology change reaches Google, as a replacement.
 
 - rule: set exactly one of gcs_notebook_source or dataform_repository_source
 - rule: set exactly one of notebook_runtime_template_resource_name or custom_environment_spec
@@ -731,6 +746,9 @@ Reference an output from another manifest as `valueFrom: {kind: GcpColabSchedule
 | `status.outputs.name` | `string` | Full resource name: projects/{project}/locations/{location}/schedules/{schedule_id}. |
 | `status.outputs.schedule_id` | `string` | The id Google assigned the schedule (the last segment of name). |
 | `status.outputs.location` | `string` | The region the schedule lives in. |
+| `status.outputs.state` | `string` | The schedule's state as Google reported it at the end of the deploy: ACTIVE, PAUSED, or COMPLETED. A snapshot: a schedule paused by hand later reads as it was until the next deploy. |
+| `status.outputs.next_run_time` | `string` | RFC 3339 time Google will next start a run, as of the end of the deploy. |
+| `status.outputs.started_run_count` | `string` | How many runs the schedule had started, as of the end of the deploy (a decimal count). |
 
 ## References
 

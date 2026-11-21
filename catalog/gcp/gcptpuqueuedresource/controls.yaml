@@ -42,7 +42,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: Managing queued resources and their nodes requires tpu.queuedResources.* and tpu.nodes.* permissions on the project.
+        reference: Managing queued resources and their nodes requires tpu.nodes.* permissions on the project; Google defines no tpu.queuedResources permission, so the queued-resource calls authorize as the node permissions.
     - control_id: workload-identity
       status: not_applicable
       notes: A queued request carries no service account at the pin; nodes run as the Compute Engine default account (use GcpTpuVm for a dedicated identity).
@@ -78,7 +78,7 @@ spec:
       field_path: deletion_policy
       evidence:
         type: spec_default
-        reference: Unset means DELETE -- the request and its nodes are deleted on destroy; PREVENT makes destroy fail; ABANDON leaves them running.
+        reference: Unset means DELETE -- the request is deleted without force, which Google refuses while its nodes are up (ACTIVE, PROVISIONING, WAITING_FOR_RESOURCES), so the destroy fails until the request is force-deleted; PREVENT makes destroy fail; ABANDON leaves them running.
     - control_id: managed-patching
       status: configurable
       field_path: node_specs.node.runtime_version

@@ -17,5 +17,6 @@ Workers for moving topics from one Managed Kafka cluster to another with MirrorM
 
 | Field | Default | Why Change |
 |-------|---------|------------|
+| `projectId`, `kafkaCluster`, `primarySubnet` | `my-gcp-project` paths | Stand-ins: name your project, reference the GcpManagedKafkaCluster and a GcpSubnetwork (`valueFrom`) or write their paths. The Kafka cluster is fixed at creation; the subnet is private, at least a /22, and in this region. |
 | `dnsDomainNames` | `legacy-events` domain | The source cluster's bootstrap address without `bootstrap.` and the port. |
 | `capacityConfig` | 6 vCPU, 24 GiB | Replication throughput scales with workers. |

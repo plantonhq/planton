@@ -103,6 +103,7 @@ var _ = ginkgo.Describe("GcpGkeFleetFeatureSpec", func() {
 			MembershipConfigs: []*GcpGkeFleetFeatureMembershipConfig{{
 				Membership: literal(membershipName),
 				Configmanagement: &GcpGkeFleetFeatureMembershipConfigManagement{ConfigSync: &GcpGkeFleetFeatureMembershipConfigSync{
+					Enabled:     proto.Bool(true),
 					Oci:         &GcpGkeFleetFeatureConfigSyncOci{SecretType: "gcpserviceaccount", SyncRepo: "us-docker.pkg.dev/p/configs/orders", GcpServiceAccountEmail: reference(catalogkind.CatalogKind_GcpServiceAccount, "config-sync")},
 					StopSyncing: proto.Bool(true),
 					DeploymentOverrides: []*GcpGkeFleetFeatureConfigSyncDeploymentOverride{{
@@ -221,6 +222,32 @@ var _ = ginkgo.Describe("GcpGkeFleetFeatureSpec", func() {
 			FleetDefaultMemberConfig: &GcpGkeFleetFeatureFleetDefaultMemberConfig{Policycontroller: &GcpGkeFleetFeaturePolicyController{}},
 		})
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should require a per-cluster Config Sync enabled, true or false", func() {
+		perCluster := func(enabled *bool) *GcpGkeFleetFeature {
+			return feature("configmanagement", &GcpGkeFleetFeatureSpec{
+				MembershipConfigs: []*GcpGkeFleetFeatureMembershipConfig{{
+					Membership: literal(membershipName),
+					Configmanagement: &GcpGkeFleetFeatureMembershipConfigManagement{ConfigSync: &GcpGkeFleetFeatureMembershipConfigSync{
+						Enabled: enabled,
+						Git:     &GcpGkeFleetFeatureConfigSyncGit{SecretType: "none", SyncRepo: "https://example.com/c.git"},
+					}},
+				}},
+			})
+		}
+		gomega.Expect(validator.Validate(perCluster(nil))).ToNot(gomega.Succeed())
+		gomega.Expect(validator.Validate(perCluster(proto.Bool(true)))).To(gomega.Succeed())
+		gomega.Expect(validator.Validate(perCluster(proto.Bool(false)))).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should accept one upstream fleet and refuse two", func() {
+		gomega.Expect(validator.Validate(feature("clusterupgrade", &GcpGkeFleetFeatureSpec{
+			Clusterupgrade: &GcpGkeFleetFeatureClusterUpgrade{UpstreamFleets: []*foreignkeyv1.StringValueOrRef{literal("dev-host")}},
+		}))).To(gomega.Succeed())
+		gomega.Expect(validator.Validate(feature("clusterupgrade", &GcpGkeFleetFeatureSpec{
+			Clusterupgrade: &GcpGkeFleetFeatureClusterUpgrade{UpstreamFleets: []*foreignkeyv1.StringValueOrRef{literal("dev-host"), literal("staging-host")}},
+		}))).ToNot(gomega.Succeed())
 	})
 
 	ginkgo.It("should require a mesh management mode, an upstream fleet, and well-formed upgrade conditions", func() {

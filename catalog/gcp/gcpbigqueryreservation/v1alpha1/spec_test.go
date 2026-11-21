@@ -72,7 +72,7 @@ var _ = ginkgo.Describe("GcpBigQueryReservationSpec", func() {
 			projectAssignment("analytics", "QUERY"),
 			projectAssignment("analytics", "PIPELINE"),
 			{Assignee: &GcpBigQueryReservationAssignee{FolderId: valueFrom("data-folder")}, JobType: "QUERY"},
-			{Assignee: &GcpBigQueryReservationAssignee{OrganizationId: "123456789"}, JobType: "CONTINUOUS"},
+			{Assignee: &GcpBigQueryReservationAssignee{OrganizationId: "123456789"}, JobType: "QUERY"},
 			{
 				Assignee:  &GcpBigQueryReservationAssignee{ProjectId: litRef("analytics")},
 				JobType:   "QUERY",
@@ -81,6 +81,68 @@ var _ = ginkgo.Describe("GcpBigQueryReservationSpec", func() {
 		}
 		msg.Spec.DeletionPolicy = "PREVENT"
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should accept a reservation of CONTINUOUS assignments only", func() {
+		msg := minimal()
+		msg.Spec.Assignments = []*GcpBigQueryReservationAssignment{
+			projectAssignment("streaming", "CONTINUOUS"),
+			projectAssignment("events", "CONTINUOUS"),
+		}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject CONTINUOUS beside another job type", func() {
+		msg := minimal()
+		msg.Spec.Assignments = []*GcpBigQueryReservationAssignment{
+			projectAssignment("analytics", "QUERY"),
+			projectAssignment("streaming", "CONTINUOUS"),
+		}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject a literal folder that is not a bare number", func() {
+		msg := minimal()
+		msg.Spec.Assignments = []*GcpBigQueryReservationAssignment{
+			{Assignee: &GcpBigQueryReservationAssignee{FolderId: litRef("folders/123")}, JobType: "QUERY"},
+		}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.Assignments[0].Assignee.FolderId = litRef("123456789012")
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject a location in the wrong case", func() {
+		for _, loc := range []string{"us", "Eu", "US-CENTRAL1"} {
+			msg := minimal()
+			msg.Spec.Location = loc
+			gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), loc)
+		}
+		for _, loc := range []string{"US", "EU", "asia-northeast1"} {
+			msg := minimal()
+			msg.Spec.Location = loc
+			gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), loc)
+		}
+	})
+
+	ginkgo.It("should reject names outside Google's rule and Google's own none", func() {
+		for _, name := range []string{"Analytics", "1analytics", "analytics-", "none",
+			"a234567890123456789012345678901234567890123456789012345678901234x"} {
+			msg := minimal()
+			msg.Spec.ReservationName = name
+			gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), name)
+		}
+	})
+
+	ginkgo.It("should reject a literal group path in another location or project", func() {
+		msg := minimal()
+		msg.Spec.ReservationGroup = litRef("projects/bq-admin/locations/EU/reservationGroups/tier-1")
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "an empty location is US")
+		msg.Spec.ReservationGroup = litRef("projects/bq-admin/locations/US/reservationGroups/tier-1")
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		msg.Spec.ProjectId = litRef("other-admin")
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.ReservationGroup = litRef("tier-1")
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "a bare group name")
 	})
 
 	ginkgo.It("should reject a duplicate assignment", func() {

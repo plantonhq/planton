@@ -30,8 +30,9 @@ type GcpManagedKafkaAclEntry struct {
 	// Who the entry applies to, in Kafka's StandardAuthorizer form: "User:"
 	// followed by a Google account, e.g.
 	// "User:orders-api@my-project.iam.gserviceaccount.com", or "User:*" for
-	// everyone. With mTLS, the principal is the certificate's mapped name
-	// (see the cluster's ssl_principal_mapping_rules).
+	// everyone. With mTLS, the principal is "User:" followed by the
+	// certificate's mapped name (see the cluster's
+	// ssl_principal_mapping_rules) -- the prefix is never dropped.
 	Principal string `protobuf:"bytes,1,opt,name=principal,proto3" json:"principal,omitempty"`
 	// The Kafka operation:
 	//
@@ -41,11 +42,11 @@ type GcpManagedKafkaAclEntry struct {
 	// Which operations are meaningful depends on the resource type (Kafka's
 	// operations table): a producer needs WRITE (and DESCRIBE) on its topic;
 	// a consumer needs READ on the topic and READ on its consumer group.
-	// Google accepts any letter case; the spec takes the canonical upper
-	// case.
+	// Google accepts any letter case; the spec accepts upper case only.
 	Operation string `protobuf:"bytes,2,opt,name=operation,proto3" json:"operation,omitempty"`
 	// ALLOW (Google's default when empty) or DENY. A DENY wins over any
-	// ALLOW for the same principal and operation.
+	// ALLOW for the same principal and operation. "User:*" matches every
+	// principal, so a "User:*" DENY denies even principals allowed by name.
 	PermissionType string `protobuf:"bytes,3,opt,name=permission_type,json=permissionType,proto3" json:"permission_type,omitempty"`
 	// The client host the entry applies to. Managed Service for Apache Kafka
 	// accepts only "*" (every host), which is also the default when empty.
@@ -124,13 +125,18 @@ func (x *GcpManagedKafkaAclEntry) GetHost() string {
 //
 // Immutable: project_id, location, cluster, acl_id (a change replaces the
 // ACL). The entries update in place.
+//
+// project_id and location name the cluster's project and region: the
+// modules send them beside the cluster's bare ID, so they must be the
+// cluster's own.
 type GcpManagedKafkaAclSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The GCP project the cluster lives in: a literal project ID or a
 	// GcpProject reference. If omitted, the provider's default project is
 	// used.
 	ProjectId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
-	// The cluster's region, e.g. "us-central1". Immutable.
+	// The cluster's region, e.g. "us-central1" -- the region the cluster
+	// runs in. Immutable.
 	Location string `protobuf:"bytes,2,opt,name=location,proto3" json:"location,omitempty"`
 	// The cluster the ACL applies to. A GcpManagedKafkaCluster reference
 	// resolves to its full resource path (name output); a literal takes the
@@ -146,10 +152,16 @@ type GcpManagedKafkaAclSpec struct {
 	//	topicPrefixed/{prefix}           -- every topic starting with prefix
 	//	consumerGroupPrefixed/{prefix}   -- every consumer group with prefix
 	//	transactionalIdPrefixed/{prefix} -- every transactional ID with prefix
+	//	allTopics                        -- every topic (Google's spelling of
+	//	                                    topic/*)
+	//	allConsumerGroups                -- every consumer group
+	//	                                    (consumerGroup/*)
+	//	allTransactionalIds              -- every transactional ID
+	//	                                    (transactionalId/*)
 	//
-	// {name} may be the literal wildcard "*" (every resource of the type).
-	// One ACL exists per pattern on a cluster, so two manifests must never
-	// declare the same one. Immutable.
+	// Google spells the wildcard patterns with the all* IDs; use them rather
+	// than a "*" name. One ACL exists per pattern on a cluster, so two
+	// manifests must never declare the same one. Immutable.
 	AclId string `protobuf:"bytes,4,opt,name=acl_id,json=aclId,proto3" json:"acl_id,omitempty"`
 	// The entries for this pattern -- at least one, at most 100.
 	AclEntries []*GcpManagedKafkaAclEntry `protobuf:"bytes,5,rep,name=acl_entries,json=aclEntries,proto3" json:"acl_entries,omitempty"`
@@ -244,18 +256,20 @@ const file_catalog_gcp_gcpmanagedkafkaacl_v1alpha1_spec_proto_rawDesc = "" +
 	"\tprincipal\x18\x01 \x01(\tB\x13\xbaH\x10\xc8\x01\x01r\v2\t^User:.+$R\tprincipal\x12\x9c\x01\n" +
 	"\toperation\x18\x02 \x01(\tB~\xbaH{\xc8\x01\x01rvR\x03ALLR\x04READR\x05WRITER\x06CREATER\x06DELETER\x05ALTERR\bDESCRIBER\x0eCLUSTER_ACTIONR\x10DESCRIBE_CONFIGSR\rALTER_CONFIGSR\x10IDEMPOTENT_WRITER\toperation\x12>\n" +
 	"\x0fpermission_type\x18\x03 \x01(\tB\x15\xbaH\x12\xd8\x01\x01r\rR\x05ALLOWR\x04DENYR\x0epermissionType\x12\x1f\n" +
-	"\x04host\x18\x04 \x01(\tB\v\xbaH\b\xd8\x01\x01r\x03R\x01*R\x04host\"\xd1\x05\n" +
+	"\x04host\x18\x04 \x01(\tB\v\xbaH\b\xd8\x01\x01r\x03R\x01*R\x04host\"\x83\v\n" +
 	"\x16GcpManagedKafkaAclSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12;\n" +
 	"\blocation\x18\x02 \x01(\tB\x1f\xbaH\x1c\xc8\x01\x01r\x172\x15^[a-z]+-[a-z]+[0-9]+$R\blocation\x12p\n" +
-	"\acluster\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\xbaH\x03\xc8\x01\x01\x88\xd4a\xf7\x18\x92\xd4a\x13status.outputs.nameR\acluster\x12`\n" +
-	"\x06acl_id\x18\x04 \x01(\tBI\xbaHF\xc8\x01\x01rA2?^(cluster|(topic|consumerGroup|transactionalId)(Prefixed)?/.+)$R\x05aclId\x12q\n" +
+	"\acluster\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\xbaH\x03\xc8\x01\x01\x88\xd4a\xf7\x18\x92\xd4a\x13status.outputs.nameR\acluster\x12\x90\x01\n" +
+	"\x06acl_id\x18\x04 \x01(\tBy\xbaHv\xc8\x01\x01rq2o^(cluster|allTopics|allConsumerGroups|allTransactionalIds|(topic|consumerGroup|transactionalId)(Prefixed)?/.+)$R\x05aclId\x12q\n" +
 	"\vacl_entries\x18\x05 \x03(\v2D.dev.planton.gcp.gcpmanagedkafkaacl.v1alpha1.GcpManagedKafkaAclEntryB\n" +
 	"\xbaH\a\x92\x01\x04\b\x01\x10dR\n" +
 	"aclEntries\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\x06 \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
-	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicyB\xee\x02\n" +
+	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy:\xfe\x04\xbaH\xfa\x04\x1a\xc3\x02\n" +
+	"\"spec.cluster_path_matches_location\x12rA literal cluster path must be in this ACL's location: projects/{project}/locations/{location}/clusters/{cluster}.\x1a\xa8\x01!has(this.cluster.value) || !this.cluster.value.startsWith('projects/') || this.cluster.value.matches('^projects/[^/]+/locations/' + this.location + '/clusters/[^/]+$')\x1a\xb1\x02\n" +
+	"!spec.cluster_path_matches_project\x128A literal cluster path must be in this ACL's project_id.\x1a\xd1\x01!has(this.cluster.value) || !this.cluster.value.startsWith('projects/') || !has(this.project_id.value) || this.project_id.value == '' || this.cluster.value.startsWith('projects/' + this.project_id.value + '/')B\xee\x02\n" +
 	"/com.dev.planton.gcp.gcpmanagedkafkaacl.v1alpha1B\tSpecProtoP\x01Z_github.com/plantonhq/planton/catalog/gcp/gcpmanagedkafkaacl/v1alpha1;gcpmanagedkafkaaclv1alpha1\xa2\x02\x04DPGG\xaa\x02+Dev.Planton.Gcp.Gcpmanagedkafkaacl.V1alpha1\xca\x02+Dev\\Planton\\Gcp\\Gcpmanagedkafkaacl\\V1alpha1\xe2\x027Dev\\Planton\\Gcp\\Gcpmanagedkafkaacl\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Gcp::Gcpmanagedkafkaacl::V1alpha1b\x06proto3"
 
 var (

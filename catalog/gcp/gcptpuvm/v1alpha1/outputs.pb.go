@@ -31,9 +31,22 @@ type GcpTpuVmOutputs struct {
 	// tpu-vm ssh` and the TPU client libraries take.
 	NodeId string `protobuf:"bytes,2,opt,name=node_id,json=nodeId,proto3" json:"node_id,omitempty"`
 	// The zone the TPU runs in.
-	Zone          string `protobuf:"bytes,3,opt,name=zone,proto3" json:"zone,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	Zone string `protobuf:"bytes,3,opt,name=zone,proto3" json:"zone,omitempty"`
+	// The TPU's state as Google reported it at the end of the deploy, e.g.
+	// READY, CREATING, PREEMPTED, or STOPPED. A snapshot: a Spot TPU that
+	// Google reclaims later reads as it was until the next deploy.
+	State string `protobuf:"bytes,4,opt,name=state,proto3" json:"state,omitempty"`
+	// The TPU's health as Google reported it at the end of the deploy, e.g.
+	// HEALTHY or UNHEALTHY_MAINTENANCE (empty while Google reports none).
+	Health string `protobuf:"bytes,5,opt,name=health,proto3" json:"health,omitempty"`
+	// The internal IP address of every TPU worker, worker 0 first -- the one
+	// a runtime client reaches first.
+	WorkerInternalIps []string `protobuf:"bytes,6,rep,name=worker_internal_ips,json=workerInternalIps,proto3" json:"worker_internal_ips,omitempty"`
+	// The external IP address of every TPU worker that has one, in worker
+	// order (empty when external IPs are off).
+	WorkerExternalIps []string `protobuf:"bytes,7,rep,name=worker_external_ips,json=workerExternalIps,proto3" json:"worker_external_ips,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *GcpTpuVmOutputs) Reset() {
@@ -87,15 +100,47 @@ func (x *GcpTpuVmOutputs) GetZone() string {
 	return ""
 }
 
+func (x *GcpTpuVmOutputs) GetState() string {
+	if x != nil {
+		return x.State
+	}
+	return ""
+}
+
+func (x *GcpTpuVmOutputs) GetHealth() string {
+	if x != nil {
+		return x.Health
+	}
+	return ""
+}
+
+func (x *GcpTpuVmOutputs) GetWorkerInternalIps() []string {
+	if x != nil {
+		return x.WorkerInternalIps
+	}
+	return nil
+}
+
+func (x *GcpTpuVmOutputs) GetWorkerExternalIps() []string {
+	if x != nil {
+		return x.WorkerExternalIps
+	}
+	return nil
+}
+
 var File_catalog_gcp_gcptpuvm_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcptpuvm_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"+catalog/gcp/gcptpuvm/v1alpha1/outputs.proto\x12!dev.planton.gcp.gcptpuvm.v1alpha1\"R\n" +
+	"+catalog/gcp/gcptpuvm/v1alpha1/outputs.proto\x12!dev.planton.gcp.gcptpuvm.v1alpha1\"\xe0\x01\n" +
 	"\x0fGcpTpuVmOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x17\n" +
 	"\anode_id\x18\x02 \x01(\tR\x06nodeId\x12\x12\n" +
-	"\x04zone\x18\x03 \x01(\tR\x04zoneB\xab\x02\n" +
+	"\x04zone\x18\x03 \x01(\tR\x04zone\x12\x14\n" +
+	"\x05state\x18\x04 \x01(\tR\x05state\x12\x16\n" +
+	"\x06health\x18\x05 \x01(\tR\x06health\x12.\n" +
+	"\x13worker_internal_ips\x18\x06 \x03(\tR\x11workerInternalIps\x12.\n" +
+	"\x13worker_external_ips\x18\a \x03(\tR\x11workerExternalIpsB\xab\x02\n" +
 	"%com.dev.planton.gcp.gcptpuvm.v1alpha1B\fOutputsProtoP\x01ZKgithub.com/plantonhq/planton/catalog/gcp/gcptpuvm/v1alpha1;gcptpuvmv1alpha1\xa2\x02\x04DPGG\xaa\x02!Dev.Planton.Gcp.Gcptpuvm.V1alpha1\xca\x02!Dev\\Planton\\Gcp\\Gcptpuvm\\V1alpha1\xe2\x02-Dev\\Planton\\Gcp\\Gcptpuvm\\V1alpha1\\GPBMetadata\xea\x02%Dev::Planton::Gcp::Gcptpuvm::V1alpha1b\x06proto3"
 
 var (

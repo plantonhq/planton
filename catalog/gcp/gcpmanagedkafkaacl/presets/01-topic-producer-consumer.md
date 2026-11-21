@@ -17,5 +17,6 @@ The grants one topic needs: its producer may write and describe it, and its cons
 
 | Field | Default | Why Change |
 |-------|---------|------------|
+| `projectId`, `cluster`, principals | `my-gcp-project`, `events`, the service accounts | Stand-ins: name the cluster's project, reference the GcpManagedKafkaCluster (`valueFrom`), and name your own service accounts. |
 | `aclId` | `topic/orders` | The topic this ACL governs. |
 | `aclEntries` | producer + consumer | One entry per principal and operation. |

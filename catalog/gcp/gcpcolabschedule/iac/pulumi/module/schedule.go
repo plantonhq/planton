@@ -101,7 +101,12 @@ func schedule(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) er
 
 	createdSchedule, err := colab.NewSchedule(ctx, metadata.Name, args,
 		pulumi.Provider(gcpProvider),
-		pulumi.DependsOn([]pulumi.Resource{createdApi}))
+		pulumi.DependsOn([]pulumi.Resource{createdApi}),
+		// Google's provider plans a changed location as an in-place update
+		// and never reads the location back; a location change replaces
+		// the schedule instead, visibly in the preview -- the Terraform
+		// module's terraform_data tracker.
+		pulumi.ReplaceOnChanges([]string{"location"}))
 	if err != nil {
 		return errors.Wrap(err, "failed to create colab schedule")
 	}
@@ -109,6 +114,9 @@ func schedule(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) er
 	ctx.Export(OpName, createdSchedule.ID())
 	ctx.Export(OpScheduleId, createdSchedule.Name)
 	ctx.Export(OpLocation, createdSchedule.Location)
+	ctx.Export(OpState, createdSchedule.State)
+	ctx.Export(OpNextRunTime, createdSchedule.NextRunTime)
+	ctx.Export(OpStartedRunCount, createdSchedule.StartedRunCount)
 	return nil
 }
 

@@ -51,6 +51,12 @@ message GcpVectorSearchCollectionVertexEmbeddingConfig {
 // every position populated) vector field -- the shape every mainstream
 // embedding model produces.
 message GcpVectorSearchCollectionDenseVector {
+  option (buf.validate.message).cel = {
+    id: "dense_vector.has_shape"
+    message: "a dense vector field needs its dimensions, or vertex_embedding_config so Vertex AI computes its vectors: an empty dense_vector reaches Google with no shape"
+    expression: "has(this.dimensions) || has(this.vertex_embedding_config)"
+  };
+
   // Number of dimensions in the vector (768 for textembedding-gecko and
   // text-embedding-005 at their default; 3072 for gemini-embedding-001).
   // Must match the embedding model when vertex_embedding_config is set.
@@ -92,16 +98,24 @@ message GcpVectorSearchCollectionVectorSchema {
 // GcpVectorSearchCollectionAutoscalingSpec bounds the replicas an index's
 // dedicated infrastructure scales between.
 message GcpVectorSearchCollectionAutoscalingSpec {
+  option (buf.validate.message).cel = {
+    id: "autoscaling_spec.max_gte_min"
+    message: "max_replica_count must be at least min_replica_count"
+    expression: "!has(this.min_replica_count) || !has(this.max_replica_count) || this.max_replica_count >= this.min_replica_count"
+  };
+
   // Fewest replicas kept serving (1-1000; Google defaults to 2 when unset
-  // or 0). Sent only when set.
+  // or 0). Sent only when set. Changes in place.
   optional int32 min_replica_count = 1 [(buf.validate.field).int32 = {
     gte: 1
     lte: 1000
   }];
 
   // Most replicas the index may scale to (at least min_replica_count, at
-  // most 1000; Google defaults to the greater of min_replica_count and 2).
-  // Sent only when set.
+  // most 1000). Unset, the default depends on the API version the engine
+  // calls: the greater of min_replica_count and 2 under Terraform (Google's
+  // v1 API), 5 under Pulumi (Google's v1beta API) -- set it to get the
+  // same ceiling on both. Sent only when set. Changes in place.
   optional int32 max_replica_count = 2 [(buf.validate.field).int32 = {
     gte: 1
     lte: 1000
@@ -109,7 +123,8 @@ message GcpVectorSearchCollectionAutoscalingSpec {
 }
 
 // GcpVectorSearchCollectionDedicatedInfrastructure gives an index its own
-// serving nodes instead of the shared pool.
+// serving nodes instead of the shared pool. An empty block sends nothing,
+// so it means the same as omitting it.
 message GcpVectorSearchCollectionDedicatedInfrastructure {
   // STORAGE_OPTIMIZED for large indexes where cost per vector matters more
   // than latency; PERFORMANCE_OPTIMIZED (Google's default) for
@@ -130,9 +145,13 @@ message GcpVectorSearchCollectionDedicatedInfrastructure {
 
 // GcpVectorSearchCollectionIndex is one approximate-nearest-neighbor index
 // over a vector field of the collection (`google_vector_search_index`).
-// Every setting but labels is immutable: changing the field, the metric,
-// the ScaNN options, the pushed fields, or the infrastructure replaces the
-// index, which is rebuilt from the collection's data.
+// The display name, description, labels, and replica bounds change in
+// place. Changing the field, the metric, the ScaNN options, the pushed
+// fields, or the infrastructure mode replaces the index, which is rebuilt
+// from the collection's data. Removing a set metric, norm, or dedicated
+// block sends nothing, and Google keeps the value (and the nodes).
+// The collection's labels and the platform attribution labels are added to
+// the index's own and win on a key conflict.
 message GcpVectorSearchCollectionIndex {
   // The index's ID within the collection -- 1-63 characters, RFC 1035
   // (lowercase letters, digits, hyphens; starts with a letter). Immutable.
@@ -148,13 +167,15 @@ message GcpVectorSearchCollectionIndex {
     (buf.validate.field).string.min_len = 1
   ];
 
-  // Human-readable name shown in the console.
+  // Human-readable name shown in the console. Changes in place.
   string display_name = 3;
 
-  // Free-text description of the index.
+  // Free-text description of the index. Changes in place.
   string description = 4;
 
-  // Labels on the index -- the one mutable setting.
+  // Labels on the index. The collection's labels and the platform
+  // attribution labels are merged in and win on a key conflict. Change in
+  // place.
   map<string, string> labels = 5;
 
   // How similarity is measured: DOT_PRODUCT (Google's default; the right
@@ -209,9 +230,30 @@ message GcpVectorSearchCollectionIndex {
 // API or its SDKs -- and is deliberately not part of this block.
 //
 // Immutable: collection_id, location, and the encryption key. The data
-// schema, description, display name, and labels update in place; every
-// index setting but labels replaces that index.
+// schema, vector fields, description, display name, and labels update in
+// place; for each index see GcpVectorSearchCollectionIndex.
+//
+// This is Vector Search's collection API. GcpVertexAiIndex,
+// GcpVertexAiIndexEndpoint, and GcpVertexAiDeployedIndex are the separate,
+// older Vertex AI Vector Search API (an index built from Cloud Storage
+// files and deployed to an endpoint); the two do not share resources.
 message GcpVectorSearchCollectionSpec {
+  option (buf.validate.message).cel = {
+    id: "vector_schemas.unique_field_name"
+    message: "each vector field_name may appear only once in vector_schemas"
+    expression: "this.vector_schemas.map(v, v.field_name).unique()"
+  };
+  option (buf.validate.message).cel = {
+    id: "indexes.unique_index_id"
+    message: "each index_id may appear only once in indexes"
+    expression: "this.indexes.map(i, i.index_id).unique()"
+  };
+  option (buf.validate.message).cel = {
+    id: "indexes.index_field_declared"
+    message: "every index's index_field must name a field declared in vector_schemas"
+    expression: "this.indexes.all(i, this.vector_schemas.exists(v, v.field_name == i.index_field))"
+  };
+
   // The GCP project the collection lives in: a literal project ID or a
   // GcpProject reference. If omitted, the provider's default project is
   // used.
@@ -251,7 +293,10 @@ message GcpVectorSearchCollectionSpec {
   string data_schema = 7;
 
   // The searchable vector fields. Only fields declared here can be
-  // indexed and searched.
+  // indexed and searched. They update in place: adding, removing, or
+  // reshaping one changes the collection's schema, and emptying the list
+  // asks Google to drop every vector field. A field an index serves stays
+  // declared while the index exists.
   repeated GcpVectorSearchCollectionVectorSchema vector_schemas = 8;
 
   // Customer-managed encryption key protecting the collection and its
@@ -265,7 +310,7 @@ message GcpVectorSearchCollectionSpec {
 
   // The approximate-nearest-neighbor indexes over the collection's vector
   // fields, each keyed by its index_id. Add or remove an index by editing
-  // this list; any other change to an index replaces it.
+  // this list; for what changes in place see GcpVectorSearchCollectionIndex.
   repeated GcpVectorSearchCollectionIndex indexes = 10;
 
   // What happens to the collection and its indexes when this resource is

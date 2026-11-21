@@ -19,7 +19,7 @@ enablement) and one `google_vertex_ai_reasoning_engine`.
 | `locals.tf` | Ambient project fallback, the display name defaulted from `metadata.name`, null-for-empty optionals, the `planton-ai_*` labels |
 | `main.tf` | `google_project_service`, `google_vertex_ai_reasoning_engine` (the agent `spec` and the memory bank as nested `dynamic` blocks) |
 | `secrets.tf` | The Secret Manager API, one secret and pinned version per `secret_env` entry with a `value`, and the accessor grant to the runtime identity |
-| `outputs.tf` | `name`, `reasoning_engine_id`, `location`, `create_time`, `update_time` |
+| `outputs.tf` | `name`, `reasoning_engine_id`, `location`, `create_time`, `update_time`, `effective_identity` |
 
 ## Send Posture
 

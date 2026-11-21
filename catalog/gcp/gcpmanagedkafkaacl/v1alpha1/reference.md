@@ -21,6 +21,10 @@ Google IAM still decides who may connect at all (roles/managedkafka.client).
 Immutable: project_id, location, cluster, acl_id (a change replaces the
 ACL). The entries update in place.
 
+project_id and location name the cluster's project and region: the
+modules send them beside the cluster's bare ID, so they must be the
+cluster's own.
+
 ## Example
 
 ```yaml
@@ -74,7 +78,8 @@ used.
 
 `string` · required
 
-The cluster's region, e.g. "us-central1". Immutable.
+The cluster's region, e.g. "us-central1" -- the region the cluster
+runs in. Immutable.
 
 - rule: {"required":true,"string":{"pattern":"^[a-z]+-[a-z]+[0-9]+$"}}
 
@@ -103,11 +108,17 @@ The resource pattern, which is also the ACL's ID:
   topicPrefixed/{prefix}           -- every topic starting with prefix
   consumerGroupPrefixed/{prefix}   -- every consumer group with prefix
   transactionalIdPrefixed/{prefix} -- every transactional ID with prefix
-{name} may be the literal wildcard "*" (every resource of the type).
-One ACL exists per pattern on a cluster, so two manifests must never
-declare the same one. Immutable.
+  allTopics                        -- every topic (Google's spelling of
+                                      topic/*)
+  allConsumerGroups                -- every consumer group
+                                      (consumerGroup/*)
+  allTransactionalIds              -- every transactional ID
+                                      (transactionalId/*)
+Google spells the wildcard patterns with the all* IDs; use them rather
+than a "*" name. One ACL exists per pattern on a cluster, so two
+manifests must never declare the same one. Immutable.
 
-- rule: {"required":true,"string":{"pattern":"^(cluster|(topic|consumerGroup|transactionalId)(Prefixed)?/.+)$"}}
+- rule: {"required":true,"string":{"pattern":"^(cluster|allTopics|allConsumerGroups|allTransactionalIds|(topic|consumerGroup|transactionalId)(Prefixed)?/.+)$"}}
 
 ### spec.aclEntries
 
@@ -124,8 +135,9 @@ The entries for this pattern -- at least one, at most 100.
 Who the entry applies to, in Kafka's StandardAuthorizer form: "User:"
 followed by a Google account, e.g.
 "User:orders-api@my-project.iam.gserviceaccount.com", or "User:*" for
-everyone. With mTLS, the principal is the certificate's mapped name
-(see the cluster's ssl_principal_mapping_rules).
+everyone. With mTLS, the principal is "User:" followed by the
+certificate's mapped name (see the cluster's
+ssl_principal_mapping_rules) -- the prefix is never dropped.
 
 - rule: {"required":true,"string":{"pattern":"^User:.+$"}}
 
@@ -139,8 +151,7 @@ The Kafka operation:
 Which operations are meaningful depends on the resource type (Kafka's
 operations table): a producer needs WRITE (and DESCRIBE) on its topic;
 a consumer needs READ on the topic and READ on its consumer group.
-Google accepts any letter case; the spec takes the canonical upper
-case.
+Google accepts any letter case; the spec accepts upper case only.
 
 - rule: {"required":true,"string":{"in":["ALL","READ","WRITE","CREATE","DELETE","ALTER","DESCRIBE","CLUSTER_ACTION","DESCRIBE_CONFIGS","ALTER_CONFIGS","IDEMPOTENT_WRITE"]}}
 
@@ -149,7 +160,8 @@ case.
 `string`
 
 ALLOW (Google's default when empty) or DENY. A DENY wins over any
-ALLOW for the same principal and operation.
+ALLOW for the same principal and operation. "User:*" matches every
+principal, so a "User:*" DENY denies even principals allowed by name.
 
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"in":["ALLOW","DENY"]}}
 
@@ -172,6 +184,11 @@ What happens to the ACL when this resource is destroyed:
   "ABANDON"     -- the ACL leaves management and stays on the cluster
 
 - rule: deletion_policy must be one of: DELETE, PREVENT, ABANDON
+
+## Validation Rules
+
+- `spec.cluster_path_matches_location`: A literal cluster path must be in this ACL's location: projects/{project}/locations/{location}/clusters/{cluster}.
+- `spec.cluster_path_matches_project`: A literal cluster path must be in this ACL's project_id.
 
 ## Outputs
 

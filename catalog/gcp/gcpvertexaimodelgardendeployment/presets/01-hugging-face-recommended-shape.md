@@ -25,4 +25,4 @@ Deploy an open Hugging Face model to a Vertex AI endpoint in one step and let Mo
 | `endpointConfig.endpointDisplayName` | `qwen-small` | The endpoint's display name; Google names it when empty. |
 | `deletionPolicy` | `DELETE` | `PREVENT` for an endpoint clients depend on. |
 
-Every field is immutable: a different model, machine, or endpoint setting replaces the whole deployment and the endpoint ID changes. The replica bills its machine and accelerator hours from the moment it is ready.
+A different model, machine, or endpoint setting replaces the whole deployment and the endpoint ID changes; with no `deployConfig` there are no replica bounds to change in place. The replica bills its machine and accelerator hours from the moment it is ready.

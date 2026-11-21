@@ -14,4 +14,21 @@ message GcpTpuVmOutputs {
 
   // The zone the TPU runs in.
   string zone = 3;
+
+  // The TPU's state as Google reported it at the end of the deploy, e.g.
+  // READY, CREATING, PREEMPTED, or STOPPED. A snapshot: a Spot TPU that
+  // Google reclaims later reads as it was until the next deploy.
+  string state = 4;
+
+  // The TPU's health as Google reported it at the end of the deploy, e.g.
+  // HEALTHY or UNHEALTHY_MAINTENANCE (empty while Google reports none).
+  string health = 5;
+
+  // The internal IP address of every TPU worker, worker 0 first -- the one
+  // a runtime client reaches first.
+  repeated string worker_internal_ips = 6;
+
+  // The external IP address of every TPU worker that has one, in worker
+  // order (empty when external IPs are off).
+  repeated string worker_external_ips = 7;
 }

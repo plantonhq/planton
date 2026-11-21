@@ -117,6 +117,47 @@ var _ = ginkgo.Describe("GcpManagedKafkaClusterSpec", func() {
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "a GcpPrivateCaPool reference")
 	})
 
+	ginkgo.It("should judge a very large vCPU count without overflowing", func() {
+		msg := minimal()
+		msg.Spec.CapacityConfig = &GcpManagedKafkaClusterCapacity{VcpuCount: 1 << 40, MemoryBytes: 3 * gib}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.CapacityConfig = &GcpManagedKafkaClusterCapacity{VcpuCount: 3, MemoryBytes: 1 << 62}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject memory below Google's 3 GiB minimum", func() {
+		msg := minimal()
+		msg.Spec.CapacityConfig = &GcpManagedKafkaClusterCapacity{VcpuCount: 3, MemoryBytes: 2 * gib}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject a literal subnet or KMS key outside the cluster's region", func() {
+		msg := minimal()
+		msg.Spec.NetworkConfigs = []*GcpManagedKafkaClusterNetworkConfig{{Subnet: litRef("projects/p/regions/us-east1/subnetworks/kafka")}}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.NetworkConfigs = []*GcpManagedKafkaClusterNetworkConfig{{Subnet: litRef("https://www.googleapis.com/compute/v1/projects/p/regions/us-central1/subnetworks/kafka")}}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "a self link in the cluster's region")
+		msg = minimal()
+		msg.Spec.KmsKey = litRef("projects/p/locations/us-east1/keyRings/r/cryptoKeys/k")
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.KmsKey = &foreignkeyv1.StringValueOrRef{
+			LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{ValueFrom: &foreignkeyv1.ValueFromRef{Name: "kafka-key"}},
+		}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "a GcpKmsKey reference")
+	})
+
+	ginkgo.It("should reject a malformed location and more than 10 CA pools", func() {
+		msg := minimal()
+		msg.Spec.Location = "US"
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg = minimal()
+		msg.Spec.TlsConfig = &GcpManagedKafkaClusterTlsConfig{}
+		for i := 0; i < 11; i++ {
+			msg.Spec.TlsConfig.CaPools = append(msg.Spec.TlsConfig.CaPools, litRef("projects/pki/locations/us-central1/caPools/clients"))
+		}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
 	ginkgo.It("should reject a malformed cluster ID, an unknown rebalance mode, and an unknown deletion policy", func() {
 		msg := minimal()
 		msg.Spec.ClusterId = "Events_Prod"

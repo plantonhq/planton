@@ -41,8 +41,14 @@ const (
 //
 // A schedule can be paused and resumed (desired_state) and bounded by a
 // time window and a run count. Mutable in place: everything except
-// location, the project, and the notebook arm (a change to the notebook
-// run REPLACES the schedule; the pipeline arm updates in place).
+// location, the project, and the notebook arm. A location change replaces
+// the schedule (both modules force it). Switching arms, or changing the
+// notebook run's machine_type, gpu_partition_size, or tpu_topology,
+// replaces it too. Every other notebook-run setting is fixed once
+// created: Google's provider never sends a change to it, so the change
+// shows on every plan and Google keeps the first value -- create a new
+// schedule (and pause the old one) for a different notebook run. The
+// pipeline arm updates in place.
 type GcpColabScheduleSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The GCP project the schedule lives in: a literal project ID or a
@@ -50,7 +56,9 @@ type GcpColabScheduleSpec struct {
 	// used.
 	ProjectId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// The Vertex AI region the schedule and its runs live in, e.g.
-	// "us-central1". Changing it needs a new schedule.
+	// "us-central1". Both modules also make it the provider's region, which
+	// is where the provider sends each run request. Changing it replaces the
+	// schedule.
 	Location string `protobuf:"bytes,2,opt,name=location,proto3" json:"location,omitempty"`
 	// The schedule's name in the console -- up to 128 characters. Defaults
 	// to metadata.name.
@@ -83,11 +91,18 @@ type GcpColabScheduleSpec struct {
 	//	"ACTIVE" -- runs launch on the cron (the default)
 	//	"PAUSED" -- nothing launches; resume by setting ACTIVE again
 	//
-	// The block pauses or resumes the schedule to match on every apply.
+	// The schedule is paused or resumed to match when it is created and on
+	// a deploy that changes this setting -- not on every deploy: a schedule
+	// paused by hand stays paused until this setting changes. A schedule
+	// created PAUSED is created active and paused right after, so a tick
+	// falling in that moment can still launch a run. Any deploy that changes
+	// a schedule Google has COMPLETED, with this ACTIVE, asks Google to
+	// resume it.
 	DesiredState string `protobuf:"bytes,11,opt,name=desired_state,json=desiredState,proto3" json:"desired_state,omitempty"`
 	// The Colab Enterprise notebook run each tick launches. Exactly one of
-	// notebook_execution_job or pipeline_job. A change replaces the
-	// schedule.
+	// notebook_execution_job or pipeline_job. Fixed once created (see the
+	// message comment): only a machine_type, gpu_partition_size, or
+	// tpu_topology change reaches Google, as a replacement.
 	NotebookExecutionJob *GcpColabScheduleNotebookExecutionJob `protobuf:"bytes,12,opt,name=notebook_execution_job,json=notebookExecutionJob,proto3" json:"notebook_execution_job,omitempty"`
 	// The Vertex AI Pipelines run each tick launches. Exactly one of
 	// notebook_execution_job or pipeline_job. Updates in place.
@@ -753,7 +768,10 @@ func (x *GcpColabScheduleReservationAffinity) GetUseReservationPool() bool {
 	return false
 }
 
-// GcpColabScheduleNetworkSpec is the network a notebook run joins.
+// GcpColabScheduleNetworkSpec is the network a notebook run joins. The
+// schedule is a timer, not a resource in the network: its references say
+// which network the runs will join, so they never place the schedule
+// inside the network.
 type GcpColabScheduleNetworkSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Give the run a public internet path. Default false.
@@ -1305,12 +1323,12 @@ const file_catalog_gcp_gcpcolabschedule_v1alpha1_spec_proto_rawDesc = "" +
 	"\x19reservation_affinity_type\x18\x01 \x01(\tB|\xbaHy\xc8\x01\x01rtR\x0eNO_RESERVATIONR\x0fANY_RESERVATIONR\x14SPECIFIC_RESERVATIONR\x1dSPECIFIC_THEN_ANY_RESERVATIONR\x1cSPECIFIC_THEN_NO_RESERVATIONR\x17reservationAffinityType\x12\x10\n" +
 	"\x03key\x18\x02 \x01(\tR\x03key\x12\x16\n" +
 	"\x06values\x18\x03 \x03(\tR\x06values\x120\n" +
-	"\x14use_reservation_pool\x18\x04 \x01(\bR\x12useReservationPool\"\xc8\x02\n" +
+	"\x14use_reservation_pool\x18\x04 \x01(\bR\x12useReservationPool\"\xd0\x02\n" +
 	"\x1bGcpColabScheduleNetworkSpec\x124\n" +
-	"\x16enable_internet_access\x18\x01 \x01(\bR\x14enableInternetAccess\x12p\n" +
-	"\anetwork\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc2\x17\x92\xd4a\x19status.outputs.network_idR\anetwork\x12\x80\x01\n" +
+	"\x16enable_internet_access\x18\x01 \x01(\bR\x14enableInternetAccess\x12t\n" +
+	"\anetwork\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\x88\xd4a\xc2\x17\x92\xd4a\x19status.outputs.network_id\x98\xd4a\x01R\anetwork\x12\x84\x01\n" +
 	"\n" +
-	"subnetwork\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\x88\xd4a\xc3\x17\x92\xd4a#status.outputs.subnetwork_self_linkR\n" +
+	"subnetwork\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB0\x88\xd4a\xc3\x17\x92\xd4a#status.outputs.subnetwork_self_link\x98\xd4a\x01R\n" +
 	"subnetwork\"\x9a\x02\n" +
 	"\"GcpColabSchedulePersistentDiskSpec\x12\xc8\x01\n" +
 	"\tdisk_type\x18\x01 \x01(\tB\xaa\x01\xbaH\xa6\x01\xba\x01\xa2\x01\n" +

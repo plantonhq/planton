@@ -30,10 +30,12 @@ type GcpBigQueryCapacityCommitmentOutputs struct {
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// The commitment's state (PENDING, ACTIVE, or FAILED).
 	State string `protobuf:"bytes,2,opt,name=state,proto3" json:"state,omitempty"`
-	// When the current term started (ACTIVE commitments only).
+	// When the original commitment started (ACTIVE commitments only);
+	// renewals don't move it.
 	CommitmentStartTime string `protobuf:"bytes,3,opt,name=commitment_start_time,json=commitmentStartTime,proto3" json:"commitment_start_time,omitempty"`
-	// When the current term ends (ACTIVE commitments only) -- the earliest a
-	// delete succeeds.
+	// When the current term ends (ACTIVE commitments only). A delete before
+	// it fails. A renewal moves it forward, so a commitment that renews never
+	// reaches it.
 	CommitmentEndTime string `protobuf:"bytes,4,opt,name=commitment_end_time,json=commitmentEndTime,proto3" json:"commitment_end_time,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache

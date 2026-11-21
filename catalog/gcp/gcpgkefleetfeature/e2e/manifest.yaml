@@ -22,6 +22,7 @@ spec:
         value: projects/my-gcp-project/locations/us-central1/memberships/orders-uc1
       configmanagement:
         configSync:
+          enabled: true
           git:
             secretType: none
             syncRepo: https://github.com/example/platform-config

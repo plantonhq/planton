@@ -17,5 +17,6 @@ Fan a Kafka topic out to Pub/Sub subscribers with Google's Pub/Sub sink connecto
 
 | Field | Default | Why Change |
 |-------|---------|------------|
+| `projectId`, `connectCluster`, `configs.cps.project` | `my-gcp-project`, `events-connect` | Stand-ins: name your project, reference the GcpManagedKafkaConnectCluster (`valueFrom`), and write your project in `cps.project` -- a value inside `configs` takes no reference. |
 | `configs.topics` | `orders` | The Kafka topics to read. |
 | `configs.cps.topic` | `orders-events` | Grant the Managed Kafka service agent `roles/pubsub.publisher` on it. |

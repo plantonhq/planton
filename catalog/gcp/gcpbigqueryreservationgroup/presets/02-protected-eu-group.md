@@ -17,5 +17,6 @@ A production tier in the EU multi-region whose reservations share idle slots amo
 
 | Field | Default | Why Change |
 |-------|---------|------------|
+| `projectId` | `bq-admin-project` | A stand-in: name the admin project of the reservations that join, or reference a GcpProject. |
 | `location` | `EU` | Match the reservations that join it. Fixed at creation. |
 | `deletionPolicy` | `PREVENT` | `DELETE` for groups in short-lived environments. |

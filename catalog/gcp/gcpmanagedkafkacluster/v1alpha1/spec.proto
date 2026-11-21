@@ -7,12 +7,13 @@ import "shared/foreignkey/v1/foreign_key.proto";
 
 // GcpManagedKafkaClusterCapacity sizes the whole cluster
 // (`capacity_config`). Google spreads the vCPUs and memory across the
-// brokers it runs; both scale in place.
+// brokers it runs; both scale in place. The rule that binds is the ratio:
+// from 1 GiB to 8 GiB of memory per vCPU.
 message GcpManagedKafkaClusterCapacity {
   option (buf.validate.message).cel = {
     id: "capacity.memory_per_vcpu"
-    expression: "this.vcpu_count < 3 || (this.memory_bytes >= this.vcpu_count * 1073741824 && this.memory_bytes <= this.vcpu_count * 8589934592)"
-    message: "memory_bytes must be between 1 GiB and 8 GiB per vCPU (vcpu_count x 1073741824 to vcpu_count x 8589934592)"
+    expression: "this.vcpu_count < 3 || this.memory_bytes < 1 || (this.memory_bytes / 1073741824 >= this.vcpu_count && (this.memory_bytes - 1) / 8589934592 < this.vcpu_count)"
+    message: "Memory must be between 1 GiB and 8 GiB per vCPU: memory_bytes from vcpu_count x 1073741824 to vcpu_count x 8589934592."
   };
 
   // vCPUs provisioned across the cluster -- at least 3. Billed per
@@ -22,9 +23,10 @@ message GcpManagedKafkaClusterCapacity {
   int64 vcpu_count = 1 [(buf.validate.field).int64.gte = 3];
 
   // Memory provisioned across the cluster, in BYTES as a plain number
-  // (3 GiB = 3221225472) -- between 1 GiB and 8 GiB per vCPU. Billed per
-  // GiB-hour. Sent as a decimal string. Mutable in place.
-  int64 memory_bytes = 2 [(buf.validate.field).int64.gte = 1073741824];
+  // (3 GiB = 3221225472) -- at least Google's 3 GiB minimum, and between
+  // 1 GiB and 8 GiB per vCPU. Billed per GiB-hour. Sent as a decimal
+  // string. Mutable in place.
+  int64 memory_bytes = 2 [(buf.validate.field).int64.gte = 3221225472];
 }
 
 // GcpManagedKafkaClusterNetworkConfig attaches the cluster to one VPC
@@ -49,12 +51,15 @@ message GcpManagedKafkaClusterNetworkConfig {
 // (`tls_config`). Declaring the message -- even empty -- makes the modules
 // send the block; an EMPTY message is how an earlier mTLS configuration is
 // cleared (Google keeps the last one otherwise). Omitting the message
-// leaves whatever Google has.
+// leaves whatever Google has. On create, an empty message and an omitted
+// one are the same request: no TLS settings reach Google.
 message GcpManagedKafkaClusterTlsConfig {
   // How the Distinguished Name of a client certificate becomes the short
   // principal name ACLs match (Kafka's ssl.principal.mapping.rules broker
   // setting, same syntax). Empty keeps Kafka's default behavior. Changing
-  // it triggers a rolling restart of the brokers.
+  // it triggers a rolling restart of the brokers. The rules shape only
+  // principals from client certificates, so they take effect once
+  // ca_pools enables mTLS.
   string ssl_principal_mapping_rules = 1;
 
   // Certificate Authority Service CA pools whose certificates the brokers
@@ -91,14 +96,29 @@ message GcpManagedKafkaClusterTlsConfig {
 // lifetime but its format can differ between clusters, and the pinned
 // Pulumi SDK cannot read it yet, so it is not an output: read it once with
 // `gcloud managed-kafka clusters describe CLUSTER --location=LOCATION
-// --format="value(bootstrapAddress)"`. Internet (public) access is not yet
+// --project=PROJECT --format="value(bootstrapAddress)"`. Internet (public) access is not yet
 // offered here for the same SDK reason; clients reach the cluster from an
 // attached VPC.
 //
 // Immutable: project_id, location, cluster_id, kms_key (a change replaces
-// the cluster and its data). Capacity, networks, rebalancing, TLS, and
-// labels update in place.
+// the cluster and its data). Capacity, the broker disk size, networks,
+// rebalancing, TLS, and labels update in place.
+//
+// Deleting the cluster deletes every topic, message, and ACL in it (they
+// are its children in Google's API). A GcpManagedKafkaTopic or
+// GcpManagedKafkaAcl block that names it is then left pointing at nothing.
 message GcpManagedKafkaClusterSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.subnets_in_cluster_region"
+    expression: "this.network_configs.all(n, !has(n.subnet.value) || !n.subnet.value.contains('/regions/') || n.subnet.value.contains('/regions/' + this.location + '/'))"
+    message: "Each literal subnet must be in the cluster's region: its path must contain /regions/{location}/."
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.kms_key_in_cluster_region"
+    expression: "!has(this.kms_key.value) || this.kms_key.value == '' || this.kms_key.value.contains('/locations/' + this.location + '/')"
+    message: "A literal KMS key must be in the cluster's region: its path must contain /locations/{location}/."
+  };
+
   // The GCP project the cluster lives in: a literal project ID or a
   // GcpProject reference. If omitted, the provider's default project is
   // used.
@@ -114,8 +134,8 @@ message GcpManagedKafkaClusterSpec {
   ];
 
   // The cluster's ID -- 1-63 characters, RFC 1035 (lowercase letters,
-  // digits, hyphens; starts with a letter). Defaults to metadata.name.
-  // Immutable.
+  // digits, hyphens; starts with a letter). Defaults to metadata.name,
+  // which must then fit the same rule. Immutable.
   string cluster_id = 3 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string.pattern = "^[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?$"
@@ -125,7 +145,7 @@ message GcpManagedKafkaClusterSpec {
   GcpManagedKafkaClusterCapacity capacity_config = 4 [(buf.validate.field).required = true];
 
   // Disk per broker in GiB -- at least 100. Empty leaves Google's default.
-  // Sent as a decimal string.
+  // Sent as a decimal string. Mutable in place.
   int64 broker_disk_size_gib = 5 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).int64.gte = 100

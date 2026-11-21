@@ -24,14 +24,23 @@ message GcpBigQueryReservationGroupSpec {
   ];
 
   // The location of the group and its reservations: a multi-region (US,
-  // EU) or a region. Empty means US (Google's default). Immutable.
-  string location = 2;
+  // EU) or a region. Empty means US (Google's default). Write US and EU in
+  // upper case and a region in lower case: the provider never reads the
+  // location back, so another spelling is another location to it, and
+  // replaces the group. Immutable.
+  string location = 2 [(buf.validate.field).cel = {
+    id: "location.spelling"
+    message: "location must be US or EU in upper case, or a region in lower case such as us-central1."
+    expression: "this == '' || this in ['US', 'EU'] || this.matches('^[a-z]+-[a-z]+[0-9]+$')"
+  }];
 
-  // The group's name -- letters, digits, and dashes. Defaults to
-  // metadata.name. Immutable.
+  // The group's name -- Google's rule: lowercase letters, digits, and
+  // dashes, starting with a letter, not ending with a dash, at most 64
+  // characters. Defaults to metadata.name, which must then fit the same
+  // rule. Immutable.
   string reservation_group_name = 3 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
-    (buf.validate.field).string.pattern = "^[a-zA-Z0-9-]+$"
+    (buf.validate.field).string.pattern = "^[a-z](?:[-a-z0-9]{0,62}[a-z0-9])?$"
   ];
 
   // What happens to the group when this resource is destroyed:

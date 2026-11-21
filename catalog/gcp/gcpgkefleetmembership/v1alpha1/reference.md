@@ -105,9 +105,11 @@ cluster_id, "projects/{p}/locations/{l}/clusters/{name}") or that
 literal path. Both modules send it as Google's resource link,
 "//container.googleapis.com/projects/{p}/locations/{l}/clusters/{name}".
 Omit it only for a cluster outside Google Cloud that registers through
-its own Connect agent. Immutable.
+its own Connect agent. A literal is that path, optionally with the
+//container.googleapis.com/ prefix. Immutable.
 
 - references: GcpGkeCluster (`status.outputs.cluster_id`)
+- rule: A literal GKE cluster must be projects/{project}/locations/{location}/clusters/{name}, optionally prefixed with //container.googleapis.com/.
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpGkeCluster, name: <that resource's name>, fieldPath: status.outputs.cluster_id}} -- a bare string does not parse
 
 ### spec.issuer

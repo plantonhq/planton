@@ -17,4 +17,5 @@ One team's or one priority tier's reservations share their idle slots with each 
 
 | Field | Default | Why Change |
 |-------|---------|------------|
+| `projectId` | `bq-admin-project` | A stand-in: name the admin project of the reservations that join, or reference a GcpProject. |
 | `location` | `US` | The same location as its reservations. Fixed at creation. |

@@ -33,7 +33,7 @@ spec:
       evidence:
         type: spec_default
         reference: "The entries decide, per principal and operation, what connected clients may do on the pattern; nothing is granted beyond what acl_entries lists."
-      notes: "Every preset grants the narrowest operations its use case needs."
+      notes: "Presets 01 and 02 grant the narrowest operations their use cases need; preset 03 grants ALL on a team's topic prefix on purpose, so the team can create and delete its own topics."
     - control_id: workload-identity
       status: enforced_by_default
       evidence:

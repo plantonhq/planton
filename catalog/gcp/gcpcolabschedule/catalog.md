@@ -83,7 +83,7 @@ These are the most important decisions when configuring a schedule. Explore the 
 
 **As whom** — runs execute as a service account (for production) or a user.
 
-**Paused or active** — `desiredState` pauses and resumes the schedule on every apply.
+**Paused or active** — `desiredState` pauses or resumes the schedule at creation and whenever the setting changes; a schedule paused by hand stays paused until it does.
 
 ## Outputs and Dependencies
 
@@ -109,6 +109,9 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 | `name` | The schedule's full resource name | Console links, automation |
 | `schedule_id` | The id Google assigned | SDK calls |
 | `location` | The schedule's region | Regional clients |
+| `state` | `ACTIVE`, `PAUSED`, or `COMPLETED` at the end of the deploy | A first check of the schedule |
+| `next_run_time` | The next run's start, as of the deploy | Dashboards and alerts |
+| `started_run_count` | Runs started so far, as of the deploy | Reporting |
 
 ## Common Patterns
 

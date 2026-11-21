@@ -15,11 +15,11 @@ This directory contains the Terraform implementation for a Model Armor floor set
 | `variables.tf` | `metadata` and `spec` variable definitions (generated from the spec; the tfvars converter flattens refs to plain strings) |
 | `locals.tf` | Scope selection into Google's parent, the `global` location default |
 | `main.tf` | `data.google_client_config` (empty scope only), `google_project_service` (project floors), `google_model_armor_floorsetting` |
-| `outputs.tf` | `name`, `parent` |
+| `outputs.tf` | `name`, `parent`, `location` |
 
 ## Send Posture
 
-- **`parent`** -- rendered from the one scope arm set; an empty scope reads the provider's project from `google_client_config` (provider configuration, no API call) -- PARITY with the Pulumi module's `GetClientConfig`.
+- **`parent`** -- rendered from the one scope arm set; an empty scope reads the provider's project from `google_client_config` (provider configuration, no API call) -- PARITY with the Pulumi module's `GetClientConfig`. A provider with no default project is refused by a postcondition on that read, with the Pulumi module's sentence, before any floor is sent.
 - **`location`** -- `spec.location`, defaulting to `global`.
 - **`enable_floor_setting_enforcement`** -- sent as declared.
 - **`inspect_only` / `inspect_and_block`** -- exactly the flag `enforcement_type` names is sent; the other is null.

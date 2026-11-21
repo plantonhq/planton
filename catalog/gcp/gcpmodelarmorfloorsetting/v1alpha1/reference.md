@@ -13,18 +13,23 @@ project, folder, or organization (`google_model_armor_floorsetting`) --
 the minimum safety screening everything beneath it must meet, and the
 switch that makes Google's own AI services enforce it.
 
-A floor does two things. It sets the weakest filters any Model Armor
-template in its scope may carry (a template below the floor is flagged
-or refused once enforcement is on). And through integrated_services it
-screens traffic to Vertex AI (Gemini generateContent calls) and Google's
-MCP servers directly, with no application change -- the way to put every
-model call in a project behind Model Armor at once.
+A floor does two things, both only while enable_floor_setting_enforcement
+is true. It sets the weakest filters any Model Armor template in its
+scope may carry. And through integrated_services it screens traffic to
+Vertex AI (Gemini generateContent calls) and Google's MCP servers
+directly, with no application change -- the way to put every model call
+in a project behind Model Armor at once. The same thresholds that bound
+templates are the ones the integrated services' traffic is screened at.
 
 Google keeps exactly one floor setting per project, folder, and
 organization. Applying this block overwrites that setting. Destroying it
 does NOT remove it: Google cannot delete a floor setting, so destroy only
 stops managing it and the last applied floor stays in force. To relax a
 floor, apply it with enable_floor_setting_enforcement false first.
+
+A changed scope or location names a different floor, so both engines
+plan a replacement: the old floor is only dropped from management and
+stays in force in Google Cloud, and the new scope's floor is written.
 
 ## Example
 
@@ -91,8 +96,13 @@ spec:
 
 `GcpModelArmorFloorSettingScope`
 
-Whose floor this is. Omit for the provider's default project.
+Whose floor this is. Omit for the provider's default project: an empty
+scope and a project_id naming that same project are the same floor.
+A deploy whose provider has no default project is refused by both
+engines before anything is sent. Changing the scope replaces the
+floor (see above).
 
+- rule: folder_id must be the numeric folder ID, without the folders/ prefix
 - rule: set at most one of project_id, folder_id, or organization_id (empty means the provider's default project)
 
 ### spec.scope.projectId
@@ -108,8 +118,9 @@ Project floor: a literal project ID or a GcpProject reference.
 
 `string | valueFrom`
 
-Folder floor: the folder's numeric ID -- a literal or a GcpFolder
-reference. Every project and folder beneath it inherits the floor.
+Folder floor: the folder's numeric ID, without the folders/ prefix --
+a literal or a GcpFolder reference. Every project and folder beneath
+it inherits the floor.
 
 - references: GcpFolder (`status.outputs.folder_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpFolder, name: <that resource's name>, fieldPath: status.outputs.folder_id}} -- a bare string does not parse
@@ -129,7 +140,8 @@ organizations/ prefix. The floor for the whole estate.
 
 The location of the floor setting. Google manages floor settings at
 "global", the default; set a region only if Google documents a
-regional floor for your case.
+regional floor for your case. Changing it replaces the floor (see
+above).
 
 - rule: location must be global, a region, or a multi-region
 
@@ -147,10 +159,13 @@ floor, since destroy leaves the last applied floor in force.
 
 The Google services whose traffic the floor screens directly:
   "AI_PLATFORM"       -- Vertex AI model calls (configure the behavior
-                         in ai_platform_floor_setting)
+                         in ai_platform_floor_setting, required with it)
   "GOOGLE_MCP_SERVER" -- Google-hosted MCP servers (configure it in
-                         google_mcp_server_floor_setting)
-Empty: the floor only governs templates.
+                         google_mcp_server_floor_setting, required with
+                         it)
+Each service and its setting come together: a service without its
+setting, or a setting without its service, is refused. Empty: the
+floor only governs templates.
 
 - rule: {"repeated":{"unique":true,"items":{"string":{"in":["AI_PLATFORM","GOOGLE_MCP_SERVER"]}}}}
 
@@ -158,8 +173,9 @@ Empty: the floor only governs templates.
 
 `GcpModelArmorFloorSettingFilterConfig` · required
 
-The minimum filters. Required: a floor with no filters sets no
-minimum.
+The minimum filters. Required, but an empty block is accepted and sets
+no minimum: a filter constrains templates and traffic only once its
+own block is set.
 
 - rule: {"required":true}
 
@@ -173,7 +189,7 @@ Malicious URL detection.
 
 `string`
 
-"ENABLED" or "DISABLED".
+"ENABLED" or "DISABLED". Unset is Google's default, which is disabled.
 
 - rule: filter_enforcement must be ENABLED or DISABLED
 
@@ -187,7 +203,7 @@ Prompt injection and jailbreak detection.
 
 `string`
 
-"ENABLED" or "DISABLED".
+"ENABLED" or "DISABLED". Unset is Google's default, which is disabled.
 
 - rule: filter_enforcement must be ENABLED or DISABLED
 
@@ -195,8 +211,10 @@ Prompt injection and jailbreak detection.
 
 `string`
 
-The weakest threshold a template may use: "LOW_AND_ABOVE" (strictest),
-"MEDIUM_AND_ABOVE", or "HIGH".
+The weakest threshold a template may use, and the threshold integrated
+services' traffic is screened at: "LOW_AND_ABOVE" (strictest),
+"MEDIUM_AND_ABOVE", or "HIGH". Unset is Google's default, which is
+LOW_AND_ABOVE.
 
 - rule: confidence_level must be LOW_AND_ABOVE, MEDIUM_AND_ABOVE, or HIGH
 
@@ -227,8 +245,10 @@ One entry per required content category.
 
 `string`
 
-The weakest threshold a template may use for this category:
-"LOW_AND_ABOVE" (strictest), "MEDIUM_AND_ABOVE", or "HIGH".
+The weakest threshold a template may use for this category, and the
+threshold integrated services' traffic is screened at:
+"LOW_AND_ABOVE" (strictest), "MEDIUM_AND_ABOVE", or "HIGH". Unset is
+Google's default, which is LOW_AND_ABOVE.
 
 - rule: confidence_level must be LOW_AND_ABOVE, MEDIUM_AND_ABOVE, or HIGH
 
@@ -250,7 +270,7 @@ Google's predefined sensitive-data detectors.
 
 `string`
 
-"ENABLED" or "DISABLED".
+"ENABLED" or "DISABLED". Unset is Google's default, which is disabled.
 
 - rule: filter_enforcement must be ENABLED or DISABLED
 
@@ -259,6 +279,8 @@ Google's predefined sensitive-data detectors.
 `GcpModelArmorFloorSettingSdpAdvancedConfig`
 
 Your own Sensitive Data Protection templates.
+
+- rule: deidentify_template needs inspect_template: the inspect template decides what the de-identify template redacts
 
 ### spec.filterConfig.sdpSettings.advancedConfig.inspectTemplate
 
@@ -283,7 +305,8 @@ Every info type it names must also be in the inspect template.
 
 `GcpModelArmorFloorSettingServiceSetting`
 
-How the floor treats Vertex AI traffic when AI_PLATFORM is integrated.
+How the floor treats Vertex AI traffic. Set exactly when AI_PLATFORM
+is in integrated_services.
 
 ### spec.aiPlatformFloorSetting.enforcementType
 
@@ -307,8 +330,8 @@ Write the floor's verdicts for this service to Cloud Logging.
 
 `GcpModelArmorFloorSettingServiceSetting`
 
-How the floor treats Google MCP server traffic when GOOGLE_MCP_SERVER
-is integrated.
+How the floor treats Google MCP server traffic. Set exactly when
+GOOGLE_MCP_SERVER is in integrated_services.
 
 ### spec.googleMcpServerFloorSetting.enforcementType
 
@@ -335,6 +358,13 @@ Write the floor's verdicts for this service to Cloud Logging.
 Screen prompts in languages other than English under the floor. Sent
 only when true.
 
+## Validation Rules
+
+- `ai_platform_floor_setting.needs_service`: ai_platform_floor_setting applies only to integrated Vertex AI traffic: add AI_PLATFORM to integrated_services, or remove the setting
+- `integrated_services.ai_platform_needs_setting`: AI_PLATFORM is integrated but ai_platform_floor_setting is not set: set it to choose INSPECT_ONLY or INSPECT_AND_BLOCK for Vertex AI traffic
+- `google_mcp_server_floor_setting.needs_service`: google_mcp_server_floor_setting applies only to integrated MCP server traffic: add GOOGLE_MCP_SERVER to integrated_services, or remove the setting
+- `integrated_services.google_mcp_server_needs_setting`: GOOGLE_MCP_SERVER is integrated but google_mcp_server_floor_setting is not set: set it to choose INSPECT_ONLY or INSPECT_AND_BLOCK for MCP server traffic
+
 ## Outputs
 
 Reference an output from another manifest as `valueFrom: {kind: GcpModelArmorFloorSetting, name: <resource-name>, fieldPath: status.outputs.<output>}`.
@@ -343,6 +373,7 @@ Reference an output from another manifest as `valueFrom: {kind: GcpModelArmorFlo
 |---|---|---|
 | `status.outputs.name` | `string` | Full resource name: {parent}/locations/{location}/floorSetting. |
 | `status.outputs.parent` | `string` | The parent the floor governs: projects/{id}, folders/{id}, or organizations/{id}. |
+| `status.outputs.location` | `string` | The location the floor is managed at ("global" unless the spec names another). |
 
 ## References
 

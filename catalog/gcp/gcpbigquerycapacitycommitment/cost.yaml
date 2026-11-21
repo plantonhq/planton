@@ -28,6 +28,6 @@ spec:
     - field_path: renewal_plan
       sku_meter: committed slots
       pricing_unit: slot-hours
-      impact: Decides whether and how the spend continues after the term ends.
+      impact: Decides whether and how the spend continues after the term ends -- NONE ends it; ANNUAL (Google's default for annual commitments) and THREE_YEAR renew it, abandoned or not.
   free_tier: ""
   notes: "Google's BigQuery pricing (cloud.google.com/bigquery/pricing, read 2026-09-24) prices committed slots per slot-hour below the pay-as-you-go edition rate, for a one- or three-year term that cannot be cancelled."

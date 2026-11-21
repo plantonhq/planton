@@ -61,8 +61,8 @@ planton apply -f colab-runtime.yaml
 | `runtimeId` | `string` | `metadata.name` | Lowercase letters, digits, hyphens. Immutable. |
 | `displayName` | `string` | `metadata.name` | Up to 128 characters. Immutable. |
 | `description` | `string` | none | Immutable. |
-| `desiredState` | `string` | running | `RUNNING` or `STOPPED`; enforced on every apply. |
-| `autoUpgrade` | `bool` | `false` | Upgrade to the latest image on start when upgradable. |
+| `desiredState` | `string` | running | `RUNNING` or `STOPPED`; applied at creation and whenever it changes, never re-asserted. |
+| `autoUpgrade` | `bool` | `false` | Upgrade to the latest image when upgradable, during a deploy that changes the runtime. |
 | `deletionPolicy` | `string` | `DELETE` | `DELETE`, `PREVENT`, or `ABANDON`. |
 
 ### Validation Rules
@@ -76,6 +76,7 @@ planton apply -f colab-runtime.yaml
 | `name` | `string` | `projects/{project}/locations/{location}/notebookRuntimes/{runtime_id}` |
 | `runtime_id` | `string` | The runtime's id |
 | `location` | `string` | The runtime's region |
+| `state` | `string` | Google's state for the runtime at the end of the deploy (a snapshot) |
 
 ## Deployment Methods
 
@@ -89,7 +90,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 ## Important Notes
 
-- **`desiredState` is enforced on every apply.** A runtime the user started in the console is stopped again on the next apply if the manifest says `STOPPED` (and vice versa). Leave it unset to let users start and stop freely.
+- **`desiredState` is applied when it changes, not on every apply.** A runtime the user starts in Colab Enterprise stays running until idle shutdown stops it or the setting changes; clearing `STOPPED` starts the runtime.
 - **Only the runtime user can connect.** Assign one runtime per person.
 - **A stopped runtime still bills its disk.** Destroy it when it is no longer needed.
 - **The template's idle shutdown still applies** to a running runtime.

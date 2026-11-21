@@ -421,7 +421,9 @@ variable "spec" {
         # failed and starting host-error recovery for the VM on it. A lower
         # value recovers a hung host faster at the cost of more false
         # positives; leave unset for Compute Engine's default recovery timing.
-        # Must be 90..330 in steps of 30 (90, 120, ..., 330).
+        # Must be 90..330 in steps of 30 (90, 120, ..., 330). Compute Engine
+        # refuses it on Spot VMs ("hostErrorTimeoutSeconds feature is not
+        # supported for preemptible instance").
         host_error_timeout_seconds = optional(number)
       }))
 

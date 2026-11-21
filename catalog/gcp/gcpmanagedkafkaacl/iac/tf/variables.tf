@@ -20,7 +20,8 @@ variable "spec" {
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     project_id = optional(string, "")
 
-    # The cluster's region, e.g. "us-central1". Immutable.
+    # The cluster's region, e.g. "us-central1" -- the region the cluster
+    # runs in. Immutable.
     location = string
 
     # The cluster the ACL applies to. A GcpManagedKafkaCluster reference
@@ -38,9 +39,15 @@ variable "spec" {
     #   topicPrefixed/{prefix}           -- every topic starting with prefix
     #   consumerGroupPrefixed/{prefix}   -- every consumer group with prefix
     #   transactionalIdPrefixed/{prefix} -- every transactional ID with prefix
-    # {name} may be the literal wildcard "*" (every resource of the type).
-    # One ACL exists per pattern on a cluster, so two manifests must never
-    # declare the same one. Immutable.
+    #   allTopics                        -- every topic (Google's spelling of
+    #                                       topic/*)
+    #   allConsumerGroups                -- every consumer group
+    #                                       (consumerGroup/*)
+    #   allTransactionalIds              -- every transactional ID
+    #                                       (transactionalId/*)
+    # Google spells the wildcard patterns with the all* IDs; use them rather
+    # than a "*" name. One ACL exists per pattern on a cluster, so two
+    # manifests must never declare the same one. Immutable.
     acl_id = string
 
     # The entries for this pattern -- at least one, at most 100.
@@ -48,8 +55,9 @@ variable "spec" {
       # Who the entry applies to, in Kafka's StandardAuthorizer form: "User:"
       # followed by a Google account, e.g.
       # "User:orders-api@my-project.iam.gserviceaccount.com", or "User:*" for
-      # everyone. With mTLS, the principal is the certificate's mapped name
-      # (see the cluster's ssl_principal_mapping_rules).
+      # everyone. With mTLS, the principal is "User:" followed by the
+      # certificate's mapped name (see the cluster's
+      # ssl_principal_mapping_rules) -- the prefix is never dropped.
       principal = string
 
       # The Kafka operation:
@@ -58,12 +66,12 @@ variable "spec" {
       # Which operations are meaningful depends on the resource type (Kafka's
       # operations table): a producer needs WRITE (and DESCRIBE) on its topic;
       # a consumer needs READ on the topic and READ on its consumer group.
-      # Google accepts any letter case; the spec takes the canonical upper
-      # case.
+      # Google accepts any letter case; the spec accepts upper case only.
       operation = string
 
       # ALLOW (Google's default when empty) or DENY. A DENY wins over any
-      # ALLOW for the same principal and operation.
+      # ALLOW for the same principal and operation. "User:*" matches every
+      # principal, so a "User:*" DENY denies even principals allowed by name.
       permission_type = optional(string, "")
 
       # The client host the entry applies to. Managed Service for Apache Kafka

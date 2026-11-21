@@ -11,11 +11,11 @@ A GPU runtime that exists, fully configured, but stays stopped until a researche
 
 ## What This Creates
 
-- A runtime from the `private-gpu-t4` template, assigned to one researcher, held `STOPPED` on every apply, auto-upgrading on start, with `PREVENT` on destroy
+- A runtime from the `private-gpu-t4` template, assigned to one researcher, created `STOPPED` (a user can still start it in Colab Enterprise until idle shutdown stops it), auto-upgrading during deploys that change it, with `PREVENT` on destroy
 
 ## Customize
 
 | Field | Default | Why Change |
 |-------|---------|------------|
-| `desiredState` | `STOPPED` | `RUNNING` for the days it is in use -- or unset to let the user decide. |
+| `desiredState` | `STOPPED` | `RUNNING` for the days it is in use; clearing it also starts the runtime. |
 | `autoUpgrade` | `true` | `false` to hold an image version. |

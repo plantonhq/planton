@@ -784,7 +784,10 @@ type GcpVertexAiModelGardenDeploymentModelConfig struct {
 	// deploy until this is true.
 	AcceptEula bool `protobuf:"varint,1,opt,name=accept_eula,json=acceptEula,proto3" json:"accept_eula,omitempty"`
 	// Hugging Face read token used to pull the artifacts of a gated Hugging
-	// Face model. Stored as a secret; never logged.
+	// Face model. Stored as a secret; never logged. The token is part of the
+	// deployment: a different token -- including a new value of the secret
+	// it is resolved from -- replaces the deployment on the next deploy, and
+	// the endpoint ID changes.
 	HuggingFaceAccessToken string `protobuf:"bytes,2,opt,name=hugging_face_access_token,json=huggingFaceAccessToken,proto3" json:"hugging_face_access_token,omitempty"`
 	// Deploy from Google's cached copy of the Hugging Face model instead of
 	// downloading from Hugging Face -- for VPC Service Controls perimeters
@@ -938,8 +941,11 @@ func (x *GcpVertexAiModelGardenDeploymentReservationAffinity) GetValues() []stri
 type GcpVertexAiModelGardenDeploymentMachineSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Compute Engine machine type, e.g. "g2-standard-12" (with an L4) or
-	// "a2-highgpu-1g" (with an A100). Google picks a default for the model
-	// when the whole deploy_config is omitted.
+	// "a2-highgpu-1g" (with an A100). Required under dedicated_resources:
+	// left blank there, Google's provider sends no machine at all and
+	// Google falls back to a small CPU machine most models cannot serve
+	// from. Model Garden picks the model's recommended machine only when
+	// the whole deploy_config is omitted.
 	MachineType string `protobuf:"bytes,1,opt,name=machine_type,json=machineType,proto3" json:"machine_type,omitempty"`
 	// Accelerator attached to each replica, e.g. "NVIDIA_L4",
 	// "NVIDIA_TESLA_A100", "NVIDIA_H100_80GB", "TPU_V5_LITEPOD". Set together
@@ -1105,7 +1111,8 @@ type GcpVertexAiModelGardenDeploymentDedicatedResources struct {
 	// Run the replicas on Spot VMs -- much cheaper, preemptible at any
 	// time.
 	Spot bool `protobuf:"varint,5,opt,name=spot,proto3" json:"spot,omitempty"`
-	// Metrics that drive autoscaling between the replica bounds.
+	// Metrics that drive autoscaling between the replica bounds, at most one
+	// entry per metric.
 	AutoscalingMetricSpecs []*GcpVertexAiModelGardenDeploymentAutoscalingMetricSpec `protobuf:"bytes,6,rep,name=autoscaling_metric_specs,json=autoscalingMetricSpecs,proto3" json:"autoscaling_metric_specs,omitempty"`
 	unknownFields          protoimpl.UnknownFields
 	sizeCache              protoimpl.SizeCache
@@ -1185,10 +1192,15 @@ func (x *GcpVertexAiModelGardenDeploymentDedicatedResources) GetAutoscalingMetri
 
 // GcpVertexAiModelGardenDeploymentDeployConfig decides the compute the
 // model is deployed on. Omit it entirely to let Model Garden pick the
-// model's recommended machine shape and one replica.
+// model's recommended machine shape and one replica. Choose that up
+// front: under Terraform, removing a deploy_config from a deployed model
+// changes nothing (Google's provider keeps reading the running machine
+// back), so moving to the recommended shape takes a new deployment.
 type GcpVertexAiModelGardenDeploymentDeployConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Machine shape and replica bounds.
+	// Machine shape and replica bounds. Google reserves quota for the
+	// ceiling: max_replica_count times the machine's cores and accelerators
+	// count against the project's Vertex AI quotas.
 	DedicatedResources *GcpVertexAiModelGardenDeploymentDedicatedResources `protobuf:"bytes,1,opt,name=dedicated_resources,json=dedicatedResources,proto3" json:"dedicated_resources,omitempty"`
 	// Enable Model Garden's fast-tryout serving path for the model when it
 	// supports one.
@@ -1385,9 +1397,9 @@ type GcpVertexAiModelGardenDeploymentEndpointConfig struct {
 	// Display name of the created endpoint; Google picks one when empty.
 	EndpointDisplayName string `protobuf:"bytes,1,opt,name=endpoint_display_name,json=endpointDisplayName,proto3" json:"endpoint_display_name,omitempty"`
 	// Give the endpoint its own DNS name
-	// ({endpoint}.{region}-{project}.prediction.vertexai.goog) isolated from
-	// the shared regional host. Once on, the shared host no longer serves
-	// it.
+	// ({endpoint_name}.{region}-{project_number}.prediction.vertexai.goog)
+	// isolated from the shared regional host. Once on, the shared host no
+	// longer serves it.
 	DedicatedEndpointEnabled bool `protobuf:"varint,2,opt,name=dedicated_endpoint_enabled,json=dedicatedEndpointEnabled,proto3" json:"dedicated_endpoint_enabled,omitempty"`
 	// Expose the endpoint through Private Service Connect.
 	PrivateServiceConnectConfig *GcpVertexAiModelGardenDeploymentPrivateServiceConnectConfig `protobuf:"bytes,3,opt,name=private_service_connect_config,json=privateServiceConnectConfig,proto3" json:"private_service_connect_config,omitempty"`
@@ -1452,13 +1464,15 @@ func (x *GcpVertexAiModelGardenDeploymentEndpointConfig) GetPrivateServiceConnec
 // uploads the model, creates an endpoint, and deploys the model to it on
 // the compute declared here.
 //
-// EVERYTHING in this spec is immutable. Google offers no in-place update
-// on this resource, so any change -- a new model version, a bigger
-// machine, an extra replica -- undeploys the model, deletes the endpoint,
-// and redeploys from scratch; the endpoint ID changes and clients pointed
-// at the old one break. Treat a deployment as a versioned artifact: roll
-// forward by declaring a second block and cutting traffic over, not by
-// editing this one in place. deletion_policy is the only mutable lever.
+// Five levers change in place, keeping the endpoint and its ID: under
+// deploy_config.dedicated_resources, min_replica_count,
+// max_replica_count, required_replica_count, and autoscaling_metric_specs
+// -- plus deletion_policy. Every other change -- a new model version, a
+// bigger machine, a different token -- undeploys the model, deletes the
+// endpoint, and redeploys from scratch; the endpoint ID changes and
+// clients pointed at the old one break. Treat a deployment as a versioned
+// artifact: roll forward by declaring a second block and cutting traffic
+// over, not by editing this one.
 //
 // A deployed model bills its machine (and accelerator) hours from the
 // moment it is ready until it is undeployed, whether or not it serves a
@@ -1494,8 +1508,9 @@ type GcpVertexAiModelGardenDeploymentSpec struct {
 	EndpointConfig *GcpVertexAiModelGardenDeploymentEndpointConfig `protobuf:"bytes,7,opt,name=endpoint_config,json=endpointConfig,proto3" json:"endpoint_config,omitempty"`
 	// What happens to the deployment when this resource is destroyed:
 	//
-	//	"" / "DELETE" -- the model is undeployed and the endpoint and model
-	//	                 are deleted
+	//	"" / "DELETE" -- the model is undeployed and the endpoint deleted;
+	//	                 Google's provider makes no call that deletes the
+	//	                 uploaded Model resource
 	//	"PREVENT"     -- destroy fails
 	//	"ABANDON"     -- the deployment leaves management and keeps serving
 	//	                 (and billing)
@@ -1688,32 +1703,36 @@ const file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_spec_proto_rawD
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\n" +
 	"metricName\x12&\n" +
 	"\x06target\x18\x02 \x01(\x05B\t\xbaH\x06\x1a\x04\x18d(\x01H\x00R\x06target\x88\x01\x01B\t\n" +
-	"\a_target\"\x98\x06\n" +
+	"\a_target\"\xab\t\n" +
 	"2GcpVertexAiModelGardenDeploymentDedicatedResources\x12\x89\x01\n" +
 	"\fmachine_spec\x18\x01 \x01(\v2f.dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentMachineSpecR\vmachineSpec\x123\n" +
 	"\x11min_replica_count\x18\x02 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01R\x0fminReplicaCount\x128\n" +
 	"\x11max_replica_count\x18\x03 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01H\x00R\x0fmaxReplicaCount\x88\x01\x01\x12B\n" +
 	"\x16required_replica_count\x18\x04 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01H\x01R\x14requiredReplicaCount\x88\x01\x01\x12\x12\n" +
-	"\x04spot\x18\x05 \x01(\bR\x04spot\x12\xaa\x01\n" +
-	"\x18autoscaling_metric_specs\x18\x06 \x03(\v2p.dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentAutoscalingMetricSpecR\x16autoscalingMetricSpecs:\xb0\x01\xbaH\xac\x01\x1a\xa9\x01\n" +
+	"\x04spot\x18\x05 \x01(\bR\x04spot\x12\xc5\x02\n" +
+	"\x18autoscaling_metric_specs\x18\x06 \x03(\v2p.dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentAutoscalingMetricSpecB\x98\x01\xbaH\x94\x01\xba\x01\x90\x01\n" +
+	"&autoscaling_metric_specs.unique_metric\x12Aeach metric_name may appear only once in autoscaling_metric_specs\x1a#this.map(m, m.metric_name).unique()R\x16autoscalingMetricSpecs:\xa8\x03\xbaH\xa4\x03\x1a\xf5\x01\n" +
+	")dedicated_resources.machine_type_required\x12\x87\x01dedicated_resources needs machine_spec.machine_type: left blank, Google falls back to a small CPU machine most models cannot serve from\x1a>has(this.machine_spec) && this.machine_spec.machine_type != ''\x1a\xa9\x01\n" +
 	"\x1fdedicated_resources.max_gte_min\x124max_replica_count must be at least min_replica_count\x1aP!has(this.max_replica_count) || this.max_replica_count >= this.min_replica_countB\x14\n" +
 	"\x12_max_replica_countB\x19\n" +
-	"\x17_required_replica_count\"\xe1\x03\n" +
+	"\x17_required_replica_count\"\xa7\x06\n" +
 	",GcpVertexAiModelGardenDeploymentDeployConfig\x12\x9e\x01\n" +
 	"\x13dedicated_resources\x18\x01 \x01(\v2m.dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentDedicatedResourcesR\x12dedicatedResources\x12.\n" +
 	"\x13fast_tryout_enabled\x18\x02 \x01(\bR\x11fastTryoutEnabled\x12\x9e\x01\n" +
 	"\rsystem_labels\x18\x03 \x03(\v2y.dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentDeployConfig.SystemLabelsEntryR\fsystemLabels\x1a?\n" +
 	"\x11SystemLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xb2\x02\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xc3\x02\xbaH\xbf\x02\x1a\xbc\x02\n" +
+	"'deploy_config.needs_dedicated_resources\x12\xb1\x01fast_tryout_enabled and system_labels need dedicated_resources: without them Google's provider reads dedicated resources back from Google and plans a replacement on every deploy\x1a]has(this.dedicated_resources) || (!this.fast_tryout_enabled && size(this.system_labels) == 0)\"\xb2\x02\n" +
 	"3GcpVertexAiModelGardenDeploymentPscAutomationConfig\x12\x7f\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_id\x98\xd4a\x01R\tprojectId\x12z\n" +
-	"\anetwork\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xc2\x17\x92\xd4a\x19status.outputs.network_id\x98\xd4a\x01R\anetwork\"\xb1\x03\n" +
+	"\anetwork\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xc2\x17\x92\xd4a\x19status.outputs.network_id\x98\xd4a\x01R\anetwork\"\xbb\x05\n" +
 	";GcpVertexAiModelGardenDeploymentPrivateServiceConnectConfig\x12C\n" +
 	"\x1eenable_private_service_connect\x18\x01 \x01(\bR\x1benablePrivateServiceConnect\x12\x87\x01\n" +
 	"\x11project_allowlist\x18\x02 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_id\x98\xd4a\x01R\x10projectAllowlist\x12\xa2\x01\n" +
-	"\x15psc_automation_config\x18\x03 \x01(\v2n.dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentPscAutomationConfigR\x13pscAutomationConfig\"\xe0\x02\n" +
+	"\x15psc_automation_config\x18\x03 \x01(\v2n.dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentPscAutomationConfigR\x13pscAutomationConfig:\x87\x02\xbaH\x83\x02\x1a\x80\x02\n" +
+	"-private_service_connect_config.lists_need_psc\x12_project_allowlist and psc_automation_config apply only with enable_private_service_connect true\x1anthis.enable_private_service_connect || (size(this.project_allowlist) == 0 && !has(this.psc_automation_config))\"\xe0\x02\n" +
 	".GcpVertexAiModelGardenDeploymentEndpointConfig\x122\n" +
 	"\x15endpoint_display_name\x18\x01 \x01(\tR\x13endpointDisplayName\x12<\n" +
 	"\x1adedicated_endpoint_enabled\x18\x02 \x01(\bR\x18dedicatedEndpointEnabled\x12\xbb\x01\n" +

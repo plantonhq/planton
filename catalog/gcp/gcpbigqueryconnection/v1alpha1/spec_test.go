@@ -96,6 +96,21 @@ var _ = ginkgo.Describe("GcpBigQueryConnectionSpec", func() {
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 	})
 
+	ginkgo.It("should require a location in Google's spelling", func() {
+		msg := base()
+		msg.Spec.CloudResource = true
+		msg.Spec.Location = ""
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		for _, loc := range []string{"us", "Eu", "US-CENTRAL1", "us central1"} {
+			msg.Spec.Location = loc
+			gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), loc)
+		}
+		for _, loc := range []string{"US", "EU", "us-central1", "europe-west1", "aws-us-east-1", "azure-eastus2"} {
+			msg.Spec.Location = loc
+			gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), loc)
+		}
+	})
+
 	ginkgo.It("should reject no arm and two arms", func() {
 		gomega.Expect(validator.Validate(base())).ToNot(gomega.Succeed())
 		msg := base()

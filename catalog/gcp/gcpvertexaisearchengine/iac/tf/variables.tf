@@ -221,8 +221,10 @@ variable "spec" {
       # Human-readable name (up to 128 characters).
       display_name = string
 
-      # Where the control applies: SEARCH_USE_CASE_SEARCH (queries) and/or
-      # SEARCH_USE_CASE_BROWSE (empty-query browsing).
+      # Where the control applies: SEARCH_USE_CASE_SEARCH (queries) or
+      # SEARCH_USE_CASE_BROWSE (empty-query browsing). One value: Google refuses
+      # a control with both ("control.useCase can only have 1 value", measured
+      # live), so a control for both makes two controls.
       use_cases = optional(list(string), [])
 
       # When the control is active; empty means always.
@@ -247,7 +249,10 @@ variable "spec" {
           end_time = optional(string, "")
         })), [])
 
-        # A regular expression the whole query must match.
+        # A regular expression the whole query must match. Google accepts it only
+        # on a promote action, and only for Basic Site Search ("only Basic Site
+        # Search promote action can have query regex condition", measured live);
+        # use query_terms for every other action.
         query_regex = optional(string, "")
       })), [])
 
@@ -255,7 +260,10 @@ variable "spec" {
       boost_action = optional(object({
         # The data store whose documents are boosted: a GcpVertexAiSearchDataStore
         # reference (its full name) or a literal
-        # projects/{project}/locations/{location}/collections/{collection}/dataStores/{store}.
+        # projects/{project_number}/locations/{location}/collections/{collection}/dataStores/{store}.
+        # Google accepts a control's data store only by project NUMBER and refuses
+        # the project id ("invalid data store name"); the data store kind's name
+        # output already carries the number.
         # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
         data_store = string
 
@@ -278,7 +286,10 @@ variable "spec" {
           # LINEAR is the only interpolation Google offers. Sent only when set.
           interpolation_type = optional(string, "")
 
-          # The curve's control point.
+          # The curve's control point. Not deployable today: the google provider
+          # sends it as "controlPoint", which the Discovery Engine API refuses as an
+          # unknown field on both engines (measured live), so the spec refuses it
+          # until the provider sends the name the API takes.
           control_point = optional(object({
             # The attribute value at this point (a number for NUMERICAL, a duration
             # like "7d" or "24h" for FRESHNESS).
@@ -293,7 +304,8 @@ variable "spec" {
       # Drop non-matching results.
       filter_action = optional(object({
         # The data store the filter applies to (a GcpVertexAiSearchDataStore
-        # reference or a literal full name).
+        # reference or a literal full name, by project number as on the boost
+        # action).
         # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
         data_store = string
 
@@ -304,7 +316,8 @@ variable "spec" {
       # Pin a link.
       promote_action = optional(object({
         # The data store the promotion applies to (a GcpVertexAiSearchDataStore
-        # reference or a literal full name).
+        # reference or a literal full name, by project number as on the boost
+        # action).
         # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
         data_store = string
 
@@ -577,7 +590,10 @@ variable "spec" {
     # What happens to the engine, its controls, and its assistants when this
     # resource is destroyed:
     #   "" / "DELETE" -- deleted (the widget config and serving config are
-    #                    Google's own and stay with the engine's deletion)
+    #                    Google's own and stay with the engine's deletion; a
+    #                    control the serving config lists is deleted by the
+    #                    engine's own deletion, since Google refuses to
+    #                    delete a listed control)
     #   "PREVENT"     -- destroy fails
     #   "ABANDON"     -- everything leaves management and stays in GCP
     # The data stores are separate resources and are not touched.

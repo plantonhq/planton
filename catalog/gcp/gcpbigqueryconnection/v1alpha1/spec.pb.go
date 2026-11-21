@@ -139,7 +139,10 @@ func (x *GcpBigQueryConnectionAzure) GetFederatedApplicationClientId() string {
 type GcpBigQueryConnectionCloudSpanner struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The database, as project/instance/database (slashes, no
-	// "projects/" prefix).
+	// "projects/" prefix) -- Google's form for this field. A
+	// GcpSpannerDatabase's database_id output is the full
+	// projects/{project}/instances/{instance}/databases/{database} path, so
+	// write this one as a literal.
 	Database string `protobuf:"bytes,1,opt,name=database,proto3" json:"database,omitempty"`
 	// A Spanner fine-grained access control role the queries run as (it
 	// must start with a letter; letters, digits, underscores). Empty reads
@@ -635,9 +638,12 @@ func (x *GcpBigQueryConnectionSpark) GetHistoryServerDataprocCluster() string {
 // Set exactly ONE arm: aws, azure, cloud_resource, cloud_spanner,
 // cloud_sql, configuration, or spark.
 //
-// Most arms create an identity Google owns that you must then grant
-// access to -- the cloud_resource and Spark service accounts, the AWS
-// identity, the Azure application -- all of them outputs.
+// Every arm but cloud_spanner creates an identity Google owns that you
+// must then grant access to -- the cloud_resource, Spark, and Cloud SQL
+// service accounts, the Connector framework's service account, the AWS
+// identity, the Azure application -- all of them outputs. A Spanner
+// connection reads as the caller (or its database_role) and has no
+// identity of its own.
 //
 // Immutable: project_id, location, connection_id, the connector id (a
 // change replaces the connection). Descriptions, the key, and each arm's
@@ -653,8 +659,9 @@ type GcpBigQueryConnectionSpec struct {
 	// europe-west1). Each arm has its own rule -- Cloud SQL must match (with
 	// us-central1 -> US and europe-west1 -> EU allowed), Spanner matches the
 	// instance's region, AWS uses aws-{region} (e.g. aws-us-east-1) and
-	// Azure azure-{region} (e.g. azure-eastus2). Empty leaves Google's
-	// default. Immutable.
+	// Azure azure-{region} (e.g. azure-eastus2). Required: Google's API has
+	// no default location for a connection. Write US and EU in upper case
+	// and every other location in lower case. Immutable.
 	Location string `protobuf:"bytes,2,opt,name=location,proto3" json:"location,omitempty"`
 	// The connection's ID. Defaults to metadata.name. Immutable.
 	ConnectionId string `protobuf:"bytes,3,opt,name=connection_id,json=connectionId,proto3" json:"connection_id,omitempty"`
@@ -665,6 +672,9 @@ type GcpBigQueryConnectionSpec struct {
 	// A Cloud KMS key encrypting the connection's stored credential (CMEK):
 	// a GcpKmsKey reference or a literal
 	// projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}.
+	// Only a stored credential is encrypted with it -- the Cloud SQL arm's
+	// user and password, or the Connector framework's when one is set; on
+	// an arm that stores no credential the key has nothing to encrypt.
 	// Empty uses Google-managed keys.
 	KmsKeyName *v1.StringValueOrRef `protobuf:"bytes,6,opt,name=kms_key_name,json=kmsKeyName,proto3" json:"kms_key_name,omitempty"`
 	// AWS through BigQuery Omni.
@@ -867,11 +877,11 @@ const file_catalog_gcp_gcpbigqueryconnection_v1alpha1_spec_proto_rawDesc = "" +
 	"\x12network_attachment\x18\x05 \x01(\tBA\xbaH>\xd8\x01\x01r927^projects/[^/]+/regions/[^/]+/networkAttachments/[^/]+$R\x11networkAttachment\"\x84\x02\n" +
 	"\x1aGcpBigQueryConnectionSpark\x12f\n" +
 	"\x11metastore_service\x18\x01 \x01(\tB9\xbaH6\xd8\x01\x01r12/^projects/[^/]+/locations/[^/]+/services/[^/]+$R\x10metastoreService\x12~\n" +
-	"\x1fhistory_server_dataproc_cluster\x18\x02 \x01(\tB7\xbaH4\xd8\x01\x01r/2-^projects/[^/]+/regions/[^/]+/clusters/[^/]+$R\x1chistoryServerDataprocCluster\"\xa5\x10\n" +
+	"\x1fhistory_server_dataproc_cluster\x18\x02 \x01(\tB7\xbaH4\xd8\x01\x01r/2-^projects/[^/]+/regions/[^/]+/clusters/[^/]+$R\x1chistoryServerDataprocCluster\"\xce\x10\n" +
 	"\x19GcpBigQueryConnectionSpec\x12u\n" +
 	"\n" +
-	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x1a\n" +
-	"\blocation\x18\x02 \x01(\tR\blocation\x12#\n" +
+	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12C\n" +
+	"\blocation\x18\x02 \x01(\tB'\xbaH$\xc8\x01\x01r\x1f2\x1d^(US|EU|[a-z]+(-[a-z0-9]+)+)$R\blocation\x12#\n" +
 	"\rconnection_id\x18\x03 \x01(\tR\fconnectionId\x12#\n" +
 	"\rfriendly_name\x18\x04 \x01(\tR\ffriendlyName\x12 \n" +
 	"\vdescription\x18\x05 \x01(\tR\vdescription\x12t\n" +

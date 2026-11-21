@@ -51,8 +51,9 @@ var _ = ginkgo.Describe("GcpManagedKafkaAclSpec", func() {
 	})
 
 	ginkgo.It("should accept every resource pattern Google defines", func() {
-		for _, id := range []string{"cluster", "topic/*", "consumerGroup/orders-consumer", "transactionalId/tx",
-			"topicPrefixed/orders.", "consumerGroupPrefixed/orders-", "transactionalIdPrefixed/tx-"} {
+		for _, id := range []string{"cluster", "topic/orders", "consumerGroup/orders-consumer", "transactionalId/tx",
+			"topicPrefixed/orders.", "consumerGroupPrefixed/orders-", "transactionalIdPrefixed/tx-",
+			"allTopics", "allConsumerGroups", "allTransactionalIds"} {
 			msg := minimal()
 			msg.Spec.AclId = id
 			gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), id)
@@ -69,11 +70,29 @@ var _ = ginkgo.Describe("GcpManagedKafkaAclSpec", func() {
 	})
 
 	ginkgo.It("should reject a pattern outside Google's grammar", func() {
-		for _, id := range []string{"", "topics/orders", "group/orders", "topic/", "Cluster"} {
+		for _, id := range []string{"", "topics/orders", "group/orders", "topic/", "Cluster", "allTopics/orders", "alltopics"} {
 			msg := minimal()
 			msg.Spec.AclId = id
 			gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), id)
 		}
+	})
+
+	ginkgo.It("should reject a literal cluster path in another location or project", func() {
+		msg := minimal()
+		msg.Spec.Cluster = litRef("projects/data-project/locations/us-east1/clusters/events")
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.Cluster = litRef("projects/data-project/locations/us-central1/clusters/events")
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		msg.Spec.ProjectId = litRef("other-project")
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject a malformed location", func() {
+		msg := minimal()
+		msg.Spec.Location = ""
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.Location = "US"
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
 
 	ginkgo.It("should require entries and cap them at 100", func() {

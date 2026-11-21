@@ -8,7 +8,7 @@ Every Colab Enterprise runtime is created from a template. The template fixes th
 
 ## Fixed at creation, labels included
 
-Google fixes a template's labels at creation: changing any label replaces the template. So does changing the machine, disk, network, idle, EUC, Secure Boot, tags, or description. Runtimes already created keep running; new ones use the new template. Plan a template per machine size rather than editing one.
+Google fixes a template's labels at creation: changing any label replaces the template, and moving the resource to another environment changes its attribution labels, so that replaces it too. Changing the location, machine, disk, network, tags, or description replaces it as well. Idle shutdown, EUC, and Secure Boot are different: Google's provider never sends a changed `idleTimeout` (the change shows on every plan and Google keeps the first value), and turning `eucDisabled` or `enableSecureBoot` off sends nothing. For any of the three, publish a new template. Runtimes already created keep running; new ones use the new template. Plan a template per machine size rather than editing one.
 
 ## Sizing and GPUs
 
@@ -20,7 +20,7 @@ A runtime bills while it runs, idle or not. `idleTimeout` (seconds ending in `s`
 
 ## Network posture
 
-With no `networkSpec`, runtimes join the default network with internet access. For private runtimes, reference a `GcpVpcNetwork` and `GcpSubnetwork` and set `enableInternetAccess: false`; the subnetwork then needs Private Google Access (or Cloud NAT) for Google APIs and package installs. `networkTags` let VPC firewall rules target notebook machines.
+With no `networkSpec`, runtimes join the default network with internet access. For private runtimes, reference a `GcpVpcNetwork` and `GcpSubnetwork` and set `enableInternetAccess: false`; the subnetwork then needs Private Google Access (or Cloud NAT) for Google APIs and package installs. A `networkSpec` without internet access must name the subnetwork: Google's provider never sends `enableInternetAccess: false` on its own, so a block naming nothing would leave runtimes on the public internet, and the spec refuses it. The template does not live in that network -- the references say which network its runtimes join. `networkTags` let VPC firewall rules target notebook machines.
 
 ## Credentials and encryption
 

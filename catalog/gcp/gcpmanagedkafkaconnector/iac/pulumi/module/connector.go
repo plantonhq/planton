@@ -27,9 +27,9 @@ func connector(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) e
 		args.Configs = pulumi.ToStringMap(spec.Configs)
 	}
 
-	// Omitted, failed tasks stay failed; declared, each backoff is sent
-	// only when set so Google's default fills the other -- the Terraform
-	// module's rule.
+	// Omitted, no policy is sent; declared (the spec requires at least one
+	// backoff), each backoff is sent only when set so Google's default
+	// fills the other -- the Terraform module's rule.
 	if policy := spec.TaskRestartPolicy; policy != nil {
 		policyArgs := &managedkafka.ConnectorTaskRestartPolicyArgs{}
 		if policy.MinimumBackoff != "" {

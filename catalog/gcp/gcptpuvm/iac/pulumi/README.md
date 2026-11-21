@@ -9,7 +9,7 @@ This directory contains the Pulumi implementation for a Cloud TPU VM from the Pl
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `tpuVm` |
 | `module/locals.go` | The `planton-ai_*` attribution labels |
 | `module/tpu_vm.go` | Enables the API; maps the accelerator, network interfaces, identity, scheduling, disks, and Secure Boot; exports the outputs |
-| `module/outputs.go` | Output key constants (`name`, `node_id`, `zone`) |
+| `module/outputs.go` | Output key constants (`name`, `node_id`, `zone`, `state`, `health`, `worker_internal_ips`, `worker_external_ips`) |
 
 ## Send Posture (parity with Terraform)
 

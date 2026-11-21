@@ -256,8 +256,12 @@ var _ = ginkgo.Describe("GcpVertexAiAgentEngineSpec", func() {
 		msg := minimal()
 		msg.Spec.Agent.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{MinInstances: proto.Int32(5), MaxInstances: proto.Int32(2)}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
-		msg.Spec.Agent.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{MinInstances: proto.Int32(11)}
+		msg.Spec.Agent.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{MinInstances: proto.Int32(76)}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.Agent.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{MinInstances: proto.Int32(0)}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.Agent.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{MinInstances: proto.Int32(75)}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 		msg.Spec.Agent.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{ResourceLimits: map[string]string{"gpu": "1"}}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
@@ -365,9 +369,35 @@ var _ = ginkgo.Describe("GcpVertexAiAgentEngineSpec", func() {
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
 
-	ginkgo.It("should reject an unknown deletion policy", func() {
+	ginkgo.It("should reject an unknown deletion policy and accept FORCE", func() {
 		msg := minimal()
 		msg.Spec.DeletionPolicy = "KEEP"
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.DeletionPolicy = "FORCE"
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should refuse a pickled package beside a container or a source build", func() {
+		pkg := &GcpVertexAiAgentEnginePackageSpec{PickleObjectGcsUri: "gs://agents/support.pkl"}
+		msg := minimal()
+		msg.Spec.Agent.PackageSpec = pkg
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.Agent = &GcpVertexAiAgentEngineAgent{
+			PackageSpec:   pkg,
+			ContainerSpec: &GcpVertexAiAgentEngineContainerSpec{ImageUri: "gcr.io/x/y"},
+		}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.Agent = &GcpVertexAiAgentEngineAgent{PackageSpec: pkg}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should refuse the telemetry variable Agent Engine manages itself", func() {
+		msg := minimal()
+		msg.Spec.Agent.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{Env: []*GcpVertexAiAgentEngineEnvVar{
+			{Name: "GOOGLE_CLOUD_AGENT_ENGINE_ENABLE_TELEMETRY", Value: "true"},
+		}}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.Agent.DeploymentSpec.Env[0].Name = "LOG_LEVEL"
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 	})
 })

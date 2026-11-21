@@ -105,7 +105,8 @@ variable "spec" {
         # identity secretAccessor on that secret alone, and points the variable at
         # that exact version -- the revision carries a reference, never the value.
         # A changed value adds a version and stamps a new revision, so rotation is
-        # a deploy; destroying the worker pool removes the secret.
+        # a deploy; destroying the worker pool removes the secret, under every
+        # deletion_policy (ABANDON included -- see deletion_policy).
         secret_value = optional(string, "")
       })), [])
 
@@ -284,7 +285,8 @@ variable "spec" {
         secret = string
 
         # Default Unix permission mode for projected files, in decimal (e.g. 292
-        # = 0444). If unset, GCP defaults to 0444.
+        # = 0444). If unset, GCP defaults to 0444. A mode of 0 is never sent
+        # (the provider drops a zero), so 0 also means 0444.
         default_mode = optional(number)
 
         # Which versions land at which relative paths. If empty, the "latest"
@@ -296,8 +298,9 @@ variable "spec" {
           # Secret version to project: a version number or "latest".
           version = optional(string, "")
 
-          # Unix permission mode for this file, in decimal. Overrides
-          # default_mode.
+          # Unix permission mode for this file, in decimal (1-511, octal 01-0777).
+          # Overrides default_mode. A mode of 0 is never sent (the provider drops
+          # a zero), so the file takes default_mode, exactly as when unset.
           mode = optional(number)
         })), [])
       }))
@@ -353,21 +356,29 @@ variable "spec" {
     service_account = optional(string, "")
 
     # How many instances run. MANUAL (Google's default) pins the total to
-    # manual_instance_count; AUTOMATIC lets Cloud Run move between
-    # min_instance_count and max_instance_count on a signal you drive.
-    # If omitted, Google runs the pool in MANUAL mode at its default count.
+    # manual_instance_count. AUTOMATIC, moving between min_instance_count and
+    # max_instance_count on a signal you drive, is refused: the provider
+    # cannot deploy it (see scaling_mode).
+    # If omitted, no scaling block is sent and the pool runs in Google's
+    # default mode, MANUAL. A block that is MANUAL (or names no mode) must
+    # state manual_instance_count: the provider sends an unset count as 0,
+    # which parks the pool.
     scaling = optional(object({
       # MANUAL (Google's default): the pool runs exactly manual_instance_count
       # instances. AUTOMATIC: Cloud Run moves the count between
       # min_instance_count and max_instance_count on a signal you drive.
-      # The spec refuses AUTOMATIC: the Google provider sends a manual
-      # instance count with every scaling block (0 when unset), and Cloud
-      # Run refuses any manual count under AUTOMATIC, so no deploy can
-      # create it.
+      # The spec refuses AUTOMATIC: the Google provider sends a manual instance
+      # count with every scaling block (0 when unset), and Cloud Run refuses any
+      # manual count under AUTOMATIC, so no deploy can create it. The bounds
+      # stay modeled because Google's API offers them; they become usable when
+      # the provider sends the count only in MANUAL mode.
       scaling_mode = optional(string, "")
 
       # Total instances across all revisions in MANUAL mode. 0 parks the pool
-      # (no instances, no bill) without deleting it.
+      # (no instances, no bill) without deleting it. Required in MANUAL mode
+      # (or when scaling_mode is unset): the provider sends an unset count as
+      # 0, so a block without one would park the pool by accident. Presence
+      # is tracked, so an explicit 0 is a deliberate park, never a default.
       manual_instance_count = optional(number)
 
       # Lower bound on instances in AUTOMATIC mode, distributed across
@@ -414,7 +425,9 @@ variable "spec" {
     encryption_key_revocation_action = optional(string, "")
 
     # Grace period before instances are shut down after a key revocation
-    # under SHUTDOWN, as a seconds duration in whole hours (e.g. "3600s").
+    # under SHUTDOWN, as a seconds duration in whole hours (e.g. "3600s"
+    # for one hour, "7200s" for two). Cloud Run's smallest increment is one
+    # hour, so any other count of seconds is refused.
     encryption_key_shutdown_duration = optional(string, "")
 
     # Explicit name for the next revision, prefixed with the worker pool
@@ -444,7 +457,8 @@ variable "spec" {
 
       # Direct VPC egress: instances get IPs in the subnetwork and reach VPC
       # resources with no connector infrastructure. The subnetwork needs free
-      # address space for the instance fleet.
+      # address space for the instance fleet. Cloud Run supports a single
+      # network interface.
       network_interfaces = optional(list(object({
         # The VPC network. Accepts a literal network name or a reference to a
         # GcpVpcNetwork resource. May be omitted when subnetwork is set (the
@@ -502,6 +516,8 @@ variable "spec" {
       policy = optional(string, "")
 
       # Justification recorded when a break-glass deploy bypasses the policy.
+      # Only with use_default: Google requires it empty whenever use_default
+      # is false, including beside a named policy.
       breakglass_justification = optional(string, "")
     }))
 
@@ -516,6 +532,12 @@ variable "spec" {
     #   "" / "DELETE" -- the worker pool is deleted (default)
     #   "PREVENT"     -- destroy fails
     #   "ABANDON"     -- the worker pool leaves management but keeps running
+    # ABANDON covers the worker pool only. The Secret Manager secrets this
+    # component keeps for env[].secret_value, their versions, and the pool
+    # identity's access grant on them are still deleted on both engines, so
+    # the abandoned pool can no longer read those secrets: its next instance
+    # start fails. A pool meant to outlive this resource should take every
+    # secret through value_from_secret, from a Secret Manager secret you own.
     deletion_policy = optional(string, "")
   })
 }

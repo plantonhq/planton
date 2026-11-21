@@ -11,7 +11,7 @@ enablement) and one `gcp.vertex.AiEndpointWithModelGardenDeployment`.
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `deployment` |
 | `module/locals.go` | Carries the IaC input (Google's deployment resource carries no labels of its own) |
 | `module/deployment.go` | Enables the API; maps the model source, model config and serving container (three probe adapters), deploy config, and endpoint config; exports the outputs |
-| `module/outputs.go` | Output key constants (`endpoint_id`, `endpoint_name`, `deployed_model_id`, `deployed_model_display_name`, `location`) |
+| `module/outputs.go` | Output key constants (`endpoint_id`, `endpoint_name`, `deployed_model_id`, `deployed_model_display_name`, `location`, `service_attachment`) |
 
 ## Send Posture (parity with Terraform)
 

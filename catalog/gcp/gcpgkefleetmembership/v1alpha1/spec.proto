@@ -64,8 +64,14 @@ message GcpGkeFleetMembershipSpec {
   // literal path. Both modules send it as Google's resource link,
   // "//container.googleapis.com/projects/{p}/locations/{l}/clusters/{name}".
   // Omit it only for a cluster outside Google Cloud that registers through
-  // its own Connect agent. Immutable.
+  // its own Connect agent. A literal is that path, optionally with the
+  // //container.googleapis.com/ prefix. Immutable.
   dev.planton.shared.foreignkey.v1.StringValueOrRef gke_cluster = 4 [
+    (buf.validate.field).cel = {
+      id: "gke_cluster.format"
+      message: "A literal GKE cluster must be projects/{project}/locations/{location}/clusters/{name}, optionally prefixed with //container.googleapis.com/."
+      expression: "!has(this.value) || this.value == '' || this.value.matches('^(//container[.]googleapis[.]com/)?projects/[^/]+/locations/[^/]+/clusters/[^/]+$')"
+    },
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpGkeCluster,
     (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.cluster_id"

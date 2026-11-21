@@ -21,7 +21,9 @@ variable "spec" {
     project_id = optional(string, "")
 
     # The Vertex AI region the schedule and its runs live in, e.g.
-    # "us-central1". Changing it needs a new schedule.
+    # "us-central1". Both modules also make it the provider's region, which
+    # is where the provider sends each run request. Changing it replaces the
+    # schedule.
     location = string
 
     # The schedule's name in the console -- up to 128 characters. Defaults
@@ -61,12 +63,19 @@ variable "spec" {
     # Whether the schedule launches runs:
     #   "ACTIVE" -- runs launch on the cron (the default)
     #   "PAUSED" -- nothing launches; resume by setting ACTIVE again
-    # The block pauses or resumes the schedule to match on every apply.
+    # The schedule is paused or resumed to match when it is created and on
+    # a deploy that changes this setting -- not on every deploy: a schedule
+    # paused by hand stays paused until this setting changes. A schedule
+    # created PAUSED is created active and paused right after, so a tick
+    # falling in that moment can still launch a run. Any deploy that changes
+    # a schedule Google has COMPLETED, with this ACTIVE, asks Google to
+    # resume it.
     desired_state = optional(string, "")
 
     # The Colab Enterprise notebook run each tick launches. Exactly one of
-    # notebook_execution_job or pipeline_job. A change replaces the
-    # schedule.
+    # notebook_execution_job or pipeline_job. Fixed once created (see the
+    # message comment): only a machine_type, gpu_partition_size, or
+    # tpu_topology change reaches Google, as a replacement.
     notebook_execution_job = optional(object({
       # The run's name in the console -- up to 128 characters. Defaults to the
       # schedule's display name.

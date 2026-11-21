@@ -39,11 +39,12 @@ var _ = ginkgo.Describe("GcpManagedKafkaTopicSpec", func() {
 				Location:          "us-central1",
 				Cluster:           litRef("events"),
 				ReplicationFactor: 3,
+				PartitionCount:    3,
 			},
 		}
 	}
 
-	ginkgo.It("should accept a topic with only its cluster and replication factor", func() {
+	ginkgo.It("should accept a topic with only its cluster, partitions, and replication factor", func() {
 		gomega.Expect(validator.Validate(minimal())).To(gomega.Succeed())
 	})
 
@@ -55,6 +56,45 @@ var _ = ginkgo.Describe("GcpManagedKafkaTopicSpec", func() {
 		msg.Spec.PartitionCount = 12
 		msg.Spec.Configs = map[string]string{"cleanup.policy": "compact"}
 		msg.Spec.DeletionPolicy = "ABANDON"
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should require a partition count", func() {
+		msg := minimal()
+		msg.Spec.PartitionCount = 0
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject a literal cluster path in another location or project", func() {
+		msg := minimal()
+		msg.Spec.Cluster = litRef("projects/data-project/locations/us-east1/clusters/events")
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg = minimal()
+		msg.Spec.ProjectId = litRef("data-project")
+		msg.Spec.Cluster = litRef("projects/other-project/locations/us-central1/clusters/events")
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.ProjectId = nil
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "no project_id to compare against")
+	})
+
+	ginkgo.It("should reject a topic config with an empty value", func() {
+		msg := minimal()
+		msg.Spec.Configs = map[string]string{"retention.ms": ""}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject a malformed location and a 250-character topic name", func() {
+		msg := minimal()
+		msg.Spec.Location = "us"
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg = minimal()
+		name := make([]byte, 250)
+		for i := range name {
+			name[i] = 'a'
+		}
+		msg.Spec.TopicId = string(name)
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.TopicId = string(name[:249])
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 	})
 

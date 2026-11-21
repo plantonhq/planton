@@ -20,7 +20,7 @@ spec:
     - field_path: agent.deployment_spec.min_instances
       sku_meter: Agent Engine vCPU
       pricing_unit: vCPU-hours
-      impact: The committed spend -- this many instances run around the clock; 0 scales the agent to nothing between requests at the cost of cold starts. The ceiling is max_instances.
+      impact: The committed spend -- this many instances run around the clock, at least one, since Google's provider never sends 0 and an agent cannot scale to nothing. The ceiling is max_instances.
     - field_path: agent.deployment_spec.resource_limits
       sku_meter: Agent Engine vCPU
       pricing_unit: vCPU-hours

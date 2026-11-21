@@ -1,6 +1,6 @@
 # GCP Model Armor Floor Setting
 
-Sets the minimum AI safety screening for a whole project, folder, or organization — and turns it on for Google's own AI services. With a floor in place, every Gemini call made through Vertex AI in that scope (and Google-hosted MCP server traffic, if you choose) is checked for prompt injection, harmful content, sensitive data, and malicious links without changing a line of application code, and no team can publish a Model Armor template weaker than the floor.
+Sets the minimum AI safety screening for a whole project, folder, or organization — and turns it on for Google's own AI services. With a floor enforced, every Gemini call made through Vertex AI in that scope is checked for prompt injection, harmful content, sensitive data, and malicious links without changing a line of application code once Vertex AI is an integrated service (and Google-hosted MCP server traffic, once that is integrated too), and the floor is the minimum every Model Armor template in the scope is held to.
 
 ## What Gets Created
 
@@ -60,13 +60,13 @@ Reference a `GcpFolder` from `scope.folderId` to set one floor for every project
 
 These are the most important decisions when configuring a floor. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**Whose floor** — a project, a folder (inherited by everything beneath it), or the organization. Empty means the connection's project.
+**Whose floor** — a project, a folder (inherited by everything beneath it), or the organization. Empty means the connection's project, the same floor as naming that project. One floor per scope: two Infra Components for the same scope overwrite each other on every apply, and changing the scope leaves the old floor in force.
 
-**Which services it screens** — `integratedServices` puts Vertex AI model calls (`AI_PLATFORM`) and Google MCP server traffic (`GOOGLE_MCP_SERVER`) behind the floor directly. Leave it empty to only govern templates.
+**Which services it screens** — `integratedServices` puts Vertex AI model calls (`AI_PLATFORM`) and Google MCP server traffic (`GOOGLE_MCP_SERVER`) behind the floor directly. Each integrated service needs its own setting below, and a setting needs its service. Leave it empty to only govern templates.
 
 **Report or block** — each integrated service's `enforcementType` decides whether a hit is recorded (`INSPECT_ONLY`) or blocked (`INSPECT_AND_BLOCK`). Roll out by reporting first.
 
-**The minimum** — `filterConfig` is the weakest filter set any template in scope may carry.
+**The minimum** — `filterConfig` is the weakest filter set any template in scope may carry, and the thresholds integrated services' traffic is screened at. Nothing is checked while `enableFloorSettingEnforcement` is false.
 
 ## Outputs and Dependencies
 
@@ -85,6 +85,7 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 |--------|-------------|----------------------|
 | `name` | The floor setting's full resource name | Audits and console links |
 | `parent` | The scope the floor governs | Reporting |
+| `location` | Where the floor is managed | Rebuilding the floor's resource name |
 
 ## Common Patterns
 

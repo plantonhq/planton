@@ -13,4 +13,9 @@ message GcpColabRuntimeOutputs {
 
   // The region the runtime lives in.
   string location = 3;
+
+  // The runtime's state as Google reported it at the end of the deploy,
+  // e.g. RUNNING or STOPPED. A snapshot: a runtime a user starts or idle
+  // shutdown stops later reads as it was until the next deploy.
+  string state = 4;
 }

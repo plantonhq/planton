@@ -79,5 +79,6 @@ func runtime(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 	ctx.Export(OpName, createdRuntime.ID())
 	ctx.Export(OpRuntimeId, createdRuntime.Name)
 	ctx.Export(OpLocation, createdRuntime.Location)
+	ctx.Export(OpState, createdRuntime.State)
 	return nil
 }

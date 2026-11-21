@@ -18,5 +18,6 @@ Production analytics capacity: 200 always-on Enterprise slots with 400 more on d
 
 | Field | Default | Why Change |
 |-------|---------|------------|
+| `projectId`, assignees | `bq-admin-project`, folder `123456789012`, `etl-project` | Stand-ins: your admin project, your folder's numeric ID (or a GcpFolder reference), and your project. `PREVENT` freezes the assignment list: apply `DELETE` on its own before removing or changing one. |
 | `slotCapacity` | `200` | Size to steady load; commit it with a `GcpBigQueryCapacityCommitment` to lower its rate. |
 | `assignments` | folder + ETL project | Every assignee's jobs of that type run here. |

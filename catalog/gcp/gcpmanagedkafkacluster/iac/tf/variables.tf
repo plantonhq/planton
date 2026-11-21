@@ -24,8 +24,8 @@ variable "spec" {
     location = string
 
     # The cluster's ID -- 1-63 characters, RFC 1035 (lowercase letters,
-    # digits, hyphens; starts with a letter). Defaults to metadata.name.
-    # Immutable.
+    # digits, hyphens; starts with a letter). Defaults to metadata.name,
+    # which must then fit the same rule. Immutable.
     cluster_id = optional(string, "")
 
     # vCPUs and memory for the whole cluster.
@@ -37,13 +37,14 @@ variable "spec" {
       vcpu_count = optional(number, 0)
 
       # Memory provisioned across the cluster, in BYTES as a plain number
-      # (3 GiB = 3221225472) -- between 1 GiB and 8 GiB per vCPU. Billed per
-      # GiB-hour. Sent as a decimal string. Mutable in place.
+      # (3 GiB = 3221225472) -- at least Google's 3 GiB minimum, and between
+      # 1 GiB and 8 GiB per vCPU. Billed per GiB-hour. Sent as a decimal
+      # string. Mutable in place.
       memory_bytes = optional(number, 0)
     })
 
     # Disk per broker in GiB -- at least 100. Empty leaves Google's default.
-    # Sent as a decimal string.
+    # Sent as a decimal string. Mutable in place.
     broker_disk_size_gib = optional(number, 0)
 
     # The VPC networks the cluster is reachable from -- at least one, at
@@ -82,7 +83,9 @@ variable "spec" {
       # How the Distinguished Name of a client certificate becomes the short
       # principal name ACLs match (Kafka's ssl.principal.mapping.rules broker
       # setting, same syntax). Empty keeps Kafka's default behavior. Changing
-      # it triggers a rolling restart of the brokers.
+      # it triggers a rolling restart of the brokers. The rules shape only
+      # principals from client certificates, so they take effect once
+      # ca_pools enables mTLS.
       ssl_principal_mapping_rules = optional(string, "")
 
       # Certificate Authority Service CA pools whose certificates the brokers

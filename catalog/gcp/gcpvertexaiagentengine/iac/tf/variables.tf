@@ -36,7 +36,8 @@ variable "spec" {
     # Customer-managed encryption key protecting the agent's data: a
     # GcpKmsKey reference or a literal
     # projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}.
-    # Omit to use Google-managed encryption. Immutable.
+    # The key must be in the agent's location. Omit to use Google-managed
+    # encryption. Immutable: a different key replaces the agent.
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     kms_key_name = optional(string, "")
 
@@ -72,7 +73,10 @@ variable "spec" {
       container_spec = optional(object({
         # Container image URI in Artifact Registry, e.g.
         # us-central1-docker.pkg.dev/{project}/{repo}/agent:latest. The image
-        # must implement the Agent Engine serving contract.
+        # must implement the Agent Engine serving contract, and the project's
+        # Reasoning Engine service agent
+        # (service-<project number>@gcp-sa-aiplatform-re.iam.gserviceaccount.com)
+        # needs roles/artifactregistry.reader on the repository to pull it.
         image_uri = string
 
         # Port the container listens on (Google's default 8080). Sent only when
@@ -150,7 +154,8 @@ variable "spec" {
         }))
       }))
 
-      # The legacy pickled-object package.
+      # The legacy pickled-object package. Mutually exclusive with
+      # container_spec and source_code_spec.
       package_spec = optional(object({
         # Cloud Storage URI (gs://...) of the pickled Python object.
         pickle_object_gcs_uri = optional(string, "")
@@ -184,7 +189,9 @@ variable "spec" {
         # secret_env, as a value this component stores in Secret Manager or a
         # secret you already own.
         env = optional(list(object({
-          # Variable name.
+          # Variable name. GOOGLE_CLOUD_AGENT_ENGINE_ENABLE_TELEMETRY is Agent
+          # Engine's own: Google's provider drops it when reading the agent back,
+          # so declaring it would show a change on every deploy.
           name = string
 
           # Literal value, written into the agent where anyone who can view it
@@ -225,16 +232,19 @@ variable "spec" {
           # variable at that exact version -- the agent carries a reference,
           # never the value. A changed value adds a version and redeploys the
           # agent, so rotation is a deploy; destroying the agent removes the
-          # secret. The secret's id is
+          # secret, under every deletion_policy (ABANDON included -- see
+          # deletion_policy). The secret's id is
           # agentengine_<location>_<metadata.name>_<variable> ('.' in the name
           # becomes '-'). Not available with identity_type AGENT_IDENTITY (see
           # the rule on GcpVertexAiAgentEngineAgent).
           value = optional(string)
         })), [])
 
-        # Instances kept running at all times (0-10; Google's default 1). Zero
-        # scales the agent to nothing between requests at the cost of cold
-        # starts. Sent only when set.
+        # Instances kept running at all times, 1-75 (Google's default 1). Google
+        # accepts 0, but Google's provider leaves an explicit 0 out of every
+        # request on both engines, so the agent keeps Google's default of one
+        # instance running (and billing) around the clock and every deploy shows
+        # the change again; 0 is refused for that reason. Sent only when set.
         min_instances = optional(number)
 
         # Most instances the agent may scale to (1-1000; 1-100 when VPC Service
@@ -529,9 +539,20 @@ variable "spec" {
     }))
 
     # What happens to the agent when this resource is destroyed:
-    #   "" / "DELETE" -- the agent and its memories are deleted
+    #   "" / "DELETE" -- the agent is deleted without force: Google refuses
+    #                    while the agent still holds child resources such as
+    #                    sessions or memories, and the destroy fails
+    #   "FORCE"       -- the agent is deleted with force, together with its
+    #                    sessions and memories
     #   "PREVENT"     -- destroy fails
     #   "ABANDON"     -- the agent leaves management and keeps running
+    # ABANDON covers the agent only. The Secret Manager secrets this
+    # component keeps for deployment_spec.secret_env[].value, their
+    # versions, and the agent identity's access grant on them are still
+    # deleted on both engines, so the abandoned agent can no longer read
+    # those secrets: its next instance start fails. An agent meant to
+    # outlive this resource should take every secret through secret_ref,
+    # from a Secret Manager secret you own.
     deletion_policy = optional(string, "")
   })
 }

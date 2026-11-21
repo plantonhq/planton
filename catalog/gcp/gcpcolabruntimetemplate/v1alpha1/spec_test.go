@@ -123,4 +123,16 @@ var _ = ginkgo.Describe("GcpColabRuntimeTemplateSpec", func() {
 		msg.Spec.DeletionPolicy = "KEEP"
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
+
+	ginkgo.It("should require a subnetwork for a network without internet access", func() {
+		msg := minimal()
+		msg.Spec.NetworkSpec = &GcpColabRuntimeTemplateNetworkSpec{}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.NetworkSpec.Network = litRef("projects/ml-project/global/networks/ml-vpc")
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.NetworkSpec.Subnetwork = litRef("projects/ml-project/regions/us-central1/subnetworks/notebooks")
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		msg.Spec.NetworkSpec = &GcpColabRuntimeTemplateNetworkSpec{EnableInternetAccess: true}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
 })

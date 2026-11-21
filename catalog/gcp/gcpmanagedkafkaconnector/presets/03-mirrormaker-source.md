@@ -17,5 +17,6 @@ Replicate topics from another Kafka cluster with MirrorMaker 2 -- the migration 
 
 | Field | Default | Why Change |
 |-------|---------|------------|
+| `projectId`, `connectCluster`, both `bootstrap.servers` | `my-gcp-project`, `migration-connect`, stand-in addresses | Name your project, reference the GcpManagedKafkaConnectCluster (`valueFrom`), and write each cluster's real bootstrap address (read with `gcloud managed-kafka clusters describe`) -- a value inside `configs` takes no reference. |
 | `configs.source.cluster.bootstrap.servers` | legacy address | Read it from the source cluster; its format can differ per cluster. |
 | `configs.topics` | `orders.*` | A regular expression of topics to replicate. |

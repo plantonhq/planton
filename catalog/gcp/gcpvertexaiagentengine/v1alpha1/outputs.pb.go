@@ -38,9 +38,14 @@ type GcpVertexAiAgentEngineOutputs struct {
 	// RFC 3339 timestamp of the agent's creation.
 	CreateTime string `protobuf:"bytes,4,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
 	// RFC 3339 timestamp of the agent's last update.
-	UpdateTime    string `protobuf:"bytes,5,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	UpdateTime string `protobuf:"bytes,5,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	// The identity the agent runs as, as Google resolved it: the service
+	// account email, the Reasoning Engine service agent, or the Agent
+	// Identity Google minted for it under AGENT_IDENTITY -- the principal to
+	// grant access to the secrets and resources the agent reads.
+	EffectiveIdentity string `protobuf:"bytes,6,opt,name=effective_identity,json=effectiveIdentity,proto3" json:"effective_identity,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *GcpVertexAiAgentEngineOutputs) Reset() {
@@ -108,11 +113,18 @@ func (x *GcpVertexAiAgentEngineOutputs) GetUpdateTime() string {
 	return ""
 }
 
+func (x *GcpVertexAiAgentEngineOutputs) GetEffectiveIdentity() string {
+	if x != nil {
+		return x.EffectiveIdentity
+	}
+	return ""
+}
+
 var File_catalog_gcp_gcpvertexaiagentengine_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/gcp/gcpvertexaiagentengine/v1alpha1/outputs.proto\x12/dev.planton.gcp.gcpvertexaiagentengine.v1alpha1\"\xc1\x01\n" +
+	"9catalog/gcp/gcpvertexaiagentengine/v1alpha1/outputs.proto\x12/dev.planton.gcp.gcpvertexaiagentengine.v1alpha1\"\xf0\x01\n" +
 	"\x1dGcpVertexAiAgentEngineOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12.\n" +
 	"\x13reasoning_engine_id\x18\x02 \x01(\tR\x11reasoningEngineId\x12\x1a\n" +
@@ -120,7 +132,8 @@ const file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_outputs_proto_rawDesc = "
 	"\vcreate_time\x18\x04 \x01(\tR\n" +
 	"createTime\x12\x1f\n" +
 	"\vupdate_time\x18\x05 \x01(\tR\n" +
-	"updateTimeB\x8d\x03\n" +
+	"updateTime\x12-\n" +
+	"\x12effective_identity\x18\x06 \x01(\tR\x11effectiveIdentityB\x8d\x03\n" +
 	"3com.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1B\fOutputsProtoP\x01Zggithub.com/plantonhq/planton/catalog/gcp/gcpvertexaiagentengine/v1alpha1;gcpvertexaiagentenginev1alpha1\xa2\x02\x04DPGG\xaa\x02/Dev.Planton.Gcp.Gcpvertexaiagentengine.V1alpha1\xca\x02/Dev\\Planton\\Gcp\\Gcpvertexaiagentengine\\V1alpha1\xe2\x02;Dev\\Planton\\Gcp\\Gcpvertexaiagentengine\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Gcp::Gcpvertexaiagentengine::V1alpha1b\x06proto3"
 
 var (

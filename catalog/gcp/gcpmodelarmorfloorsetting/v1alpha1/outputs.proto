@@ -10,4 +10,8 @@ message GcpModelArmorFloorSettingOutputs {
   // The parent the floor governs: projects/{id}, folders/{id}, or
   // organizations/{id}.
   string parent = 2;
+
+  // The location the floor is managed at ("global" unless the spec names
+  // another).
+  string location = 3;
 }

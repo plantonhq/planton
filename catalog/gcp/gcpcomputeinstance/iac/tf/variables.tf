@@ -153,8 +153,10 @@ variable "spec" {
       # semantics — a partial list plans a VM REPLACEMENT on every re-apply
       # (live-verified: debian-12's ["UEFI_COMPATIBLE", "GVNIC"] echoed back
       # ["UEFI_COMPATIBLE", "VIRTIO_SCSI_MULTIQUEUE", "GVNIC", "SEV_CAPABLE",
-      # "SEV_LIVE_MIGRATABLE_V2"]). Leave unset to follow the image's own
-      # features cleanly.
+      # "SEV_LIVE_MIGRATABLE_V2"]). An image family's feature set also grows
+      # between releases (debian-12 has since added "SUSPEND_SAFE_FPR"), so a
+      # complete list must follow every image change. Leave unset to follow the
+      # image's own features cleanly.
       guest_os_features = optional(list(string), [])
 
       # Zones for a REGIONAL boot disk (exactly two, one of which must be
@@ -484,7 +486,8 @@ variable "spec" {
       # automatic_restart). A lower value recovers faster from a hung host at
       # the cost of more false positives; leave unset for Compute Engine's
       # default recovery timing. Must be 90..330 in steps of 30 (90, 120, ...,
-      # 330).
+      # 330). Compute Engine refuses it on a Spot VM ("hostErrorTimeoutSeconds
+      # feature is not supported for preemptible instance").
       host_error_timeout_seconds = optional(number)
     }))
 
@@ -547,10 +550,11 @@ variable "spec" {
 
     # GPU accelerator cards attached to the instance. Requires a
     # GPU-capable zone and on_host_maintenance = "TERMINATE". Each entry
-    # attaches at least one card (count >= 1). Removing every entry from an
-    # existing VM leaves its GPUs attached (the provider preserves the
-    # current accelerators when the block is absent); detaching GPUs
-    # replaces the VM, so plan it as a recreate rather than an edit.
+    # attaches at least one card (count >= 1). Any change to this list on
+    # an existing VM (a type, a count, an added or removed entry) replaces
+    # the VM, so plan it as a recreate rather than an edit. Removing every
+    # entry is the exception: the provider preserves the current
+    # accelerators when the block is absent, so the GPUs stay attached.
     guest_accelerators = optional(list(object({
       # Accelerator type available in the instance's zone, e.g.
       # "nvidia-tesla-t4", "nvidia-l4", "nvidia-a100-80gb".

@@ -66,7 +66,7 @@ These are the most important decisions when configuring a runtime. Explore the f
 
 **Which template** — the machine, network, and image all come from `runtimeTemplate`.
 
-**Running or stopped** — `desiredState` starts or stops the runtime on every apply; `STOPPED` keeps the disk and stops the compute bill. Leave it unset to let the user decide.
+**Running or stopped** — `desiredState` starts or stops the runtime at creation and whenever the setting changes; `STOPPED` keeps the disk and stops the compute bill. A user can still start a parked runtime in Colab Enterprise, and the next deploy does not stop it again unless the setting changes. Unset means running.
 
 ## Outputs and Dependencies
 
@@ -86,6 +86,7 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 | `name` | The runtime's full resource name | Console links, automation |
 | `runtime_id` | The runtime's id | SDK calls |
 | `location` | The runtime's region | Regional clients |
+| `state` | Google's state for the runtime at the end of the deploy | A first check that the runtime came up as declared |
 
 ## Common Patterns
 

@@ -18,4 +18,8 @@ provider "google" {
   # replacement. Credentials are injected by the runtime; the connection
   # never names a project.
   project = local.project_id
+  # A schedule names a location, yet the provider fills each run request's
+  # parent from its own region before every create and update, and fails
+  # with no region at all -- so the region is the spec's location.
+  region = var.spec.location
 }

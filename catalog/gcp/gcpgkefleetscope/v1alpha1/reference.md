@@ -30,9 +30,10 @@ Important behavioral notes:
 
   - The scope lives in a fleet: Google requires the fleet first, so
     project_id references the GcpGkeFleet by default.
-  - scope_id and every child's ID are create-time decisions; labels,
-    namespace labels, role-binding principals and roles, and a cluster
-    binding's target update in place.
+  - scope_id, every child's ID, and a cluster binding's membership are
+    create-time decisions (a changed membership replaces its binding);
+    labels, namespace labels, and role-binding principals and roles
+    update in place.
   - Destroy deletes the bindings, the namespaces (removing them from
     every bound cluster), and the scope.
 
@@ -240,7 +241,10 @@ namespaces:
 The name of a Kubernetes ClusterRole on the bound clusters. Google
 honors it only when the fleet's rbacrolebindingactuation feature
 (GcpGkeFleetFeature with feature "rbacrolebindingactuation") lists it
-in allowed_custom_roles.
+in allowed_custom_roles. A Kubernetes object name: no "/" or "%", and
+not "." or "..".
+
+- rule: custom_role must be a Kubernetes ClusterRole name: no / or %, and not . or ..
 
 ### spec.rbacRoleBindings[].labels
 
@@ -273,8 +277,10 @@ The cluster's fleet membership, by full name
 ("projects/{p}/locations/{l}/memberships/{id}"): a GcpGkeFleetMembership
 reference, a GcpGkeCluster reference (its fleet_membership output, for
 a cluster that joined through fleet_project), or the literal name. The
-membership must be in this scope's fleet. Both modules derive the
-binding's project, location, and membership ID from it. Immutable.
+membership must be in this scope's fleet project: both modules derive
+the binding's location and membership ID from it, and create the
+binding in this scope's project. Immutable: a change replaces the
+binding.
 
 - references: GcpGkeFleetMembership (`status.outputs.name`), GcpGkeCluster (`status.outputs.fleet_membership`)
 - rule: membership must be a full membership name: projects/{project}/locations/{location}/memberships/{id}

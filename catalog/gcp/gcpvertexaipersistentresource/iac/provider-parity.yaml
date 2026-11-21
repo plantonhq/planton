@@ -25,6 +25,12 @@ resources:
       # Two one-leaf wrappers; the spec lifts the leaf.
       - spec: spec.enable_custom_service_account
         arg: resource_runtime_spec.service_account_spec.enable_custom_service_account
+  terraform_data:
+    internal: >-
+      the module's replacement tracker (OpenTofu's built-in store) -- the
+      provider updates a persistent resource with a PUT Google does not
+      serve, so any change to the resource replaces it, delete first; it has
+      no provider surface
   google_project_service:
     internal: >-
       API enablement plumbing -- the module enables the owning API so a

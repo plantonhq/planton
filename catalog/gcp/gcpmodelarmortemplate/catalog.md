@@ -13,7 +13,7 @@ When you deploy this Infra Component, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** — an active connection in the Connect module with Model Armor admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
+- **GCP Provider Connection** — an active connection in the Connect module with `roles/modelarmor.admin` on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ## Deploy
@@ -59,7 +59,7 @@ Reference the template's `name` output from a `GcpVertexAiSearchEngine` assistan
 
 These are the most important decisions when configuring a template. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**Which checks run** — each filter under `filterConfig` is off until you set it. Prompt injection and jailbreak detection is the one almost every AI app needs; add the content filters for user-facing chat, sensitive-data detection when prompts may carry personal data, and URL checks when responses include links.
+**Which checks run** — each filter under `filterConfig` is off until you set its block with `filterEnforcement: ENABLED` (a Responsible AI category runs once listed). Prompt injection and jailbreak detection is the one almost every AI app needs; add the content filters for user-facing chat, sensitive-data detection when prompts may carry personal data, and URL checks when responses include links.
 
 **How strict each check is** — `LOW_AND_ABOVE` catches the most and flags the most false positives; `HIGH` flags only clear cases. `MEDIUM_AND_ABOVE` is the balanced start.
 

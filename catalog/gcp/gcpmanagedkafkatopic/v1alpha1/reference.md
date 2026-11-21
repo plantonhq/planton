@@ -17,6 +17,10 @@ Immutable: project_id, location, cluster, topic_id, replication_factor
 (a change replaces the topic and DELETES its messages). partition_count
 grows in place but never shrinks; configs update in place.
 
+project_id and location name the cluster's project and region: the
+modules send them beside the cluster's bare ID, so they must be the
+cluster's own.
+
 ## Example
 
 ```yaml
@@ -68,7 +72,8 @@ used.
 
 `string` · required
 
-The cluster's region, e.g. "us-central1". Immutable.
+The cluster's region, e.g. "us-central1" -- the region the cluster
+runs in, not a choice of the topic's. Immutable.
 
 - rule: {"required":true,"string":{"pattern":"^[a-z]+-[a-z]+[0-9]+$"}}
 
@@ -92,7 +97,8 @@ Google's resource expects. Immutable.
 The topic's name as producers and consumers see it -- Kafka's own
 rule: letters, digits, dots, underscores, hyphens, at most 249
 characters (avoid mixing dots and underscores; Kafka treats them as
-colliding in metric names). Defaults to metadata.name. Immutable.
+colliding in metric names). Defaults to metadata.name, which must then
+fit the same rule. Immutable.
 
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^[a-zA-Z0-9._-]{1,249}$"}}
 
@@ -101,20 +107,21 @@ colliding in metric names). Defaults to metadata.name. Immutable.
 `int32`
 
 How many partitions the topic has -- the unit of consumer parallelism.
-Can be raised in place, never lowered; raising it changes which
-partition a keyed message lands on, so per-key ordering is only
-guaranteed for messages written after the change. Empty leaves
-Google's default.
+Required by Google. Can be raised in place, never lowered: a lower
+number plans as an update and Google refuses it at apply (no spec
+rule can see the stored count). Raising it changes which partition a
+keyed message lands on, so per-key ordering is only guaranteed for
+messages written after the change.
 
-- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","int32":{"gte":1}}
+- rule: {"int32":{"gte":1}}
 
 ### spec.replicationFactor
 
 `int32`
 
-How many copies of each partition the cluster keeps. Google
-recommends 3 for high availability (the brokers span three zones).
-Immutable.
+How many copies of each partition the cluster keeps. Required: there
+is no default. Google recommends 3 for high availability (the brokers
+span three zones). Immutable.
 
 - rule: {"int32":{"gte":1}}
 
@@ -125,7 +132,11 @@ Immutable.
 Topic-level overrides of the cluster's defaults, keyed by Kafka topic
 property, e.g. "cleanup.policy" = "compact", "retention.ms" =
 "604800000", "compression.type" = "producer". Keys absent here follow
-the cluster default.
+the cluster default. The map is replaced whole: removing a key returns
+it to the cluster's default on the next apply. Every value must be
+non-empty.
+
+- rule: Every topic config needs a value; remove the key to return it to the cluster's default.
 
 ### spec.deletionPolicy
 
@@ -137,6 +148,11 @@ What happens to the topic when this resource is destroyed:
   "ABANDON"     -- the topic leaves management and stays on the cluster
 
 - rule: deletion_policy must be one of: DELETE, PREVENT, ABANDON
+
+## Validation Rules
+
+- `spec.cluster_path_matches_location`: A literal cluster path must be in this topic's location: projects/{project}/locations/{location}/clusters/{cluster}.
+- `spec.cluster_path_matches_project`: A literal cluster path must be in this topic's project_id.
 
 ## Outputs
 

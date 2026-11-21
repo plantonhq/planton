@@ -87,7 +87,8 @@ variable "spec" {
         # The name of a Kubernetes ClusterRole on the bound clusters. Google
         # honors it only when the fleet's rbacrolebindingactuation feature
         # (GcpGkeFleetFeature with feature "rbacrolebindingactuation") lists it
-        # in allowed_custom_roles.
+        # in allowed_custom_roles. A Kubernetes object name: no "/" or "%", and
+        # not "." or "..".
         custom_role = optional(string, "")
       })
 
@@ -106,8 +107,10 @@ variable "spec" {
       # ("projects/{p}/locations/{l}/memberships/{id}"): a GcpGkeFleetMembership
       # reference, a GcpGkeCluster reference (its fleet_membership output, for
       # a cluster that joined through fleet_project), or the literal name. The
-      # membership must be in this scope's fleet. Both modules derive the
-      # binding's project, location, and membership ID from it. Immutable.
+      # membership must be in this scope's fleet project: both modules derive
+      # the binding's location and membership ID from it, and create the
+      # binding in this scope's project. Immutable: a change replaces the
+      # binding.
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       membership = string
 

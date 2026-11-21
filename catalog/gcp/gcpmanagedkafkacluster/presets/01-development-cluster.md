@@ -19,5 +19,6 @@ The smallest Kafka cluster Google sells, for development and integration testing
 | Field | Default | Why Change |
 |-------|---------|------------|
 | `location` | `us-central1` | Put the cluster where its clients run. Fixed at creation. |
+| `projectId` | `my-gcp-project` | A stand-in: name your project, or reference a GcpProject. |
 | `capacityConfig` | 3 vCPU, 3 GiB | Raise vCPUs for throughput; memory 1-8 GiB per vCPU. |
-| `networkConfigs` | `default` subnet | Point at the subnet whose network your clients live in. |
+| `networkConfigs` | `default` subnet | A stand-in path: point at the subnet whose network your clients live in, or reference a GcpSubnetwork. |

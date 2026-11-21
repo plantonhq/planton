@@ -1,6 +1,8 @@
 package module
 
 import (
+	"regexp"
+
 	"github.com/pkg/errors"
 	gcpmodelarmortemplatev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmodelarmortemplate/v1alpha1"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
@@ -12,6 +14,9 @@ import (
 // template creates the Model Armor template. location and template_id are
 // immutable; the filters, metadata, and labels update in place. Every
 // optional string is sent only when set -- the Terraform module's posture.
+// templateIdPattern is the template_id rule the spec states.
+var templateIdPattern = regexp.MustCompile(`^[A-Za-z0-9_-]{1,63}$`)
+
 func template(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) error {
 	spec := locals.GcpModelArmorTemplate.Spec
 
@@ -35,6 +40,14 @@ func template(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) er
 	templateId := spec.TemplateId
 	if templateId == "" {
 		templateId = locals.GcpModelArmorTemplate.Metadata.Name
+	}
+	// The fallback to metadata.name escapes the spec's template_id rule, so
+	// it is checked here with the Terraform module's sentence.
+	if !templateIdPattern.MatchString(templateId) {
+		return errors.Errorf("The template id %q is not 1-63 letters, digits, hyphens, or underscores -- set spec.template_id, or give the resource a metadata.name that fits.", templateId)
+	}
+	if spec.FilterConfig == nil {
+		return errors.New("spec.filter_config is required: a template names the filters it runs")
 	}
 
 	args := &modelarmor.TemplateArgs{
@@ -126,10 +139,17 @@ func buildFilterConfig(fc *gcpmodelarmortemplatev1alpha1.GcpModelArmorTemplateFi
 }
 
 func buildTemplateMetadata(tm *gcpmodelarmortemplatev1alpha1.GcpModelArmorTemplateMetadata) *modelarmor.TemplateTemplateMetadataArgs {
-	args := &modelarmor.TemplateTemplateMetadataArgs{
-		LogTemplateOperations:           pulumi.Bool(tm.LogTemplateOperations),
-		LogSanitizeOperations:           pulumi.Bool(tm.LogSanitizeOperations),
-		IgnorePartialInvocationFailures: pulumi.Bool(tm.IgnorePartialInvocationFailures),
+	// Each bool is sent only when true; Google's default for each is false
+	// -- identical to the Terraform module.
+	args := &modelarmor.TemplateTemplateMetadataArgs{}
+	if tm.LogTemplateOperations {
+		args.LogTemplateOperations = pulumi.Bool(true)
+	}
+	if tm.LogSanitizeOperations {
+		args.LogSanitizeOperations = pulumi.Bool(true)
+	}
+	if tm.IgnorePartialInvocationFailures {
+		args.IgnorePartialInvocationFailures = pulumi.Bool(true)
 	}
 	if tm.CustomPromptSafetyErrorCode != 0 {
 		args.CustomPromptSafetyErrorCode = pulumi.Int(int(tm.CustomPromptSafetyErrorCode))

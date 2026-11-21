@@ -1,7 +1,16 @@
 # The provider's default project, read only when the manifest names no
-# scope; an explicitly scoped floor never performs this read.
+# scope; an explicitly scoped floor never performs this read. A provider
+# with no default project would otherwise render a parent with no ID, so
+# the read refuses it with the Pulumi module's sentence.
 data "google_client_config" "current" {
   count = local.needs_client_project ? 1 : 0
+
+  lifecycle {
+    postcondition {
+      condition     = self.project != null && self.project != ""
+      error_message = "The floor names no scope and the provider has no default project -- set spec.scope or configure a project."
+    }
+  }
 }
 
 # A project floor needs the Model Armor API on that project; a folder or

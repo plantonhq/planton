@@ -143,6 +143,7 @@ func image(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) error
 	// The provider's resource ID is projects/{project}/global/images/{name},
 	// the same string the Terraform module exports from the resource's id.
 	ctx.Export(OpImageId, created.ID().ToStringOutput())
+	ctx.Export(OpArchiveSizeBytes, created.ArchiveSizeBytes)
 	return nil
 }
 

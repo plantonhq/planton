@@ -247,7 +247,10 @@ message GcpVertexAiModelGardenDeploymentModelConfig {
   bool accept_eula = 1;
 
   // Hugging Face read token used to pull the artifacts of a gated Hugging
-  // Face model. Stored as a secret; never logged.
+  // Face model. Stored as a secret; never logged. The token is part of the
+  // deployment: a different token -- including a new value of the secret
+  // it is resolved from -- replaces the deployment on the next deploy, and
+  // the endpoint ID changes.
   string hugging_face_access_token = 2 [(dev.planton.shared.options.sensitive) = true];
 
   // Deploy from Google's cached copy of the Hugging Face model instead of
@@ -305,8 +308,11 @@ message GcpVertexAiModelGardenDeploymentMachineSpec {
   };
 
   // Compute Engine machine type, e.g. "g2-standard-12" (with an L4) or
-  // "a2-highgpu-1g" (with an A100). Google picks a default for the model
-  // when the whole deploy_config is omitted.
+  // "a2-highgpu-1g" (with an A100). Required under dedicated_resources:
+  // left blank there, Google's provider sends no machine at all and
+  // Google falls back to a small CPU machine most models cannot serve
+  // from. Model Garden picks the model's recommended machine only when
+  // the whole deploy_config is omitted.
   string machine_type = 1;
 
   // Accelerator attached to each replica, e.g. "NVIDIA_L4",
@@ -352,6 +358,11 @@ message GcpVertexAiModelGardenDeploymentAutoscalingMetricSpec {
 // deployed model gets: a machine shape and replica bounds.
 message GcpVertexAiModelGardenDeploymentDedicatedResources {
   option (buf.validate.message).cel = {
+    id: "dedicated_resources.machine_type_required"
+    message: "dedicated_resources needs machine_spec.machine_type: left blank, Google falls back to a small CPU machine most models cannot serve from"
+    expression: "has(this.machine_spec) && this.machine_spec.machine_type != ''"
+  };
+  option (buf.validate.message).cel = {
     id: "dedicated_resources.max_gte_min"
     message: "max_replica_count must be at least min_replica_count"
     expression: "!has(this.max_replica_count) || this.max_replica_count >= this.min_replica_count"
@@ -376,15 +387,31 @@ message GcpVertexAiModelGardenDeploymentDedicatedResources {
   // time.
   bool spot = 5;
 
-  // Metrics that drive autoscaling between the replica bounds.
-  repeated GcpVertexAiModelGardenDeploymentAutoscalingMetricSpec autoscaling_metric_specs = 6;
+  // Metrics that drive autoscaling between the replica bounds, at most one
+  // entry per metric.
+  repeated GcpVertexAiModelGardenDeploymentAutoscalingMetricSpec autoscaling_metric_specs = 6 [(buf.validate.field).cel = {
+    id: "autoscaling_metric_specs.unique_metric"
+    message: "each metric_name may appear only once in autoscaling_metric_specs"
+    expression: "this.map(m, m.metric_name).unique()"
+  }];
 }
 
 // GcpVertexAiModelGardenDeploymentDeployConfig decides the compute the
 // model is deployed on. Omit it entirely to let Model Garden pick the
-// model's recommended machine shape and one replica.
+// model's recommended machine shape and one replica. Choose that up
+// front: under Terraform, removing a deploy_config from a deployed model
+// changes nothing (Google's provider keeps reading the running machine
+// back), so moving to the recommended shape takes a new deployment.
 message GcpVertexAiModelGardenDeploymentDeployConfig {
-  // Machine shape and replica bounds.
+  option (buf.validate.message).cel = {
+    id: "deploy_config.needs_dedicated_resources"
+    message: "fast_tryout_enabled and system_labels need dedicated_resources: without them Google's provider reads dedicated resources back from Google and plans a replacement on every deploy"
+    expression: "has(this.dedicated_resources) || (!this.fast_tryout_enabled && size(this.system_labels) == 0)"
+  };
+
+  // Machine shape and replica bounds. Google reserves quota for the
+  // ceiling: max_replica_count times the machine's cores and accelerators
+  // count against the project's Vertex AI quotas.
   GcpVertexAiModelGardenDeploymentDedicatedResources dedicated_resources = 1;
 
   // Enable Model Garden's fast-tryout serving path for the model when it
@@ -422,6 +449,12 @@ message GcpVertexAiModelGardenDeploymentPscAutomationConfig {
 // GcpVertexAiModelGardenDeploymentPrivateServiceConnectConfig exposes the
 // endpoint through Private Service Connect instead of the public API host.
 message GcpVertexAiModelGardenDeploymentPrivateServiceConnectConfig {
+  option (buf.validate.message).cel = {
+    id: "private_service_connect_config.lists_need_psc"
+    message: "project_allowlist and psc_automation_config apply only with enable_private_service_connect true"
+    expression: "this.enable_private_service_connect || (size(this.project_allowlist) == 0 && !has(this.psc_automation_config))"
+  };
+
   // Publish the endpoint through Private Service Connect.
   bool enable_private_service_connect = 1;
 
@@ -446,9 +479,9 @@ message GcpVertexAiModelGardenDeploymentEndpointConfig {
   string endpoint_display_name = 1;
 
   // Give the endpoint its own DNS name
-  // ({endpoint}.{region}-{project}.prediction.vertexai.goog) isolated from
-  // the shared regional host. Once on, the shared host no longer serves
-  // it.
+  // ({endpoint_name}.{region}-{project_number}.prediction.vertexai.goog)
+  // isolated from the shared regional host. Once on, the shared host no
+  // longer serves it.
   bool dedicated_endpoint_enabled = 2;
 
   // Expose the endpoint through Private Service Connect.
@@ -461,13 +494,15 @@ message GcpVertexAiModelGardenDeploymentEndpointConfig {
 // uploads the model, creates an endpoint, and deploys the model to it on
 // the compute declared here.
 //
-// EVERYTHING in this spec is immutable. Google offers no in-place update
-// on this resource, so any change -- a new model version, a bigger
-// machine, an extra replica -- undeploys the model, deletes the endpoint,
-// and redeploys from scratch; the endpoint ID changes and clients pointed
-// at the old one break. Treat a deployment as a versioned artifact: roll
-// forward by declaring a second block and cutting traffic over, not by
-// editing this one in place. deletion_policy is the only mutable lever.
+// Five levers change in place, keeping the endpoint and its ID: under
+// deploy_config.dedicated_resources, min_replica_count,
+// max_replica_count, required_replica_count, and autoscaling_metric_specs
+// -- plus deletion_policy. Every other change -- a new model version, a
+// bigger machine, a different token -- undeploys the model, deletes the
+// endpoint, and redeploys from scratch; the endpoint ID changes and
+// clients pointed at the old one break. Treat a deployment as a versioned
+// artifact: roll forward by declaring a second block and cutting traffic
+// over, not by editing this one.
 //
 // A deployed model bills its machine (and accelerator) hours from the
 // moment it is ready until it is undeployed, whether or not it serves a
@@ -526,8 +561,9 @@ message GcpVertexAiModelGardenDeploymentSpec {
   GcpVertexAiModelGardenDeploymentEndpointConfig endpoint_config = 7;
 
   // What happens to the deployment when this resource is destroyed:
-  //   "" / "DELETE" -- the model is undeployed and the endpoint and model
-  //                    are deleted
+  //   "" / "DELETE" -- the model is undeployed and the endpoint deleted;
+  //                    Google's provider makes no call that deletes the
+  //                    uploaded Model resource
   //   "PREVENT"     -- destroy fails
   //   "ABANDON"     -- the deployment leaves management and keeps serving
   //                    (and billing)

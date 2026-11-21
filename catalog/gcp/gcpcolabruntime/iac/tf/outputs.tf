@@ -12,3 +12,8 @@ output "location" {
   description = "The region the runtime lives in"
   value       = google_colab_runtime.this.location
 }
+
+output "state" {
+  description = "The runtime's state as Google reported it at the end of the deploy"
+  value       = google_colab_runtime.this.state
+}

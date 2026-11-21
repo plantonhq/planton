@@ -28,25 +28,35 @@ const (
 // the minimum safety screening everything beneath it must meet, and the
 // switch that makes Google's own AI services enforce it.
 //
-// A floor does two things. It sets the weakest filters any Model Armor
-// template in its scope may carry (a template below the floor is flagged
-// or refused once enforcement is on). And through integrated_services it
-// screens traffic to Vertex AI (Gemini generateContent calls) and Google's
-// MCP servers directly, with no application change -- the way to put every
-// model call in a project behind Model Armor at once.
+// A floor does two things, both only while enable_floor_setting_enforcement
+// is true. It sets the weakest filters any Model Armor template in its
+// scope may carry. And through integrated_services it screens traffic to
+// Vertex AI (Gemini generateContent calls) and Google's MCP servers
+// directly, with no application change -- the way to put every model call
+// in a project behind Model Armor at once. The same thresholds that bound
+// templates are the ones the integrated services' traffic is screened at.
 //
 // Google keeps exactly one floor setting per project, folder, and
 // organization. Applying this block overwrites that setting. Destroying it
 // does NOT remove it: Google cannot delete a floor setting, so destroy only
 // stops managing it and the last applied floor stays in force. To relax a
 // floor, apply it with enable_floor_setting_enforcement false first.
+//
+// A changed scope or location names a different floor, so both engines
+// plan a replacement: the old floor is only dropped from management and
+// stays in force in Google Cloud, and the new scope's floor is written.
 type GcpModelArmorFloorSettingSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Whose floor this is. Omit for the provider's default project.
+	// Whose floor this is. Omit for the provider's default project: an empty
+	// scope and a project_id naming that same project are the same floor.
+	// A deploy whose provider has no default project is refused by both
+	// engines before anything is sent. Changing the scope replaces the
+	// floor (see above).
 	Scope *GcpModelArmorFloorSettingScope `protobuf:"bytes,1,opt,name=scope,proto3" json:"scope,omitempty"`
 	// The location of the floor setting. Google manages floor settings at
 	// "global", the default; set a region only if Google documents a
-	// regional floor for your case.
+	// regional floor for your case. Changing it replaces the floor (see
+	// above).
 	Location string `protobuf:"bytes,2,opt,name=location,proto3" json:"location,omitempty"`
 	// Turn the floor on. While false the floor is recorded but nothing is
 	// checked or screened -- the state to apply before walking away from a
@@ -55,19 +65,24 @@ type GcpModelArmorFloorSettingSpec struct {
 	// The Google services whose traffic the floor screens directly:
 	//
 	//	"AI_PLATFORM"       -- Vertex AI model calls (configure the behavior
-	//	                       in ai_platform_floor_setting)
+	//	                       in ai_platform_floor_setting, required with it)
 	//	"GOOGLE_MCP_SERVER" -- Google-hosted MCP servers (configure it in
-	//	                       google_mcp_server_floor_setting)
+	//	                       google_mcp_server_floor_setting, required with
+	//	                       it)
 	//
-	// Empty: the floor only governs templates.
+	// Each service and its setting come together: a service without its
+	// setting, or a setting without its service, is refused. Empty: the
+	// floor only governs templates.
 	IntegratedServices []string `protobuf:"bytes,4,rep,name=integrated_services,json=integratedServices,proto3" json:"integrated_services,omitempty"`
-	// The minimum filters. Required: a floor with no filters sets no
-	// minimum.
+	// The minimum filters. Required, but an empty block is accepted and sets
+	// no minimum: a filter constrains templates and traffic only once its
+	// own block is set.
 	FilterConfig *GcpModelArmorFloorSettingFilterConfig `protobuf:"bytes,5,opt,name=filter_config,json=filterConfig,proto3" json:"filter_config,omitempty"`
-	// How the floor treats Vertex AI traffic when AI_PLATFORM is integrated.
+	// How the floor treats Vertex AI traffic. Set exactly when AI_PLATFORM
+	// is in integrated_services.
 	AiPlatformFloorSetting *GcpModelArmorFloorSettingServiceSetting `protobuf:"bytes,6,opt,name=ai_platform_floor_setting,json=aiPlatformFloorSetting,proto3" json:"ai_platform_floor_setting,omitempty"`
-	// How the floor treats Google MCP server traffic when GOOGLE_MCP_SERVER
-	// is integrated.
+	// How the floor treats Google MCP server traffic. Set exactly when
+	// GOOGLE_MCP_SERVER is in integrated_services.
 	GoogleMcpServerFloorSetting *GcpModelArmorFloorSettingServiceSetting `protobuf:"bytes,7,opt,name=google_mcp_server_floor_setting,json=googleMcpServerFloorSetting,proto3" json:"google_mcp_server_floor_setting,omitempty"`
 	// Screen prompts in languages other than English under the floor. Sent
 	// only when true.
@@ -170,8 +185,9 @@ type GcpModelArmorFloorSettingScope struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Project floor: a literal project ID or a GcpProject reference.
 	ProjectId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
-	// Folder floor: the folder's numeric ID -- a literal or a GcpFolder
-	// reference. Every project and folder beneath it inherits the floor.
+	// Folder floor: the folder's numeric ID, without the folders/ prefix --
+	// a literal or a GcpFolder reference. Every project and folder beneath
+	// it inherits the floor.
 	FolderId *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=folder_id,json=folderId,proto3" json:"folder_id,omitempty"`
 	// Organization floor: the numeric organization ID, without the
 	// organizations/ prefix. The floor for the whole estate.
@@ -294,7 +310,8 @@ func (x *GcpModelArmorFloorSettingServiceSetting) GetEnableCloudLogging() bool {
 }
 
 // GcpModelArmorFloorSettingFilterConfig selects the minimum filters. Each
-// filter is unconstrained unless its message is set.
+// filter is unconstrained unless its message is set; a set filter whose
+// filter_enforcement is unset takes Google's default, which is disabled.
 type GcpModelArmorFloorSettingFilterConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Malicious URL detection.
@@ -371,7 +388,7 @@ func (x *GcpModelArmorFloorSettingFilterConfig) GetSdpSettings() *GcpModelArmorF
 // the malicious URL filter.
 type GcpModelArmorFloorSettingMaliciousUriFilterSettings struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// "ENABLED" or "DISABLED".
+	// "ENABLED" or "DISABLED". Unset is Google's default, which is disabled.
 	FilterEnforcement string `protobuf:"bytes,1,opt,name=filter_enforcement,json=filterEnforcement,proto3" json:"filter_enforcement,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
@@ -418,10 +435,12 @@ func (x *GcpModelArmorFloorSettingMaliciousUriFilterSettings) GetFilterEnforceme
 // prompt injection and jailbreak filter at a minimum threshold.
 type GcpModelArmorFloorSettingPiAndJailbreakFilterSettings struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// "ENABLED" or "DISABLED".
+	// "ENABLED" or "DISABLED". Unset is Google's default, which is disabled.
 	FilterEnforcement string `protobuf:"bytes,1,opt,name=filter_enforcement,json=filterEnforcement,proto3" json:"filter_enforcement,omitempty"`
-	// The weakest threshold a template may use: "LOW_AND_ABOVE" (strictest),
-	// "MEDIUM_AND_ABOVE", or "HIGH".
+	// The weakest threshold a template may use, and the threshold integrated
+	// services' traffic is screened at: "LOW_AND_ABOVE" (strictest),
+	// "MEDIUM_AND_ABOVE", or "HIGH". Unset is Google's default, which is
+	// LOW_AND_ABOVE.
 	ConfidenceLevel string `protobuf:"bytes,2,opt,name=confidence_level,json=confidenceLevel,proto3" json:"confidence_level,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
@@ -523,8 +542,10 @@ type GcpModelArmorFloorSettingRaiFilter struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// "SEXUALLY_EXPLICIT", "HATE_SPEECH", "HARASSMENT", or "DANGEROUS".
 	FilterType string `protobuf:"bytes,1,opt,name=filter_type,json=filterType,proto3" json:"filter_type,omitempty"`
-	// The weakest threshold a template may use for this category:
-	// "LOW_AND_ABOVE" (strictest), "MEDIUM_AND_ABOVE", or "HIGH".
+	// The weakest threshold a template may use for this category, and the
+	// threshold integrated services' traffic is screened at:
+	// "LOW_AND_ABOVE" (strictest), "MEDIUM_AND_ABOVE", or "HIGH". Unset is
+	// Google's default, which is LOW_AND_ABOVE.
 	ConfidenceLevel string `protobuf:"bytes,2,opt,name=confidence_level,json=confidenceLevel,proto3" json:"confidence_level,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
@@ -575,7 +596,8 @@ func (x *GcpModelArmorFloorSettingRaiFilter) GetConfidenceLevel() string {
 }
 
 // GcpModelArmorFloorSettingSdpSettings requires Sensitive Data Protection
-// screening -- Google's basic detectors or your own templates, never both.
+// screening -- Google's basic detectors or your own templates: at most one
+// of the two.
 type GcpModelArmorFloorSettingSdpSettings struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Google's predefined sensitive-data detectors.
@@ -633,7 +655,7 @@ func (x *GcpModelArmorFloorSettingSdpSettings) GetAdvancedConfig() *GcpModelArmo
 // GcpModelArmorFloorSettingSdpBasicConfig switches the basic detectors.
 type GcpModelArmorFloorSettingSdpBasicConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// "ENABLED" or "DISABLED".
+	// "ENABLED" or "DISABLED". Unset is Google's default, which is disabled.
 	FilterEnforcement string `protobuf:"bytes,1,opt,name=filter_enforcement,json=filterEnforcement,proto3" json:"filter_enforcement,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
@@ -677,7 +699,8 @@ func (x *GcpModelArmorFloorSettingSdpBasicConfig) GetFilterEnforcement() string 
 }
 
 // GcpModelArmorFloorSettingSdpAdvancedConfig names Sensitive Data
-// Protection templates.
+// Protection templates. A de-identify template needs an inspect template
+// beside it.
 type GcpModelArmorFloorSettingSdpAdvancedConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Inspect template:
@@ -739,7 +762,7 @@ var File_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_spec_proto protoreflect.
 
 const file_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/gcp/gcpmodelarmorfloorsetting/v1alpha1/spec.proto\x122dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xe4\a\n" +
+	"9catalog/gcp/gcpmodelarmorfloorsetting/v1alpha1/spec.proto\x122dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xe3\x10\n" +
 	"\x1dGcpModelArmorFloorSettingSpec\x12h\n" +
 	"\x05scope\x18\x01 \x01(\v2R.dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1.GcpModelArmorFloorSettingScopeR\x05scope\x12\xa3\x01\n" +
 	"\blocation\x18\x02 \x01(\tB\x86\x01\xbaH\x82\x01\xba\x01\x7f\n" +
@@ -749,13 +772,18 @@ const file_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_spec_proto_rawDesc = "
 	"\rfilter_config\x18\x05 \x01(\v2Y.dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1.GcpModelArmorFloorSettingFilterConfigB\x06\xbaH\x03\xc8\x01\x01R\ffilterConfig\x12\x96\x01\n" +
 	"\x19ai_platform_floor_setting\x18\x06 \x01(\v2[.dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1.GcpModelArmorFloorSettingServiceSettingR\x16aiPlatformFloorSetting\x12\xa1\x01\n" +
 	"\x1fgoogle_mcp_server_floor_setting\x18\a \x01(\v2[.dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1.GcpModelArmorFloorSettingServiceSettingR\x1bgoogleMcpServerFloorSetting\x12E\n" +
-	"\x1fenable_multi_language_detection\x18\b \x01(\bR\x1cenableMultiLanguageDetection\"\xca\x06\n" +
+	"\x1fenable_multi_language_detection\x18\b \x01(\bR\x1cenableMultiLanguageDetection:\xfc\b\xbaH\xf8\b\x1a\x84\x02\n" +
+	"'ai_platform_floor_setting.needs_service\x12\x85\x01ai_platform_floor_setting applies only to integrated Vertex AI traffic: add AI_PLATFORM to integrated_services, or remove the setting\x1aQ!has(this.ai_platform_floor_setting) || 'AI_PLATFORM' in this.integrated_services\x1a\x93\x02\n" +
+	"-integrated_services.ai_platform_needs_setting\x12\x8c\x01AI_PLATFORM is integrated but ai_platform_floor_setting is not set: set it to choose INSPECT_ONLY or INSPECT_AND_BLOCK for Vertex AI traffic\x1aS!('AI_PLATFORM' in this.integrated_services) || has(this.ai_platform_floor_setting)\x1a\xa3\x02\n" +
+	"-google_mcp_server_floor_setting.needs_service\x12\x92\x01google_mcp_server_floor_setting applies only to integrated MCP server traffic: add GOOGLE_MCP_SERVER to integrated_services, or remove the setting\x1a]!has(this.google_mcp_server_floor_setting) || 'GOOGLE_MCP_SERVER' in this.integrated_services\x1a\xb2\x02\n" +
+	"3integrated_services.google_mcp_server_needs_setting\x12\x99\x01GOOGLE_MCP_SERVER is integrated but google_mcp_server_floor_setting is not set: set it to choose INSPECT_ONLY or INSPECT_AND_BLOCK for MCP server traffic\x1a_!('GOOGLE_MCP_SERVER' in this.integrated_services) || has(this.google_mcp_server_floor_setting)\"\xa4\b\n" +
 	"\x1eGcpModelArmorFloorSettingScope\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12r\n" +
 	"\tfolder_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xe2\x18\x92\xd4a\x18status.outputs.folder_idR\bfolderId\x12\xcb\x01\n" +
 	"\x0forganization_id\x18\x03 \x01(\tB\xa1\x01\xbaH\x9d\x01\xba\x01\x99\x01\n" +
-	"\x17organization_id.numeric\x12Vorganization_id must be the numeric organization ID, without the organizations/ prefix\x1a&this == '' || this.matches('^[0-9]+$')R\x0eorganizationId:\xee\x02\xbaH\xea\x02\x1a\xe7\x02\n" +
+	"\x17organization_id.numeric\x12Vorganization_id must be the numeric organization ID, without the organizations/ prefix\x1a&this == '' || this.matches('^[0-9]+$')R\x0eorganizationId:\xc8\x04\xbaH\xc4\x04\x1a\xd7\x01\n" +
+	"\x11folder_id.numeric\x12Dfolder_id must be the numeric folder ID, without the folders/ prefix\x1a|!has(this.folder_id) || !has(this.folder_id.value) || this.folder_id.value == '' || this.folder_id.value.matches('^[0-9]+$')\x1a\xe7\x02\n" +
 	"\x11at_most_one_scope\x12iset at most one of project_id, folder_id, or organization_id (empty means the provider's default project)\x1a\xe6\x01[has(this.project_id) && (this.project_id.value != '' || has(this.project_id.value_from)), has(this.folder_id) && (this.folder_id.value != '' || has(this.folder_id.value_from)), this.organization_id != ''].filter(x, x).size() <= 1\"\xb1\x01\n" +
 	"'GcpModelArmorFloorSettingServiceSetting\x12T\n" +
 	"\x10enforcement_type\x18\x01 \x01(\tB)\xbaH&\xc8\x01\x01r!R\fINSPECT_ONLYR\x11INSPECT_AND_BLOCKR\x0fenforcementType\x120\n" +
@@ -782,19 +810,20 @@ const file_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_spec_proto_rawDesc = "
 	"HARASSMENTR\tDANGEROUSR\n" +
 	"filterType\x12\xd4\x01\n" +
 	"\x10confidence_level\x18\x02 \x01(\tB\xa8\x01\xbaH\xa4\x01\xba\x01\xa0\x01\n" +
-	"\x16confidence_level.valid\x12Aconfidence_level must be LOW_AND_ABOVE, MEDIUM_AND_ABOVE, or HIGH\x1aCthis == '' || this in ['LOW_AND_ABOVE', 'MEDIUM_AND_ABOVE', 'HIGH']R\x0fconfidenceLevel\"\xc7\x03\n" +
+	"\x16confidence_level.valid\x12Aconfidence_level must be LOW_AND_ABOVE, MEDIUM_AND_ABOVE, or HIGH\x1aCthis == '' || this in ['LOW_AND_ABOVE', 'MEDIUM_AND_ABOVE', 'HIGH']R\x0fconfidenceLevel\"\xc0\x03\n" +
 	"$GcpModelArmorFloorSettingSdpSettings\x12~\n" +
 	"\fbasic_config\x18\x01 \x01(\v2[.dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1.GcpModelArmorFloorSettingSdpBasicConfigR\vbasicConfig\x12\x87\x01\n" +
-	"\x0fadvanced_config\x18\x02 \x01(\v2^.dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1.GcpModelArmorFloorSettingSdpAdvancedConfigR\x0eadvancedConfig:\x94\x01\xbaH\x90\x01\x1a\x8d\x01\n" +
-	"\x1fsdp_settings.basic_xor_advanced\x122set at most one of basic_config or advanced_config\x1a6!(has(this.basic_config) && has(this.advanced_config))\"\xda\x01\n" +
+	"\x0fadvanced_config\x18\x02 \x01(\v2^.dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1.GcpModelArmorFloorSettingSdpAdvancedConfigR\x0eadvancedConfig:\x8d\x01\xbaH\x89\x01\x1a\x86\x01\n" +
+	"\x18sdp_settings.at_most_one\x122set at most one of basic_config or advanced_config\x1a6!(has(this.basic_config) && has(this.advanced_config))\"\xda\x01\n" +
 	"'GcpModelArmorFloorSettingSdpBasicConfig\x12\xae\x01\n" +
 	"\x12filter_enforcement\x18\x01 \x01(\tB\x7f\xbaH|\xba\x01y\n" +
-	"\x18filter_enforcement.valid\x12.filter_enforcement must be ENABLED or DISABLED\x1a-this == '' || this in ['ENABLED', 'DISABLED']R\x11filterEnforcement\"\xc8\x04\n" +
+	"\x18filter_enforcement.valid\x12.filter_enforcement must be ENABLED or DISABLED\x1a-this == '' || this in ['ENABLED', 'DISABLED']R\x11filterEnforcement\"\xab\x06\n" +
 	"*GcpModelArmorFloorSettingSdpAdvancedConfig\x12\x82\x02\n" +
 	"\x10inspect_template\x18\x01 \x01(\tB\xd6\x01\xbaH\xd2\x01\xba\x01\xce\x01\n" +
 	"\x17inspect_template.format\x12\\inspect_template must be projects/{project}/locations/{location}/inspectTemplates/{template}\x1aUthis == '' || this.matches('^projects/[^/]+/locations/[^/]+/inspectTemplates/[^/]+$')R\x0finspectTemplate\x12\x94\x02\n" +
 	"\x13deidentify_template\x18\x02 \x01(\tB\xe2\x01\xbaH\xde\x01\xba\x01\xda\x01\n" +
-	"\x1adeidentify_template.format\x12bdeidentify_template must be projects/{project}/locations/{location}/deidentifyTemplates/{template}\x1aXthis == '' || this.matches('^projects/[^/]+/locations/[^/]+/deidentifyTemplates/[^/]+$')R\x12deidentifyTemplateB\x9f\x03\n" +
+	"\x1adeidentify_template.format\x12bdeidentify_template must be projects/{project}/locations/{location}/deidentifyTemplates/{template}\x1aXthis == '' || this.matches('^projects/[^/]+/locations/[^/]+/deidentifyTemplates/[^/]+$')R\x12deidentifyTemplate:\xe0\x01\xbaH\xdc\x01\x1a\xd9\x01\n" +
+	"(advanced_config.deidentify_needs_inspect\x12ndeidentify_template needs inspect_template: the inspect template decides what the de-identify template redacts\x1a=this.deidentify_template == '' || this.inspect_template != ''B\x9f\x03\n" +
 	"6com.dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1B\tSpecProtoP\x01Zmgithub.com/plantonhq/planton/catalog/gcp/gcpmodelarmorfloorsetting/v1alpha1;gcpmodelarmorfloorsettingv1alpha1\xa2\x02\x04DPGG\xaa\x022Dev.Planton.Gcp.Gcpmodelarmorfloorsetting.V1alpha1\xca\x022Dev\\Planton\\Gcp\\Gcpmodelarmorfloorsetting\\V1alpha1\xe2\x02>Dev\\Planton\\Gcp\\Gcpmodelarmorfloorsetting\\V1alpha1\\GPBMetadata\xea\x026Dev::Planton::Gcp::Gcpmodelarmorfloorsetting::V1alpha1b\x06proto3"
 
 var (

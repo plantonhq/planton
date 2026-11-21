@@ -73,9 +73,9 @@ planton apply -f agent-engine.yaml
 | `agent.sourceCodeSpec` | `object` | none | Exactly one source (`inlineSource.sourceArchive`, `developerConnectSource.config`, `agentConfigSource.adkConfig`) and exactly one build (`pythonSpec { version, entrypointModule, entrypointObject, requirementsFile }` or `imageSpec { buildArgs }`). |
 | `agent.packageSpec` | `object` | none | The legacy pickled-object package: `pickleObjectGcsUri`, `dependencyFilesGcsUri`, `requirementsGcsUri`, `pythonVersion`. |
 | `agent.buildSpec.workerPool` | `StringValueOrRef` | none | A Cloud Build private worker pool for the source build: a `GcpCloudBuildWorkerPool` reference (its `name` output) or the full `projects/{p}/locations/{l}/workerPools/{pool}` name. |
-| `agent.deploymentSpec` | `object` | Google's defaults | `env[]` (plain text), `secretEnv[]` (each entry either a `secretRef` to a `GcpSecretManagerSecret` or a `value` the module stores in its own secret, granting the runtime identity access to it alone; a `value` is refused with `identityType: AGENT_IDENTITY`), `minInstances` (0-10), `maxInstances` (1-1000), `containerConcurrency`, `resourceLimits { cpu, memory }`, `pscInterfaceConfig { networkAttachment, dnsPeeringConfigs[] }`, `agentGatewayConfig { clientToAgentConfig, agentToAnywhereConfig }`. |
+| `agent.deploymentSpec` | `object` | Google's defaults | `env[]` (plain text), `secretEnv[]` (each entry either a `secretRef` to a `GcpSecretManagerSecret` or a `value` the module stores in its own secret, granting the runtime identity access to it alone; a `value` is refused with `identityType: AGENT_IDENTITY`), `minInstances` (1-75; Google's provider never sends 0), `maxInstances` (1-1000), `containerConcurrency`, `resourceLimits { cpu, memory }`, `pscInterfaceConfig { networkAttachment, dnsPeeringConfigs[] }`, `agentGatewayConfig { clientToAgentConfig, agentToAnywhereConfig }`. |
 | `contextSpec.memoryBankConfig` | `object` | none | `generationConfig { model, generationTriggerConfig.generationRule }`, `similaritySearchConfig.embeddingModel`, `ttlConfig`, `disableMemoryRevisions`, `structuredMemoryConfigs[]`, `customizationConfigs[]` (scope keys, topics, worked examples, consolidation, generation flags). |
-| `deletionPolicy` | `string` | `DELETE` | `DELETE`, `PREVENT`, or `ABANDON`. |
+| `deletionPolicy` | `string` | `DELETE` | `DELETE` (refused by Google while the agent holds sessions or memories), `FORCE` (deletes them with it), `PREVENT`, or `ABANDON` (the stored secrets are still deleted). |
 
 ### Validation Rules
 
@@ -92,6 +92,7 @@ planton apply -f agent-engine.yaml
 | `reasoning_engine_id` | `string` | The numeric ID Vertex AI assigned |
 | `location` | `string` | The agent's location |
 | `create_time`, `update_time` | `string` | RFC 3339 timestamps |
+| `effective_identity` | `string` | The identity the agent runs as (service account, Reasoning Engine service agent, or its Agent Identity) |
 
 ## Deployment Methods
 

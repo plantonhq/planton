@@ -103,11 +103,13 @@ variable "spec" {
       }))
 
       # The basic constraints extension: whether the certificate is a CA and
-      # how many CA levels may sit below it. Omit to leave the extension to
-      # Google's default (for a leaf certificate, is_ca false).
+      # how many CA levels may sit below it. Omitting the block sends no basic
+      # constraints at all, leaving the extension to the pool and the request.
+      # A block with is_ca unset is a different request: the block is sent
+      # without a CA flag.
       ca_options = optional(object({
         # true makes a CA certificate (CA:TRUE), false states CA:FALSE; unset
-        # leaves the CA flag out of the extension.
+        # sends the block without a CA flag.
         is_ca = optional(bool)
 
         # The path length constraint: how many CA levels may sit below this
@@ -198,8 +200,9 @@ variable "spec" {
       # names that must hold before a certificate is signed, e.g.
       # subject_alt_names.all(san, san.type == DNS && san.value.endsWith(".internal.example.com")).
       cel_expression = optional(object({
-        # The expression.
-        expression = optional(string, "")
+        # The expression. Required when the block is set: an empty expression
+        # constrains nothing.
+        expression = string
 
         # A short title for the expression.
         title = optional(string, "")

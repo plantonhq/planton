@@ -6,4 +6,8 @@ const (
 	OpName       = "name"
 	OpScheduleId = "schedule_id"
 	OpLocation   = "location"
+
+	OpState           = "state"
+	OpNextRunTime     = "next_run_time"
+	OpStartedRunCount = "started_run_count"
 )

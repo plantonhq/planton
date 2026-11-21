@@ -52,7 +52,10 @@ variable "spec" {
     # The processor version that serves requests which do not name one --
     # its short id, e.g. "pretrained-ocr-v2.1-2024-08-07" for a Google
     # version or the id of a version you trained. The modules compose the
-    # full path under this processor. Omit to keep Google's default.
+    # full path under this processor. Omit to leave the default as it is:
+    # Google's own default on a new processor, and on a processor that had a
+    # pinned version, that version keeps answering (clearing this sends
+    # nothing; Google has no "unset" -- pin another version to change it).
     #
     # Use a concrete version, never the "stable" or "rc" channel alias:
     # Google answers with the version the alias currently resolves to, so a

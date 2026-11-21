@@ -39,10 +39,15 @@ type GcpBigQueryReservationGroupSpec struct {
 	// omitted, the provider's default project is used.
 	ProjectId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// The location of the group and its reservations: a multi-region (US,
-	// EU) or a region. Empty means US (Google's default). Immutable.
+	// EU) or a region. Empty means US (Google's default). Write US and EU in
+	// upper case and a region in lower case: the provider never reads the
+	// location back, so another spelling is another location to it, and
+	// replaces the group. Immutable.
 	Location string `protobuf:"bytes,2,opt,name=location,proto3" json:"location,omitempty"`
-	// The group's name -- letters, digits, and dashes. Defaults to
-	// metadata.name. Immutable.
+	// The group's name -- Google's rule: lowercase letters, digits, and
+	// dashes, starting with a letter, not ending with a dash, at most 64
+	// characters. Defaults to metadata.name, which must then fit the same
+	// rule. Immutable.
 	ReservationGroupName string `protobuf:"bytes,3,opt,name=reservation_group_name,json=reservationGroupName,proto3" json:"reservation_group_name,omitempty"`
 	// What happens to the group when this resource is destroyed:
 	//
@@ -116,12 +121,13 @@ var File_catalog_gcp_gcpbigqueryreservationgroup_v1alpha1_spec_proto protoreflec
 
 const file_catalog_gcp_gcpbigqueryreservationgroup_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	";catalog/gcp/gcpbigqueryreservationgroup/v1alpha1/spec.proto\x124dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xc3\x03\n" +
+	";catalog/gcp/gcpbigqueryreservationgroup/v1alpha1/spec.proto\x124dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x9c\x05\n" +
 	"\x1fGcpBigQueryReservationGroupSpec\x12u\n" +
 	"\n" +
-	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x1a\n" +
-	"\blocation\x18\x02 \x01(\tR\blocation\x12O\n" +
-	"\x16reservation_group_name\x18\x03 \x01(\tB\x19\xbaH\x16\xd8\x01\x01r\x112\x0f^[a-zA-Z0-9-]+$R\x14reservationGroupName\x12\xbb\x01\n" +
+	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\xde\x01\n" +
+	"\blocation\x18\x02 \x01(\tB\xc1\x01\xbaH\xbd\x01\xba\x01\xb9\x01\n" +
+	"\x11location.spelling\x12Wlocation must be US or EU in upper case, or a region in lower case such as us-central1.\x1aKthis == '' || this in ['US', 'EU'] || this.matches('^[a-z]+-[a-z]+[0-9]+$')R\blocation\x12c\n" +
+	"\x16reservation_group_name\x18\x03 \x01(\tB-\xbaH*\xd8\x01\x01r%2#^[a-z](?:[-a-z0-9]{0,62}[a-z0-9])?$R\x14reservationGroupName\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\x04 \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
 	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicyB\xad\x03\n" +
 	"8com.dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1B\tSpecProtoP\x01Zqgithub.com/plantonhq/planton/catalog/gcp/gcpbigqueryreservationgroup/v1alpha1;gcpbigqueryreservationgroupv1alpha1\xa2\x02\x04DPGG\xaa\x024Dev.Planton.Gcp.Gcpbigqueryreservationgroup.V1alpha1\xca\x024Dev\\Planton\\Gcp\\Gcpbigqueryreservationgroup\\V1alpha1\xe2\x02@Dev\\Planton\\Gcp\\Gcpbigqueryreservationgroup\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Gcp::Gcpbigqueryreservationgroup::V1alpha1b\x06proto3"

@@ -63,7 +63,10 @@ const (
 // Important behavioral notes:
 //
 //   - Creating a feature that is already on adopts it: the existing
-//     feature's settings are replaced by this block's.
+//     feature's settings are replaced by this block's. Settings the block
+//     does not declare survive the first apply and are removed on the
+//     next. Two blocks naming the same feature in one fleet fight over it,
+//     and destroying either turns the feature off for both.
 //   - Destroy turns the feature off and removes its per-cluster settings,
 //     except "rbacrolebindingactuation", which Google never deletes:
 //     destroy empties its allowlist instead.
@@ -440,7 +443,8 @@ type GcpGkeFleetFeatureClusterUpgrade struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The upstream fleet whose completed upgrades this fleet consumes: its
 	// host project's ID or number, as a literal or a GcpGkeFleet reference.
-	// Google accepts at most one today; the list leaves room for more.
+	// Exactly one: Google accepts at most one upstream fleet, and its API
+	// keeps the field a list only to leave room for more.
 	UpstreamFleets []*v1.StringValueOrRef `protobuf:"bytes,1,rep,name=upstream_fleets,json=upstreamFleets,proto3" json:"upstream_fleets,omitempty"`
 	// When an upgrade counts as complete in this fleet. Empty takes Google's
 	// default.
@@ -1034,8 +1038,11 @@ func (x *GcpGkeFleetFeatureMembershipConfigManagement) GetConfigSync() *GcpGkeFl
 // Config Sync's source and behavior (fleet-wide default).
 type GcpGkeFleetFeatureConfigSync struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// true installs Config Sync and applies these settings; false removes it
-	// and ignores the rest. Unset installs it exactly when git or oci is set.
+	// true installs Config Sync on every cluster and applies these settings.
+	// false is never sent to Google in the fleet-wide default (the provider
+	// drops it), so it cannot keep Config Sync off: a git or oci source still
+	// installs it. To keep Config Sync off fleet-wide, declare no
+	// config_sync. Unset installs it exactly when git or oci is set.
 	Enabled *bool `protobuf:"varint,1,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	// Sync from a Git repository.
 	Git *GcpGkeFleetFeatureConfigSyncGit `protobuf:"bytes,2,opt,name=git,proto3" json:"git,omitempty"`
@@ -1046,8 +1053,9 @@ type GcpGkeFleetFeatureConfigSync struct {
 	// reference or a literal email.
 	MetricsGcpServiceAccountEmail *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=metrics_gcp_service_account_email,json=metricsGcpServiceAccountEmail,proto3" json:"metrics_gcp_service_account_email,omitempty"`
 	// true turns on Config Sync's admission webhook, which refuses manual
-	// changes to synced objects; false turns it off. Unset takes Google's
-	// default.
+	// changes to synced objects. false is never sent to Google in the
+	// fleet-wide default (the provider drops it), so it leaves Google's
+	// current setting; unset does the same.
 	PreventDrift *bool `protobuf:"varint,5,opt,name=prevent_drift,json=preventDrift,proto3,oneof" json:"prevent_drift,omitempty"`
 	// The repository's layout: "unstructured" (any layout; the recommended
 	// choice) or "hierarchy" (the namespace-directory layout). Empty takes
@@ -1132,8 +1140,9 @@ func (x *GcpGkeFleetFeatureConfigSync) GetSourceFormat() string {
 // Config Sync's source and behavior for one cluster.
 type GcpGkeFleetFeatureMembershipConfigSync struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// true installs Config Sync and applies these settings; false removes it
-	// and ignores the rest. Unset installs it exactly when git or oci is set.
+	// Required. true installs Config Sync on this cluster and applies these
+	// settings; false removes it and ignores the rest. The provider sends an
+	// unset value as false, so leaving it out would remove Config Sync.
 	Enabled *bool `protobuf:"varint,1,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	// Sync from a Git repository.
 	Git *GcpGkeFleetFeatureConfigSyncGit `protobuf:"bytes,2,opt,name=git,proto3" json:"git,omitempty"`
@@ -1143,7 +1152,7 @@ type GcpGkeFleetFeatureMembershipConfigSync struct {
 	// GcpServiceAccount reference or a literal email.
 	MetricsGcpServiceAccountEmail *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=metrics_gcp_service_account_email,json=metricsGcpServiceAccountEmail,proto3" json:"metrics_gcp_service_account_email,omitempty"`
 	// true turns on the admission webhook that refuses manual changes to
-	// synced objects. Unset takes Google's default.
+	// synced objects. The provider sends an unset value as false (off).
 	PreventDrift *bool `protobuf:"varint,5,opt,name=prevent_drift,json=preventDrift,proto3,oneof" json:"prevent_drift,omitempty"`
 	// The repository's layout: "unstructured" or "hierarchy".
 	SourceFormat string `protobuf:"bytes,6,opt,name=source_format,json=sourceFormat,proto3" json:"source_format,omitempty"`
@@ -1713,11 +1722,13 @@ type GcpGkeFleetFeaturePolicyControllerHubConfig struct {
 	//
 	// Required.
 	InstallSpec string `protobuf:"bytes,1,opt,name=install_spec,json=installSpec,proto3" json:"install_spec,omitempty"`
-	// Seconds between audit scans; 0 turns auditing off. Unset takes
-	// Google's default.
+	// Seconds between audit scans. Unset takes Google's default. 0 is never
+	// sent to Google (the provider drops it), so it leaves Google's current
+	// interval rather than turning auditing off.
 	AuditIntervalSeconds *int64 `protobuf:"varint,2,opt,name=audit_interval_seconds,json=auditIntervalSeconds,proto3,oneof" json:"audit_interval_seconds,omitempty"`
 	// How many violations a constraint stores. Unset takes Google's default
-	// (20).
+	// (20). In the fleet-wide default, 0 is never sent to Google (the
+	// provider drops it).
 	ConstraintViolationLimit *int64 `protobuf:"varint,3,opt,name=constraint_violation_limit,json=constraintViolationLimit,proto3,oneof" json:"constraint_violation_limit,omitempty"`
 	// Namespaces Policy Controller never checks; they need not exist yet.
 	ExemptableNamespaces []string `protobuf:"bytes,4,rep,name=exemptable_namespaces,json=exemptableNamespaces,proto3" json:"exemptable_namespaces,omitempty"`
@@ -1728,8 +1739,9 @@ type GcpGkeFleetFeaturePolicyControllerHubConfig struct {
 	// Allow constraint templates that read objects other than the one being
 	// checked (referential rules).
 	ReferentialRulesEnabled bool `protobuf:"varint,7,opt,name=referential_rules_enabled,json=referentialRulesEnabled,proto3" json:"referential_rules_enabled,omitempty"`
-	// Where Policy Controller exports metrics. Unset takes Google's default;
-	// set with no backends to turn metrics export off.
+	// Where Policy Controller exports metrics. Unset takes Google's default.
+	// In the fleet-wide default an empty backends list is never sent to
+	// Google (the provider drops it), so it cannot turn export off there.
 	Monitoring *GcpGkeFleetFeaturePolicyControllerMonitoring `protobuf:"bytes,8,opt,name=monitoring,proto3" json:"monitoring,omitempty"`
 	// Sizing and placement for Policy Controller's components.
 	DeploymentConfigs []*GcpGkeFleetFeaturePolicyControllerDeploymentConfig `protobuf:"bytes,9,rep,name=deployment_configs,json=deploymentConfigs,proto3" json:"deployment_configs,omitempty"`
@@ -1842,7 +1854,8 @@ func (x *GcpGkeFleetFeaturePolicyControllerHubConfig) GetPolicyContent() *GcpGke
 // Policy Controller metrics export.
 type GcpGkeFleetFeaturePolicyControllerMonitoring struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// "PROMETHEUS" and/or "CLOUD_MONITORING". Empty turns export off.
+	// "PROMETHEUS" and/or "CLOUD_MONITORING". An empty list is never sent in
+	// the fleet-wide default (see monitoring).
 	Backends      []string `protobuf:"bytes,1,rep,name=backends,proto3" json:"backends,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -1890,7 +1903,8 @@ type GcpGkeFleetFeaturePolicyControllerDeploymentConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The component: "admission", "audit", or "mutation". Required.
 	Component string `protobuf:"bytes,1,opt,name=component,proto3" json:"component,omitempty"`
-	// Pod replicas. Unset takes Google's default.
+	// Pod replicas. Unset takes Google's default. In the fleet-wide default,
+	// 0 is never sent to Google (the provider drops it).
 	ReplicaCount *int64 `protobuf:"varint,2,opt,name=replica_count,json=replicaCount,proto3,oneof" json:"replica_count,omitempty"`
 	// "ANTI_AFFINITY" spreads replicas across nodes; "NO_AFFINITY" does not.
 	// Empty takes Google's default.
@@ -2357,9 +2371,9 @@ const file_catalog_gcp_gcpgkefleetfeature_v1alpha1_spec_proto_rawDesc = "" +
 	"\"GcpGkeFleetFeatureLogRoutingConfig\x12i\n" +
 	"\x04mode\x18\x01 \x01(\tBU\xbaHR\xba\x01O\n" +
 	"\n" +
-	"mode.valid\x12\x19mode must be COPY or MOVE\x1a&this == '' || this in ['COPY', 'MOVE']R\x04mode\"\xb7\x03\n" +
-	" GcpGkeFleetFeatureClusterUpgrade\x12\x8b\x01\n" +
-	"\x0fupstream_fleets\x18\x01 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB.\xbaH\x05\x92\x01\x02\b\x01\x88\xd4a\xa8\x19\x92\xd4a\x19status.outputs.project_id\x98\xd4a\x01R\x0eupstreamFleets\x12}\n" +
+	"mode.valid\x12\x19mode must be COPY or MOVE\x1a&this == '' || this in ['COPY', 'MOVE']R\x04mode\"\xb9\x03\n" +
+	" GcpGkeFleetFeatureClusterUpgrade\x12\x8d\x01\n" +
+	"\x0fupstream_fleets\x18\x01 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB0\xbaH\a\x92\x01\x04\b\x01\x10\x01\x88\xd4a\xa8\x19\x92\xd4a\x19status.outputs.project_id\x98\xd4a\x01R\x0eupstreamFleets\x12}\n" +
 	"\x0fpost_conditions\x18\x02 \x01(\v2T.dev.planton.gcp.gcpgkefleetfeature.v1alpha1.GcpGkeFleetFeatureUpgradePostConditionsR\x0epostConditions\x12\x85\x01\n" +
 	"\x15gke_upgrade_overrides\x18\x03 \x03(\v2Q.dev.planton.gcp.gcpgkefleetfeature.v1alpha1.GcpGkeFleetFeatureGkeUpgradeOverrideR\x13gkeUpgradeOverrides\"\xd3\x01\n" +
 	"'GcpGkeFleetFeatureUpgradePostConditions\x12\xa7\x01\n" +
@@ -2415,9 +2429,9 @@ const file_catalog_gcp_gcpgkefleetfeature_v1alpha1_spec_proto_rawDesc = "" +
 	"\x16config_sync.one_source\x12+config_sync syncs from git or oci, not both\x1a!!(has(this.git) && has(this.oci))B\n" +
 	"\n" +
 	"\b_enabledB\x10\n" +
-	"\x0e_prevent_drift\"\xd0\a\n" +
-	"&GcpGkeFleetFeatureMembershipConfigSync\x12\x1d\n" +
-	"\aenabled\x18\x01 \x01(\bH\x00R\aenabled\x88\x01\x01\x12^\n" +
+	"\x0e_prevent_drift\"\xd8\a\n" +
+	"&GcpGkeFleetFeatureMembershipConfigSync\x12%\n" +
+	"\aenabled\x18\x01 \x01(\bB\x06\xbaH\x03\xc8\x01\x01H\x00R\aenabled\x88\x01\x01\x12^\n" +
 	"\x03git\x18\x02 \x01(\v2L.dev.planton.gcp.gcpgkefleetfeature.v1alpha1.GcpGkeFleetFeatureConfigSyncGitR\x03git\x12^\n" +
 	"\x03oci\x18\x03 \x01(\v2L.dev.planton.gcp.gcpgkefleetfeature.v1alpha1.GcpGkeFleetFeatureConfigSyncOciR\x03oci\x12\x9b\x01\n" +
 	"!metrics_gcp_service_account_email\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1d\x88\xd4a\xc6\x17\x92\xd4a\x14status.outputs.emailR\x1dmetricsGcpServiceAccountEmail\x12(\n" +

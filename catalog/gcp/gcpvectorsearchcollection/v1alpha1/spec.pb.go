@@ -233,11 +233,13 @@ func (x *GcpVectorSearchCollectionVectorSchema) GetSparseVector() bool {
 type GcpVectorSearchCollectionAutoscalingSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fewest replicas kept serving (1-1000; Google defaults to 2 when unset
-	// or 0). Sent only when set.
+	// or 0). Sent only when set. Changes in place.
 	MinReplicaCount *int32 `protobuf:"varint,1,opt,name=min_replica_count,json=minReplicaCount,proto3,oneof" json:"min_replica_count,omitempty"`
 	// Most replicas the index may scale to (at least min_replica_count, at
-	// most 1000; Google defaults to the greater of min_replica_count and 2).
-	// Sent only when set.
+	// most 1000). Unset, the default depends on the API version the engine
+	// calls: the greater of min_replica_count and 2 under Terraform (Google's
+	// v1 API), 5 under Pulumi (Google's v1beta API) -- set it to get the
+	// same ceiling on both. Sent only when set. Changes in place.
 	MaxReplicaCount *int32 `protobuf:"varint,2,opt,name=max_replica_count,json=maxReplicaCount,proto3,oneof" json:"max_replica_count,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
@@ -288,7 +290,8 @@ func (x *GcpVectorSearchCollectionAutoscalingSpec) GetMaxReplicaCount() int32 {
 }
 
 // GcpVectorSearchCollectionDedicatedInfrastructure gives an index its own
-// serving nodes instead of the shared pool.
+// serving nodes instead of the shared pool. An empty block sends nothing,
+// so it means the same as omitting it.
 type GcpVectorSearchCollectionDedicatedInfrastructure struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// STORAGE_OPTIMIZED for large indexes where cost per vector matters more
@@ -347,9 +350,13 @@ func (x *GcpVectorSearchCollectionDedicatedInfrastructure) GetAutoscalingSpec() 
 
 // GcpVectorSearchCollectionIndex is one approximate-nearest-neighbor index
 // over a vector field of the collection (`google_vector_search_index`).
-// Every setting but labels is immutable: changing the field, the metric,
-// the ScaNN options, the pushed fields, or the infrastructure replaces the
-// index, which is rebuilt from the collection's data.
+// The display name, description, labels, and replica bounds change in
+// place. Changing the field, the metric, the ScaNN options, the pushed
+// fields, or the infrastructure mode replaces the index, which is rebuilt
+// from the collection's data. Removing a set metric, norm, or dedicated
+// block sends nothing, and Google keeps the value (and the nodes).
+// The collection's labels and the platform attribution labels are added to
+// the index's own and win on a key conflict.
 type GcpVectorSearchCollectionIndex struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The index's ID within the collection -- 1-63 characters, RFC 1035
@@ -358,11 +365,13 @@ type GcpVectorSearchCollectionIndex struct {
 	// The vector field (a vector_schemas[].field_name) this index serves.
 	// Immutable.
 	IndexField string `protobuf:"bytes,2,opt,name=index_field,json=indexField,proto3" json:"index_field,omitempty"`
-	// Human-readable name shown in the console.
+	// Human-readable name shown in the console. Changes in place.
 	DisplayName string `protobuf:"bytes,3,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
-	// Free-text description of the index.
+	// Free-text description of the index. Changes in place.
 	Description string `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
-	// Labels on the index -- the one mutable setting.
+	// Labels on the index. The collection's labels and the platform
+	// attribution labels are merged in and win on a key conflict. Change in
+	// place.
 	Labels map[string]string `protobuf:"bytes,5,rep,name=labels,proto3" json:"labels,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// How similarity is measured: DOT_PRODUCT (Google's default; the right
 	// choice for embeddings the model already normalizes) or COSINE_DISTANCE.
@@ -498,8 +507,13 @@ func (x *GcpVectorSearchCollectionIndex) GetDedicatedInfrastructure() *GcpVector
 // API or its SDKs -- and is deliberately not part of this block.
 //
 // Immutable: collection_id, location, and the encryption key. The data
-// schema, description, display name, and labels update in place; every
-// index setting but labels replaces that index.
+// schema, vector fields, description, display name, and labels update in
+// place; for each index see GcpVectorSearchCollectionIndex.
+//
+// This is Vector Search's collection API. GcpVertexAiIndex,
+// GcpVertexAiIndexEndpoint, and GcpVertexAiDeployedIndex are the separate,
+// older Vertex AI Vector Search API (an index built from Cloud Storage
+// files and deployed to an endpoint); the two do not share resources.
 type GcpVectorSearchCollectionSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The GCP project the collection lives in: a literal project ID or a
@@ -525,7 +539,10 @@ type GcpVectorSearchCollectionSpec struct {
 	// referenced from a text_template.
 	DataSchema string `protobuf:"bytes,7,opt,name=data_schema,json=dataSchema,proto3" json:"data_schema,omitempty"`
 	// The searchable vector fields. Only fields declared here can be
-	// indexed and searched.
+	// indexed and searched. They update in place: adding, removing, or
+	// reshaping one changes the collection's schema, and emptying the list
+	// asks Google to drop every vector field. A field an index serves stays
+	// declared while the index exists.
 	VectorSchemas []*GcpVectorSearchCollectionVectorSchema `protobuf:"bytes,8,rep,name=vector_schemas,json=vectorSchemas,proto3" json:"vector_schemas,omitempty"`
 	// Customer-managed encryption key protecting the collection and its
 	// indexes: a GcpKmsKey reference or a literal
@@ -534,7 +551,7 @@ type GcpVectorSearchCollectionSpec struct {
 	KmsKeyName *v1.StringValueOrRef `protobuf:"bytes,9,opt,name=kms_key_name,json=kmsKeyName,proto3" json:"kms_key_name,omitempty"`
 	// The approximate-nearest-neighbor indexes over the collection's vector
 	// fields, each keyed by its index_id. Add or remove an index by editing
-	// this list; any other change to an index replaces it.
+	// this list; for what changes in place see GcpVectorSearchCollectionIndex.
 	Indexes []*GcpVectorSearchCollectionIndex `protobuf:"bytes,10,rep,name=indexes,proto3" json:"indexes,omitempty"`
 	// What happens to the collection and its indexes when this resource is
 	// destroyed:
@@ -666,24 +683,26 @@ const file_catalog_gcp_gcpvectorsearchcollection_v1alpha1_spec_proto_rawDesc = "
 	"\ttask_type\x18\x02 \x01(\tB\x9d\x01\xbaH\x99\x01\xc8\x01\x01r\x93\x01R\x0fRETRIEVAL_QUERYR\x12RETRIEVAL_DOCUMENTR\x13SEMANTIC_SIMILARITYR\x0eCLASSIFICATIONR\n" +
 	"CLUSTERINGR\x12QUESTION_ANSWERINGR\x11FACT_VERIFICATIONR\x14CODE_RETRIEVAL_QUERYR\btaskType\x12/\n" +
 	"\rtext_template\x18\x03 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\ftextTemplate\"\x80\x02\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\ftextTemplate\"\xfb\x03\n" +
 	"$GcpVectorSearchCollectionDenseVector\x12,\n" +
 	"\n" +
 	"dimensions\x18\x01 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01H\x00R\n" +
 	"dimensions\x88\x01\x01\x12\x9a\x01\n" +
-	"\x17vertex_embedding_config\x18\x02 \x01(\v2b.dev.planton.gcp.gcpvectorsearchcollection.v1alpha1.GcpVectorSearchCollectionVertexEmbeddingConfigR\x15vertexEmbeddingConfigB\r\n" +
+	"\x17vertex_embedding_config\x18\x02 \x01(\v2b.dev.planton.gcp.gcpvectorsearchcollection.v1alpha1.GcpVectorSearchCollectionVertexEmbeddingConfigR\x15vertexEmbeddingConfig:\xf8\x01\xbaH\xf4\x01\x1a\xf1\x01\n" +
+	"\x16dense_vector.has_shape\x12\x9b\x01a dense vector field needs its dimensions, or vertex_embedding_config so Vertex AI computes its vectors: an empty dense_vector reaches Google with no shape\x1a9has(this.dimensions) || has(this.vertex_embedding_config)B\r\n" +
 	"\v_dimensions\"\x9d\x03\n" +
 	"%GcpVectorSearchCollectionVectorSchema\x129\n" +
 	"\n" +
 	"field_name\x18\x01 \x01(\tB\x1a\xbaH\x17\xc8\x01\x01r\x122\x10^[A-Za-z0-9_-]+$R\tfieldName\x12{\n" +
 	"\fdense_vector\x18\x02 \x01(\v2X.dev.planton.gcp.gcpvectorsearchcollection.v1alpha1.GcpVectorSearchCollectionDenseVectorR\vdenseVector\x12#\n" +
 	"\rsparse_vector\x18\x03 \x01(\bR\fsparseVector:\x96\x01\xbaH\x92\x01\x1a\x8f\x01\n" +
-	"\x1fvector_schema.exactly_one_shape\x12>a vector field is exactly one of dense_vector or sparse_vector\x1a,has(this.dense_vector) != this.sparse_vector\"\xd0\x01\n" +
+	"\x1fvector_schema.exactly_one_shape\x12>a vector field is exactly one of dense_vector or sparse_vector\x1a,has(this.dense_vector) != this.sparse_vector\"\xa0\x03\n" +
 	"(GcpVectorSearchCollectionAutoscalingSpec\x12;\n" +
 	"\x11min_replica_count\x18\x01 \x01(\x05B\n" +
 	"\xbaH\a\x1a\x05\x18\xe8\a(\x01H\x00R\x0fminReplicaCount\x88\x01\x01\x12;\n" +
 	"\x11max_replica_count\x18\x02 \x01(\x05B\n" +
-	"\xbaH\a\x1a\x05\x18\xe8\a(\x01H\x01R\x0fmaxReplicaCount\x88\x01\x01B\x14\n" +
+	"\xbaH\a\x1a\x05\x18\xe8\a(\x01H\x01R\x0fmaxReplicaCount\x88\x01\x01:\xcd\x01\xbaH\xc9\x01\x1a\xc6\x01\n" +
+	"\x1cautoscaling_spec.max_gte_min\x124max_replica_count must be at least min_replica_count\x1ap!has(this.min_replica_count) || !has(this.max_replica_count) || this.max_replica_count >= this.min_replica_countB\x14\n" +
 	"\x12_min_replica_countB\x14\n" +
 	"\x12_max_replica_count\"\x84\x02\n" +
 	"0GcpVectorSearchCollectionDedicatedInfrastructure\x12F\n" +
@@ -705,7 +724,7 @@ const file_catalog_gcp_gcpvectorsearchcollection_v1alpha1_spec_proto_rawDesc = "
 	" \x01(\v2d.dev.planton.gcp.gcpvectorsearchcollection.v1alpha1.GcpVectorSearchCollectionDedicatedInfrastructureR\x17dedicatedInfrastructure\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xe4\b\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xb2\f\n" +
 	"\x1dGcpVectorSearchCollectionSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12;\n" +
@@ -725,7 +744,10 @@ const file_catalog_gcp_gcpvectorsearchcollection_v1alpha1_spec_proto_rawDesc = "
 	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x9f\x03\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xcb\x03\xbaH\xc7\x03\x1a\x94\x01\n" +
+	" vector_schemas.unique_field_name\x12=each vector field_name may appear only once in vector_schemas\x1a1this.vector_schemas.map(v, v.field_name).unique()\x1ar\n" +
+	"\x17indexes.unique_index_id\x12-each index_id may appear only once in indexes\x1a(this.indexes.map(i, i.index_id).unique()\x1a\xb9\x01\n" +
+	"\x1cindexes.index_field_declared\x12Fevery index's index_field must name a field declared in vector_schemas\x1aQthis.indexes.all(i, this.vector_schemas.exists(v, v.field_name == i.index_field))B\x9f\x03\n" +
 	"6com.dev.planton.gcp.gcpvectorsearchcollection.v1alpha1B\tSpecProtoP\x01Zmgithub.com/plantonhq/planton/catalog/gcp/gcpvectorsearchcollection/v1alpha1;gcpvectorsearchcollectionv1alpha1\xa2\x02\x04DPGG\xaa\x022Dev.Planton.Gcp.Gcpvectorsearchcollection.V1alpha1\xca\x022Dev\\Planton\\Gcp\\Gcpvectorsearchcollection\\V1alpha1\xe2\x02>Dev\\Planton\\Gcp\\Gcpvectorsearchcollection\\V1alpha1\\GPBMetadata\xea\x026Dev::Planton::Gcp::Gcpvectorsearchcollection::V1alpha1b\x06proto3"
 
 var (

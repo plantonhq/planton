@@ -526,7 +526,8 @@ cost cap regardless of zone spread.
 
 Scale-up algorithm: BALANCED spreads new nodes to even out zone sizes;
 ANY prioritizes unused reservations and reduces Spot preemption risk —
-prefer ANY for Spot pools.
+prefer ANY for Spot pools. Unset: BALANCED for on-demand and
+reservation pools, ANY for Spot and flex-start pools (GKE's defaults).
 
 - rule: location_policy must be empty, BALANCED, or ANY
 
@@ -628,7 +629,7 @@ Number of blue nodes drained per batch.
 `string`
 
 Soak time after each batch drains before the next starts. Duration in
-seconds format, e.g. "600s".
+seconds format, e.g. "600s". Unset: zero seconds.
 
 - rule: batch_soak_duration must be a seconds-format duration like "600s"
 
@@ -637,7 +638,9 @@ seconds format, e.g. "600s".
 `string`
 
 Time after the entire blue pool is drained before it is deleted —
-the rollback window. Duration in seconds format, e.g. "3600s".
+the rollback window. Duration in seconds format, e.g. "3600s". Unset:
+one hour ("3600s"). A total soak (this plus every batch soak) that
+reaches seven days deletes the blue pool at once.
 
 - rule: node_pool_soak_duration must be a seconds-format duration like "3600s"
 
@@ -1298,7 +1301,8 @@ CPU management: "static" gives Guaranteed-QoS pods exclusive cores
 `bool` · optional (explicit presence)
 
 Enforce CPU CFS quota for containers with CPU limits. Disabling trades
-throttling for potential node CPU contention.
+throttling for potential node CPU contention. Unset: true (GKE's
+default), so pod CPU limits are enforced.
 
 ### spec.nodeConfig.kubeletConfig.cpuCfsQuotaPeriod
 
@@ -1312,6 +1316,7 @@ smooth throttling for latency-sensitive workloads.
 `int64` · optional (explicit presence)
 
 Maximum processes per pod — a fork-bomb fence for multi-tenant pools.
+Unset: GKE sets no per-pod limit.
 
 - rule: {"int64":{"lte":"4194304","gte":"1024"}}
 
@@ -1329,20 +1334,22 @@ legacy monitoring agents that still scrape it.
 
 `int64` · optional (explicit presence)
 
-Parallel image pulls (kubelet default serializes fewer) — speeds up
-busy nodes that churn many images.
+Parallel image pulls, 2 to 5 — more speeds up busy nodes that churn
+many images. Unset: 2 or 3, chosen by GKE from the boot disk type.
 
 ### spec.nodeConfig.kubeletConfig.containerLogMaxSize
 
 `string`
 
 Container log file size before rotation, e.g. "10Mi" (10Mi-500Mi).
+Unset: "10Mi". Size times files may not exceed 1% of the node's
+storage.
 
 ### spec.nodeConfig.kubeletConfig.containerLogMaxFiles
 
 `int64` · optional (explicit presence)
 
-Rotated container log files kept per container (2-10).
+Rotated container log files kept per container (2-10). Unset: 5.
 
 - rule: {"int64":{"lte":"10","gte":"2"}}
 
@@ -1351,7 +1358,7 @@ Rotated container log files kept per container (2-10).
 `int64` · optional (explicit presence)
 
 Disk usage percent below which image GC never runs (must be lower
-than the high threshold).
+than the high threshold). Unset: 80.
 
 - rule: {"int64":{"lte":"85","gte":"10"}}
 
@@ -1359,7 +1366,7 @@ than the high threshold).
 
 `int64` · optional (explicit presence)
 
-Disk usage percent above which image GC always runs.
+Disk usage percent above which image GC always runs. Unset: 85.
 
 - rule: {"int64":{"lte":"85","gte":"10"}}
 
@@ -1368,7 +1375,8 @@ Disk usage percent above which image GC always runs.
 `string`
 
 Minimum age an unused image must reach before GC may remove it,
-seconds format, e.g. "120s".
+seconds format, e.g. "120s". Unset: two minutes, which is also the
+most GKE accepts.
 
 - rule: image_minimum_gc_age must be a seconds-format duration like "120s"
 
@@ -1377,7 +1385,8 @@ seconds format, e.g. "120s".
 `string`
 
 Maximum age an unused image may reach before GC removes it regardless
-of disk pressure, seconds format, e.g. "86400s".
+of disk pressure, seconds format, e.g. "86400s". Unset: "0s", which
+turns age-based collection off.
 
 - rule: image_maximum_gc_age must be a seconds-format duration like "86400s"
 
@@ -1396,7 +1405,8 @@ node, not just the pod that sets them.
 `int64` · optional (explicit presence)
 
 Maximum seconds the kubelet grants a pod to terminate during
-soft-eviction (caps the pod's own grace period in that path).
+soft-eviction (caps the pod's own grace period in that path). GKE
+accepts 0 to 300. Unset: 0.
 
 - rule: {"int64":{"gte":"0"}}
 
@@ -1406,7 +1416,8 @@ soft-eviction (caps the pod's own grace period in that path).
 
 Kill only the offending process instead of the whole container on
 OOM — for containers running multiple processes where one leaking
-process should not take down its siblings.
+process should not take down its siblings. Unset: true on cgroup v1
+nodes, false on cgroup v2 nodes.
 
 ### spec.nodeConfig.kubeletConfig.evictionSoft
 
@@ -1414,6 +1425,8 @@ process should not take down its siblings.
 
 Soft eviction thresholds: the kubelet starts graceful pod eviction
 when a signal stays past its threshold for the paired grace period.
+Unset: GKE sets no soft thresholds (nor grace periods or minimum
+reclaims), so only hard eviction applies.
 
 ### spec.nodeConfig.kubeletConfig.evictionSoft.memoryAvailable
 
@@ -1564,7 +1577,8 @@ more restart churn.
 `string`
 
 Maximum backoff delay between restarts of a crashing container,
-seconds format (e.g. "300s"; kubelet default caps at 300s).
+seconds format (e.g. "300s"). Unset: five minutes, which is also the
+most GKE accepts.
 
 - rule: max_container_restart_period must be a seconds-format duration like "300s"
 
@@ -1619,8 +1633,9 @@ Graceful node shutdown: the total time, in seconds, a node delays its
 shutdown so every pod (critical and non-critical) can terminate
 cleanly when the VM is reclaimed. Only configurable on Spot or
 preemptible pools (the ones that get reclaimed). Between 10 and
-10000. Leave unset for GKE's default; sent only when set because the
-API fills the value itself.
+10000; GKE's node system configuration guide lists 30 and 120 as the
+values it accepts. Unset: 30 seconds (GKE's default); sent only when
+set because the API fills the value itself.
 
 - rule: {"int64":{"lte":"10000","gte":"10"}}
 
@@ -1632,7 +1647,8 @@ The portion of shutdown_grace_period_seconds reserved for critical
 pods (system-node-critical and system-cluster-critical priority
 classes) after ordinary pods have been given their share. Must not
 exceed shutdown_grace_period_seconds. Spot or preemptible pools only.
-Sent only when set because the API fills the value itself.
+Unset: 15 seconds (GKE's default). Sent only when set because the API
+fills the value itself.
 
 - rule: {"int64":{"lte":"10000","gte":"0"}}
 
@@ -1669,20 +1685,24 @@ Hugepage pre-allocation for DPDK/database workloads.
 
 `int64` · optional (explicit presence)
 
-Number of 2MB hugepages.
+Number of 2MB hugepages to pre-allocate. Unset: 0. All hugepages may
+take at most 60% of a node's memory under 30 GB, 80% above.
 
 ### spec.nodeConfig.linuxNodeConfig.hugepagesConfig.hugepageSize1g
 
 `int64` · optional (explicit presence)
 
-Number of 1GB hugepages.
+Number of 1GB hugepages to pre-allocate. Unset: 0. Only some machine
+families offer them (A3, C2D, C3, C3D, C4, C4A, C4D, C4N, H3, M2, M3,
+M4, Z3 and others).
 
 ### spec.nodeConfig.linuxNodeConfig.transparentHugepageEnabled
 
 `string`
 
 Kernel transparent hugepage mode for anonymous memory:
-ALWAYS, MADVISE (only regions that request it), or NEVER.
+ALWAYS, MADVISE (only regions that request it), or NEVER. Unset: GKE
+leaves the kernel's own setting, which is MADVISE.
 
 - rule: transparent_hugepage_enabled must be empty, TRANSPARENT_HUGEPAGE_ENABLED_ALWAYS, TRANSPARENT_HUGEPAGE_ENABLED_MADVISE, TRANSPARENT_HUGEPAGE_ENABLED_NEVER, or TRANSPARENT_HUGEPAGE_ENABLED_UNSPECIFIED
 
@@ -1692,7 +1712,8 @@ ALWAYS, MADVISE (only regions that request it), or NEVER.
 
 Kernel defrag behavior when allocating transparent hugepages:
 ALWAYS (stall to reclaim), DEFER (kick background reclaim),
-DEFER_WITH_MADVISE, MADVISE, or NEVER.
+DEFER_WITH_MADVISE, MADVISE, or NEVER. Unset: GKE leaves the kernel's
+own setting.
 
 - rule: transparent_hugepage_defrag must be empty, TRANSPARENT_HUGEPAGE_DEFRAG_ALWAYS, TRANSPARENT_HUGEPAGE_DEFRAG_DEFER, TRANSPARENT_HUGEPAGE_DEFRAG_DEFER_WITH_MADVISE, TRANSPARENT_HUGEPAGE_DEFRAG_MADVISE, TRANSPARENT_HUGEPAGE_DEFRAG_NEVER, or TRANSPARENT_HUGEPAGE_DEFRAG_UNSPECIFIED
 
@@ -1712,7 +1733,7 @@ DO_NOT_ENFORCE_SIGNED_MODULES allows them.
 
 PTP/KVM paravirtual clock sync for sub-millisecond time accuracy —
 for workloads needing precise cross-node timestamps (trading,
-distributed tracing at fine granularity).
+distributed tracing at fine granularity). Unset: false.
 
 ### spec.nodeConfig.linuxNodeConfig.swapConfig
 
@@ -2295,7 +2316,8 @@ a support case to enable it".
 `string`
 
 Grace period each node gets to finish draining before it is removed,
-seconds format, e.g. "300s".
+seconds format, e.g. "300s". Google's API reference names no default:
+unset leaves the period to GKE.
 
 - rule: grace_termination_duration must be a seconds-format duration like "300s"
 
@@ -2304,7 +2326,8 @@ seconds format, e.g. "300s".
 `string`
 
 How long the drain waits on a blocking PodDisruptionBudget before
-proceeding anyway, seconds format, e.g. "3600s".
+proceeding anyway, seconds format, e.g. "3600s". Google's API reference
+names no default: unset leaves the timeout to GKE.
 
 - rule: pdb_timeout_duration must be a seconds-format duration like "3600s"
 
@@ -2313,7 +2336,10 @@ proceeding anyway, seconds format, e.g. "3600s".
 `bool` · optional (explicit presence)
 
 Honor PodDisruptionBudgets while the pool is being deleted (bounded
-by pdb_timeout_duration) instead of evicting immediately.
+by pdb_timeout_duration) instead of evicting immediately. Unset: GKE
+does not respect PodDisruptionBudgets when it deletes a node pool. When
+set, GKE respects them for up to one hour. It never applies when the
+whole cluster is deleted.
 
 ### spec.excludeUpgradesUntilEndOfSupport
 

@@ -13,4 +13,17 @@ message GcpColabScheduleOutputs {
 
   // The region the schedule lives in.
   string location = 3;
+
+  // The schedule's state as Google reported it at the end of the deploy:
+  // ACTIVE, PAUSED, or COMPLETED. A snapshot: a schedule paused by hand
+  // later reads as it was until the next deploy.
+  string state = 4;
+
+  // RFC 3339 time Google will next start a run, as of the end of the
+  // deploy.
+  string next_run_time = 5;
+
+  // How many runs the schedule had started, as of the end of the deploy
+  // (a decimal count).
+  string started_run_count = 6;
 }

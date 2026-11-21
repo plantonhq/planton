@@ -30,10 +30,13 @@ variable "spec" {
 
     # The TPU nodes requested, provisioned together once capacity exists.
     node_specs = list(object({
-      # The node's id once provisioned -- its name in the project. Lowercase
-      # letters, digits, and hyphens, starting with a letter. Unset: Google
-      # generates one.
-      node_id = optional(string, "")
+      # The node's id once provisioned -- its name in the project, what
+      # `gcloud compute tpus tpu-vm ssh` takes. Lowercase letters, digits, and
+      # hyphens, starting with a letter. Required: Google's provider neither
+      # reads back an id Google generates nor lets it change in place, so an
+      # unnamed node would plan a replacement of the whole request on every
+      # deploy.
+      node_id = string
 
       # The node itself.
       node = object({
@@ -48,17 +51,22 @@ variable "spec" {
         # What the node is for.
         description = optional(string, "")
 
-        # The node's network. Unset: the project's default network and
-        # subnetwork.
+        # The node's network. Unset: the project's network and subnetwork named
+        # "default", which many organizations never create -- a project without
+        # them must set this.
         network_config = optional(object({
           # The VPC network: a GcpVpcNetwork reference or a literal
-          # projects/{project}/global/networks/{name}. Unset: "default".
+          # projects/{project}/global/networks/{name}. Unset: the project's network
+          # named "default", which many organizations never create (or delete) --
+          # a project without it must name a network here.
           # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
           network = optional(string, "")
 
           # The subnetwork in the zone's region: a GcpSubnetwork reference or a
           # literal projects/{project}/regions/{region}/subnetworks/{name}. Unset:
-          # "default".
+          # the subnetwork named "default" in the region, which exists only where
+          # the project's "default" network does -- a project without it must
+          # name a subnetwork here.
           # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
           subnetwork = optional(string, "")
 
@@ -76,8 +84,9 @@ variable "spec" {
     }))
 
     # What happens to the request when this resource is destroyed:
-    #   "" / "DELETE" -- the request is deleted, and with it every node it
-    #                    provisioned
+    #   "" / "DELETE" -- the request is deleted without force: Google refuses
+    #                    while it is ACTIVE, PROVISIONING, or
+    #                    WAITING_FOR_RESOURCES (see the message comment)
     #   "PREVENT"     -- destroy fails
     #   "ABANDON"     -- the request leaves management; its nodes keep
     #                    running (and billing)

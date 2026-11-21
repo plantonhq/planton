@@ -17,11 +17,23 @@ data "google_project" "pipeline_network" {
   project_id = local.pipeline_network_proj
 }
 
+# Google's provider plans a changed location as an in-place update and
+# never reads the location back. This tracker makes a location change
+# replace the schedule instead, visibly in the plan -- the Pulumi module's
+# ReplaceOnChanges.
+resource "terraform_data" "location" {
+  input = var.spec.location
+}
+
 # The schedule. desired_state (ACTIVE / PAUSED) is a client-side control the
-# provider enforces with pause and resume calls. Exactly one request block
-# is rendered; the notebook request is immutable (a change replaces the
-# schedule), the pipeline request updates in place. Each request's parent
-# is left to the provider, which fills projects/{project}/locations/{location}.
+# provider applies with pause and resume calls when the setting changes.
+# Exactly one request block is rendered. Switching arms, or changing the
+# notebook run's machine type, GPU partition size, or TPU topology,
+# replaces the schedule; every other notebook-run change is never sent
+# (the provider's update mask never names the request). The pipeline
+# request updates in place. Each request's parent is left to the provider,
+# which fills projects/{project}/locations/{region} -- the provider's region
+# is the spec's location (provider.tf).
 resource "google_colab_schedule" "this" {
   project      = local.project_id
   location     = var.spec.location
@@ -175,6 +187,10 @@ resource "google_colab_schedule" "this" {
         }
       }
     }
+  }
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.location]
   }
 
   depends_on = [google_project_service.aiplatform_api]

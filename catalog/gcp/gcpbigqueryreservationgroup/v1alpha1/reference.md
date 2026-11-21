@@ -59,16 +59,23 @@ omitted, the provider's default project is used.
 `string`
 
 The location of the group and its reservations: a multi-region (US,
-EU) or a region. Empty means US (Google's default). Immutable.
+EU) or a region. Empty means US (Google's default). Write US and EU in
+upper case and a region in lower case: the provider never reads the
+location back, so another spelling is another location to it, and
+replaces the group. Immutable.
+
+- rule: location must be US or EU in upper case, or a region in lower case such as us-central1.
 
 ### spec.reservationGroupName
 
 `string`
 
-The group's name -- letters, digits, and dashes. Defaults to
-metadata.name. Immutable.
+The group's name -- Google's rule: lowercase letters, digits, and
+dashes, starting with a letter, not ending with a dash, at most 64
+characters. Defaults to metadata.name, which must then fit the same
+rule. Immutable.
 
-- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^[a-zA-Z0-9-]+$"}}
+- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^[a-z](?:[-a-z0-9]{0,62}[a-z0-9])?$"}}
 
 ### spec.deletionPolicy
 

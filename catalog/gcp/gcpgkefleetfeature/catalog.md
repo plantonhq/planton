@@ -91,6 +91,8 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
 | `name` | The feature's resource name | Audits, tooling |
+| `resource_state` | The feature's lifecycle state (`ACTIVE` once on) | Readiness checks |
+| `state_code` | The feature's health (`OK`, `WARNING`, `ERROR`) | Alerting, dashboards |
 
 ## Common Patterns
 

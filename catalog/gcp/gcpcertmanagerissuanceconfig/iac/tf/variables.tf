@@ -37,7 +37,10 @@ variable "spec" {
     # full name: projects/{project}/locations/{location}/caPools/{pool}.
     # Reference a GcpPrivateCaPool -- its `name` output is exactly this value.
     # The pool needs an enabled authority, and the Certificate Manager service
-    # agent needs roles/privateca.certificateRequester on it. Immutable.
+    # agent needs roles/privateca.certificateRequester on it before this
+    # config is created: Google refuses the create without it ("Config
+    # validation failed"). Google creates that agent only on request
+    # (services identity create), not when the API is turned on. Immutable.
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     ca_pool = string
 

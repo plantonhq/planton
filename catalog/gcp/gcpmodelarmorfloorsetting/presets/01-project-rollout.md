@@ -18,6 +18,7 @@ Put every Vertex AI model call in one project behind Model Armor without changin
 
 | Field | Default | Why Change |
 |-------|---------|------------|
+| `scope.projectId` | `my-gcp-project` | Your project ID, or a `GcpProject` reference. |
 | `aiPlatformFloorSetting.enforcementType` | `INSPECT_ONLY` | `INSPECT_AND_BLOCK` after reviewing the logged verdicts. |
-| `integratedServices` | `AI_PLATFORM` | Add `GOOGLE_MCP_SERVER` for Google-hosted MCP traffic. |
+| `integratedServices` | `AI_PLATFORM` | Add `GOOGLE_MCP_SERVER` for Google-hosted MCP traffic, with a `googleMcpServerFloorSetting` block beside it. |
 | `filterConfig` | injection + URLs | Add content categories or sensitive-data detection to raise the minimum. |

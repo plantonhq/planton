@@ -2,7 +2,7 @@
 
 ## Use Case
 
-An organization-wide AI safety baseline: every project's Vertex AI and Google MCP server traffic screened and blocked on a hit, and no template anywhere allowed below the minimum.
+An organization-wide AI safety baseline for an estate whose thresholds a project rollout has already proven (this preset blocks from its first apply): every project's Vertex AI and Google MCP server traffic screened and blocked on a hit, and no template anywhere allowed below the minimum.
 
 ## When to Use
 

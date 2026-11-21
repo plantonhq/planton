@@ -13,7 +13,7 @@ enablement) and one `gcp.vertex.AiReasoningEngine`.
 | `module/agent_engine.go` | Enables the API; maps the top level, the agent `spec` (source, container, package, build, deployment); exports the outputs |
 | `module/env_secrets.go` | Stores each `secret_env` entry that carries a `value` in its own Secret Manager secret and grants the runtime identity access |
 | `module/memory_bank.go` | Maps `context_spec.memory_bank_config`: generation, lookup, TTLs, structured schemas, per-scope customization with worked examples in Gemini's `Content.Part` shape |
-| `module/outputs.go` | Output key constants (`name`, `reasoning_engine_id`, `location`, `create_time`, `update_time`) |
+| `module/outputs.go` | Output key constants (`name`, `reasoning_engine_id`, `location`, `create_time`, `update_time`, `effective_identity`) |
 
 ## Send Posture (parity with Terraform)
 

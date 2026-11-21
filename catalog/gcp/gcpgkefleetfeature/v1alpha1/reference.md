@@ -48,7 +48,10 @@ so it lives here, keyed by the cluster's fleet membership.
 Important behavioral notes:
 
   - Creating a feature that is already on adopts it: the existing
-    feature's settings are replaced by this block's.
+    feature's settings are replaced by this block's. Settings the block
+    does not declare survive the first apply and are removed on the
+    next. Two blocks naming the same feature in one fleet fight over it,
+    and destroying either turns the feature off for both.
   - Destroy turns the feature off and removes its per-cluster settings,
     except "rbacrolebindingactuation", which Google never deletes:
     destroy empties its allowlist instead.
@@ -84,6 +87,7 @@ spec:
         value: projects/my-gcp-project/locations/us-central1/memberships/orders-uc1
       configmanagement:
         configSync:
+          enabled: true
           git:
             secretType: none
             syncRepo: https://github.com/example/platform-config
@@ -187,7 +191,7 @@ spec:
 | `spec.membershipConfigs[].configmanagement.management` | `string` |  |  |  |
 | `spec.membershipConfigs[].configmanagement.version` | `string` |  |  |  |
 | `spec.membershipConfigs[].configmanagement.configSync` | `GcpGkeFleetFeatureMembershipConfigSync` |  |  |  |
-| `spec.membershipConfigs[].configmanagement.configSync.enabled` | `bool` |  |  |  |
+| `spec.membershipConfigs[].configmanagement.configSync.enabled` | `bool` | yes |  |  |
 | `spec.membershipConfigs[].configmanagement.configSync.git` | `GcpGkeFleetFeatureConfigSyncGit` |  |  |  |
 | `spec.membershipConfigs[].configmanagement.configSync.git.secretType` | `string` | yes |  |  |
 | `spec.membershipConfigs[].configmanagement.configSync.git.gcpServiceAccountEmail` | `string \| valueFrom` |  |  | GcpServiceAccount (`status.outputs.email`) |
@@ -371,10 +375,11 @@ Settings for "clusterupgrade".
 
 The upstream fleet whose completed upgrades this fleet consumes: its
 host project's ID or number, as a literal or a GcpGkeFleet reference.
-Google accepts at most one today; the list leaves room for more.
+Exactly one: Google accepts at most one upstream fleet, and its API
+keeps the field a list only to leave room for more.
 
 - references: GcpGkeFleet (`status.outputs.project_id`)
-- rule: {"repeated":{"minItems":"1"}}
+- rule: {"repeated":{"minItems":"1","maxItems":"1"}}
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpGkeFleet, name: <that resource's name>, fieldPath: status.outputs.project_id}} -- a bare string does not parse
 
 ### spec.clusterupgrade.postConditions
@@ -521,8 +526,11 @@ What to sync and how.
 
 `bool` · optional (explicit presence)
 
-true installs Config Sync and applies these settings; false removes it
-and ignores the rest. Unset installs it exactly when git or oci is set.
+true installs Config Sync on every cluster and applies these settings.
+false is never sent to Google in the fleet-wide default (the provider
+drops it), so it cannot keep Config Sync off: a git or oci source still
+installs it. To keep Config Sync off fleet-wide, declare no
+config_sync. Unset installs it exactly when git or oci is set.
 
 ### spec.fleetDefaultMemberConfig.configmanagement.configSync.git
 
@@ -662,8 +670,9 @@ reference or a literal email.
 `bool` · optional (explicit presence)
 
 true turns on Config Sync's admission webhook, which refuses manual
-changes to synced objects; false turns it off. Unset takes Google's
-default.
+changes to synced objects. false is never sent to Google in the
+fleet-wide default (the provider drops it), so it leaves Google's
+current setting; unset does the same.
 
 ### spec.fleetDefaultMemberConfig.configmanagement.configSync.sourceFormat
 
@@ -732,8 +741,9 @@ Required.
 
 `int64` · optional (explicit presence)
 
-Seconds between audit scans; 0 turns auditing off. Unset takes
-Google's default.
+Seconds between audit scans. Unset takes Google's default. 0 is never
+sent to Google (the provider drops it), so it leaves Google's current
+interval rather than turning auditing off.
 
 - rule: {"int64":{"gte":"0"}}
 
@@ -742,7 +752,8 @@ Google's default.
 `int64` · optional (explicit presence)
 
 How many violations a constraint stores. Unset takes Google's default
-(20).
+(20). In the fleet-wide default, 0 is never sent to Google (the
+provider drops it).
 
 - rule: {"int64":{"gte":"0"}}
 
@@ -775,14 +786,16 @@ checked (referential rules).
 
 `GcpGkeFleetFeaturePolicyControllerMonitoring`
 
-Where Policy Controller exports metrics. Unset takes Google's default;
-set with no backends to turn metrics export off.
+Where Policy Controller exports metrics. Unset takes Google's default.
+In the fleet-wide default an empty backends list is never sent to
+Google (the provider drops it), so it cannot turn export off there.
 
 ### spec.fleetDefaultMemberConfig.policycontroller.policyControllerHubConfig.monitoring.backends
 
 `[]string`
 
-"PROMETHEUS" and/or "CLOUD_MONITORING". Empty turns export off.
+"PROMETHEUS" and/or "CLOUD_MONITORING". An empty list is never sent in
+the fleet-wide default (see monitoring).
 
 - rule: {"repeated":{"unique":true,"items":{"string":{"in":["PROMETHEUS","CLOUD_MONITORING"]}}}}
 
@@ -805,7 +818,8 @@ The component: "admission", "audit", or "mutation". Required.
 
 `int64` · optional (explicit presence)
 
-Pod replicas. Unset takes Google's default.
+Pod replicas. Unset takes Google's default. In the fleet-wide default,
+0 is never sent to Google (the provider drops it).
 
 - rule: {"int64":{"gte":"0"}}
 
@@ -990,10 +1004,13 @@ What this cluster syncs and how.
 
 ### spec.membershipConfigs[].configmanagement.configSync.enabled
 
-`bool` · optional (explicit presence)
+`bool` · required · optional (explicit presence)
 
-true installs Config Sync and applies these settings; false removes it
-and ignores the rest. Unset installs it exactly when git or oci is set.
+Required. true installs Config Sync on this cluster and applies these
+settings; false removes it and ignores the rest. The provider sends an
+unset value as false, so leaving it out would remove Config Sync.
+
+- rule: {"required":true}
 
 ### spec.membershipConfigs[].configmanagement.configSync.git
 
@@ -1132,7 +1149,7 @@ GcpServiceAccount reference or a literal email.
 `bool` · optional (explicit presence)
 
 true turns on the admission webhook that refuses manual changes to
-synced objects. Unset takes Google's default.
+synced objects. The provider sends an unset value as false (off).
 
 ### spec.membershipConfigs[].configmanagement.configSync.sourceFormat
 
@@ -1261,8 +1278,9 @@ Required.
 
 `int64` · optional (explicit presence)
 
-Seconds between audit scans; 0 turns auditing off. Unset takes
-Google's default.
+Seconds between audit scans. Unset takes Google's default. 0 is never
+sent to Google (the provider drops it), so it leaves Google's current
+interval rather than turning auditing off.
 
 - rule: {"int64":{"gte":"0"}}
 
@@ -1271,7 +1289,8 @@ Google's default.
 `int64` · optional (explicit presence)
 
 How many violations a constraint stores. Unset takes Google's default
-(20).
+(20). In the fleet-wide default, 0 is never sent to Google (the
+provider drops it).
 
 - rule: {"int64":{"gte":"0"}}
 
@@ -1304,14 +1323,16 @@ checked (referential rules).
 
 `GcpGkeFleetFeaturePolicyControllerMonitoring`
 
-Where Policy Controller exports metrics. Unset takes Google's default;
-set with no backends to turn metrics export off.
+Where Policy Controller exports metrics. Unset takes Google's default.
+In the fleet-wide default an empty backends list is never sent to
+Google (the provider drops it), so it cannot turn export off there.
 
 ### spec.membershipConfigs[].policycontroller.policyControllerHubConfig.monitoring.backends
 
 `[]string`
 
-"PROMETHEUS" and/or "CLOUD_MONITORING". Empty turns export off.
+"PROMETHEUS" and/or "CLOUD_MONITORING". An empty list is never sent in
+the fleet-wide default (see monitoring).
 
 - rule: {"repeated":{"unique":true,"items":{"string":{"in":["PROMETHEUS","CLOUD_MONITORING"]}}}}
 
@@ -1334,7 +1355,8 @@ The component: "admission", "audit", or "mutation". Required.
 
 `int64` · optional (explicit presence)
 
-Pod replicas. Unset takes Google's default.
+Pod replicas. Unset takes Google's default. In the fleet-wide default,
+0 is never sent to Google (the provider drops it).
 
 - rule: {"int64":{"gte":"0"}}
 
@@ -1497,6 +1519,8 @@ Reference an output from another manifest as `valueFrom: {kind: GcpGkeFleetFeatu
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.name` | `string` | Full resource name: projects/{project}/locations/{location}/features/{feature}. |
+| `status.outputs.resource_state` | `string` | The feature's lifecycle state in the fleet: ENABLING, ACTIVE, DISABLING, UPDATING, or SERVICE_UPDATING. |
+| `status.outputs.state_code` | `string` | The feature's health as Google reports it: OK, WARNING, or ERROR. Empty until Google has assessed the feature. |
 
 ## References
 

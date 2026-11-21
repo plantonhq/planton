@@ -23,4 +23,10 @@ message GcpVertexAiAgentEngineOutputs {
 
   // RFC 3339 timestamp of the agent's last update.
   string update_time = 5;
+
+  // The identity the agent runs as, as Google resolved it: the service
+  // account email, the Reasoning Engine service agent, or the Agent
+  // Identity Google minted for it under AGENT_IDENTITY -- the principal to
+  // grant access to the secrets and resources the agent reads.
+  string effective_identity = 6;
 }

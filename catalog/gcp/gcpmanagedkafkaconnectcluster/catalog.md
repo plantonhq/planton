@@ -64,9 +64,11 @@ Reference the `GcpManagedKafkaCluster` from `kafkaCluster` and a `GcpSubnetwork`
 
 These are the most important decisions when configuring this component. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
+**Attachment** — `kafkaCluster` is fixed at creation: changing it replaces the Connect cluster, and the connectors on it are created again by their own blocks.
+
 **Capacity** — `vcpuCount` and `memoryBytes` size the workers every connector shares and bill around the clock; both scale in place.
 
-**Networks** — each `primarySubnet` gets a Private Service Connect interface for the workers — the path to the Kafka cluster and to the systems connectors reach.
+**Networks** — each `primarySubnet` gets a Private Service Connect interface for the workers — the path to the Kafka cluster and to the systems connectors reach. Each subnet is private (RFC 1918), at least a /22, and in the Connect cluster's region.
 
 **DNS** — `dnsDomainNames` lets workers resolve names in other clusters' private zones — required for MirrorMaker 2 from another Managed Kafka cluster.
 

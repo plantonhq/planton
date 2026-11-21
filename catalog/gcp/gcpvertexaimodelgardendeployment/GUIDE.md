@@ -1,8 +1,9 @@
 # GcpVertexAiModelGardenDeployment Guide
 
 The judgment this guide protects: this block is a frozen deployment, not a
-serving endpoint you tune. Every field is immutable, the replicas bill
-from the moment they are ready, and most open models need a GPU. Decide
+serving endpoint you tune. Only its replica bounds and autoscaling change
+in place, the replicas bill from the moment they are ready, and most open
+models need a GPU. Decide
 the model, the compute, and the endpoint once; roll forward by declaring
 again.
 
@@ -12,11 +13,14 @@ Google's one-step deployment uploads the model, creates a Vertex AI
 endpoint, and deploys the model to it. The block exports the endpoint the
 same way `GcpVertexAiEndpoint` does (`endpoint_id`, `endpoint_name`), so
 whatever calls the model reads the endpoint without caring which block
-made it. There is no update path: Google offers none on this resource, so
-a changed model version, machine, or endpoint setting undeploys, deletes
-the endpoint, and redeploys -- and the endpoint ID changes. Clients pinned
-to the old ID break. Roll forward with a second block and cut traffic
-over, then remove the first.
+made it. Under `dedicatedResources`, `minReplicaCount`, `maxReplicaCount`,
+`requiredReplicaCount`, and `autoscalingMetricSpecs` change in place and
+the endpoint keeps its ID. Anything else -- a changed model version,
+machine, token, or endpoint setting -- undeploys, deletes the endpoint, and
+redeploys, and the endpoint ID changes. Clients pinned to the old ID break.
+Roll forward with a second block and cut traffic over, then remove the
+first. Destroy undeploys the model and deletes the endpoint; Google's
+provider makes no call that deletes the uploaded Model resource.
 
 ## Which model
 
@@ -31,8 +35,13 @@ Controls perimeter, `huggingFaceCacheEnabled` deploys from Google's copy.
 ## Which compute, and what it costs
 
 Omit `deployConfig` and Model Garden picks the model's recommended machine
-and one replica -- the right answer for trying a model. For production,
-declare `dedicatedResources`: the machine type and accelerator (an
+and one replica -- the right answer for trying a model. Decide this up
+front: under Terraform, removing `deployConfig` from a deployed model
+changes nothing, so returning to the recommended shape takes a new
+deployment; and `fastTryoutEnabled` or `systemLabels` need
+`dedicatedResources` beside them. For production, declare
+`dedicatedResources`: the machine type (required there -- left blank,
+Google falls back to a small CPU machine) and accelerator (an
 `NVIDIA_L4` on `g2-standard-12` serves 2B-class models; A100s and H100s
 serve larger ones), `minReplicaCount` (never below one; there is no
 scale-to-zero), `maxReplicaCount`, `spot` for preemptible capacity at a
@@ -40,7 +49,9 @@ steep discount, and the metric autoscaling follows (`accelerator/duty_cycle`
 on a GPU). Every replica bills its machine and accelerator hours from
 ready until undeployed; `minReplicaCount` is the committed spend and the
 accelerator is usually the whole bill. The project needs quota for the
-accelerator in the region before the deploy will succeed.
+accelerator in the region before the deploy will succeed, and Google
+reserves it at the ceiling: `maxReplicaCount` times the machine's cores
+and accelerators.
 
 ## The serving container
 

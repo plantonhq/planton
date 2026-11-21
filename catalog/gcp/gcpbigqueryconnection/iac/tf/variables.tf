@@ -25,9 +25,10 @@ variable "spec" {
     # europe-west1). Each arm has its own rule -- Cloud SQL must match (with
     # us-central1 -> US and europe-west1 -> EU allowed), Spanner matches the
     # instance's region, AWS uses aws-{region} (e.g. aws-us-east-1) and
-    # Azure azure-{region} (e.g. azure-eastus2). Empty leaves Google's
-    # default. Immutable.
-    location = optional(string, "")
+    # Azure azure-{region} (e.g. azure-eastus2). Required: Google's API has
+    # no default location for a connection. Write US and EU in upper case
+    # and every other location in lower case. Immutable.
+    location = string
 
     # The connection's ID. Defaults to metadata.name. Immutable.
     connection_id = optional(string, "")
@@ -41,6 +42,9 @@ variable "spec" {
     # A Cloud KMS key encrypting the connection's stored credential (CMEK):
     # a GcpKmsKey reference or a literal
     # projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}.
+    # Only a stored credential is encrypted with it -- the Cloud SQL arm's
+    # user and password, or the Connector framework's when one is set; on
+    # an arm that stores no credential the key has nothing to encrypt.
     # Empty uses Google-managed keys.
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     kms_key_name = optional(string, "")
@@ -76,7 +80,10 @@ variable "spec" {
     # A Cloud Spanner database.
     cloud_spanner = optional(object({
       # The database, as project/instance/database (slashes, no
-      # "projects/" prefix).
+      # "projects/" prefix) -- Google's form for this field. A
+      # GcpSpannerDatabase's database_id output is the full
+      # projects/{project}/instances/{instance}/databases/{database} path, so
+      # write this one as a literal.
       database = string
 
       # A Spanner fine-grained access control role the queries run as (it

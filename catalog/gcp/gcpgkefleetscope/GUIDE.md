@@ -12,4 +12,4 @@ Each fleet namespace becomes a Kubernetes namespace on every bound cluster (an e
 
 ## Lifecycle
 
-IDs are create-time decisions; labels, principals, roles, and a binding's target update in place. Destroy removes the bindings, the namespaces (from every bound cluster), and the scope -- in a chart, before the clusters it binds.
+IDs and a cluster binding's membership are create-time decisions (a changed membership replaces its binding); labels, principals, and roles update in place. Destroy removes the bindings, the namespaces (from every bound cluster), and the scope -- in a chart, before the clusters it binds.

@@ -84,6 +84,9 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 | `name` | The TPU's full resource name | Automation, monitoring |
 | `node_id` | The TPU's id | `gcloud compute tpus tpu-vm ssh` |
 | `zone` | The TPU's zone | Regional tooling |
+| `state`, `health` | Google's state and health at the end of the deploy | A first check that the slice came up |
+| `worker_internal_ips` | Every worker's internal IP, worker 0 first | Firewall rules, a job launcher reaching worker 0 |
+| `worker_external_ips` | External IPs of the workers that have one | Allow-lists, SSH from outside the VPC |
 
 ## Common Patterns
 
