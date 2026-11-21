@@ -25,6 +25,12 @@ spec:
   # -> network -- a resourceInUseByAnotherResource on teardown means the
   # fixture chain was listed out of order.
   #
+  # A live attempt (2026-11-20) settled two of the PSC rule's shapes: Google
+  # wants the reserved address resource (its self link), never a literal IP,
+  # and no IP protocol on a rule that targets a service attachment. On
+  # Pulumi the fixture rule's address reference then resolved empty, so the
+  # lane waits on that resolution before it runs again.
+  #
   # No second act: the set's create, update and delete are one write (a
   # PATCH of the cluster's endpoint list), so an update proves no permission
   # create doesn't, and Google's audit log can't tell them apart. It carries
