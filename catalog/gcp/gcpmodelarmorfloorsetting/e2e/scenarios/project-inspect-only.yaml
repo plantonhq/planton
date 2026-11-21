@@ -19,6 +19,9 @@ metadata:
     e2e-catalog-kind: gcpmodelarmorfloorsetting
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-exclusive: gcp-model-armor # the project's floor constrains its templates, so the two kinds never write at once
+    planton.dev/e2e-names-nothing: "a project's Model Armor floor setting is a singleton named by its project"
   tags:
     - planton-e2e
 spec:

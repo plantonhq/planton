@@ -13,6 +13,9 @@ metadata:
     e2e-catalog-kind: gcpbigqueryreservation
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-upgrade-manifest: in-group.to.yaml # the in-place update: the autoscale maximum
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-exclusive: gcp-bigquery-project-assignment # a project's QUERY jobs go to one reservation at a time, so the two engines take turns
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpbigqueryreservation/e2e/prerequisites/gcpbigqueryreservationgroup-tier.yaml"
   tags:
     - planton-e2e

@@ -1,0 +1,28 @@
+# Consumer-scoped GcpSubnetwork install profile for the gcptpuqueuedresource chain: the
+# TPU's subnetwork in its zone's region, with Private Google Access so
+# workers without external addresses still reach Google APIs.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSubnetwork
+metadata:
+  name: planton-oss-e2e-gcptpuq-subnet
+  id: planton-oss-e2e-gcptpuq-subnet
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpsubnetwork
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  vpcSelfLink:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcptpuq-vpc
+      fieldPath: status.outputs.network_self_link
+  subnetworkName: e2e-gcptpuq-subnet-${E2E_RUN_ID}
+  region: us-central1
+  ipCidrRange: 10.9.41.0/24
+  privateIpGoogleAccess: true
+  description: Ephemeral subnetwork for the gcptpuqueuedresource E2E chain; safe to delete

@@ -15,6 +15,8 @@ metadata:
     e2e-catalog-kind: gcpbigqueryreservation
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-exclusive: gcp-bigquery-project-assignment # a project's QUERY jobs go to one reservation at a time, so the two engines take turns
   tags:
     - planton-e2e
 spec:

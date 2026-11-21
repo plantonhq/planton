@@ -12,6 +12,10 @@ spec:
   # the full path, the provider's name the short one); (2) reservation
   # groups may be allowlisted -- a 403 is recorded, not patched; (3) destroy
   # deletes the group and the verifier reads 404.
+  #
+  # No second act: a reservation group has no field Google updates in place
+  # -- every field recreates it -- so an update would prove only create and
+  # delete again. It carries no second act, as the IAM-member kinds don't.
   tier: 1
   status: pending_proof
   validated_provisioners: []

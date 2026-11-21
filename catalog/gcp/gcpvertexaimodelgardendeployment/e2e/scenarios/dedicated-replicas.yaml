@@ -1,0 +1,35 @@
+# GcpVertexAiModelGardenDeployment scenario: the same small open model on an
+# explicit dedicated shape -- one NVIDIA L4 on g2-standard-12, one of the
+# shapes Model Garden lists for it -- so the replica bounds are the
+# manifest's to change. Its second act raises the ceiling in place.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiModelGardenDeployment
+metadata:
+  name: planton-oss-e2e-gcpmgdep-dedicated
+  id: planton-oss-e2e-gcpmgdep-dedicated
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpvertexaimodelgardendeployment
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-upgrade-manifest: dedicated-replicas.to.yaml # the in-place update: the replica ceiling
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-exclusive: gcp-vertex-gpu-serving # the project serves two GPUs of a type, so deployments take turns
+    planton.dev/e2e-names-nothing: "Google assigns the endpoint and model ids"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  huggingFaceModelId: Qwen/Qwen3-0.6B
+  modelConfig:
+    acceptEula: true
+  deployConfig:
+    dedicatedResources:
+      machineSpec:
+        machineType: g2-standard-12
+        acceleratorType: NVIDIA_L4
+        acceleratorCount: 1
+      minReplicaCount: 1
+      maxReplicaCount: 1

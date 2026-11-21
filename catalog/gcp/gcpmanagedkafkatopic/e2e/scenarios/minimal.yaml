@@ -13,6 +13,8 @@ metadata:
     e2e-catalog-kind: gcpmanagedkafkatopic
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the in-place update: a topic config
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
   tags:
     - planton-e2e
 spec:

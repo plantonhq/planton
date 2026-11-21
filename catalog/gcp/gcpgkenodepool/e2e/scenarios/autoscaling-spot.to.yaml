@@ -17,7 +17,7 @@ metadata:
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
-    planton.dev/e2e-exclusive: gcp-project-vcpus # the lane project holds 12 vCPUs across all regions, so VM-running kinds never run side by side
+    planton.dev/e2e-exclusive: gcp-project-vcpus # the lane project holds few vCPUs across all regions (read CPUS_ALL_REGIONS live), so VM-running kinds never run side by side
     planton.dev/e2e-second-act: autoscaling-spot.yaml
     planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
   tags:

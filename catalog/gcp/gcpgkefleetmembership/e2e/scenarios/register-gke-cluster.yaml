@@ -15,6 +15,10 @@ metadata:
     e2e-catalog-kind: gcpgkefleetmembership
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-upgrade-manifest: register-gke-cluster.to.yaml # the in-place update: a user label
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-identity-project: ${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID} # the kind is granted, and runs, in the second test project
+    planton.dev/e2e-exclusive: gcp-fleet-second-project # the second project holds one fleet, which every fleet kind writes
     planton.dev/e2e-required-env: PLANTON_E2E_GCP_SECOND_PROJECT_ID
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpgkefleetmembership/e2e/prerequisites/vpc.yaml,catalog/gcp/gcpgkefleetmembership/e2e/prerequisites/subnet.yaml,catalog/gcp/gcpgkefleetmembership/e2e/prerequisites/cluster.yaml"
   tags:

@@ -17,6 +17,11 @@ spec:
   # engines; (3) the destroy PATCHes the location to UNPROVISIONED and the
   # verifier reads that tier back -- there is no 404, because the
   # singleton never goes away.
+  #
+  # No second act: the configuration's create, update and delete are one
+  # write (a PATCH of the location's singleton), so an update proves no
+  # permission create doesn't. It carries no second act, as the Redis
+  # endpoint set doesn't.
   tier: 1
   status: pending_proof
   validated_provisioners: []

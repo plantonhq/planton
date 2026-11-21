@@ -17,6 +17,11 @@ spec:
   # destroy leaves the floor in Google and the verifier reads it after
   # destroy; (4) the floor left behind (inspect-only, injection detection
   # at HIGH) blocks no other lane and no template scenario.
+  #
+  # No second act: the floor's create and update are one write (a PATCH of
+  # the project's singleton), and its delete leaves the floor in force, so
+  # an update proves no permission create doesn't. It carries no second
+  # act, as the Redis endpoint set doesn't.
   tier: 1
   status: pending_proof
   validated_provisioners: []

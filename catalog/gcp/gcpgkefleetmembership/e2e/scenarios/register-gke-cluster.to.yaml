@@ -1,0 +1,37 @@
+# The second act of register-gke-cluster.yaml: the same membership with a
+# user label, a patch in place. Not a scenario of its own.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeFleetMembership
+metadata:
+  name: planton-oss-e2e-gcpflmb-register
+  id: planton-oss-e2e-gcpflmb-register
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpgkefleetmembership
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-second-act: register-gke-cluster.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-identity-project: ${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID} # the kind is granted, and runs, in the second test project
+    planton.dev/e2e-exclusive: gcp-fleet-second-project # the second project holds one fleet, which every fleet kind writes
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_SECOND_PROJECT_ID
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpgkefleetmembership/e2e/prerequisites/vpc.yaml,catalog/gcp/gcpgkefleetmembership/e2e/prerequisites/subnet.yaml,catalog/gcp/gcpgkefleetmembership/e2e/prerequisites/cluster.yaml"
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpGkeFleet
+      name: planton-oss-e2e-gcpflmb-fleet
+      fieldPath: status.outputs.project_id
+  membershipId: e2e-gcpflmb-${E2E_RUN_ID}
+  labels:
+    team: platform-e2e
+  gkeCluster:
+    valueFrom:
+      kind: GcpGkeCluster
+      name: planton-oss-e2e-gcpflmb-cluster
+      fieldPath: status.outputs.cluster_id

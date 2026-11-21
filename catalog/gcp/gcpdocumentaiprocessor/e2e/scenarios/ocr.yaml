@@ -14,8 +14,10 @@ metadata:
     e2e-catalog-kind: gcpdocumentaiprocessor
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
   tags:
     - planton-e2e
 spec:
   location: us
   type: OCR_PROCESSOR
+  displayName: e2e-docai-ocr-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it

@@ -16,6 +16,11 @@ spec:
   # the node parent the modules derive matches what Google stores; (3)
   # destroy deletes the request and any node it provisioned, and the
   # verifier reads 404.
+  #
+  # No second act: a queued resource has no field Google updates in place --
+  # every field recreates the request -- so an update would prove only
+  # create and delete again. It carries no second act, as the IAM-member
+  # kinds don't.
   tier: 1
   status: pending_proof
   validated_provisioners: []

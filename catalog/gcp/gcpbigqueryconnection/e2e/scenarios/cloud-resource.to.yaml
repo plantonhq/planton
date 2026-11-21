@@ -1,0 +1,26 @@
+# The second act of cloud-resource.yaml: the same connection with a new
+# friendly name, a patch in place. Not a scenario of its own.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBigQueryConnection
+metadata:
+  name: planton-oss-e2e-gcpbqcn-lake
+  id: planton-oss-e2e-gcpbqcn-lake
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpbigqueryconnection
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-second-act: cloud-resource.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+  tags:
+    - planton-e2e
+spec:
+  location: US
+  connectionId: e2e_bqcn_lake_${E2E_RUN_ID_UNDERSCORE}
+  friendlyName: E2E BigLake connection (renamed)
+  description: Ephemeral cloud-resource connection; safe to delete
+  cloudResource: true
+  deletionPolicy: DELETE

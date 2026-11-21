@@ -16,6 +16,8 @@ metadata:
     e2e-catalog-kind: gcpmodelarmortemplate
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-exclusive: gcp-model-armor # the project's floor constrains its templates, so the two kinds never write at once
   tags:
     - planton-e2e
 spec:

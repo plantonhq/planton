@@ -1,0 +1,33 @@
+# The second act of from-disk.yaml: the same image with a user label, set
+# in place (every other image field recreates it). Not a scenario of its own.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpComputeImage
+metadata:
+  name: planton-oss-e2e-gcpimg-disk-image
+  id: planton-oss-e2e-gcpimg-disk-image
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpcomputeimage
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-second-act: from-disk.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpcomputeimage/e2e/prerequisites/disk.yaml"
+  tags:
+    - planton-e2e
+spec:
+  imageName: planton-e2e-gcpimg-disk-${E2E_RUN_ID}
+  description: Ephemeral image created by the Planton E2E harness; safe to delete
+  sourceDisk:
+    valueFrom:
+      kind: GcpComputeDisk
+      name: planton-oss-e2e-gcpimg-disk
+      fieldPath: status.outputs.self_link
+  guestOsFeatures:
+    - UEFI_COMPATIBLE
+    - GVNIC
+  labels:
+    team: platform-e2e

@@ -14,6 +14,8 @@ metadata:
     e2e-catalog-kind: gcpcomputeimage
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-upgrade-manifest: from-disk.to.yaml # the in-place update: a user label
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpcomputeimage/e2e/prerequisites/disk.yaml"
   tags:
     - planton-e2e

@@ -1,0 +1,34 @@
+# The second act of in-group.yaml: the same reservation with a higher
+# autoscale ceiling, a patch in place. Not a scenario of its own.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBigQueryReservation
+metadata:
+  name: planton-oss-e2e-gcpbqrs-grouped
+  id: planton-oss-e2e-gcpbqrs-grouped
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpbigqueryreservation
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-second-act: in-group.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-exclusive: gcp-bigquery-project-assignment # a project's QUERY jobs go to one reservation at a time, so the two engines take turns
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpbigqueryreservation/e2e/prerequisites/gcpbigqueryreservationgroup-tier.yaml"
+  tags:
+    - planton-e2e
+spec:
+  location: US
+  reservationName: e2e-bqrs-grouped-${E2E_RUN_ID}
+  edition: ENTERPRISE
+  slotCapacity: 0
+  autoscaleMaxSlots: 100
+  ignoreIdleSlots: true
+  reservationGroup:
+    valueFrom:
+      kind: GcpBigQueryReservationGroup
+      name: planton-oss-e2e-gcpbqrs-group
+      fieldPath: status.outputs.name
+  deletionPolicy: DELETE

@@ -1,0 +1,30 @@
+# The second act of minimal.yaml: the same template detecting prompt
+# injection at a lower confidence (stricter, and still above the project's
+# floor), a patch in place. Not a scenario of its own.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpModelArmorTemplate
+metadata:
+  name: planton-oss-e2e-gcpmarm-minimal
+  id: planton-oss-e2e-gcpmarm-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpmodelarmortemplate
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-second-act: minimal.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-exclusive: gcp-model-armor # the project's floor constrains its templates, so the two kinds never write at once
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  templateId: e2e-marm-min-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
+  filterConfig:
+    piAndJailbreakFilterSettings:
+      filterEnforcement: ENABLED
+      confidenceLevel: LOW_AND_ABOVE
+    maliciousUriFilterSettings:
+      filterEnforcement: ENABLED

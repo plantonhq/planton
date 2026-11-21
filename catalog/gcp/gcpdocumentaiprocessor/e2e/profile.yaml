@@ -16,6 +16,10 @@ spec:
   # it; (4) destroy deletes the processor and the verifier reads 404. The
   # default-version arm is proven offline (it needs a concrete version id
   # Google publishes for the chosen type and location).
+  #
+  # No second act: Google updates nothing on a processor in place -- every
+  # field recreates it -- so an update would prove only create and delete
+  # again. It carries no second act, as the IAM-member kinds don't.
   tier: 1
   status: pending_proof
   validated_provisioners: []

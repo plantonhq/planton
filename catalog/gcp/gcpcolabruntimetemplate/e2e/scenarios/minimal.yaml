@@ -15,10 +15,14 @@ metadata:
     e2e-catalog-kind: gcpcolabruntimetemplate
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the in-place update: the display name
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
   tags:
     - planton-e2e
 spec:
   location: us-central1
+  runtimeTemplateId: e2e-colt-min-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
+  displayName: E2E minimal runtime template
   machineSpec:
     machineType: e2-standard-4
   dataPersistentDiskSpec:

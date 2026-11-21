@@ -1,0 +1,41 @@
+# The second act of v2-8-spot.yaml: the same TPU VM with a user label, a
+# patch in place. Not a scenario of its own.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTpuVm
+metadata:
+  name: planton-oss-e2e-gcptpu-v2
+  id: planton-oss-e2e-gcptpu-v2
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcptpuvm
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcptpuvm/e2e/prerequisites/gcpvpcnetwork.yaml,catalog/gcp/gcptpuvm/e2e/prerequisites/gcpsubnetwork.yaml"
+    planton.dev/e2e-second-act: v2-8-spot.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+  tags:
+    - planton-e2e
+spec:
+  zone: us-central1-f
+  nodeId: e2e-tpu-spot-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
+  acceleratorType: v2-8
+  runtimeVersion: tpu-ubuntu2204-base
+  schedulingConfig:
+    spot: true
+  networkConfig:
+    network:
+      valueFrom:
+        kind: GcpVpcNetwork
+        name: planton-oss-e2e-gcptpu-vpc
+        fieldPath: status.outputs.network_id
+    subnetwork:
+      valueFrom:
+        kind: GcpSubnetwork
+        name: planton-oss-e2e-gcptpu-subnet
+        fieldPath: status.outputs.subnetwork_self_link
+  labels:
+    team: platform-e2e
+  deletionPolicy: DELETE

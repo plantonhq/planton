@@ -22,7 +22,7 @@ spec:
       kind: GcpVpcNetwork
       name: planton-oss-e2e-gcpflmb-vpc
       fieldPath: status.outputs.network_self_link
-  subnetworkName: planton-oss-e2e-gcpflmb-subnet
+  subnetworkName: e2e-gcpflmb-subnet-${E2E_RUN_ID}
   region: us-east1
   ipCidrRange: 10.240.0.0/20
   privateIpGoogleAccess: true

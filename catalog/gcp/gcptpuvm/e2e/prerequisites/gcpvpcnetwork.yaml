@@ -1,0 +1,21 @@
+# Consumer-scoped GcpVpcNetwork install profile for the gcptpuvm chain: the
+# TPU's own network, because a project need not have one named "default".
+# The cloud-side name carries the run id; metadata.name stays fixed for
+# reference resolution across the chain.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVpcNetwork
+metadata:
+  name: planton-oss-e2e-gcptpu-vpc
+  id: planton-oss-e2e-gcptpu-vpc
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpvpcnetwork
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  networkName: e2e-gcptpu-vpc-${E2E_RUN_ID}
+  autoCreateSubnetworks: false

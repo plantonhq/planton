@@ -15,6 +15,9 @@ metadata:
     e2e-catalog-kind: gcpmanagedkafkaacl
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-upgrade-manifest: topic-read-write.to.yaml # the in-place update: one more ACL entry
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-names-nothing: "the ACL id is the Kafka resource pattern it governs (topic/e2e-orders) on a run-scoped cluster"
   tags:
     - planton-e2e
 spec:
@@ -32,7 +35,7 @@ spec:
       operation: DESCRIBE
     - principal: User:e2e-orders-consumer@${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}.iam.gserviceaccount.com
       operation: READ
-    - principal: User:*
+    - principal: User:e2e-orders-intruder@${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}.iam.gserviceaccount.com
       operation: WRITE
       permissionType: DENY
   deletionPolicy: DELETE

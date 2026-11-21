@@ -1,0 +1,42 @@
+# The second act of topic-read-write.yaml: the same ACL with one more
+# entry (the consumer may describe the topic), a patch in place. Not a
+# scenario of its own.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpManagedKafkaAcl
+metadata:
+  name: planton-oss-e2e-gcpkacl-topic
+  id: planton-oss-e2e-gcpkacl-topic
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpmanagedkafkaacl
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-second-act: topic-read-write.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-names-nothing: "the ACL id is the Kafka resource pattern it governs (topic/e2e-orders) on a run-scoped cluster"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  cluster:
+    valueFrom:
+      kind: GcpManagedKafkaCluster
+      name: planton-oss-e2e-gcpkacl-kafka
+      fieldPath: status.outputs.name
+  aclId: topic/e2e-orders
+  aclEntries:
+    - principal: User:e2e-orders-producer@${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}.iam.gserviceaccount.com
+      operation: WRITE
+    - principal: User:e2e-orders-producer@${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}.iam.gserviceaccount.com
+      operation: DESCRIBE
+    - principal: User:e2e-orders-consumer@${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}.iam.gserviceaccount.com
+      operation: READ
+    - principal: User:e2e-orders-consumer@${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}.iam.gserviceaccount.com
+      operation: DESCRIBE
+    - principal: User:e2e-orders-intruder@${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}.iam.gserviceaccount.com
+      operation: WRITE
+      permissionType: DENY
+  deletionPolicy: DELETE

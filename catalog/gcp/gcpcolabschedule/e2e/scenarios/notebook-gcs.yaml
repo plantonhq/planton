@@ -16,11 +16,14 @@ metadata:
     e2e-catalog-kind: gcpcolabschedule
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-upgrade-manifest: notebook-gcs.to.yaml # the in-place update: the cron
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpcolabschedule/e2e/prerequisites/gcpcolabruntimetemplate-schedule.yaml,catalog/gcp/gcpcolabschedule/e2e/prerequisites/gcpgcsbucket-schedule.yaml,catalog/gcp/gcpcolabschedule/e2e/prerequisites/gcpserviceaccount-schedule.yaml"
   tags:
     - planton-e2e
 spec:
   location: us-central1
+  displayName: e2e-cols-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   cron: "0 6 * * *"
   maxConcurrentRunCount: 1
   maxRunCount: 10

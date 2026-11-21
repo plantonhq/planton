@@ -15,12 +15,27 @@ metadata:
     e2e-catalog-kind: gcptpuvm
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcptpuvm/e2e/prerequisites/gcpvpcnetwork.yaml,catalog/gcp/gcptpuvm/e2e/prerequisites/gcpsubnetwork.yaml"
+    planton.dev/e2e-upgrade-manifest: v2-8-spot.to.yaml # the in-place update: a user label
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
   tags:
     - planton-e2e
 spec:
   zone: us-central1-f
+  nodeId: e2e-tpu-spot-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   acceleratorType: v2-8
   runtimeVersion: tpu-ubuntu2204-base
   schedulingConfig:
     spot: true
+  networkConfig:
+    network:
+      valueFrom:
+        kind: GcpVpcNetwork
+        name: planton-oss-e2e-gcptpu-vpc
+        fieldPath: status.outputs.network_id
+    subnetwork:
+      valueFrom:
+        kind: GcpSubnetwork
+        name: planton-oss-e2e-gcptpu-subnet
+        fieldPath: status.outputs.subnetwork_self_link
   deletionPolicy: DELETE

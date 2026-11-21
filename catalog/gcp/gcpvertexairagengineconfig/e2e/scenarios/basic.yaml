@@ -17,6 +17,9 @@ metadata:
     e2e-catalog-kind: gcpvertexairagengineconfig
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-exclusive: gcp-rag-engine-config # one RAG Engine configuration per location
+    planton.dev/e2e-names-nothing: "a location's RAG Engine configuration is a singleton Google owns, named by its location"
   tags:
     - planton-e2e
 spec:

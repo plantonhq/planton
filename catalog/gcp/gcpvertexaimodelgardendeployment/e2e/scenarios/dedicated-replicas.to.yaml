@@ -1,0 +1,35 @@
+# The second act of dedicated-replicas.yaml: the same deployment with a
+# replica ceiling of two, mutated in place on the deployed model (no replica
+# is added without load). Not a scenario of its own.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiModelGardenDeployment
+metadata:
+  name: planton-oss-e2e-gcpmgdep-dedicated
+  id: planton-oss-e2e-gcpmgdep-dedicated
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpvertexaimodelgardendeployment
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-second-act: dedicated-replicas.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-exclusive: gcp-vertex-gpu-serving # the project serves two GPUs of a type, so deployments take turns
+    planton.dev/e2e-names-nothing: "Google assigns the endpoint and model ids"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  huggingFaceModelId: Qwen/Qwen3-0.6B
+  modelConfig:
+    acceptEula: true
+  deployConfig:
+    dedicatedResources:
+      machineSpec:
+        machineType: g2-standard-12
+        acceleratorType: NVIDIA_L4
+        acceleratorCount: 1
+      minReplicaCount: 1
+      maxReplicaCount: 2

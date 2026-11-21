@@ -17,5 +17,5 @@ metadata:
 spec:
   projectId:
     value: ${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID}
-  networkName: planton-oss-e2e-gcpflmb-vpc
+  networkName: e2e-gcpflmb-vpc-${E2E_RUN_ID}
   autoCreateSubnetworks: false

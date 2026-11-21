@@ -251,14 +251,29 @@ adopts it needs all three:
   review, so a document that does name something never carries it.
 - **Singletons and scarce quota take a class.** A scenario annotated
   `planton.dev/e2e-exclusive: <class>` never runs beside another kind naming
-  the same class: a location's RAG Engine configuration, a project's Model
-  Armor floor, a project too small in vCPUs for two clusters at once. GCP's
-  VM-running kinds (GKE clusters and node pools, Dataproc, Compute
-  instances and managed instance groups, Workbench notebooks) name
-  `gcp-project-vcpus`: the lane project holds 12 vCPUs across all regions,
-  so they run one at a time, and each kind's two engines in turn. A kind
-  takes its classes before its slot, so kinds queued behind a class never
-  hold the slots the other kinds run in.
+  the same class, and a kind's two engines take turns in it. GCP's classes:
+  - `gcp-project-vcpus`: the VM-running kinds (GKE clusters and node pools,
+    Dataproc, Compute instances and managed instance groups, Workbench
+    notebooks, Colab runtimes). The lane project holds few vCPUs across all
+    regions -- read `CPUS_ALL_REGIONS` live, it moves as the project ages --
+    so they run one at a time.
+  - `gcp-rag-engine-config`: a location's one RAG Engine configuration.
+  - `gcp-model-armor`: the project's one Model Armor floor and the templates
+    it constrains.
+  - `gcp-fleet-second-project`: the second project's one fleet and every
+    feature, scope and membership written into it.
+  - `gcp-vertex-gpu-serving`: Model Garden deployments, because the project
+    serves two GPUs of a type.
+  - `gcp-bigquery-project-assignment`: a project's query jobs go to one
+    reservation at a time.
+  - `gcp-autokey`, `gcp-binauthz-policy`: a project's one Autokey
+    configuration (and the key handles that need it), and its one Binary
+    Authorization policy.
+  - `gcp-network-pairs`: the kinds whose lanes hold two networks each,
+    against the project's five.
+
+  A kind takes its classes before its slot, so kinds queued behind a class
+  never hold the slots the other kinds run in.
 
 Pulumi stacks are created with `--no-select` and never selected (every
 command names its stack), because selecting writes one record per module

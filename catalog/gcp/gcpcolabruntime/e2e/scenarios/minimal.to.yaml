@@ -1,0 +1,34 @@
+# The second act of minimal.yaml: the same runtime asked to run -- Google's
+# start call on the stopped runtime, a write in place. Not a scenario of its
+# own.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpColabRuntime
+metadata:
+  name: planton-oss-e2e-gcpcolr-minimal
+  id: planton-oss-e2e-gcpcolr-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpcolabruntime
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-second-act: minimal.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-exclusive: gcp-project-vcpus # a running Colab runtime is a VM on the project's vCPUs
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpcolabruntime/e2e/prerequisites/gcpcolabruntimetemplate-runtime.yaml"
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_COLAB_RUNTIME_USER
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  runtimeId: pln-e2e-colr-${E2E_RUN_ID}
+  runtimeTemplate:
+    valueFrom:
+      kind: GcpColabRuntimeTemplate
+      name: planton-oss-e2e-gcpcolr-template
+      fieldPath: status.outputs.name
+  runtimeUser: ${E2E_ENV:PLANTON_E2E_GCP_COLAB_RUNTIME_USER}
+  desiredState: RUNNING
+  deletionPolicy: DELETE

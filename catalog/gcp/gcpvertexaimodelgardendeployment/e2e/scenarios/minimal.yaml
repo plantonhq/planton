@@ -17,6 +17,9 @@ metadata:
     e2e-catalog-kind: gcpvertexaimodelgardendeployment
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-exclusive: gcp-vertex-gpu-serving # the project serves two GPUs of a type, so deployments take turns
+    planton.dev/e2e-names-nothing: "Google assigns the endpoint and model ids"
   tags:
     - planton-e2e
 spec:

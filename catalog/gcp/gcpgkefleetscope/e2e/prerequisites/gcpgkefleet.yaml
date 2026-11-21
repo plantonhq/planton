@@ -14,6 +14,7 @@ metadata:
     e2e-catalog-kind: gcpgkefleet
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-names-nothing: "a project has one fleet, named by its project"
   tags:
     - planton-e2e
 spec:

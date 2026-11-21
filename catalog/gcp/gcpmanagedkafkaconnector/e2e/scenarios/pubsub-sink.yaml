@@ -16,6 +16,8 @@ metadata:
     e2e-catalog-kind: gcpmanagedkafkaconnector
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-upgrade-manifest: pubsub-sink.to.yaml # the in-place update: tasks.max
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpmanagedkafkaconnector/e2e/prerequisites/gcpmanagedkafkatopic-source.yaml,catalog/gcp/gcpmanagedkafkaconnector/e2e/prerequisites/gcppubsubtopic-sink.yaml"
   tags:
     - planton-e2e

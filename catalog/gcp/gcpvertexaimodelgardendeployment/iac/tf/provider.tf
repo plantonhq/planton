@@ -18,4 +18,9 @@ provider "google" {
   # replacement. Credentials are injected by the runtime; the connection
   # never names a project.
   project = local.project_id
+  # A Model Garden deployment names a location, yet the provider reaches
+  # Vertex AI through the regional endpoint it builds from its own region
+  # (https://{region}-aiplatform.googleapis.com), so the region is the spec's
+  # location; with none set the call has no endpoint.
+  region = var.spec.location
 }

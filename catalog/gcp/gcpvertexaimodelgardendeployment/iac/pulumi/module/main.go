@@ -10,7 +10,11 @@ import (
 func Resources(ctx *pulumi.Context, iacInput *gcpvertexaimodelgardendeploymentv1alpha1.GcpVertexAiModelGardenDeploymentIacInput) error {
 	locals := initializeLocals(ctx, iacInput)
 
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig, iacInput.Target.GetSpec().GetProjectId().GetValue())
+	gcpProvider, err := pulumigoogleprovider.GetInRegion(ctx, iacInput.ProviderConfig,
+		iacInput.Target.GetSpec().GetProjectId().GetValue(),
+		// Vertex AI's regional endpoint comes from the provider's region, not
+		// the deployment's location (GetInRegion).
+		iacInput.Target.GetSpec().GetLocation())
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

@@ -15,13 +15,27 @@ metadata:
     e2e-catalog-kind: gcptpuqueuedresource
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcptpuqueuedresource/e2e/prerequisites/gcpvpcnetwork.yaml,catalog/gcp/gcptpuqueuedresource/e2e/prerequisites/gcpsubnetwork.yaml"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
   tags:
     - planton-e2e
 spec:
   zone: us-central1-f
+  queuedResourceId: e2e-tpuq-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   nodeSpecs:
     - nodeId: pln-e2e-tpuq-${E2E_RUN_ID}
       node:
         runtimeVersion: tpu-ubuntu2204-base
         acceleratorType: v2-8
+        networkConfig:
+          network:
+            valueFrom:
+              kind: GcpVpcNetwork
+              name: planton-oss-e2e-gcptpuq-vpc
+              fieldPath: status.outputs.network_id
+          subnetwork:
+            valueFrom:
+              kind: GcpSubnetwork
+              name: planton-oss-e2e-gcptpuq-subnet
+              fieldPath: status.outputs.subnetwork_self_link
   deletionPolicy: DELETE

@@ -1,0 +1,40 @@
+# The second act of minimal.yaml: the same template with a new display
+# name, a patch in place. Not a scenario of its own.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpColabRuntimeTemplate
+metadata:
+  name: planton-oss-e2e-gcpcolt-minimal
+  id: planton-oss-e2e-gcpcolt-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpcolabruntimetemplate
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-second-act: minimal.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  runtimeTemplateId: e2e-colt-min-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
+  displayName: E2E minimal runtime template (renamed)
+  machineSpec:
+    machineType: e2-standard-4
+  dataPersistentDiskSpec:
+    diskType: pd-balanced
+    diskSizeGb: 50
+  networkSpec:
+    enableInternetAccess: true
+  idleTimeout: 600s
+  enableSecureBoot: true
+  softwareConfig:
+    env:
+      - name: PLANTON_E2E
+        value: "true"
+    postStartupScriptConfig:
+      postStartupScript: echo planton-e2e
+      postStartupScriptBehavior: RUN_ONCE
+  deletionPolicy: DELETE
