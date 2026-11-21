@@ -3,6 +3,15 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpdataproccluster
 spec:
+  # Proven live on both engines (2026-11-20): minimal-single-node and
+  # autoscaling each deployed, the single-node cluster's labels changed in
+  # place (ClusterController.UpdateCluster in Google's audit log) and
+  # destroyed by an identity holding only this kind's permissions manifest,
+  # with the re-plan clean. Dataproc attaches only Hyperdisk types as
+  # additional disks, and E2 machines take none, so the autoscaling scenario
+  # attaches no disk and the spec refuses other types.
+  # confidential_instance_type needs N2D/C3 capacity and stays offline-proven.
+  #
   # Composed scenarios: each installs the VPC -> subnetwork chain plus an
   # autoscaling policy from the prerequisite graph, then creates the
   # cluster. A cluster create runs ~2-4 minutes (real VMs boot); destroy
@@ -24,13 +33,6 @@ spec:
   # First contact also caught machine_type + instance_flexibility_policy
   # as API-mutually-exclusive (silent machineTypeUri drop -> perpetual
   # replacement re-plan) — now a spec CEL wall on master and worker.
-  #
-  # Awaiting re-proof: the cluster gained additional attached disks on every
-  # node role (the autoscaling scenario attaches one 50 GB pd-standard per
-  # worker), per-selection disk shapes inside the flexibility policy, and
-  # confidential_instance_type; the earlier live proof predates them.
-  # Confidential type needs N2D/C3 capacity and stays offline-proven; the next
-  # proof confirms the attached disk provisions and re-plans clean.
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 60

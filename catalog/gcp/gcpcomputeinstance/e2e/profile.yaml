@@ -3,6 +3,18 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpcomputeinstance
 spec:
+  # Proven live on both engines (2026-11-20): minimal and features each
+  # deployed, minimal's labels and metadata changed in place without a stop
+  # (setLabels and setMetadata in Google's audit log) and destroyed by an
+  # identity holding only this kind's permissions manifest, with the re-plan
+  # clean. minimal round-trips scheduling.host_error_timeout_seconds; Compute
+  # Engine refuses it on a Spot VM, so the spec refuses that shape first. The
+  # Pulumi provider reads the boot disk mid-create (compute.disks.get), and
+  # without it panics and leaves the VM outside state. debian-12's guest OS
+  # feature set grows between image releases, so features pins the current
+  # list. Managed workload identity needs a workload identity pool the test
+  # project lacks and stays offline-proven.
+  #
   # VM creates are fast (~1 min). The minimal scenario proves the
   # subnetwork chain with an ephemeral external IP; the features scenario
   # proves the composed graph live — Spot scheduling, shielded VM, a
@@ -35,13 +47,6 @@ spec:
   # cryptoKeyEncrypterDecrypter grant), and resource_manager_tags (needs
   # org-level tagKeys/tagValues — the standing org-fixture item).
   tier: 1
-  #
-  # Awaiting re-proof: the VM gained scheduling.host_error_timeout_seconds
-  # (the features scenario sets 120) and managed workload identity
-  # (workload_identity_config); the earlier live proof predates them. Workload
-  # identity needs a workload identity pool the test project does not carry,
-  # so it stays offline-proven; the next proof confirms the timeout round-
-  # trips and re-plans clean.
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 30

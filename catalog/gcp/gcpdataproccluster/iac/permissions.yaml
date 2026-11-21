@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling dataproc.googleapis.com on the target project (the Pulumi module enables the same service). disable_on_destroy is false in both modules, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling dataproc.googleapis.com on the target project (the Pulumi module enables the same service). disable_on_destroy is false in both modules, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageCluster
         permissions:
           - dataproc.clusters.create
@@ -27,23 +27,23 @@ spec:
           - dataproc.clusters.update
           - dataproc.clusters.delete
           - dataproc.operations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_dataproc_cluster on both arms -- create, read/refresh, in-place updates (labels, worker counts, lifecycle TTLs, autoscaling attachment), and destroy. Every mutation returns a long-running operation the provider polls, and unlike GKE node pools (where operations authorize on the cluster), Dataproc defines dataproc.operations.get as its own permission -- verified present in IAM's testable-permissions inventory. The VMs themselves are created by the Dataproc service agent under its own identity, so no compute.* permissions fall on the runner.
+        notes: Covers google_dataproc_cluster on both arms -- create, read/refresh, in-place updates (labels, worker counts, lifecycle TTLs, autoscaling attachment), and destroy. Every mutation returns a long-running operation the provider polls, and unlike GKE node pools (where operations authorize on the cluster), Dataproc defines dataproc.operations.get as its own permission -- verified present in IAM's testable-permissions inventory. The VMs themselves are created by the Dataproc service agent under its own identity, so no compute.* permissions fall on the runner. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: UseAutoscalingPolicy
         permissions:
           - dataproc.autoscalingPolicies.use
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: cluster_config.autoscaling_policy_uri
-        notes: Required only when cluster_config.autoscaling_policy_uri attaches a policy (the 03-cost-optimized-batch preset does) -- the Dataproc API authorizes policy attachment as use on the referenced policy, a permission distinct from managing the policy itself.
+        notes: Required only when cluster_config.autoscaling_policy_uri attaches a policy (the 03-cost-optimized-batch preset does) -- the Dataproc API authorizes policy attachment as use on the referenced policy, a permission distinct from managing the policy itself. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ActAsClusterServiceAccount
         permissions:
           - iam.serviceAccounts.actAs
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: uses_identity
-        notes: Required when cluster_config.gce_config.service_account pins a custom node identity (the 02-ha-production preset does) -- Dataproc demands actAs on that account before provisioning VMs running as it. Not needed when node identity is left to the Compute Engine default.
+        notes: Required when cluster_config.gce_config.service_account pins a custom node identity (the 02-ha-production preset does) -- Dataproc demands actAs on that account before provisioning VMs running as it. Not needed when node identity is left to the Compute Engine default. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

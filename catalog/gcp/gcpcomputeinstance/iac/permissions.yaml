@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling compute.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling compute.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageInstance
         permissions:
           - compute.instances.create
@@ -42,10 +42,10 @@ spec:
           - compute.instances.attachDisk
           - compute.instances.detachDisk
           - compute.zoneOperations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_compute_instance across its whole in-place update surface -- metadata/startup script, labels, tags, machine type, scheduling, service account, shielded config, deletion protection, NIC updates, desired_status start/stop/suspend/resume, and attached-disk changes -- plus polling the zone operation every mutation returns. GCP defines NO compute.instances.setShieldedInstanceConfig permission (verified against IAM's testable-permissions inventory); the shielded-config updater is compute.instances.updateShieldedInstanceConfig.
+        notes: Covers google_compute_instance across its whole in-place update surface -- metadata/startup script, labels, tags, machine type, scheduling, service account, shielded config, deletion protection, NIC updates, desired_status start/stop/suspend/resume, and attached-disk changes -- plus polling the zone operation every mutation returns. GCP defines NO compute.instances.setShieldedInstanceConfig permission (verified against IAM's testable-permissions inventory); the shielded-config updater is compute.instances.updateShieldedInstanceConfig. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ProvisionBootDisk
         permissions:
           - compute.disks.create
@@ -54,25 +54,25 @@ spec:
           - compute.disks.setLabels
           - compute.images.useReadOnly
           - compute.snapshots.useReadOnly
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Creating the VM with a fresh boot disk (boot_disk.image or source_snapshot via initialize_params) creates a disk from an image or snapshot; disks.use covers booting from an existing GcpComputeDisk (boot_disk.source_disk) and attaching data disks (attached_disks); disks.setLabels covers boot_disk.disk_labels. The Pulumi provider reads the new boot disk after create (compute.disks.get); refused, the provider crashes mid-create and leaves the VM outside its state (measured).
+        notes: Creating the VM with a fresh boot disk (boot_disk.image or source_snapshot via initialize_params) creates a disk from an image or snapshot; disks.use covers booting from an existing GcpComputeDisk (boot_disk.source_disk) and attaching data disks (attached_disks); disks.setLabels covers boot_disk.disk_labels. The Pulumi provider reads the new boot disk after create (compute.disks.get); refused, the provider crashes mid-create and leaves the VM outside its state (measured). Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: WireNetworking
         permissions:
           - compute.subnetworks.use
           - compute.subnetworks.useExternalIp
           - compute.addresses.use
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Placing each NIC on its VPC subnetwork requires subnetworks.use; granting an external IPv4 through an access config requires subnetworks.useExternalIp; addresses.use covers pinning reserved GcpAddress IPs (network_ip internal, access_configs.nat_ip external).
+        notes: Placing each NIC on its VPC subnetwork requires subnetworks.use; granting an external IPv4 through an access config requires subnetworks.useExternalIp; addresses.use covers pinning reserved GcpAddress IPs (network_ip internal, access_configs.nat_ip external). Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ActAsServiceAccount
         permissions:
           - iam.serviceAccounts.actAs
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: uses_identity
         condition:
           spec_field_set: service_account.email
-        notes: Required only when service_account.email attaches an identity to the VM (the 02-hardened-web-server preset does) -- GCP demands actAs on that account before provisioning a VM running as it. Not needed when the block is omitted.
+        notes: Required only when service_account.email attaches an identity to the VM (the 02-hardened-web-server preset does) -- GCP demands actAs on that account before provisioning a VM running as it. Not needed when the block is omitted. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

@@ -3,6 +3,15 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpvertexainotebook
 spec:
+  # Proven live on both engines (2026-11-20): the minimal Workbench instance
+  # deployed, its labels changed in place (NotebookService.UpdateInstance in
+  # Google's audit log) and destroyed by an identity holding only this kind's
+  # permissions manifest, with the re-plan clean. The fields added since the
+  # August proof (min_cpu_platform, enable_deletion_protection, data-disk
+  # resource policies) are API-computed when unset and re-plan clean
+  # untouched; deletion protection is not armed live (it would block the
+  # destroy) and stays offline-proven.
+  #
   # Composed scenario: VPC -> subnetwork chain before the notebook create.
   # Workbench instances take ~5-15 minutes per engine; batch runs with a
   # go test -timeout of at least 60m.
@@ -21,13 +30,6 @@ spec:
   # boot/data-disk types (need hyperdisk-capable machine series in the
   # scenario; the widened CELs carry the provider ValidateEnum evidence).
   tier: 1
-  #
-  # Awaiting re-proof: the notebook gained min_cpu_platform,
-  # enable_deletion_protection, and data-disk resource policies; the earlier
-  # live proof predates them. All three are API-computed when unset, so the
-  # next proof confirms the untouched shape re-plans clean; deletion
-  # protection is not armed live (it would block the harness's destroy) and
-  # stays offline-proven.
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 20

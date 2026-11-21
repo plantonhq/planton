@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers the two google_project_service resources enabling notebooks.googleapis.com and compute.googleapis.com on the target project. disable_on_destroy is false for both, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers the two google_project_service resources enabling notebooks.googleapis.com and compute.googleapis.com on the target project. disable_on_destroy is false for both, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageWorkbenchInstance
         permissions:
           - notebooks.instances.create
@@ -29,16 +29,16 @@ spec:
           - notebooks.instances.start
           - notebooks.instances.stop
           - notebooks.operations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Covers google_workbench_instance (Terraform) / workbench.Instance (Pulumi). GCP defines NO workbench.* permission family (verified against IAM's testable-permissions inventory) -- the v2 Workbench Instances API authorizes with the notebooks.instances.* permissions. In-place changes (labels, metadata, machine type via the gce_setup patch) authorize as notebooks.instances.update; desired_state ACTIVE/STOPPED drives start and stop; every mutation returns a long-running operation the provider polls with notebooks.operations.get. The underlying Compute Engine VM is created by the Notebooks service agent, not the caller, so the runner needs no compute.instances.* permissions -- only the Compute API enablement above."
+        notes: "Covers google_workbench_instance (Terraform) / workbench.Instance (Pulumi). GCP defines NO workbench.* permission family (verified against IAM's testable-permissions inventory) -- the v2 Workbench Instances API authorizes with the notebooks.instances.* permissions. In-place changes (labels, metadata, machine type via the gce_setup patch) authorize as notebooks.instances.update; desired_state ACTIVE/STOPPED drives start and stop; every mutation returns a long-running operation the provider polls with notebooks.operations.get. The underlying Compute Engine VM is created by the Notebooks service agent, not the caller, so the runner needs no compute.instances.* permissions -- only the Compute API enablement above. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: ActAsServiceAccount
         permissions:
           - iam.serviceAccounts.actAs
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: uses_identity
         condition:
           spec_field_set: service_account
-        notes: GCP demands actAs on the VM identity service_account pins (the 03-secure-private-notebook preset does) before provisioning a VM running as it.
+        notes: GCP demands actAs on the VM identity service_account pins (the 03-secure-private-notebook preset does) before provisioning a VM running as it. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
