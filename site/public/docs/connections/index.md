@@ -109,7 +109,7 @@ Some connections need no credential of their own because another connection alre
 
 **Best for**: Every registry a connection you already have can reach.
 
-Not every provider supports every mode. Cloud infrastructure providers (AWS, GCP, Azure) support keyless (OIDC), inline, runner-delegated, a Vault broker, and the sign-in on this machine; in the console the four cloud methods are named **Keyless**, **Stored Key**, **Runner Identity**, and **Vault Broker**, and every cloud connection also records what Planton may deploy through it (see [Cloud Providers](/docs/connections/cloud-providers#what-planton-may-deploy)). DigitalOcean and Cloudflare support inline and an exported API token. GitHub signs in as an App or as the sign-in on this machine. Container registries sign in through a connection you already trust or with stored keys. GitLab, state backends, and managed services use inline credentials.
+Not every provider supports every mode. Cloud infrastructure providers (AWS, GCP, Azure) support keyless (OIDC), inline, runner-delegated, a Vault broker, and the sign-in on this machine; in the console the four cloud methods are named **Keyless**, **Stored Key**, **Runner Identity**, and **Vault Broker**, and every cloud connection also records what Planton may deploy through it (see [Cloud Providers](/docs/connections/cloud-providers#what-planton-may-deploy)). DigitalOcean and Cloudflare connect with a stored API token, or through a runner of your own (**Runner Identity**). GitHub signs in as an App or as the sign-in on this machine. Container registries sign in through a connection you already trust or with stored keys. GitLab, state backends, and managed services use inline credentials.
 
 ## Authorization and Defaults
 

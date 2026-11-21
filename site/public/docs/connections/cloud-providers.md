@@ -108,11 +108,11 @@ Every cloud connection's page has **Verify**, and the screen after **Create** ru
 <!-- SCREENSHOT: Google Cloud connection - Verify's deployability answer
   Page: /orgs/{org}/connections/gcp/{connection} (Verify panel)
   Action: Click Verify on a keyless GCP connection whose role is missing part of its grant (for example, a permission removed from the connection's role in the Google Cloud console), then open Can't Deploy Yet
-  Focus: The "N of M GCP Kinds Can Deploy" headline, the "The Cloud Is Missing Part of This Grant" notice with Apply the Grant Again and Copy Permissions for gcloud, and one blocked kind with its missing permissions
+  Focus: The "N of M GCP Kinds Can Deploy" headline, the "This Service Account Is Missing Part of the Grant" notice with Apply the Grant Again and Copy Missing Permissions, and one blocked kind with its missing permissions
   Alt: GCP connection Verify panel showing how many catalog kinds the connection can deploy, the way to apply the grant again, and a blocked kind's missing permissions
 -->
 
-- **Can't Deploy Yet** lists the kinds the connection's grant covers that its identity can't deploy yet, each with exactly the permissions it's missing. A newer catalog may need more than the identity holds, or someone removed a permission in your cloud. Above the list, one sentence says what is missing (on Google Cloud and Azure, from the connection's Planton Deployer role; on AWS, from the role's policies), and **Apply the Grant Again** gives your cloud the whole grant once more. The missing access is one click away in the form your cloud's own tool takes it, for example **Copy Permissions for gcloud**.
+- **Can't Deploy Yet** lists the kinds the connection's grant covers that its identity can't deploy yet, each with exactly the permissions it's missing. A newer catalog may need more than the identity holds, or someone removed a permission in your cloud. Above the list, one sentence says what is missing (on Google Cloud and Azure, from the connection's Planton Deployer role; on AWS, from the role's policies), and **Apply the Grant Again** gives your cloud the whole grant once more. The missing access is one click away in the form your cloud's own tool takes it, **Copy Missing Permissions** on Google Cloud, **Copy Missing Actions** on AWS and Azure.
 - **Can Deploy** lists every kind the identity can deploy. When some of these kinds' permissions were read from their modules' source and not yet proven in a live run, a note says so.
 - **Not in This Connection's Grant** lists what you chose to leave out. It never counts against the connection; **Add These Kinds** opens the grant with them ticked.
 
@@ -145,7 +145,7 @@ AWS connections support Keyless, Stored Key (an access key pair), Runner Identit
 1. Navigate to **Connections** and click the **AWS** card under Infrastructure.
 2. **Name your connection** — choose a descriptive name like "AWS Production" or "aws-dev-sandbox". The slug is derived from the name ("AWS Production" becomes `aws-production`), because a slug is lowercase letters and digits joined by single hyphens, like my-app-2.
 3. **Choose your authentication method**:
-   - **Keyless** — Enter your account ID and region, choose what Planton may deploy, then run the AWS CLI script the console gives you, or upload the same template in the CloudFormation console. The script registers Planton's identity issuer in your account and creates a role only this connection can assume; the connection is created once AWS confirms the role trusts it. See [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections#aws).
+   - **Keyless** — Enter your account ID and region, choose what Planton may deploy, then click **Launch Stack in AWS** to build the role on AWS's own quick-create page, or run the AWS CLI script the console gives you, or upload the same template in the CloudFormation console. The script registers Planton's identity issuer in your account and creates a role only this connection can assume; the connection is created once AWS confirms the role trusts it. See [Keyless Cloud Connections](/docs/connections/keyless-cloud-connections#aws).
    - **Stored Key** — Identify the account and region, choose what Planton may deploy and attach the policies the Permissions step shows to the IAM user, then select the secrets that hold your Access Key ID and Secret Access Key (and a session token, for temporary credentials).
    - **Runner Identity** — Identify the account and region, choose what Planton may deploy, then select an existing runner or create a new one. The runner authenticates with its own AWS identity.
    - **Vault Broker** — Identify the account, choose what Planton may deploy, then point the connection at the Vault connection and secrets-engine role that issue its credentials.
@@ -252,7 +252,7 @@ For Keyless, skip the client secret: the console creates the app registration fo
 
 ## DigitalOcean
 
-DigitalOcean connections use an API token to authenticate. Optionally, you can provide Spaces credentials for object storage operations.
+DigitalOcean connections use an API token to authenticate, or **Runner Identity**: a runner of your own that holds the token. Optionally, you can provide Spaces credentials for object storage operations.
 
 ### What You Need
 
@@ -275,7 +275,7 @@ DIGITALOCEAN_TOKEN=dop_v1_... planton connect digitalocean --region nyc3
 
 ## Cloudflare
 
-Cloudflare connections support two authentication schemes. The recommended approach uses a scoped API token; the legacy approach uses a global API key with your account email.
+Cloudflare connections can also use **Runner Identity** (a runner of your own that holds the credential). Stored in Planton, they support two authentication schemes. The recommended approach uses a scoped API token; the legacy approach uses a global API key with your account email.
 
 ### What You Need (Recommended)
 

@@ -85,7 +85,7 @@ planton variable get default-aws-region
 Create a file named `aws-connection.yaml`. This manifest demonstrates both reference types:
 
 ```yaml
-apiVersion: connect.planton.ai/v1
+apiVersion: connect.planton.ai/v1alpha1
 kind: AwsProviderConnection
 metadata:
   name: my-aws-connection
@@ -149,7 +149,8 @@ planton secret versions aws-access-key-id
 If you need to roll back to a previous version:
 
 ```bash
-planton secret rollback aws-access-key-id --version 1
+planton secret history aws-access-key-id
+planton secret rollback aws-access-key-id --to-version 1
 ```
 
 The connection manifest itself does not change during rotation. Because it references the secret by slug, the rotation is transparent to the resource.

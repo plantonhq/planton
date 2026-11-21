@@ -143,7 +143,7 @@ Use `planton secret set` with `--string`, reading the JSON key file from standar
 planton secret set gcp-sa-key --string < ./sa-key.json
 ```
 
-After the secret is stored in config-manager, delete the local key file so it does not remain on disk:
+After the secret is stored in Planton, delete the local key file so it does not remain on disk:
 
 ```bash
 rm sa-key.json
@@ -154,7 +154,7 @@ rm sa-key.json
 Create a file named `gcp-connection.yaml` with the following content:
 
 ```yaml
-apiVersion: connect.planton.ai/v1
+apiVersion: connect.planton.ai/v1alpha1
 kind: GcpProviderConnection
 metadata:
   name: my-gcp-connection
@@ -175,7 +175,7 @@ Replace these values with your own:
 
 A few things to note about the GCP connection spec:
 
-- GCP's stored-key mode requires only **one secret reference** (`service_account_key`). The service account JSON key bundles the project ID, client email, and private key into a single file, so there are no separate fields for project, region, or individual credentials.
+- GCP's stored-key mode requires only **one secret reference** (`service_account_key`). The service account JSON key bundles the project ID, client email, and private key into a single file, so there are no fields for region or individual credentials; the optional `project_id` names the connection's home project.
 - **`auth_mode`** defaults to `inline` when omitted. Including it explicitly (`auth_mode: inline`) is also fine, but not required.
 - The IaC provider extracts everything it needs (project ID, credentials) from the key at execution time.
 
@@ -185,7 +185,7 @@ A few things to note about the GCP connection spec:
 planton apply -f gcp-connection.yaml
 ```
 
-Planton validates that the referenced secret exists in your organization's config-manager and creates the connection. A manifest without `grant` is refused with a message that says how to add it.
+Planton creates the connection; the secret it references is read when the connection is used, so a missing one shows at Verify. A manifest without `grant` is refused with a message that says how to add it.
 
 ### Step 7: Verify the Connection
 
@@ -207,7 +207,7 @@ This approach requires a running Planton Runner. If you do not have one yet, the
 
 ### Step 1: Create a Runner Token
 
-Create a runner token from the console's Runners area. The token is a named, revocable secret that authorizes runners to join your organization — it is never a runner's identity. A runner started with the token enrolls itself with the control plane on arrival and receives its own identity (a dedicated service account, an API key, and the mutual-TLS material for the runner-to-control-plane tunnel) — these are separate from GCP credentials.
+Create a runner token from the console's Runners area. The token is a named, revocable secret that authorizes runners to join your organization — it is never a runner's identity. A runner started with the token enrolls itself with the control plane on arrival and receives its own identity (a dedicated service account, an API key, and the certificate for its mutual-TLS connection to Planton) — these are separate from GCP credentials.
 
 ### Step 2: Deploy the Runner with GCP IAM Bindings
 
@@ -223,14 +223,14 @@ The runner uses GCP's Application Default Credentials, so any method that makes 
 
 ### Step 3: Start the Runner
 
-Start the runner with your runner token and a name (for example, `my-gcp-runner`). On first start it enrolls itself — the registration appears in your Runners list at that moment — then establishes an outbound mTLS tunnel to the Planton control plane. It is now ready to receive and execute operations.
+Start the runner with your runner token and a name (for example, `my-gcp-runner`). On first start it enrolls itself — the registration appears in your Runners list at that moment — then opens an outbound connection to Planton on port 443, secured with mutual TLS. It is now ready to receive and execute operations.
 
 ### Step 4: Write the Connection Manifest
 
 Create a file named `gcp-runner-connection.yaml`:
 
 ```yaml
-apiVersion: connect.planton.ai/v1
+apiVersion: connect.planton.ai/v1alpha1
 kind: GcpProviderConnection
 metadata:
   name: gcp-runner

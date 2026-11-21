@@ -100,7 +100,9 @@ Signed in to planton.ai, Planton Desktop finds the gcloud, AWS CLI or Azure CLI 
 ### What You Need
 
 - Your 12-digit AWS account ID and a region.
-- A shell with the AWS CLI signed in to that account, with permission to manage IAM OIDC identity providers, roles, and managed policies. The console notes that AWS CloudShell works. The script also uses `openssl` when it registers the identity provider for the first time. Or, instead of the script, permission to create a CloudFormation stack that creates the same.
+- One of these, in that account:
+  - permission to create a CloudFormation stack that creates IAM roles and a Lambda function, for **Launch Stack in AWS**;
+  - or a shell with the AWS CLI signed in, with permission to manage IAM OIDC identity providers, roles, and managed policies, for the setup script. AWS CloudShell works. The script also uses `openssl` when it registers the identity provider for the first time.
 
 ### Steps in the Console
 
@@ -109,18 +111,24 @@ Signed in to planton.ai, Planton Desktop finds the gcloud, AWS CLI or Azure CLI 
 3. Choose **Keyless**.
 4. **Account**: enter the **AWS Account ID** and the **Default Region**.
 5. **Permissions**: choose what Planton may deploy. **Everything Planton Can Deploy** (recommended) covers every AWS kind in Planton's catalog and what Planton itself uses the connection for; **Only What I Pick** shelves the kinds by AWS's own service groups for you to tick. **Organization Access** (AWS Organizations: its accounts and organizational units) and **Access Granting** (IAM users, roles, policies and keys across the account) stay off unless you turn them on; each says how many kinds need it. **Show the Policies** shows exactly what the role will hold.
-6. **Set Up**: build the role in your account in one of two ways:
-   - **Run the Setup Script** the step shows, with the AWS CLI signed in to that account.
-   - **Prefer CloudFormation? Show the Template**: download the template, then in the CloudFormation console choose **Create stack**, **Upload a template file**. It creates exactly what the script does; run one of the two.
+6. **Set Up**: build the role in your account.
+   - **Launch Stack in AWS** (the footer's button) opens AWS's own quick-create page with this connection's stack filled in. The step lists what AWS's page will ask, in order:
+     1. Sign in to the account you entered. The stack runs only there.
+     2. Tick **I acknowledge that AWS CloudFormation might create IAM resources with custom names.**
+     3. Press **Create Stack**.
 
-   Then click **Check the Trust**. Planton asks AWS whether the role trusts this connection; AWS takes a few seconds to accept a new role and its identity provider, and the step waits for it. Once AWS says yes, **Next** opens. If you need to hand the setup to someone who administers the account, **Create It Now, Finish the Trust Later** creates the connection, and its page keeps the same setup and its check until the trust works.
+     Planton then asks AWS whether the role trusts this connection, and moves on by itself once AWS says yes, usually within two minutes. If it takes longer than three, the step names the usual causes (signed in to another account, Create Stack not pressed, the stack rolled back) and opens the stack's own page in AWS.
+   - **Prefer to Run It Yourself? Show the Setup Script**: run the script the step shows, with the AWS CLI signed in to that account, then click **Check the Trust**.
+   - **Prefer the CloudFormation Console? Show the Template** (under the script): download the template, then in the CloudFormation console choose **Create stack**, **Upload a template file**. It builds exactly what **Launch Stack in AWS** builds. The stack and the script end with the same identity provider, role and policies; the stack also keeps a small Lambda function of its own, which registers or adopts the identity provider. Use one of the three.
+
+   If someone else administers the account, **Create It Now, Finish the Trust Later** creates the connection, and its page keeps the same setup and its check until the trust works. On a self-hosted Planton that doesn't host the templates, the step offers the script and the template only.
 7. **Review & Create**: click **Create**. The connection is created with the role the trust admits, and the next screen runs its first Verify and says what it can deploy.
 
 <!-- SCREENSHOT: AWS keyless setup - the Set Up step
   Page: /orgs/{org}/connections (AWS connect wizard, Set Up step)
   Action: Choose Keyless, enter the account ID and region, keep Everything Planton Can Deploy, open the Set Up step
-  Focus: The "Set Up With the Script" notice, the Run the Setup Script block with its copy button, Prefer CloudFormation? Show the Template, Check the Trust in the footer, and Create It Now, Finish the Trust Later
-  Alt: AWS keyless connection wizard showing the setup script, the CloudFormation template option, and the Check the Trust button
+  Focus: What the Setup Builds, On AWS's Page with its three asks, Launch Stack in AWS in the footer, and Create It Now, Finish the Trust Later
+  Alt: AWS keyless connection wizard showing what the stack builds, what AWS's page will ask, and the Launch Stack in AWS button
 -->
 
 ### What the Script Does
@@ -144,7 +152,7 @@ A second connection in the same account, for example `acme-aws-staging`, gets it
 ### What You Need
 
 - Your project's ID, for example `acme-prod`. Planton looks up the project number itself.
-- For **Set It Up for Me**, a Google account that administers the project (Role Administrator, Project IAM Admin, Workload Identity Pool Admin and Service Account Admin, or Owner). Planton checks that the account may make every change before it changes anything. With Organization Access, the organization's Organization Role Administrator and Organization Administrator roles too.
+- For **Set It Up for Me**, a Google account that administers the project (Role Administrator, Project IAM Admin, Workload Identity Pool Admin, Service Account Admin and Service Usage Admin, or Owner). Planton checks that the account may make every change before it changes anything. With Organization Access, the organization's Organization Role Administrator and Organization Administrator roles too, and Billing Account Administrator on the project's billing account.
 - For the script, a shell with `gcloud` signed in with the same permissions in the project (Cloud Shell works).
 
 ### Steps in the Console
@@ -152,13 +160,13 @@ A second connection in the same account, for example `acme-aws-staging`, gets it
 1. Open **Connections** and click the **GCP** card under Infrastructure.
 2. **Name** the connection, for example `acme-gcp-prod`.
 3. Choose **Keyless**.
-4. **Project**: enter the **Project ID** (`acme-prod`). The console suggests the **Service Account** `planton-provisioner@acme-prod.iam.gserviceaccount.com`, which the setup creates if it does not exist; you can name an existing one instead. If you already run a workload identity pool, click **Already have a Workload Identity provider?** and paste its full resource name.
+4. **Project**: enter the **Project ID** (`acme-prod`). The console suggests the **Service Account** `planton-provisioner@acme-prod.iam.gserviceaccount.com`, which the setup creates if it does not exist; you can name an existing one instead. If you already run a workload identity pool, click **Use My Own Workload Identity Provider** and paste its full resource name.
 5. **Permissions**: choose what Planton may deploy, as on AWS: **Everything Planton Can Deploy** (recommended) or **Only What I Pick**, with **Organization Access** (folders, the organization and billing accounts) and **Access Granting** off unless you turn them on. **Show the Role** shows the custom role the setup creates.
-6. **Set Up**: build the trust in your project in one of two ways:
+6. **Set Up**: build the trust in your project in one of two ways (or hand it to someone else, below):
    - **Set It Up for Me**: sign in with a Google account that administers the project. Planton uses the one-time consent to turn on the APIs the trust and Planton need, create the pool, the provider, the service account and the binding, and create this connection's own custom role and grant it to the service account, then discards the token. No refresh token is minted and nothing about your Google access is stored.
    - **Prefer to Run It Yourself? Show the Setup Script**: run the script, then paste the line it prints into **The Line the Script Printed** and click **Check the Trust**.
 
-   Either way, Planton then asks Google whether it trusts this connection. A new provider can take a minute or two to spread inside Google, and the step waits for it. If a GCP connection with the same name already exists, the step says so before anything is built and offers **Change the Name**.
+   Either way, Planton then asks Google whether it trusts this connection. A new provider can take a minute or two to spread inside Google, and the step waits for it. If a GCP connection with the same name already exists, the step says so before anything is built and offers **Change the Name**. If someone else administers the project, **Create It Now, Finish the Trust Later** asks for the project's number, creates the connection, and its page keeps the same setup and its check until the trust works.
 7. **Review & Create**: click **Create**. The connection is created with the provider the trust admits, and the next screen runs its first Verify and says what it can deploy.
 
 <!-- SCREENSHOT: Google Cloud keyless setup - the Set Up step

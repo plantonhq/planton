@@ -155,7 +155,7 @@ Before deploying infrastructure, connect your cloud provider account. This gives
 
    Every method has a **Permissions** step: keep **Everything Planton Can Deploy**, or pick the kinds you use.
 5. **Review & Create** — click **Create**. The next screen runs the connection's first Verify and says what it can deploy.
-6. Click **Set Up Organization Access**, keep **Authorize for all environments** and **Set as organization default** checked, and click **Complete Setup**.
+6. Click **Choose Environments and Default**, keep **Authorize for all environments** and **Set as organization default** checked, and click **Complete Setup**.
 
 <!-- SCREENSHOT: AWS connection wizard - Permissions step
   Page: /orgs/{org}/connections (AWS connect wizard, Permissions step)

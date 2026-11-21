@@ -129,7 +129,7 @@ rm sa-key.json
 Create a file named `container-registry.yaml`:
 
 ```yaml
-apiVersion: connect.planton.ai/v1
+apiVersion: connect.planton.ai/v1alpha1
 kind: ContainerRegistryConnection
 metadata:
   name: gcp-registry
@@ -240,7 +240,7 @@ planton secret set ecr-secret-key '<secret-access-key>'
 Create a file named `container-registry.yaml`:
 
 ```yaml
-apiVersion: connect.planton.ai/v1
+apiVersion: connect.planton.ai/v1alpha1
 kind: ContainerRegistryConnection
 metadata:
   name: aws-registry
@@ -297,7 +297,7 @@ planton secret set ghcr-pat '<personal-access-token>'
 Create a file named `container-registry.yaml`:
 
 ```yaml
-apiVersion: connect.planton.ai/v1
+apiVersion: connect.planton.ai/v1alpha1
 kind: ContainerRegistryConnection
 metadata:
   name: github-registry
