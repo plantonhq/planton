@@ -332,6 +332,11 @@ func newLiveReaders(ctx context.Context, t *testing.T, opts []option.ClientOptio
 			}
 			return !role.Deleted, nil
 		},
+		// A deleted cluster's node pools stay in the index for a while after
+		// the cluster; both the zonal and the location path read under v1.
+		"container.googleapis.com/Cluster":                 restReader(rest, "https://container.googleapis.com/v1/"),
+		"container.googleapis.com/NodePool":                restReader(rest, "https://container.googleapis.com/v1/"),
+		"logging.googleapis.com/LogSink":                   restReader(rest, "https://logging.googleapis.com/v2/"),
 		"binaryauthorization.googleapis.com/Attestor":      restReader(rest, "https://binaryauthorization.googleapis.com/v1/"),
 		"securitycenter.googleapis.com/NotificationConfig": restReader(rest, "https://securitycenter.googleapis.com/v2/"),
 		"secretmanager.googleapis.com/Secret":              restReader(rest, "https://secretmanager.googleapis.com/v1/"),
