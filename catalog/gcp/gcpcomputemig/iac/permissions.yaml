@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling compute.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling compute.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageInstanceTemplate
         permissions:
           - compute.instanceTemplates.create
@@ -27,10 +27,10 @@ spec:
           - compute.instanceTemplates.delete
           - compute.instanceTemplates.useReadOnly
           - compute.networks.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_compute_instance_template and google_compute_region_instance_template (the module picks one by zone vs region); templates are immutable, so updates are create-new-then-delete-old, never an update permission. GCP defines NO compute.regionInstanceTemplates permissions (verified against IAM's testable-permissions inventory) -- regional templates authorize under these same unqualified names. useReadOnly lets the group manager reference the template. Creating a template reads the network its interface names (compute.networks.get; Google refuses the create without it, measured).
+        notes: Covers google_compute_instance_template and google_compute_region_instance_template (the module picks one by zone vs region); templates are immutable, so updates are create-new-then-delete-old, never an update permission. GCP defines NO compute.regionInstanceTemplates permissions (verified against IAM's testable-permissions inventory) -- regional templates authorize under these same unqualified names. useReadOnly lets the group manager reference the template. Creating a template reads the network its interface names (compute.networks.get; Google refuses the create without it, measured). Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageGroupManager
         permissions:
           - compute.instanceGroupManagers.create
@@ -45,10 +45,10 @@ spec:
           - compute.instances.delete
           - compute.zoneOperations.get
           - compute.regionOperations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_compute_instance_group_manager / _region_instance_group_manager plus every sub-resource that authorizes THROUGH the manager -- per-instance configs (google_compute_per_instance_config / _region_) and resize requests (google_compute_resize_request / _region_) all check instanceGroupManagers.update, since GCP defines no compute.resizeRequests or per-instance-config permissions (verified against the IAM inventory; mirrors how node pools authorize under container.clusters.update). Google creates and deletes the group the manager runs as the caller (compute.instanceGroups.create and .delete, measured). The manager creates and deletes VMs on the caller's behalf, so instances.create/delete are checked on sizing changes; zone/regionOperations.get polls the operations every mutation returns.
+        notes: Covers google_compute_instance_group_manager / _region_instance_group_manager plus every sub-resource that authorizes THROUGH the manager -- per-instance configs (google_compute_per_instance_config / _region_) and resize requests (google_compute_resize_request / _region_) all check instanceGroupManagers.update, since GCP defines no compute.resizeRequests or per-instance-config permissions (verified against the IAM inventory; mirrors how node pools authorize under container.clusters.update). Google creates and deletes the group the manager runs as the caller (compute.instanceGroups.create and .delete, measured). The manager creates and deletes VMs on the caller's behalf, so instances.create/delete are checked on sizing changes; zone/regionOperations.get polls the operations every mutation returns. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: CreateGroupVms
         permissions:
           - compute.disks.create
@@ -56,10 +56,10 @@ spec:
           - compute.subnetworks.use
           - compute.instances.setLabels
           - compute.instances.setMetadata
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Creating a group manager, Google checks that the caller could create the template's VMs itself -- their boot disks from the template's image, their NICs on the network's subnetwork, the labels the module puts on every template, and metadata, which Google writes onto every group VM (its instance-template key) even when the template sets none (Google refuses the create without compute.disks.create and compute.instances.setMetadata, measured). instances.create sits in ManageGroupManager.
+        notes: Creating a group manager, Google checks that the caller could create the template's VMs itself -- their boot disks from the template's image, their NICs on the network's subnetwork, the labels the module puts on every template, and metadata, which Google writes onto every group VM (its instance-template key) even when the template sets none (Google refuses the create without compute.disks.create and compute.instances.setMetadata, measured). instances.create sits in ManageGroupManager. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: CreateGroupVmsWithTags
         permissions:
           - compute.instances.setTags
@@ -84,21 +84,21 @@ spec:
           - compute.autoscalers.get
           - compute.autoscalers.update
           - compute.autoscalers.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: autoscaler
-        notes: Required only when spec.autoscaler is set (google_compute_autoscaler / _region_autoscaler). GCP defines NO compute.regionAutoscalers permissions (verified against the IAM inventory) -- regional autoscalers authorize under these same names.
+        notes: Required only when spec.autoscaler is set (google_compute_autoscaler / _region_autoscaler). GCP defines NO compute.regionAutoscalers permissions (verified against the IAM inventory) -- regional autoscalers authorize under these same names. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: UseHealthCheck
         permissions:
           - compute.healthChecks.use
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: auto_healing.health_check
-        notes: Required only when auto_healing references a health check by self link -- Google checks compute.healthChecks.use, not the read-only grant, when the group manager wires auto-healing (measured).
+        notes: Required only when auto_healing references a health check by self link -- Google checks compute.healthChecks.use, not the read-only grant, when the group manager wires auto-healing (measured). Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ActAsServiceAccount
         permissions:
           - iam.serviceAccounts.actAs

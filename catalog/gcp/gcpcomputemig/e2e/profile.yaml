@@ -3,6 +3,18 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpcomputemig
 spec:
+  # Proven live on both engines (2026-11-20): minimal and regional-autoscaled
+  # each deployed, the zonal group's target size changed in place
+  # (instanceGroupManagers.resize in Google's audit log) and destroyed by an
+  # identity holding only this kind's permissions manifest, with the re-plan
+  # clean; the regional template round-trips
+  # scheduling.host_error_timeout_seconds. Google creates the group's VMs, and
+  # creates and deletes the group itself, as the caller, so the manifest
+  # carries the VM-creation permissions, instanceGroups.create and .delete,
+  # and healthChecks.use for auto-healing. The template tags and service-
+  # account groups stay derived (no scenario sets them); managed workload
+  # identity needs a pool and stays offline-proven.
+  #
   # Two scenarios: minimal (zonal, ONE fixed e2-micro on the VPC fixture
   # — the template->manager reference link and the instance_group output
   # on the cheapest footprint) and regional-autoscaled (the production
@@ -34,13 +46,6 @@ spec:
   #     arms need multi-apply choreography the framework does not model
   #     yet.
   tier: 1
-  #
-  # Awaiting re-proof: both templates gained
-  # scheduling.host_error_timeout_seconds (the regional-autoscaled scenario
-  # sets 120) and managed workload identity; the earlier live proof predates
-  # them. Workload identity stays offline-proven (needs a pool); the next
-  # proof confirms the timeout round-trips on the regional template and re-
-  # plans clean.
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 45
