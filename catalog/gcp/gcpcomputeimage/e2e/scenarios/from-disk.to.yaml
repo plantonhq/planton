@@ -26,8 +26,5 @@ spec:
       kind: GcpComputeDisk
       name: planton-oss-e2e-gcpimg-disk
       fieldPath: status.outputs.self_link
-  guestOsFeatures:
-    - UEFI_COMPATIBLE
-    - GVNIC
   labels:
     team: platform-e2e

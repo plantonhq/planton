@@ -19,4 +19,4 @@ Encrypt an image with a customer-managed key that Cloud KMS Autokey created for 
 | Field | Default | Why Change |
 |-------|---------|------------|
 | `kmsKey` | a `GcpKmsKeyHandle` reference | A `GcpKmsKey` you manage. The key must be in the image's storage location. |
-| `sourceImage` | Debian 12 family | Your source. |
+| `sourceImage` | A named Debian 12 image | Your source, named itself rather than by family. |

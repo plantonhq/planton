@@ -68,7 +68,7 @@ spec:
 | `spec.dataPersistentDiskSpec` | `GcpColabRuntimeTemplateDataPersistentDiskSpec` |  |  |  |
 | `spec.dataPersistentDiskSpec.diskType` | `string` |  |  |  |
 | `spec.dataPersistentDiskSpec.diskSizeGb` | `int64` |  |  |  |
-| `spec.networkSpec` | `GcpColabRuntimeTemplateNetworkSpec` |  |  |  |
+| `spec.networkSpec` | `GcpColabRuntimeTemplateNetworkSpec` | yes |  |  |
 | `spec.networkSpec.enableInternetAccess` | `bool` |  |  |  |
 | `spec.networkSpec.network` | `string \| valueFrom` |  |  | GcpVpcNetwork (`status.outputs.network_id`) |
 | `spec.networkSpec.subnetwork` | `string \| valueFrom` |  |  | GcpSubnetwork (`status.outputs.subnetwork_self_link`) |
@@ -207,28 +207,33 @@ Disk size in GB, 10 to 65536. Needs disk_type.
 
 ### spec.networkSpec
 
-`GcpColabRuntimeTemplateNetworkSpec`
+`GcpColabRuntimeTemplateNetworkSpec` · required
 
-The network the runtime joins. Omit for Google's default network with
-internet access.
+The network the runtime joins. Required: a template that sends no
+network spec has no internet access, and Google then refuses it unless
+it names both a network and a subnetwork ("Both [networkSpec.network]
+and [networkSpec.subnetwork] fields must be provided if Internet Access
+is disabled"). Turn internet access on, or name both.
 
-- rule: a network_spec without internet access must name a subnetwork: Google's provider never sends enable_internet_access false on its own, so the runtimes would keep a public internet path
+- rule: {"required":true}
+- rule: a network_spec without internet access must name both a network and a subnetwork: Google refuses a private template that leaves either out
 
 ### spec.networkSpec.enableInternetAccess
 
 `bool`
 
 Give runtimes a public internet path. Turn off for runtimes that must
-stay private; then name the subnetwork, which needs Private Google
-Access.
+stay private; then name the network and the subnetwork, which needs
+Private Google Access.
 
 ### spec.networkSpec.network
 
 `string | valueFrom`
 
 The VPC network: a GcpVpcNetwork reference or a literal
-projects/{project}/global/networks/{name}. Unset: the project's
-default network.
+projects/{project}/global/networks/{name}. Unset: the project's network
+named "default", which many organizations never create -- in a project
+without one, Google refuses the template, so name a network.
 
 - references: GcpVpcNetwork (`status.outputs.network_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpVpcNetwork, name: <that resource's name>, fieldPath: status.outputs.network_id}} -- a bare string does not parse

@@ -64,7 +64,7 @@ None: an empty spec is a zero-baseline reservation in `US`.
 | `reservationName` | `string` | `metadata.name` | Lowercase letters, digits, dashes; starts with a letter, at most 64; not `none`. Immutable. |
 | `edition` | `string` | Google's choice | `STANDARD`, `ENTERPRISE`, `ENTERPRISE_PLUS`. Immutable. |
 | `autoscaleMaxSlots` | `int64` | off | Slots autoscaling may add above the baseline. |
-| `ignoreIdleSlots` | `bool` | `false` | `true` caps queries at this reservation's own slots. |
+| `ignoreIdleSlots` | `bool` | `false` | `true` caps queries at this reservation's own slots. Required `true` on a `STANDARD` reservation, which Google never lets share idle slots. |
 | `concurrency` | `int64` | automatic | Soft limit on concurrent queries. |
 | `reservationGroup` | `StringValueOrRef` | none | A `GcpBigQueryReservationGroup` reference. |
 | `secondaryLocation` | `string` | none | Managed disaster recovery replica (Enterprise Plus). |

@@ -60,7 +60,7 @@ planton apply -f colab-runtime-template.yaml
 | `labels` | `map<string,string>` | none | Merged under the platform attribution labels. A change replaces the template. |
 | `machineSpec` | `object` | Google default | `machineType`, `acceleratorType`, `acceleratorCount`. Immutable. |
 | `dataPersistentDiskSpec` | `object` | Google default | `diskType` (`pd-standard`, `pd-balanced`, `pd-ssd`, `pd-extreme`), `diskSizeGb` (10-65536). Immutable. |
-| `networkSpec` | `object` | default network | `enableInternetAccess`, `network` (`GcpVpcNetwork` ref), `subnetwork` (`GcpSubnetwork` ref). Immutable. |
+| `networkSpec` | `object` | required | `enableInternetAccess`, or both `network` (`GcpVpcNetwork` ref) and `subnetwork` (`GcpSubnetwork` ref). Google refuses a template with neither. Immutable. |
 | `idleTimeout` | `string` | Google default | Seconds ending in `s`; `0s` disables, otherwise 600s-86400s. Immutable. |
 | `eucDisabled` | `bool` | `false` | Block user credentials inside the runtime. Immutable. |
 | `enableSecureBoot` | `bool` | `false` | Shielded VM Secure Boot. Immutable. |

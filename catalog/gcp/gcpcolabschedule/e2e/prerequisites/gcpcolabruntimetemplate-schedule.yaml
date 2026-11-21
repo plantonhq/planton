@@ -18,4 +18,16 @@ spec:
   runtimeTemplateId: pln-e2e-cols-${E2E_RUN_ID}
   machineSpec:
     machineType: e2-standard-4
+  networkSpec:
+    enableInternetAccess: true
+    network:
+      valueFrom:
+        kind: GcpVpcNetwork
+        name: planton-oss-e2e-gcpcols-vpc
+        fieldPath: status.outputs.network_id
+    subnetwork:
+      valueFrom:
+        kind: GcpSubnetwork
+        name: planton-oss-e2e-gcpcols-subnet
+        fieldPath: status.outputs.subnetwork_self_link
   deletionPolicy: DELETE

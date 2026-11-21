@@ -15,6 +15,7 @@ metadata:
     e2e-catalog-kind: gcpcolabruntimetemplate
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpcolabruntimetemplate/e2e/prerequisites/gcpvpcnetwork-gcpcolt.yaml,catalog/gcp/gcpcolabruntimetemplate/e2e/prerequisites/gcpsubnetwork-gcpcolt.yaml"
     planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the in-place update: the display name
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
   tags:
@@ -30,6 +31,16 @@ spec:
     diskSizeGb: 50
   networkSpec:
     enableInternetAccess: true
+    network:
+      valueFrom:
+        kind: GcpVpcNetwork
+        name: planton-oss-e2e-gcpcolt-vpc
+        fieldPath: status.outputs.network_id
+    subnetwork:
+      valueFrom:
+        kind: GcpSubnetwork
+        name: planton-oss-e2e-gcpcolt-subnet
+        fieldPath: status.outputs.subnetwork_self_link
   idleTimeout: 600s
   enableSecureBoot: true
   softwareConfig:

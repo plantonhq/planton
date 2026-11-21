@@ -165,8 +165,10 @@ Immutable.
 
 Source: an image to copy, referenced as another GcpComputeImage (its
 self_link) or a literal image self link (e.g.
-"projects/debian-cloud/global/images/family/debian-12" for a public
-image). Exactly one source. Immutable.
+"projects/debian-cloud/global/images/debian-12-bookworm-v20261117" for
+a public image). Name the image itself, never an image family: Google
+records the image a family resolved to, so a family path would plan a
+replacement on every apply. Exactly one source. Immutable.
 
 - references: GcpComputeImage (`status.outputs.self_link`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpComputeImage, name: <that resource's name>, fieldPath: status.outputs.self_link}} -- a bare string does not parse
@@ -338,7 +340,10 @@ the provider accepts: "UEFI_COMPATIBLE", "SECURE_BOOT", "GVNIC",
 "SEV_LIVE_MIGRATABLE", "SEV_LIVE_MIGRATABLE_V2", "SNP_SVSM_CAPABLE",
 "TDX_CAPABLE", "IDPF", "MULTI_IP_SUBNET", "SUSPEND_RESUME_COMPATIBLE",
 "WINDOWS". See "Enabling guest operating system features" in the
-Compute Engine docs. Unset inherits the source's features. Immutable.
+Compute Engine docs. Unset inherits the source's features. Google adds
+the source's own features to whatever is listed, so a list that leaves
+any of them out plans a replacement on every apply: list the full set
+the image ends up with, or leave it unset. Immutable.
 
 - rule: {"repeated":{"unique":true,"items":{"string":{"in":["UEFI_COMPATIBLE","SECURE_BOOT","GVNIC","VIRTIO_SCSI_MULTIQUEUE","SEV_CAPABLE","SEV_SNP_CAPABLE","SEV_LIVE_MIGRATABLE","SEV_LIVE_MIGRATABLE_V2","SNP_SVSM_CAPABLE","TDX_CAPABLE","IDPF","MULTI_IP_SUBNET","SUSPEND_RESUME_COMPATIBLE","WINDOWS"]}}}}
 
@@ -491,6 +496,7 @@ Deletion policy -- what happens when this resource is destroyed:
 ## Validation Rules
 
 - `image_exactly_one_source`: an image is built from exactly one source: source_disk, source_image, source_snapshot, or raw_disk
+- `source_image_not_a_family`: source_image must name an image, not an image family: Google stores the image the family resolved to, so a family path plans a replacement on every apply -- name the family's current image (gcloud compute images describe-from-family)
 - `source_disk_encryption_requires_source_disk`: source_disk_encryption is only valid together with source_disk
 - `source_image_encryption_requires_source_image`: source_image_encryption is only valid together with source_image
 - `source_snapshot_encryption_requires_source_snapshot`: source_snapshot_encryption is only valid together with source_snapshot

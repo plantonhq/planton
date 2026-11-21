@@ -20,7 +20,7 @@ A runtime bills while it runs, idle or not. `idleTimeout` (seconds ending in `s`
 
 ## Network posture
 
-With no `networkSpec`, runtimes join the default network with internet access. For private runtimes, reference a `GcpVpcNetwork` and `GcpSubnetwork` and set `enableInternetAccess: false`; the subnetwork then needs Private Google Access (or Cloud NAT) for Google APIs and package installs. A `networkSpec` without internet access must name the subnetwork: Google's provider never sends `enableInternetAccess: false` on its own, so a block naming nothing would leave runtimes on the public internet, and the spec refuses it. The template does not live in that network -- the references say which network its runtimes join. `networkTags` let VPC firewall rules target notebook machines.
+A template must say how its runtimes reach the network. Turn on `enableInternetAccess` for runtimes on Google's network with a public path; for private runtimes, reference a `GcpVpcNetwork` and a `GcpSubnetwork` (with Private Google Access) and leave internet access off. A template that sends no network spec has no internet access, and Google refuses it unless it names both a network and a subnetwork, so the spec requires the block. A private subnetwork needs Private Google Access (or Cloud NAT) for Google APIs and package installs. The template does not live in that network -- the references say which network its runtimes join. `networkTags` let VPC firewall rules target notebook machines.
 
 ## Credentials and encryption
 

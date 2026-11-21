@@ -44,8 +44,10 @@ variable "spec" {
 
     # Source: an image to copy, referenced as another GcpComputeImage (its
     # self_link) or a literal image self link (e.g.
-    # "projects/debian-cloud/global/images/family/debian-12" for a public
-    # image). Exactly one source. Immutable.
+    # "projects/debian-cloud/global/images/debian-12-bookworm-v20261117" for
+    # a public image). Name the image itself, never an image family: Google
+    # records the image a family resolved to, so a family path would plan a
+    # replacement on every apply. Exactly one source. Immutable.
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     source_image = optional(string, "")
 
@@ -142,7 +144,10 @@ variable "spec" {
     # "SEV_LIVE_MIGRATABLE", "SEV_LIVE_MIGRATABLE_V2", "SNP_SVSM_CAPABLE",
     # "TDX_CAPABLE", "IDPF", "MULTI_IP_SUBNET", "SUSPEND_RESUME_COMPATIBLE",
     # "WINDOWS". See "Enabling guest operating system features" in the
-    # Compute Engine docs. Unset inherits the source's features. Immutable.
+    # Compute Engine docs. Unset inherits the source's features. Google adds
+    # the source's own features to whatever is listed, so a list that leaves
+    # any of them out plans a replacement on every apply: list the full set
+    # the image ends up with, or leave it unset. Immutable.
     guest_os_features = optional(list(string), [])
 
     # License URIs the image carries, e.g. a Windows Server or SQL Server

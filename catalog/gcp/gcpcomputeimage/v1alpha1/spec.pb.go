@@ -73,8 +73,10 @@ type GcpComputeImageSpec struct {
 	SourceDisk *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=source_disk,json=sourceDisk,proto3" json:"source_disk,omitempty"`
 	// Source: an image to copy, referenced as another GcpComputeImage (its
 	// self_link) or a literal image self link (e.g.
-	// "projects/debian-cloud/global/images/family/debian-12" for a public
-	// image). Exactly one source. Immutable.
+	// "projects/debian-cloud/global/images/debian-12-bookworm-v20261117" for
+	// a public image). Name the image itself, never an image family: Google
+	// records the image a family resolved to, so a family path would plan a
+	// replacement on every apply. Exactly one source. Immutable.
 	SourceImage *v1.StringValueOrRef `protobuf:"bytes,6,opt,name=source_image,json=sourceImage,proto3" json:"source_image,omitempty"`
 	// Source: a snapshot to image (name or self link). Exactly one source.
 	// Immutable.
@@ -115,7 +117,10 @@ type GcpComputeImageSpec struct {
 	// "SEV_LIVE_MIGRATABLE", "SEV_LIVE_MIGRATABLE_V2", "SNP_SVSM_CAPABLE",
 	// "TDX_CAPABLE", "IDPF", "MULTI_IP_SUBNET", "SUSPEND_RESUME_COMPATIBLE",
 	// "WINDOWS". See "Enabling guest operating system features" in the
-	// Compute Engine docs. Unset inherits the source's features. Immutable.
+	// Compute Engine docs. Unset inherits the source's features. Google adds
+	// the source's own features to whatever is listed, so a list that leaves
+	// any of them out plans a replacement on every apply: list the full set
+	// the image ends up with, or leave it unset. Immutable.
 	GuestOsFeatures []string `protobuf:"bytes,15,rep,name=guest_os_features,json=guestOsFeatures,proto3" json:"guest_os_features,omitempty"`
 	// License URIs the image carries, e.g. a Windows Server or SQL Server
 	// license. Unset inherits the source's licenses; set explicitly when
@@ -589,7 +594,7 @@ var File_catalog_gcp_gcpcomputeimage_v1alpha1_spec_proto protoreflect.FileDescri
 
 const file_catalog_gcp_gcpcomputeimage_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/gcp/gcpcomputeimage/v1alpha1/spec.proto\x12(dev.planton.gcp.gcpcomputeimage.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x94\"\n" +
+	"/catalog/gcp/gcpcomputeimage/v1alpha1/spec.proto\x12(dev.planton.gcp.gcpcomputeimage.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x90%\n" +
 	"\x13GcpComputeImageSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x81\x02\n" +
@@ -626,10 +631,9 @@ const file_catalog_gcp_gcpcomputeimage_v1alpha1_spec_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xc1\n" +
-	"\xbaH\xbd\n" +
-	"\x1a\x9e\x03\n" +
-	"\x18image_exactly_one_source\x12ban image is built from exactly one source: source_disk, source_image, source_snapshot, or raw_disk\x1a\x9d\x02((has(this.source_disk) && (has(this.source_disk.value) || has(this.source_disk.value_from))) ? 1 : 0) + ((has(this.source_image) && (has(this.source_image.value) || has(this.source_image.value_from))) ? 1 : 0) + (this.source_snapshot != '' ? 1 : 0) + (has(this.raw_disk) ? 1 : 0) == 1\x1a\xf1\x01\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xbd\r\xbaH\xb9\r\x1a\x9e\x03\n" +
+	"\x18image_exactly_one_source\x12ban image is built from exactly one source: source_disk, source_image, source_snapshot, or raw_disk\x1a\x9d\x02((has(this.source_disk) && (has(this.source_disk.value) || has(this.source_disk.value_from))) ? 1 : 0) + ((has(this.source_image) && (has(this.source_image.value) || has(this.source_image.value_from))) ? 1 : 0) + (this.source_snapshot != '' ? 1 : 0) + (has(this.raw_disk) ? 1 : 0) == 1\x1a\xf9\x02\n" +
+	"\x19source_image_not_a_family\x12\xe9\x01source_image must name an image, not an image family: Google stores the image the family resolved to, so a family path plans a replacement on every apply -- name the family's current image (gcloud compute images describe-from-family)\x1ap!has(this.source_image) || !has(this.source_image.value) || !this.source_image.value.contains('/images/family/')\x1a\xf1\x01\n" +
 	"+source_disk_encryption_requires_source_disk\x12>source_disk_encryption is only valid together with source_disk\x1a\x81\x01!has(this.source_disk_encryption) || (has(this.source_disk) && (has(this.source_disk.value) || has(this.source_disk.value_from)))\x1a\xf9\x01\n" +
 	"-source_image_encryption_requires_source_image\x12@source_image_encryption is only valid together with source_image\x1a\x85\x01!has(this.source_image_encryption) || (has(this.source_image) && (has(this.source_image.value) || has(this.source_image.value_from)))\x1a\xc2\x01\n" +
 	"3source_snapshot_encryption_requires_source_snapshot\x12Fsource_snapshot_encryption is only valid together with source_snapshot\x1aC!has(this.source_snapshot_encryption) || this.source_snapshot != ''\x1a\xe4\x01\n" +

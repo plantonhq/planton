@@ -15,7 +15,7 @@ metadata:
     planton.dev/e2e-second-act: notebook-gcs.yaml
     planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
-    planton.dev/e2e-prerequisites: "catalog/gcp/gcpcolabschedule/e2e/prerequisites/gcpcolabruntimetemplate-schedule.yaml,catalog/gcp/gcpcolabschedule/e2e/prerequisites/gcpgcsbucket-schedule.yaml,catalog/gcp/gcpcolabschedule/e2e/prerequisites/gcpserviceaccount-schedule.yaml"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpcolabschedule/e2e/prerequisites/gcpvpcnetwork-gcpcols.yaml,catalog/gcp/gcpcolabschedule/e2e/prerequisites/gcpsubnetwork-gcpcols.yaml,catalog/gcp/gcpcolabschedule/e2e/prerequisites/gcpcolabruntimetemplate-schedule.yaml,catalog/gcp/gcpcolabschedule/e2e/prerequisites/gcpgcsbucket-schedule.yaml,catalog/gcp/gcpcolabschedule/e2e/prerequisites/gcpserviceaccount-schedule.yaml"
   tags:
     - planton-e2e
 spec:

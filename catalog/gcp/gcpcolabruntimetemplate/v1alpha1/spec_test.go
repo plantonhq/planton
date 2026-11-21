@@ -36,7 +36,10 @@ var _ = ginkgo.Describe("GcpColabRuntimeTemplateSpec", func() {
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpColabRuntimeTemplate",
 			Metadata:   &shared.CatalogObjectMetadata{Name: "standard-runtime"},
-			Spec:       &GcpColabRuntimeTemplateSpec{Location: "us-central1"},
+			Spec: &GcpColabRuntimeTemplateSpec{
+				Location:    "us-central1",
+				NetworkSpec: &GcpColabRuntimeTemplateNetworkSpec{EnableInternetAccess: true},
+			},
 		}
 	}
 
@@ -132,7 +135,15 @@ var _ = ginkgo.Describe("GcpColabRuntimeTemplateSpec", func() {
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 		msg.Spec.NetworkSpec.Subnetwork = litRef("projects/ml-project/regions/us-central1/subnetworks/notebooks")
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		msg.Spec.NetworkSpec.Network = nil
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 		msg.Spec.NetworkSpec = &GcpColabRuntimeTemplateNetworkSpec{EnableInternetAccess: true}
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should require a network spec, since a template without one has no internet access", func() {
+		msg := minimal()
+		msg.Spec.NetworkSpec = nil
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
 })

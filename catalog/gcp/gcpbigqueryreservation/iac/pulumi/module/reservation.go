@@ -60,8 +60,11 @@ func reservation(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider)
 	if spec.Concurrency > 0 {
 		args.Concurrency = pulumi.Int(int(spec.Concurrency))
 	}
-	if spec.ReservationGroup.GetValue() != "" {
-		args.ReservationGroup = pulumi.String(spec.ReservationGroup.GetValue())
+	if group := spec.ReservationGroup.GetValue(); group != "" {
+		// Google stores the group by its short name, so a full path (the
+		// group kind's name output) is trimmed to it; sending the path would
+		// re-plan on every apply.
+		args.ReservationGroup = pulumi.String(group[strings.LastIndex(group, "/")+1:])
 	}
 	if spec.SecondaryLocation != "" {
 		args.SecondaryLocation = pulumi.String(spec.SecondaryLocation)

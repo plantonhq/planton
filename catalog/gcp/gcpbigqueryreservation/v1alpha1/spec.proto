@@ -115,6 +115,11 @@ message GcpBigQueryReservationSpec {
   // two rows here, though Google sees one assignment: write each assignee
   // one way.
   option (buf.validate.message).cel = {
+    id: "spec.standard_ignores_idle_slots"
+    expression: "this.edition != 'STANDARD' || this.ignore_idle_slots"
+    message: "a STANDARD reservation cannot share idle slots: set ignore_idle_slots to true"
+  };
+  option (buf.validate.message).cel = {
     id: "spec.assignments_unique"
     expression: "this.assignments.all(a, this.assignments.filter(b, b.job_type == a.job_type && b.principal == a.principal && b.assignee.organization_id == a.assignee.organization_id && b.assignee.project_id.value == a.assignee.project_id.value && b.assignee.project_id.value_from.name == a.assignee.project_id.value_from.name && b.assignee.folder_id.value == a.assignee.folder_id.value && b.assignee.folder_id.value_from.name == a.assignee.folder_id.value_from.name).size() == 1)"
     message: "each assignment must be unique by assignee, job_type, and principal"
@@ -199,7 +204,8 @@ message GcpBigQueryReservationSpec {
 
   // true caps queries at this reservation's own slots; false (Google's
   // default) lets them borrow idle slots from other reservations in the
-  // same admin project.
+  // same admin project. A STANDARD reservation cannot share idle slots:
+  // Google refuses one with this false, so set it true for STANDARD.
   bool ignore_idle_slots = 7;
 
   // The soft limit on queries running at once. 0 (Google's default) sizes

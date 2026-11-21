@@ -3,26 +3,15 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpmodelarmorfloorsetting
 spec:
-  # Awaiting the live proof lane. The scenario proves on the harness
-  # project's own floor with roles/modelarmor.floorSettingsAdmin (folder
-  # and organization floors are proven offline: they need organization
-  # roles the harness does not hold). Offline bar met: both modules build
-  # and validate, offline plans for the reference manifest, the scenario,
-  # and throwaway folder and organization arms are clean on the pinned
-  # provider (the empty scope reads google_client_config, credential-free),
-  # and the accounting is total. Live facts the proof lane confirms: (1)
-  # the PATCH applies over whatever floor the project already had and
-  # RE-PLANS CLEAN on both engines -- only the chosen inspect flag is sent;
-  # (2) the name output is {parent}/locations/global/floorSetting; (3)
-  # destroy leaves the floor in Google and the verifier reads it after
-  # destroy; (4) the floor left behind (inspect-only, injection detection
-  # at HIGH) blocks no other lane and no template scenario.
-  #
-  # No second act: the floor's create and update are one write (a PATCH of
-  # the project's singleton), and its delete leaves the floor in force, so
-  # an update proves no permission create doesn't. It carries no second
-  # act, as the Redis endpoint set doesn't.
+  # Proven live on both engines (2026-11-21), as an identity holding only this
+  # kind's permissions manifest: the project floor (AI Platform integrated,
+  # inspect-only, prompt injection at HIGH) applied, re-planned clean, and
+  # destroyed. Destroy leaves the last floor applied in force in Google, by
+  # design; the lane project keeps that inspect-only floor, which blocks no
+  # template. No second act: the floor's create and update are one write (a
+  # PATCH of the project's singleton), so an update proves no permission
+  # create doesn't.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15

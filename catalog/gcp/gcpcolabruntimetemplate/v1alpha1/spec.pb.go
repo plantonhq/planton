@@ -68,8 +68,11 @@ type GcpColabRuntimeTemplateSpec struct {
 	// The runtime's data disk (mounted as the home directory). Omit for
 	// Google's default disk.
 	DataPersistentDiskSpec *GcpColabRuntimeTemplateDataPersistentDiskSpec `protobuf:"bytes,8,opt,name=data_persistent_disk_spec,json=dataPersistentDiskSpec,proto3" json:"data_persistent_disk_spec,omitempty"`
-	// The network the runtime joins. Omit for Google's default network with
-	// internet access.
+	// The network the runtime joins. Required: a template that sends no
+	// network spec has no internet access, and Google then refuses it unless
+	// it names both a network and a subnetwork ("Both [networkSpec.network]
+	// and [networkSpec.subnetwork] fields must be provided if Internet Access
+	// is disabled"). Turn internet access on, or name both.
 	NetworkSpec *GcpColabRuntimeTemplateNetworkSpec `protobuf:"bytes,9,opt,name=network_spec,json=networkSpec,proto3" json:"network_spec,omitempty"`
 	// Shut an idle runtime down after this long -- the main cost control for
 	// interactive notebooks. A duration in seconds ending in "s": "0s"
@@ -387,12 +390,13 @@ func (x *GcpColabRuntimeTemplateDataPersistentDiskSpec) GetDiskSizeGb() int64 {
 type GcpColabRuntimeTemplateNetworkSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Give runtimes a public internet path. Turn off for runtimes that must
-	// stay private; then name the subnetwork, which needs Private Google
-	// Access.
+	// stay private; then name the network and the subnetwork, which needs
+	// Private Google Access.
 	EnableInternetAccess bool `protobuf:"varint,1,opt,name=enable_internet_access,json=enableInternetAccess,proto3" json:"enable_internet_access,omitempty"`
 	// The VPC network: a GcpVpcNetwork reference or a literal
-	// projects/{project}/global/networks/{name}. Unset: the project's
-	// default network.
+	// projects/{project}/global/networks/{name}. Unset: the project's network
+	// named "default", which many organizations never create -- in a project
+	// without one, Google refuses the template, so name a network.
 	Network *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=network,proto3" json:"network,omitempty"`
 	// The subnetwork in the template's region: a GcpSubnetwork reference or
 	// a literal projects/{project}/regions/{region}/subnetworks/{name}.
@@ -702,7 +706,7 @@ var File_catalog_gcp_gcpcolabruntimetemplate_v1alpha1_spec_proto protoreflect.Fi
 
 const file_catalog_gcp_gcpcolabruntimetemplate_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/gcp/gcpcolabruntimetemplate/v1alpha1/spec.proto\x120dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xce\x0e\n" +
+	"7catalog/gcp/gcpcolabruntimetemplate/v1alpha1/spec.proto\x120dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xd6\x0e\n" +
 	"\x1bGcpColabRuntimeTemplateSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12;\n" +
@@ -713,8 +717,8 @@ const file_catalog_gcp_gcpcolabruntimetemplate_v1alpha1_spec_proto_rawDesc = "" 
 	"\vdescription\x18\x05 \x01(\tR\vdescription\x12q\n" +
 	"\x06labels\x18\x06 \x03(\v2Y.dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplateSpec.LabelsEntryR\x06labels\x12w\n" +
 	"\fmachine_spec\x18\a \x01(\v2T.dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplateMachineSpecR\vmachineSpec\x12\x9a\x01\n" +
-	"\x19data_persistent_disk_spec\x18\b \x01(\v2_.dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplateDataPersistentDiskSpecR\x16dataPersistentDiskSpec\x12w\n" +
-	"\fnetwork_spec\x18\t \x01(\v2T.dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplateNetworkSpecR\vnetworkSpec\x12\xa1\x01\n" +
+	"\x19data_persistent_disk_spec\x18\b \x01(\v2_.dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplateDataPersistentDiskSpecR\x16dataPersistentDiskSpec\x12\x7f\n" +
+	"\fnetwork_spec\x18\t \x01(\v2T.dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplateNetworkSpecB\x06\xbaH\x03\xc8\x01\x01R\vnetworkSpec\x12\xa1\x01\n" +
 	"\fidle_timeout\x18\n" +
 	" \x01(\tB~\xbaH{\xba\x01x\n" +
 	"\x13idle_timeout.format\x128idle_timeout must be a duration in seconds such as 3600s\x1a'this == '' || this.matches('^[0-9]+s$')R\vidleTimeout\x12!\n" +
@@ -740,14 +744,14 @@ const file_catalog_gcp_gcpcolabruntimetemplate_v1alpha1_spec_proto_rawDesc = "" 
 	"\fdisk_size_gb\x18\x02 \x01(\x03Bq\xbaHn\xba\x01k\n" +
 	"\x12disk_size_gb.range\x12)disk_size_gb must be between 10 and 65536\x1a*this == 0 || (this >= 10 && this <= 65536)R\n" +
 	"diskSizeGb:~\xbaH{\x1ay\n" +
-	")data_persistent_disk_spec.size_needs_type\x12\x1cdisk_size_gb needs disk_type\x1a.this.disk_size_gb == 0 || this.disk_type != ''\"\xf7\x04\n" +
+	")data_persistent_disk_spec.size_needs_type\x12\x1cdisk_size_gb needs disk_type\x1a.this.disk_size_gb == 0 || this.disk_type != ''\"\xe1\x04\n" +
 	"\"GcpColabRuntimeTemplateNetworkSpec\x124\n" +
 	"\x16enable_internet_access\x18\x01 \x01(\bR\x14enableInternetAccess\x12t\n" +
 	"\anetwork\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\x88\xd4a\xc2\x17\x92\xd4a\x19status.outputs.network_id\x98\xd4a\x01R\anetwork\x12\x84\x01\n" +
 	"\n" +
 	"subnetwork\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB0\x88\xd4a\xc3\x17\x92\xd4a#status.outputs.subnetwork_self_link\x98\xd4a\x01R\n" +
-	"subnetwork:\x9d\x02\xbaH\x99\x02\x1a\x96\x02\n" +
-	"%network_spec.private_needs_subnetwork\x12\xb7\x01a network_spec without internet access must name a subnetwork: Google's provider never sends enable_internet_access false on its own, so the runtimes would keep a public internet path\x1a3this.enable_internet_access || has(this.subnetwork)\"\xa0\x03\n" +
+	"subnetwork:\x87\x02\xbaH\x83\x02\x1a\x80\x02\n" +
+	"%network_spec.private_needs_subnetwork\x12\x8a\x01a network_spec without internet access must name both a network and a subnetwork: Google refuses a private template that leaves either out\x1aJthis.enable_internet_access || (has(this.network) && has(this.subnetwork))\"\xa0\x03\n" +
 	"%GcpColabRuntimeTemplateSoftwareConfig\x12a\n" +
 	"\x03env\x18\x01 \x03(\v2O.dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplateEnvVarR\x03env\x12\x9d\x01\n" +
 	"\x1apost_startup_script_config\x18\x02 \x01(\v2`.dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplatePostStartupScriptConfigR\x17postStartupScriptConfig\x12t\n" +

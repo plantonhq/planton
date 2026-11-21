@@ -71,17 +71,21 @@ variable "spec" {
       disk_size_gb = optional(number, 0)
     }))
 
-    # The network the runtime joins. Omit for Google's default network with
-    # internet access.
-    network_spec = optional(object({
+    # The network the runtime joins. Required: a template that sends no
+    # network spec has no internet access, and Google then refuses it unless
+    # it names both a network and a subnetwork ("Both [networkSpec.network]
+    # and [networkSpec.subnetwork] fields must be provided if Internet Access
+    # is disabled"). Turn internet access on, or name both.
+    network_spec = object({
       # Give runtimes a public internet path. Turn off for runtimes that must
-      # stay private; then name the subnetwork, which needs Private Google
-      # Access.
+      # stay private; then name the network and the subnetwork, which needs
+      # Private Google Access.
       enable_internet_access = optional(bool, false)
 
       # The VPC network: a GcpVpcNetwork reference or a literal
-      # projects/{project}/global/networks/{name}. Unset: the project's
-      # default network.
+      # projects/{project}/global/networks/{name}. Unset: the project's network
+      # named "default", which many organizations never create -- in a project
+      # without one, Google refuses the template, so name a network.
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       network = optional(string, "")
 
@@ -89,7 +93,7 @@ variable "spec" {
       # a literal projects/{project}/regions/{region}/subnetworks/{name}.
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       subnetwork = optional(string, "")
-    }))
+    })
 
     # Shut an idle runtime down after this long -- the main cost control for
     # interactive notebooks. A duration in seconds ending in "s": "0s"

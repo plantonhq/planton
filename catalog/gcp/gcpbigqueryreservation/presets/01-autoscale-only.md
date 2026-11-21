@@ -20,3 +20,4 @@ Capacity-based pricing without a standing bill: a Standard reservation with no b
 | `projectId`, assignee | `bq-admin-project`, `analytics-project` | Stand-ins: name your admin project and the project whose jobs use the slots, or reference GcpProjects. |
 | `autoscaleMaxSlots` | `100` | The ceiling on what a burst can cost. |
 | `edition` | `STANDARD` | `ENTERPRISE` for commitments and more features. Fixed at creation. |
+| `ignoreIdleSlots` | `true` | Required on `STANDARD`: Google never lets a STANDARD reservation share idle slots. |

@@ -67,9 +67,12 @@ message GcpColabRuntimeTemplateSpec {
   // Google's default disk.
   GcpColabRuntimeTemplateDataPersistentDiskSpec data_persistent_disk_spec = 8;
 
-  // The network the runtime joins. Omit for Google's default network with
-  // internet access.
-  GcpColabRuntimeTemplateNetworkSpec network_spec = 9;
+  // The network the runtime joins. Required: a template that sends no
+  // network spec has no internet access, and Google then refuses it unless
+  // it names both a network and a subnetwork ("Both [networkSpec.network]
+  // and [networkSpec.subnetwork] fields must be provided if Internet Access
+  // is disabled"). Turn internet access on, or name both.
+  GcpColabRuntimeTemplateNetworkSpec network_spec = 9 [(buf.validate.field).required = true];
 
   // Shut an idle runtime down after this long -- the main cost control for
   // interactive notebooks. A duration in seconds ending in "s": "0s"
@@ -181,18 +184,19 @@ message GcpColabRuntimeTemplateDataPersistentDiskSpec {
 message GcpColabRuntimeTemplateNetworkSpec {
   option (buf.validate.message).cel = {
     id: "network_spec.private_needs_subnetwork"
-    message: "a network_spec without internet access must name a subnetwork: Google's provider never sends enable_internet_access false on its own, so the runtimes would keep a public internet path"
-    expression: "this.enable_internet_access || has(this.subnetwork)"
+    message: "a network_spec without internet access must name both a network and a subnetwork: Google refuses a private template that leaves either out"
+    expression: "this.enable_internet_access || (has(this.network) && has(this.subnetwork))"
   };
 
   // Give runtimes a public internet path. Turn off for runtimes that must
-  // stay private; then name the subnetwork, which needs Private Google
-  // Access.
+  // stay private; then name the network and the subnetwork, which needs
+  // Private Google Access.
   bool enable_internet_access = 1;
 
   // The VPC network: a GcpVpcNetwork reference or a literal
-  // projects/{project}/global/networks/{name}. Unset: the project's
-  // default network.
+  // projects/{project}/global/networks/{name}. Unset: the project's network
+  // named "default", which many organizations never create -- in a project
+  // without one, Google refuses the template, so name a network.
   dev.planton.shared.foreignkey.v1.StringValueOrRef network = 2 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpVpcNetwork,
     (dev.planton.shared.foreignkey.v1.containment_exempt) = true,

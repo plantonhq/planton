@@ -22,6 +22,6 @@ spec:
   family: planton-e2e-gcpimg
   description: Ephemeral image created by the Planton E2E harness; safe to delete
   sourceImage:
-    value: projects/debian-cloud/global/images/family/debian-12
+    value: projects/debian-cloud/global/images/debian-12-bookworm-v20261117
   storageLocations:
     - us

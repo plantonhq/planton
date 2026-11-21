@@ -207,4 +207,12 @@ var _ = ginkgo.Describe("GcpBigQueryReservationSpec", func() {
 		msg.Spec.DeletionPolicy = "KEEP"
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
+
+	ginkgo.It("should make a STANDARD reservation ignore idle slots", func() {
+		msg := minimal()
+		msg.Spec.Edition = "STANDARD"
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.IgnoreIdleSlots = true
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
 })

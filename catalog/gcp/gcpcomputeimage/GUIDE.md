@@ -8,7 +8,7 @@ Everything except labels replaces the image, so treat each build as a new image:
 
 ## Choosing the source
 
-Exactly one source: `sourceDisk` (the classic golden-image path -- configure a VM's boot disk, stop the VM, image the disk), `sourceImage` (copy or re-key an image, including a public family such as Debian's), `sourceSnapshot`, or `rawDisk` (a `disk.raw` tarball in Cloud Storage, the import and Packer path). Guest OS features, licenses, and storage locations are inherited from the source when unset; set `guestOsFeatures` explicitly for an imported disk (`UEFI_COMPATIBLE`, `GVNIC`, `SECURE_BOOT`, ...).
+Exactly one source: `sourceDisk` (the classic golden-image path -- configure a VM's boot disk, stop the VM, image the disk), `sourceImage` (copy or re-key an image, such as a public Debian image -- named itself, never by family: Google records the image the family resolved to, so a family path would replace the copy on every apply; `gcloud compute images describe-from-family` names a family's current image), `sourceSnapshot`, or `rawDisk` (a `disk.raw` tarball in Cloud Storage, the import and Packer path). Guest OS features, licenses, and storage locations are inherited from the source when unset. Google adds the source's guest OS features to any list you give, so a list that leaves one of them out replaces the image on every apply: leave `guestOsFeatures` unset for a disk or image source, and set it in full for an imported disk (`UEFI_COMPATIBLE`, `GVNIC`, `SECURE_BOOT`, ...).
 
 ## Encryption
 

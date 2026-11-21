@@ -16,15 +16,15 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling modelarmor.googleapis.com on the floor's project; the module creates it only for a project floor (scope.project_id, or no scope at all), never for a folder or organization floor. disable_on_destroy is false, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling modelarmor.googleapis.com on the floor's project; the module creates it only for a project floor (scope.project_id, or no scope at all), never for a folder or organization floor. disable_on_destroy is false, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-21 -- an identity holding only this manifest deployed and destroyed the kind on both engines; it has no in-place update.
       - purpose: ManageFloorSetting
         permissions:
           - modelarmor.floorSettings.get
           - modelarmor.floorSettings.update
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_model_armor_floorsetting (Pulumi modelarmor.Floorsetting) -- create and update are the same PATCH on the scope's singleton, read on every refresh; delete makes no API call. Held at the floor's scope -- the project, the folder, or the organization (roles/modelarmor.floorSettingsAdmin there). The provider-default project lookup reads provider configuration only and needs no permission.
+        notes: Covers google_model_armor_floorsetting (Pulumi modelarmor.Floorsetting) -- create and update are the same PATCH on the scope's singleton, read on every refresh; delete makes no API call. Held at the floor's scope -- the project, the folder, or the organization (roles/modelarmor.floorSettingsAdmin there). The provider-default project lookup reads provider configuration only and needs no permission. Proven 2026-11-21 -- an identity holding only this manifest deployed and destroyed the kind on both engines; it has no in-place update.

@@ -30,6 +30,15 @@ spec:
         reach: target
         privilege: ordinary
         notes: Covers google_colab_schedule (Pulumi colab.Schedule) -- created, patched for the timing fields and the pipeline request, read on every refresh, deleted.
+      - purpose: CreateScheduledRuns
+        permissions:
+          - aiplatform.pipelineJobs.create
+          - aiplatform.notebookExecutionJobs.create
+          - aiplatform.notebookRuntimeTemplates.apply
+        provenance: derived
+        reach: target
+        privilege: ordinary
+        notes: Creating a schedule checks that its caller may create the runs it will launch -- Google refused a notebook schedule's create with "Permission 'aiplatform.pipelineJobs.create' denied" (measured), even with no pipeline arm. A notebook run is a notebook execution job on the named runtime template, which Google's Colab Enterprise admin role grants as notebookExecutionJobs.create and notebookRuntimeTemplates.apply beside it.
       - purpose: PauseAndResumeSchedule
         permissions:
           - aiplatform.schedules.update

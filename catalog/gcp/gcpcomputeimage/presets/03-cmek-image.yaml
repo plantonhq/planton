@@ -5,7 +5,7 @@ metadata:
 spec:
   family: regulated-base
   sourceImage:
-    value: projects/debian-cloud/global/images/family/debian-12
+    value: projects/debian-cloud/global/images/debian-12-bookworm-v20261117
   kmsKey:
     valueFrom:
       kind: GcpKmsKeyHandle

@@ -3,21 +3,13 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpbigqueryconnection
 spec:
-  # Awaiting the live proof lane. Both scenarios prove in the harness
-  # project with roles/bigquery.connectionAdmin; the module enables
-  # bigqueryconnection.googleapis.com itself: the cloud_resource arm in US
-  # and the spark arm in us-central1, both free. Offline bar met: both
-  # modules build and validate, offline plans for the reference manifest,
-  # every scenario, and every fixture are clean on the pinned provider, and
-  # the accounting is total. Live facts the proof lane confirms: (1) the
-  # marker bool emits an empty cloud_resource block Google answers with a
-  # service account, which the verifier matches against the output; (2) the
-  # connection id defaulted from metadata.name (underscores in the
-  # scenarios) is accepted; (3) the arms Google must reach outside the
-  # project -- Cloud SQL, Spanner, AWS, Azure, the Connector framework --
-  # are proven offline; (4) destroy deletes the connection and the verifier
-  # reads 404.
+  # Proven live on both engines (2026-11-21), as an identity holding only this
+  # kind's permissions manifest: a cloud-resource connection in US and a Spark
+  # connection in us-central1 deployed with underscore ids from the run id,
+  # re-planned clean, and destroyed; the cloud-resource connection's friendly
+  # name moved in place, judged from Google's Admin Activity log
+  # (ConnectionService.UpdateConnection).
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 20

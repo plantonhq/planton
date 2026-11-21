@@ -22,5 +22,15 @@ spec:
     machineType: e2-standard-4
   networkSpec:
     enableInternetAccess: true
+    network:
+      valueFrom:
+        kind: GcpVpcNetwork
+        name: planton-oss-e2e-gcpcolr-vpc
+        fieldPath: status.outputs.network_id
+    subnetwork:
+      valueFrom:
+        kind: GcpSubnetwork
+        name: planton-oss-e2e-gcpcolr-subnet
+        fieldPath: status.outputs.subnetwork_self_link
   idleTimeout: 600s
   deletionPolicy: DELETE

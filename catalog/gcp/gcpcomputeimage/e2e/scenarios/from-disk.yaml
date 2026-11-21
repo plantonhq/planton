@@ -1,6 +1,7 @@
 # GcpComputeImage scenario: an image of a disk fixture (the golden-image
-# path), referenced through the disk's self_link, with explicit guest OS
-# features. Cost: a 10 GB standard disk and the image's storage for the
+# path), referenced through the disk's self_link, taking the source's guest
+# OS features (Google adds them to any list, so a partial one re-plans).
+# Cost: a 10 GB standard disk and the image's storage for the
 # lane's duration (cents).
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpComputeImage
@@ -27,6 +28,3 @@ spec:
       kind: GcpComputeDisk
       name: planton-oss-e2e-gcpimg-disk
       fieldPath: status.outputs.self_link
-  guestOsFeatures:
-    - UEFI_COMPATIBLE
-    - GVNIC

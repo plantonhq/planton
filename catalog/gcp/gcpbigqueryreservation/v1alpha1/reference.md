@@ -161,7 +161,8 @@ turns autoscaling off.
 
 true caps queries at this reservation's own slots; false (Google's
 default) lets them borrow idle slots from other reservations in the
-same admin project.
+same admin project. A STANDARD reservation cannot share idle slots:
+Google refuses one with this false, so set it true for STANDARD.
 
 ### spec.concurrency
 
@@ -294,6 +295,7 @@ resource is destroyed:
 
 ## Validation Rules
 
+- `spec.standard_ignores_idle_slots`: a STANDARD reservation cannot share idle slots: set ignore_idle_slots to true
 - `spec.assignments_unique`: each assignment must be unique by assignee, job_type, and principal
 - `spec.continuous_assignments_alone`: Google does not mix CONTINUOUS assignments with other job types on one reservation; give continuous queries a reservation of their own.
 - `spec.group_path_matches_location`: A literal reservation group path must be in this reservation's location (US when location is empty).

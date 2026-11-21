@@ -5,6 +5,6 @@ metadata:
 spec:
   family: debian-12-pinned
   sourceImage:
-    value: projects/debian-cloud/global/images/family/debian-12
+    value: projects/debian-cloud/global/images/debian-12-bookworm-v20261117
   storageLocations:
     - us

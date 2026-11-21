@@ -242,7 +242,8 @@ type GcpBigQueryReservationSpec struct {
 	AutoscaleMaxSlots int64 `protobuf:"varint,6,opt,name=autoscale_max_slots,json=autoscaleMaxSlots,proto3" json:"autoscale_max_slots,omitempty"`
 	// true caps queries at this reservation's own slots; false (Google's
 	// default) lets them borrow idle slots from other reservations in the
-	// same admin project.
+	// same admin project. A STANDARD reservation cannot share idle slots:
+	// Google refuses one with this false, so set it true for STANDARD.
 	IgnoreIdleSlots bool `protobuf:"varint,7,opt,name=ignore_idle_slots,json=ignoreIdleSlots,proto3" json:"ignore_idle_slots,omitempty"`
 	// The soft limit on queries running at once. 0 (Google's default) sizes
 	// it automatically from the reservation's slots.
@@ -419,7 +420,7 @@ const file_catalog_gcp_gcpbigqueryreservation_v1alpha1_spec_proto_rawDesc = "" +
 	"\bassignee\x18\x01 \x01(\v2O.dev.planton.gcp.gcpbigqueryreservation.v1alpha1.GcpBigQueryReservationAssigneeB\x06\xbaH\x03\xc8\x01\x01R\bassignee\x12@\n" +
 	"\bjob_type\x18\x02 \x01(\tB%\xbaH\"\xc8\x01\x01r\x1dR\x05QUERYR\bPIPELINER\n" +
 	"CONTINUOUSR\ajobType\x128\n" +
-	"\tprincipal\x18\x03 \x01(\tB\x1a\xbaH\x17\xd8\x01\x01r\x122\x10^principal://.+$R\tprincipal\"\xff\x16\n" +
+	"\tprincipal\x18\x03 \x01(\tB\x1a\xbaH\x17\xd8\x01\x01r\x122\x10^principal://.+$R\tprincipal\"\xa9\x18\n" +
 	"\x1aGcpBigQueryReservationSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\xde\x01\n" +
@@ -441,7 +442,8 @@ const file_catalog_gcp_gcpbigqueryreservation_v1alpha1_spec_proto_rawDesc = "" +
 	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x92\f\xbaH\x8e\f\x1a\xb0\x04\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xbc\r\xbaH\xb8\r\x1a\xa7\x01\n" +
+	" spec.standard_ignores_idle_slots\x12Ma STANDARD reservation cannot share idle slots: set ignore_idle_slots to true\x1a4this.edition != 'STANDARD' || this.ignore_idle_slots\x1a\xb0\x04\n" +
 	"\x17spec.assignments_unique\x12Ceach assignment must be unique by assignee, job_type, and principal\x1a\xcf\x03this.assignments.all(a, this.assignments.filter(b, b.job_type == a.job_type && b.principal == a.principal && b.assignee.organization_id == a.assignee.organization_id && b.assignee.project_id.value == a.assignee.project_id.value && b.assignee.project_id.value_from.name == a.assignee.project_id.value_from.name && b.assignee.folder_id.value == a.assignee.folder_id.value && b.assignee.folder_id.value_from.name == a.assignee.folder_id.value_from.name).size() == 1)\x1a\x9d\x02\n" +
 	"!spec.continuous_assignments_alone\x12\x87\x01Google does not mix CONTINUOUS assignments with other job types on one reservation; give continuous queries a reservation of their own.\x1an!this.assignments.exists(a, a.job_type == 'CONTINUOUS') || this.assignments.all(a, a.job_type == 'CONTINUOUS')\x1a\xd3\x02\n" +
 	" spec.group_path_matches_location\x12dA literal reservation group path must be in this reservation's location (US when location is empty).\x1a\xc8\x01!has(this.reservation_group.value) || !this.reservation_group.value.startsWith('projects/') || this.reservation_group.value.contains('/locations/' + (this.location == '' ? 'US' : this.location) + '/')\x1a\xe2\x02\n" +

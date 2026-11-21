@@ -12,11 +12,14 @@ locals {
   # Empty optionals become null so the provider omits them and Google's
   # defaults apply (location US, edition chosen by Google, concurrency
   # sized automatically, idle slots shared).
-  location           = var.spec.location != "" ? var.spec.location : null
-  edition            = var.spec.edition != "" ? var.spec.edition : null
-  concurrency        = var.spec.concurrency > 0 ? var.spec.concurrency : null
-  ignore_idle_slots  = var.spec.ignore_idle_slots ? true : null
-  reservation_group  = var.spec.reservation_group != "" ? var.spec.reservation_group : null
+  location          = var.spec.location != "" ? var.spec.location : null
+  edition           = var.spec.edition != "" ? var.spec.edition : null
+  concurrency       = var.spec.concurrency > 0 ? var.spec.concurrency : null
+  ignore_idle_slots = var.spec.ignore_idle_slots ? true : null
+  # Google stores a reservation's group by its short name, so a full path
+  # (the group kind's name output) is trimmed to it; sending the path
+  # would re-plan on every apply.
+  reservation_group  = var.spec.reservation_group != "" ? element(split("/", var.spec.reservation_group), length(split("/", var.spec.reservation_group)) - 1) : null
   secondary_location = var.spec.secondary_location != "" ? var.spec.secondary_location : null
   deletion_policy    = var.spec.deletion_policy != "" ? var.spec.deletion_policy : null
 

@@ -59,7 +59,8 @@ variable "spec" {
 
     # true caps queries at this reservation's own slots; false (Google's
     # default) lets them borrow idle slots from other reservations in the
-    # same admin project.
+    # same admin project. A STANDARD reservation cannot share idle slots:
+    # Google refuses one with this false, so set it true for STANDARD.
     ignore_idle_slots = optional(bool, false)
 
     # The soft limit on queries running at once. 0 (Google's default) sizes

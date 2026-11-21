@@ -12,11 +12,11 @@ Pin a copy of a public OS image in your own project, so VMs keep booting a versi
 ## What This Creates
 
 - The Compute Engine API on the project
-- One copy of Debian 12's newest public image in the `debian-12-pinned` family
+- One copy of a named Debian 12 public image in the `debian-12-pinned` family
 
 ## Customize
 
 | Field | Default | Why Change |
 |-------|---------|------------|
-| `sourceImage` | Debian 12 family | Another public image or family. |
+| `sourceImage` | Debian 12's current image | Another image, named itself: a family path would replace the copy on every apply. |
 | `storageLocations` | `us` | Another multi-region or region. |

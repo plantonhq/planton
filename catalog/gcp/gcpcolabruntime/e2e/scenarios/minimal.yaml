@@ -19,7 +19,7 @@ metadata:
     planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the in-place update: start the runtime
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e-exclusive: gcp-project-vcpus # a running Colab runtime is a VM on the project's vCPUs
-    planton.dev/e2e-prerequisites: "catalog/gcp/gcpcolabruntime/e2e/prerequisites/gcpcolabruntimetemplate-runtime.yaml"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpcolabruntime/e2e/prerequisites/gcpvpcnetwork-gcpcolr.yaml,catalog/gcp/gcpcolabruntime/e2e/prerequisites/gcpsubnetwork-gcpcolr.yaml,catalog/gcp/gcpcolabruntime/e2e/prerequisites/gcpcolabruntimetemplate-runtime.yaml"
     planton.dev/e2e-required-env: PLANTON_E2E_GCP_COLAB_RUNTIME_USER
   tags:
     - planton-e2e

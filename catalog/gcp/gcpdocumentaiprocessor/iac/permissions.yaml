@@ -16,20 +16,20 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling documentai.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling documentai.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-21 -- an identity holding only this manifest deployed and destroyed the kind on both engines; it has no in-place update.
       - purpose: ManageProcessor
         permissions:
           - documentai.processors.create
           - documentai.processors.get
           - documentai.processors.delete
           - documentai.operations.getLegacy
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_document_ai_processor (Pulumi essentialcontacts.DocumentAiProcessor) -- every argument is immutable, so there is no update path; delete runs a long-running operation the provider polls. roles/documentai.admin contains all four.
+        notes: Covers google_document_ai_processor (Pulumi essentialcontacts.DocumentAiProcessor) -- every argument is immutable, so there is no update path; delete runs a long-running operation the provider polls. roles/documentai.admin contains all four. Proven 2026-11-21 -- an identity holding only this manifest deployed and destroyed the kind on both engines; it has no in-place update.
       - purpose: SetDefaultVersion
         permissions:
           - documentai.processors.update

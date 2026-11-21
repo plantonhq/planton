@@ -50,7 +50,7 @@ var _ = ginkgo.Describe("GcpComputeImageSpec", func() {
 
 		msg := fromDisk()
 		msg.Spec.SourceDisk = nil
-		msg.Spec.SourceImage = literal("projects/debian-cloud/global/images/family/debian-12")
+		msg.Spec.SourceImage = literal("projects/debian-cloud/global/images/debian-12-bookworm-v20261117")
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 
 		msg = fromDisk()
@@ -184,5 +184,14 @@ var _ = ginkgo.Describe("GcpComputeImageSpec", func() {
 		msg = fromDisk()
 		msg.Spec.DeletionPolicy = "KEEP"
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should refuse an image family as the source image", func() {
+		msg := fromDisk()
+		msg.Spec.SourceDisk = nil
+		msg.Spec.SourceImage = literal("projects/debian-cloud/global/images/family/debian-12")
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.SourceImage = literal("projects/debian-cloud/global/images/debian-12-bookworm-v20261117")
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 	})
 })

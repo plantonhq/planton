@@ -23,6 +23,7 @@ spec:
   location: US
   reservationName: e2e-bqrs-${E2E_RUN_ID}
   edition: STANDARD
+  ignoreIdleSlots: true # a STANDARD reservation cannot share idle slots
   slotCapacity: 0
   autoscaleMaxSlots: 50
   labels:
