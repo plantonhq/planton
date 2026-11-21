@@ -39,6 +39,7 @@ spec:
           - compute.instanceGroupManagers.delete
           - compute.instanceGroupManagers.use
           - compute.instanceGroups.create
+          - compute.instanceGroups.delete
           - compute.instanceGroups.get
           - compute.instances.create
           - compute.instances.delete
@@ -47,7 +48,7 @@ spec:
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: Covers google_compute_instance_group_manager / _region_instance_group_manager plus every sub-resource that authorizes THROUGH the manager -- per-instance configs (google_compute_per_instance_config / _region_) and resize requests (google_compute_resize_request / _region_) all check instanceGroupManagers.update, since GCP defines no compute.resizeRequests or per-instance-config permissions (verified against the IAM inventory; mirrors how node pools authorize under container.clusters.update). Google creates the group the manager runs as the caller (compute.instanceGroups.create, measured). The manager creates and deletes VMs on the caller's behalf, so instances.create/delete are checked on sizing changes; zone/regionOperations.get polls the operations every mutation returns.
+        notes: Covers google_compute_instance_group_manager / _region_instance_group_manager plus every sub-resource that authorizes THROUGH the manager -- per-instance configs (google_compute_per_instance_config / _region_) and resize requests (google_compute_resize_request / _region_) all check instanceGroupManagers.update, since GCP defines no compute.resizeRequests or per-instance-config permissions (verified against the IAM inventory; mirrors how node pools authorize under container.clusters.update). Google creates and deletes the group the manager runs as the caller (compute.instanceGroups.create and .delete, measured). The manager creates and deletes VMs on the caller's behalf, so instances.create/delete are checked on sizing changes; zone/regionOperations.get polls the operations every mutation returns.
       - purpose: CreateGroupVms
         permissions:
           - compute.disks.create
