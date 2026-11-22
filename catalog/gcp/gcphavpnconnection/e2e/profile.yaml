@@ -18,9 +18,9 @@ spec:
   # index-aligned list outputs are populated on both engines; (3) the
   # Optional+Computed session fields (ip_address, peer_ip_address, enable_ipv4,
   # the next hops) RE-PLAN CLEAN under the apply-idempotency gate when unset;
-  # (4) the knobs scenario's BFD, MD5, CUSTOM advertisement, cipher suite, and
-  # priorities round-trip -- and whether Google establishes a session with BFD
-  # and MD5 on one side only (the reverse fixture has neither; a watch item);
+  # (4) the knobs scenario's MD5, CUSTOM advertisement, cipher suite, and
+  # priorities round-trip -- and whether Google establishes a session with
+  # MD5 on one side only (the reverse fixture has none; a watch item);
   # (5) the harness destroys the connection before the gateway (Google refuses
   # the other order). Project-scoped; needs roles/compute.networkAdmin on the
   # harness project. Cost: four tunnel-hours per hour while the chain lives
@@ -33,6 +33,6 @@ spec:
   #     a peer device the owner arranges, exported as
   #     PLANTON_E2E_GCP_VPN_PEER_IP_0 / _1.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 30
