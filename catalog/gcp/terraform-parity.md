@@ -30,10 +30,10 @@ how far that has progressed.
 | Provider schema (parity baseline) | `google@8.7.0` |
 | Supporting schema (pinned by this catalog's modules) | `google-beta@8.7.0` |
 | Kinds in the catalog | 186 |
-| Distinct provider resources consumed | 308 |
+| Distinct provider resources consumed | 311 |
 | Spec fields authored across all kinds | 6399 |
 | Module pins on `google` | `~> 8.3` × 186 |
-| Module pins on `google-beta` | `~> 8.3` × 6 |
+| Module pins on `google-beta` | `~> 8.3` × 7 |
 | Module pins on `random` | `~> 3.6` × 1 |
 
 The GA provider is the parity baseline. Capability that exists only in a
@@ -54,6 +54,7 @@ baseline serves at the pin is a stale admission.
 | `google_firebase_project` | `google-beta` | GcpFirebaseProject | Firebase enablement (projects.addFirebase on the Firebase Management API) is published only in the beta provider at the pin -- the GA provider has no code under services/firebase; the kind cannot exist without it. | hashicorp/terraform-provider-google: the appearance of google/services/firebase/resource_firebase_project.go (the GA promotion of the firebase service); until then google-beta/services/firebase/ is the only home. |
 | `google_firebase_storage_default_bucket` | `google-beta` | GcpFirebaseProject | The default Cloud Storage for Firebase bucket (projects.defaultBucket on the Firebase Storage API) is published only in the beta provider at the pin; the GA provider has no code under services/firebasestorage. | hashicorp/terraform-provider-google: the appearance of google/services/firebasestorage/resource_firebase_storage_default_bucket.go (the GA promotion of the firebasestorage service). |
 | `google_firebase_web_app` | `google-beta` | GcpFirebaseWebApp | The web app registration (projects.webApps on the Firebase Management API) is published only in the beta provider at the pin -- the GA provider has no code under services/firebase; the kind cannot exist without it. | hashicorp/terraform-provider-google: the appearance of google/services/firebase/resource_firebase_web_app.go (the GA promotion of the firebase service); until then google-beta/services/firebase/ is the only home. |
+| `google_project_service_identity` | `google-beta` | GcpCertManagerIssuanceConfig | The Certificate Manager service agent (services.generateServiceIdentity on the Service Usage v1beta1 API) is created only through the beta provider at the pin -- the GA provider registers no google_project_service_identity. Google refuses an issuance config unless that agent holds roles/privateca.certificateRequester on the pool, and creates the agent only on request, so the kind cannot deploy without it. | hashicorp/terraform-provider-google: google/services/resourcemanager/resource_project_service_identity.go gaining its implementation (at the pin it is an empty generated stub in the GA provider, which follows the Service Usage generateServiceIdentity method reaching v1); until then google-beta/services/resourcemanager/ is its only home. |
 | `google_tpu_v2_queued_resource` | `google-beta` | GcpTpuQueuedResource | The Cloud TPU queued resource (projects.locations.queuedResources on the Cloud TPU API) -- Google's way to wait for scarce TPU capacity -- is published only in the beta provider at the pin; the GA provider has no code under services/tpuv2. | hashicorp/terraform-provider-google: the appearance of google/services/tpuv2/resource_tpu_v2_queued_resource.go (the GA promotion of the tpuv2 service); until then google-beta/services/tpuv2/ is the only home. |
 | `google_tpu_v2_vm` | `google-beta` | GcpTpuVm | The Cloud TPU VM (projects.locations.nodes on the Cloud TPU API) is published only in the beta provider at the pin -- the GA provider has no code under services/tpuv2, and the GA google_tpu_node it once had was removed in 7.0.0; the kind cannot exist without it. | hashicorp/terraform-provider-google: the appearance of google/services/tpuv2/resource_tpu_v2_vm.go (the GA promotion of the tpuv2 service); until then google-beta/services/tpuv2/ is the only home. |
 
@@ -79,7 +80,7 @@ excluded with a recorded reason -- and every spec field must reach provider
 surface. **Accounted** means both directions hold with zero unexplained
 gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind runs on.
 
-**169 of 186 kinds are at total accounting; 80 proven live.**
+**169 of 186 kinds are at total accounting; 158 proven live.**
 
 | Kind | Provider args | Matched | Mapped | Excluded | Open gaps | Accounted | Proven |
 |---|---|---|---|---|---|---|---|
@@ -90,63 +91,63 @@ gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind 
 | GcpApiKey | 13 | 10 | 2 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpArtifactRegistryRepo | 52 | 33 | 12 | 7 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpBackendBucket | 29 | 22 | 6 | 1 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpBackendService | 226 | 174 | 45 | 5 | 2 | ❌ | — |
+| GcpBackendService | 226 | 174 | 45 | 5 | 2 | ❌ | ✅ pulumi, terraform |
 | GcpBigQueryCapacityCommitment | 9 | 8 | 1 | 0 | 0 | ✅ | — |
-| GcpBigQueryConnection | 31 | 21 | 8 | 0 | 2 | ❌ | — |
+| GcpBigQueryConnection | 31 | 21 | 8 | 0 | 2 | ❌ | ✅ pulumi, terraform |
 | GcpBigQueryDataset | 39 | 33 | 6 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpBigQueryReservation | 19 | 11 | 8 | 0 | 0 | ✅ | — |
-| GcpBigQueryReservationGroup | 4 | 2 | 2 | 0 | 0 | ✅ | — |
+| GcpBigQueryReservation | 19 | 11 | 8 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpBigQueryReservationGroup | 4 | 2 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpBigQueryTable | 98 | 86 | 12 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpBigtableInstance | 19 | 6 | 13 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpBigtableTable | 23 | 8 | 14 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpBillingBudget | 29 | 24 | 5 | 0 | 0 | ✅ | — |
-| GcpBinaryAuthorizationAttestor | 20 | 11 | 9 | 0 | 0 | ✅ | — |
-| GcpBinaryAuthorizationPolicy | 12 | 10 | 2 | 0 | 0 | ✅ | — |
+| GcpBinaryAuthorizationAttestor | 20 | 11 | 9 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpBinaryAuthorizationPolicy | 12 | 10 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCertManagerCert | 14 | 10 | 2 | 2 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCertManagerDnsAuthorization | 8 | 6 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCertManagerIssuanceConfig | 10 | 7 | 3 | 0 | 0 | ✅ | — |
-| GcpCertManagerTrustConfig | 9 | 4 | 5 | 0 | 0 | ✅ | — |
+| GcpCertManagerTrustConfig | 9 | 4 | 5 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCertificateMap | 14 | 4 | 9 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCloudArmorPolicy | 120 | 26 | 93 | 1 | 0 | ✅ | — |
 | GcpCloudBuildConnection | 32 | 30 | 2 | 0 | 0 | ✅ | — |
 | GcpCloudBuildRepository | 7 | 4 | 3 | 0 | 0 | ✅ | — |
-| GcpCloudBuildTrigger | 131 | 110 | 18 | 3 | 0 | ✅ | — |
-| GcpCloudBuildWorkerPool | 14 | 12 | 2 | 0 | 0 | ✅ | — |
-| GcpCloudComposerEnvironment | 89 | 3 | 67 | 19 | 0 | ✅ | — |
+| GcpCloudBuildTrigger | 131 | 110 | 18 | 3 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpCloudBuildWorkerPool | 14 | 12 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpCloudComposerEnvironment | 89 | 3 | 67 | 19 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCloudComposerUserWorkloadsConfigMap | 6 | 4 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCloudComposerUserWorkloadsSecret | 6 | 4 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpCloudFunction | 73 | 43 | 16 | 14 | 0 | ✅ | — |
+| GcpCloudFunction | 73 | 43 | 16 | 14 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCloudIdentityGroup | 15 | 6 | 8 | 1 | 0 | ✅ | — |
-| GcpCloudRun | 153 | 27 | 102 | 18 | 6 | ❌ | — |
+| GcpCloudRun | 153 | 27 | 102 | 18 | 6 | ❌ | ✅ pulumi, terraform |
 | GcpCloudRunDomainMapping | 10 | 1 | 9 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpCloudRunJob | 84 | 10 | 63 | 9 | 2 | ❌ | — |
-| GcpCloudRunWorkerPool | 97 | 16 | 68 | 13 | 0 | ✅ | — |
+| GcpCloudRunJob | 84 | 10 | 63 | 9 | 2 | ❌ | ✅ pulumi, terraform |
+| GcpCloudRunWorkerPool | 97 | 16 | 68 | 13 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCloudSchedulerJob | 32 | 29 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpCloudSql | 149 | 43 | 99 | 6 | 1 | ❌ | — |
+| GcpCloudSql | 149 | 43 | 99 | 6 | 1 | ❌ | ✅ pulumi, terraform |
 | GcpCloudSqlDatabase | 6 | 4 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpCloudSqlUser | 14 | 10 | 2 | 2 | 0 | ✅ | — |
+| GcpCloudSqlUser | 14 | 10 | 2 | 2 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCloudTasksQueue | 29 | 22 | 7 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpColabRuntime | 10 | 7 | 3 | 0 | 0 | ✅ | — |
-| GcpColabRuntimeTemplate | 26 | 20 | 6 | 0 | 0 | ✅ | — |
-| GcpColabSchedule | 57 | 11 | 44 | 2 | 0 | ✅ | — |
+| GcpColabRuntimeTemplate | 26 | 20 | 6 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpColabSchedule | 57 | 11 | 44 | 2 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpComputeDisk | 40 | 18 | 14 | 4 | 4 | ❌ | ✅ pulumi, terraform |
-| GcpComputeImage | 41 | 21 | 12 | 8 | 0 | ✅ | — |
-| GcpComputeInstance | 129 | 50 | 64 | 11 | 4 | ❌ | — |
-| GcpComputeMig | 423 | 70 | 316 | 29 | 8 | ❌ | — |
+| GcpComputeImage | 41 | 21 | 12 | 8 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpComputeInstance | 129 | 50 | 64 | 11 | 4 | ❌ | ✅ pulumi, terraform |
+| GcpComputeMig | 423 | 70 | 316 | 29 | 8 | ❌ | ✅ pulumi, terraform |
 | GcpDataprocAutoscalingPolicy | 16 | 15 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpDataprocCluster | 172 | 89 | 77 | 0 | 12 | ❌ | — |
-| GcpDatastreamConnectionProfile | 58 | 56 | 2 | 0 | 0 | ✅ | — |
-| GcpDatastreamPrivateConnection | 10 | 9 | 1 | 0 | 0 | ✅ | — |
-| GcpDatastreamStream | 159 | 158 | 1 | 0 | 0 | ✅ | — |
-| GcpDeliveryPipeline | 123 | 116 | 6 | 1 | 0 | ✅ | — |
-| GcpDeployCustomTargetType | 26 | 24 | 2 | 0 | 0 | ✅ | — |
-| GcpDeployPolicy | 39 | 37 | 2 | 0 | 0 | ✅ | — |
-| GcpDeployTarget | 33 | 31 | 2 | 0 | 0 | ✅ | — |
-| GcpDialogflowCxAgent | 161 | 138 | 15 | 8 | 0 | ✅ | — |
-| GcpDialogflowCxSecuritySettings | 16 | 14 | 2 | 0 | 0 | ✅ | — |
+| GcpDataprocCluster | 172 | 89 | 77 | 0 | 12 | ❌ | ✅ pulumi, terraform |
+| GcpDatastreamConnectionProfile | 58 | 56 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpDatastreamPrivateConnection | 10 | 9 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpDatastreamStream | 159 | 158 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpDeliveryPipeline | 123 | 116 | 6 | 1 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpDeployCustomTargetType | 26 | 24 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpDeployPolicy | 39 | 37 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpDeployTarget | 33 | 31 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpDialogflowCxAgent | 161 | 138 | 15 | 8 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpDialogflowCxSecuritySettings | 16 | 14 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpDnsRecord | 49 | 43 | 6 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpDnsZone | 23 | 18 | 2 | 3 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpDocumentAiProcessor | 8 | 5 | 2 | 1 | 0 | ✅ | — |
+| GcpDocumentAiProcessor | 8 | 5 | 2 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpEventarcMessageBus | 56 | 12 | 42 | 2 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpEventarcTrigger | 35 | 22 | 12 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpFilestoreInstance | 36 | 14 | 22 | 0 | 0 | ✅ | ✅ pulumi, terraform |
@@ -160,18 +161,18 @@ gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind 
 | GcpFirewallRule | 20 | 13 | 7 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpFolder | 5 | 4 | 1 | 0 | 0 | ✅ | — |
 | GcpGcsBucket | 78 | 39 | 31 | 8 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpGcsBucketIamMember | 6 | 6 | 0 | 0 | 0 | ✅ | — |
-| GcpGkeCluster | 538 | 63 | 147 | 328 | 0 | ✅ | — |
-| GcpGkeFleet | 10 | 5 | 2 | 3 | 0 | ✅ | — |
-| GcpGkeFleetFeature | 126 | 91 | 24 | 11 | 0 | ✅ | — |
-| GcpGkeFleetMembership | 7 | 4 | 3 | 0 | 0 | ✅ | — |
-| GcpGkeFleetScope | 28 | 15 | 11 | 2 | 0 | ✅ | — |
-| GcpGkeNodePool | 185 | 129 | 54 | 0 | 3 | ❌ | — |
+| GcpGcsBucketIamMember | 6 | 6 | 0 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpGkeCluster | 538 | 63 | 147 | 328 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpGkeFleet | 10 | 5 | 2 | 3 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpGkeFleetFeature | 126 | 91 | 24 | 11 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpGkeFleetMembership | 7 | 4 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpGkeFleetScope | 28 | 15 | 11 | 2 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpGkeNodePool | 185 | 129 | 54 | 0 | 3 | ❌ | ✅ pulumi, terraform |
 | GcpGkeWorkloadIdentityBinding | 6 | 3 | 0 | 3 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpGlobalAddress | 11 | 9 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpGlobalForwardingRule | 51 | 43 | 8 | 0 | 0 | ✅ | — |
+| GcpGlobalForwardingRule | 51 | 43 | 8 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpHaVpnConnection | 84 | 44 | 25 | 15 | 0 | ✅ | — |
-| GcpHaVpnGateway | 30 | 11 | 16 | 3 | 0 | ✅ | — |
+| GcpHaVpnGateway | 30 | 11 | 16 | 3 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpHealthCheck | 100 | 14 | 86 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpHierarchicalFirewallPolicy | 37 | 29 | 6 | 2 | 0 | ✅ | — |
 | GcpIamCustomRole | 7 | 6 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
@@ -179,52 +180,52 @@ gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind 
 | GcpIamOauthClient | 18 | 12 | 3 | 3 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpIdentityPlatformConfig | 55 | 42 | 10 | 3 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpIdentityPlatformTenant | 36 | 24 | 6 | 6 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpKmsAutokeyConfig | 7 | 5 | 2 | 0 | 0 | ✅ | — |
-| GcpKmsKey | 12 | 10 | 2 | 0 | 0 | ✅ | — |
-| GcpKmsKeyHandle | 4 | 2 | 2 | 0 | 0 | ✅ | — |
+| GcpKmsAutokeyConfig | 7 | 5 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpKmsKey | 12 | 10 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpKmsKeyHandle | 4 | 2 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpKmsKeyIamMember | 6 | 6 | 0 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpKmsKeyRing | 3 | 1 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpLogBucket | 59 | 38 | 17 | 4 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpLogMetric | 23 | 21 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpLoggingSink | 54 | 38 | 16 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpManagedKafkaAcl | 9 | 8 | 1 | 0 | 0 | ✅ | — |
-| GcpManagedKafkaCluster | 15 | 7 | 6 | 1 | 1 | ❌ | — |
-| GcpManagedKafkaConnectCluster | 10 | 7 | 3 | 0 | 0 | ✅ | — |
-| GcpManagedKafkaConnector | 8 | 7 | 1 | 0 | 0 | ✅ | — |
-| GcpManagedKafkaTopic | 8 | 7 | 1 | 0 | 0 | ✅ | — |
+| GcpManagedKafkaAcl | 9 | 8 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpManagedKafkaCluster | 15 | 7 | 6 | 1 | 1 | ❌ | ✅ pulumi, terraform |
+| GcpManagedKafkaConnectCluster | 10 | 7 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpManagedKafkaConnector | 8 | 7 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpManagedKafkaTopic | 8 | 7 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpManagedSslCertificate | 6 | 2 | 3 | 1 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpMemorystoreInstance | 39 | 30 | 6 | 3 | 0 | ✅ | — |
-| GcpModelArmorFloorSetting | 19 | 13 | 6 | 0 | 0 | ✅ | — |
-| GcpModelArmorTemplate | 25 | 22 | 2 | 0 | 1 | ❌ | — |
+| GcpMemorystoreInstance | 39 | 30 | 6 | 3 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpModelArmorFloorSetting | 19 | 13 | 6 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpModelArmorTemplate | 25 | 22 | 2 | 0 | 1 | ❌ | ✅ pulumi, terraform |
 | GcpMonitoringAlertPolicy | 70 | 68 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpMonitoringDashboard | 3 | 2 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpMonitoringNotificationChannel | 18 | 9 | 3 | 6 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpMonitoringSlo | 53 | 9 | 44 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpMonitoringUptimeCheck | 38 | 33 | 3 | 2 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpNetworkEndpointGroup | 28 | 15 | 11 | 2 | 0 | ✅ | — |
-| GcpNetworkFirewallPolicy | 87 | 63 | 20 | 4 | 0 | ✅ | — |
+| GcpNetworkFirewallPolicy | 87 | 63 | 20 | 4 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpOrgPolicy | 27 | 1 | 26 | 0 | 0 | ✅ | — |
 | GcpOrgPolicyCustomConstraint | 9 | 7 | 2 | 0 | 0 | ✅ | — |
 | GcpPlantonRunner | 0 | 0 | 0 | 0 | 0 | ✅ | — |
-| GcpPrivateCaCertificate | 59 | 54 | 3 | 2 | 0 | ✅ | — |
-| GcpPrivateCaCertificateAuthority | 67 | 62 | 3 | 2 | 0 | ✅ | — |
-| GcpPrivateCaCertificateTemplate | 49 | 45 | 2 | 2 | 0 | ✅ | — |
-| GcpPrivateCaPool | 57 | 51 | 4 | 2 | 0 | ✅ | — |
+| GcpPrivateCaCertificate | 59 | 54 | 3 | 2 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpPrivateCaCertificateAuthority | 67 | 62 | 3 | 2 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpPrivateCaCertificateTemplate | 49 | 45 | 2 | 2 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpPrivateCaPool | 57 | 51 | 4 | 2 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpProject | 14 | 5 | 5 | 4 | 0 | ✅ | — |
 | GcpProjectIamMember | 6 | 5 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpPscServiceAttachment | 20 | 14 | 4 | 1 | 1 | ❌ | — |
 | GcpPubSubSchema | 5 | 3 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpPubSubSubscription | 44 | 41 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpPubSubTopic | 44 | 41 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpPubSubTopicIamMember | 7 | 3 | 0 | 4 | 0 | ✅ | — |
-| GcpRedisCluster | 36 | 29 | 4 | 3 | 0 | ✅ | — |
+| GcpPubSubTopicIamMember | 7 | 3 | 0 | 4 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpRedisCluster | 36 | 29 | 4 | 3 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpRedisClusterEndpointSet | 10 | 2 | 8 | 0 | 0 | ✅ | — |
 | GcpRedisInstance | 32 | 24 | 6 | 2 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpRegionNetworkEndpointGroup | 18 | 16 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpRouterNat | 54 | 28 | 21 | 5 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpSccBigQueryExport | 22 | 18 | 3 | 1 | 0 | ✅ | — |
-| GcpSccMuteConfig | 21 | 18 | 3 | 0 | 0 | ✅ | — |
-| GcpSccNotificationConfig | 21 | 15 | 6 | 0 | 0 | ✅ | — |
+| GcpSccBigQueryExport | 22 | 18 | 3 | 1 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpSccMuteConfig | 21 | 18 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpSccNotificationConfig | 21 | 15 | 6 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpSecretManagerSecret | 65 | 35 | 16 | 10 | 4 | ❌ | ✅ pulumi, terraform |
 | GcpServerlessVpcConnector | 13 | 9 | 2 | 2 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpServiceAccount | 26 | 11 | 5 | 10 | 0 | ✅ | ✅ pulumi, terraform |
@@ -239,34 +240,34 @@ gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind 
 | GcpSslCertificate | 19 | 9 | 4 | 6 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpSslPolicy | 17 | 13 | 4 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpSubnetwork | 29 | 22 | 7 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpTagBinding | 7 | 5 | 2 | 0 | 0 | ✅ | — |
-| GcpTagKey | 7 | 6 | 1 | 0 | 0 | ✅ | — |
-| GcpTagValue | 4 | 3 | 1 | 0 | 0 | ✅ | — |
-| GcpTargetHttpProxy | 14 | 10 | 4 | 0 | 0 | ✅ | — |
+| GcpTagBinding | 7 | 5 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpTagKey | 7 | 6 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpTagValue | 4 | 3 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpTargetHttpProxy | 14 | 10 | 4 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpTargetHttpsProxy | 25 | 21 | 4 | 0 | 0 | ✅ | — |
 | GcpTpuQueuedResource | 14 | 2 | 11 | 1 | 0 | ✅ | — |
 | GcpTpuVm | 31 | 27 | 4 | 0 | 0 | ✅ | — |
-| GcpUrlMap | 558 | 124 | 430 | 0 | 4 | ❌ | — |
+| GcpUrlMap | 558 | 124 | 429 | 1 | 4 | ❌ | — |
 | GcpVectorSearchCollection | 30 | 18 | 12 | 0 | 0 | ✅ | — |
-| GcpVertexAiAgentEngine | 104 | 50 | 41 | 13 | 0 | ✅ | — |
-| GcpVertexAiDataset | 7 | 4 | 3 | 0 | 0 | ✅ | — |
+| GcpVertexAiAgentEngine | 104 | 50 | 41 | 13 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpVertexAiDataset | 7 | 4 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVertexAiDeployedIndex | 16 | 12 | 4 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVertexAiEndpoint | 19 | 8 | 9 | 2 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpVertexAiFeatureGroup | 16 | 7 | 9 | 0 | 0 | ✅ | — |
-| GcpVertexAiFeatureOnlineStore | 27 | 18 | 9 | 0 | 0 | ✅ | — |
+| GcpVertexAiFeatureGroup | 16 | 7 | 9 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpVertexAiFeatureOnlineStore | 27 | 18 | 9 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVertexAiIndex | 17 | 5 | 12 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVertexAiIndexEndpoint | 13 | 10 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpVertexAiModelGardenDeployment | 90 | 87 | 3 | 0 | 0 | ✅ | — |
-| GcpVertexAiNotebook | 46 | 9 | 36 | 1 | 0 | ✅ | — |
-| GcpVertexAiPersistentResource | 23 | 19 | 4 | 0 | 0 | ✅ | — |
-| GcpVertexAiRagEngineConfig | 3 | 1 | 2 | 0 | 0 | ✅ | — |
+| GcpVertexAiModelGardenDeployment | 90 | 87 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpVertexAiNotebook | 46 | 9 | 36 | 1 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpVertexAiPersistentResource | 23 | 19 | 4 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpVertexAiRagEngineConfig | 3 | 1 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVertexAiSearchDataConnector | 34 | 27 | 1 | 0 | 6 | ❌ | — |
-| GcpVertexAiSearchDataStore | 53 | 23 | 30 | 0 | 0 | ✅ | — |
-| GcpVertexAiSearchEngine | 160 | 124 | 29 | 2 | 5 | ❌ | — |
-| GcpVertexAiTensorboard | 25 | 11 | 12 | 2 | 0 | ✅ | — |
+| GcpVertexAiSearchDataStore | 53 | 23 | 30 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpVertexAiSearchEngine | 160 | 124 | 29 | 2 | 5 | ❌ | ✅ pulumi, terraform |
+| GcpVertexAiTensorboard | 25 | 11 | 12 | 2 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVpcNetwork | 17 | 10 | 6 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVpcPeering | 17 | 14 | 2 | 1 | 0 | ✅ | — |
-| GcpWorkflow | 23 | 10 | 5 | 8 | 0 | ✅ | — |
+| GcpWorkflow | 23 | 10 | 5 | 8 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpWorkloadIdentityPool | 16 | 15 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpWorkloadIdentityPoolProvider | 16 | 15 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 
@@ -276,9 +277,9 @@ All resources of `google@8.7.0` land in exactly one class:
 
 | Disposition | Resources | Meaning |
 |---|---|---|
-| Modeled | 300 | consumed by a kind's Terraform module today |
-| IAM-covered | 24 | authoritative per-resource IAM forms (binding, policy) of a resource a kind already grants on additively; deliberately not modeled |
-| IAM not offered per resource | 393 | per-resource IAM triplets for resources no kind grants on yet; access goes through a grant at a broader scope (the project or account) |
+| Modeled | 301 | consumed by a kind's Terraform module today |
+| IAM-covered | 26 | authoritative per-resource IAM forms (binding, policy) of a resource a kind already grants on additively; deliberately not modeled |
+| IAM not offered per resource | 390 | per-resource IAM triplets for resources no kind grants on yet; access goes through a grant at a broader scope (the project or account) |
 | Composed | 6 | capability covered through an existing kind's surface rather than a kind of its own |
 | Planned | 0 | judged to be covered by a planned kind or planned composition, not built yet |
 | Deferred | 576 | deliberately not offered, each with the recorded reason |
@@ -291,7 +292,7 @@ All resources of `google@8.7.0` land in exactly one class:
 The full per-resource record, so the accounting above is verifiable
 rather than trusted.
 
-### Modeled (300)
+### Modeled (301)
 
 | Resource | Consuming kinds |
 |---|---|
@@ -526,6 +527,7 @@ rather than trusted.
 | `google_org_policy_policy` | consumed by GcpOrgPolicy |
 | `google_organization_iam_member` | consumed by GcpServiceAccount |
 | `google_privateca_ca_pool` | consumed by GcpPrivateCaPool |
+| `google_privateca_ca_pool_iam_member` | consumed by GcpCertManagerIssuanceConfig |
 | `google_privateca_certificate` | consumed by GcpPrivateCaCertificate |
 | `google_privateca_certificate_authority` | consumed by GcpPrivateCaCertificateAuthority |
 | `google_privateca_certificate_template` | consumed by GcpPrivateCaCertificateTemplate |
@@ -596,7 +598,7 @@ rather than trusted.
 | `google_workbench_instance` | consumed by GcpVertexAiNotebook |
 | `google_workflows_workflow` | consumed by GcpWorkflow |
 
-### IAM-covered (24)
+### IAM-covered (26)
 
 | Resource | Detail |
 |---|---|
@@ -612,6 +614,8 @@ rather than trusted.
 | `google_kms_crypto_key_iam_policy` | authoritative form of the additive grant GcpKmsKeyIamMember makes on google_kms_crypto_key; deliberately not modeled |
 | `google_organization_iam_binding` | authoritative form of the additive grant GcpServiceAccount makes on google_organization; deliberately not modeled |
 | `google_organization_iam_policy` | authoritative form of the additive grant GcpServiceAccount makes on google_organization; deliberately not modeled |
+| `google_privateca_ca_pool_iam_binding` | authoritative form of the additive grant GcpCertManagerIssuanceConfig makes on google_privateca_ca_pool; deliberately not modeled |
+| `google_privateca_ca_pool_iam_policy` | authoritative form of the additive grant GcpCertManagerIssuanceConfig makes on google_privateca_ca_pool; deliberately not modeled |
 | `google_project_iam_binding` | authoritative form of the additive grant GcpProjectIamMember, GcpServiceAccount makes on google_project; deliberately not modeled |
 | `google_project_iam_policy` | authoritative form of the additive grant GcpProjectIamMember, GcpServiceAccount makes on google_project; deliberately not modeled |
 | `google_pubsub_topic_iam_binding` | authoritative form of the additive grant GcpPubSubTopicIamMember makes on google_pubsub_topic; deliberately not modeled |
@@ -625,7 +629,7 @@ rather than trusted.
 | `google_storage_bucket_iam_binding` | authoritative form of the additive grant GcpGcsBucket, GcpGcsBucketIamMember makes on google_storage_bucket; deliberately not modeled |
 | `google_storage_bucket_iam_policy` | authoritative form of the additive grant GcpGcsBucket, GcpGcsBucketIamMember makes on google_storage_bucket; deliberately not modeled |
 
-### IAM not offered per resource (393)
+### IAM not offered per resource (390)
 
 | Resource | Detail |
 |---|---|
@@ -962,9 +966,6 @@ rather than trusted.
 | `google_network_security_address_group_iam_binding` | no kind grants on google_network_security_address_group per resource yet; grant at a broader scope |
 | `google_network_security_address_group_iam_member` | no kind grants on google_network_security_address_group per resource yet; grant at a broader scope |
 | `google_network_security_address_group_iam_policy` | no kind grants on google_network_security_address_group per resource yet; grant at a broader scope |
-| `google_privateca_ca_pool_iam_binding` | no kind grants on google_privateca_ca_pool per resource yet; grant at a broader scope |
-| `google_privateca_ca_pool_iam_member` | no kind grants on google_privateca_ca_pool per resource yet; grant at a broader scope |
-| `google_privateca_ca_pool_iam_policy` | no kind grants on google_privateca_ca_pool per resource yet; grant at a broader scope |
 | `google_privateca_certificate_template_iam_binding` | no kind grants on google_privateca_certificate_template per resource yet; grant at a broader scope |
 | `google_privateca_certificate_template_iam_member` | no kind grants on google_privateca_certificate_template per resource yet; grant at a broader scope |
 | `google_privateca_certificate_template_iam_policy` | no kind grants on google_privateca_certificate_template per resource yet; grant at a broader scope |
