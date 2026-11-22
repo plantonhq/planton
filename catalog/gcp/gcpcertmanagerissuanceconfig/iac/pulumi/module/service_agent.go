@@ -1,8 +1,6 @@
 package module
 
 import (
-	"strings"
-
 	"github.com/pkg/errors"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/certificateauthority"
@@ -21,9 +19,9 @@ import (
 // deleting the identity is a no-op, so the agent outlives this config. The
 // returned grant is what the config depends on.
 //
-// The grant lands in the pool's own project and location, parsed from its
-// full name, so a pool in another project works -- identical parse to the
-// Terraform module. It is a member grant: two configs over one pool write
+// The grant names the pool by its full name, so it lands on the pool where
+// it lives, whatever project this config is in -- as the Terraform module
+// does. It is a member grant: two configs over one pool write
 // the same binding, and destroying either removes it until the other is
 // applied again.
 func certificateManagerAgentGrant(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider, projectService pulumi.Resource) (pulumi.Resource, error) {
@@ -43,20 +41,15 @@ func certificateManagerAgentGrant(ctx *pulumi.Context, locals *Locals, gcpProvid
 		return nil, errors.Wrap(err, "failed to create the certificate manager service agent")
 	}
 
-	// projects/{project}/locations/{location}/caPools/{pool}, which the
-	// spec's ca_pool.format rule guarantees for a literal and the
-	// GcpPrivateCaPool name output always has.
-	poolParts := strings.Split(spec.CaPool.GetValue(), "/")
-	if len(poolParts) != 6 {
-		return nil, errors.Errorf("ca_pool %q is not projects/{project}/locations/{location}/caPools/{pool}", spec.CaPool.GetValue())
-	}
-
 	createdGrant, err := certificateauthority.NewCaPoolIamMember(ctx, name+"-agent-requests-certificates", &certificateauthority.CaPoolIamMemberArgs{
-		Project:  pulumi.StringPtr(poolParts[1]),
-		Location: pulumi.StringPtr(poolParts[3]),
-		CaPool:   pulumi.String(poolParts[5]),
-		Role:     pulumi.String("roles/privateca.certificateRequester"),
-		Member:   createdAgent.Member,
+		// projects/{project}/locations/{location}/caPools/{pool}, which the
+		// spec's ca_pool.format rule guarantees for a literal and the
+		// GcpPrivateCaPool name output always has. The provider's IAM
+		// parser accepts the full name or {project}/{location}/{pool},
+		// never the bare pool id.
+		CaPool: pulumi.String(spec.CaPool.GetValue()),
+		Role:   pulumi.String("roles/privateca.certificateRequester"),
+		Member: createdAgent.Member,
 	}, pulumi.Provider(gcpProvider))
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to grant the certificate manager service agent on the ca pool")

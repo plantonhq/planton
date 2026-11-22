@@ -35,11 +35,11 @@ resource "google_project_service_identity" "certificatemanager_agent" {
 # same binding, and destroying either removes it until the other is applied
 # again.
 resource "google_privateca_ca_pool_iam_member" "certificatemanager_agent_requests_certificates" {
-  project  = local.ca_pool_project
-  location = local.ca_pool_location
-  ca_pool  = local.ca_pool_id
-  role     = "roles/privateca.certificateRequester"
-  member   = google_project_service_identity.certificatemanager_agent.member
+  # The pool's full name: the provider's IAM parser accepts the full name or
+  # {project}/{location}/{pool}, never the bare pool id.
+  ca_pool = var.spec.ca_pool
+  role    = "roles/privateca.certificateRequester"
+  member  = google_project_service_identity.certificatemanager_agent.member
 }
 
 # One certificate issuance config: how Google-managed certificates that name
