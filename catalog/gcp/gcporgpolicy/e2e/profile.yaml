@@ -3,21 +3,23 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcporgpolicy
 spec:
-  # Awaiting the live proof lane on the PROJECT-scoped arm. Google grants
-  # roles/orgpolicy.policyAdmin only on an organization, never on a project,
-  # so both scenarios run as the declared identity holding it on the test
-  # organization (PLANTON_E2E_GCP_ORGANIZATION_ID), which holds the harness
-  # project; each second act updates the policy in place. Offline bar met:
-  # both modules build and validate, offline plans for the reference
-  # manifest and both scenarios are clean on the pinned provider, and the
-  # accounting is total. Live facts the proof lane confirms: (1) the
-  # boolean and list rule shapes deploy and RE-PLAN CLEAN under the
-  # apply-idempotency gate -- Google normalizes the "TRUE"/"FALSE" strings
-  # and compares rules as a set; (2) dry_run_spec round-trips; (3) the
-  # ambient-project resolution renders the same parent on both engines.
-  # The folder and organization arms stay offline-only: a policy there would
-  # bind every lane in the test organization.
+  # Proven live on both engines (2026-11-23, test organization
+  # planton-e2e.com) on the PROJECT-scoped arm. Google grants roles/orgpolicy.policyAdmin
+  # only on an organization, never on a project, so every scenario runs as the
+  # declared identity holding it on the test organization
+  # (PLANTON_E2E_GCP_ORGANIZATION_ID), which holds the harness project; each
+  # second act updates the policy in place. Three scenarios: a legacy boolean
+  # constraint (minimal), a legacy list constraint with a value group
+  # (list-values), and a managed constraint with a dry-run policy beside the
+  # live one (managed-dry-run): Google takes a dry run only on custom and
+  # managed constraints and four legacy ones, and refused it on
+  # gcp.resourceLocations ("DryRun feature is not available for the resource",
+  # measured on both engines). The provider keeps only the bare constraint in
+  # its name attribute after the first read, so both modules export the
+  # resource id as the full name. The folder and organization arms stay
+  # offline-only: a policy there would bind every lane in the test
+  # organization.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15
