@@ -152,10 +152,12 @@ variable "spec" {
 
         # Rewrite the path using a template that references named path variables
         # captured by a route rule's path_template_match (e.g. "/v2/{country}").
-        # Honored only inside a route_rule's route_action, on both scopes: Google
-        # refuses it in a path matcher's default route action ("pathTemplateRewrite
-        # can only be set on RouteRule level", measured on a regional map), in the
-        # map's default route action, and in path-rule route actions. Mutually exclusive with path_prefix_rewrite.
+        # Honored only inside a route_rule's route_action whose match_rules
+        # include a path_template_match, on both scopes: Google refuses it in a
+        # path matcher's default route action ("pathTemplateRewrite can only be
+        # set on RouteRule level", measured on a regional map), in the map's
+        # default route action, and in path-rule route actions. Mutually
+        # exclusive with path_prefix_rewrite.
         path_template_rewrite = optional(string, "")
       }))
 
@@ -539,8 +541,11 @@ variable "spec" {
       }))
 
       # Advanced default handling (weighted split / rewrite) for the path matcher.
-      # On a regional map this is the one place besides route rules where a
-      # url_rewrite may carry path_template_rewrite.
+      # Its url_rewrite takes host_rewrite and path_prefix_rewrite but never
+      # path_template_rewrite: the default matches no template, so it has no
+      # variables to rewrite with, and Google refuses it here on both scopes
+      # ("pathTemplateRewrite can only be set on RouteRule level", measured on a
+      # regional map, whose provider schema still offers the argument).
       default_route_action = optional(object({
         # Split traffic across multiple backend services by weight — the mechanism
         # for weighted canary and blue/green rollouts. The weights are relative; a
@@ -605,10 +610,12 @@ variable "spec" {
 
           # Rewrite the path using a template that references named path variables
           # captured by a route rule's path_template_match (e.g. "/v2/{country}").
-          # Honored only inside a route_rule's route_action, on both scopes: Google
-          # refuses it in a path matcher's default route action ("pathTemplateRewrite
-          # can only be set on RouteRule level", measured on a regional map), in the
-          # map's default route action, and in path-rule route actions. Mutually exclusive with path_prefix_rewrite.
+          # Honored only inside a route_rule's route_action whose match_rules
+          # include a path_template_match, on both scopes: Google refuses it in a
+          # path matcher's default route action ("pathTemplateRewrite can only be
+          # set on RouteRule level", measured on a regional map), in the map's
+          # default route action, and in path-rule route actions. Mutually
+          # exclusive with path_prefix_rewrite.
           path_template_rewrite = optional(string, "")
         }))
 
@@ -1014,10 +1021,12 @@ variable "spec" {
 
             # Rewrite the path using a template that references named path variables
             # captured by a route rule's path_template_match (e.g. "/v2/{country}").
-            # Honored only inside a route_rule's route_action, on both scopes: Google
-            # refuses it in a path matcher's default route action ("pathTemplateRewrite
-            # can only be set on RouteRule level", measured on a regional map), in the
-            # map's default route action, and in path-rule route actions. Mutually exclusive with path_prefix_rewrite.
+            # Honored only inside a route_rule's route_action whose match_rules
+            # include a path_template_match, on both scopes: Google refuses it in a
+            # path matcher's default route action ("pathTemplateRewrite can only be
+            # set on RouteRule level", measured on a regional map), in the map's
+            # default route action, and in path-rule route actions. Mutually
+            # exclusive with path_prefix_rewrite.
             path_template_rewrite = optional(string, "")
           }))
 
@@ -1440,6 +1449,9 @@ variable "spec" {
         }))
 
         # Advanced handling (weighted split / rewrite / retry) for matched requests.
+        # A url_rewrite.path_template_rewrite here needs at least one match rule
+        # with a path_template_match: the rewrite may use only the variables that
+        # template captures, and Google refuses it without one.
         route_action = optional(object({
           # Split traffic across multiple backend services by weight — the mechanism
           # for weighted canary and blue/green rollouts. The weights are relative; a
@@ -1504,10 +1516,12 @@ variable "spec" {
 
             # Rewrite the path using a template that references named path variables
             # captured by a route rule's path_template_match (e.g. "/v2/{country}").
-            # Honored only inside a route_rule's route_action, on both scopes: Google
-            # refuses it in a path matcher's default route action ("pathTemplateRewrite
-            # can only be set on RouteRule level", measured on a regional map), in the
-            # map's default route action, and in path-rule route actions. Mutually exclusive with path_prefix_rewrite.
+            # Honored only inside a route_rule's route_action whose match_rules
+            # include a path_template_match, on both scopes: Google refuses it in a
+            # path matcher's default route action ("pathTemplateRewrite can only be
+            # set on RouteRule level", measured on a regional map), in the map's
+            # default route action, and in path-rule route actions. Mutually
+            # exclusive with path_prefix_rewrite.
             path_template_rewrite = optional(string, "")
           }))
 

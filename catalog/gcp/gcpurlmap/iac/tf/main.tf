@@ -19,8 +19,8 @@ resource "google_project_service" "compute_api" {
 # share the whole routing surface except Cloud CDN route caching, custom
 # error pages, stream-duration limits (outside a path matcher's default
 # action), and header-driven routing tests, which exist only on the global
-# map; the regional map alone honors a path_template_rewrite in a path
-# matcher's default route action. spec.region selects which resource below
+# map. On both, path_template_rewrite lives only in a route rule's route
+# action, beside a path_template_match. spec.region selects which resource below
 # is created; the regional block below mirrors this one minus the surfaces
 # its API lacks, and the spec's CEL walls keep those surfaces off a regional
 # manifest before the API ever sees it.
@@ -1126,8 +1126,9 @@ resource "google_compute_url_map" "this" {
 
 # The regional twin: the routing brain of the regional external and regional
 # internal Application Load Balancers. It routes only to regional backend
-# services in its own region (never to a backend bucket), and it alone
-# honors path_template_rewrite in a path matcher's default route action.
+# services in its own region (never to a backend bucket). Its schema offers
+# path_template_rewrite in a path matcher's default route action, but Google
+# refuses it there as on the global map, so this block never sends it.
 resource "google_compute_region_url_map" "this" {
   count = local.is_regional ? 1 : 0
 
@@ -1363,9 +1364,8 @@ resource "google_compute_region_url_map" "this" {
           dynamic "url_rewrite" {
             for_each = default_route_action.value.url_rewrite != null ? [default_route_action.value.url_rewrite] : []
             content {
-              host_rewrite          = url_rewrite.value.host_rewrite
-              path_prefix_rewrite   = url_rewrite.value.path_prefix_rewrite
-              path_template_rewrite = url_rewrite.value.path_template_rewrite
+              host_rewrite        = url_rewrite.value.host_rewrite
+              path_prefix_rewrite = url_rewrite.value.path_prefix_rewrite
             }
           }
 

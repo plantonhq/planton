@@ -123,13 +123,13 @@ locals {
             header_action   = w.header_action
           }
         ]
-        # path_template_rewrite is honored here by the regional map alone (the
-        # spec CEL rejects it on a global map); the global resource block
-        # never reads the key.
+        # No path_template_rewrite here: Google honors it only in a route
+        # rule's route action ("pathTemplateRewrite can only be set on
+        # RouteRule level"), and the spec CEL refuses it at this site on both
+        # scopes, although the regional provider schema still offers it.
         url_rewrite = matcher.default_route_action.url_rewrite == null ? null : {
-          host_rewrite          = try(matcher.default_route_action.url_rewrite.host_rewrite, "") != "" ? matcher.default_route_action.url_rewrite.host_rewrite : null
-          path_prefix_rewrite   = try(matcher.default_route_action.url_rewrite.path_prefix_rewrite, "") != "" ? matcher.default_route_action.url_rewrite.path_prefix_rewrite : null
-          path_template_rewrite = try(matcher.default_route_action.url_rewrite.path_template_rewrite, "") != "" ? matcher.default_route_action.url_rewrite.path_template_rewrite : null
+          host_rewrite        = try(matcher.default_route_action.url_rewrite.host_rewrite, "") != "" ? matcher.default_route_action.url_rewrite.host_rewrite : null
+          path_prefix_rewrite = try(matcher.default_route_action.url_rewrite.path_prefix_rewrite, "") != "" ? matcher.default_route_action.url_rewrite.path_prefix_rewrite : null
         }
         timeout                = matcher.default_route_action.timeout
         retry_policy           = matcher.default_route_action.retry_policy

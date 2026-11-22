@@ -1,10 +1,10 @@
 # GcpUrlMap scenario: the REGIONAL arm (google_compute_region_url_map) -- a
 # set region routes the module down the regional branch, every backend is a
-# regional backend service fixture in the same region, and the path matcher
-# exercises the one knob only the regional map honors: a pathTemplateRewrite
-# in its DEFAULT route action, paired (as Google requires) with a route rule
-# whose pathTemplateMatch declares the variable. A service-only routing test
-# proves the regional test shape.
+# regional backend service fixture in the same region, and the path matcher's
+# route rule rewrites through a pathTemplateRewrite beside the
+# pathTemplateMatch that declares its variable (Google honors the rewrite
+# only in a route rule, never in a path matcher's default route action). A
+# service-only routing test proves the regional test shape.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpUrlMap
 metadata:
@@ -41,8 +41,6 @@ spec:
           name: planton-oss-e2e-gcpum-rbs
           fieldPath: status.outputs.self_link
       defaultRouteAction:
-        urlRewrite:
-          pathTemplateRewrite: "/v2/{path}"
         timeout:
           seconds: 30
       routeRules:
@@ -52,6 +50,9 @@ spec:
               kind: GcpBackendService
               name: planton-oss-e2e-gcpum-rbs
               fieldPath: status.outputs.self_link
+          routeAction:
+            urlRewrite:
+              pathTemplateRewrite: "/v2/{path}"
           matchRules:
             - pathTemplateMatch: "/v1/{path=**}"
   tests:

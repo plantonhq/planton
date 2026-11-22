@@ -33,8 +33,9 @@ ALB), routing only to regional backend services in that region. The two
 scopes share the whole routing surface except Cloud CDN route caching,
 custom error pages, stream-duration limits, and header-driven routing
 tests, which exist only on the global map (and are rejected when region is
-set); the regional map alone honors a path_template_rewrite in a path
-matcher's default route action. A URL map cannot move between scopes.
+set). On both scopes a path_template_rewrite lives only in a route rule's
+route_action, beside a match rule whose path_template_match captures its
+variables. A URL map cannot move between scopes.
 
 ## Example
 
@@ -857,10 +858,12 @@ path_template_rewrite.
 
 Rewrite the path using a template that references named path variables
 captured by a route rule's path_template_match (e.g. "/v2/{country}").
-Honored only inside a route_rule's route_action, on both scopes: Google
-refuses it in a path matcher's default route action ("pathTemplateRewrite
-can only be set on RouteRule level", measured on a regional map), in the
-map's default route action, and in path-rule route actions. Mutually exclusive with path_prefix_rewrite.
+Honored only inside a route_rule's route_action whose match_rules
+include a path_template_match, on both scopes: Google refuses it in a
+path matcher's default route action ("pathTemplateRewrite can only be
+set on RouteRule level", measured on a regional map), in the map's
+default route action, and in path-rule route actions. Mutually
+exclusive with path_prefix_rewrite.
 
 - rule: {"string":{"maxLen":"1024"}}
 
@@ -1565,6 +1568,7 @@ routing (path_rules, route_rules, and its own default). Mutable.
 - rule: a path matcher may set at most one default target: default_service, default_url_redirect, or default_route_action with weighted_backend_services (a route action carrying only sub-policies may accompany default_service)
 - rule: default_route_action and default_url_redirect are mutually exclusive — a redirect never reaches a backend
 - rule: a path matcher uses either path_rules or route_rules, not both
+- rule: path_template_rewrite is honored only inside a route rule's route_action, beside a path_template_match — GCP rejects it in a path matcher's default route action on both global and regional maps; move it into a route rule or use path_prefix_rewrite
 
 ### spec.pathMatchers[].name
 
@@ -1650,8 +1654,11 @@ string is preserved).
 `GcpUrlMapRouteAction`
 
 Advanced default handling (weighted split / rewrite) for the path matcher.
-On a regional map this is the one place besides route rules where a
-url_rewrite may carry path_template_rewrite.
+Its url_rewrite takes host_rewrite and path_prefix_rewrite but never
+path_template_rewrite: the default matches no template, so it has no
+variables to rewrite with, and Google refuses it here on both scopes
+("pathTemplateRewrite can only be set on RouteRule level", measured on a
+regional map, whose provider schema still offers the argument).
 
 ### spec.pathMatchers[].defaultRouteAction.weightedBackendServices
 
@@ -1795,10 +1802,12 @@ path_template_rewrite.
 
 Rewrite the path using a template that references named path variables
 captured by a route rule's path_template_match (e.g. "/v2/{country}").
-Honored only inside a route_rule's route_action, on both scopes: Google
-refuses it in a path matcher's default route action ("pathTemplateRewrite
-can only be set on RouteRule level", measured on a regional map), in the
-map's default route action, and in path-rule route actions. Mutually exclusive with path_prefix_rewrite.
+Honored only inside a route_rule's route_action whose match_rules
+include a path_template_match, on both scopes: Google refuses it in a
+path matcher's default route action ("pathTemplateRewrite can only be
+set on RouteRule level", measured on a regional map), in the map's
+default route action, and in path-rule route actions. Mutually
+exclusive with path_prefix_rewrite.
 
 - rule: {"string":{"maxLen":"1024"}}
 
@@ -2645,10 +2654,12 @@ path_template_rewrite.
 
 Rewrite the path using a template that references named path variables
 captured by a route rule's path_template_match (e.g. "/v2/{country}").
-Honored only inside a route_rule's route_action, on both scopes: Google
-refuses it in a path matcher's default route action ("pathTemplateRewrite
-can only be set on RouteRule level", measured on a regional map), in the
-map's default route action, and in path-rule route actions. Mutually exclusive with path_prefix_rewrite.
+Honored only inside a route_rule's route_action whose match_rules
+include a path_template_match, on both scopes: Google refuses it in a
+path matcher's default route action ("pathTemplateRewrite can only be
+set on RouteRule level", measured on a regional map), in the map's
+default route action, and in path-rule route actions. Mutually
+exclusive with path_prefix_rewrite.
 
 - rule: {"string":{"maxLen":"1024"}}
 
@@ -3294,6 +3305,7 @@ route_rules, not both.
 
 - rule: a route rule must have exactly one target: service, url_redirect, or route_action with weighted_backend_services (a route action carrying only sub-policies may accompany service)
 - rule: route_action and url_redirect are mutually exclusive — a redirect never reaches a backend
+- rule: path_template_rewrite rewrites with the variables a path_template_match captures — give at least one of this route rule's match_rules a path_template_match (e.g. "/v1/{path=**}")
 
 ### spec.pathMatchers[].routeRules[].priority
 
@@ -3517,6 +3529,9 @@ Label value.
 `GcpUrlMapRouteAction`
 
 Advanced handling (weighted split / rewrite / retry) for matched requests.
+A url_rewrite.path_template_rewrite here needs at least one match rule
+with a path_template_match: the rewrite may use only the variables that
+template captures, and Google refuses it without one.
 
 ### spec.pathMatchers[].routeRules[].routeAction.weightedBackendServices
 
@@ -3660,10 +3675,12 @@ path_template_rewrite.
 
 Rewrite the path using a template that references named path variables
 captured by a route rule's path_template_match (e.g. "/v2/{country}").
-Honored only inside a route_rule's route_action, on both scopes: Google
-refuses it in a path matcher's default route action ("pathTemplateRewrite
-can only be set on RouteRule level", measured on a regional map), in the
-map's default route action, and in path-rule route actions. Mutually exclusive with path_prefix_rewrite.
+Honored only inside a route_rule's route_action whose match_rules
+include a path_template_match, on both scopes: Google refuses it in a
+path matcher's default route action ("pathTemplateRewrite can only be
+set on RouteRule level", measured on a regional map), in the map's
+default route action, and in path-rule route actions. Mutually
+exclusive with path_prefix_rewrite.
 
 - rule: {"string":{"maxLen":"1024"}}
 
@@ -4485,8 +4502,7 @@ the GCP API.
 
 - `exactly_one_default_target`: set exactly one default target: default_service, default_url_redirect, or default_route_action (with weighted_backend_services)
 - `default_route_action_conflicts_redirect`: default_route_action and default_url_redirect are mutually exclusive
-- `default_no_path_template_rewrite`: path_template_rewrite is honored only inside a route rule's route_action (and, on a regional map, a path matcher's default route action) — GCP rejects it in the URL map's default route action
-- `path_matcher_path_template_rewrite_regional_only`: path_template_rewrite in a path matcher's default route action is honored only by a regional URL map — set region, move the rewrite into a route rule, or use path_prefix_rewrite
+- `default_no_path_template_rewrite`: path_template_rewrite is honored only inside a route rule's route_action — GCP rejects it in the URL map's default route action
 - `cache_policy_global_only`: cache_policy (Cloud CDN route caching) exists only on a global URL map — a regional Application Load Balancer has no Cloud CDN; clear region or remove every cache_policy
 - `custom_error_response_policy_global_only`: custom error response policies exist only on a global URL map — the regional map has no error-page surface; clear region or remove every custom_error_response_policy and default_custom_error_response_policy
 - `max_stream_duration_global_only`: max_stream_duration exists only on a global URL map (Traffic Director) at the map's default route action and inside path rules and route rules — a regional map carries none; clear region or remove it

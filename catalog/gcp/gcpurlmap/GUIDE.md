@@ -20,8 +20,10 @@ custom error response policies, `maxStreamDuration` (except in a path
 matcher's default route action, which both scopes carry), and the
 header-driven routing-test fields (`headers`, `expectedOutputUrl`,
 `expectedRedirectResponseCode` — a regional test names its `service` and
-nothing else). One knob exists only on the regional map:
-`pathTemplateRewrite` in a path matcher's default route action. `region` is
+nothing else). On both scopes `pathTemplateRewrite` lives only in a route
+rule's route action, beside a match rule whose `pathTemplateMatch` captures
+the variables it uses; Google refuses it in a path matcher's default route
+action even though the regional provider schema offers it there. `region` is
 immutable — a map never moves between scopes.
 
 ## Route evaluation order

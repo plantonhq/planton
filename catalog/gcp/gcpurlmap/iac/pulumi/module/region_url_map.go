@@ -12,8 +12,9 @@ import (
 // regionalUrlMap builds the regional twin (spec.region set): the routing
 // brain of the regional external and regional internal Application Load
 // Balancers. It routes only to regional backend services in its own region
-// (never to a backend bucket), and it alone honors path_template_rewrite in
-// a path matcher's default route action.
+// (never to a backend bucket). Its schema offers path_template_rewrite in a
+// path matcher's default route action, but Google refuses it there as on the
+// global map, so the builder never sends it.
 //
 // The builders below mirror url_map.go's global ones minus the surfaces the
 // regional API lacks — Cloud CDN route caching, custom error pages,
@@ -436,13 +437,13 @@ func regionalPathMatcherDefaultWeightedBackends(backends []*gcpurlmapv1alpha1.Gc
 	return result
 }
 
-// The regional map alone honors path_template_rewrite in a path matcher's
-// default route action (the spec CEL rejects it on a global map).
+// No PathTemplateRewrite: Google honors it only in a route rule's route
+// action ("pathTemplateRewrite can only be set on RouteRule level"), and the
+// spec CEL refuses it at a path matcher's default on both scopes.
 func regionalPathMatcherDefaultUrlRewrite(r *gcpurlmapv1alpha1.GcpUrlMapUrlRewrite) *compute.RegionUrlMapPathMatcherDefaultRouteActionUrlRewriteArgs {
 	return &compute.RegionUrlMapPathMatcherDefaultRouteActionUrlRewriteArgs{
-		HostRewrite:         emptyAsNilString(r.HostRewrite),
-		PathPrefixRewrite:   emptyAsNilString(r.PathPrefixRewrite),
-		PathTemplateRewrite: emptyAsNilString(r.PathTemplateRewrite),
+		HostRewrite:       emptyAsNilString(r.HostRewrite),
+		PathPrefixRewrite: emptyAsNilString(r.PathPrefixRewrite),
 	}
 }
 

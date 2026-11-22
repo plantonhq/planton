@@ -16,17 +16,19 @@ spec:
     - name: api
       defaultService:
         value: "<regional-backend-service-self-link>" # replace: the same or another regional GcpBackendService
-      # A path template rewrite in the matcher's DEFAULT action is the regional
-      # map's own knob; Google requires a route rule in the same matcher to
-      # declare the template variables it rewrites with (pathTemplateMatch).
       defaultRouteAction:
-        urlRewrite:
-          pathTemplateRewrite: "/v2/{path}"
         timeout:
           seconds: 30
+      # A path template rewrite lives in a route rule's routeAction, beside the
+      # pathTemplateMatch that captures the variables it rewrites with: /v1/...
+      # reaches the backend as /v2/... Google refuses the rewrite in a path
+      # matcher's default route action.
       routeRules:
         - priority: 1
           service:
             value: "<regional-backend-service-self-link>" # replace: the regional GcpBackendService serving /v1
+          routeAction:
+            urlRewrite:
+              pathTemplateRewrite: "/v2/{path}"
           matchRules:
             - pathTemplateMatch: "/v1/{path=**}"

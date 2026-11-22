@@ -48,8 +48,9 @@ const (
 // scopes share the whole routing surface except Cloud CDN route caching,
 // custom error pages, stream-duration limits, and header-driven routing
 // tests, which exist only on the global map (and are rejected when region is
-// set); the regional map alone honors a path_template_rewrite in a path
-// matcher's default route action. A URL map cannot move between scopes.
+// set). On both scopes a path_template_rewrite lives only in a route rule's
+// route_action, beside a match rule whose path_template_match captures its
+// variables. A URL map cannot move between scopes.
 type GcpUrlMapSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The GCP project that owns the URL map.
@@ -722,10 +723,12 @@ type GcpUrlMapUrlRewrite struct {
 	PathPrefixRewrite string `protobuf:"bytes,2,opt,name=path_prefix_rewrite,json=pathPrefixRewrite,proto3" json:"path_prefix_rewrite,omitempty"`
 	// Rewrite the path using a template that references named path variables
 	// captured by a route rule's path_template_match (e.g. "/v2/{country}").
-	// Honored only inside a route_rule's route_action, on both scopes: Google
-	// refuses it in a path matcher's default route action ("pathTemplateRewrite
-	// can only be set on RouteRule level", measured on a regional map), in the
-	// map's default route action, and in path-rule route actions. Mutually exclusive with path_prefix_rewrite.
+	// Honored only inside a route_rule's route_action whose match_rules
+	// include a path_template_match, on both scopes: Google refuses it in a
+	// path matcher's default route action ("pathTemplateRewrite can only be
+	// set on RouteRule level", measured on a regional map), in the map's
+	// default route action, and in path-rule route actions. Mutually
+	// exclusive with path_prefix_rewrite.
 	PathTemplateRewrite string `protobuf:"bytes,3,opt,name=path_template_rewrite,json=pathTemplateRewrite,proto3" json:"path_template_rewrite,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
@@ -1759,8 +1762,11 @@ type GcpUrlMapPathMatcher struct {
 	// Redirect as the path matcher's default instead of serving.
 	DefaultUrlRedirect *GcpUrlMapUrlRedirect `protobuf:"bytes,3,opt,name=default_url_redirect,json=defaultUrlRedirect,proto3" json:"default_url_redirect,omitempty"`
 	// Advanced default handling (weighted split / rewrite) for the path matcher.
-	// On a regional map this is the one place besides route rules where a
-	// url_rewrite may carry path_template_rewrite.
+	// Its url_rewrite takes host_rewrite and path_prefix_rewrite but never
+	// path_template_rewrite: the default matches no template, so it has no
+	// variables to rewrite with, and Google refuses it here on both scopes
+	// ("pathTemplateRewrite can only be set on RouteRule level", measured on a
+	// regional map, whose provider schema still offers the argument).
 	DefaultRouteAction *GcpUrlMapRouteAction `protobuf:"bytes,4,opt,name=default_route_action,json=defaultRouteAction,proto3" json:"default_route_action,omitempty"`
 	// Custom error pages for this path matcher's default. Global external ALBs
 	// only — rejected when the map's region is set.
@@ -1976,6 +1982,9 @@ type GcpUrlMapRouteRule struct {
 	// matching). At least one match rule is required.
 	MatchRules []*GcpUrlMapRouteRuleMatchRule `protobuf:"bytes,3,rep,name=match_rules,json=matchRules,proto3" json:"match_rules,omitempty"`
 	// Advanced handling (weighted split / rewrite / retry) for matched requests.
+	// A url_rewrite.path_template_rewrite here needs at least one match rule
+	// with a path_template_match: the rewrite may use only the variables that
+	// template captures, and Google refuses it without one.
 	RouteAction *GcpUrlMapRouteAction `protobuf:"bytes,4,opt,name=route_action,json=routeAction,proto3" json:"route_action,omitempty"`
 	// Redirect matched requests instead of serving them.
 	UrlRedirect *GcpUrlMapUrlRedirect `protobuf:"bytes,5,opt,name=url_redirect,json=urlRedirect,proto3" json:"url_redirect,omitempty"`
@@ -2695,7 +2704,7 @@ var File_catalog_gcp_gcpurlmap_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpurlmap_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	")catalog/gcp/gcpurlmap/v1alpha1/spec.proto\x12\"dev.planton.gcp.gcpurlmap.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xbe(\n" +
+	")catalog/gcp/gcpurlmap/v1alpha1/spec.proto\x12\"dev.planton.gcp.gcpurlmap.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xd4$\n" +
 	"\rGcpUrlMapSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x8e\x02\n" +
@@ -2716,11 +2725,10 @@ const file_catalog_gcp_gcpurlmap_v1alpha1_spec_proto_rawDesc = "" +
 	" \x03(\v28.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapPathMatcherR\fpathMatchers\x12G\n" +
 	"\x05tests\x18\v \x03(\v21.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapTestR\x05tests\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\f \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
-	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy:\xdf\x1a\xbaH\xdb\x1a\x1a\xdf\x02\n" +
+	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy:\xf5\x16\xbaH\xf1\x16\x1a\xdf\x02\n" +
 	"\x1aexactly_one_default_target\x12\x7fset exactly one default target: default_service, default_url_redirect, or default_route_action (with weighted_backend_services)\x1a\xbf\x01(has(this.default_service) ? 1 : 0) + (has(this.default_url_redirect) ? 1 : 0) + (has(this.default_route_action) && size(this.default_route_action.weighted_backend_services) > 0 ? 1 : 0) == 1\x1a\xb4\x01\n" +
-	"'default_route_action_conflicts_redirect\x12Ddefault_route_action and default_url_redirect are mutually exclusive\x1aC!(has(this.default_route_action) && has(this.default_url_redirect))\x1a\xfc\x02\n" +
-	" default_no_path_template_rewrite\x12\xc1\x01path_template_rewrite is honored only inside a route rule's route_action (and, on a regional map, a path matcher's default route action) — GCP rejects it in the URL map's default route action\x1a\x93\x01!has(this.default_route_action) || !has(this.default_route_action.url_rewrite) || this.default_route_action.url_rewrite.path_template_rewrite == ''\x1a\xa7\x03\n" +
-	"0path_matcher_path_template_rewrite_regional_only\x12\xb3\x01path_template_rewrite in a path matcher's default route action is honored only by a regional URL map — set region, move the rewrite into a route rule, or use path_prefix_rewrite\x1a\xbc\x01this.region != '' || !this.path_matchers.exists(p, has(p.default_route_action) && has(p.default_route_action.url_rewrite) && p.default_route_action.url_rewrite.path_template_rewrite != '')\x1a\xc5\x04\n" +
+	"'default_route_action_conflicts_redirect\x12Ddefault_route_action and default_url_redirect are mutually exclusive\x1aC!(has(this.default_route_action) && has(this.default_url_redirect))\x1a\xbc\x02\n" +
+	" default_no_path_template_rewrite\x12\x81\x01path_template_rewrite is honored only inside a route rule's route_action — GCP rejects it in the URL map's default route action\x1a\x93\x01!has(this.default_route_action) || !has(this.default_route_action.url_rewrite) || this.default_route_action.url_rewrite.path_template_rewrite == ''\x1a\xc5\x04\n" +
 	"\x18cache_policy_global_only\x12\xab\x01cache_policy (Cloud CDN route caching) exists only on a global URL map — a regional Application Load Balancer has no Cloud CDN; clear region or remove every cache_policy\x1a\xfa\x02this.region == '' || (!(has(this.default_route_action) && has(this.default_route_action.cache_policy)) && !this.path_matchers.exists(p, (has(p.default_route_action) && has(p.default_route_action.cache_policy)) || p.path_rules.exists(r, has(r.route_action) && has(r.route_action.cache_policy)) || p.route_rules.exists(r, has(r.route_action) && has(r.route_action.cache_policy))))\x1a\x93\x04\n" +
 	"(custom_error_response_policy_global_only\x12\xd0\x01custom error response policies exist only on a global URL map — the regional map has no error-page surface; clear region or remove every custom_error_response_policy and default_custom_error_response_policy\x1a\x93\x02this.region == '' || (!has(this.default_custom_error_response_policy) && !this.path_matchers.exists(p, has(p.default_custom_error_response_policy) || p.path_rules.exists(r, has(r.custom_error_response_policy)) || p.route_rules.exists(r, has(r.custom_error_response_policy))))\x1a\xb2\x04\n" +
 	"\x1fmax_stream_duration_global_only\x12\xc9\x01max_stream_duration exists only on a global URL map (Traffic Director) at the map's default route action and inside path rules and route rules — a regional map carries none; clear region or remove it\x1a\xc2\x02this.region == '' || (!(has(this.default_route_action) && has(this.default_route_action.max_stream_duration)) && !this.path_matchers.exists(p, p.path_rules.exists(r, has(r.route_action) && has(r.route_action.max_stream_duration)) || p.route_rules.exists(r, has(r.route_action) && has(r.route_action.max_stream_duration))))\x1a\x83\x03\n" +
@@ -2851,7 +2859,7 @@ const file_catalog_gcp_gcpurlmap_v1alpha1_spec_proto_rawDesc = "" +
 	"\x05hosts\x18\x01 \x03(\tB\x0e\xbaH\v\x92\x01\b\b\x01\"\x04r\x02\x10\x01R\x05hosts\x12-\n" +
 	"\fpath_matcher\x18\x02 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\vpathMatcher\x12*\n" +
-	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\bR\vdescription\"\xf8\r\n" +
+	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\bR\vdescription\"\xb4\x11\n" +
 	"\x14GcpUrlMapPathMatcher\x12 \n" +
 	"\x04name\x18\x01 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x01\x18?R\x04name\x12\xc0\x01\n" +
 	"\x0fdefault_service\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefBc\x88\xd4a\xd1\x17\x92\xd4a\x18status.outputs.self_link\xa2\xd4a\x1d\b\xd1\x17\x12\x18status.outputs.self_link\xa2\xd4a\x1d\b\xd0\x17\x12\x18status.outputs.self_linkR\x0edefaultService\x12j\n" +
@@ -2863,10 +2871,13 @@ const file_catalog_gcp_gcpurlmap_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
 	"path_rules\x18\b \x03(\v25.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapPathRuleR\tpathRules\x12W\n" +
 	"\vroute_rules\x18\t \x03(\v26.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapRouteRuleR\n" +
-	"routeRules:\xce\x06\xbaH\xca\x06\x1a\xc8\x03\n" +
+	"routeRules:\x8a\n" +
+	"\xbaH\x86\n" +
+	"\x1a\xc8\x03\n" +
 	"'path_matcher_default_target_at_most_one\x12\xda\x01a path matcher may set at most one default target: default_service, default_url_redirect, or default_route_action with weighted_backend_services (a route action carrying only sub-policies may accompany default_service)\x1a\xbf\x01(has(this.default_service) ? 1 : 0) + (has(this.default_url_redirect) ? 1 : 0) + (has(this.default_route_action) && size(this.default_route_action.weighted_backend_services) > 0 ? 1 : 0) <= 1\x1a\xe0\x01\n" +
 	",path_matcher_route_action_conflicts_redirect\x12kdefault_route_action and default_url_redirect are mutually exclusive — a redirect never reaches a backend\x1aC!(has(this.default_route_action) && has(this.default_url_redirect))\x1a\x99\x01\n" +
-	"\x1cpath_matcher_rules_exclusive\x12>a path matcher uses either path_rules or route_rules, not both\x1a9size(this.path_rules) == 0 || size(this.route_rules) == 0\"\x8e\v\n" +
+	"\x1cpath_matcher_rules_exclusive\x12>a path matcher uses either path_rules or route_rules, not both\x1a9size(this.path_rules) == 0 || size(this.route_rules) == 0\x1a\xb9\x03\n" +
+	"%path_matcher_no_path_template_rewrite\x12\xf9\x01path_template_rewrite is honored only inside a route rule's route_action, beside a path_template_match — GCP rejects it in a path matcher's default route action on both global and regional maps; move it into a route rule or use path_prefix_rewrite\x1a\x93\x01!has(this.default_route_action) || !has(this.default_route_action.url_rewrite) || this.default_route_action.url_rewrite.path_template_rewrite == ''\"\x8e\v\n" +
 	"\x11GcpUrlMapPathRule\x12$\n" +
 	"\x05paths\x18\x01 \x03(\tB\x0e\xbaH\v\x92\x01\b\b\x01\"\x04r\x02\x10\x01R\x05paths\x12\xb1\x01\n" +
 	"\aservice\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefBc\x88\xd4a\xd1\x17\x92\xd4a\x18status.outputs.self_link\xa2\xd4a\x1d\b\xd1\x17\x12\x18status.outputs.self_link\xa2\xd4a\x1d\b\xd0\x17\x12\x18status.outputs.self_linkR\aservice\x12[\n" +
@@ -2875,7 +2886,7 @@ const file_catalog_gcp_gcpurlmap_v1alpha1_spec_proto_rawDesc = "" +
 	"\x1ccustom_error_response_policy\x18\x05 \x01(\v2F.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapCustomErrorResponsePolicyR\x19customErrorResponsePolicy:\xda\x06\xbaH\xd6\x06\x1a\xf4\x02\n" +
 	"\x1cpath_rule_target_exactly_one\x12\xb1\x01a path rule must have exactly one target: service, url_redirect, or route_action with weighted_backend_services (a route action carrying only sub-policies may accompany service)\x1a\x9f\x01(has(this.service) ? 1 : 0) + (has(this.url_redirect) ? 1 : 0) + (has(this.route_action) && size(this.route_action.weighted_backend_services) > 0 ? 1 : 0) == 1\x1a\xbd\x01\n" +
 	")path_rule_route_action_conflicts_redirect\x12[route_action and url_redirect are mutually exclusive — a redirect never reaches a backend\x1a3!(has(this.route_action) && has(this.url_redirect))\x1a\x9c\x02\n" +
-	"\"path_rule_no_path_template_rewrite\x12ypath_template_rewrite is honored only inside a route rule's route_action — GCP rejects it in a path rule's route action\x1a{!has(this.route_action) || !has(this.route_action.url_rewrite) || this.route_action.url_rewrite.path_template_rewrite == ''\"\xfb\t\n" +
+	"\"path_rule_no_path_template_rewrite\x12ypath_template_rewrite is honored only inside a route rule's route_action — GCP rejects it in a path rule's route action\x1a{!has(this.route_action) || !has(this.route_action.url_rewrite) || this.route_action.url_rewrite.path_template_rewrite == ''\"\xa5\r\n" +
 	"\x12GcpUrlMapRouteRule\x12#\n" +
 	"\bpriority\x18\x01 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00R\bpriority\x12o\n" +
 	"\aservice\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xd1\x17\x92\xd4a\x18status.outputs.self_linkR\aservice\x12j\n" +
@@ -2884,9 +2895,10 @@ const file_catalog_gcp_gcpurlmap_v1alpha1_spec_proto_rawDesc = "" +
 	"\froute_action\x18\x04 \x01(\v28.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapRouteActionR\vrouteAction\x12[\n" +
 	"\furl_redirect\x18\x05 \x01(\v28.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapUrlRedirectR\vurlRedirect\x12^\n" +
 	"\rheader_action\x18\x06 \x01(\v29.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapHeaderActionR\fheaderAction\x12\x87\x01\n" +
-	"\x1ccustom_error_response_policy\x18\a \x01(\v2F.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapCustomErrorResponsePolicyR\x19customErrorResponsePolicy:\xbe\x04\xbaH\xba\x04\x1a\xf6\x02\n" +
+	"\x1ccustom_error_response_policy\x18\a \x01(\v2F.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapCustomErrorResponsePolicyR\x19customErrorResponsePolicy:\xe8\a\xbaH\xe4\a\x1a\xf6\x02\n" +
 	"\x1droute_rule_target_exactly_one\x12\xb2\x01a route rule must have exactly one target: service, url_redirect, or route_action with weighted_backend_services (a route action carrying only sub-policies may accompany service)\x1a\x9f\x01(has(this.service) ? 1 : 0) + (has(this.url_redirect) ? 1 : 0) + (has(this.route_action) && size(this.route_action.weighted_backend_services) > 0 ? 1 : 0) == 1\x1a\xbe\x01\n" +
-	"*route_rule_route_action_conflicts_redirect\x12[route_action and url_redirect are mutually exclusive — a redirect never reaches a backend\x1a3!(has(this.route_action) && has(this.url_redirect))\"\xef\x06\n" +
+	"*route_rule_route_action_conflicts_redirect\x12[route_action and url_redirect are mutually exclusive — a redirect never reaches a backend\x1a3!(has(this.route_action) && has(this.url_redirect))\x1a\xa7\x03\n" +
+	"5route_rule_path_template_rewrite_needs_template_match\x12\xb4\x01path_template_rewrite rewrites with the variables a path_template_match captures — give at least one of this route rule's match_rules a path_template_match (e.g. \"/v1/{path=**}\")\x1a\xb6\x01!has(this.route_action) || !has(this.route_action.url_rewrite) || this.route_action.url_rewrite.path_template_rewrite == '' || this.match_rules.exists(m, m.path_template_match != '')\"\xef\x06\n" +
 	"\x1bGcpUrlMapRouteRuleMatchRule\x12+\n" +
 	"\fprefix_match\x18\x01 \x01(\tB\b\xbaH\x05r\x03\x18\x80\bR\vprefixMatch\x120\n" +
 	"\x0ffull_path_match\x18\x02 \x01(\tB\b\xbaH\x05r\x03\x18\x80\bR\rfullPathMatch\x12)\n" +

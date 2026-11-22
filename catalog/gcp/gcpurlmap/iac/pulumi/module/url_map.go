@@ -21,8 +21,8 @@ import (
 // share the whole routing surface except Cloud CDN route caching, custom
 // error pages, stream-duration limits (outside a path matcher's default
 // action), and header-driven routing tests, which exist only on the global
-// map; the regional map alone honors a path_template_rewrite in a path
-// matcher's default route action. spec.region selects the branch, exactly
+// map. On both, path_template_rewrite lives only in a route rule's route
+// action, beside a path_template_match. spec.region selects the branch, exactly
 // as the Terraform module's count guards do: this file carries the global
 // builders, region_url_map.go the regional ones, in the same order.
 //

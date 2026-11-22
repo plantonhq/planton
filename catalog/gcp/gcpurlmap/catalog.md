@@ -129,7 +129,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 **Traffic-managed canary** — A weighted split hardened with bounded timeouts, deliberate retries, load-balancer CORS, and an attribution response header. Start from the **Traffic-Managed Canary** preset.
 
-**Regional routing table** — A regional URL map fronting a regional backend service, with a path template rewrite in the path matcher's default action (the regional map's own knob). Start from the **Regional Routing Table** preset.
+**Regional routing table** — A regional URL map fronting a regional backend service, with a route rule that rewrites `/v1/...` to `/v2/...` through a path template. Start from the **Regional Routing Table** preset.
 
 ## Works With
 

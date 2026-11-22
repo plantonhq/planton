@@ -522,6 +522,51 @@ var _ = ginkgo.Describe("GcpUrlMapSpec", func() {
 		gomega.Expect(err).To(gomega.HaveOccurred())
 	})
 
+	ginkgo.It("should reject path_template_rewrite in a route rule none of whose match rules is a path template", func() {
+		target := minimal()
+		target.Spec.PathMatchers = []*GcpUrlMapPathMatcher{
+			{
+				Name: "tmpl-no-match",
+				RouteRules: []*GcpUrlMapRouteRule{
+					{
+						Priority: 1,
+						Service:  backendSelfLink(),
+						RouteAction: &GcpUrlMapRouteAction{
+							UrlRewrite: &GcpUrlMapUrlRewrite{PathTemplateRewrite: "/v2/{id}"},
+						},
+						MatchRules: []*GcpUrlMapRouteRuleMatchRule{{PrefixMatch: "/v1"}},
+					},
+				},
+			},
+		}
+		err := validator.Validate(target)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(err.Error()).To(gomega.ContainSubstring("give at least one of this route rule's match_rules a path_template_match"))
+	})
+
+	ginkgo.It("should accept path_template_rewrite when one of the route rule's match rules is a path template", func() {
+		target := minimal()
+		target.Spec.PathMatchers = []*GcpUrlMapPathMatcher{
+			{
+				Name: "tmpl-mixed",
+				RouteRules: []*GcpUrlMapRouteRule{
+					{
+						Priority: 1,
+						Service:  backendSelfLink(),
+						RouteAction: &GcpUrlMapRouteAction{
+							UrlRewrite: &GcpUrlMapUrlRewrite{PathTemplateRewrite: "/v2/{id}"},
+						},
+						MatchRules: []*GcpUrlMapRouteRuleMatchRule{
+							{PrefixMatch: "/legacy"},
+							{PathTemplateMatch: "/v1/{id}"},
+						},
+					},
+				},
+			},
+		}
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+	})
+
 	ginkgo.It("should reject path_prefix_rewrite and path_template_rewrite together", func() {
 		target := minimal()
 		target.Spec.PathMatchers = []*GcpUrlMapPathMatcher{
@@ -826,7 +871,7 @@ var _ = ginkgo.Describe("GcpUrlMapSpec", func() {
 		gomega.Expect(validator.Validate(regional())).To(gomega.Succeed())
 	})
 
-	ginkgo.It("should accept path_template_rewrite in a path matcher default route action on a regional map", func() {
+	ginkgo.It("should reject path_template_rewrite in a path matcher default route action on a regional map", func() {
 		target := regional()
 		target.Spec.HostRules = []*GcpUrlMapHostRule{{Hosts: []string{"api.example.com"}, PathMatcher: "api"}}
 		target.Spec.PathMatchers = []*GcpUrlMapPathMatcher{
@@ -835,6 +880,45 @@ var _ = ginkgo.Describe("GcpUrlMapSpec", func() {
 				DefaultService: regionalBackend(),
 				DefaultRouteAction: &GcpUrlMapRouteAction{
 					UrlRewrite: &GcpUrlMapUrlRewrite{PathTemplateRewrite: "/v2/{id}"},
+				},
+			},
+		}
+		err := validator.Validate(target)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(err.Error()).To(gomega.ContainSubstring("both global and regional maps"))
+	})
+
+	ginkgo.It("should accept path_prefix_rewrite in a path matcher default route action on a regional map", func() {
+		target := regional()
+		target.Spec.HostRules = []*GcpUrlMapHostRule{{Hosts: []string{"api.example.com"}, PathMatcher: "api"}}
+		target.Spec.PathMatchers = []*GcpUrlMapPathMatcher{
+			{
+				Name:           "api",
+				DefaultService: regionalBackend(),
+				DefaultRouteAction: &GcpUrlMapRouteAction{
+					UrlRewrite: &GcpUrlMapUrlRewrite{PathPrefixRewrite: "/v2"},
+				},
+			},
+		}
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should accept path_template_rewrite in a regional route rule beside its path_template_match", func() {
+		target := regional()
+		target.Spec.HostRules = []*GcpUrlMapHostRule{{Hosts: []string{"api.example.com"}, PathMatcher: "api"}}
+		target.Spec.PathMatchers = []*GcpUrlMapPathMatcher{
+			{
+				Name:           "api",
+				DefaultService: regionalBackend(),
+				RouteRules: []*GcpUrlMapRouteRule{
+					{
+						Priority: 1,
+						Service:  regionalBackend(),
+						RouteAction: &GcpUrlMapRouteAction{
+							UrlRewrite: &GcpUrlMapUrlRewrite{PathTemplateRewrite: "/v2/{path}"},
+						},
+						MatchRules: []*GcpUrlMapRouteRuleMatchRule{{PathTemplateMatch: "/v1/{path=**}"}},
+					},
 				},
 			},
 		}

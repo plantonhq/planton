@@ -2,7 +2,7 @@
 
 Deploys a Compute Engine URL map — the L7 routing brain of an Application Load Balancer. It matches each request's host and path and decides whether to forward to a backend, split traffic across weighted backends, rewrite or redirect the URL, inject headers, or serve custom error pages.
 
-One kind, two scopes: leave `region` empty for the GLOBAL map (`google_compute_url_map` — the global external ALB, the cross-region internal ALB, Traffic Director), or set it for the REGIONAL map (`google_compute_region_url_map` — the regional external ALB and the regional internal ALB), which routes only to regional backend services in that region. The two scopes share the whole routing surface except Cloud CDN route caching, custom error pages, stream-duration limits, and header-driven routing tests (global only), and `pathTemplateRewrite` in a path matcher's default route action (regional only).
+One kind, two scopes: leave `region` empty for the GLOBAL map (`google_compute_url_map` — the global external ALB, the cross-region internal ALB, Traffic Director), or set it for the REGIONAL map (`google_compute_region_url_map` — the regional external ALB and the regional internal ALB), which routes only to regional backend services in that region. The two scopes share the whole routing surface except Cloud CDN route caching, custom error pages, stream-duration limits, and header-driven routing tests (global only).
 
 ## What Gets Created
 
@@ -66,7 +66,7 @@ Inside `defaultRouteAction`, `pathMatchers[].defaultRouteAction`, `pathRules[].r
 | Sub-field | Description |
 |-----------|-------------|
 | `weightedBackendServices` | Relative weights splitting traffic across backend services, each with an optional per-backend `headerAction` |
-| `urlRewrite` | `hostRewrite`, `pathPrefixRewrite`, or `pathTemplateRewrite` (route rules on both scopes; a path matcher's default route action on a regional map only) |
+| `urlRewrite` | `hostRewrite`, `pathPrefixRewrite`, or `pathTemplateRewrite` (in a route rule only, on both scopes, beside a match rule with a `pathTemplateMatch`) |
 | `timeout` | Total time budget for the request including all retries |
 | `retryPolicy` | Retry conditions, attempt count, and per-try timeout |
 | `requestMirrorPolicy` | Fire-and-forget mirroring of matched traffic to a second backend service |
