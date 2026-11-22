@@ -4,18 +4,20 @@ metadata:
   name: gcphierarchicalfirewallpolicy
 spec:
   # A hierarchical firewall policy exists only inside a Google Cloud
-  # Organization. Both lanes run as the declared identity, granted on the
-  # test organization (PLANTON_E2E_GCP_ORGANIZATION_ID) the groups that reach
-  # it; each second act changes the policy's description in place, judged
-  # from the organization's and the folder's Admin Activity logs. Offline bar
-  # met: both modules build and validate, offline plans for the reference
-  # manifest and both scenarios are clean on the pinned provider, and the
-  # accounting is total. validated_provisioners stays empty until the live
-  # lanes actually run. Every E2E manifest's short name and association name
-  # carry the run id because Google does not free a deleted policy's short
-  # name immediately.
+  # Organization. Proven live on both engines (2026-11-23, test organization
+  # planton-e2e.com) as the declared identity, granted on the organization
+  # the groups that reach it: a policy on the organization with threat
+  # intelligence, geography and a disabled rule, and a policy on a folder
+  # fixture associated with it. Each second act changes the description,
+  # judged in place from the organization's or the folder's Admin Activity
+  # log (firewallPolicies.patch). What the runs taught: polling the
+  # organization-level operation needs compute.globalOperations.get; Google
+  # refuses a rule that names no source (INGRESS) or destination (EGRESS),
+  # a catch-all goto_next included; and Google stores a named protocol's
+  # number as its name, so the spec asks for the name. Short and association
+  # names carry the run id because Google does not free a deleted policy's
+  # short name immediately.
   tier: 2
-  status: deferred
-  deferred_reason: the live lanes wait for a test organization exported as PLANTON_E2E_GCP_ORGANIZATION_ID, where the harness grants the declared identity the groups that reach it; offline plans only until then
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 20
