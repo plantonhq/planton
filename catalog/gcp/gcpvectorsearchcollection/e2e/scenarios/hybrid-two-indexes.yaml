@@ -18,6 +18,12 @@ metadata:
     e2e-catalog-kind: gcpvectorsearchcollection
   annotations:
     planton.dev/e2e: "true"
+    # Pulumi only: Terraform starts a collection's indexes together and Google
+    # runs one index operation per collection at a time, refusing the second
+    # with 409 "unable to queue the operation" (the GUIDE's several-indexes
+    # section), so a two-index first apply on Terraform ends after one index
+    # by design of the provider. The single-index arm runs on both engines.
+    planton.dev/e2e-engines: "pulumi"
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
   tags:
     - planton-e2e
