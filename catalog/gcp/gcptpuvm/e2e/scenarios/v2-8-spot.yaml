@@ -1,5 +1,5 @@
 # GcpTpuVm scenario: the smallest TPU -- a v2-8 on spot capacity in
-# us-central1-b with the base Ubuntu runtime. project_id is deliberately
+# us-central1-c with the base Ubuntu runtime. project_id is deliberately
 # omitted; the node id carries the run id. Spot keeps the lane's
 # bill to minutes at the lowest TPU rate; a spot stock-out in the zone is a
 # capacity event, not a module defect (watch list).
@@ -21,7 +21,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  zone: us-central1-b
+  zone: us-central1-c
   nodeId: e2e-tpu-spot-${E2E_RUN_ID} # per kind and engine, so lanes side by side never share it
   acceleratorType: v2-8
   runtimeVersion: tpu-ubuntu2204-base
