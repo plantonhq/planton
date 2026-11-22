@@ -31,5 +31,5 @@ spec:
           allowedValues:
             - in:us-locations
           deniedValues:
-            - us-west4
+            - in:us-west4-locations # Google stores a location as its value group, so the bare name re-plans forever
   deletionPolicy: DELETE

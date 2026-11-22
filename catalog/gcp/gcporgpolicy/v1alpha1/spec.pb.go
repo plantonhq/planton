@@ -482,8 +482,10 @@ func (*GcpOrgPolicyRule_Enforce) isGcpOrgPolicyRule_Kind() {}
 func (*GcpOrgPolicyRule_Values) isGcpOrgPolicyRule_Kind() {}
 
 // The allow and deny lists of a LIST-constraint rule. Values are the
-// constraint's own vocabulary: for `gcp.resourceLocations` a location or a
-// value group (`in:us-locations`); for `iam.allowedPolicyMemberDomains` a
+// constraint's own vocabulary: for `gcp.resourceLocations` a value group
+// (`in:us-locations`, or `in:us-west4-locations` for one region -- Google
+// stores a bare location such as `us-west4` as its value group, so the bare
+// name re-plans forever); for `iam.allowedPolicyMemberDomains` a
 // Workspace customer ID; for `constraints/compute.vmExternalIpAccess` a
 // VM resource name. Prefix rules (`under:`, `is:`, `in:`) are the same
 // strings `gcloud org-policies` accepts. A deny wins over an allow for the

@@ -2,6 +2,7 @@ package verify
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -41,7 +42,13 @@ func (v *orgPolicyVerifier) VerifyExists(ctx context.Context, svc *Services, out
 		return errors.Wrapf(err, "organization policy %s not found after deploy", name)
 	}
 	if policy.Name != name {
-		return errors.Errorf("organization policy resolved to name %q, want the name output %q", policy.Name, name)
+		same, err := sameProjectPolicy(ctx, svc, policy.Name, name)
+		if err != nil {
+			return err
+		}
+		if !same {
+			return errors.Errorf("organization policy resolved to name %q, want the name output %q", policy.Name, name)
+		}
 	}
 	if etag := outputs["etag"]; etag != "" && policy.Etag != "" && policy.Etag != etag {
 		return errors.Errorf("organization policy %s etag is %q, want the etag output %q (an out-of-band edit landed between apply and verify)", name, policy.Etag, etag)
@@ -63,4 +70,21 @@ func (v *orgPolicyVerifier) VerifyAbsent(ctx context.Context, svc *Services, out
 		return errors.Wrapf(err, "unexpected error probing organization policy %s after destroy", name)
 	}
 	return errors.Errorf("organization policy %s still exists after destroy", name)
+}
+
+// sameProjectPolicy reports whether two policy names are one project's
+// policy, one naming the project by number and the other by id: Google
+// answers with the number, and the name output keeps the id the manifest
+// gave, which Google accepts as the same resource.
+func sameProjectPolicy(ctx context.Context, svc *Services, live, output string) (bool, error) {
+	liveProject, liveRest, ok := strings.Cut(strings.TrimPrefix(live, "projects/"), "/")
+	outProject, outRest, ok2 := strings.Cut(strings.TrimPrefix(output, "projects/"), "/")
+	if !ok || !ok2 || !strings.HasPrefix(live, "projects/") || !strings.HasPrefix(output, "projects/") || liveRest != outRest {
+		return false, nil
+	}
+	project, err := svc.Crm.Projects.Get(outProject).Context(ctx).Do()
+	if err != nil {
+		return false, errors.Wrapf(err, "reading project %s to compare the policy names", outProject)
+	}
+	return fmt.Sprint(project.ProjectNumber) == liveProject, nil
 }

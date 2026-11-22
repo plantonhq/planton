@@ -16,6 +16,11 @@ takes a rule with `enforce`; a list constraint (`gcp.resourceLocations`,
 shape and Google rejects a mismatch at apply time.
 `gcloud org-policies list-constraints --project <id>` shows the type.
 
+Google normalizes list values as it stores them: for `gcp.resourceLocations`
+a bare location such as `us-west4` reads back as its value group
+`in:us-west4-locations`. Write the value group yourself, or every plan shows
+the policy changing.
+
 ## Dry run first
 
 `dryRunPolicy` evaluates the same rules in audit mode: violations are
