@@ -62,7 +62,7 @@ spec:
       match:
         srcIpRanges: ["192.0.2.0/24"]
         layer4Configs:
-          - ipProtocol: "6"
+          - ipProtocol: tcp
             ports: ["3389"]
     - priority: 2000
       action: goto_next

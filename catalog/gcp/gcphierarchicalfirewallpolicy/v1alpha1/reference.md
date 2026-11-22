@@ -316,16 +316,20 @@ Protocols and ports the rule applies to. At least one entry; a packet
 matches when it fits any entry.
 
 - rule: {"repeated":{"minItems":"1"}}
-- rule: ports can be set only when ip_protocol is tcp, udp, 6, or 17 -- other protocols have no ports
+- rule: ports can be set only when ip_protocol is tcp or udp -- other protocols have no ports
 
 ### spec.rules[].match.layer4Configs[].ipProtocol
 
 `string` · required
 
 The IP protocol: a well-known name (tcp, udp, icmp, esp, ah, ipip,
-sctp), `all` for every protocol, or a protocol number (0-255).
+sctp), `all` for every protocol, or the number (0-255) of a protocol
+with no name here. Write a named protocol by its name: Google stores the
+name for its number (`6` reads back as `tcp`, measured on both engines),
+so a rule written with the number re-plans forever.
 
 - rule: ip_protocol must be tcp, udp, icmp, esp, ah, ipip, sctp, all, or an IP protocol number 0-255
+- rule: write this protocol by its name (icmp, ipip, tcp, udp, esp, ah or sctp), not its number -- Google stores the name, so the number re-plans forever
 - rule: {"required":true}
 
 ### spec.rules[].match.layer4Configs[].ports

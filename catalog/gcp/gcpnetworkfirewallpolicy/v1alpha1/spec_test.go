@@ -116,7 +116,7 @@ var _ = ginkgo.Describe("GcpNetworkFirewallPolicySpec", func() {
 		target := globalBaseline()
 		r := target.Spec.Rules[0]
 		r.Match = &GcpNetworkFirewallPolicyRuleMatch{
-			Layer4Configs:           []*GcpNetworkFirewallPolicyLayer4Config{tcp("443", "8000-8999"), {IpProtocol: "17"}, {IpProtocol: "icmp"}},
+			Layer4Configs:           []*GcpNetworkFirewallPolicyLayer4Config{tcp("443", "8000-8999"), {IpProtocol: "udp"}, {IpProtocol: "icmp"}, {IpProtocol: "47"}},
 			SrcIpRanges:             []string{"10.0.0.0/8", "2001:db8::/32"},
 			DestIpRanges:            []string{"10.10.0.0/16"},
 			SrcAddressGroups:        []string{"projects/acme/locations/global/addressGroups/partners"},
@@ -221,6 +221,14 @@ var _ = ginkgo.Describe("GcpNetworkFirewallPolicySpec", func() {
 		target = globalBaseline()
 		target.Spec.Rules[0].Match.Layer4Configs = []*GcpNetworkFirewallPolicyLayer4Config{tcp("http")}
 		expectError(target, "ports")
+	})
+
+	ginkgo.It("should reject a named protocol written as its number, which Google stores as the name", func() {
+		for _, number := range []string{"1", "4", "6", "17", "50", "51", "132"} {
+			target := globalBaseline()
+			target.Spec.Rules[0].Match.Layer4Configs = []*GcpNetworkFirewallPolicyLayer4Config{{IpProtocol: number}}
+			expectError(target, "write this protocol by its name")
+		}
 	})
 
 	ginkgo.It("should reject a bare address without a prefix length and a lowercase region code", func() {

@@ -719,7 +719,10 @@ func (x *GcpNetworkFirewallPolicyRuleMatch) GetDestNetworkContext() string {
 type GcpNetworkFirewallPolicyLayer4Config struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The IP protocol: a well-known name (tcp, udp, icmp, esp, ah, ipip,
-	// sctp), `all` for every protocol, or a protocol number (0-255).
+	// sctp), `all` for every protocol, or the number (0-255) of a protocol
+	// with no name here. Write a named protocol by its name: Google stores the
+	// name for its number (`6` reads back as `tcp`, measured on both engines),
+	// so a rule written with the number re-plans forever.
 	IpProtocol string `protobuf:"bytes,1,opt,name=ip_protocol,json=ipProtocol,proto3" json:"ip_protocol,omitempty"`
 	// Ports or port ranges the rule applies to, for tcp and udp only:
 	// "22", "80", "8000-8999". Empty means every port of the protocol.
@@ -856,13 +859,14 @@ const file_catalog_gcp_gcpnetworkfirewallpolicy_v1alpha1_spec_proto_rawDesc = ""
 	"\x14dest_network_context\x18\x0f \x01(\tB\xd9\x01\xbaH\xd5\x01\xba\x01\xd1\x01\n" +
 	"\x1avalid_dest_network_context\x12adest_network_context must be one of: UNSPECIFIED, INTERNET, INTRA_VPC, NON_INTERNET, VPC_NETWORKS\x1aPthis in ['UNSPECIFIED', 'INTERNET', 'INTRA_VPC', 'NON_INTERNET', 'VPC_NETWORKS']H\x01R\x12destNetworkContext\x88\x01\x01B\x16\n" +
 	"\x14_src_network_contextB\x17\n" +
-	"\x15_dest_network_context\"\xda\x04\n" +
-	"$GcpNetworkFirewallPolicyLayer4Config\x12\xa9\x02\n" +
-	"\vip_protocol\x18\x01 \x01(\tB\x87\x02\xbaH\x83\x02\xba\x01\xfc\x01\n" +
-	"\x11valid_ip_protocol\x12\\ip_protocol must be tcp, udp, icmp, esp, ah, ipip, sctp, all, or an IP protocol number 0-255\x1a\x88\x01this in ['tcp', 'udp', 'icmp', 'esp', 'ah', 'ipip', 'sctp', 'all'] || this.matches('^([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$')\xc8\x01\x01R\n" +
+	"\x15_dest_network_context\"\xac\x06\n" +
+	"$GcpNetworkFirewallPolicyLayer4Config\x12\x8e\x04\n" +
+	"\vip_protocol\x18\x01 \x01(\tB\xec\x03\xbaH\xe8\x03\xba\x01\xfc\x01\n" +
+	"\x11valid_ip_protocol\x12\\ip_protocol must be tcp, udp, icmp, esp, ah, ipip, sctp, all, or an IP protocol number 0-255\x1a\x88\x01this in ['tcp', 'udp', 'icmp', 'esp', 'ah', 'ipip', 'sctp', 'all'] || this.matches('^([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$')\xba\x01\xe1\x01\n" +
+	"\x16named_protocol_by_name\x12\x91\x01write this protocol by its name (icmp, ipip, tcp, udp, esp, ah or sctp), not its number -- Google stores the name, so the number re-plans forever\x1a3!(this in ['1', '4', '6', '17', '50', '51', '132'])\xc8\x01\x01R\n" +
 	"ipProtocol\x12<\n" +
-	"\x05ports\x18\x02 \x03(\tB&\xbaH#\x92\x01 \"\x1er\x1c2\x1a^[0-9]{1,5}(-[0-9]{1,5})?$R\x05ports:\xc7\x01\xbaH\xc3\x01\x1a\xc0\x01\n" +
-	"\x16ports_only_for_tcp_udp\x12]ports can be set only when ip_protocol is tcp, udp, 6, or 17 -- other protocols have no ports\x1aGthis.ports.size() == 0 || this.ip_protocol in ['tcp', 'udp', '6', '17']B\x98\x03\n" +
+	"\x05ports\x18\x02 \x03(\tB&\xbaH#\x92\x01 \"\x1er\x1c2\x1a^[0-9]{1,5}(-[0-9]{1,5})?$R\x05ports:\xb4\x01\xbaH\xb0\x01\x1a\xad\x01\n" +
+	"\x16ports_only_for_tcp_udp\x12Uports can be set only when ip_protocol is tcp or udp -- other protocols have no ports\x1a<this.ports.size() == 0 || this.ip_protocol in ['tcp', 'udp']B\x98\x03\n" +
 	"5com.dev.planton.gcp.gcpnetworkfirewallpolicy.v1alpha1B\tSpecProtoP\x01Zkgithub.com/plantonhq/planton/catalog/gcp/gcpnetworkfirewallpolicy/v1alpha1;gcpnetworkfirewallpolicyv1alpha1\xa2\x02\x04DPGG\xaa\x021Dev.Planton.Gcp.Gcpnetworkfirewallpolicy.V1alpha1\xca\x021Dev\\Planton\\Gcp\\Gcpnetworkfirewallpolicy\\V1alpha1\xe2\x02=Dev\\Planton\\Gcp\\Gcpnetworkfirewallpolicy\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Gcp::Gcpnetworkfirewallpolicy::V1alpha1b\x06proto3"
 
 var (
