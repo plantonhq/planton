@@ -49,11 +49,11 @@ type GcpRedisClusterEndpointSetConnection struct {
 	Network *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=network,proto3" json:"network,omitempty"`
 	// The cluster service attachment this connection targets, as
 	// projects/{project}/regions/{region}/serviceAttachments/{id}. A
-	// GcpRedisCluster reference resolves to its discovery_service_attachment
-	// output by default; the connection for the primary or reader endpoint
-	// names that handle through an explicit fieldPath
-	// (status.outputs.primary_service_attachment,
-	// status.outputs.reader_service_attachment).
+	// GcpRedisCluster publishes one per endpoint, so a reference names which
+	// through its fieldPath: status.outputs.discovery_service_attachment,
+	// status.outputs.primary_service_attachment, or
+	// status.outputs.reader_service_attachment (all three are declared
+	// candidates; a reference naming none is refused as ambiguous).
 	ServiceAttachment *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=service_attachment,json=serviceAttachment,proto3" json:"service_attachment,omitempty"`
 	// The consumer project the forwarding rule was created in. If omitted,
 	// Google records the project it finds on the rule -- set it only when
@@ -314,13 +314,13 @@ var File_catalog_gcp_gcpredisclusterendpointset_v1alpha1_spec_proto protoreflect
 
 const file_catalog_gcp_gcpredisclusterendpointset_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	":catalog/gcp/gcpredisclusterendpointset/v1alpha1/spec.proto\x123dev.planton.gcp.gcpredisclusterendpointset.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xcb\x06\n" +
+	":catalog/gcp/gcpredisclusterendpointset/v1alpha1/spec.proto\x123dev.planton.gcp.gcpredisclusterendpointset.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xe3\a\n" +
 	"$GcpRedisClusterEndpointSetConnection\x12\x84\x01\n" +
 	"\x0fforwarding_rule\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xa6\x18\x92\xd4a\x18status.outputs.self_linkR\x0eforwardingRule\x12\x8f\x01\n" +
 	"\x11psc_connection_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB/\xbaH\x03\xc8\x01\x01\x88\xd4a\xa6\x18\x92\xd4a status.outputs.psc_connection_idR\x0fpscConnectionId\x12s\n" +
 	"\aaddress\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB%\xbaH\x03\xc8\x01\x01\x88\xd4a\xaa\x18\x92\xd4a\x16status.outputs.addressR\aaddress\x12z\n" +
-	"\anetwork\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xc2\x17\x92\xd4a\x19status.outputs.network_id\x98\xd4a\x01R\anetwork\x12\x9d\x01\n" +
-	"\x12service_attachment\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB:\xbaH\x03\xc8\x01\x01\x88\xd4a\xf6\x18\x92\xd4a+status.outputs.discovery_service_attachmentR\x11serviceAttachment\x12y\n" +
+	"\anetwork\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xc2\x17\x92\xd4a\x19status.outputs.network_id\x98\xd4a\x01R\anetwork\x12\xb5\x02\n" +
+	"\x12service_attachment\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xd1\x01\xbaH\x03\xc8\x01\x01\x88\xd4a\xf6\x18\x92\xd4a+status.outputs.discovery_service_attachment\xa2\xd4a0\b\xf6\x18\x12+status.outputs.discovery_service_attachment\xa2\xd4a.\b\xf6\x18\x12)status.outputs.primary_service_attachment\xa2\xd4a-\b\xf6\x18\x12(status.outputs.reader_service_attachmentR\x11serviceAttachment\x12y\n" +
 	"\n" +
 	"project_id\x18\x06 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_id\x98\xd4a\x01R\tprojectId\"\xac\x01\n" +
 	"\"GcpRedisClusterEndpointSetEndpoint\x12\x85\x01\n" +

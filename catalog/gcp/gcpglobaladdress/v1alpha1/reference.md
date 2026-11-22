@@ -224,6 +224,7 @@ Fields on other kinds that can point at this resource:
 | Kind | Field | Reads |
 |---|---|---|
 | GcpGlobalForwardingRule | `spec.ipAddress` | `status.outputs.address` |
+| GcpGlobalForwardingRule | `spec.ipAddress` | `status.outputs.self_link` |
 | GcpServiceNetworkingConnection | `spec.reservedPeeringRanges` | `status.outputs.name` |
 | GcpVertexAiDeployedIndex | `spec.reservedIpRanges` | `status.outputs.name` |
 

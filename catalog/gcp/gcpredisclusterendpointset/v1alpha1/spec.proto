@@ -51,15 +51,27 @@ message GcpRedisClusterEndpointSetConnection {
 
   // The cluster service attachment this connection targets, as
   // projects/{project}/regions/{region}/serviceAttachments/{id}. A
-  // GcpRedisCluster reference resolves to its discovery_service_attachment
-  // output by default; the connection for the primary or reader endpoint
-  // names that handle through an explicit fieldPath
-  // (status.outputs.primary_service_attachment,
-  // status.outputs.reader_service_attachment).
+  // GcpRedisCluster publishes one per endpoint, so a reference names which
+  // through its fieldPath: status.outputs.discovery_service_attachment,
+  // status.outputs.primary_service_attachment, or
+  // status.outputs.reader_service_attachment (all three are declared
+  // candidates; a reference naming none is refused as ambiguous).
   dev.planton.shared.foreignkey.v1.StringValueOrRef service_attachment = 5 [
     (buf.validate.field).required = true,
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpRedisCluster,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.discovery_service_attachment"
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.discovery_service_attachment",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpRedisCluster
+      field_path: "status.outputs.discovery_service_attachment"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpRedisCluster
+      field_path: "status.outputs.primary_service_attachment"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpRedisCluster
+      field_path: "status.outputs.reader_service_attachment"
+    }
   ];
 
   // The consumer project the forwarding rule was created in. If omitted,

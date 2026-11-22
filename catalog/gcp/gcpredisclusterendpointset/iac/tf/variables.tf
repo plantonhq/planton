@@ -67,11 +67,11 @@ variable "spec" {
 
         # The cluster service attachment this connection targets, as
         # projects/{project}/regions/{region}/serviceAttachments/{id}. A
-        # GcpRedisCluster reference resolves to its discovery_service_attachment
-        # output by default; the connection for the primary or reader endpoint
-        # names that handle through an explicit fieldPath
-        # (status.outputs.primary_service_attachment,
-        # status.outputs.reader_service_attachment).
+        # GcpRedisCluster publishes one per endpoint, so a reference names which
+        # through its fieldPath: status.outputs.discovery_service_attachment,
+        # status.outputs.primary_service_attachment, or
+        # status.outputs.reader_service_attachment (all three are declared
+        # candidates; a reference naming none is refused as ambiguous).
         # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
         service_attachment = string
 

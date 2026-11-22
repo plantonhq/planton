@@ -12,6 +12,7 @@ import (
 	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/e2e/profile"
 	"github.com/plantonhq/planton/pkg/manifestgraph"
+	"github.com/plantonhq/planton/pkg/refannotations"
 	kindv1 "github.com/plantonhq/planton/qa/catalogkinde2eprofile/v1"
 	"github.com/plantonhq/planton/shared/catalogkind"
 )
@@ -182,6 +183,9 @@ func checkRefResolvable(use manifestgraph.RefUse, deployed map[catalogkind.Catal
 				"planton.dev/e2e-prerequisites annotation",
 		}
 	}
+	if finding := checkRefFieldPath(use, kind); finding != nil {
+		return finding
+	}
 	if instances[use.Ref.GetName()] || len(instances) == 1 {
 		// Exact name match, or the runner's sole-instance fallback.
 		return nil
@@ -197,6 +201,36 @@ func checkRefResolvable(use manifestgraph.RefUse, deployed map[catalogkind.Catal
 		RefName: use.Ref.GetName(),
 		Reason: fmt.Sprintf("name matches none of the %d deployed instances (%s) -- the runner fails the run on "+
 			"this ambiguity after the fixtures are already deployed", len(instances), strings.Join(names, ", ")),
+	}
+}
+
+// checkRefFieldPath holds a reference's explicit fieldPath to the rules the
+// deploy-time resolution applies (pkg/manifestgraph.CheckRef, the one home
+// shared with chart validation): a path the field never composes from, or
+// one the target kind does not carry, is refused there, the runner leaves
+// the reference unresolved, and the module deploys without the value -- a
+// Pulumi module drops it silently, a Terraform plan fails far from the
+// manifest. A reference naming no path is left to the kind and name checks:
+// CheckRef fills the field's declared default in.
+func checkRefFieldPath(use manifestgraph.RefUse, kind catalogkind.CatalogKind) *FixtureIntegrityFinding {
+	path := use.Ref.GetFieldPath()
+	if path == "" {
+		return nil
+	}
+	_, problems := manifestgraph.CheckRef(use)
+	if len(problems) == 0 {
+		return nil
+	}
+	reason := strings.Join(problems, "; ") + " -- the runner leaves the reference unresolved and the Pulumi module deploys without the value"
+	if !refannotations.Of(use.Field).AcceptsPath(kind, path) {
+		reason = fmt.Sprintf("the field declares no candidate at %s for %s; the runner leaves the reference unresolved "+
+			"and the Pulumi module deploys without the value", path, kind)
+	}
+	return &FixtureIntegrityFinding{
+		Field:   string(use.Field.Name()),
+		RefKind: kind.String(),
+		RefName: use.Ref.GetName(),
+		Reason:  reason,
 	}
 }
 

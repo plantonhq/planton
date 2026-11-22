@@ -123,18 +123,20 @@ type GcpGlobalForwardingRuleSpec struct {
 	// target: Google requires the backend service for the passthrough load
 	// balancers and rejects it for every proxy-based one. Immutable.
 	BackendService *v1.StringValueOrRef `protobuf:"bytes,21,opt,name=backend_service,json=backendService,proto3" json:"backend_service,omitempty"`
-	// The IP address this rule accepts traffic on. Reference a
-	// GcpGlobalAddress (the default kind, for a global rule) or a regional
-	// GcpAddress in the rule's region (for a regional rule) — both are
-	// declared candidates, so their address output fills in — or provide a
-	// literal IP ("34.120.1.2") or an address resource URL. When omitted,
-	// Google Cloud assigns an ephemeral IP — fine for testing, but production
-	// frontends should reserve a static address so DNS never has to chase a
-	// new VIP. Required for Private Service Connect rules to Google APIs. A
-	// Private Service Connect rule to a service attachment takes the address
-	// resource (its self link), not a literal IP: Google refuses an IP there
-	// ("Invalid value for field 'resource.IPAddress' ... The URL is
-	// malformed"). Immutable.
+	// The IP address this rule accepts traffic on: a GcpGlobalAddress (the
+	// default kind, for a global rule) or a regional GcpAddress in the rule's
+	// region (for a regional rule), or a literal IP ("34.120.1.2") or address
+	// resource URL. A reference names one of two outputs of either kind:
+	// status.outputs.address (the IP number) or status.outputs.self_link (the
+	// address resource) -- Google accepts both forms for an ordinary rule, and
+	// reads the IP number back either way. A Private Service Connect rule to
+	// a service attachment takes the address resource, never the number:
+	// Google refuses an IP there ("Invalid value for field
+	// 'resource.IPAddress' ... The URL is malformed"), so reference the
+	// GcpAddress's self_link. When omitted, Google Cloud assigns an ephemeral
+	// IP -- fine for testing, but production frontends should reserve a
+	// static address so DNS never has to chase a new VIP. Required for
+	// Private Service Connect rules to Google APIs. Immutable.
 	IpAddress *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=ip_address,json=ipAddress,proto3" json:"ip_address,omitempty"`
 	// The IP protocol this rule matches (default TCP). All proxy-based load
 	// balancers and Private Service Connect to Google APIs use TCP; a Private
@@ -724,7 +726,7 @@ var File_catalog_gcp_gcpglobalforwardingrule_v1alpha1_spec_proto protoreflect.Fi
 
 const file_catalog_gcp_gcpglobalforwardingrule_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/gcp/gcpglobalforwardingrule/v1alpha1/spec.proto\x120dev.planton.gcp.gcpglobalforwardingrule.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xb7V\n" +
+	"7catalog/gcp/gcpglobalforwardingrule/v1alpha1/spec.proto\x120dev.planton.gcp.gcpglobalforwardingrule.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xfaV\n" +
 	"\x1bGcpGlobalForwardingRuleSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x94\x03\n" +
@@ -734,9 +736,9 @@ const file_catalog_gcp_gcpglobalforwardingrule_v1alpha1_spec_proto_rawDesc = "" 
 	"\x06region\x18\x14 \x01(\tB\xb5\x01\xbaH\xb1\x01\xba\x01\xad\x01\n" +
 	"\fvalid_region\x12aregion must be a valid GCP region name such as us-central1, or empty for a global forwarding rule\x1a:this == '' || this.matches('^[a-z]([-a-z0-9]*[a-z0-9])?$')R\x06region\x12\xd1\x01\n" +
 	"\x06target\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x84\x01\x88\xd4a\xb9\x17\x92\xd4a\x18status.outputs.self_link\xa2\xd4a\x1d\b\xb9\x17\x12\x18status.outputs.self_link\xa2\xd4a\x1d\b\xd5\x17\x12\x18status.outputs.self_link\xa2\xd4a\x1d\b\xf2\x18\x12\x18status.outputs.self_linkR\x06target\x12~\n" +
-	"\x0fbackend_service\x18\x15 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xd1\x17\x92\xd4a\x18status.outputs.self_linkR\x0ebackendService\x12\xb0\x01\n" +
+	"\x0fbackend_service\x18\x15 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xd1\x17\x92\xd4a\x18status.outputs.self_linkR\x0ebackendService\x12\xf3\x01\n" +
 	"\n" +
-	"ip_address\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB]\x88\xd4a\xcd\x17\x92\xd4a\x16status.outputs.address\xa2\xd4a\x1b\b\xcd\x17\x12\x16status.outputs.address\xa2\xd4a\x1b\b\xaa\x18\x12\x16status.outputs.addressR\tipAddress\x12\x8c\x02\n" +
+	"ip_address\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x9f\x01\x88\xd4a\xcd\x17\x92\xd4a\x16status.outputs.address\xa2\xd4a\x1b\b\xcd\x17\x12\x16status.outputs.address\xa2\xd4a\x1d\b\xcd\x17\x12\x18status.outputs.self_link\xa2\xd4a\x1b\b\xaa\x18\x12\x16status.outputs.address\xa2\xd4a\x1d\b\xaa\x18\x12\x18status.outputs.self_linkR\tipAddress\x12\x8c\x02\n" +
 	"\vip_protocol\x18\x06 \x01(\tB\xe5\x01\xbaH\xda\x01\xba\x01\xd6\x01\n" +
 	"\x11valid_ip_protocol\x12pip_protocol must be one of TCP, UDP, ESP, AH, SCTP, ICMP, or L3_DEFAULT (L3_DEFAULT is a regional-rule protocol)\x1aOthis == '' || this in ['TCP', 'UDP', 'ESP', 'AH', 'SCTP', 'ICMP', 'L3_DEFAULT']\x8a\xa6\x1d\x03TCPH\x00R\n" +
 	"ipProtocol\x88\x01\x01\x12\x80\x01\n" +

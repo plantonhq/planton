@@ -712,6 +712,8 @@ Fields on other kinds that can point at this resource:
 | GcpRedisCluster | `spec.crossClusterReplicationConfig.secondaryClusters[].cluster` | `status.outputs.name` |
 | GcpRedisClusterEndpointSet | `spec.cluster` | `status.outputs.name` |
 | GcpRedisClusterEndpointSet | `spec.endpoints[].connections[].serviceAttachment` | `status.outputs.discovery_service_attachment` |
+| GcpRedisClusterEndpointSet | `spec.endpoints[].connections[].serviceAttachment` | `status.outputs.primary_service_attachment` |
+| GcpRedisClusterEndpointSet | `spec.endpoints[].connections[].serviceAttachment` | `status.outputs.reader_service_attachment` |
 
 ## See Also
 

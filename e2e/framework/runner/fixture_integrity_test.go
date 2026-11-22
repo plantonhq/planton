@@ -169,6 +169,89 @@ spec:
 	}
 }
 
+// A reference naming an output the field never composes from is left
+// unresolved by the runner: the shared rules (pkg/manifestgraph.CheckRef)
+// refuse it, so the module deploys without the value and the failure
+// surfaces at deploy, far from the manifest. The output exists on the kind
+// (a VPC's network_id), which is why no schema check catches it.
+func TestFixtureIntegrity_FieldPathTheFieldDoesNotDeclare(t *testing.T) {
+	repoRoot := t.TempDir()
+	writeKindManifest(t, repoRoot, "catalog/gcp/gcpvpcnetwork/e2e/prerequisite.yaml", fakeVpcPrereq)
+	scenario := writeKindManifest(t, repoRoot, "catalog/gcp/gcpsubnetwork/e2e/scenarios/minimal.yaml",
+		strings.Replace(fakeSubnetworkScenario("fake-vpc-prereq"), "status.outputs.network_self_link", "status.outputs.network_id", 1))
+
+	findings, err := CheckScenarioFixtureIntegrity(repoRoot, "gcp", "gcpsubnetwork", scenario)
+	if err != nil {
+		t.Fatalf("CheckScenarioFixtureIntegrity: %v", err)
+	}
+	if len(findings) != 1 {
+		t.Fatalf("expected 1 undeclared-path finding, got %v", findings)
+	}
+	want := "the field declares no candidate at status.outputs.network_id for GcpVpcNetwork; the runner leaves the reference unresolved and the Pulumi module deploys without the value"
+	if findings[0].Reason != want {
+		t.Errorf("Reason = %q, want %q", findings[0].Reason, want)
+	}
+	if findings[0].RefKind != "GcpVpcNetwork" || findings[0].Field != "vpc_self_link" {
+		t.Errorf("finding names %s on %q, want GcpVpcNetwork on vpc_self_link", findings[0].RefKind, findings[0].Field)
+	}
+}
+
+// The path the field declares resolves: the check refuses only what the
+// field never composes from.
+func TestFixtureIntegrity_DeclaredFieldPathResolves(t *testing.T) {
+	repoRoot := t.TempDir()
+	writeKindManifest(t, repoRoot, "catalog/gcp/gcpvpcnetwork/e2e/prerequisite.yaml", fakeVpcPrereq)
+	scenario := writeKindManifest(t, repoRoot, "catalog/gcp/gcpsubnetwork/e2e/scenarios/minimal.yaml",
+		fakeSubnetworkScenario("fake-vpc-prereq"))
+
+	findings, err := CheckScenarioFixtureIntegrity(repoRoot, "gcp", "gcpsubnetwork", scenario)
+	if err != nil {
+		t.Fatalf("CheckScenarioFixtureIntegrity: %v", err)
+	}
+	if len(findings) != 0 {
+		t.Fatalf("expected the declared path to resolve, got %v", findings)
+	}
+}
+
+// A declared path the target kind does not actually carry is refused by the
+// same shared rules, and the finding quotes them.
+func TestFixtureIntegrity_FieldPathOnAKindWithNoDeclaredKey(t *testing.T) {
+	repoRoot := t.TempDir()
+	writeKindManifest(t, repoRoot, "catalog/gcp/gcpvpcnetwork/e2e/prerequisite.yaml", fakeVpcPrereq)
+	writeKindManifest(t, repoRoot, "catalog/gcp/gcpdnszone/e2e/prerequisite.yaml",
+		`apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDnsZone
+metadata:
+  name: fake-zone-prereq
+spec: {}
+`)
+	scenario := writeKindManifest(t, repoRoot, "catalog/gcp/gcpdnsrecord/e2e/scenarios/minimal.yaml",
+		`apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDnsRecord
+metadata:
+  name: fake-record-scenario
+spec:
+  type: TXT
+  values:
+    - valueFrom:
+        kind: GcpVpcNetwork
+        name: fake-vpc-prereq
+        fieldPath: status.outputs.no_such_output
+`)
+
+	findings, err := CheckScenarioFixtureIntegrity(repoRoot, "gcp", "gcpdnsrecord", scenario)
+	if err != nil {
+		t.Fatalf("CheckScenarioFixtureIntegrity: %v", err)
+	}
+	if len(findings) != 1 {
+		t.Fatalf("expected 1 unresolvable-path finding, got %v", findings)
+	}
+	if !strings.Contains(findings[0].Reason, "does not resolve on GcpVpcNetwork") ||
+		!strings.Contains(findings[0].Reason, "the runner leaves the reference unresolved") {
+		t.Errorf("unexpected reason: %s", findings[0].Reason)
+	}
+}
+
 // A kind whose profile records `status: deferred` is skipped by the
 // CATALOG walk: its deferral is the record that its lanes cannot run, so an
 // unresolvable chain is not a finding. Any other status keeps the check

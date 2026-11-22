@@ -48,6 +48,7 @@ go_library(
         "//pkg/manifestgraph",
         "//pkg/outputs",
         "//pkg/protobufyaml",
+        "//pkg/refannotations",
         "//pkg/reflection/metadatareflect",
         "//qa/catalogkinde2eprofile/v1:catalogkinde2eprofile",
         "//shared/catalogkind",

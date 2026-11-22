@@ -120,7 +120,7 @@ spec:
 | `spec.endpoints[].connections[].pscConnectionId` | `string \| valueFrom` | yes |  | GcpGlobalForwardingRule (`status.outputs.psc_connection_id`) |
 | `spec.endpoints[].connections[].address` | `string \| valueFrom` | yes |  | GcpAddress (`status.outputs.address`) |
 | `spec.endpoints[].connections[].network` | `string \| valueFrom` | yes |  | GcpVpcNetwork (`status.outputs.network_id`) |
-| `spec.endpoints[].connections[].serviceAttachment` | `string \| valueFrom` | yes |  | GcpRedisCluster (`status.outputs.discovery_service_attachment`) |
+| `spec.endpoints[].connections[].serviceAttachment` | `string \| valueFrom` | yes |  | GcpRedisCluster (`status.outputs.discovery_service_attachment`), GcpRedisCluster (`status.outputs.primary_service_attachment`), GcpRedisCluster (`status.outputs.reader_service_attachment`) |
 | `spec.endpoints[].connections[].projectId` | `string \| valueFrom` |  |  | GcpProject (`status.outputs.project_id`) |
 | `spec.deletionPolicy` | `string` |  |  |  |
 
@@ -235,13 +235,13 @@ resolves to its network_id output.
 
 The cluster service attachment this connection targets, as
 projects/{project}/regions/{region}/serviceAttachments/{id}. A
-GcpRedisCluster reference resolves to its discovery_service_attachment
-output by default; the connection for the primary or reader endpoint
-names that handle through an explicit fieldPath
-(status.outputs.primary_service_attachment,
-status.outputs.reader_service_attachment).
+GcpRedisCluster publishes one per endpoint, so a reference names which
+through its fieldPath: status.outputs.discovery_service_attachment,
+status.outputs.primary_service_attachment, or
+status.outputs.reader_service_attachment (all three are declared
+candidates; a reference naming none is refused as ambiguous).
 
-- references: GcpRedisCluster (`status.outputs.discovery_service_attachment`)
+- references: GcpRedisCluster (`status.outputs.discovery_service_attachment`), GcpRedisCluster (`status.outputs.primary_service_attachment`), GcpRedisCluster (`status.outputs.reader_service_attachment`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpRedisCluster, name: <that resource's name>, fieldPath: status.outputs.discovery_service_attachment}} -- a bare string does not parse
 
@@ -295,6 +295,8 @@ Fields that can point at another resource's outputs:
 | `spec.endpoints[].connections[].address` | GcpAddress | `status.outputs.address` |
 | `spec.endpoints[].connections[].network` | GcpVpcNetwork | `status.outputs.network_id` |
 | `spec.endpoints[].connections[].serviceAttachment` | GcpRedisCluster | `status.outputs.discovery_service_attachment` |
+| `spec.endpoints[].connections[].serviceAttachment` | GcpRedisCluster | `status.outputs.primary_service_attachment` |
+| `spec.endpoints[].connections[].serviceAttachment` | GcpRedisCluster | `status.outputs.reader_service_attachment` |
 | `spec.endpoints[].connections[].projectId` | GcpProject | `status.outputs.project_id` |
 
 ## See Also

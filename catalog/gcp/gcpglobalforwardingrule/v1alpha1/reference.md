@@ -100,7 +100,7 @@ spec:
 | `spec.region` | `string` |  |  |  |
 | `spec.target` | `string \| valueFrom` |  |  | GcpTargetHttpsProxy (`status.outputs.self_link`), GcpTargetHttpProxy (`status.outputs.self_link`), GcpPscServiceAttachment (`status.outputs.self_link`) |
 | `spec.backendService` | `string \| valueFrom` |  |  | GcpBackendService (`status.outputs.self_link`) |
-| `spec.ipAddress` | `string \| valueFrom` |  |  | GcpGlobalAddress (`status.outputs.address`), GcpAddress (`status.outputs.address`) |
+| `spec.ipAddress` | `string \| valueFrom` |  |  | GcpGlobalAddress (`status.outputs.address`), GcpGlobalAddress (`status.outputs.self_link`), GcpAddress (`status.outputs.address`), GcpAddress (`status.outputs.self_link`) |
 | `spec.ipProtocol` | `string` |  | `TCP` |  |
 | `spec.ipVersion` | `string` |  |  |  |
 | `spec.loadBalancingScheme` | `string` |  | `EXTERNAL` |  |
@@ -237,20 +237,22 @@ balancers and rejects it for every proxy-based one. Immutable.
 
 `string | valueFrom`
 
-The IP address this rule accepts traffic on. Reference a
-GcpGlobalAddress (the default kind, for a global rule) or a regional
-GcpAddress in the rule's region (for a regional rule) — both are
-declared candidates, so their address output fills in — or provide a
-literal IP ("34.120.1.2") or an address resource URL. When omitted,
-Google Cloud assigns an ephemeral IP — fine for testing, but production
-frontends should reserve a static address so DNS never has to chase a
-new VIP. Required for Private Service Connect rules to Google APIs. A
-Private Service Connect rule to a service attachment takes the address
-resource (its self link), not a literal IP: Google refuses an IP there
-("Invalid value for field 'resource.IPAddress' ... The URL is
-malformed"). Immutable.
+The IP address this rule accepts traffic on: a GcpGlobalAddress (the
+default kind, for a global rule) or a regional GcpAddress in the rule's
+region (for a regional rule), or a literal IP ("34.120.1.2") or address
+resource URL. A reference names one of two outputs of either kind:
+status.outputs.address (the IP number) or status.outputs.self_link (the
+address resource) -- Google accepts both forms for an ordinary rule, and
+reads the IP number back either way. A Private Service Connect rule to
+a service attachment takes the address resource, never the number:
+Google refuses an IP there ("Invalid value for field
+'resource.IPAddress' ... The URL is malformed"), so reference the
+GcpAddress's self_link. When omitted, Google Cloud assigns an ephemeral
+IP -- fine for testing, but production frontends should reserve a
+static address so DNS never has to chase a new VIP. Required for
+Private Service Connect rules to Google APIs. Immutable.
 
-- references: GcpGlobalAddress (`status.outputs.address`), GcpAddress (`status.outputs.address`)
+- references: GcpGlobalAddress (`status.outputs.address`), GcpGlobalAddress (`status.outputs.self_link`), GcpAddress (`status.outputs.address`), GcpAddress (`status.outputs.self_link`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpGlobalAddress, name: <that resource's name>, fieldPath: status.outputs.address}} -- a bare string does not parse
 
 ### spec.ipProtocol
@@ -646,7 +648,9 @@ Fields that can point at another resource's outputs:
 | `spec.target` | GcpPscServiceAttachment | `status.outputs.self_link` |
 | `spec.backendService` | GcpBackendService | `status.outputs.self_link` |
 | `spec.ipAddress` | GcpGlobalAddress | `status.outputs.address` |
+| `spec.ipAddress` | GcpGlobalAddress | `status.outputs.self_link` |
 | `spec.ipAddress` | GcpAddress | `status.outputs.address` |
+| `spec.ipAddress` | GcpAddress | `status.outputs.self_link` |
 | `spec.network` | GcpVpcNetwork | `status.outputs.network_self_link` |
 | `spec.subnetwork` | GcpSubnetwork | `status.outputs.subnetwork_self_link` |
 
