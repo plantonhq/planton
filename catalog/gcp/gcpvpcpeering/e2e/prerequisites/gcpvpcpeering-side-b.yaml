@@ -29,5 +29,15 @@ spec:
       kind: GcpVpcNetwork
       name: planton-oss-e2e-gcpvpcnetwork-prereq
       fieldPath: status.outputs.network_self_link
+  # Under CONSENSUS Google requires the two sides' route flags to be
+  # complementary when the second side is added: each side's export flag
+  # equals the other side's import flag. These mirror side A in
+  # scenarios/consensus-dual-stack-flags.yaml (export and import custom
+  # routes both on; side A imports public-IP subnet routes, so this side
+  # exports them and does not import them).
+  exportCustomRoutes: true
   importCustomRoutes: true
+  exportSubnetRoutesWithPublicIp: true
+  importSubnetRoutesWithPublicIp: false
+  stackType: IPV4_ONLY
   updateStrategy: CONSENSUS # Google requires both sides of a pair to use the same strategy

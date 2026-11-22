@@ -3,7 +3,9 @@
 # subnet-route flags flipped from their defaults, IPV4_ONLY stated
 # explicitly, and PREVENT held off so the harness can destroy. Same two
 # fixture networks and the same side-B fixture as the reference manifest, so
-# the pair goes ACTIVE (side B's flags are independent of side A's).
+# the pair goes ACTIVE. Under CONSENSUS Google refuses the second side
+# unless the two sides' flags are complementary, so the side-B fixture
+# carries the mirror of these flags.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpVpcPeering
 metadata:
