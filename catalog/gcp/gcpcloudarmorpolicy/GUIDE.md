@@ -87,8 +87,11 @@ value matches (OR); an empty `networkMatch: {}` matches every packet and
 is how the default rule is written. A rule that names a user-defined
 field the policy never defined is rejected before deploy.
 
-Packet rules and user-defined fields are a Cloud Armor Enterprise
-feature. Google's own setup enrolls the project in Enterprise, turns on
+Every `CLOUD_ARMOR_NETWORK` policy is a Cloud Armor Enterprise feature:
+in a project without the subscription Google refuses even one with no
+rules and no user-defined fields ("Network security policies require
+Cloud Armor Enterprise subscription", HTTP 412). Google's own setup
+enrolls the project in Enterprise, turns on
 advanced network DDoS protection in the region first (a separate
 `CLOUD_ARMOR_NETWORK` policy with `ddosProtection: ADVANCED` and
 `networkEdgeSecurityService`; Google says not to reuse that policy for
@@ -97,9 +100,9 @@ region without advanced network DDoS protection, Google refused a
 `CLOUD_ARMOR_NETWORK` policy carrying one user-defined field and the
 default rule written as an empty `networkMatch` ("Creating network
 security policies with custom rules requires advanced network DDoS
-protection to be enabled in the region"). A policy with no rules and no
-user-defined fields is the shape to use there; Google adds the default
-rule itself.
+protection to be enabled in the region"). In an enrolled project, a
+policy with no rules and no user-defined fields is the shape to start
+from in such a region; Google adds the default rule itself.
 
 `ddosProtectionConfig.ddosProtection` is the reason most network
 policies exist. `STANDARD` is Google's always-on protection, free with

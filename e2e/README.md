@@ -3149,6 +3149,7 @@ inside such a scenario inherit its declaration.
 | `PLANTON_E2E_GCP_SHARED_VPC_DETACH_BY_HAND` | an operator's promise to detach the second project from the harness project by hand after the lane: the abandon arm leaves the attachment by design, and Google will not disable a host that has one | `GcpSharedVpcServiceProject` (the abandon arm) |
 | `PLANTON_E2E_GCP_SCC_PROJECT_ID` | a project with Security Command Center activated | `GcpSccNotificationConfig`, `GcpSccMuteConfig`, `GcpSccBigQueryExport` |
 | `PLANTON_E2E_GCP_BILLING_ACCOUNT_ID` | a billing account where the harness account can set the IAM policy and read the Admin Activity log; a declared lane's identity is bound there to the predefined role of each group that reaches the billing account (`roles/billing.costsManager` for budgets), and the sweep reads it for lane budgets and bindings | `GcpBillingBudget` |
+| `PLANTON_E2E_GCP_CLOUD_ARMOR_ENTERPRISE` | set (any value) only when the harness project is enrolled in Cloud Armor Enterprise; Google creates a `CLOUD_ARMOR_NETWORK` policy nowhere else | `GcpCloudArmorPolicy` (`regional-network-standard`) |
 | `PLANTON_E2E_GCP_CLOUD_IDENTITY_CUSTOMER_ID` | a Cloud Identity customer where the identity is a Groups Admin | `GcpCloudIdentityGroup` |
 | `PLANTON_E2E_VERIFIED_DOMAIN` | a domain verified for the identity (group email addresses, Cloud Run domain mappings) | `GcpCloudIdentityGroup`, `GcpCloudRunDomainMapping` |
 | `PLANTON_E2E_GCP_COLAB_RUNTIME_USER` | the email a Colab Enterprise runtime is assigned to | `GcpColabRuntime` |

@@ -1872,7 +1872,9 @@ func (x *GcpCloudArmorNetworkEdgeSecurityService) GetDescription() string {
 //     passthrough Network Load Balancers, protocol forwarding, and VMs with
 //     public IPs -- network DDoS protection (ddos_protection_config),
 //     custom packet fields (user_defined_fields), and L3/L4 rules
-//     (rules[].network_match).
+//     (rules[].network_match). Google creates this type only in a
+//     project with a Cloud Armor Enterprise subscription, whatever the
+//     policy holds.
 //
 // The policy type is immutable after creation (ForceNew).
 //

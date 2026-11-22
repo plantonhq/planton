@@ -1,12 +1,12 @@
 # GcpCloudArmorPolicy scenario exercising the CLOUD_ARMOR_NETWORK type: a
-# regional packet-level policy with STANDARD network DDoS protection (no
-# subscription needed), no rules and no user-defined fields, so Google adds
-# its own default rule. A region without advanced network DDoS protection
-# refused this type carrying a user-defined field and the default rule
-# written as an empty network match; rules and user-defined fields, ADVANCED
-# protection and the network edge security service stay offline-only:
-# they need a Cloud Armor Enterprise subscription the harness project does
-# not hold.
+# regional packet-level policy with STANDARD network DDoS protection, no
+# rules and no user-defined fields, so Google adds its own default rule.
+# Offline unless PLANTON_E2E_GCP_CLOUD_ARMOR_ENTERPRISE is set: Google
+# creates a CLOUD_ARMOR_NETWORK policy only in a project with a Cloud Armor
+# Enterprise subscription ("Network security policies require Cloud Armor
+# Enterprise subscription", 412), which the harness project does not hold.
+# Rules, user-defined fields, ADVANCED protection and the network edge
+# security service need the same subscription.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpCloudArmorPolicy
 metadata:
@@ -19,6 +19,7 @@ metadata:
     e2e-catalog-kind: gcpcloudarmorpolicy
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_CLOUD_ARMOR_ENTERPRISE # set only in a project enrolled in Cloud Armor Enterprise
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
   tags:
     - planton-e2e
