@@ -404,6 +404,9 @@ func newLiveReaders(ctx context.Context, t *testing.T, opts []option.ClientOptio
 			_, err := iamService.Projects.ServiceAccounts.Keys.Get(name).Context(ctx).Do()
 			return stillThere(err)
 		},
+		// A Shared VPC host's lien (Google places one on every host it
+		// enables) stays listed long after disableXpnHost removes it.
+		"cloudresourcemanager.googleapis.com/Lien": restReader(rest, "https://cloudresourcemanager.googleapis.com/v1/"),
 		"cloudresourcemanager.googleapis.com/TagKey": func(ctx context.Context, name string) (bool, error) {
 			_, err := crm.TagKeys.Get(name).Context(ctx).Do()
 			return stillThere(err)
