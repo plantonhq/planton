@@ -6,11 +6,16 @@ The judgment this guide protects: an issuance config is shared policy, not a per
 
 1. A `GcpPrivateCaPool`.
 2. An enabled `GcpPrivateCaCertificateAuthority` in that pool.
-3. The Certificate Manager service agent, `service-<project_number>@gcp-sa-certificatemanager.iam.gserviceaccount.com`, created and granted `roles/privateca.certificateRequester` on the pool. Google does not create this agent when the API is turned on: create it first (`gcloud beta services identity create --service=certificatemanager.googleapis.com --project=<project>`), or the grant is refused as an invalid member.
-4. This config, `caPool` from the pool's `name` output.
-5. `GcpCertManagerCert` resources whose `managed.issuance_config` references this config's `issuance_config_id`.
+3. This config, `caPool` from the pool's `name` output.
+4. `GcpCertManagerCert` resources whose `managed.issuance_config` references this config's `issuance_config_id`.
 
-Google checks step 3 when the config is created: without the agent's grant on the pool, the create fails with "Config validation failed" (measured on both engines). No catalog kind creates the agent or grants on a CA pool yet; do both outside the catalog, once per project and pool, before creating the config.
+## The service agent and its grant
+
+Google requires the Certificate Manager service agent, `service-<project_number>@gcp-sa-certificatemanager.iam.gserviceaccount.com`, to hold `roles/privateca.certificateRequester` on the pool when the config is created; without it the create fails with "Config validation failed" (measured on both engines). Google creates that agent only on request, never when the API is turned on, and a grant naming it before then is refused as an invalid member.
+
+This block does both, in order: it creates the agent in the config's project, grants it the requester role on the pool (in the pool's own project, parsed from its name), and then creates the config. The deploying identity therefore needs `privateca.caPools.getIamPolicy` and `setIamPolicy` on the pool, beside the Certificate Manager permissions. The agent outlives the config; destroy never removes it.
+
+The grant is a member grant, not counted per config. Two issuance configs over one pool share the one binding: destroying either removes it, and the other's certificates stop renewing until the other config is applied again. Keep pool and configs in one stack, or re-apply the survivor after removing one.
 
 ## Choosing the policy
 

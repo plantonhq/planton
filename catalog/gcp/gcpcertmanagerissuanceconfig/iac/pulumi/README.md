@@ -1,6 +1,6 @@
 # GcpCertManagerIssuanceConfig Pulumi Module
 
-This Pulumi module creates one Certificate Manager certificate issuance config and enables the Certificate Manager API on the target project.
+This Pulumi module creates one Certificate Manager certificate issuance config and enables the Certificate Manager API on the target project. Before the config it creates the Certificate Manager service agent (`projects.ServiceIdentity`) and grants it `roles/privateca.certificateRequester` on the pool (`certificateauthority.CaPoolIamMember`, in the pool's own project and location, parsed from its name): Google refuses the config without that grant.
 
 ## Usage
 

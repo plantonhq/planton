@@ -63,11 +63,14 @@ type GcpCertManagerIssuanceConfigSpec struct {
 	// The Certificate Authority Service pool that issues the certificates, by
 	// full name: projects/{project}/locations/{location}/caPools/{pool}.
 	// Reference a GcpPrivateCaPool -- its `name` output is exactly this value.
-	// The pool needs an enabled authority, and the Certificate Manager service
-	// agent needs roles/privateca.certificateRequester on it before this
-	// config is created: Google refuses the create without it ("Config
-	// validation failed"). Google creates that agent only on request
-	// (services identity create), not when the API is turned on. Immutable.
+	// The pool needs an enabled authority. Google also requires the
+	// Certificate Manager service agent to hold
+	// roles/privateca.certificateRequester on the pool before this config is
+	// created, and refuses the create without it ("Config validation
+	// failed"); Google creates that agent only on request, never when the API
+	// is turned on. This block creates the agent in the config's project and
+	// grants it on this pool, in the pool's own project, so the deploying
+	// identity needs privateca.caPools.setIamPolicy there. Immutable.
 	CaPool *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=ca_pool,json=caPool,proto3" json:"ca_pool,omitempty"`
 	// Key algorithm for the private key Google generates for each
 	// certificate: RSA_2048 (widest client compatibility) or ECDSA_P256

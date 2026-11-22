@@ -33,7 +33,12 @@ func Resources(ctx *pulumi.Context, iacInput *gcpcertmanagerissuanceconfigv1alph
 		return errors.Wrap(err, "failed to enable certificatemanager.googleapis.com api")
 	}
 
-	if err := issuanceConfig(ctx, locals, gcpProvider, createdProjectService); err != nil {
+	agentGrant, err := certificateManagerAgentGrant(ctx, locals, gcpProvider, createdProjectService)
+	if err != nil {
+		return errors.Wrap(err, "failed to grant the certificate manager service agent on the ca pool")
+	}
+
+	if err := issuanceConfig(ctx, locals, gcpProvider, agentGrant); err != nil {
 		return errors.Wrap(err, "failed to create certificate manager issuance config")
 	}
 

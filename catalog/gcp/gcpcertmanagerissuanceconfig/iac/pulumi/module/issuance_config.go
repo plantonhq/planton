@@ -11,7 +11,7 @@ import (
 // Google-managed certificates that name it are issued from a Certificate
 // Authority Service pool. Every argument except labels and deletion_policy
 // forces replacement.
-func issuanceConfig(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider, projectService pulumi.Resource) error {
+func issuanceConfig(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider, agentGrant pulumi.Resource) error {
 	spec := locals.GcpCertManagerIssuanceConfig.Spec
 
 	args := &certificatemanager.CertificateIssuanceConfigArgs{
@@ -46,7 +46,7 @@ func issuanceConfig(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provid
 		locals.GcpCertManagerIssuanceConfig.Metadata.Name,
 		args,
 		pulumi.Provider(gcpProvider),
-		pulumi.DependsOn([]pulumi.Resource{projectService}))
+		pulumi.DependsOn([]pulumi.Resource{agentGrant}))
 	if err != nil {
 		return errors.Wrap(err, "failed to create certificate issuance config")
 	}

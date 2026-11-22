@@ -113,3 +113,20 @@ resources:
       google/services/tpuv2/resource_tpu_v2_queued_resource.go (the GA
       promotion of the tpuv2 service); until then
       google-beta/services/tpuv2/ is the only home.
+  - resource: google_project_service_identity
+    kind: GcpCertManagerIssuanceConfig
+    reason: >-
+      The Certificate Manager service agent (services.generateServiceIdentity
+      on the Service Usage v1beta1 API) is created only through the beta
+      provider at the pin -- the GA provider registers no
+      google_project_service_identity. Google refuses an issuance config
+      unless that agent holds roles/privateca.certificateRequester on the
+      pool, and creates the agent only on request, so the kind cannot
+      deploy without it.
+    promotionTracking: >-
+      hashicorp/terraform-provider-google:
+      google/services/resourcemanager/resource_project_service_identity.go
+      gaining its implementation (at the pin it is an empty generated stub
+      in the GA provider, which follows the Service Usage
+      generateServiceIdentity method reaching v1); until then
+      google-beta/services/resourcemanager/ is its only home.

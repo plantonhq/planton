@@ -10,12 +10,9 @@ Private PKI usually means hand-rolled issuance and renewal. With an issuance con
 
 ## Before It Works
 
-Google documents two prerequisites this kind does not create:
+The pool needs **an enabled certificate authority** — a `GcpPrivateCaCertificateAuthority` in the `GcpPrivateCaPool` this config names. Certificates that name the config fail to issue until it is enabled.
 
-1. **An enabled certificate authority in the pool** — a `GcpPrivateCaCertificateAuthority` in the `GcpPrivateCaPool` this config names.
-2. **The Certificate Manager service agent** (`service-<project_number>@gcp-sa-certificatemanager.iam.gserviceaccount.com`) holding `roles/privateca.certificateRequester` on the pool.
-
-The config itself creates without either; certificates that name it fail to issue until both are in place.
+Google also refuses the config unless **the Certificate Manager service agent** (`service-<project_number>@gcp-sa-certificatemanager.iam.gserviceaccount.com`) holds `roles/privateca.certificateRequester` on the pool. This block creates the agent and grants it on the pool before it creates the config, so the deploying identity needs `privateca.caPools.setIamPolicy` on the pool. The grant is shared: two configs over one pool hold the same binding, and destroying one removes it until the other is applied again.
 
 ## Key Features
 
@@ -25,6 +22,7 @@ The config itself creates without either; certificates that name it fail to issu
 - User labels merged beneath the platform's attribution labels, identically on both engines
 - `deletionPolicy` (DELETE / PREVENT / ABANDON) controls what a destroy does
 - Enables the Certificate Manager API on the target project (never disabled on destroy)
+- Creates the Certificate Manager service agent and grants it `roles/privateca.certificateRequester` on the pool, which Google checks when the config is created
 
 ## Example Usage
 

@@ -12,10 +12,10 @@ spec:
   # presets are clean on the pinned provider, and the accounting is total.
   # Live facts the proof lane confirms: (1) Certificate Manager accepts a
   # DevOps-tier pool -- the provider's own acceptance test uses an Enterprise
-  # pool; (2) create succeeds without the Certificate Manager service agent
-  # holding roles/privateca.certificateRequester on the pool, which the
-  # scenario does not grant (no catalog kind grants on a pool, and nothing is
-  # issued); (3) the config reads back with the platform attribution labels
+  # pool; (2) the module creates the Certificate Manager service agent and
+  # grants it roles/privateca.certificateRequester on the pool before the
+  # config, which Google checks at create (without the grant the create is
+  # refused with "Config validation failed", measured on both engines); (3) the config reads back with the platform attribution labels
   # and RE-PLANS CLEAN on both engines -- the provider-defaulted "global"
   # location must not diff; (4) destroy leaves the verifier reading 404
   # before the authority and pool go.

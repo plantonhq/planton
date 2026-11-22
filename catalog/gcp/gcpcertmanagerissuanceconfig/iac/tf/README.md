@@ -1,6 +1,6 @@
 # GcpCertManagerIssuanceConfig Terraform Module
 
-This Terraform module creates one Certificate Manager certificate issuance config and enables the Certificate Manager API on the target project.
+This Terraform module creates one Certificate Manager certificate issuance config and enables the Certificate Manager API on the target project. Before the config it creates the Certificate Manager service agent (`google_project_service_identity`, through the `google-beta` provider, the only one that publishes it) and grants it `roles/privateca.certificateRequester` on the pool (`google_privateca_ca_pool_iam_member`, in the pool's own project and location, parsed from its name): Google refuses the config without that grant.
 
 ## Usage
 
@@ -38,6 +38,7 @@ module "issuance_config" {
 |------|---------|
 | terraform | >= 1.0 |
 | google | ~> 8.3 |
+| google-beta | ~> 8.3 |
 
 ## Inputs
 

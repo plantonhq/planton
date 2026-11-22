@@ -19,6 +19,20 @@ resources:
       - spec: spec.ca_pool
         arg: certificate_authority_config.certificate_authority_service_config.ca_pool
 
+  google_project_service_identity:
+    internal: >-
+      The Certificate Manager service agent Google requires before the
+      config is created and creates only on request; fixed arguments
+      (certificatemanager.googleapis.com in the config's project), not a
+      knob of the kind. Published only in the beta channel (admitted).
+
+  google_privateca_ca_pool_iam_member:
+    internal: >-
+      The grant Google requires for the service agent to request
+      certificates from the pool (roles/privateca.certificateRequester);
+      project, location and pool are parsed from spec.ca_pool, the member
+      is the agent -- not a knob of the kind.
+
   google_project_service:
     internal: >-
       API enablement plumbing -- the module enables
