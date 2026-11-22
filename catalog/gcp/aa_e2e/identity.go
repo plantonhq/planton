@@ -73,12 +73,13 @@ import (
 // A scope's variable is named in the scenario's planton.dev/e2e-required-env,
 // so a lane without it skips before it gets here.
 //
-// Which project: the harness's own, unless the scenario names the project
+// Which project: the harness's own, unless the scenario names the projects
 // its kind targets with provider.IdentityProjectAnnotation (a policy that
-// lives in the second test project). The custom role is written and bound
-// there, since Google binds a project's custom role only inside that
-// project; the account itself always lives in the harness's project, where
-// CleanLaneIdentities finds a crashed lane's leftovers.
+// lives in the second test project; both projects a Shared VPC attachment
+// joins). The custom role is written and bound in each, since Google binds a
+// project's custom role only inside that project; the account itself always
+// lives in the harness's project, where CleanLaneIdentities finds a crashed
+// lane's leftovers.
 const identityDeclared = "declared"
 
 const (
@@ -130,11 +131,11 @@ func (h *Harness) ProvisionIdentity(ctx context.Context, tc *provider.KindTestCo
 	if err != nil {
 		return "", nil, err
 	}
-	project, err := h.identityProject(tc)
+	projects, err := h.identityProjects(tc)
 	if err != nil {
 		return "", nil, err
 	}
-	scopes, err := h.grantScopes(project, grant)
+	scopes, err := h.grantScopes(projects, grant)
 	if err != nil {
 		return "", nil, err
 	}
@@ -246,7 +247,7 @@ func (h *Harness) ProvisionIdentity(ctx context.Context, tc *provider.KindTestCo
 	firstAct := tc.ManifestPath
 	h.mu.Lock()
 	h.laneGrants[tc] = held
-	h.laneAudits[firstAct] = &laneAudit{tc: tc, project: project, scopes: auditScopes, principal: account.Email, start: start}
+	h.laneAudits[firstAct] = &laneAudit{tc: tc, project: projects[0], scopes: auditScopes, principal: account.Email, start: start}
 	h.mu.Unlock()
 	return config.Path, func() {
 		h.mu.Lock()
@@ -445,10 +446,12 @@ type permissionTest func(ctx context.Context, keyJSON []byte, permissions []stri
 // part whose variable is unset fails the lane with the variable named; the
 // scenario declares it in planton.dev/e2e-required-env, so normally the lane
 // skipped before this.
-func (h *Harness) grantScopes(project string, grant declaredGrantSet) ([]*grantScope, error) {
+func (h *Harness) grantScopes(projects []string, grant declaredGrantSet) ([]*grantScope, error) {
 	var scopes []*grantScope
 	if !grant.target.empty() {
-		scopes = append(scopes, &grantScope{policy: h.projectPolicy(project), grant: grant.target, test: h.projectPermissionTest(project)})
+		for _, project := range projects {
+			scopes = append(scopes, &grantScope{policy: h.projectPolicy(project), grant: grant.target, test: h.projectPermissionTest(project)})
+		}
 	}
 	if !grant.organization.empty() {
 		organization, err := scopeFromEnv(organizationEnv, "organizations/", grant.kind, "the organization")
@@ -973,25 +976,31 @@ func (h *Harness) testProjects() []string {
 	return projects
 }
 
-// identityProject is the project a lane's identity is granted in: the one
-// the scenario names with provider.IdentityProjectAnnotation (tokens already
-// expanded), else the harness's own. It must be a test project, so a typo
+// identityProjects are the projects a lane's identity is granted its target
+// groups in: the ones the scenario names with
+// provider.IdentityProjectAnnotation (comma-separated, tokens already
+// expanded), else the harness's own. Each must be a test project, so a typo
 // never grants a lane identity somewhere CleanLaneIdentities would not look.
-func (h *Harness) identityProject(tc *provider.KindTestContext) (string, error) {
+func (h *Harness) identityProjects(tc *provider.KindTestContext) ([]string, error) {
 	named, err := runner.ManifestAnnotation(tc.ManifestPath, provider.IdentityProjectAnnotation)
 	if err != nil {
-		return "", errors.Wrapf(err, "reading %s", provider.IdentityProjectAnnotation)
+		return nil, errors.Wrapf(err, "reading %s", provider.IdentityProjectAnnotation)
 	}
-	if named == "" {
-		return h.services.Project, nil
+	if strings.TrimSpace(named) == "" {
+		return []string{h.services.Project}, nil
 	}
-	for _, project := range h.testProjects() {
-		if named == project {
-			return project, nil
+	var projects []string
+	for _, name := range strings.Split(named, ",") {
+		name = strings.TrimSpace(name)
+		if !containsString(h.testProjects(), name) {
+			return nil, errors.Errorf("%s names %q, which is not a test project (%s)",
+				provider.IdentityProjectAnnotation, name, strings.Join(h.testProjects(), ", "))
+		}
+		if !containsString(projects, name) {
+			projects = append(projects, name)
 		}
 	}
-	return "", errors.Errorf("%s names %q, which is not a test project (%s)",
-		provider.IdentityProjectAnnotation, named, strings.Join(h.testProjects(), ", "))
+	return projects, nil
 }
 
 // isLaneOrDeletedMember names a policy member a lane left behind: a lane

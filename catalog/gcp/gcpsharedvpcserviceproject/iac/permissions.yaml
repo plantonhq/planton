@@ -34,4 +34,4 @@ spec:
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: "Before attaching, the provider reads the host project through Resource Manager (refused without resourcemanager.projects.get on both engines: \"Required 'resourcemanager.projects.get' permission for 'projects/<host>'\"), and enableXpnResource and disableXpnResource return an operation in the host project that both engines poll as compute.globalOperations.get. Held on the host project."
+        notes: "Before attaching, the provider reads both the host and the service project through Resource Manager (each refused without resourcemanager.projects.get, on both engines: \"Required 'resourcemanager.projects.get' permission for 'projects/<project>'\"), and enableXpnResource and disableXpnResource return an operation in the host project that both engines poll as compute.globalOperations.get. Held on both projects the attachment joins."

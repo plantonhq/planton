@@ -19,6 +19,7 @@ metadata:
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-identity-project: "${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID},${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID}" # the attachment acts on the host and the service project, so its target groups hold on both
     planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID,PLANTON_E2E_GCP_SECOND_PROJECT_ID
   tags:
     - planton-e2e

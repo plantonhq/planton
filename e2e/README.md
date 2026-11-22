@@ -862,9 +862,10 @@ this kind"). For each lane it
 - creates a lane account `pe2e-<hash>` (the full lane in its display name)
   in the harness's project, and binds on each scope its custom role and the
   groups' named predefined roles. The project is the harness's own, or the
-  one the scenario names with `planton.dev/e2e-identity-project` (a token
-  such as `${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID}`; it must be a test
-  project), where the custom role is written too, because Google binds a
+  ones the scenario names with `planton.dev/e2e-identity-project` (a token
+  such as `${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID}`, or two
+  comma-separated for a kind that acts on both, as a Shared VPC attachment
+  does; each must be a test project), where the custom role is written too, because Google binds a
   project's custom role only inside that project. It mints a key, and waits
   until Google answers, for the account itself, every granted permission on
   every scope (each scope's own `testIamPermissions`: the project's, the

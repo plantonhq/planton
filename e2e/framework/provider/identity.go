@@ -7,7 +7,9 @@ import "context"
 // kind under test targets one other than the harness's own: a policy that
 // lives in a second test project is deployed by an identity granted there,
 // exactly as a customer's connection is granted on the project the
-// deployment targets. The value is a manifest value, so tokens such as
+// deployment targets. A kind that acts on two projects at once (a Shared VPC
+// attachment joins a host and a service project) names both, comma-separated,
+// and is granted in each. The value is a manifest value, so tokens such as
 // ${E2E_ENV:NAME} expand in it; without it the identity is granted in the
 // harness's own project. Harness vocabulary like the identity spec itself:
 // the runner never reads it.

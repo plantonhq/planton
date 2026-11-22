@@ -136,11 +136,13 @@ func TestIdentityProjectIsATestProject(t *testing.T) {
 	}{
 		{"", "harness-project", false},
 		{"second-project", "second-project", false},
+		{`"harness-project, second-project"`, "harness-project,second-project", false},
 		{"someone-elses-project", "", true},
+		{`"harness-project, someone-elses-project"`, "", true},
 	}
 	for _, c := range cases {
-		got, err := h.identityProject(manifest(c.annotation))
-		if c.refused != (err != nil) || got != c.want {
+		got, err := h.identityProjects(manifest(c.annotation))
+		if c.refused != (err != nil) || strings.Join(got, ",") != c.want {
 			t.Errorf("annotation %q: got (%q, %v), want %q refused=%v", c.annotation, got, err, c.want, c.refused)
 		}
 	}
@@ -270,12 +272,12 @@ func TestGrantScopesNameTheMissingVariable(t *testing.T) {
 	}
 	t.Setenv(organizationEnv, "")
 	t.Setenv(billingAccountEnv, "012345-6789AB-CDEF01")
-	if _, err := h.grantScopes("harness-project", grant); err == nil || !strings.Contains(err.Error(), organizationEnv) {
+	if _, err := h.grantScopes([]string{"harness-project"}, grant); err == nil || !strings.Contains(err.Error(), organizationEnv) {
 		t.Fatalf("err = %v, want the unset %s named", err, organizationEnv)
 	}
 	t.Setenv(organizationEnv, "organizations/123456789012")
 	t.Setenv(billingAccountEnv, "billingAccounts/012345-6789AB-CDEF01")
-	scopes, err := h.grantScopes("harness-project", grant)
+	scopes, err := h.grantScopes([]string{"harness-project"}, grant)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -287,7 +289,7 @@ func TestGrantScopesNameTheMissingVariable(t *testing.T) {
 		t.Fatalf("scopes = %s", got)
 	}
 	t.Setenv(billingAccountEnv, "")
-	if _, err := h.grantScopes("harness-project", grant); err == nil || !strings.Contains(err.Error(), billingAccountEnv) {
+	if _, err := h.grantScopes([]string{"harness-project"}, grant); err == nil || !strings.Contains(err.Error(), billingAccountEnv) {
 		t.Fatalf("err = %v, want the unset %s named", err, billingAccountEnv)
 	}
 }
