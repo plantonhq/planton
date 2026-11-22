@@ -3,15 +3,17 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpiamdenypolicy
 spec:
-  # Google grants roles/iam.denyAdmin only on an organization, even for a
-  # project-attached deny policy. The lane runs as the declared identity,
-  # which the harness grants it on the test organization
-  # (PLANTON_E2E_GCP_ORGANIZATION_ID) holding the harness project; the second
-  # act changes a rule's description in place. The offline bar (spec suite,
-  # both engines' builds, offline plans) is the shipped evidence until then;
-  # validated_provisioners stays empty until the live lanes actually run.
+  # Proven live on both engines (2026-11-23, test organization
+  # planton-e2e.com). Google grants roles/iam.denyAdmin only on an
+  # organization, even for a project-attached deny policy, so the declared
+  # identity holds it on the test organization; the policy attaches to the
+  # harness project. The second act changes a rule's description, judged in
+  # place from the PROJECT's Admin Activity log (UpdatePolicy), where Google
+  # writes a deny policy's changes: the harness reads the attachment point
+  # from the policy's url-encoded name. Google refuses a rule naming a
+  # principal that does not exist, so the break-glass exception is the
+  # harness project's Cloud Storage agent.
   tier: 2
-  status: deferred
-  deferred_reason: the live lane waits for a test organization exported as PLANTON_E2E_GCP_ORGANIZATION_ID, where the harness grants the declared identity roles/iam.denyAdmin; offline plans only until then
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15

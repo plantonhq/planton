@@ -3,17 +3,13 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpsharedvpchost
 spec:
-  # Shared VPC exists only inside an organization. The lane runs as the
-  # declared identity in the test organization
-  # (PLANTON_E2E_GCP_ORGANIZATION_ID) that holds the harness project. It has
-  # no second act: the project is the host's only field, so nothing updates
-  # in place and the kind proves by deploy and destroy. Offline bar met: both
-  # modules build and validate, offline plans for the reference manifest
-  # (ambient project, one guarded client-config read) and the literal-project
-  # scenario are clean on the pinned provider, and the accounting is total.
-  # validated_provisioners stays empty until the live lanes actually run.
+  # Shared VPC exists only inside an organization. Proven live on both
+  # engines (2026-11-23, test organization planton-e2e.com) as the declared
+  # identity: enableXpnHost and disableXpnHost on the organization, the
+  # operation they return polled with compute.globalOperations.get on the host
+  # project. No second act: the project is the host's only field, so nothing
+  # updates in place and the kind proves by deploy and destroy.
   tier: 2
-  status: deferred
-  deferred_reason: the live lane waits for a test organization exported as PLANTON_E2E_GCP_ORGANIZATION_ID holding the harness project; offline plans only until then
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 10
