@@ -25,18 +25,27 @@ spec:
   networkEndpointType: GCE_VM_IP_PORT
   defaultPort: 8080
   # The list IS the membership: written as one set, changed in place.
+  # Every VM endpoint states its address: Google fills a missing one with the
+  # VM's primary internal IP and the plan never settles.
   endpoints:
     - instance:
         valueFrom:
           kind: GcpComputeInstance
           name: web-1
           fieldPath: status.outputs.instance_name
-      ipAddress: 10.0.1.5
+      # The VM's primary internal IP, read from the instance.
+      ipAddress:
+        valueFrom:
+          kind: GcpComputeInstance
+          name: web-1
+          fieldPath: status.outputs.internal_ip
     - instance:
         valueFrom:
           kind: GcpComputeInstance
           name: web-2
           fieldPath: status.outputs.instance_name
-      ipAddress: 10.0.1.6
+      # An alias IP of web-2 in the group's subnetwork, as a literal.
+      ipAddress:
+        value: 10.0.1.6
       port: 8081
   deletionPolicy: DELETE

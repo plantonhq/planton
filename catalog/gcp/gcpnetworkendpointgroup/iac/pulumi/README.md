@@ -22,7 +22,10 @@ set, global when it is empty -- together with its membership.
 - **`DefaultPort`, endpoint `Port`** -- sent only when set; a global
   endpoint's port falls back to `default_port`.
 - **`Instance`, `IpAddress`, `Fqdn`** -- sent only when non-empty; the
-  spec has already matched each to the group's type.
+  spec has already matched each to the group's type. `Instance` and
+  `IpAddress` are references the CLI resolves before the module runs (the
+  module reads their `GetValue()`); a VM endpoint always carries its
+  address, because Google fills a missing one and the plan never settles.
 - **`DeletionPolicy`** -- DELETE (default), PREVENT, or ABANDON, fanned out
   to the endpoint resources; sent only when set on both engines.
 - **`neg_id`** -- the zonal group's `GeneratedId` as a string; empty on

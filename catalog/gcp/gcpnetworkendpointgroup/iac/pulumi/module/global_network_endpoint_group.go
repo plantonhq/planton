@@ -54,8 +54,8 @@ func globalNetworkEndpointGroup(ctx *pulumi.Context, locals *Locals, gcpProvider
 		if locals.ProjectId != "" {
 			epArgs.Project = pulumi.StringPtr(locals.ProjectId)
 		}
-		if e.IpAddress != "" {
-			epArgs.IpAddress = pulumi.StringPtr(e.IpAddress)
+		if v := e.IpAddress.GetValue(); v != "" {
+			epArgs.IpAddress = pulumi.StringPtr(v)
 		}
 		if e.Fqdn != "" {
 			epArgs.Fqdn = pulumi.StringPtr(e.Fqdn)

@@ -30,13 +30,21 @@ with no endpoints is valid and carries no endpoint resource at all.
 ## Which fields an endpoint carries
 
 The group's type decides: `GCE_VM_IP_PORT` endpoints name an `instance`
-(a `GcpComputeInstance` reference) and optionally an `ipAddress` (a
-primary or alias IP of that VM; unset means the primary) and `port`
-(unset means `defaultPort`); `GCE_VM_IP` endpoints name an instance and
-no port at all -- the passthrough load balancer forwards every port;
+(a `GcpComputeInstance` reference), an `ipAddress` (a primary or alias IP
+of that VM), and optionally a `port` (unset means `defaultPort`);
+`GCE_VM_IP` endpoints name an instance and an address and no port at all
+-- the passthrough load balancer forwards every port;
 hybrid and `INTERNET_IP_PORT` endpoints are an `ipAddress` and a `port`;
 `INTERNET_FQDN_PORT` endpoints are an `fqdn` and a `port`. Every mismatch
 is rejected before deploy.
+
+A VM endpoint's address is required, although Google accepts it unset.
+Google fills a missing address with the VM's primary internal IP, so an
+endpoint declared without one plans a change on every apply, and detaching
+it sends the empty address back, which Google cannot match to the
+endpoint it holds -- the endpoint stays attached. Reference the
+instance's `internal_ip` output (the field's default) for the primary
+address, or write an alias IP as a literal.
 
 ## Hybrid groups have a scheme rule
 

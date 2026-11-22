@@ -1551,6 +1551,7 @@ Fields on other kinds that can point at this resource:
 | Kind | Field | Reads |
 |---|---|---|
 | GcpNetworkEndpointGroup | `spec.endpoints[].instance` | `status.outputs.instance_name` |
+| GcpNetworkEndpointGroup | `spec.endpoints[].ipAddress` | `status.outputs.internal_ip` |
 
 ## See Also
 

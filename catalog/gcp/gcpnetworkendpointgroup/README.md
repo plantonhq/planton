@@ -71,14 +71,14 @@ planton apply -f network-endpoint-group.yaml
 | `networkEndpointType` | `string` | `GCE_VM_IP_PORT` (zonal) | Zonal: `GCE_VM_IP`, `GCE_VM_IP_PORT`, `NON_GCP_PRIVATE_IP_PORT`, `INTERNET_IP_PORT`, `INTERNET_FQDN_PORT`, `GCE_VM_IP_DEDICATED_BACKEND`. Immutable. |
 | `subnetwork` | `StringValueOrRef` | — | Zonal groups: the subnet endpoint IPs fall in. Immutable. |
 | `defaultPort` | `int32` | — | Port for endpoints that set none. Not for `GCE_VM_IP`. Immutable. |
-| `endpoints` | `[]object` | — | The whole membership: `instance` (`GcpComputeInstance` reference; VM groups), `ipAddress`, `fqdn` (FQDN groups), `port`. Changes in place. |
+| `endpoints` | `[]object` | — | The whole membership: `instance` (`GcpComputeInstance` reference; VM groups), `ipAddress` (`StringValueOrRef`: a literal, or a `GcpComputeInstance`'s `internal_ip` by default), `fqdn` (FQDN groups), `port`. Changes in place. |
 | `deletionPolicy` | `string` | `DELETE` | `DELETE`, `PREVENT`, or `ABANDON`. |
 
 ### Validation Rules
 
 - Zonal groups require `network`; global groups reject `network` and `subnetwork`.
 - The type list is per scope; `SERVERLESS` and `PRIVATE_SERVICE_CONNECT` belong to `GcpRegionNetworkEndpointGroup`.
-- VM groups (`GCE_VM_IP`, `GCE_VM_IP_PORT`): every endpoint names its `instance`; other groups reject `instance`. `GCE_VM_IP` endpoints and groups carry no port.
+- VM groups (`GCE_VM_IP`, `GCE_VM_IP_PORT`): every endpoint names its `instance` and its `ipAddress`; other groups reject `instance`. `GCE_VM_IP` endpoints and groups carry no port.
 - `INTERNET_FQDN_PORT` endpoints name an `fqdn` (no other group does); `NON_GCP_PRIVATE_IP_PORT` and `INTERNET_IP_PORT` endpoints name an `ipAddress`.
 
 ## Outputs
@@ -105,7 +105,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 - **The list is the membership.** An endpoint removed from `endpoints` is detached in place; one added is attached. Leave the list empty to let an autoscaler or another controller own membership.
 - **Nearly everything is immutable** -- name, scope, network, subnetwork, type, default port, description all recreate the group; only the endpoint list changes in place.
-- **A VM endpoint without `ipAddress`** uses the instance's primary internal IP; without `port`, the group's `defaultPort`.
+- **Every VM endpoint states its `ipAddress`.** Google fills a missing one with the instance's primary internal IP, so the plan would change on every apply and a detach would never match the endpoint Google holds. Reference the instance's `internal_ip` output, or write an alias IP as a literal. A VM endpoint without `port` uses the group's `defaultPort`.
 - **Cost**: the group and its endpoints are free; the load balancer that consumes it bills under its own components.
 
 ## Examples

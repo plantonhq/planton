@@ -2,8 +2,9 @@
 # written through the bulk endpoint set. The chain -- a subnet on the
 # registry's prerequisite network and a Spot VM on that subnet -- is
 # declared here because a path-declared fixture's own annotation is never
-# read. The endpoint names only its instance: Google resolves the address
-# to the VM's primary internal IP, and the port falls back to the group's
+# read. The endpoint names its instance and the instance's internal IP by
+# reference (Google fills a missing VM endpoint address with that IP, and
+# the plan would never settle); the port falls back to the group's
 # default_port.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpNetworkEndpointGroup
@@ -43,4 +44,9 @@ spec:
           kind: GcpComputeInstance
           name: planton-oss-e2e-gcpneg-vm
           fieldPath: status.outputs.instance_name
+      ipAddress:
+        valueFrom:
+          kind: GcpComputeInstance
+          name: planton-oss-e2e-gcpneg-vm
+          fieldPath: status.outputs.internal_ip
   deletionPolicy: DELETE

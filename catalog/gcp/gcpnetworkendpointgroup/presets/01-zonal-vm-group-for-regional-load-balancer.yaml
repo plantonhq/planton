@@ -24,17 +24,29 @@ spec:
   networkEndpointType: GCE_VM_IP_PORT
   defaultPort: 8080
   # The list IS the membership -- written as one set, changed in place.
-  # An endpoint without ipAddress uses the VM's primary internal IP;
-  # without port, the group's defaultPort.
+  # Each VM endpoint names its instance and the address it serves on, here
+  # the VM's primary internal IP read from the instance (Google fills a
+  # missing address with that IP and the plan never settles). An endpoint
+  # without port uses the group's defaultPort.
   endpoints:
     - instance:
         valueFrom:
           kind: GcpComputeInstance
           name: web-1
           fieldPath: status.outputs.instance_name
+      ipAddress:
+        valueFrom:
+          kind: GcpComputeInstance
+          name: web-1
+          fieldPath: status.outputs.internal_ip
     - instance:
         valueFrom:
           kind: GcpComputeInstance
           name: web-2
           fieldPath: status.outputs.instance_name
+      ipAddress:
+        valueFrom:
+          kind: GcpComputeInstance
+          name: web-2
+          fieldPath: status.outputs.internal_ip
   deletionPolicy: DELETE

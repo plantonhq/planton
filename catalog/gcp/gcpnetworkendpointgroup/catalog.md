@@ -79,7 +79,7 @@ These are the most important decisions when configuring a network endpoint group
 
 **Endpoint type** — zonal: `GCE_VM_IP_PORT` (default; Application and proxy load balancers), `GCE_VM_IP` (passthrough Network Load Balancers; no ports), `NON_GCP_PRIVATE_IP_PORT` (hybrid), `INTERNET_IP_PORT` / `INTERNET_FQDN_PORT` (regional external ALB origins), `GCE_VM_IP_DEDICATED_BACKEND`; global: `INTERNET_IP_PORT` or `INTERNET_FQDN_PORT`. Immutable.
 
-**Membership** — `endpoints` is the whole list, written as one set and changed in place; leave it empty when another controller owns membership. Each endpoint carries the fields its type needs (`instance`, `ipAddress`, `fqdn`, `port`), and every mismatch is rejected before deploy.
+**Membership** — `endpoints` is the whole list, written as one set and changed in place; leave it empty when another controller owns membership. Each endpoint carries the fields its type needs (`instance`, `ipAddress`, `fqdn`, `port`), and every mismatch is rejected before deploy. A VM endpoint's `ipAddress` is required and usually references its instance's `internal_ip` output: Google fills a missing one with that IP, and the plan never settles.
 
 ## Outputs and Dependencies
 

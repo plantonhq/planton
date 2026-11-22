@@ -7,7 +7,8 @@ spec:
   # with project-level roles/compute.networkAdmin (plus instanceAdmin for
   # the endpoint VM fixture): the zonal-vm-endpoint scenario deploys a
   # subnet and a Spot VM on the registry's prerequisite network and writes
-  # the VM as the group's one endpoint through the bulk endpoint set; the
+  # the VM, with its internal_ip referenced as the endpoint address, as the
+  # group's one endpoint through the bulk endpoint set; the
   # global-internet-fqdn scenario builds an INTERNET_FQDN_PORT group with
   # one FQDN endpoint and needs no fixture. Offline bar met: both modules
   # build and validate, offline plans for the reference manifest and every

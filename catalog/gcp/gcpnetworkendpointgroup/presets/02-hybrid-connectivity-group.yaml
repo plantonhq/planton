@@ -21,8 +21,11 @@ spec:
   networkEndpointType: NON_GCP_PRIVATE_IP_PORT
   defaultPort: 443
   endpoints:
-    - ipAddress: 192.168.10.11
-    - ipAddress: 192.168.10.12
-    - ipAddress: 192.168.10.13
+    - ipAddress:
+        value: 192.168.10.11
+    - ipAddress:
+        value: 192.168.10.12
+    - ipAddress:
+        value: 192.168.10.13
       port: 8443
   deletionPolicy: DELETE

@@ -8,7 +8,8 @@ import "shared/foreignkey/v1/foreign_key.proto";
 // GcpNetworkEndpoint is one member of the group. Which fields it carries
 // follows the group's network_endpoint_type:
 //   - GCE_VM_IP_PORT (zonal): instance + ip_address (a primary or alias IP
-//     of that VM) + port (or the group's default_port)
+//     of that VM, usually its internal_ip output) + port (or the group's
+//     default_port)
 //   - GCE_VM_IP (zonal): instance + ip_address, no port
 //   - NON_GCP_PRIVATE_IP_PORT (zonal, hybrid): ip_address + port, no
 //     instance
@@ -18,7 +19,7 @@ message GcpNetworkEndpoint {
   option (buf.validate.message).cel = {
     id: "endpoint_address_or_fqdn"
     message: "an endpoint names either an ip_address or an fqdn (INTERNET_FQDN_PORT groups), never both"
-    expression: "!(this.ip_address != '' && this.fqdn != '')"
+    expression: "!((has(this.ip_address) && (this.ip_address.value != '' || has(this.ip_address.value_from))) && this.fqdn != '')"
   };
 
   // The VM the endpoint belongs to: a reference to a GcpComputeInstance or
@@ -29,15 +30,27 @@ message GcpNetworkEndpoint {
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.instance_name"
   ];
 
-  // The endpoint's IP address. For VM endpoints a primary or alias IP of
-  // the instance in the group's subnetwork (unset means the instance's
-  // primary internal IP); for hybrid and internet endpoints the reachable
-  // address, required.
-  string ip_address = 2 [(buf.validate.field).cel = {
-    id: "valid_ip_address"
-    message: "ip_address must be an IPv4 or IPv6 address"
-    expression: "this == '' || this.isIp()"
-  }];
+  // The endpoint's IP address: a literal, or a reference to a
+  // GcpComputeInstance's internal_ip output (the default) -- the same VM
+  // the instance field names. Required on every endpoint but an
+  // INTERNET_FQDN_PORT one:
+  //   - VM endpoints (GCE_VM_IP, GCE_VM_IP_PORT): a primary or alias IP of
+  //     the instance in the group's subnetwork. Google fills a missing VM
+  //     endpoint address with the instance's primary internal IP, so an
+  //     endpoint declared without one plans a change on every apply, and a
+  //     detach sends the empty address back, which Google cannot match to
+  //     the endpoint it holds -- the endpoint is never removed. Wire the
+  //     instance's internal_ip here.
+  //   - Hybrid and internet endpoints: the reachable address.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef ip_address = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpComputeInstance,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.internal_ip",
+    (buf.validate.field).cel = {
+      id: "valid_ip_address"
+      message: "a literal ip_address must be an IPv4 or IPv6 address"
+      expression: "!has(this.value) || this.value == '' || this.value.isIp()"
+    }
+  ];
 
   // Fully qualified domain name of an INTERNET_FQDN_PORT endpoint
   // (resolved by Google at connection time).
@@ -101,6 +114,15 @@ message GcpNetworkEndpointGroupSpec {
     message: "every endpoint of a GCE_VM_IP or GCE_VM_IP_PORT group names its instance"
     expression: "!(this.zone != '' && this.network_endpoint_type in ['', 'GCE_VM_IP', 'GCE_VM_IP_PORT']) || this.endpoints.all(e, has(e.instance) && (e.instance.value != '' || has(e.instance.value_from)))"
   };
+  // Google fills a VM endpoint's missing address with the instance's
+  // primary internal IP, so the plan diffs forever and the endpoint can
+  // never be detached; the address is stated, usually by referencing the
+  // instance's internal_ip output.
+  option (buf.validate.message).cel = {
+    id: "vm_endpoints_name_an_ip_address"
+    message: "every endpoint of a GCE_VM_IP or GCE_VM_IP_PORT group names its ip_address (reference the instance's status.outputs.internal_ip): Google fills a missing one with the VM's primary internal IP, which then plans a change on every apply and keeps the endpoint from ever being detached"
+    expression: "!(this.zone != '' && this.network_endpoint_type in ['', 'GCE_VM_IP', 'GCE_VM_IP_PORT']) || this.endpoints.all(e, has(e.ip_address) && (e.ip_address.value != '' || has(e.ip_address.value_from)))"
+  };
   option (buf.validate.message).cel = {
     id: "non_vm_endpoints_carry_no_instance"
     message: "instance applies only to GCE_VM_IP and GCE_VM_IP_PORT endpoints; hybrid and internet endpoints are addresses"
@@ -124,7 +146,7 @@ message GcpNetworkEndpointGroupSpec {
   option (buf.validate.message).cel = {
     id: "address_endpoints_name_an_ip"
     message: "every endpoint of a NON_GCP_PRIVATE_IP_PORT or INTERNET_IP_PORT group names an ip_address"
-    expression: "!(this.network_endpoint_type in ['NON_GCP_PRIVATE_IP_PORT', 'INTERNET_IP_PORT']) || this.endpoints.all(e, e.ip_address != '')"
+    expression: "!(this.network_endpoint_type in ['NON_GCP_PRIVATE_IP_PORT', 'INTERNET_IP_PORT']) || this.endpoints.all(e, has(e.ip_address) && (e.ip_address.value != '' || has(e.ip_address.value_from)))"
   };
 
   // The GCP project that owns the group. A literal project ID or a

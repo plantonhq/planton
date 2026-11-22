@@ -26,7 +26,8 @@ const (
 // GcpNetworkEndpoint is one member of the group. Which fields it carries
 // follows the group's network_endpoint_type:
 //   - GCE_VM_IP_PORT (zonal): instance + ip_address (a primary or alias IP
-//     of that VM) + port (or the group's default_port)
+//     of that VM, usually its internal_ip output) + port (or the group's
+//     default_port)
 //   - GCE_VM_IP (zonal): instance + ip_address, no port
 //   - NON_GCP_PRIVATE_IP_PORT (zonal, hybrid): ip_address + port, no
 //     instance
@@ -38,11 +39,19 @@ type GcpNetworkEndpoint struct {
 	// its instance name in the group's zone. Zonal GCE_VM_IP and
 	// GCE_VM_IP_PORT groups only.
 	Instance *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=instance,proto3" json:"instance,omitempty"`
-	// The endpoint's IP address. For VM endpoints a primary or alias IP of
-	// the instance in the group's subnetwork (unset means the instance's
-	// primary internal IP); for hybrid and internet endpoints the reachable
-	// address, required.
-	IpAddress string `protobuf:"bytes,2,opt,name=ip_address,json=ipAddress,proto3" json:"ip_address,omitempty"`
+	// The endpoint's IP address: a literal, or a reference to a
+	// GcpComputeInstance's internal_ip output (the default) -- the same VM
+	// the instance field names. Required on every endpoint but an
+	// INTERNET_FQDN_PORT one:
+	//   - VM endpoints (GCE_VM_IP, GCE_VM_IP_PORT): a primary or alias IP of
+	//     the instance in the group's subnetwork. Google fills a missing VM
+	//     endpoint address with the instance's primary internal IP, so an
+	//     endpoint declared without one plans a change on every apply, and a
+	//     detach sends the empty address back, which Google cannot match to
+	//     the endpoint it holds -- the endpoint is never removed. Wire the
+	//     instance's internal_ip here.
+	//   - Hybrid and internet endpoints: the reachable address.
+	IpAddress *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=ip_address,json=ipAddress,proto3" json:"ip_address,omitempty"`
 	// Fully qualified domain name of an INTERNET_FQDN_PORT endpoint
 	// (resolved by Google at connection time).
 	Fqdn string `protobuf:"bytes,3,opt,name=fqdn,proto3" json:"fqdn,omitempty"`
@@ -90,11 +99,11 @@ func (x *GcpNetworkEndpoint) GetInstance() *v1.StringValueOrRef {
 	return nil
 }
 
-func (x *GcpNetworkEndpoint) GetIpAddress() string {
+func (x *GcpNetworkEndpoint) GetIpAddress() *v1.StringValueOrRef {
 	if x != nil {
 		return x.IpAddress
 	}
-	return ""
+	return nil
 }
 
 func (x *GcpNetworkEndpoint) GetFqdn() string {
@@ -298,16 +307,16 @@ var File_catalog_gcp_gcpnetworkendpointgroup_v1alpha1_spec_proto protoreflect.Fi
 
 const file_catalog_gcp_gcpnetworkendpointgroup_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/gcp/gcpnetworkendpointgroup/v1alpha1/spec.proto\x120dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xfa\x03\n" +
+	"7catalog/gcp/gcpnetworkendpointgroup/v1alpha1/spec.proto\x120dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xc4\x05\n" +
 	"\x12GcpNetworkEndpoint\x12u\n" +
-	"\binstance\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB%\x88\xd4a\xc9\x17\x92\xd4a\x1cstatus.outputs.instance_nameR\binstance\x12~\n" +
+	"\binstance\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB%\x88\xd4a\xc9\x17\x92\xd4a\x1cstatus.outputs.instance_nameR\binstance\x12\x82\x02\n" +
 	"\n" +
-	"ip_address\x18\x02 \x01(\tB_\xbaH\\\xba\x01Y\n" +
-	"\x10valid_ip_address\x12*ip_address must be an IPv4 or IPv6 address\x1a\x19this == '' || this.isIp()R\tipAddress\x12\x12\n" +
+	"ip_address\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xae\x01\xbaH\x87\x01\xba\x01\x83\x01\n" +
+	"\x10valid_ip_address\x124a literal ip_address must be an IPv4 or IPv6 address\x1a9!has(this.value) || this.value == '' || this.value.isIp()\x88\xd4a\xc9\x17\x92\xd4a\x1astatus.outputs.internal_ipR\tipAddress\x12\x12\n" +
 	"\x04fqdn\x18\x03 \x01(\tR\x04fqdn\x12$\n" +
-	"\x04port\x18\x04 \x01(\x05B\v\xbaH\b\x1a\x06\x18\xff\xff\x03(\x01H\x00R\x04port\x88\x01\x01:\xa9\x01\xbaH\xa5\x01\x1a\xa2\x01\n" +
-	"\x18endpoint_address_or_fqdn\x12Yan endpoint names either an ip_address or an fqdn (INTERNET_FQDN_PORT groups), never both\x1a+!(this.ip_address != '' && this.fqdn != '')B\a\n" +
-	"\x05_port\"\xac#\n" +
+	"\x04port\x18\x04 \x01(\x05B\v\xbaH\b\x1a\x06\x18\xff\xff\x03(\x01H\x00R\x04port\x88\x01\x01:\xee\x01\xbaH\xea\x01\x1a\xe7\x01\n" +
+	"\x18endpoint_address_or_fqdn\x12Yan endpoint names either an ip_address or an fqdn (INTERNET_FQDN_PORT groups), never both\x1ap!((has(this.ip_address) && (this.ip_address.value != '' || has(this.ip_address.value_from))) && this.fqdn != '')B\a\n" +
+	"\x05_port\"\xed'\n" +
 	"\x1bGcpNetworkEndpointGroupSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\xf6\x01\n" +
@@ -327,17 +336,18 @@ const file_catalog_gcp_gcpnetworkendpointgroup_v1alpha1_spec_proto_rawDesc = "" 
 	"\tendpoints\x18\t \x03(\v2D.dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1.GcpNetworkEndpointR\tendpoints\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\n" +
 	" \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
-	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy:\x94\x16\xbaH\x90\x16\x1a\xa9\x03\n" +
+	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy:\xd5\x1a\xbaH\xd1\x1a\x1a\xa9\x03\n" +
 	"\x10zonal_type_valid\x12\xd9\x01a zonal network endpoint group's network_endpoint_type must be one of GCE_VM_IP, GCE_VM_IP_PORT, NON_GCP_PRIVATE_IP_PORT, INTERNET_IP_PORT, INTERNET_FQDN_PORT, GCE_VM_IP_DEDICATED_BACKEND (or empty for GCE_VM_IP_PORT)\x1a\xb8\x01this.zone == '' || this.network_endpoint_type in ['', 'GCE_VM_IP', 'GCE_VM_IP_PORT', 'NON_GCP_PRIVATE_IP_PORT', 'INTERNET_IP_PORT', 'INTERNET_FQDN_PORT', 'GCE_VM_IP_DEDICATED_BACKEND']\x1a\x9a\x02\n" +
 	"\x11global_type_valid\x12\xa7\x01a global (internet) network endpoint group's network_endpoint_type must be INTERNET_IP_PORT or INTERNET_FQDN_PORT; set zone for VM, hybrid, or dedicated-backend groups\x1a[this.zone != '' || this.network_endpoint_type in ['INTERNET_IP_PORT', 'INTERNET_FQDN_PORT']\x1a\xda\x01\n" +
 	"\x16network_required_zonal\x12Znetwork is required for a zonal network endpoint group (the VPC every endpoint belongs to)\x1adthis.zone == '' || (has(this.network) && (this.network.value != '' || has(this.network.value_from)))\x1a\xd0\x02\n" +
 	"\x1anetwork_global_only_absent\x12gnetwork and subnetwork apply only to a zonal network endpoint group; a global internet group has no VPC\x1a\xc8\x01this.zone != '' || ((!has(this.network) || (this.network.value == '' && !has(this.network.value_from))) && (!has(this.subnetwork) || (this.subnetwork.value == '' && !has(this.subnetwork.value_from))))\x1a\xa7\x02\n" +
-	"\x1dvm_endpoints_name_an_instance\x12Hevery endpoint of a GCE_VM_IP or GCE_VM_IP_PORT group names its instance\x1a\xbb\x01!(this.zone != '' && this.network_endpoint_type in ['', 'GCE_VM_IP', 'GCE_VM_IP_PORT']) || this.endpoints.all(e, has(e.instance) && (e.instance.value != '' || has(e.instance.value_from)))\x1a\xd1\x02\n" +
+	"\x1dvm_endpoints_name_an_instance\x12Hevery endpoint of a GCE_VM_IP or GCE_VM_IP_PORT group names its instance\x1a\xbb\x01!(this.zone != '' && this.network_endpoint_type in ['', 'GCE_VM_IP', 'GCE_VM_IP_PORT']) || this.endpoints.all(e, has(e.instance) && (e.instance.value != '' || has(e.instance.value_from)))\x1a\x80\x04\n" +
+	"\x1fvm_endpoints_name_an_ip_address\x12\x98\x02every endpoint of a GCE_VM_IP or GCE_VM_IP_PORT group names its ip_address (reference the instance's status.outputs.internal_ip): Google fills a missing one with the VM's primary internal IP, which then plans a change on every apply and keeps the endpoint from ever being detached\x1a\xc1\x01!(this.zone != '' && this.network_endpoint_type in ['', 'GCE_VM_IP', 'GCE_VM_IP_PORT']) || this.endpoints.all(e, has(e.ip_address) && (e.ip_address.value != '' || has(e.ip_address.value_from)))\x1a\xd1\x02\n" +
 	"\"non_vm_endpoints_carry_no_instance\x12linstance applies only to GCE_VM_IP and GCE_VM_IP_PORT endpoints; hybrid and internet endpoints are addresses\x1a\xbc\x01(this.zone != '' && this.network_endpoint_type in ['', 'GCE_VM_IP', 'GCE_VM_IP_PORT']) || this.endpoints.all(e, !has(e.instance) || (e.instance.value == '' && !has(e.instance.value_from)))\x1a\x8c\x02\n" +
 	"!gce_vm_ip_endpoints_carry_no_port\x12xGCE_VM_IP endpoints carry no port (the passthrough load balancer forwards every port); remove port or use GCE_VM_IP_PORT\x1amthis.network_endpoint_type != 'GCE_VM_IP' || (!has(this.default_port) && this.endpoints.all(e, !has(e.port)))\x1a\xd9\x01\n" +
 	"\x18fqdn_only_in_fqdn_groups\x12bfqdn endpoints belong to an INTERNET_FQDN_PORT group; other groups address endpoints by ip_address\x1aYthis.network_endpoint_type == 'INTERNET_FQDN_PORT' || this.endpoints.all(e, e.fqdn == '')\x1a\xb0\x01\n" +
-	"\x16fqdn_groups_name_fqdns\x12;every endpoint of an INTERNET_FQDN_PORT group names an fqdn\x1aYthis.network_endpoint_type != 'INTERNET_FQDN_PORT' || this.endpoints.all(e, e.fqdn != '')\x1a\xf8\x01\n" +
-	"\x1caddress_endpoints_name_an_ip\x12Yevery endpoint of a NON_GCP_PRIVATE_IP_PORT or INTERNET_IP_PORT group names an ip_address\x1a}!(this.network_endpoint_type in ['NON_GCP_PRIVATE_IP_PORT', 'INTERNET_IP_PORT']) || this.endpoints.all(e, e.ip_address != '')B\x0f\n" +
+	"\x16fqdn_groups_name_fqdns\x12;every endpoint of an INTERNET_FQDN_PORT group names an fqdn\x1aYthis.network_endpoint_type != 'INTERNET_FQDN_PORT' || this.endpoints.all(e, e.fqdn != '')\x1a\xb6\x02\n" +
+	"\x1caddress_endpoints_name_an_ip\x12Yevery endpoint of a NON_GCP_PRIVATE_IP_PORT or INTERNET_IP_PORT group names an ip_address\x1a\xba\x01!(this.network_endpoint_type in ['NON_GCP_PRIVATE_IP_PORT', 'INTERNET_IP_PORT']) || this.endpoints.all(e, has(e.ip_address) && (e.ip_address.value != '' || has(e.ip_address.value_from)))B\x0f\n" +
 	"\r_default_portB\x91\x03\n" +
 	"4com.dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1B\tSpecProtoP\x01Zigithub.com/plantonhq/planton/catalog/gcp/gcpnetworkendpointgroup/v1alpha1;gcpnetworkendpointgroupv1alpha1\xa2\x02\x04DPGG\xaa\x020Dev.Planton.Gcp.Gcpnetworkendpointgroup.V1alpha1\xca\x020Dev\\Planton\\Gcp\\Gcpnetworkendpointgroup\\V1alpha1\xe2\x02<Dev\\Planton\\Gcp\\Gcpnetworkendpointgroup\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Gcp::Gcpnetworkendpointgroup::V1alpha1b\x06proto3"
 
@@ -361,15 +371,16 @@ var file_catalog_gcp_gcpnetworkendpointgroup_v1alpha1_spec_proto_goTypes = []any
 }
 var file_catalog_gcp_gcpnetworkendpointgroup_v1alpha1_spec_proto_depIdxs = []int32{
 	2, // 0: dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1.GcpNetworkEndpoint.instance:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	2, // 1: dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1.GcpNetworkEndpointGroupSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	2, // 2: dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1.GcpNetworkEndpointGroupSpec.network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	2, // 3: dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1.GcpNetworkEndpointGroupSpec.subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	0, // 4: dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1.GcpNetworkEndpointGroupSpec.endpoints:type_name -> dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1.GcpNetworkEndpoint
-	5, // [5:5] is the sub-list for method output_type
-	5, // [5:5] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	2, // 1: dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1.GcpNetworkEndpoint.ip_address:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	2, // 2: dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1.GcpNetworkEndpointGroupSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	2, // 3: dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1.GcpNetworkEndpointGroupSpec.network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	2, // 4: dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1.GcpNetworkEndpointGroupSpec.subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	0, // 5: dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1.GcpNetworkEndpointGroupSpec.endpoints:type_name -> dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1.GcpNetworkEndpoint
+	6, // [6:6] is the sub-list for method output_type
+	6, // [6:6] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpnetworkendpointgroup_v1alpha1_spec_proto_init() }

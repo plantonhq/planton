@@ -7,6 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
 )
@@ -49,7 +50,7 @@ var _ = ginkgo.Describe("GcpNetworkEndpointGroupSpec", func() {
 				Network:     nameRef("main-vpc"),
 				DefaultPort: proto.Int32(8080),
 				Endpoints: []*GcpNetworkEndpoint{
-					{Instance: nameRef("web-1"), IpAddress: "10.0.0.5", Port: proto.Int32(8080)},
+					{Instance: nameRef("web-1"), IpAddress: litRef("10.0.0.5"), Port: proto.Int32(8080)},
 				},
 			},
 		}
@@ -97,7 +98,7 @@ var _ = ginkgo.Describe("GcpNetworkEndpointGroupSpec", func() {
 	ginkgo.It("should accept a hybrid group of addresses and reject an instance on it", func() {
 		msg := zonal()
 		msg.Spec.NetworkEndpointType = "NON_GCP_PRIVATE_IP_PORT"
-		msg.Spec.Endpoints = []*GcpNetworkEndpoint{{IpAddress: "192.168.10.4", Port: proto.Int32(443)}}
+		msg.Spec.Endpoints = []*GcpNetworkEndpoint{{IpAddress: litRef("192.168.10.4"), Port: proto.Int32(443)}}
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 		msg.Spec.Endpoints[0].Instance = nameRef("not-allowed")
 		gomega.Expect(validator.Validate(msg)).To(gomega.HaveOccurred())
@@ -106,6 +107,43 @@ var _ = ginkgo.Describe("GcpNetworkEndpointGroupSpec", func() {
 	ginkgo.It("should reject a VM endpoint without an instance", func() {
 		msg := zonal()
 		msg.Spec.Endpoints[0].Instance = nil
+		gomega.Expect(validator.Validate(msg)).To(gomega.HaveOccurred())
+	})
+
+	ginkgo.It("should reject a VM endpoint without an ip_address, on both VM types", func() {
+		msg := zonal()
+		msg.Spec.Endpoints[0].IpAddress = nil
+		err := validator.Validate(msg)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(err.Error()).To(gomega.ContainSubstring("names its ip_address"))
+
+		msg = zonal()
+		msg.Spec.Endpoints[0].IpAddress = litRef("")
+		gomega.Expect(validator.Validate(msg)).To(gomega.HaveOccurred())
+
+		msg = zonal()
+		msg.Spec.NetworkEndpointType = "GCE_VM_IP"
+		msg.Spec.DefaultPort = nil
+		msg.Spec.Endpoints[0].Port = nil
+		msg.Spec.Endpoints[0].IpAddress = nil
+		gomega.Expect(validator.Validate(msg)).To(gomega.HaveOccurred())
+	})
+
+	ginkgo.It("should accept a VM endpoint whose ip_address references the instance's internal IP", func() {
+		msg := zonal()
+		msg.Spec.Endpoints[0].IpAddress = &foreignkeyv1.StringValueOrRef{
+			LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{ValueFrom: &foreignkeyv1.ValueFromRef{
+				Kind:      catalogkind.CatalogKind_GcpComputeInstance,
+				Name:      "web-1",
+				FieldPath: "status.outputs.internal_ip",
+			}},
+		}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject an endpoint whose referenced address sits beside an fqdn", func() {
+		msg := global()
+		msg.Spec.Endpoints[0].IpAddress = nameRef("origin-vm")
 		gomega.Expect(validator.Validate(msg)).To(gomega.HaveOccurred())
 	})
 
@@ -151,14 +189,14 @@ var _ = ginkgo.Describe("GcpNetworkEndpointGroupSpec", func() {
 		gomega.Expect(validator.Validate(msg)).To(gomega.HaveOccurred())
 		msg = global()
 		msg.Spec.Endpoints[0].Fqdn = ""
-		msg.Spec.Endpoints[0].IpAddress = "203.0.113.10"
+		msg.Spec.Endpoints[0].IpAddress = litRef("203.0.113.10")
 		gomega.Expect(validator.Validate(msg)).To(gomega.HaveOccurred())
 	})
 
 	ginkgo.It("should accept a global INTERNET_IP_PORT group and reject an endpoint with both address and fqdn", func() {
 		msg := global()
 		msg.Spec.NetworkEndpointType = "INTERNET_IP_PORT"
-		msg.Spec.Endpoints = []*GcpNetworkEndpoint{{IpAddress: "203.0.113.10", Port: proto.Int32(443)}}
+		msg.Spec.Endpoints = []*GcpNetworkEndpoint{{IpAddress: litRef("203.0.113.10"), Port: proto.Int32(443)}}
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 		msg.Spec.Endpoints[0].Fqdn = "also.example.com"
 		gomega.Expect(validator.Validate(msg)).To(gomega.HaveOccurred())
@@ -172,7 +210,7 @@ var _ = ginkgo.Describe("GcpNetworkEndpointGroupSpec", func() {
 		msg.Spec.NegName = "Web_NEG"
 		gomega.Expect(validator.Validate(msg)).To(gomega.HaveOccurred())
 		msg = zonal()
-		msg.Spec.Endpoints[0].IpAddress = "10.0.0"
+		msg.Spec.Endpoints[0].IpAddress = litRef("10.0.0")
 		gomega.Expect(validator.Validate(msg)).To(gomega.HaveOccurred())
 		msg = zonal()
 		msg.Spec.Endpoints[0].Port = proto.Int32(70000)

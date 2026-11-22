@@ -76,10 +76,19 @@ variable "spec" {
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       instance = optional(string, "")
 
-      # The endpoint's IP address. For VM endpoints a primary or alias IP of
-      # the instance in the group's subnetwork (unset means the instance's
-      # primary internal IP); for hybrid and internet endpoints the reachable
-      # address, required.
+      # The endpoint's IP address: a literal, or a reference to a
+      # GcpComputeInstance's internal_ip output (the default) -- the same VM
+      # the instance field names. Required on every endpoint but an
+      # INTERNET_FQDN_PORT one:
+      #   - VM endpoints (GCE_VM_IP, GCE_VM_IP_PORT): a primary or alias IP of
+      #     the instance in the group's subnetwork. Google fills a missing VM
+      #     endpoint address with the instance's primary internal IP, so an
+      #     endpoint declared without one plans a change on every apply, and a
+      #     detach sends the empty address back, which Google cannot match to
+      #     the endpoint it holds -- the endpoint is never removed. Wire the
+      #     instance's internal_ip here.
+      #   - Hybrid and internet endpoints: the reachable address.
+      # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       ip_address = optional(string, "")
 
       # Fully qualified domain name of an INTERNET_FQDN_PORT endpoint

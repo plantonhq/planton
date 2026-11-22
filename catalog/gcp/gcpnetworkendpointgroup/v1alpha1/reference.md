@@ -63,19 +63,28 @@ spec:
   networkEndpointType: GCE_VM_IP_PORT
   defaultPort: 8080
   # The list IS the membership: written as one set, changed in place.
+  # Every VM endpoint states its address: Google fills a missing one with the
+  # VM's primary internal IP and the plan never settles.
   endpoints:
     - instance:
         valueFrom:
           kind: GcpComputeInstance
           name: web-1
           fieldPath: status.outputs.instance_name
-      ipAddress: 10.0.1.5
+      # The VM's primary internal IP, read from the instance.
+      ipAddress:
+        valueFrom:
+          kind: GcpComputeInstance
+          name: web-1
+          fieldPath: status.outputs.internal_ip
     - instance:
         valueFrom:
           kind: GcpComputeInstance
           name: web-2
           fieldPath: status.outputs.instance_name
-      ipAddress: 10.0.1.6
+      # An alias IP of web-2 in the group's subnetwork, as a literal.
+      ipAddress:
+        value: 10.0.1.6
       port: 8081
   deletionPolicy: DELETE
 ```
@@ -94,7 +103,7 @@ spec:
 | `spec.defaultPort` | `int32` |  |  |  |
 | `spec.endpoints` | `[]GcpNetworkEndpoint` |  |  |  |
 | `spec.endpoints[].instance` | `string \| valueFrom` |  |  | GcpComputeInstance (`status.outputs.instance_name`) |
-| `spec.endpoints[].ipAddress` | `string` |  |  |  |
+| `spec.endpoints[].ipAddress` | `string \| valueFrom` |  |  | GcpComputeInstance (`status.outputs.internal_ip`) |
 | `spec.endpoints[].fqdn` | `string` |  |  |  |
 | `spec.endpoints[].port` | `int32` |  |  |  |
 | `spec.deletionPolicy` | `string` |  |  |  |
@@ -216,14 +225,24 @@ GCE_VM_IP_PORT groups only.
 
 ### spec.endpoints[].ipAddress
 
-`string`
+`string | valueFrom`
 
-The endpoint's IP address. For VM endpoints a primary or alias IP of
-the instance in the group's subnetwork (unset means the instance's
-primary internal IP); for hybrid and internet endpoints the reachable
-address, required.
+The endpoint's IP address: a literal, or a reference to a
+GcpComputeInstance's internal_ip output (the default) -- the same VM
+the instance field names. Required on every endpoint but an
+INTERNET_FQDN_PORT one:
+  - VM endpoints (GCE_VM_IP, GCE_VM_IP_PORT): a primary or alias IP of
+    the instance in the group's subnetwork. Google fills a missing VM
+    endpoint address with the instance's primary internal IP, so an
+    endpoint declared without one plans a change on every apply, and a
+    detach sends the empty address back, which Google cannot match to
+    the endpoint it holds -- the endpoint is never removed. Wire the
+    instance's internal_ip here.
+  - Hybrid and internet endpoints: the reachable address.
 
-- rule: ip_address must be an IPv4 or IPv6 address
+- references: GcpComputeInstance (`status.outputs.internal_ip`)
+- rule: a literal ip_address must be an IPv4 or IPv6 address
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpComputeInstance, name: <that resource's name>, fieldPath: status.outputs.internal_ip}} -- a bare string does not parse
 
 ### spec.endpoints[].fqdn
 
@@ -261,6 +280,7 @@ What destroy does to the group and its endpoints:
 - `network_required_zonal`: network is required for a zonal network endpoint group (the VPC every endpoint belongs to)
 - `network_global_only_absent`: network and subnetwork apply only to a zonal network endpoint group; a global internet group has no VPC
 - `vm_endpoints_name_an_instance`: every endpoint of a GCE_VM_IP or GCE_VM_IP_PORT group names its instance
+- `vm_endpoints_name_an_ip_address`: every endpoint of a GCE_VM_IP or GCE_VM_IP_PORT group names its ip_address (reference the instance's status.outputs.internal_ip): Google fills a missing one with the VM's primary internal IP, which then plans a change on every apply and keeps the endpoint from ever being detached
 - `non_vm_endpoints_carry_no_instance`: instance applies only to GCE_VM_IP and GCE_VM_IP_PORT endpoints; hybrid and internet endpoints are addresses
 - `gce_vm_ip_endpoints_carry_no_port`: GCE_VM_IP endpoints carry no port (the passthrough load balancer forwards every port); remove port or use GCE_VM_IP_PORT
 - `fqdn_only_in_fqdn_groups`: fqdn endpoints belong to an INTERNET_FQDN_PORT group; other groups address endpoints by ip_address
@@ -289,6 +309,7 @@ Fields that can point at another resource's outputs:
 | `spec.network` | GcpVpcNetwork | `status.outputs.network_self_link` |
 | `spec.subnetwork` | GcpSubnetwork | `status.outputs.subnetwork_self_link` |
 | `spec.endpoints[].instance` | GcpComputeInstance | `status.outputs.instance_name` |
+| `spec.endpoints[].ipAddress` | GcpComputeInstance | `status.outputs.internal_ip` |
 
 ## See Also
 

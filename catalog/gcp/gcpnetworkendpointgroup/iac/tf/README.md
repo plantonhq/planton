@@ -41,6 +41,9 @@ changed member is replaced.
   `default_port`, because the global endpoint resource requires one.
 - **`instance`, `ip_address`, `fqdn`** -- empty strings mean "not this
   arm" and are sent as null; the spec has already matched each to the
-  group's type.
+  group's type. `instance` and `ip_address` are references the tfvars
+  converter has already flattened to plain strings; a VM endpoint always
+  carries its address, because Google fills a missing one and the plan
+  never settles.
 - **`deletion_policy`** -- DELETE (default), PREVENT, or ABANDON, fanned
   out to the endpoint resources so the membership shares the group's fate.

@@ -60,8 +60,8 @@ func zonalNetworkEndpointGroup(ctx *pulumi.Context, locals *Locals, gcpProvider 
 			if v := e.Instance.GetValue(); v != "" {
 				m.Instance = pulumi.StringPtr(v)
 			}
-			if e.IpAddress != "" {
-				m.IpAddress = pulumi.StringPtr(e.IpAddress)
+			if v := e.IpAddress.GetValue(); v != "" {
+				m.IpAddress = pulumi.StringPtr(v)
 			}
 			if e.Port != nil {
 				m.Port = pulumi.IntPtr(int(e.GetPort()))

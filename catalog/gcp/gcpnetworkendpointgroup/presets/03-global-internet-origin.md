@@ -20,7 +20,7 @@ Front an origin that lives outside Google Cloud -- a SaaS API, a server on anoth
 
 | Field | Default | Why Change |
 |-------|---------|------------|
-| `networkEndpointType` | `INTERNET_FQDN_PORT` | `INTERNET_IP_PORT` to name the origin by IP address (`endpoints[].ipAddress`) instead of hostname. Immutable. |
+| `networkEndpointType` | `INTERNET_FQDN_PORT` | `INTERNET_IP_PORT` to name the origin by IP address (`endpoints[].ipAddress`, a literal under `value:` or a reference) instead of hostname. Immutable. |
 | `endpoints[].fqdn` | `origin.example.com` | Your origin's hostname; every FQDN endpoint names one. |
 | `defaultPort` / `port` | 443 | The port the origin listens on. |
 
