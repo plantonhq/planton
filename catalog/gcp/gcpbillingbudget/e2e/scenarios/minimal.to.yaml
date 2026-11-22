@@ -1,0 +1,38 @@
+# The second act of minimal.yaml: the same budget with a new amount, updated
+# in place (only the billing account recreates it). Not a scenario of its
+# own (the second-act annotation keeps discovery from running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBillingBudget
+metadata:
+  name: planton-oss-e2e-gcpbdgt-minimal
+  id: planton-oss-e2e-gcpbdgt-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpbillingbudget
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: minimal.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_BILLING_ACCOUNT_ID
+    planton.dev/e2e-prerequisites: "GcpMonitoringNotificationChannel"
+  tags:
+    - planton-e2e
+spec:
+  billingAccount: ${E2E_ENV:PLANTON_E2E_GCP_BILLING_ACCOUNT_ID}
+  displayName: planton-e2e-${E2E_RUN_ID}
+  amount:
+    specifiedAmount:
+      units: 20
+  thresholdRules:
+    - thresholdPercent: 0.9
+  notifications:
+    monitoringNotificationChannels:
+      - valueFrom:
+          kind: GcpMonitoringNotificationChannel
+          name: planton-oss-e2e-gcpnotifchan-prereq
+          fieldPath: status.outputs.channel_name
+    disableDefaultIamRecipients: true
+  deletionPolicy: DELETE

@@ -3,24 +3,25 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpbillingbudget
 spec:
-  # A budget lives on the billing account, not in the harness project, so
-  # proving it needs a billing account the E2E identity can administer
-  # (roles/billing.costsManager on the account) and the account's ID
-  # exported as PLANTON_E2E_GCP_BILLING_ACCOUNT_ID -- neither exists for
-  # the shared test identity today. Offline bar met: both modules build
-  # and validate, offline plans for the reference manifest and both
-  # scenarios (the token substituted) are clean on the pinned provider,
-  # and the accounting is total. Live facts the proof lane confirms when
-  # the account exists: (1) the budget deploys and RE-PLANS CLEAN under the
-  # apply-idempotency gate on both engines with the defaulted enums sent
-  # explicitly (credit_types_treatment, spend_basis, schema_version) and
-  # currency_code left to the account's currency; (2) the display name
-  # round-trips and the name output carries billingAccounts/{id}/budgets/
-  # {id} on both engines; (3) a last-period budget over a MONTH filter is
-  # accepted; (4) a project filter given as projects/{number} round-trips
-  # without a diff.
+  # A budget lives on the billing account, not in the harness project. Both
+  # scenarios run as the declared identity: the harness binds the manifest's
+  # roles/billing.costsManager on the account PLANTON_E2E_GCP_BILLING_ACCOUNT_ID
+  # names, and turns billingbudgets.googleapis.com on in the harness project,
+  # where Google bills the identity's budget calls. Each scenario's second act
+  # changes the budget in place (the amount, the threshold), judged from the
+  # billing account's Admin Activity log. Every lane budget turns the default
+  # administrator emails off and alerts only the notification channel fixture,
+  # so no lane mails the account's administrators. Offline bar met: both
+  # modules build and validate, offline plans for the reference manifest and
+  # both scenarios (the token substituted) are clean on the pinned provider,
+  # and the accounting is total. Live facts the proof lane confirms: (1) the
+  # budget deploys and RE-PLANS CLEAN under the apply-idempotency gate on both
+  # engines with the defaulted enums sent explicitly (credit_types_treatment,
+  # spend_basis, schema_version) and currency_code left to the account's
+  # currency; (2) the display name round-trips and the name output carries
+  # billingAccounts/{id}/budgets/{id} on both engines; (3) a last-period
+  # budget over a MONTH filter is accepted.
   tier: 2
-  status: deferred
-  deferred_reason: a billing budget lives on the billing account and needs roles/billing.costsManager there plus the account ID exported as PLANTON_E2E_GCP_BILLING_ACCOUNT_ID, neither of which the E2E test identity has; offline plans only
+  status: pending_proof
   validated_provisioners: []
   timeout_minutes: 10

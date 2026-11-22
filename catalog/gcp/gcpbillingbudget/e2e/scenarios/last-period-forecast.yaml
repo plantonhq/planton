@@ -1,11 +1,9 @@
 # GcpBillingBudget scenario: the "no worse than last month" guardrail --
-# last period's spend as the budget, a forecasted-spend threshold, the
-# harness project as the filter (by the project-ID token, which Google
-# accepts as the project's number is not known here -- the proof lane
-# watches the round-trip), gross spend (credits excluded), and the default
-# administrator emails switched off with no channel declared (the API
-# accepts it; nobody is notified except through the console). Owner-arranged
-# billing account token.
+# last period's spend as the budget, a forecasted-spend threshold, a label
+# filter over a monthly period, and gross spend (credits excluded). The default
+# administrator emails are off, so a lane's alerts reach only the
+# notification channel fixture, whose example.com address delivers nowhere.
+# Owner-arranged billing account token.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpBillingBudget
 metadata:
@@ -18,7 +16,10 @@ metadata:
     e2e-catalog-kind: gcpbillingbudget
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: last-period-forecast.to.yaml # the update: the threshold
     planton.dev/e2e-required-env: PLANTON_E2E_GCP_BILLING_ACCOUNT_ID
+    planton.dev/e2e-prerequisites: "GcpMonitoringNotificationChannel"
   tags:
     - planton-e2e
 spec:
@@ -34,5 +35,12 @@ spec:
   thresholdRules:
     - thresholdPercent: 1.0
       spendBasis: FORECASTED_SPEND
+  notifications:
+    monitoringNotificationChannels:
+      - valueFrom:
+          kind: GcpMonitoringNotificationChannel
+          name: planton-oss-e2e-gcpnotifchan-prereq
+          fieldPath: status.outputs.channel_name
+    disableDefaultIamRecipients: true
   ownershipScope: BILLING_ACCOUNT
   deletionPolicy: DELETE

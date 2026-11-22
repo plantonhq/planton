@@ -1,10 +1,12 @@
-# Minimal GcpPlantonRunner scenario: the appliance in the ambient project
-# with an obviously-fake runner token. NOTE for the proof lane: unlike
-# ECS, Cloud Run v2 gates service CREATION on the first revision becoming
-# ready, and a runner holding a fake token exits after its refused join --
-# so this lane needs either a reachable control plane with a real
-# throwaway token (via the fenced env below) or a recorded deferral; the
-# fake-token default documents the shape, not a passing lane.
+# Minimal GcpPlantonRunner scenario: the appliance in the ambient project,
+# joining a real control plane. Cloud Run v2 gates service creation on the
+# first revision becoming ready, and a runner exits when its join is
+# refused, so this lane needs an owner-arranged control plane: its endpoint
+# (host:port), a throwaway runner token it issued, and the runner version
+# it serves, so the lane runs the control plane's own runner. All three are
+# fenced in planton.dev/e2e-required-env; the lane skips without them. The
+# sibling fake-token-failure-mode scenario proves everything short of a
+# successful join with no secret at all.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpPlantonRunner
 metadata:
@@ -17,9 +19,13 @@ metadata:
     e2e-catalog-kind: gcpplantonrunner
   annotations:
     planton.dev/e2e: "true"
-    planton.dev/e2e-required-env: PLANTON_E2E_RUNNER_TOKEN
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the update: the memory, a new revision of the same service
+    planton.dev/e2e-required-env: PLANTON_E2E_RUNNER_TOKEN,PLANTON_E2E_RUNNER_ENDPOINT,PLANTON_E2E_RUNNER_VERSION
   tags:
     - planton-e2e
 spec:
   region: us-central1
   token: ${E2E_ENV:PLANTON_E2E_RUNNER_TOKEN}
+  controlPlaneEndpoint: ${E2E_ENV:PLANTON_E2E_RUNNER_ENDPOINT}
+  runnerVersion: ${E2E_ENV:PLANTON_E2E_RUNNER_VERSION}

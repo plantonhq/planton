@@ -1,7 +1,10 @@
 # GcpBillingBudget scenario: the smallest budget that alerts -- a fixed
 # amount over the whole billing account, reset monthly, one threshold. The
 # billing account is owner-arranged (PLANTON_E2E_GCP_BILLING_ACCOUNT_ID);
-# the lane skips honestly when the token is unset.
+# the lane skips honestly when the token is unset. The default emails to the
+# account's administrators are off: a lane's budget is spent at once on a
+# working account, so its alerts go only to the notification channel
+# fixture, whose example.com address delivers nowhere.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpBillingBudget
 metadata:
@@ -14,7 +17,10 @@ metadata:
     e2e-catalog-kind: gcpbillingbudget
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the update: the amount
     planton.dev/e2e-required-env: PLANTON_E2E_GCP_BILLING_ACCOUNT_ID
+    planton.dev/e2e-prerequisites: "GcpMonitoringNotificationChannel"
   tags:
     - planton-e2e
 spec:
@@ -25,4 +31,11 @@ spec:
       units: 10
   thresholdRules:
     - thresholdPercent: 0.9
+  notifications:
+    monitoringNotificationChannels:
+      - valueFrom:
+          kind: GcpMonitoringNotificationChannel
+          name: planton-oss-e2e-gcpnotifchan-prereq
+          fieldPath: status.outputs.channel_name
+    disableDefaultIamRecipients: true
   deletionPolicy: DELETE

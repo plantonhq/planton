@@ -15,11 +15,14 @@ spec:
   #    verifies absence. Everything except "revision goes ready on a
   #    successful join" is live-proven, with zero secrets, forever
   #    CI-runnable.
-  # 2. PENDING: the ready-state half -- the minimal scenario needs an
-  #    owner-arranged real runner token (the fenced
-  #    PLANTON_E2E_RUNNER_TOKEN env; lanes SKIP with the reason when it
-  #    is absent). One run with a throwaway token flips this profile
-  #    green; this is a substrate property, not a module gap.
+  # 2. PENDING: the ready-state half -- the minimal scenario joins an
+  #    owner-arranged control plane (PLANTON_E2E_RUNNER_ENDPOINT, a
+  #    throwaway PLANTON_E2E_RUNNER_TOKEN it issued, and the runner
+  #    version it serves, PLANTON_E2E_RUNNER_VERSION; lanes SKIP with the
+  #    reason when any is absent), as the declared identity, and its
+  #    second act raises the memory: a new revision of the same service
+  #    that must join again. This is a substrate property, not a module
+  #    gap.
   tier: 1
   status: pending_proof
   validated_provisioners: []
