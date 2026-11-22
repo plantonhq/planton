@@ -345,9 +345,11 @@ class is letters/numbers/underscores only (first hit: a Vertex AI
 `deployed_index_id`, which must start with a letter and forbids hyphens).
 The runner expands `${E2E_RUN_ID_UNDERSCORE}` with every hyphen replaced by
 an underscore ([tokens.go](framework/runner/tokens.go)); use it whenever a
-run-scoped identifier lives in an underscore-only field. Do NOT fall back to
-a fixed identifier to dodge the character class — see the next paragraph for
-why that 400s.
+run-scoped identifier lives in an underscore-only field. A field that takes
+letters and digits only (an organization policy custom constraint's name)
+takes `${E2E_RUN_ID_ALNUM}`, the run id with its hyphens removed. Do NOT fall
+back to a fixed identifier to dodge the character class — see the next
+paragraph for why that 400s.
 
 **Dates a provider bounds take the run-clock token,
 `${E2E_UNIX_TIME_PLUS:<offset>}`.** It expands to a Unix timestamp in

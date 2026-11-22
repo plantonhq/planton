@@ -32,6 +32,11 @@ const RunIDToken = "${E2E_RUN_ID}"
 // underscore-only field.
 const UnderscoreRunIDToken = "${E2E_RUN_ID_UNDERSCORE}"
 
+// AlnumRunIDToken is RunIDToken for identifier classes that take letters and
+// digits only, neither hyphens nor underscores (an organization policy
+// custom constraint's name). It expands with every hyphen removed.
+const AlnumRunIDToken = "${E2E_RUN_ID_ALNUM}"
+
 // ScenarioToken is the placeholder for the running scenario's slug (the
 // scenario file's base name without extension). It is the reservation-window
 // sibling of RunIDToken: prerequisite install manifests redeploy per
@@ -143,20 +148,22 @@ func ExpandManifestTokens(manifestPath, runID, scenario string, clock time.Time)
 	hasEnvTokens := strings.Contains(string(raw), "${E2E_ENV:")
 	hasScenarioToken := strings.Contains(string(raw), ScenarioToken)
 	hasTimeTokens := strings.Contains(string(raw), TimeTokenPrefix)
-	if !strings.Contains(string(raw), RunIDToken) && !strings.Contains(string(raw), UnderscoreRunIDToken) && !hasEnvTokens && !hasScenarioToken && !hasTimeTokens {
+	hasRunIDToken := strings.Contains(string(raw), RunIDToken) || strings.Contains(string(raw), UnderscoreRunIDToken) || strings.Contains(string(raw), AlnumRunIDToken)
+	if !hasRunIDToken && !hasEnvTokens && !hasScenarioToken && !hasTimeTokens {
 		return manifestPath, nil
 	}
-	if (strings.Contains(string(raw), RunIDToken) || strings.Contains(string(raw), UnderscoreRunIDToken)) && runID == "" {
+	if hasRunIDToken && runID == "" {
 		return "", errors.Errorf("manifest %s uses %s but no run id was provided", manifestPath, RunIDToken)
 	}
 	if hasScenarioToken && scenario == "" {
 		return "", errors.Errorf("manifest %s uses %s but no scenario is in scope", manifestPath, ScenarioToken)
 	}
 
-	// The underscore variant substitutes first: RunIDToken is not a textual
-	// prefix of it (the closing brace differs), but explicit ordering keeps
-	// the intent obvious.
+	// The variants substitute first: RunIDToken is not a textual prefix of
+	// them (the closing brace differs), but explicit ordering keeps the
+	// intent obvious.
 	expanded := strings.ReplaceAll(string(raw), UnderscoreRunIDToken, strings.ReplaceAll(runID, "-", "_"))
+	expanded = strings.ReplaceAll(expanded, AlnumRunIDToken, strings.ReplaceAll(runID, "-", ""))
 	expanded = strings.ReplaceAll(expanded, RunIDToken, runID)
 	expanded = strings.ReplaceAll(expanded, ScenarioToken, scenario)
 

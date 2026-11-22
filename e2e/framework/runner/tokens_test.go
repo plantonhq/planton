@@ -56,6 +56,34 @@ func TestExpandManifestTokens_ReplacesAllOccurrences(t *testing.T) {
 	}
 }
 
+// The engine-scoped run id carries a hyphen; the variants serve identifier
+// classes that forbid it: underscores for an underscore-only field, nothing
+// for a letters-and-digits field.
+func TestExpandManifestTokens_RunIDVariantsFitTheirCharacterClass(t *testing.T) {
+	src := writeTempManifest(t, strings.Join([]string{
+		"apiVersion: gcp.planton.dev/v1alpha1",
+		"kind: GcpOrgPolicyCustomConstraint",
+		"spec:",
+		"  constraintName: plantonE2eMinimal${E2E_RUN_ID_ALNUM}",
+		"  displayName: e2e_${E2E_RUN_ID_UNDERSCORE}",
+		"  description: run ${E2E_RUN_ID}",
+	}, "\n"))
+	out, err := ExpandManifestTokens(src, "ab12cd34-p", "minimal", LaneClock())
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	t.Cleanup(func() { os.Remove(out) })
+	expanded, err := os.ReadFile(out)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, want := range []string{"constraintName: plantonE2eMinimalab12cd34p", "displayName: e2e_ab12cd34_p", "description: run ab12cd34-p"} {
+		if !strings.Contains(string(expanded), want) {
+			t.Errorf("want %q in:\n%s", want, expanded)
+		}
+	}
+}
+
 func TestExpandManifestTokens_PassthroughWithoutToken(t *testing.T) {
 	src := writeTempManifest(t, "apiVersion: gcp.planton.dev/v1alpha1\nkind: GcpServiceAccount\n")
 
