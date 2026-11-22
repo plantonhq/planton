@@ -63,8 +63,14 @@ func zonalNetworkEndpointGroup(ctx *pulumi.Context, locals *Locals, gcpProvider 
 			if v := e.IpAddress.GetValue(); v != "" {
 				m.IpAddress = pulumi.StringPtr(v)
 			}
-			if e.Port != nil {
+			// An endpoint with no port takes the group's default_port:
+			// Google stores that port on the endpoint, so sending it keeps
+			// the plan settled. Neither is set for GCE_VM_IP groups.
+			switch {
+			case e.Port != nil:
 				m.Port = pulumi.IntPtr(int(e.GetPort()))
+			case spec.DefaultPort != nil:
+				m.Port = pulumi.IntPtr(int(spec.GetDefaultPort()))
 			}
 			members = append(members, m)
 		}

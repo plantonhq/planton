@@ -96,7 +96,9 @@ variable "spec" {
       fqdn = optional(string, "")
 
       # Port the endpoint listens on. Unset falls back to the group's
-      # default_port; GCE_VM_IP groups carry no port at all.
+      # default_port, which Google then stores on the endpoint itself (so a
+      # later read shows the default's value here); GCE_VM_IP groups carry no
+      # port at all.
       port = optional(number)
     })), [])
 

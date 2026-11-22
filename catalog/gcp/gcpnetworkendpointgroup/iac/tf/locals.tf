@@ -33,7 +33,10 @@ locals {
     for e in var.spec.endpoints : {
       instance   = e.instance != "" ? e.instance : null
       ip_address = e.ip_address != "" ? e.ip_address : null
-      port       = e.port
+      # An endpoint with no port takes the group's default_port: Google
+      # stores that port on the endpoint, so sending it keeps the plan
+      # settled. Both are null for GCE_VM_IP groups.
+      port = e.port != null ? e.port : var.spec.default_port
     }
   ]
 

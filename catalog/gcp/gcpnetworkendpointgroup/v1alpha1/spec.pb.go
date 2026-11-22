@@ -56,7 +56,9 @@ type GcpNetworkEndpoint struct {
 	// (resolved by Google at connection time).
 	Fqdn string `protobuf:"bytes,3,opt,name=fqdn,proto3" json:"fqdn,omitempty"`
 	// Port the endpoint listens on. Unset falls back to the group's
-	// default_port; GCE_VM_IP groups carry no port at all.
+	// default_port, which Google then stores on the endpoint itself (so a
+	// later read shows the default's value here); GCE_VM_IP groups carry no
+	// port at all.
 	Port          *int32 `protobuf:"varint,4,opt,name=port,proto3,oneof" json:"port,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
