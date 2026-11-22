@@ -24,6 +24,6 @@ spec:
   #    that must join again. This is a substrate property, not a module
   #    gap.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 30
