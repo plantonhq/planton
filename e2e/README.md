@@ -954,6 +954,19 @@ Connect cluster leaves the attachment Google made for its workers, which
 held its subnetwork for more than 25 minutes (measured 2026-11-21). An
 attachment still serving an endpoint is never touched.
 
+**An owner's step the cloud requires before a destroy is taken before it.**
+A scenario names it with `planton.dev/e2e-prepare-destroy: <class>`; the
+runner calls the harness (`provider.DestroyPreparer`) before every destroy
+attempt of the kind under test (DESTROY, the cleanup destroy after a failed
+phase, DESTROY-AGAIN and each declared retry), with the resolved first act
+on the context, so it holds when the deploy failed before any output
+existed. An unknown class, or a harness without the capability, fails the
+destroy. The GCP class `consensus-peering` requests the removal of a
+CONSENSUS VPC peering on both networks and waits for `DELETE_ACKNOWLEDGED`:
+Google deletes such a peering only after both owners ask, and neither
+provider asks, so the harness takes the step the kind's GUIDE gives the
+customer, and the lane proves that teardown.
+
 **VERIFY-CLEAN re-reads for two minutes.** A delete can finish before a read
 sees it (Dialogflow answered a security setting's read half a second after
 its destroy succeeded), so the GCP harness reads a destroyed kind's absence
@@ -3161,6 +3174,15 @@ inside such a scenario inherit its declaration.
 | `PLANTON_E2E_RUNNER_VERSION` | the runner version that control plane serves, so the lane runs its own runner | `GcpPlantonRunner` |
 | `PLANTON_E2E_GCP_SERVICE_NETWORKING_VPC` | a VPC with an existing private services access peering (the routes-config form edits a peering Google created) | `GcpVpcPeering` |
 | `PLANTON_E2E_GCP_VPN_PEER_IP_0`, `PLANTON_E2E_GCP_VPN_PEER_IP_1` | the two public interface addresses of an external VPN device | `GcpHaVpnConnection` |
+
+**The organization-scoped kinds run in a process of their own.** Their
+lanes need the harness project inside the test organization, so that process
+sets `E2E_GCP_PROJECT` and `PLANTON_E2E_GCP_SECOND_PROJECT_ID` to the
+organization's two projects and `PLANTON_E2E_GCP_ORGANIZATION_ID` to it, and
+runs only after the other process ends (one test process per account). It
+never carries `PLANTON_E2E_GCP_BILLING_ACCOUNT_ID`: the start-up cleanup
+rewrites the IAM policy of every billing account it is given, and no
+organization-scoped kind needs one.
 
 Each kind's `e2e/profile.yaml` says which of its lanes need these and why.
 

@@ -284,6 +284,10 @@ func RunKindTest(ctx context.Context, tc *provider.KindTestContext, harness prov
 	}
 
 	originalManifest := tc.ManifestPath
+	// The owners' step the cloud requires before the kind's destroy, when the
+	// scenario declares one (preparedestroy.go), read from the resolved first
+	// act so it holds even when the deploy fails before any output exists.
+	prepareDestroy := destroyPreparation(verifyCtx, tc, harness, originalManifest)
 
 	// Phases 1-6 (7 with the opt-in import round-trip): standard lifecycle.
 	type lifecyclePhase struct {
@@ -301,7 +305,7 @@ func RunKindTest(ctx context.Context, tc *provider.KindTestContext, harness prov
 		phases = []lifecyclePhase{
 			{PhaseValidate, func() error { return runValidate(tc) }},
 			{PhaseExpectFail, func() error { return runExpectDeployFailure(verifyCtx, tc, harness, expectDeployFailure) }},
-			{PhaseDestroy, func() error { return runDestroyMaybeRetry(tc) }},
+			{PhaseDestroy, func() error { return runDestroyMaybeRetry(tc, prepareDestroy) }},
 			{PhaseVerifyCln, func() error { return runVerifyCleanup(verifyCtx, tc, harness) }},
 		}
 	} else {
@@ -389,7 +393,7 @@ func RunKindTest(ctx context.Context, tc *provider.KindTestContext, harness prov
 			}
 		}
 		phases = append(phases,
-			lifecyclePhase{PhaseDestroy, func() error { return runDestroyMaybeRetry(tc) }},
+			lifecyclePhase{PhaseDestroy, func() error { return runDestroyMaybeRetry(tc, prepareDestroy) }},
 			lifecyclePhase{PhaseVerifyCln, func() error { return runVerifyCleanup(cleanupCtx, tc, harness) }},
 		)
 		// The third act: the same manifest again, on a cluster that may still
@@ -408,7 +412,7 @@ func RunKindTest(ctx context.Context, tc *provider.KindTestContext, harness prov
 					}
 					return runVerifyResources(verifyCtx, tc, harness)
 				}},
-				lifecyclePhase{PhaseDestroyAgain, func() error { return runDestroyMaybeRetry(tc) }},
+				lifecyclePhase{PhaseDestroyAgain, func() error { return runDestroyMaybeRetry(tc, prepareDestroy) }},
 				lifecyclePhase{PhaseVerifyClnAgain, func() error { return runVerifyCleanup(verifyCtx, tc, harness) }},
 			)
 		}
@@ -434,7 +438,7 @@ func RunKindTest(ctx context.Context, tc *provider.KindTestContext, harness prov
 				// A failed DEPLOY-EXPECT-FAIL needs the cleanup destroy on BOTH
 				// branches: an unexpected deploy success leaves live resources,
 				// and a failed post-mortem leaves the tainted partial stack.
-				cleanupErr := runDestroyMaybeRetry(tc)
+				cleanupErr := runDestroyMaybeRetry(tc, prepareDestroy)
 				if cleanupErr != nil {
 					lanef(tc.T, "  [WARN] cleanup destroy also failed: %v", cleanupErr)
 				}
@@ -662,12 +666,14 @@ const (
 	destroyRetryBudget   = 15 * time.Minute
 )
 
-// runDestroyMaybeRetry runs destroy once, then -- only for scenarios carrying
+// runDestroyMaybeRetry runs destroy once (after the scenario's destroy
+// preparation, when it declares one), then -- only for scenarios carrying
 // DestroyRetryAnnotation -- keeps re-running it on destroyRetryInterval until
 // it succeeds or destroyRetryBudget elapses. Every retry prints the declared
 // reason so the lane log records why the phase is waiting.
-func runDestroyMaybeRetry(tc *provider.KindTestContext) error {
-	err := runDestroy(tc)
+func runDestroyMaybeRetry(tc *provider.KindTestContext, prepare func() error) error {
+	destroy := func() error { return runDestroy(tc) }
+	err := destroyAttempt(prepare, destroy)
 	if err == nil {
 		return nil
 	}
@@ -680,11 +686,23 @@ func runDestroyMaybeRetry(tc *provider.KindTestContext) error {
 		lanef(tc.T, "  [destroy-retry] attempt %d in %s (scenario-declared: %s); last error: %v",
 			attempt, destroyRetryInterval, reason, err)
 		time.Sleep(destroyRetryInterval)
-		if err = runDestroy(tc); err == nil {
+		if err = destroyAttempt(prepare, destroy); err == nil {
 			return nil
 		}
 	}
 	return errors.Wrapf(err, "destroy still failing after the %s retry budget", destroyRetryBudget)
+}
+
+// destroyAttempt takes the scenario's destroy preparation (nil when it
+// declares none) and then the destroy; a failed preparation fails the
+// attempt, since the destroy it guards would be refused.
+func destroyAttempt(prepare, destroy func() error) error {
+	if prepare != nil {
+		if err := prepare(); err != nil {
+			return err
+		}
+	}
+	return destroy()
 }
 
 func runDestroy(tc *provider.KindTestContext) error {

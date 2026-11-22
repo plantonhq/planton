@@ -77,6 +77,25 @@ func TestUpgradeExpectationIsRequired(t *testing.T) {
 	}
 }
 
+// A deny policy is named by its url-encoded attachment point, as both
+// engines export it; the judgment reads that resource's log, since the
+// identity's only grant is on the organization.
+func TestAuditResourcesReadAnIamPolicysAttachmentPoint(t *testing.T) {
+	scopes := []string{"organizations/1"}
+	cases := map[string]string{
+		"cloudresourcemanager.googleapis.com%2Fprojects%2Fplanton-catalog-e2e-org/planton-oss-e2e-deny-min": "organizations/1,projects/planton-catalog-e2e-org",
+		"cloudresourcemanager.googleapis.com%2fprojects%2f749324254197/planton-oss-e2e-deny-min":            "organizations/1,projects/749324254197",
+		"cloudresourcemanager.googleapis.com%2Ffolders%2F345/planton-oss-e2e-deny-folder":                   "organizations/1,folders/345",
+		"cloudresourcemanager.googleapis.com%2Forganizations%2F1/planton-oss-e2e-deny-org":                  "organizations/1",
+	}
+	for policyName, want := range cases {
+		got := strings.Join(auditResources(scopes, map[string]string{"policy_name": policyName}), ",")
+		if got != want {
+			t.Errorf("%s\n got %s\nwant %s", policyName, got, want)
+		}
+	}
+}
+
 // The judgment reads every scope the identity was granted on, then each
 // folder and project the kind's outputs name, once each.
 func TestAuditResourcesFollowTheOutputs(t *testing.T) {

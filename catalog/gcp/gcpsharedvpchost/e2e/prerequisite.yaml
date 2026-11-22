@@ -1,8 +1,9 @@
 # GcpSharedVpcHost install profile used when the host is an E2E PREREQUISITE
 # for another component (a GcpSharedVpcServiceProject). Names no project, so
-# the harness project becomes the host. Enabling it needs the organization-
-# level xpnAdmin grant the shared identity lacks, which is why the consuming
-# kind's profile is deferred with the same unblock condition.
+# the harness project becomes the host. Enabling it needs Google's
+# organization-level Shared VPC admin permissions, which the harness key holds
+# on the test organization, so the consuming kind runs in the
+# organization-scoped process (e2e/README.md).
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpSharedVpcHost
 metadata:

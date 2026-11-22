@@ -30,6 +30,26 @@ type DependentsReleaser interface {
 	ReleaseDependents(ctx context.Context, tc *KindTestContext, class string) error
 }
 
+// DestroyPreparer takes, before the kind under test is destroyed, a step the
+// cloud requires of the resource's owners that neither engine's destroy
+// takes: Google deletes a VPC peering in CONSENSUS mode only after the owners
+// of both networks have requested its removal, and neither provider makes
+// that request. The kind's GUIDE teaches the customer the step; the harness
+// takes it in their place, so the lane proves the GUIDE's teardown.
+//
+// Activated by the scenario annotation `planton.dev/e2e-prepare-destroy:
+// <class>`, whose class the harness names and interprets (an unknown class
+// is the harness's error, so a typo never passes silently). The runner calls
+// it before every destroy attempt of the kind under test -- DESTROY, the
+// cleanup destroy after a failed phase, DESTROY-AGAIN, and each scenario-
+// declared retry -- with ManifestPathKey on ctx naming the resolved first
+// act, so it works when the deploy failed before any output existed.
+// Implementations are idempotent: a request already made, or a resource
+// already gone, is success.
+type DestroyPreparer interface {
+	PrepareDestroy(ctx context.Context, tc *KindTestContext, class string) error
+}
+
 // DependencyTeardownPreparer removes what a cloud leaves holding a fixture
 // after the objects that made it are gone, which the fixture's own destroy
 // cannot remove: deleting a Managed Kafka Connect cluster leaves the network

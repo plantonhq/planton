@@ -50,12 +50,19 @@ var (
 	lanes *runner.LaneScheduler
 )
 
+// TestMain runs the lanes and exits with their verdict. The work lives in
+// runLanes so its deferred cleanup runs: os.Exit skips deferred calls, and
+// the Pulumi backend it removes holds every lane identity's key.
 func TestMain(m *testing.M) {
+	os.Exit(runLanes(m))
+}
+
+func runLanes(m *testing.M) int {
 	var err error
 	repoRoot, err = filepath.Abs(filepath.Join("..", ".."))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to resolve repo root: %v\n", err)
-		os.Exit(1)
+		return 1
 	}
 
 	runID = uuid.New().String()[:8]
@@ -63,20 +70,20 @@ func TestMain(m *testing.M) {
 	backendDir, err := os.MkdirTemp("", "planton-e2e-gcp-pulumi-*")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to create temp backend dir: %v\n", err)
-		os.Exit(1)
+		return 1
 	}
 	pulumiBackendURL = "file://" + backendDir
 	defer os.RemoveAll(backendDir)
 
 	if err := runner.PulumiLogin(pulumiBackendURL); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to login to pulumi backend: %v\n", err)
-		os.Exit(1)
+		return 1
 	}
 
 	providerProfile, err := profile.LoadProviderProfile(repoRoot, "gcp")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to load GCP provider E2E profile: %v\n", err)
-		os.Exit(1)
+		return 1
 	}
 	assertApplyIdempotency = providerProfile.GetSpec().GetAssertApplyIdempotency()
 	lanes = runner.NewLaneScheduler(int(providerProfile.GetSpec().GetMaxConcurrentTests()))
@@ -85,14 +92,14 @@ func TestMain(m *testing.M) {
 	ctx := context.Background()
 	if err := testHarness.Setup(ctx); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to setup GCP harness: %v\n", err)
-		os.Exit(1)
+		return 1
 	}
 	// One test process per provider account (the e2e README), so every lane
 	// identity already in the project is a crashed process's leftover.
 	removed, err := testHarness.CleanLaneIdentities(ctx)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to remove leftover lane identities: %v\n", err)
-		os.Exit(1)
+		return 1
 	}
 	for _, email := range removed {
 		fmt.Printf("  [gcp] removed a leftover lane identity: %s\n", email)
@@ -104,7 +111,7 @@ func TestMain(m *testing.M) {
 		fmt.Fprintf(os.Stderr, "warning: failed to teardown GCP harness: %v\n", err)
 	}
 
-	os.Exit(code)
+	return code
 }
 
 // --- GCP Service Account (the identity leaf everything references) ---
@@ -838,7 +845,9 @@ func TestGcpCertManagerCert_Terraform(t *testing.T) {
 	runAllScenariosForKind(t, "gcpcertmanagercert", "terraform")
 }
 
-// GcpProject is plan-only unless org-level Project Creator credentials are available.
+// GcpProject creates projects under the organization PLANTON_E2E_GCP_ORGANIZATION_ID
+// names (the lane identity holds projects.create there), so it runs in the
+// organization-scoped process (e2e/README.md).
 func TestGcpProject_Pulumi(t *testing.T) {
 	runAllScenariosForKind(t, "gcpproject", "pulumi")
 }
@@ -1067,9 +1076,9 @@ func TestGcpFirebaseWebApp_Terraform(t *testing.T) {
 	runAllScenariosForKind(t, "gcpfirebasewebapp", "terraform")
 }
 
-// --- GCP Folder (organization-level: needs roles/resourcemanager.folderAdmin
-// on the organization; plan-only until the org-scoped test identity exists;
-// soft-deleted for 30 days with the display name reserved -- scenarios carry
+// --- GCP Folder (organization-level: the lane identity holds its folder
+// permissions on the organization PLANTON_E2E_GCP_ORGANIZATION_ID names, so it
+// runs in the organization-scoped process; soft-deleted for 30 days with the display name reserved -- scenarios carry
 // the run id and set deletion_protection: false so the harness can destroy) ---
 
 func TestGcpFolder_Pulumi(t *testing.T) {
@@ -1080,9 +1089,9 @@ func TestGcpFolder_Terraform(t *testing.T) {
 	runAllScenariosForKind(t, "gcpfolder", "terraform")
 }
 
-// --- GCP Organization Policy (the project-scoped arm proves live with
-// roles/orgpolicy.policyAdmin on the test project; folder and organization
-// arms are plan-only until the org-scoped identity exists) ---
+// --- GCP Organization Policy (Google grants roles/orgpolicy.policyAdmin only on
+// an organization, so even the project-scoped arm runs in the
+// organization-scoped process, the identity granted on the organization) ---
 
 func TestGcpOrgPolicy_Pulumi(t *testing.T) {
 	runAllScenariosForKind(t, "gcporgpolicy", "pulumi")
@@ -1093,7 +1102,7 @@ func TestGcpOrgPolicy_Terraform(t *testing.T) {
 }
 
 // --- GCP Organization Policy Custom Constraint (organization-scoped by
-// Google's design: plan-only until the org-scoped test identity exists) ---
+// Google's design: runs in the organization-scoped process) ---
 
 func TestGcpOrgPolicyCustomConstraint_Pulumi(t *testing.T) {
 	runAllScenariosForKind(t, "gcporgpolicycustomconstraint", "pulumi")

@@ -81,6 +81,7 @@ go_test(
     srcs = [
         "identity_test.go",
         "outputs_test.go",
+        "teardown_test.go",
         "upgrade_test.go",
     ],
     embed = [":aa_e2e"],
@@ -92,6 +93,8 @@ go_test(
         "@com_google_cloud_go_auth//:auth",
         "@org_golang_google_api//cloudbilling/v1:cloudbilling",
         "@org_golang_google_api//cloudresourcemanager/v1:cloudresourcemanager",
+        "@org_golang_google_api//compute/v1:compute",
         "@org_golang_google_api//googleapi",
+        "@org_golang_google_api//option",
     ],
 )

@@ -187,8 +187,14 @@ func (h *Harness) judgeUpgrade(ctx context.Context, audit laneAudit, resources [
 
 // auditResources is every resource whose audit log the judgment reads: each
 // scope the identity was granted on, then each folder and project the kind's
-// outputs name (a folder_id, a project_id, a folders/N value) that is not
-// one of them, since Google writes a change to that resource's own log.
+// outputs name (a folder_id, a project_id, a folders/N value, or an IAM v2
+// attachment point) that is not one of them, since Google writes a change
+// to that resource's own log. An IAM v2 policy (a deny policy) is named by
+// its url-encoded attachment point
+// (cloudresourcemanager.googleapis.com%2Fprojects%2Fp/<name>), and Google
+// writes its changes to the log of the project, folder or organization it
+// is attached to -- which, for a kind whose every group reaches the
+// organization, is not among the granted scopes.
 func auditResources(scopes []string, outputs map[string]string) []string {
 	resources := append([]string{}, scopes...)
 	keys := make([]string, 0, len(outputs))
@@ -206,6 +212,9 @@ func auditResources(scopes []string, outputs map[string]string) []string {
 			resource = "folders/" + value
 		case (key == "project_id" || strings.HasSuffix(key, "_project_id")) && projectID.MatchString(value):
 			resource = "projects/" + value
+		case attachmentPoint.MatchString(value):
+			match := attachmentPoint.FindStringSubmatch(value)
+			resource = strings.ToLower(match[1]) + "/" + match[2]
 		default:
 			continue
 		}
@@ -220,6 +229,9 @@ var (
 	folderName = regexp.MustCompile(`^folders/[0-9]+$`)
 	numericID  = regexp.MustCompile(`^[0-9]+$`)
 	projectID  = regexp.MustCompile(`^[a-z][a-z0-9-]{4,28}[a-z0-9]$`)
+	// attachmentPoint reads the resource an IAM v2 policy is attached to
+	// from the policy's url-encoded id; the escapes may be either case.
+	attachmentPoint = regexp.MustCompile(`(?i)^cloudresourcemanager\.googleapis\.com%2F(projects|folders|organizations)%2F([a-z0-9-]+)/`)
 )
 
 // laneAuditEntries lists the lane account's Admin Activity entries since the
