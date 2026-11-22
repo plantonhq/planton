@@ -10,8 +10,9 @@ spec:
   # fixtures on the registry's prerequisite network, then the attachment
   # publishes the forwarding rule -- ACCEPT_AUTOMATIC with the bare
   # required set, and ACCEPT_MANUAL with the harness project in the accept
-  # list, a reject list, reconciliation, PROXY protocol, a Cloud DNS domain,
-  # and an explicit zero propagated-connection limit. Offline bar met: both
+  # list, a reject list, reconciliation, PROXY protocol, and an explicit zero
+  # propagated-connection limit; no Cloud DNS domain, which Google accepts
+  # only for a domain the producer has validated. Offline bar met: both
   # modules build and validate, offline plans for the reference manifest
   # and every scenario are clean on the pinned provider, and the accounting
   # is total. Live facts the proof lane confirms: (1) nat_subnets and the

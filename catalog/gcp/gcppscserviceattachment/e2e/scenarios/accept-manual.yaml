@@ -1,10 +1,11 @@
 # GcpPscServiceAttachment scenario: the ACCEPT_MANUAL form -- only the
 # harness project (by project ID literal) may connect, with a connection
 # limit, a reject list, reconciliation of existing connections, the PROXY
-# protocol, a Cloud DNS domain, and an explicit zero propagated-connection
-# limit (the tri-state field's send-if-zero path). Same producer chain as
-# accept-automatic; the harness runs scenarios sequentially so the two
-# never coexist.
+# protocol, and an explicit zero propagated-connection limit (the
+# tri-state field's send-if-zero path). No domainNames: Google refuses a
+# domain the producer has not validated for VPC-hosted services, and the
+# harness owns no such domain. Same producer chain as accept-automatic; the
+# harness runs scenarios sequentially so the two never coexist.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpPscServiceAttachment
 metadata:
@@ -46,7 +47,5 @@ spec:
     - value: ${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID} # Google refuses a project that doesn't exist
   reconcileConnections: true
   enableProxyProtocol: true
-  domainNames:
-    - planton-e2e-${E2E_RUN_ID}.internal.
   propagatedConnectionLimit: 0
   deletionPolicy: DELETE
