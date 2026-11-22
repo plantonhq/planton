@@ -12,6 +12,7 @@ metadata:
     managed-by: planton-e2e
     e2e-catalog-kind: gcpbillingbudget
   annotations:
+    planton.dev/e2e-upgrade-unaudited: Cloud Billing writes no Admin Activity entry for a budget change, in the billing account's log or the caller project's (measured 2026-11-22 after in-place amount and threshold updates on Pulumi)
     planton.dev/e2e: "true"
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e-second-act: minimal.yaml
