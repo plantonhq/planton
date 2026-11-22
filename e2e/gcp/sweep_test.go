@@ -8,12 +8,15 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"testing"
 
 	"golang.org/x/oauth2/google"
+	billingbudgets "google.golang.org/api/billingbudgets/v1"
 	cloudasset "google.golang.org/api/cloudasset/v1"
+	cloudbilling "google.golang.org/api/cloudbilling/v1"
 	"google.golang.org/api/clouddeploy/v1"
 	"google.golang.org/api/cloudkms/v1"
 	"google.golang.org/api/cloudresourcemanager/v1"
@@ -22,7 +25,9 @@ import (
 	"google.golang.org/api/discoveryengine/v1"
 	"google.golang.org/api/googleapi"
 	iam "google.golang.org/api/iam/v1"
+	iamv2 "google.golang.org/api/iam/v2"
 	"google.golang.org/api/option"
+	orgpolicy "google.golang.org/api/orgpolicy/v2"
 	htransport "google.golang.org/api/transport/http"
 )
 
@@ -45,6 +50,13 @@ import (
 // this runs, and says so on its own lines.
 //
 // The second project, PLANTON_E2E_GCP_SECOND_PROJECT_ID, is swept too when set.
+//
+// The test organization (PLANTON_E2E_GCP_ORGANIZATION_ID) and the test
+// billing account (PLANTON_E2E_GCP_BILLING_ACCOUNT_ID) are read too when set
+// (sweepOrganization, sweepBillingAccount). Neither is dedicated to the lanes
+// as a test project is -- the organization holds the projects themselves and
+// whatever its owner set up, the billing account pays for others -- so there
+// a leftover is what carries a lane's name (laneNamed) or a lane's account.
 func TestSweep(t *testing.T) {
 	if os.Getenv("PLANTON_E2E_GCP_SWEEP") != "1" {
 		t.Skip("the sweep runs at a session's end, when asked: PLANTON_E2E_GCP_SWEEP=1")
@@ -59,13 +71,22 @@ func TestSweep(t *testing.T) {
 	for _, project := range projects {
 		leftovers = append(leftovers, sweepProject(ctx, t, project, harness)...)
 	}
+	swept := strings.Join(projects, ", ")
+	if organization := strings.TrimPrefix(os.Getenv("PLANTON_E2E_GCP_ORGANIZATION_ID"), "organizations/"); organization != "" {
+		leftovers = append(leftovers, sweepOrganization(ctx, t, "organizations/"+organization, projects)...)
+		swept += ", organizations/" + organization
+	}
+	if account := strings.TrimPrefix(os.Getenv("PLANTON_E2E_GCP_BILLING_ACCOUNT_ID"), "billingAccounts/"); account != "" {
+		leftovers = append(leftovers, sweepBillingAccount(ctx, t, "billingAccounts/"+account, projects[0])...)
+		swept += ", billingAccounts/" + account
+	}
 	for _, line := range leftovers {
 		t.Log(line)
 	}
 	if len(leftovers) > 0 {
-		t.Fatalf("%d leftover(s) in %s", len(leftovers), strings.Join(projects, ", "))
+		t.Fatalf("%d leftover(s) in %s", len(leftovers), swept)
 	}
-	t.Logf("the sweep reads 0 in %s", strings.Join(projects, ", "))
+	t.Logf("the sweep reads 0 in %s", swept)
 }
 
 func sweepProject(ctx context.Context, t *testing.T, project string, harness harnessAccount) []string {
@@ -142,7 +163,9 @@ func standingResource(project string, harness harnessAccount, resource *cloudass
 			strings.Contains(name, "-compute@developer.gserviceaccount.com") ||
 			strings.Contains(name, "/serviceAccounts/"+project+"@appspot.gserviceaccount.com")
 	case "iam.googleapis.com/Role":
-		// The declared identities' standing roles (rewritten, never deleted).
+		// The declared identities' standing roles (rewritten, never deleted);
+		// the organization holds its own under the same ids, which the sweep
+		// never lists.
 		return strings.Contains(name, "/roles/plantonE2eDeclared")
 	case "logging.googleapis.com/LogBucket", "logging.googleapis.com/LogSink":
 		// Every project's two log routes.
@@ -426,4 +449,208 @@ func restReader(client *http.Client, base string) liveReader {
 		defer response.Body.Close()
 		return stillThere(googleapi.CheckResponse(response))
 	}
+}
+
+// laneNamed reports whether a name is one the lanes give what they make in a
+// scope shared with others: every scenario names a folder, a project, a
+// budget, a firewall policy or a custom constraint planton-e2e-..., or
+// plantonE2e... where Google allows no hyphen.
+func laneNamed(name string) bool {
+	return strings.Contains(name, "planton-e2e") || strings.Contains(name, "planton-oss-e2e") || strings.Contains(name, "plantonE2e")
+}
+
+// sweepOrganization reads what lanes make in the test organization: folders
+// and projects (Resource Manager lists only ACTIVE ones, so a folder or
+// project waiting out its 30 days in DELETE_REQUESTED counts as gone),
+// custom constraints and the organization policies that use them,
+// hierarchical firewall policies on the organization and its folders, deny
+// policies, and lane bindings on the organization's IAM policy. In the test
+// projects, which the lanes own, it reads what Asset Inventory may not
+// index: every organization policy and deny policy set on the project, and
+// a Shared VPC host left enabled.
+func sweepOrganization(ctx context.Context, t *testing.T, organization string, projects []string) []string {
+	t.Helper()
+	opts := []option.ClientOption{option.WithQuotaProject(projects[0])}
+	crm, err := crmv3.NewService(ctx, opts...)
+	if err != nil {
+		t.Fatal(err)
+	}
+	policies, err := orgpolicy.NewService(ctx, opts...)
+	if err != nil {
+		t.Fatal(err)
+	}
+	computeService, err := compute.NewService(ctx, opts...)
+	if err != nil {
+		t.Fatal(err)
+	}
+	denies, err := iamv2.NewService(ctx, opts...)
+	if err != nil {
+		t.Fatal(err)
+	}
+	crmV1, err := cloudresourcemanager.NewService(ctx, opts...)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var leftovers []string
+	found := func(format string, args ...interface{}) {
+		leftovers = append(leftovers, fmt.Sprintf(format, args...))
+	}
+	isTestProject := map[string]bool{}
+	for _, project := range projects {
+		isTestProject[project] = true
+	}
+
+	// The hierarchy, walked from the organization down through every
+	// ACTIVE folder.
+	parents := []string{organization}
+	for i := 0; i < len(parents); i++ {
+		parent := parents[i]
+		if err := crm.Folders.List().Parent(parent).Pages(ctx, func(page *crmv3.ListFoldersResponse) error {
+			for _, folder := range page.Folders {
+				parents = append(parents, folder.Name)
+				if laneNamed(folder.DisplayName) {
+					found("%s: folder %s (%s)", organization, folder.Name, folder.DisplayName)
+				}
+			}
+			return nil
+		}); err != nil {
+			t.Fatalf("listing the folders under %s: %v", parent, err)
+		}
+		if err := crm.Projects.List().Parent(parent).Pages(ctx, func(page *crmv3.ListProjectsResponse) error {
+			for _, project := range page.Projects {
+				if !isTestProject[project.ProjectId] && laneNamed(project.ProjectId) {
+					found("%s: project %s under %s", organization, project.ProjectId, parent)
+				}
+			}
+			return nil
+		}); err != nil {
+			t.Fatalf("listing the projects under %s: %v", parent, err)
+		}
+		if err := computeService.FirewallPolicies.List().ParentId(parent).Pages(ctx, func(page *compute.FirewallPolicyList) error {
+			for _, policy := range page.Items {
+				if laneNamed(policy.ShortName) {
+					found("%s: hierarchical firewall policy %s (%s) on %s", organization, policy.Name, policy.ShortName, parent)
+				}
+			}
+			return nil
+		}); err != nil {
+			t.Fatalf("listing the hierarchical firewall policies on %s: %v", parent, err)
+		}
+	}
+
+	if err := policies.Organizations.CustomConstraints.List(organization).Pages(ctx, func(page *orgpolicy.GoogleCloudOrgpolicyV2ListCustomConstraintsResponse) error {
+		for _, constraint := range page.CustomConstraints {
+			if laneNamed(constraint.Name) {
+				found("%s: custom constraint %s", organization, constraint.Name)
+			}
+		}
+		return nil
+	}); err != nil {
+		t.Fatalf("listing %s's custom constraints: %v", organization, err)
+	}
+	if err := policies.Organizations.Policies.List(organization).Pages(ctx, func(page *orgpolicy.GoogleCloudOrgpolicyV2ListPoliciesResponse) error {
+		for _, policy := range page.Policies {
+			if laneNamed(policy.Name) {
+				found("%s: organization policy %s", organization, policy.Name)
+			}
+		}
+		return nil
+	}); err != nil {
+		t.Fatalf("listing %s's organization policies: %v", organization, err)
+	}
+	for _, project := range projects {
+		if err := policies.Projects.Policies.List("projects/"+project).Pages(ctx, func(page *orgpolicy.GoogleCloudOrgpolicyV2ListPoliciesResponse) error {
+			for _, policy := range page.Policies {
+				found("%s: organization policy %s", project, policy.Name)
+			}
+			return nil
+		}); err != nil {
+			t.Fatalf("listing %s's organization policies: %v", project, err)
+		}
+	}
+
+	// Deny policies, by their attachment point (Google takes it
+	// percent-encoded inside the parent's name).
+	attachments := []string{organization}
+	for _, project := range projects {
+		attachments = append(attachments, "projects/"+project)
+	}
+	for _, attachment := range attachments {
+		parent := "policies/" + url.PathEscape("cloudresourcemanager.googleapis.com/"+attachment) + "/denypolicies"
+		if err := denies.Policies.ListPolicies(parent).Pages(ctx, func(page *iamv2.GoogleIamV2ListPoliciesResponse) error {
+			for _, policy := range page.Policies {
+				if strings.HasPrefix(attachment, "projects/") || laneNamed(policy.Name) || laneNamed(policy.DisplayName) {
+					found("%s: deny policy %s", attachment, policy.Name)
+				}
+			}
+			return nil
+		}); err != nil {
+			t.Fatalf("listing the deny policies on %s: %v", attachment, err)
+		}
+	}
+
+	for _, project := range projects {
+		host, err := computeService.Projects.Get(project).Context(ctx).Do()
+		if err != nil {
+			t.Fatalf("reading %s's Shared VPC status: %v", project, err)
+		}
+		if host.XpnProjectStatus == "HOST" {
+			found("%s: Shared VPC host still enabled", project)
+		}
+	}
+
+	policy, err := crmV1.Organizations.GetIamPolicy(organization, &cloudresourcemanager.GetIamPolicyRequest{
+		Options: &cloudresourcemanager.GetPolicyOptions{RequestedPolicyVersion: 3},
+	}).Context(ctx).Do()
+	if err != nil {
+		t.Fatalf("reading %s's IAM policy: %v", organization, err)
+	}
+	for _, binding := range policy.Bindings {
+		for _, member := range binding.Members {
+			if strings.HasPrefix(member, "serviceAccount:pe2e-") || strings.HasPrefix(member, "deleted:") {
+				found("%s: IAM binding %s on %s", organization, member, binding.Role)
+			}
+		}
+	}
+	return leftovers
+}
+
+// sweepBillingAccount reads the budgets lanes made on the test billing
+// account (by their display names) and the lane accounts still bound on it.
+// The account pays for others too, so a deleted principal there may be
+// anyone's: only a lane account, deleted or not, is a leftover.
+func sweepBillingAccount(ctx context.Context, t *testing.T, account, quotaProject string) []string {
+	t.Helper()
+	opts := []option.ClientOption{option.WithQuotaProject(quotaProject)}
+	budgets, err := billingbudgets.NewService(ctx, opts...)
+	if err != nil {
+		t.Fatal(err)
+	}
+	billing, err := cloudbilling.NewService(ctx, opts...)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var leftovers []string
+	if err := budgets.BillingAccounts.Budgets.List(account).Pages(ctx, func(page *billingbudgets.GoogleCloudBillingBudgetsV1ListBudgetsResponse) error {
+		for _, budget := range page.Budgets {
+			if laneNamed(budget.DisplayName) {
+				leftovers = append(leftovers, fmt.Sprintf("%s: budget %s (%s)", account, budget.Name, budget.DisplayName))
+			}
+		}
+		return nil
+	}); err != nil {
+		t.Fatalf("listing %s's budgets: %v", account, err)
+	}
+	policy, err := billing.BillingAccounts.GetIamPolicy(account).Context(ctx).Do()
+	if err != nil {
+		t.Fatalf("reading %s's IAM policy: %v", account, err)
+	}
+	for _, binding := range policy.Bindings {
+		for _, member := range binding.Members {
+			if strings.HasPrefix(strings.TrimPrefix(member, "deleted:"), "serviceAccount:pe2e-") {
+				leftovers = append(leftovers, fmt.Sprintf("%s: IAM binding %s on %s", account, member, binding.Role))
+			}
+		}
+	}
+	return leftovers
 }
