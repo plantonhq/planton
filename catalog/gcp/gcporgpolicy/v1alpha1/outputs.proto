@@ -12,6 +12,7 @@ message GcpOrgPolicyOutputs {
   string name = 1;
 
   // The policy's etag: an opaque version marker Google changes on every
-  // update, useful for detecting out-of-band edits.
+  // update. Right after an update applied with Terraform it lags the live
+  // etag until the next refresh, so compare it only from a fresh read.
   string etag = 2;
 }

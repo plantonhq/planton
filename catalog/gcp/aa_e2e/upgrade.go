@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"google.golang.org/api/googleapi"
 	"regexp"
 	"sort"
 	"strings"
@@ -161,7 +162,10 @@ func (h *Harness) judgeUpgrade(ctx context.Context, audit laneAudit, resources [
 	var settleUntil time.Time
 	for {
 		entries, err := h.laneAuditEntries(ctx, audit, resources)
-		if err != nil {
+		// Logging answers an occasional 500 backendError (measured once in
+		// the test organization); the poll reads again rather than failing
+		// the lane on Google's own hiccup.
+		if err != nil && !isServerError(err) {
 			return "", "", err
 		}
 		created, upgrade := splitAuditWindows(entries, audit.firstActDone, upgradeDone)
@@ -338,4 +342,10 @@ func dedupe(lines []string) []string {
 	}
 	sort.Strings(out)
 	return out
+}
+
+// isServerError reports a Google API answer in the 5xx range.
+func isServerError(err error) bool {
+	var apiErr *googleapi.Error
+	return errors.As(err, &apiErr) && apiErr.Code >= 500
 }

@@ -513,7 +513,7 @@ Reference an output from another manifest as `valueFrom: {kind: GcpOrgPolicy, na
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.name` | `string` | The policy's full resource name, `{scope}/policies/{constraint}` -- e.g. `projects/123456789012/policies/compute.disableSerialPortAccess`. Google returns the project scope as the project NUMBER even when the policy was created with the project ID. |
-| `status.outputs.etag` | `string` | The policy's etag: an opaque version marker Google changes on every update, useful for detecting out-of-band edits. |
+| `status.outputs.etag` | `string` | The policy's etag: an opaque version marker Google changes on every update. Right after an update applied with Terraform it lags the live etag until the next refresh, so compare it only from a fresh read. |
 
 ## References
 

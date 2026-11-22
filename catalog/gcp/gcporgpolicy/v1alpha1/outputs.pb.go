@@ -31,7 +31,8 @@ type GcpOrgPolicyOutputs struct {
 	// policy was created with the project ID.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// The policy's etag: an opaque version marker Google changes on every
-	// update, useful for detecting out-of-band edits.
+	// update. Right after an update applied with Terraform it lags the live
+	// etag until the next refresh, so compare it only from a fresh read.
 	Etag          string `protobuf:"bytes,2,opt,name=etag,proto3" json:"etag,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
