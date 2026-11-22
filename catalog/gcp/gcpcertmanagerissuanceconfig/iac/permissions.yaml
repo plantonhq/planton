@@ -30,7 +30,14 @@ spec:
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: Covers google_certificate_manager_certificate_issuance_config (Pulumi certificatemanager.CertificateIssuanceConfig) -- create, read/refresh, in-place label updates (every other argument forces replacement), and destroy. Certificate Manager mutations return long-running operations the provider polls under certificatemanager.operations.get. Issuance from the pool runs as the Certificate Manager service agent (roles/privateca.certificateRequester on the pool, granted by this component before the config), never as the runner; whether Google also checks the caller's own access to the pool at create is for the live capture lane to establish.
+        notes: Covers google_certificate_manager_certificate_issuance_config (Pulumi certificatemanager.CertificateIssuanceConfig) -- create, read/refresh, in-place label updates (every other argument forces replacement), and destroy. Certificate Manager mutations return long-running operations the provider polls under certificatemanager.operations.get. Issuance from the pool runs as the Certificate Manager service agent (roles/privateca.certificateRequester on the pool, granted by this component before the config), never as the runner; Google also checks the caller's own use of the pool at create (UseCaPool).
+      - purpose: UseCaPool
+        permissions:
+          - privateca.caPools.use
+        provenance: derived
+        reach: target
+        privilege: ordinary
+        notes: Certificate Manager checks at create that the caller may issue from the pool spec.ca_pool names -- Google's issuance-config documentation states "the caller must have the privateca.capools.use permission" -- and refuses a caller without it with only "Config validation failed", naming no permission. Held on the pool's project (or the pool), which may differ from the config's.
       - purpose: GrantServiceAgentOnCaPool
         permissions:
           - privateca.caPools.getIamPolicy
