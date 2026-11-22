@@ -9,7 +9,7 @@ When you deploy this Infra Component, the IaC module provisions:
 - **External VPN gateway** (external peer only) -- the `compute_external_vpn_gateway` holding the device's public addresses
 - **VPN tunnels** -- one `compute_vpn_tunnel` per `tunnels[]` entry
 - **Router interfaces** -- one `compute_router_interface` per tunnel (the link-local /30)
-- **BGP peers** -- one `compute_router_peer` per tunnel, with BFD and MD5 when declared
+- **BGP peers** -- one `compute_router_peer` per tunnel, with MD5 when declared
 - **Keys** (only when the spec declares none) -- one generated IKE pre-shared key for every tunnel without its own, and one generated BGP MD5 key for every MD5 session without its own, reported as sensitive outputs
 
 ## Before You Deploy
@@ -97,7 +97,7 @@ planton apply -f ha-vpn-connection.yaml
 | `tunnels[].cipherSuite` | `message` | Google defaults | Phase-1 and phase-2 algorithm restrictions. |
 | `tunnels[].labels` | `map` | — | The one mutable tunnel field. |
 | `tunnels[].description` | `string` | — | Immutable. |
-| `tunnels[].bgpSession.*` | — | — | `name`, `interfaceIpRange` (link-local /30), `ipVersion`, `peerIpAddress`, `advertisedRoutePriority`, `advertiseMode` / `advertisedGroups` / `advertisedIpRanges`, `enable`, `enableIpv4`, `enableIpv6`, the four next-hop addresses, `customLearnedIpRanges`, `customLearnedRoutePriority`, `bfd`, `md5AuthenticationKey` (declaring the block enables MD5; its optional sensitive `key` overrides the connection's), `importPolicies`, `exportPolicies`. |
+| `tunnels[].bgpSession.*` | — | — | `name`, `interfaceIpRange` (link-local /30), `ipVersion`, `peerIpAddress`, `advertisedRoutePriority`, `advertiseMode` / `advertisedGroups` / `advertisedIpRanges`, `enable`, `enableIpv4`, `enableIpv6`, the four next-hop addresses, `customLearnedIpRanges`, `customLearnedRoutePriority`, `md5AuthenticationKey` (declaring the block enables MD5; its optional sensitive `key` overrides the connection's), `importPolicies`, `exportPolicies`. |
 | `resourceManagerTags` | `map` | — | Create-time tags on every tunnel and the external gateway. |
 | `deletionPolicy` | `string` | `DELETE` | `DELETE`, `PREVENT`, or `ABANDON` for every resource. |
 
@@ -105,7 +105,7 @@ planton apply -f ha-vpn-connection.yaml
 
 - **`peer`**: exactly one arm. External interfaces match `redundancyType` (1 / 2 / 4), unique ids, one address each.
 - **`tunnels`**: distinct names; distinct `interfaceIpRange`s; every tunnel names a `peerExternalGatewayInterface` with an external peer and none with a Google peer; the named interface exists.
-- **`bgpSession`**: `peerAsn` ≥ 1; `interfaceIpRange` is `169.254.x.y/30`; BFD intervals 1000-30000, multiplier 5-16; priorities 0-65535 / 0-65335.
+- **`bgpSession`**: `peerAsn` ≥ 1; `interfaceIpRange` is `169.254.x.y/30`; priorities 0-65535 / 0-65335.
 - **Keys**: a literal `sharedSecret` is 1-63 printable ASCII characters; a literal `md5AuthenticationKey` is 1-80.
 
 ## Outputs
@@ -154,7 +154,7 @@ For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e
 
 - [HA VPN topologies](https://cloud.google.com/network-connectivity/docs/vpn/concepts/topologies)
 - [Supported IKE ciphers](https://cloud.google.com/network-connectivity/docs/vpn/concepts/supported-ike-ciphers)
-- [BGP sessions and BFD on Cloud Router](https://cloud.google.com/network-connectivity/docs/router/concepts/bfd)
+- [Cloud Router overview](https://cloud.google.com/network-connectivity/docs/router/concepts/overview)
 
 ## Support
 

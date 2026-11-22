@@ -20,5 +20,5 @@ spec:
       impact: Traffic between two Google Cloud VPCs over HA VPN bills as inter-region (or inter-zone) VPC egress on top of the tunnel hours; VPC Network Peering carries the same traffic at intra-VPC rates with no tunnel meter, and is the cheaper choice whenever the two networks can peer.
   estimate_exclusions:
     - tunnel egress bills per GiB on the traffic that actually crosses; the volume is unknowable from this manifest
-    - Cloud Router and the external VPN gateway resource are free; BFD and MD5 add no meter
+    - Cloud Router and the external VPN gateway resource are free; MD5 adds no meter
   notes: "The committed money is the tunnel count -- tunnels bill from creation, up or down, so an idle connection is not free. Everything else is traffic."

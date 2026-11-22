@@ -18,7 +18,8 @@ The recommended 99.99% topology is TWO tunnels: one from each gateway
 interface, to two addresses of the peer (redundancy_type
 TWO_IPS_REDUNDANCY, or a Google peer, which always has two). Each tunnel
 gets its own link-local /30 and BGP session; both advertise the same
-routes so traffic fails over in seconds (or sub-second with BFD).
+routes so traffic fails over once BGP declares the dead session down
+(three keepalive intervals, 60 s by default).
 
 Composition: this kind creates the tunnels, one Cloud Router interface
 and one BGP peer per tunnel on the gateway's router, and -- when the
@@ -175,11 +176,6 @@ spec:
 | `spec.tunnels[].bgpSession.customLearnedIpRanges` | `[]GcpHaVpnConnectionBgpCustomLearnedIpRange` |  |  |  |
 | `spec.tunnels[].bgpSession.customLearnedIpRanges[].range` | `string` | yes |  |  |
 | `spec.tunnels[].bgpSession.customLearnedRoutePriority` | `int32` |  |  |  |
-| `spec.tunnels[].bgpSession.bfd` | `GcpHaVpnConnectionBgpBfd` |  |  |  |
-| `spec.tunnels[].bgpSession.bfd.sessionInitializationMode` | `string` | yes |  |  |
-| `spec.tunnels[].bgpSession.bfd.minReceiveInterval` | `int32` |  |  |  |
-| `spec.tunnels[].bgpSession.bfd.minTransmitInterval` | `int32` |  |  |  |
-| `spec.tunnels[].bgpSession.bfd.multiplier` | `int32` |  |  |  |
 | `spec.tunnels[].bgpSession.md5AuthenticationKey` | `GcpHaVpnConnectionBgpMd5AuthenticationKey` |  |  |  |
 | `spec.tunnels[].bgpSession.md5AuthenticationKey.name` | `string` |  |  |  |
 | `spec.tunnels[].bgpSession.md5AuthenticationKey.key` | `string` (sensitive) |  |  |  |
@@ -418,8 +414,8 @@ tunnel.
 `int32` · optional (explicit presence)
 
 IKE protocol version: 1 or 2. 2 when empty (Google's default and the
-only version that supports IPv6, BFD-friendly rekeying, and modern
-ciphers). Use 1 only for a legacy device. Always sent. Immutable.
+only version that supports IPv6 and modern ciphers). Use 1 only for a
+legacy device. Always sent. Immutable.
 
 - default: `2`
 - rule: {"int32":{"lte":2,"gte":1}}
@@ -743,54 +739,6 @@ Priority applied to every custom learned range of this session.
 priority. Mutable.
 
 - rule: {"int32":{"lte":65335,"gte":0}}
-
-### spec.tunnels[].bgpSession.bfd
-
-`GcpHaVpnConnectionBgpBfd`
-
-BFD for fast failure detection on this session. Leave unset to rely
-on BGP keepalives alone.
-
-### spec.tunnels[].bgpSession.bfd.sessionInitializationMode
-
-`string` · required
-
-Who starts the BFD session:
-  "ACTIVE"   -- Cloud Router initiates (the usual choice)
-  "PASSIVE"  -- Cloud Router waits for the peer to initiate
-  "DISABLED" -- BFD off for this session
-
-- rule: session_initialization_mode must be ACTIVE, PASSIVE, or DISABLED
-- rule: {"required":true}
-
-### spec.tunnels[].bgpSession.bfd.minReceiveInterval
-
-`int32`
-
-Minimum interval in milliseconds between BFD packets RECEIVED from the
-peer; the negotiated value is the greater of this and the peer's
-transmit interval. 1000-30000; 1000 when empty.
-
-- rule: min_receive_interval must be between 1000 and 30000 milliseconds
-
-### spec.tunnels[].bgpSession.bfd.minTransmitInterval
-
-`int32`
-
-Minimum interval in milliseconds between BFD packets TRANSMITTED to
-the peer; negotiated the same way. 1000-30000; 1000 when empty.
-
-- rule: min_transmit_interval must be between 1000 and 30000 milliseconds
-
-### spec.tunnels[].bgpSession.bfd.multiplier
-
-`int32`
-
-How many consecutive BFD packets may be missed before the peer is
-declared down. 5-16; 5 when empty. Detection time is roughly the
-negotiated interval times this multiplier.
-
-- rule: multiplier must be between 5 and 16
 
 ### spec.tunnels[].bgpSession.md5AuthenticationKey
 

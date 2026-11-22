@@ -25,7 +25,7 @@ tunnels, two per gateway interface. A single-address device
 (`SINGLE_IP_INTERNALLY_REDUNDANT`) still gets two tunnels from the two
 gateway interfaces to the one address -- 99.9%. Both sessions advertise
 the same routes, so a failed tunnel loses traffic only until BGP notices
-(three keepalives, 60 s by default) or BFD notices (about a second).
+(three keepalives, 60 s by default).
 
 ## Every tunnel needs its own /30
 
@@ -80,11 +80,17 @@ one (active/passive), or leave them equal for active/active. Route
 policies (`importPolicies` / `exportPolicies`) are Cloud Router
 objects created outside this block and named here.
 
-## BFD and MD5
+## No BFD on a VPN session
 
-`bfd.sessionInitializationMode: ACTIVE` with the defaults (1000 ms,
-multiplier 5) detects a dead tunnel in about five seconds instead of
-sixty; the device must support BFD. `md5AuthenticationKey` guards the
+Google refuses Bidirectional Forwarding Detection on a BGP session whose
+interface is a VPN tunnel; BFD runs on Cloud Interconnect attachments.
+That is why a session here has no `bfd` block: failure detection is BGP's
+own keepalives, three intervals (60 s by default) before the dead
+tunnel's routes are withdrawn.
+
+## MD5
+
+`md5AuthenticationKey` guards the
 BGP session against a misconfigured peer (IPsec already guards it
 against an attacker). Declaring the block on a session turns MD5 on for
 that session; the key comes from the block, else the connection's

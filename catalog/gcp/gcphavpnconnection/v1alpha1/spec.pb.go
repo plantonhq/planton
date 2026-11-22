@@ -586,91 +586,6 @@ func (x *GcpHaVpnConnectionBgpCustomLearnedIpRange) GetRange() string {
 	return ""
 }
 
-// GcpHaVpnConnectionBgpBfd enables Bidirectional Forwarding Detection on
-// the session: sub-second detection of a dead tunnel, far faster than BGP
-// keepalives (which take three keepalive intervals, 60 s by default).
-// Both sides must support BFD.
-type GcpHaVpnConnectionBgpBfd struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// Who starts the BFD session:
-	//
-	//	"ACTIVE"   -- Cloud Router initiates (the usual choice)
-	//	"PASSIVE"  -- Cloud Router waits for the peer to initiate
-	//	"DISABLED" -- BFD off for this session
-	SessionInitializationMode string `protobuf:"bytes,1,opt,name=session_initialization_mode,json=sessionInitializationMode,proto3" json:"session_initialization_mode,omitempty"`
-	// Minimum interval in milliseconds between BFD packets RECEIVED from the
-	// peer; the negotiated value is the greater of this and the peer's
-	// transmit interval. 1000-30000; 1000 when empty.
-	MinReceiveInterval int32 `protobuf:"varint,2,opt,name=min_receive_interval,json=minReceiveInterval,proto3" json:"min_receive_interval,omitempty"`
-	// Minimum interval in milliseconds between BFD packets TRANSMITTED to
-	// the peer; negotiated the same way. 1000-30000; 1000 when empty.
-	MinTransmitInterval int32 `protobuf:"varint,3,opt,name=min_transmit_interval,json=minTransmitInterval,proto3" json:"min_transmit_interval,omitempty"`
-	// How many consecutive BFD packets may be missed before the peer is
-	// declared down. 5-16; 5 when empty. Detection time is roughly the
-	// negotiated interval times this multiplier.
-	Multiplier    int32 `protobuf:"varint,4,opt,name=multiplier,proto3" json:"multiplier,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GcpHaVpnConnectionBgpBfd) Reset() {
-	*x = GcpHaVpnConnectionBgpBfd{}
-	mi := &file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_msgTypes[8]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GcpHaVpnConnectionBgpBfd) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GcpHaVpnConnectionBgpBfd) ProtoMessage() {}
-
-func (x *GcpHaVpnConnectionBgpBfd) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_msgTypes[8]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GcpHaVpnConnectionBgpBfd.ProtoReflect.Descriptor instead.
-func (*GcpHaVpnConnectionBgpBfd) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
-}
-
-func (x *GcpHaVpnConnectionBgpBfd) GetSessionInitializationMode() string {
-	if x != nil {
-		return x.SessionInitializationMode
-	}
-	return ""
-}
-
-func (x *GcpHaVpnConnectionBgpBfd) GetMinReceiveInterval() int32 {
-	if x != nil {
-		return x.MinReceiveInterval
-	}
-	return 0
-}
-
-func (x *GcpHaVpnConnectionBgpBfd) GetMinTransmitInterval() int32 {
-	if x != nil {
-		return x.MinTransmitInterval
-	}
-	return 0
-}
-
-func (x *GcpHaVpnConnectionBgpBfd) GetMultiplier() int32 {
-	if x != nil {
-		return x.Multiplier
-	}
-	return 0
-}
-
 // GcpHaVpnConnectionBgpMd5AuthenticationKey turns on MD5 authentication of
 // the BGP session: declaring the block (even empty) enables MD5 on this
 // session; omitting it leaves the session unauthenticated. The key is
@@ -698,7 +613,7 @@ type GcpHaVpnConnectionBgpMd5AuthenticationKey struct {
 
 func (x *GcpHaVpnConnectionBgpMd5AuthenticationKey) Reset() {
 	*x = GcpHaVpnConnectionBgpMd5AuthenticationKey{}
-	mi := &file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_msgTypes[9]
+	mi := &file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -710,7 +625,7 @@ func (x *GcpHaVpnConnectionBgpMd5AuthenticationKey) String() string {
 func (*GcpHaVpnConnectionBgpMd5AuthenticationKey) ProtoMessage() {}
 
 func (x *GcpHaVpnConnectionBgpMd5AuthenticationKey) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_msgTypes[9]
+	mi := &file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -723,7 +638,7 @@ func (x *GcpHaVpnConnectionBgpMd5AuthenticationKey) ProtoReflect() protoreflect.
 
 // Deprecated: Use GcpHaVpnConnectionBgpMd5AuthenticationKey.ProtoReflect.Descriptor instead.
 func (*GcpHaVpnConnectionBgpMd5AuthenticationKey) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
+	return file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GcpHaVpnConnectionBgpMd5AuthenticationKey) GetName() string {
@@ -748,8 +663,13 @@ func (x *GcpHaVpnConnectionBgpMd5AuthenticationKey) GetKey() string {
 // to keep aligned. Without a session a tunnel carries no routes.
 //
 // Everything about the session that is not BGP policy (name, interface
-// range, IP version) is immutable; the peer ASN, advertisement, BFD, MD5,
+// range, IP version) is immutable; the peer ASN, advertisement, MD5,
 // enable flags, and policies change in place.
+//
+// There is no BFD here: Google refuses Bidirectional Forwarding Detection
+// on a BGP peer whose interface is a VPN tunnel (BFD runs on Cloud
+// Interconnect attachments). A session detects a dead tunnel through BGP
+// keepalives -- three keepalive intervals, 60 s by default.
 type GcpHaVpnConnectionBgpSession struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the Cloud Router interface and BGP peer this session creates
@@ -839,9 +759,6 @@ type GcpHaVpnConnectionBgpSession struct {
 	// 0-65335; Google uses 100 when empty. Sent only when set, so 0 is a real
 	// priority. Mutable.
 	CustomLearnedRoutePriority *int32 `protobuf:"varint,18,opt,name=custom_learned_route_priority,json=customLearnedRoutePriority,proto3,oneof" json:"custom_learned_route_priority,omitempty"`
-	// BFD for fast failure detection on this session. Leave unset to rely
-	// on BGP keepalives alone.
-	Bfd *GcpHaVpnConnectionBgpBfd `protobuf:"bytes,19,opt,name=bfd,proto3" json:"bfd,omitempty"`
 	// MD5 authentication of the BGP session. Declare the block (an empty
 	// block is enough) to enable MD5; the key is the block's own key, else
 	// the connection's md5_authentication_key, else the one the modules
@@ -849,24 +766,24 @@ type GcpHaVpnConnectionBgpSession struct {
 	// IPsec already protects the control traffic; MD5 defends against a
 	// misconfigured peer, not an attacker). Both ends of a session must
 	// agree: MD5 on one side only keeps the session down.
-	Md5AuthenticationKey *GcpHaVpnConnectionBgpMd5AuthenticationKey `protobuf:"bytes,20,opt,name=md5_authentication_key,json=md5AuthenticationKey,proto3" json:"md5_authentication_key,omitempty"`
+	Md5AuthenticationKey *GcpHaVpnConnectionBgpMd5AuthenticationKey `protobuf:"bytes,19,opt,name=md5_authentication_key,json=md5AuthenticationKey,proto3" json:"md5_authentication_key,omitempty"`
 	// Names of route policies (ROUTE_POLICY_TYPE_IMPORT) on the router,
 	// applied to routes learned from this peer in order. Route policies are
 	// created outside this kind (`gcloud compute routers update-route-policy`
 	// or the provider's router route-policy resource) and referenced here by
 	// name. Mutable.
-	ImportPolicies []string `protobuf:"bytes,21,rep,name=import_policies,json=importPolicies,proto3" json:"import_policies,omitempty"`
+	ImportPolicies []string `protobuf:"bytes,20,rep,name=import_policies,json=importPolicies,proto3" json:"import_policies,omitempty"`
 	// Names of route policies (ROUTE_POLICY_TYPE_EXPORT) on the router,
 	// applied to routes advertised to this peer in order. Same provenance as
 	// import_policies. Mutable.
-	ExportPolicies []string `protobuf:"bytes,22,rep,name=export_policies,json=exportPolicies,proto3" json:"export_policies,omitempty"`
+	ExportPolicies []string `protobuf:"bytes,21,rep,name=export_policies,json=exportPolicies,proto3" json:"export_policies,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
 
 func (x *GcpHaVpnConnectionBgpSession) Reset() {
 	*x = GcpHaVpnConnectionBgpSession{}
-	mi := &file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_msgTypes[10]
+	mi := &file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -878,7 +795,7 @@ func (x *GcpHaVpnConnectionBgpSession) String() string {
 func (*GcpHaVpnConnectionBgpSession) ProtoMessage() {}
 
 func (x *GcpHaVpnConnectionBgpSession) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_msgTypes[10]
+	mi := &file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -891,7 +808,7 @@ func (x *GcpHaVpnConnectionBgpSession) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpHaVpnConnectionBgpSession.ProtoReflect.Descriptor instead.
 func (*GcpHaVpnConnectionBgpSession) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
+	return file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *GcpHaVpnConnectionBgpSession) GetName() string {
@@ -1020,13 +937,6 @@ func (x *GcpHaVpnConnectionBgpSession) GetCustomLearnedRoutePriority() int32 {
 	return 0
 }
 
-func (x *GcpHaVpnConnectionBgpSession) GetBfd() *GcpHaVpnConnectionBgpBfd {
-	if x != nil {
-		return x.Bfd
-	}
-	return nil
-}
-
 func (x *GcpHaVpnConnectionBgpSession) GetMd5AuthenticationKey() *GcpHaVpnConnectionBgpMd5AuthenticationKey {
 	if x != nil {
 		return x.Md5AuthenticationKey
@@ -1080,8 +990,8 @@ type GcpHaVpnConnectionTunnel struct {
 	// tunnel.
 	SharedSecret string `protobuf:"bytes,4,opt,name=shared_secret,json=sharedSecret,proto3" json:"shared_secret,omitempty"`
 	// IKE protocol version: 1 or 2. 2 when empty (Google's default and the
-	// only version that supports IPv6, BFD-friendly rekeying, and modern
-	// ciphers). Use 1 only for a legacy device. Always sent. Immutable.
+	// only version that supports IPv6 and modern ciphers). Use 1 only for a
+	// legacy device. Always sent. Immutable.
 	IkeVersion *int32 `protobuf:"varint,5,opt,name=ike_version,json=ikeVersion,proto3,oneof" json:"ike_version,omitempty"`
 	// Local traffic selectors -- the IPv4 CIDRs on the Google side the
 	// tunnel carries when the tunnel is used in ROUTE-BASED (policy-less)
@@ -1110,7 +1020,7 @@ type GcpHaVpnConnectionTunnel struct {
 
 func (x *GcpHaVpnConnectionTunnel) Reset() {
 	*x = GcpHaVpnConnectionTunnel{}
-	mi := &file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_msgTypes[11]
+	mi := &file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1122,7 +1032,7 @@ func (x *GcpHaVpnConnectionTunnel) String() string {
 func (*GcpHaVpnConnectionTunnel) ProtoMessage() {}
 
 func (x *GcpHaVpnConnectionTunnel) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_msgTypes[11]
+	mi := &file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1135,7 +1045,7 @@ func (x *GcpHaVpnConnectionTunnel) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpHaVpnConnectionTunnel.ProtoReflect.Descriptor instead.
 func (*GcpHaVpnConnectionTunnel) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
+	return file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *GcpHaVpnConnectionTunnel) GetName() string {
@@ -1225,7 +1135,8 @@ func (x *GcpHaVpnConnectionTunnel) GetDescription() string {
 // interface, to two addresses of the peer (redundancy_type
 // TWO_IPS_REDUNDANCY, or a Google peer, which always has two). Each tunnel
 // gets its own link-local /30 and BGP session; both advertise the same
-// routes so traffic fails over in seconds (or sub-second with BFD).
+// routes so traffic fails over once BGP declares the dead session down
+// (three keepalive intervals, 60 s by default).
 //
 // Composition: this kind creates the tunnels, one Cloud Router interface
 // and one BGP peer per tunnel on the gateway's router, and -- when the
@@ -1322,7 +1233,7 @@ type GcpHaVpnConnectionSpec struct {
 
 func (x *GcpHaVpnConnectionSpec) Reset() {
 	*x = GcpHaVpnConnectionSpec{}
-	mi := &file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_msgTypes[12]
+	mi := &file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1334,7 +1245,7 @@ func (x *GcpHaVpnConnectionSpec) String() string {
 func (*GcpHaVpnConnectionSpec) ProtoMessage() {}
 
 func (x *GcpHaVpnConnectionSpec) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_msgTypes[12]
+	mi := &file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1347,7 +1258,7 @@ func (x *GcpHaVpnConnectionSpec) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpHaVpnConnectionSpec.ProtoReflect.Descriptor instead.
 func (*GcpHaVpnConnectionSpec) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_rawDescGZIP(), []int{12}
+	return file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *GcpHaVpnConnectionSpec) GetProjectId() *v1.StringValueOrRef {
@@ -1478,22 +1389,11 @@ const file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_rawDesc = "" +
 	"\x05range\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05range\x12 \n" +
 	"\vdescription\x18\x02 \x01(\tR\vdescription\"I\n" +
 	")GcpHaVpnConnectionBgpCustomLearnedIpRange\x12\x1c\n" +
-	"\x05range\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05range\"\x89\x06\n" +
-	"\x18GcpHaVpnConnectionBgpBfd\x12\xc8\x01\n" +
-	"\x1bsession_initialization_mode\x18\x01 \x01(\tB\x87\x01\xbaH\x83\x01\xba\x01}\n" +
-	"\x0evalid_bfd_mode\x12@session_initialization_mode must be ACTIVE, PASSIVE, or DISABLED\x1a)this in ['ACTIVE', 'PASSIVE', 'DISABLED']\xc8\x01\x01R\x19sessionInitializationMode\x12\xc7\x01\n" +
-	"\x14min_receive_interval\x18\x02 \x01(\x05B\x94\x01\xbaH\x90\x01\xba\x01\x8c\x01\n" +
-	"\x1abfd_receive_interval_range\x12@min_receive_interval must be between 1000 and 30000 milliseconds\x1a,this == 0 || (this >= 1000 && this <= 30000)R\x12minReceiveInterval\x12\xcb\x01\n" +
-	"\x15min_transmit_interval\x18\x03 \x01(\x05B\x96\x01\xbaH\x92\x01\xba\x01\x8e\x01\n" +
-	"\x1bbfd_transmit_interval_range\x12Amin_transmit_interval must be between 1000 and 30000 milliseconds\x1a,this == 0 || (this >= 1000 && this <= 30000)R\x13minTransmitInterval\x12\x89\x01\n" +
-	"\n" +
-	"multiplier\x18\x04 \x01(\x05Bi\xbaHf\xba\x01c\n" +
-	"\x14bfd_multiplier_range\x12#multiplier must be between 5 and 16\x1a&this == 0 || (this >= 5 && this <= 16)R\n" +
-	"multiplier\"\xbe\x02\n" +
+	"\x05range\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05range\"\xbe\x02\n" +
 	")GcpHaVpnConnectionBgpMd5AuthenticationKey\x12\xf8\x01\n" +
 	"\x04name\x18\x01 \x01(\tB\xe3\x01\xbaH\xdf\x01\xba\x01\xdb\x01\n" +
 	"\x12valid_md5_key_name\x12\x83\x01md5 key name must be 1-63 characters of lowercase letters, digits, and hyphens, starting with a letter and not ending with a hyphen\x1a?this == '' || this.matches('^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$')R\x04name\x12\x16\n" +
-	"\x03key\x18\x02 \x01(\tB\x04\xa0\xa6\x1d\x01R\x03key\"\xde\x1b\n" +
+	"\x03key\x18\x02 \x01(\tB\x04\xa0\xa6\x1d\x01R\x03key\"\x85\x1b\n" +
 	"\x1cGcpHaVpnConnectionBgpSession\x12\xf8\x01\n" +
 	"\x04name\x18\x01 \x01(\tB\xe3\x01\xbaH\xdf\x01\xba\x01\xdb\x01\n" +
 	"\x12valid_session_name\x12\x83\x01session name must be 1-63 characters of lowercase letters, digits, and hyphens, starting with a letter and not ending with a hyphen\x1a?this == '' || this.matches('^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$')R\x04name\x12\x8a\x02\n" +
@@ -1526,11 +1426,10 @@ const file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_rawDesc = "" +
 	"\x19peer_ipv4_nexthop_address\x18\x10 \x01(\tBn\xbaHk\xba\x01h\n" +
 	"\x17valid_peer_ipv4_nexthop\x121peer_ipv4_nexthop_address must be an IPv4 address\x1a\x1athis == '' || this.isIp(4)H\bR\x16peerIpv4NexthopAddress\x88\x01\x01\x12\x8f\x01\n" +
 	"\x18custom_learned_ip_ranges\x18\x11 \x03(\v2V.dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionBgpCustomLearnedIpRangeR\x15customLearnedIpRanges\x12S\n" +
-	"\x1dcustom_learned_route_priority\x18\x12 \x01(\x05B\v\xbaH\b\x1a\x06\x18\xb7\xfe\x03(\x00H\tR\x1acustomLearnedRoutePriority\x88\x01\x01\x12W\n" +
-	"\x03bfd\x18\x13 \x01(\v2E.dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionBgpBfdR\x03bfd\x12\x8c\x01\n" +
-	"\x16md5_authentication_key\x18\x14 \x01(\v2V.dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionBgpMd5AuthenticationKeyR\x14md5AuthenticationKey\x12'\n" +
-	"\x0fimport_policies\x18\x15 \x03(\tR\x0eimportPolicies\x12'\n" +
-	"\x0fexport_policies\x18\x16 \x03(\tR\x0eexportPolicies:\x9c\x05\xbaH\x98\x05\x1a\xaf\x01\n" +
+	"\x1dcustom_learned_route_priority\x18\x12 \x01(\x05B\v\xbaH\b\x1a\x06\x18\xb7\xfe\x03(\x00H\tR\x1acustomLearnedRoutePriority\x88\x01\x01\x12\x8c\x01\n" +
+	"\x16md5_authentication_key\x18\x13 \x01(\v2V.dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionBgpMd5AuthenticationKeyR\x14md5AuthenticationKey\x12'\n" +
+	"\x0fimport_policies\x18\x14 \x03(\tR\x0eimportPolicies\x12'\n" +
+	"\x0fexport_policies\x18\x15 \x03(\tR\x0eexportPolicies:\x9c\x05\xbaH\x98\x05\x1a\xaf\x01\n" +
 	"%advertised_groups_require_custom_mode\x12?advertised_groups can only be set when advertise_mode is CUSTOM\x1aEthis.advertised_groups.size() == 0 || this.advertise_mode == 'CUSTOM'\x1a\xb8\x01\n" +
 	"(advertised_ip_ranges_require_custom_mode\x12Badvertised_ip_ranges can only be set when advertise_mode is CUSTOM\x1aHthis.advertised_ip_ranges.size() == 0 || this.advertise_mode == 'CUSTOM'\x1a\xa8\x02\n" +
 	"\x1apeer_ip_in_interface_range\x12\xa0\x01peer_ip_address, when set, must be a link-local address in 169.254.0.0/16 like interface_ip_range (Google requires both ends of an IPv4 session in the same /30)\x1ag!has(this.peer_ip_address) || this.peer_ip_address == '' || this.peer_ip_address.startsWith('169.254.')B\r\n" +
@@ -1604,7 +1503,7 @@ func file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_rawDescGZIP() []byt
 	return file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_rawDescData
 }
 
-var file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_goTypes = []any{
 	(*GcpHaVpnConnectionExternalGatewayInterface)(nil), // 0: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionExternalGatewayInterface
 	(*GcpHaVpnConnectionExternalGateway)(nil),          // 1: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionExternalGateway
@@ -1614,44 +1513,42 @@ var file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_goTypes = []any{
 	(*GcpHaVpnConnectionCipherSuite)(nil),              // 5: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionCipherSuite
 	(*GcpHaVpnConnectionBgpAdvertisedIpRange)(nil),     // 6: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionBgpAdvertisedIpRange
 	(*GcpHaVpnConnectionBgpCustomLearnedIpRange)(nil),  // 7: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionBgpCustomLearnedIpRange
-	(*GcpHaVpnConnectionBgpBfd)(nil),                   // 8: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionBgpBfd
-	(*GcpHaVpnConnectionBgpMd5AuthenticationKey)(nil),  // 9: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionBgpMd5AuthenticationKey
-	(*GcpHaVpnConnectionBgpSession)(nil),               // 10: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionBgpSession
-	(*GcpHaVpnConnectionTunnel)(nil),                   // 11: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionTunnel
-	(*GcpHaVpnConnectionSpec)(nil),                     // 12: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec
-	nil,                                                // 13: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionExternalGateway.LabelsEntry
-	nil,                                                // 14: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionTunnel.LabelsEntry
-	nil,                                                // 15: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.ResourceManagerTagsEntry
-	(*v1.StringValueOrRef)(nil),                        // 16: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*GcpHaVpnConnectionBgpMd5AuthenticationKey)(nil),  // 8: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionBgpMd5AuthenticationKey
+	(*GcpHaVpnConnectionBgpSession)(nil),               // 9: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionBgpSession
+	(*GcpHaVpnConnectionTunnel)(nil),                   // 10: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionTunnel
+	(*GcpHaVpnConnectionSpec)(nil),                     // 11: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec
+	nil,                                                // 12: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionExternalGateway.LabelsEntry
+	nil,                                                // 13: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionTunnel.LabelsEntry
+	nil,                                                // 14: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.ResourceManagerTagsEntry
+	(*v1.StringValueOrRef)(nil),                        // 15: dev.planton.shared.foreignkey.v1.StringValueOrRef
 }
 var file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_depIdxs = []int32{
 	0,  // 0: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionExternalGateway.interfaces:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionExternalGatewayInterface
-	13, // 1: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionExternalGateway.labels:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionExternalGateway.LabelsEntry
+	12, // 1: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionExternalGateway.labels:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionExternalGateway.LabelsEntry
 	1,  // 2: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionPeer.external_gateway:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionExternalGateway
-	16, // 3: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionPeer.gcp_gateway:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	15, // 3: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionPeer.gcp_gateway:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	3,  // 4: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionCipherSuite.phase1:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionCipherSuitePhase1
 	4,  // 5: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionCipherSuite.phase2:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionCipherSuitePhase2
 	6,  // 6: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionBgpSession.advertised_ip_ranges:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionBgpAdvertisedIpRange
 	7,  // 7: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionBgpSession.custom_learned_ip_ranges:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionBgpCustomLearnedIpRange
-	8,  // 8: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionBgpSession.bfd:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionBgpBfd
-	9,  // 9: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionBgpSession.md5_authentication_key:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionBgpMd5AuthenticationKey
-	5,  // 10: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionTunnel.cipher_suite:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionCipherSuite
-	14, // 11: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionTunnel.labels:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionTunnel.LabelsEntry
-	10, // 12: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionTunnel.bgp_session:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionBgpSession
-	16, // 13: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	16, // 14: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.gateway:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	16, // 15: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.router:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	16, // 16: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.region:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	2,  // 17: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.peer:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionPeer
-	11, // 18: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.tunnels:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionTunnel
-	16, // 19: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.shared_secret:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	16, // 20: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.md5_authentication_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	15, // 21: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.resource_manager_tags:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.ResourceManagerTagsEntry
-	22, // [22:22] is the sub-list for method output_type
-	22, // [22:22] is the sub-list for method input_type
-	22, // [22:22] is the sub-list for extension type_name
-	22, // [22:22] is the sub-list for extension extendee
-	0,  // [0:22] is the sub-list for field type_name
+	8,  // 8: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionBgpSession.md5_authentication_key:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionBgpMd5AuthenticationKey
+	5,  // 9: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionTunnel.cipher_suite:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionCipherSuite
+	13, // 10: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionTunnel.labels:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionTunnel.LabelsEntry
+	9,  // 11: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionTunnel.bgp_session:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionBgpSession
+	15, // 12: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	15, // 13: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.gateway:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	15, // 14: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.router:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	15, // 15: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.region:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	2,  // 16: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.peer:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionPeer
+	10, // 17: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.tunnels:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionTunnel
+	15, // 18: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.shared_secret:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	15, // 19: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.md5_authentication_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	14, // 20: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.resource_manager_tags:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.ResourceManagerTagsEntry
+	21, // [21:21] is the sub-list for method output_type
+	21, // [21:21] is the sub-list for method input_type
+	21, // [21:21] is the sub-list for extension type_name
+	21, // [21:21] is the sub-list for extension extendee
+	0,  // [0:21] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_init() }
@@ -1659,15 +1556,15 @@ func file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_init() {
 	if File_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto != nil {
 		return
 	}
+	file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_msgTypes[9].OneofWrappers = []any{}
 	file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_msgTypes[10].OneofWrappers = []any{}
-	file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_msgTypes[11].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_rawDesc), len(file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   16,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

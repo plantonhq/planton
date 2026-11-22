@@ -215,16 +215,6 @@ resource "google_compute_router_peer" "this" {
   }
   custom_learned_route_priority = each.value.bgp_session.custom_learned_route_priority
 
-  dynamic "bfd" {
-    for_each = each.value.bgp_session.bfd != null ? [each.value.bgp_session.bfd] : []
-    content {
-      session_initialization_mode = bfd.value.session_initialization_mode
-      min_receive_interval        = bfd.value.min_receive_interval > 0 ? bfd.value.min_receive_interval : null
-      min_transmit_interval       = bfd.value.min_transmit_interval > 0 ? bfd.value.min_transmit_interval : null
-      multiplier                  = bfd.value.multiplier > 0 ? bfd.value.multiplier : null
-    }
-  }
-
   dynamic "md5_authentication_key" {
     for_each = each.value.bgp_session.md5_authentication_key != null ? [each.value.bgp_session.md5_authentication_key] : []
     content {

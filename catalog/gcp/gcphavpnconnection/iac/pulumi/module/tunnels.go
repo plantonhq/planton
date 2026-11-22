@@ -224,21 +224,6 @@ func routerPeer(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider, 
 	if session.CustomLearnedRoutePriority != nil {
 		args.CustomLearnedRoutePriority = pulumi.IntPtr(int(*session.CustomLearnedRoutePriority))
 	}
-	if session.Bfd != nil {
-		bfdArgs := &compute.RouterPeerBfdArgs{
-			SessionInitializationMode: pulumi.String(session.Bfd.SessionInitializationMode),
-		}
-		if session.Bfd.MinReceiveInterval > 0 {
-			bfdArgs.MinReceiveInterval = pulumi.IntPtr(int(session.Bfd.MinReceiveInterval))
-		}
-		if session.Bfd.MinTransmitInterval > 0 {
-			bfdArgs.MinTransmitInterval = pulumi.IntPtr(int(session.Bfd.MinTransmitInterval))
-		}
-		if session.Bfd.Multiplier > 0 {
-			bfdArgs.Multiplier = pulumi.IntPtr(int(session.Bfd.Multiplier))
-		}
-		args.Bfd = bfdArgs
-	}
 	// The MD5 key rides the peer: the provider inserts it into the router's
 	// key table under this name and attaches it to the session (Google
 	// requires each key-table entry to be used by exactly one session; the

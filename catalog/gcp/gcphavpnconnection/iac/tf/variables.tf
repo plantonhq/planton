@@ -133,8 +133,8 @@ variable "spec" {
       shared_secret = optional(string, "")
 
       # IKE protocol version: 1 or 2. 2 when empty (Google's default and the
-      # only version that supports IPv6, BFD-friendly rekeying, and modern
-      # ciphers). Use 1 only for a legacy device. Always sent. Immutable.
+      # only version that supports IPv6 and modern ciphers). Use 1 only for a
+      # legacy device. Always sent. Immutable.
       ike_version = optional(number)
 
       # Local traffic selectors -- the IPv4 CIDRs on the Google side the
@@ -305,30 +305,6 @@ variable "spec" {
         # 0-65335; Google uses 100 when empty. Sent only when set, so 0 is a real
         # priority. Mutable.
         custom_learned_route_priority = optional(number)
-
-        # BFD for fast failure detection on this session. Leave unset to rely
-        # on BGP keepalives alone.
-        bfd = optional(object({
-          # Who starts the BFD session:
-          #   "ACTIVE"   -- Cloud Router initiates (the usual choice)
-          #   "PASSIVE"  -- Cloud Router waits for the peer to initiate
-          #   "DISABLED" -- BFD off for this session
-          session_initialization_mode = string
-
-          # Minimum interval in milliseconds between BFD packets RECEIVED from the
-          # peer; the negotiated value is the greater of this and the peer's
-          # transmit interval. 1000-30000; 1000 when empty.
-          min_receive_interval = optional(number, 0)
-
-          # Minimum interval in milliseconds between BFD packets TRANSMITTED to
-          # the peer; negotiated the same way. 1000-30000; 1000 when empty.
-          min_transmit_interval = optional(number, 0)
-
-          # How many consecutive BFD packets may be missed before the peer is
-          # declared down. 5-16; 5 when empty. Detection time is roughly the
-          # negotiated interval times this multiplier.
-          multiplier = optional(number, 0)
-        }))
 
         # MD5 authentication of the BGP session. Declare the block (an empty
         # block is enough) to enable MD5; the key is the block's own key, else

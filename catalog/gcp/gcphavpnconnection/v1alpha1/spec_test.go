@@ -189,7 +189,6 @@ var _ = ginkgo.Describe("GcpHaVpnConnectionSpec", func() {
 			EnableIpv6:                 false,
 			CustomLearnedIpRanges:      []*GcpHaVpnConnectionBgpCustomLearnedIpRange{{Range: "192.168.50.0/24"}},
 			CustomLearnedRoutePriority: proto.Int32(0),
-			Bfd:                        &GcpHaVpnConnectionBgpBfd{SessionInitializationMode: "ACTIVE", MinReceiveInterval: 1000, MinTransmitInterval: 1000, Multiplier: 5},
 			Md5AuthenticationKey:       &GcpHaVpnConnectionBgpMd5AuthenticationKey{Name: "hq-key-0", Key: "s3cret"},
 			ImportPolicies:             []string{"accept-hq"},
 			ExportPolicies:             []string{"export-shared"},
@@ -363,7 +362,7 @@ var _ = ginkgo.Describe("GcpHaVpnConnectionSpec", func() {
 		expectError(target, "peer_ip_address, when set, must be a link-local address")
 	})
 
-	ginkgo.It("should reject custom advertisement in DEFAULT mode and out-of-range priorities, BFD, IKE, and interface ids", func() {
+	ginkgo.It("should reject custom advertisement in DEFAULT mode and out-of-range priorities, IKE, and interface ids", func() {
 		target := toGcp()
 		target.Spec.Tunnels[0].BgpSession.AdvertisedGroups = []string{"ALL_SUBNETS"}
 		expectError(target, "advertised_groups can only be set when advertise_mode is CUSTOM")
@@ -375,18 +374,6 @@ var _ = ginkgo.Describe("GcpHaVpnConnectionSpec", func() {
 		target = toGcp()
 		target.Spec.Tunnels[0].BgpSession.CustomLearnedRoutePriority = proto.Int32(65336)
 		expectError(target, "custom_learned_route_priority")
-
-		target = toGcp()
-		target.Spec.Tunnels[0].BgpSession.Bfd = &GcpHaVpnConnectionBgpBfd{SessionInitializationMode: "ACTIVE", Multiplier: 4}
-		expectError(target, "multiplier must be between 5 and 16")
-
-		target = toGcp()
-		target.Spec.Tunnels[0].BgpSession.Bfd = &GcpHaVpnConnectionBgpBfd{SessionInitializationMode: "ON"}
-		expectError(target, "session_initialization_mode must be ACTIVE, PASSIVE, or DISABLED")
-
-		target = toGcp()
-		target.Spec.Tunnels[0].BgpSession.Bfd = &GcpHaVpnConnectionBgpBfd{SessionInitializationMode: "ACTIVE", MinReceiveInterval: 500}
-		expectError(target, "min_receive_interval must be between 1000 and 30000")
 
 		target = toGcp()
 		target.Spec.Tunnels[0].IkeVersion = proto.Int32(3)

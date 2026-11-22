@@ -33,7 +33,7 @@ terraform apply -var-file=terraform.tfvars.json
 | `metadata` | Resource metadata (name, labels, etc.) | — |
 | `spec` | GcpHaVpnConnection spec | — |
 
-The `spec` object includes: `project_id`, `shared_secret`, `md5_authentication_key`, `gateway`, `router`, `region` (all three referencing the `GcpHaVpnGateway`), `peer` (exactly one of `external_gateway { name, redundancy_type, interfaces[], description, labels }` or `gcp_gateway`), `tunnels[]` (`name`, `vpn_gateway_interface`, `peer_external_gateway_interface`, `shared_secret`, `ike_version`, `local_traffic_selector`, `remote_traffic_selector`, `cipher_suite`, `labels`, `description`, `bgp_session { name, interface_ip_range, ip_version, peer_asn, peer_ip_address, advertised_route_priority, advertise_mode, advertised_groups, advertised_ip_ranges, enable, enable_ipv4, enable_ipv6, the four nexthop addresses, custom_learned_ip_ranges, custom_learned_route_priority, bfd, md5_authentication_key, import_policies, export_policies }`), `resource_manager_tags`, and `deletion_policy`.
+The `spec` object includes: `project_id`, `shared_secret`, `md5_authentication_key`, `gateway`, `router`, `region` (all three referencing the `GcpHaVpnGateway`), `peer` (exactly one of `external_gateway { name, redundancy_type, interfaces[], description, labels }` or `gcp_gateway`), `tunnels[]` (`name`, `vpn_gateway_interface`, `peer_external_gateway_interface`, `shared_secret`, `ike_version`, `local_traffic_selector`, `remote_traffic_selector`, `cipher_suite`, `labels`, `description`, `bgp_session { name, interface_ip_range, ip_version, peer_asn, peer_ip_address, advertised_route_priority, advertise_mode, advertised_groups, advertised_ip_ranges, enable, enable_ipv4, enable_ipv6, the four nexthop addresses, custom_learned_ip_ranges, custom_learned_route_priority, md5_authentication_key, import_policies, export_policies }`), `resource_manager_tags`, and `deletion_policy`.
 
 `variables.tf` is generated from the proto contract (`planton tofu generate-variables GcpHaVpnConnection`) and formatted with `tofu fmt`; regenerate it when the spec changes rather than editing by hand.
 
@@ -59,7 +59,7 @@ The `spec` object includes: `project_id`, `shared_secret`, `md5_authentication_k
 - `google_compute_external_vpn_gateway` (count-gated on an external peer) — the device's interfaces, exactly one address each; labels merged (platform wins)
 - `google_compute_vpn_tunnel` (`for_each` tunnel) — `shared_secret` (the tunnel's own, else the connection's, else the generated key), `ike_version` always sent (2 when unset), exactly one of `peer_external_gateway` / `peer_gcp_gateway`, traffic selectors and cipher suite only when set
 - `google_compute_router_interface` (`for_each` tunnel) — named from `bgp_session.name` or the tunnel's name; `ip_range` / `ip_version` only when set
-- `google_compute_router_peer` (`for_each` tunnel) — `enable` always sent (true when unset), optional numerics and addresses only when set, BFD, and MD5 when the session declares the block (key: the session's own, else the connection's, else the generated one; key-table name defaults to `<tunnel>-md5`)
+- `google_compute_router_peer` (`for_each` tunnel) — `enable` always sent (true when unset), optional numerics and addresses only when set, and MD5 when the session declares the block (key: the session's own, else the connection's, else the generated one; key-table name defaults to `<tunnel>-md5`)
 
 `deletion_policy` is fanned to every resource when set.
 

@@ -219,51 +219,6 @@ message GcpHaVpnConnectionBgpCustomLearnedIpRange {
   string range = 1 [(buf.validate.field).required = true];
 }
 
-// GcpHaVpnConnectionBgpBfd enables Bidirectional Forwarding Detection on
-// the session: sub-second detection of a dead tunnel, far faster than BGP
-// keepalives (which take three keepalive intervals, 60 s by default).
-// Both sides must support BFD.
-message GcpHaVpnConnectionBgpBfd {
-  // Who starts the BFD session:
-  //   "ACTIVE"   -- Cloud Router initiates (the usual choice)
-  //   "PASSIVE"  -- Cloud Router waits for the peer to initiate
-  //   "DISABLED" -- BFD off for this session
-  string session_initialization_mode = 1 [
-    (buf.validate.field).required = true,
-    (buf.validate.field).cel = {
-      id: "valid_bfd_mode"
-      message: "session_initialization_mode must be ACTIVE, PASSIVE, or DISABLED"
-      expression: "this in ['ACTIVE', 'PASSIVE', 'DISABLED']"
-    }
-  ];
-
-  // Minimum interval in milliseconds between BFD packets RECEIVED from the
-  // peer; the negotiated value is the greater of this and the peer's
-  // transmit interval. 1000-30000; 1000 when empty.
-  int32 min_receive_interval = 2 [(buf.validate.field).cel = {
-    id: "bfd_receive_interval_range"
-    message: "min_receive_interval must be between 1000 and 30000 milliseconds"
-    expression: "this == 0 || (this >= 1000 && this <= 30000)"
-  }];
-
-  // Minimum interval in milliseconds between BFD packets TRANSMITTED to
-  // the peer; negotiated the same way. 1000-30000; 1000 when empty.
-  int32 min_transmit_interval = 3 [(buf.validate.field).cel = {
-    id: "bfd_transmit_interval_range"
-    message: "min_transmit_interval must be between 1000 and 30000 milliseconds"
-    expression: "this == 0 || (this >= 1000 && this <= 30000)"
-  }];
-
-  // How many consecutive BFD packets may be missed before the peer is
-  // declared down. 5-16; 5 when empty. Detection time is roughly the
-  // negotiated interval times this multiplier.
-  int32 multiplier = 4 [(buf.validate.field).cel = {
-    id: "bfd_multiplier_range"
-    message: "multiplier must be between 5 and 16"
-    expression: "this == 0 || (this >= 5 && this <= 16)"
-  }];
-}
-
 // GcpHaVpnConnectionBgpMd5AuthenticationKey turns on MD5 authentication of
 // the BGP session: declaring the block (even empty) enables MD5 on this
 // session; omitting it leaves the session unauthenticated. The key is
@@ -299,8 +254,13 @@ message GcpHaVpnConnectionBgpMd5AuthenticationKey {
 // to keep aligned. Without a session a tunnel carries no routes.
 //
 // Everything about the session that is not BGP policy (name, interface
-// range, IP version) is immutable; the peer ASN, advertisement, BFD, MD5,
+// range, IP version) is immutable; the peer ASN, advertisement, MD5,
 // enable flags, and policies change in place.
+//
+// There is no BFD here: Google refuses Bidirectional Forwarding Detection
+// on a BGP peer whose interface is a VPN tunnel (BFD runs on Cloud
+// Interconnect attachments). A session detects a dead tunnel through BGP
+// keepalives -- three keepalive intervals, 60 s by default.
 message GcpHaVpnConnectionBgpSession {
   option (buf.validate.message).cel = {
     id: "advertised_groups_require_custom_mode"
@@ -468,10 +428,6 @@ message GcpHaVpnConnectionBgpSession {
     lte: 65335
   }];
 
-  // BFD for fast failure detection on this session. Leave unset to rely
-  // on BGP keepalives alone.
-  GcpHaVpnConnectionBgpBfd bfd = 19;
-
   // MD5 authentication of the BGP session. Declare the block (an empty
   // block is enough) to enable MD5; the key is the block's own key, else
   // the connection's md5_authentication_key, else the one the modules
@@ -479,19 +435,19 @@ message GcpHaVpnConnectionBgpSession {
   // IPsec already protects the control traffic; MD5 defends against a
   // misconfigured peer, not an attacker). Both ends of a session must
   // agree: MD5 on one side only keeps the session down.
-  GcpHaVpnConnectionBgpMd5AuthenticationKey md5_authentication_key = 20;
+  GcpHaVpnConnectionBgpMd5AuthenticationKey md5_authentication_key = 19;
 
   // Names of route policies (ROUTE_POLICY_TYPE_IMPORT) on the router,
   // applied to routes learned from this peer in order. Route policies are
   // created outside this kind (`gcloud compute routers update-route-policy`
   // or the provider's router route-policy resource) and referenced here by
   // name. Mutable.
-  repeated string import_policies = 21;
+  repeated string import_policies = 20;
 
   // Names of route policies (ROUTE_POLICY_TYPE_EXPORT) on the router,
   // applied to routes advertised to this peer in order. Same provenance as
   // import_policies. Mutable.
-  repeated string export_policies = 22;
+  repeated string export_policies = 21;
 }
 
 // GcpHaVpnConnectionTunnel is one IPsec tunnel from one interface of the
@@ -538,8 +494,8 @@ message GcpHaVpnConnectionTunnel {
   string shared_secret = 4 [(dev.planton.shared.options.sensitive) = true];
 
   // IKE protocol version: 1 or 2. 2 when empty (Google's default and the
-  // only version that supports IPv6, BFD-friendly rekeying, and modern
-  // ciphers). Use 1 only for a legacy device. Always sent. Immutable.
+  // only version that supports IPv6 and modern ciphers). Use 1 only for a
+  // legacy device. Always sent. Immutable.
   optional int32 ike_version = 5 [
     (buf.validate.field).int32 = {
       gte: 1
@@ -594,7 +550,8 @@ message GcpHaVpnConnectionTunnel {
 // interface, to two addresses of the peer (redundancy_type
 // TWO_IPS_REDUNDANCY, or a Google peer, which always has two). Each tunnel
 // gets its own link-local /30 and BGP session; both advertise the same
-// routes so traffic fails over in seconds (or sub-second with BFD).
+// routes so traffic fails over once BGP declares the dead session down
+// (three keepalive intervals, 60 s by default).
 //
 // Composition: this kind creates the tunnels, one Cloud Router interface
 // and one BGP peer per tunnel on the gateway's router, and -- when the

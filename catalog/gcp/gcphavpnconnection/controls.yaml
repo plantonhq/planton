@@ -77,7 +77,7 @@ spec:
       evidence:
         type: spec_default
         reference: Google's 99.99% availability SLA requires a tunnel from EACH of the gateway's two interfaces to redundant peer addresses -- two tunnels with vpn_gateway_interface 0 and 1 (the 01-two-tunnel-to-onprem and 03-gcp-to-gcp presets, and the E2E manifest); a single tunnel is a single point of failure on Google's side and earns at most 99.9%.
-      notes: BFD (bgp_session.bfd) shortens failover from three BGP keepalives (60 s by default) to about a second.
+      notes: Failover waits for BGP to declare the dead session down (three keepalives, 60 s by default); Google refuses BFD on a BGP session over a VPN tunnel, so there is no faster detector on this kind.
     - control_id: deletion-protection
       status: configurable
       field_path: deletion_policy

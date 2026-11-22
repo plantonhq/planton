@@ -158,6 +158,12 @@ resources:
           subnetwork-backed interface (Network Connectivity Center); a VPN
           session's peer is the device at the other end of the tunnel, not a
           Compute Engine instance
+      - arg: bfd
+        reason: >-
+          Google refuses BFD on a BGP peer whose interface is a VPN tunnel
+          ("BFD cannot be enabled on VPN Tunnel interfaces"); BFD applies to
+          Cloud Interconnect attachments, so every session of this kind
+          detects failure through BGP keepalives
       - arg: zero_advertised_route_priority
         reason: >-
           the provider's escape hatch for sending an explicit 0 where a Go

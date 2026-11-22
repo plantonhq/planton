@@ -2,7 +2,7 @@
 
 Google's recommended 99.99% topology to an on-premises site with two
 public addresses: one tunnel from each gateway interface to each address,
-two BGP sessions with BFD, protected against destroy.
+two BGP sessions, protected against destroy.
 
 ## What it configures
 
@@ -13,7 +13,7 @@ two BGP sessions with BFD, protected against destroy.
   addresses as interfaces 0 and 1.
 - `tunnels` — `hq-tunnel-0` from gateway interface 0 to device interface 0,
   `hq-tunnel-1` from 1 to 1; each with its own link-local /30 and a BGP
-  session to the device's ASN; BFD `ACTIVE` for ~1 s failure detection.
+  session to the device's ASN.
 - `sharedSecret` — one pre-shared key for both tunnels, at the connection
   level, wired from a secrets manager and never written into the manifest.
   Leave it out and the module generates one; read it from the

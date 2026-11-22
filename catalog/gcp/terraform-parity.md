@@ -31,7 +31,7 @@ how far that has progressed.
 | Supporting schema (pinned by this catalog's modules) | `google-beta@8.7.0` |
 | Kinds in the catalog | 186 |
 | Distinct provider resources consumed | 311 |
-| Spec fields authored across all kinds | 6399 |
+| Spec fields authored across all kinds | 6395 |
 | Module pins on `google` | `~> 8.3` × 186 |
 | Module pins on `google-beta` | `~> 8.3` × 7 |
 | Module pins on `random` | `~> 3.6` × 1 |
@@ -171,7 +171,7 @@ gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind 
 | GcpGkeWorkloadIdentityBinding | 6 | 3 | 0 | 3 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpGlobalAddress | 11 | 9 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpGlobalForwardingRule | 51 | 43 | 8 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpHaVpnConnection | 84 | 44 | 25 | 15 | 0 | ✅ | — |
+| GcpHaVpnConnection | 84 | 40 | 25 | 19 | 0 | ✅ | — |
 | GcpHaVpnGateway | 30 | 11 | 16 | 3 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpHealthCheck | 100 | 14 | 86 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpHierarchicalFirewallPolicy | 37 | 29 | 6 | 2 | 0 | ✅ | — |

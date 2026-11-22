@@ -1,6 +1,6 @@
 # GCP HA VPN Connection
 
-Connects a Google Cloud HA VPN gateway (GCP HA VPN Gateway) to ONE peer — an on-premises site, another cloud, or another Google Cloud VPC — with one to four IPsec tunnels, each carrying a BGP session on the gateway's Cloud Router. Declare one connection per site and add or remove sites without touching the gateway. Two tunnels, one from each gateway interface to two addresses of the peer, is Google's recommended 99.99% topology; the tunnels advertise the same routes so traffic fails over in seconds, or sub-second with BFD.
+Connects a Google Cloud HA VPN gateway (GCP HA VPN Gateway) to ONE peer — an on-premises site, another cloud, or another Google Cloud VPC — with one to four IPsec tunnels, each carrying a BGP session on the gateway's Cloud Router. Declare one connection per site and add or remove sites without touching the gateway. Two tunnels, one from each gateway interface to two addresses of the peer, is Google's recommended 99.99% topology; the tunnels advertise the same routes so traffic fails over once BGP declares the dead session down (three keepalives, 60 s by default).
 
 ## What Gets Created
 
@@ -9,7 +9,7 @@ When you deploy this Infra Component, the IaC module provisions:
 - **External VPN gateway** (external peer only) — the `compute_external_vpn_gateway` holding the device's public addresses
 - **VPN tunnels** — one `compute_vpn_tunnel` per `tunnels[]` entry, from a gateway interface to a peer interface
 - **Router interfaces** — one `compute_router_interface` per tunnel: the Google end of the session's link-local /30
-- **BGP peers** — one `compute_router_peer` per tunnel, with route advertisement, BFD, and MD5 authentication when declared
+- **BGP peers** — one `compute_router_peer` per tunnel, with route advertisement and MD5 authentication when declared
 - **Generated keys** — when the spec declares none, one IKE pre-shared key for every tunnel and one BGP MD5 key for every MD5 session, reported as sensitive outputs
 
 ## Before You Deploy
@@ -128,7 +128,7 @@ These are the most important decisions when configuring a connection. Explore th
 
 **BGP session** — each tunnel's `interfaceIpRange` is a link-local /30 (`169.254.x.y/30`), unique on the router; Google takes the address as its end and the peer takes the other. `peerAsn` is the device's ASN. Set different `advertisedRoutePriority` values on the tunnels to make the peer prefer one (active/passive) instead of splitting traffic (the default).
 
-**BFD** — sub-second failure detection; leave unset to rely on BGP keepalives (up to 60 s by default).
+**No BFD** — Google refuses BFD on a BGP session over a VPN tunnel (BFD runs on Cloud Interconnect attachments), so failure detection is BGP keepalives (up to 60 s by default).
 
 **Deletion policy** — `DELETE` (default) removes everything and disconnects the site; `PREVENT` fails the destroy, the guard for a production link; `ABANDON` leaves the tunnels live.
 

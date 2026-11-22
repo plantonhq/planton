@@ -1,4 +1,4 @@
-# The second act of bfd-md5-custom-advertisement.yaml: the same connection
+# The second act of md5-custom-advertisement.yaml: the same connection
 # with the first BGP session advertising its routes at priority 200, a router
 # peer patch in place (a tunnel's own fields recreate it). Not a scenario of
 # its own (the second-act annotation keeps discovery from running it as a
@@ -16,7 +16,7 @@ metadata:
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
-    planton.dev/e2e-second-act: bfd-md5-custom-advertisement.yaml
+    planton.dev/e2e-second-act: md5-custom-advertisement.yaml
     planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
     planton.dev/e2e-prerequisites: "catalog/gcp/gcphavpnconnection/e2e/prerequisites/gcpvpcnetwork-spoke.yaml,catalog/gcp/gcphavpnconnection/e2e/prerequisites/gcphavpngateway-spoke.yaml,catalog/gcp/gcphavpnconnection/e2e/prerequisites/gcphavpnconnection-spoke-to-hub.yaml"
   tags:
@@ -76,11 +76,6 @@ spec:
           - range: 10.251.0.0/16
             description: Planton E2E per-session range
         enable: true
-        bfd:
-          sessionInitializationMode: ACTIVE
-          minReceiveInterval: 1000
-          minTransmitInterval: 1000
-          multiplier: 5
         md5AuthenticationKey:
           name: planton-oss-e2e-gcpvpncn-knobs-s0-md5-${E2E_RUN_ID}
     - name: planton-oss-e2e-gcpvpncn-knobs-1-${E2E_RUN_ID}
