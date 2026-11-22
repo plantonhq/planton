@@ -829,28 +829,53 @@ this kind"). For each lane it
   the rule the platform's runner policy reads from one shared case table) --
   tighter than a customer's connection, which is granted the conditional
   groups too, so a passing lane also proves where each condition is drawn;
-- refuses, before anything is created, a group that reaches above the
-  project (the test project holds no grant above itself) and a permission
-  Google keeps out of custom roles (the group must name its predefined role);
+- grants each group where it reaches, as a connection's setup does, since a
+  role on a project cannot hold a permission Google authorizes above it.
+  `target` groups go on the project the kind targets; `organization` groups
+  on the test organization (`PLANTON_E2E_GCP_ORGANIZATION_ID`); and
+  `billing_account` groups on the test billing account
+  (`PLANTON_E2E_GCP_BILLING_ACCOUNT_ID`). A scenario whose grant reaches
+  either lists its variable in `planton.dev/e2e-required-env`, so it skips
+  without one; a lane that gets this far without it fails naming the
+  variable;
+- refuses, before anything is created, a permission Google keeps out of
+  custom roles (the group must name its predefined role) and a billing
+  account group that names no predefined role (a billing account takes
+  custom roles only from the organization that owns it, which need not be
+  the harness's);
 - writes the kind's standing custom role, `plantonE2eDeclared<Kind>` (plus
   `C` and a short hash when the scenario turns conditional groups on), to
-  exactly those permissions -- rewritten before every lane, never deleted, so
-  a manifest fix takes effect on the next lane and Google's per-project role
-  cap and deleted-id hold never bite;
+  exactly the permissions of the groups that name no predefined role -- on
+  the project for `target`, on the organization for `organization` (Google
+  authorizes those permissions only on an organization or a folder, and a
+  folder cannot hold a custom role). Each is rewritten before every lane and
+  never deleted, so a manifest fix takes effect on the next lane and
+  Google's role caps and deleted-id hold never bite;
+- turns on, in the harness's project, the manifest's
+  `caller_project_services` (Service Usage `batchEnable`, only what is off).
+  Google bills a call on a resource in no project -- an organization policy,
+  a budget -- to the caller's own project, and the lane account lives in the
+  harness's; a customer's connection setup turns the same list on in the
+  connection's project;
 - creates a lane account `pe2e-<hash>` (the full lane in its display name)
-  in the harness's project, binds the role and any named predefined roles on
-  the project the kind targets -- the harness's own, or the one the scenario
-  names with `planton.dev/e2e-identity-project` (a token such as
-  `${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID}`; it must be a test project),
-  where the custom role is written too, because Google binds a project's
-  custom role only inside that project -- mints a key,
-  and waits until Google answers every granted permission for the account
-  itself (`testIamPermissions`, up to five minutes) and has accepted the key
-  for a full minute without one refusal, each check with a fresh token. A
-  key minted seconds ago is refused at the token endpoint with
-  `invalid_grant` ("Invalid JWT Signature"), and acceptance is not
-  monotonic: measured, a key that had just answered was refused by the
-  engine's next token fetch, so one success is not enough;
+  in the harness's project, and binds on each scope its custom role and the
+  groups' named predefined roles. The project is the harness's own, or the
+  one the scenario names with `planton.dev/e2e-identity-project` (a token
+  such as `${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID}`; it must be a test
+  project), where the custom role is written too, because Google binds a
+  project's custom role only inside that project. It mints a key, and waits
+  until Google answers, for the account itself, every granted permission on
+  every scope (each scope's own `testIamPermissions`: the project's, the
+  organization's, the billing account's), the custom roles' permissions and
+  those the manifest lists for each predefined role alike. The wait is up to
+  five minutes, ten when the lane is granted above the project (Google
+  gives a grant "typically 2 minutes, potentially 7 minutes or longer"), and
+  ends only once the key has been accepted for a full minute without one
+  refusal, each check with a fresh token. A key minted seconds ago is
+  refused at the token endpoint with `invalid_grant` ("Invalid JWT
+  Signature"), and acceptance is not monotonic: measured, a key that had
+  just answered was refused by the engine's next token fetch, so one
+  success is not enough;
 - hands the key to both engines as the lane's `GcpProviderConfig`, and to
   the Pulumi subprocesses that deploy, re-plan and destroy the kind as
   `GOOGLE_CREDENTIALS` after everything inherited, so a default provider in a
@@ -858,11 +883,18 @@ this kind"). For each lane it
   receives it that way). A `GOOGLE_OAUTH_ACCESS_TOKEN` in the test process
   would outrank the key in both engines, so the lane refuses to start with
   one set;
-- removes the binding and deletes the account after the lane, whatever the
-  verdict. `TestMain` removes what a killed process left (every `pe2e-`
-  account, and any binding naming one or a deleted principal in either test
-  project) before the first lane, since one test process per account means
-  anything already there is a leftover.
+- removes the bindings on every scope and deletes the account after the
+  lane, whatever the verdict. `TestMain` removes what a killed process left
+  before the first lane, since one test process per account means anything
+  already there is a leftover: every `pe2e-` account, any binding naming one
+  or a deleted principal in either test project and in the test
+  organization (the harness owns those policies), and any binding naming a
+  lane account, deleted or not, on the test billing account (which pays for
+  others too, so anyone else's deleted principal stays).
+
+The harness's own account therefore needs, beyond the test projects: on the
+test organization, to set its IAM policy, write custom roles and read its
+logs; on the test billing account, to set its IAM policy and read its logs.
 
 **A declared lane's update is judged: in place, or replaced.** The catalog's
 `updated` means the kind's objects were changed, not deleted and created
@@ -870,9 +902,13 @@ again (a replacement proves create and delete twice and never the update
 permissions). So every GCP second act carries
 `planton.dev/e2e-expect-upgrade: in-place | replaced`, and a declared lane
 whose second act omits it is refused before anything is minted. At
-VERIFY-UPGRADED the harness reads the Admin Activity audit log of the
-identity's project for the lane's account alone (fixtures deploy as the
-harness, so every entry is the kind under test): the resource names the
+VERIFY-UPGRADED the harness reads, for the lane's account alone, the Admin
+Activity audit log of every scope the identity was granted on (the project,
+the organization, the billing account) and of every folder and project the
+kind's outputs name (a `folder_id`, a `project_id`, a `folders/N` value):
+Google writes a change where the changed object lives, a folder's rename in
+the folder's own log and a new project's in that project's. Fixtures deploy
+as the harness, so every entry is the kind under test. The resource names the
 account created before VERIFY-RES are the kind's objects; during the upgrade,
 any of those deleted or created again means replaced, and any other write
 (a patch, a set, `addRule`, `attachNetworkEndpoints`, `updatePeering`) means
@@ -3109,15 +3145,19 @@ inside such a scenario inherit its declaration.
 |---|---|---|
 | `PLANTON_E2E_GCP_PROJECT_NUMBER` | the test project's number (the webhook trigger grants Cloud Build's service agent by number) | `GcpCloudBuildTrigger` |
 | `PLANTON_E2E_GCP_SECOND_PROJECT_ID` | a second project the identity administers (fleets, shared VPC service projects, a Binary Authorization policy that must never be the harness project's own) | `GcpGkeFleet`, `GcpGkeFleetFeature`, `GcpGkeFleetMembership`, `GcpGkeFleetScope`, `GcpSharedVpcServiceProject`, `GcpBinaryAuthorizationPolicy` |
-| `PLANTON_E2E_GCP_ORGANIZATION_ID` | an organization where the identity holds the organization-level roles the kind names | `GcpFolder`, `GcpOrgPolicyCustomConstraint`, `GcpHierarchicalFirewallPolicy`, `GcpProject` |
+| `PLANTON_E2E_GCP_ORGANIZATION_ID` | a test organization holding the harness project (and the second project), where the harness account can set the IAM policy, write custom roles and read the Admin Activity log; a declared lane's identity is granted there the groups that reach the organization (their predefined roles, and an organization custom role for the rest), and the sweep reads it for lane leftovers | `GcpFolder`, `GcpOrgPolicy`, `GcpOrgPolicyCustomConstraint`, `GcpHierarchicalFirewallPolicy`, `GcpIamDenyPolicy`, `GcpProject`, `GcpSharedVpcHost`, `GcpSharedVpcServiceProject` |
+| `PLANTON_E2E_GCP_SHARED_VPC_DETACH_BY_HAND` | an operator's promise to detach the second project from the harness project by hand after the lane: the abandon arm leaves the attachment by design, and Google will not disable a host that has one | `GcpSharedVpcServiceProject` (the abandon arm) |
 | `PLANTON_E2E_GCP_SCC_PROJECT_ID` | a project with Security Command Center activated | `GcpSccNotificationConfig`, `GcpSccMuteConfig`, `GcpSccBigQueryExport` |
-| `PLANTON_E2E_GCP_BILLING_ACCOUNT_ID` | a billing account where the identity holds `roles/billing.costsManager` | `GcpBillingBudget` |
+| `PLANTON_E2E_GCP_BILLING_ACCOUNT_ID` | a billing account where the harness account can set the IAM policy and read the Admin Activity log; a declared lane's identity is bound there to the predefined role of each group that reaches the billing account (`roles/billing.costsManager` for budgets), and the sweep reads it for lane budgets and bindings | `GcpBillingBudget` |
 | `PLANTON_E2E_GCP_CLOUD_IDENTITY_CUSTOMER_ID` | a Cloud Identity customer where the identity is a Groups Admin | `GcpCloudIdentityGroup` |
 | `PLANTON_E2E_VERIFIED_DOMAIN` | a domain verified for the identity (group email addresses, Cloud Run domain mappings) | `GcpCloudIdentityGroup`, `GcpCloudRunDomainMapping` |
 | `PLANTON_E2E_GCP_COLAB_RUNTIME_USER` | the email a Colab Enterprise runtime is assigned to | `GcpColabRuntime` |
 | `PLANTON_E2E_GCP_GITHUB_APP_INSTALLATION_ID` | the Cloud Build GitHub App installed on a test organization or account | `GcpCloudBuildConnection`, `GcpCloudBuildRepository` |
 | `PLANTON_E2E_GCP_GITHUB_TOKEN_SECRET_VERSION` | a Secret Manager secret version holding that account's OAuth token, readable by the Cloud Build service agent | `GcpCloudBuildConnection`, `GcpCloudBuildRepository` |
 | `PLANTON_E2E_GCP_GITHUB_REPO_URI` | a repository the installation can read | `GcpCloudBuildRepository` |
+| `PLANTON_E2E_RUNNER_ENDPOINT` | a Planton control plane a runner can join, as `host:port` | `GcpPlantonRunner` |
+| `PLANTON_E2E_RUNNER_TOKEN` | a throwaway runner token that control plane issued | `GcpPlantonRunner` |
+| `PLANTON_E2E_RUNNER_VERSION` | the runner version that control plane serves, so the lane runs its own runner | `GcpPlantonRunner` |
 | `PLANTON_E2E_GCP_SERVICE_NETWORKING_VPC` | a VPC with an existing private services access peering (the routes-config form edits a peering Google created) | `GcpVpcPeering` |
 | `PLANTON_E2E_GCP_VPN_PEER_IP_0`, `PLANTON_E2E_GCP_VPN_PEER_IP_1` | the two public interface addresses of an external VPN device | `GcpHaVpnConnection` |
 
@@ -3483,6 +3523,21 @@ there. Asset Inventory names
 a service account key by its account's unique id, not its email. A type it
 does not index relies on the lane's own VERIFY-CLEAN phase. Delete a leftover through its kind's module, or with
 `gcloud` for the special classes below.
+
+The test organization and the test billing account are swept too when
+their variables are set, but neither is the lanes' alone, so there a
+leftover is what carries a lane's name (`planton-e2e`, `planton-oss-e2e`,
+`plantonE2e`) or a lane's account. In the organization: folders and projects
+(Resource Manager lists only ACTIVE ones, so anything waiting out its 30 days
+in DELETE_REQUESTED counts as gone), custom constraints and the
+organization policies that use them, and hierarchical firewall policies, on
+the organization and every folder under it; deny policies on the
+organization; and IAM bindings naming a lane account or a deleted
+principal. In the test projects, which are the lanes' own, every
+organization policy and deny policy set on the project, and a Shared VPC
+host left enabled. On the billing account: budgets by display name, and
+bindings naming a lane account, deleted or not. The organization's standing
+`plantonE2eDeclared*` roles stand, as the projects' do.
 
 **Intra-cluster firewall is part of a multi-node cluster's minimum
 composition on a custom VPC:** custom-mode VPCs have no default firewall

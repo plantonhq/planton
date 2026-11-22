@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"sort"
 	"strings"
 	"time"
@@ -23,10 +24,15 @@ import (
 // (provider.ExpectUpgradeAnnotation) and the harness checks it against
 // Google's own record.
 //
-// The record is the Admin Activity audit log of the project the lane's
-// identity is granted in, read for the lane's account alone. Fixtures deploy
-// as the harness and both engines deploy as the lane's key, so every entry
-// there is the kind under test. The rule needs no per-kind knowledge:
+// The record is the Admin Activity audit log of every scope the lane's
+// identity is granted on (the project, the organization, the billing
+// account) and of every folder or project the kind's outputs name, read for
+// the lane's account alone. Google writes a change where the changed object
+// lives: an organization's custom constraint in the organization's log, a
+// budget in the billing account's, a folder's rename in the folder's own, a
+// new project's label in that project's. Fixtures deploy as the harness and
+// both engines deploy as the lane's key, so every entry there is the kind
+// under test. The rule needs no per-kind knowledge:
 //
 //   - the kind's objects are the resource names the lane's account CREATED
 //     during the first act (from the identity to VERIFY-RES);
@@ -66,8 +72,11 @@ const (
 // when its identity is provisioned and keyed by the first act's manifest
 // (the path the runner later passes as provider.FirstActManifestPathKey).
 type laneAudit struct {
-	tc        *provider.KindTestContext
-	project   string
+	tc      *provider.KindTestContext
+	project string
+	// scopes are the resources the identity is bound on (projects/p,
+	// organizations/o, billingAccounts/b), each with an audit log of its own.
+	scopes    []string
 	principal string
 	start     time.Time
 	// firstActDone is when the first act's last verification ran (VERIFY-RES,
@@ -93,9 +102,10 @@ func requireUpgradeExpectation(secondAct string) error {
 	}
 }
 
-// noteVerified is called from VerifyDeployed: on a first act it marks the end
-// of the first act's window; on a second act it judges the upgrade.
-func (h *Harness) noteVerified(ctx context.Context) error {
+// noteVerified is called from VerifyDeployed with the act's outputs: on a
+// first act it marks the end of the first act's window; on a second act it
+// judges the upgrade.
+func (h *Harness) noteVerified(ctx context.Context, outputs map[string]string) error {
 	firstAct, _ := ctx.Value(provider.FirstActManifestPathKey{}).(string)
 	if firstAct == "" {
 		manifest, _ := ctx.Value(provider.ManifestPathKey{}).(string)
@@ -123,7 +133,8 @@ func (h *Harness) noteVerified(ctx context.Context) error {
 		lanef(audit.tc, "  [upgrade] not judged from the audit log (%s): the engine planned an update in place and the verifier read the upgraded object", unaudited)
 		return nil
 	}
-	verdict, evidence, err := h.judgeUpgrade(ctx, *audit, time.Now())
+	resources := auditResources(audit.scopes, outputs)
+	verdict, evidence, err := h.judgeUpgrade(ctx, *audit, resources, time.Now())
 	if err != nil {
 		return err
 	}
@@ -131,7 +142,7 @@ func (h *Harness) noteVerified(ctx context.Context) error {
 		return errors.Errorf("the second act declares %s %q, but Google's audit log shows the upgrade %s: %s",
 			provider.ExpectUpgradeAnnotation, expectation, verdict, evidence)
 	}
-	lanef(audit.tc, "  [upgrade] %s, as declared -- Google's audit log in %s: %s", verdict, audit.project, evidence)
+	lanef(audit.tc, "  [upgrade] %s, as declared -- Google's audit log in %s: %s", verdict, strings.Join(resources, ", "), evidence)
 	return nil
 }
 
@@ -145,11 +156,11 @@ type auditEntry struct {
 // judgeUpgrade reads the lane's entries and returns the verdict
 // (provider.UpgradeInPlace or provider.UpgradeReplaced) and the entries
 // behind it.
-func (h *Harness) judgeUpgrade(ctx context.Context, audit laneAudit, upgradeDone time.Time) (string, string, error) {
+func (h *Harness) judgeUpgrade(ctx context.Context, audit laneAudit, resources []string, upgradeDone time.Time) (string, string, error) {
 	deadline := time.Now().Add(upgradeJudgmentBudget)
 	var settleUntil time.Time
 	for {
-		entries, err := h.laneAuditEntries(ctx, audit)
+		entries, err := h.laneAuditEntries(ctx, audit, resources)
 		if err != nil {
 			return "", "", err
 		}
@@ -163,8 +174,8 @@ func (h *Harness) judgeUpgrade(ctx context.Context, audit laneAudit, upgradeDone
 			return verdict, evidence, nil
 		}
 		if settleUntil.IsZero() && now.After(deadline) {
-			return "", "", errors.Errorf("update not judged: Google's audit log in %s holds no change by %s during the upgrade after %s -- the second act's change may never reach Google (a field the module does not send)",
-				audit.project, audit.principal, upgradeJudgmentBudget)
+			return "", "", errors.Errorf("update not judged: Google's audit logs in %s hold no change by %s during the upgrade after %s -- the second act's change may never reach Google (a field the module does not send)",
+				strings.Join(resources, ", "), audit.principal, upgradeJudgmentBudget)
 		}
 		select {
 		case <-ctx.Done():
@@ -174,18 +185,57 @@ func (h *Harness) judgeUpgrade(ctx context.Context, audit laneAudit, upgradeDone
 	}
 }
 
+// auditResources is every resource whose audit log the judgment reads: each
+// scope the identity was granted on, then each folder and project the kind's
+// outputs name (a folder_id, a project_id, a folders/N value) that is not
+// one of them, since Google writes a change to that resource's own log.
+func auditResources(scopes []string, outputs map[string]string) []string {
+	resources := append([]string{}, scopes...)
+	keys := make([]string, 0, len(outputs))
+	for key := range outputs {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	for _, key := range keys {
+		value := outputs[key]
+		var resource string
+		switch {
+		case folderName.MatchString(value):
+			resource = value
+		case (key == "folder_id" || strings.HasSuffix(key, "_folder_id")) && numericID.MatchString(value):
+			resource = "folders/" + value
+		case (key == "project_id" || strings.HasSuffix(key, "_project_id")) && projectID.MatchString(value):
+			resource = "projects/" + value
+		default:
+			continue
+		}
+		if !containsString(resources, resource) {
+			resources = append(resources, resource)
+		}
+	}
+	return resources
+}
+
+var (
+	folderName = regexp.MustCompile(`^folders/[0-9]+$`)
+	numericID  = regexp.MustCompile(`^[0-9]+$`)
+	projectID  = regexp.MustCompile(`^[a-z][a-z0-9-]{4,28}[a-z0-9]$`)
+)
+
 // laneAuditEntries lists the lane account's Admin Activity entries since the
-// lane began, oldest first.
-func (h *Harness) laneAuditEntries(ctx context.Context, audit laneAudit) ([]auditEntry, error) {
+// lane began in every resource's log, oldest first.
+func (h *Harness) laneAuditEntries(ctx context.Context, audit laneAudit, resources []string) ([]auditEntry, error) {
 	service, err := logging.NewService(ctx, option.WithQuotaProject(audit.project))
 	if err != nil {
 		return nil, errors.Wrap(err, "building the Logging client")
 	}
-	filter := fmt.Sprintf(`logName="projects/%s/logs/cloudaudit.googleapis.com%%2Factivity" AND protoPayload.authenticationInfo.principalEmail="%s" AND timestamp>="%s"`,
-		audit.project, audit.principal, audit.start.UTC().Format(time.RFC3339))
+	// log_id names the Admin Activity log in every resource's own path
+	// (projects/p/logs/..., organizations/o/logs/..., billingAccounts/b/logs/...).
+	filter := fmt.Sprintf(`log_id("cloudaudit.googleapis.com/activity") AND protoPayload.authenticationInfo.principalEmail="%s" AND timestamp>="%s"`,
+		audit.principal, audit.start.UTC().Format(time.RFC3339))
 	var entries []auditEntry
 	err = service.Entries.List(&logging.ListLogEntriesRequest{
-		ResourceNames: []string{"projects/" + audit.project},
+		ResourceNames: resources,
 		Filter:        filter,
 		OrderBy:       "timestamp asc",
 		PageSize:      1000,
@@ -207,7 +257,7 @@ func (h *Harness) laneAuditEntries(ctx context.Context, audit laneAudit) ([]audi
 		return nil
 	})
 	if err != nil {
-		return nil, errors.Wrapf(err, "reading the Admin Activity audit log of %s", audit.project)
+		return nil, errors.Wrapf(err, "reading the Admin Activity audit logs of %s", strings.Join(resources, ", "))
 	}
 	return entries, nil
 }

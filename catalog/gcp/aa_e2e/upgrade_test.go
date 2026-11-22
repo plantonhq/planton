@@ -76,3 +76,23 @@ func TestUpgradeExpectationIsRequired(t *testing.T) {
 		t.Fatal("an unknown expectation must be refused")
 	}
 }
+
+// The judgment reads every scope the identity was granted on, then each
+// folder and project the kind's outputs name, once each.
+func TestAuditResourcesFollowTheOutputs(t *testing.T) {
+	scopes := []string{"projects/harness", "organizations/1", "billingAccounts/0A-0B-0C"}
+	outputs := map[string]string{
+		"folder_id":           "345",
+		"parent":              "folders/678",
+		"project_id":          "harness",
+		"service_project_id":  "planton-e2e-second",
+		"name":                "folders/345",
+		"budget_id":           "abc",
+		"service_account_key": "projects/harness/serviceAccounts/x",
+	}
+	got := strings.Join(auditResources(scopes, outputs), ",")
+	want := "projects/harness,organizations/1,billingAccounts/0A-0B-0C,folders/345,folders/678,projects/planton-e2e-second"
+	if got != want {
+		t.Fatalf("audit resources\n got %s\nwant %s", got, want)
+	}
+}

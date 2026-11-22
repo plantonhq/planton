@@ -40,6 +40,7 @@ import (
 	bigtableadmin "google.golang.org/api/bigtableadmin/v2"
 	billingbudgets "google.golang.org/api/billingbudgets/v1"
 	certificatemanager "google.golang.org/api/certificatemanager/v1"
+	cloudbilling "google.golang.org/api/cloudbilling/v1"
 	cloudbuild "google.golang.org/api/cloudbuild/v1"
 	cloudbuildv2 "google.golang.org/api/cloudbuild/v2"
 	clouddeploy "google.golang.org/api/clouddeploy/v1"
@@ -72,6 +73,7 @@ import (
 	"google.golang.org/api/redis/v1"
 	run "google.golang.org/api/run/v2"
 	secretmanager "google.golang.org/api/secretmanager/v1"
+	serviceusage "google.golang.org/api/serviceusage/v1"
 	"google.golang.org/api/spanner/v1"
 	"google.golang.org/api/sqladmin/v1"
 	"google.golang.org/api/storage/v1"
@@ -84,6 +86,11 @@ import (
 // Harness manages the GCP E2E test lifecycle.
 type Harness struct {
 	services *verify.Services
+	// billing and serviceUsage serve the declared identity alone: a billing
+	// account's IAM policy, and the APIs its calls need on in the harness's
+	// project (identity.go). No verifier reads through them.
+	billing      *cloudbilling.APIService
+	serviceUsage *serviceusage.Service
 
 	// mu guards deployed, written by VerifyDeployed and read by VerifyDestroyed;
 	// laneGrants, the permissions each running lane's identity holds (written
@@ -328,9 +335,7 @@ func (h *Harness) Setup(ctx context.Context) error {
 		return errors.Wrap(err, "failed to create orgpolicy client")
 	}
 	// Cloud Billing budgets live on the billing account; Cloud Identity
-	// groups live under a customer -- neither is project-scoped, and the
-	// kinds that use them stay deferred until the harness identity holds
-	// the account- and customer-level roles.
+	// groups live under a customer -- neither is project-scoped.
 	billingBudgetsService, err := billingbudgets.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create billingbudgets client")
@@ -371,6 +376,15 @@ func (h *Harness) Setup(ctx context.Context) error {
 		append([]option.ClientOption{option.WithScopes(cloudresourcemanager.CloudPlatformScope)}, clientOpts...)...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create ADC-authenticated REST client")
+	}
+
+	billingService, err := cloudbilling.NewService(ctx, clientOpts...)
+	if err != nil {
+		return errors.Wrap(err, "failed to create cloudbilling client")
+	}
+	serviceUsageService, err := serviceusage.NewService(ctx, clientOpts...)
+	if err != nil {
+		return errors.Wrap(err, "failed to create serviceusage client")
 	}
 
 	gotProject, err := crmService.Projects.Get(project).Context(ctx).Do()
@@ -428,6 +442,8 @@ func (h *Harness) Setup(ctx context.Context) error {
 		CloudDeploy:          cloudDeployService,
 		RestClient:           restClient,
 	}
+	h.billing = billingService
+	h.serviceUsage = serviceUsageService
 	return nil
 }
 
@@ -461,7 +477,7 @@ func (h *Harness) VerifyDeployed(ctx context.Context, kindDir string, outputs ma
 	}
 	// A declared lane's upgrade is judged here, at VERIFY-UPGRADED; the first
 	// act's VERIFY-RES closes the window its creations are read from.
-	return h.noteVerified(ctx)
+	return h.noteVerified(ctx, strOutputs)
 }
 
 // VerifyDestroyed confirms the previously deployed resource no longer exists.

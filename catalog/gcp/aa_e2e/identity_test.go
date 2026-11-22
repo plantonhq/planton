@@ -13,6 +13,7 @@ import (
 	"github.com/plantonhq/planton/catalog/gcp/aa_e2e/verify"
 	"github.com/plantonhq/planton/e2e/framework/provider"
 	"github.com/plantonhq/planton/e2e/framework/runner"
+	cloudbilling "google.golang.org/api/cloudbilling/v1"
 	"google.golang.org/api/cloudresourcemanager/v1"
 	"google.golang.org/api/googleapi"
 )
@@ -76,7 +77,7 @@ func TestDeclaredGrantLeavesOutConditionalGroupsTheScenarioDoesNotSet(t *testing
 	if got := declaredRoleID(grant.kind, nil); got != "plantonE2eDeclaredGcpDatastreamStream" {
 		t.Fatalf("role id = %q", got)
 	}
-	for _, permission := range grant.permissions {
+	for _, permission := range grant.target.permissions {
 		if strings.HasSuffix(permission, ".start") || strings.HasSuffix(permission, ".pause") {
 			t.Fatalf("the state-change group leaked in: %s", permission)
 		}
@@ -148,14 +149,168 @@ func TestIdentityProjectIsATestProject(t *testing.T) {
 	}
 }
 
-// A group that reaches above the project is refused before anything is
-// minted, naming the group.
-func TestDeclaredGrantRefusesAGroupAboveTheProject(t *testing.T) {
-	root := repoRoot(t)
-	scenario := filepath.Join(root, "catalog", "gcp", "gcporgpolicy", "e2e", "scenarios", "minimal.yaml")
-	_, err := declaredGrant(root, "gcporgpolicy", []string{scenario})
-	if err == nil || !strings.Contains(err.Error(), "reaches organization") {
-		t.Fatalf("err = %v, want a refusal naming the organization reach", err)
+// syntheticKind writes a kind whose permissions manifest is the given
+// groups into a scratch repository root beside the real inventory, so a test
+// of how the harness splits a grant reads no catalog kind's live manifest.
+func syntheticKind(t *testing.T, gcpBody string) (root, scenario string) {
+	t.Helper()
+	real := repoRoot(t)
+	root = t.TempDir()
+	inventory := filepath.Join(root, "pkg", "iac")
+	if err := os.MkdirAll(inventory, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Symlink(filepath.Join(real, "pkg", "iac", "actioninventory"), filepath.Join(inventory, "actioninventory")); err != nil {
+		t.Fatal(err)
+	}
+	kindDir := filepath.Join(root, "catalog", "gcp", "gcpsynthetic", "iac")
+	if err := os.MkdirAll(kindDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	manifest := "apiVersion: iac.planton.dev/v1\nkind: CatalogKindPermissions\nmetadata:\n  name: gcpsynthetic\nspec:\n  gcp:\n" + gcpBody
+	if err := os.WriteFile(filepath.Join(kindDir, "permissions.yaml"), []byte(manifest), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	scenario = filepath.Join(root, "scenario.yaml")
+	if err := os.WriteFile(scenario, []byte("apiVersion: gcp.planton.dev/v1alpha1\nkind: GcpSynthetic\nmetadata:\n  name: x\nspec:\n  region: us-central1\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	return root, scenario
+}
+
+// Each group is granted where it reaches: the project's custom role and
+// roles, the organization's custom role and roles, the billing account's
+// role. A predefined role's listed permissions are what readiness waits on
+// for it, and the manifest's caller-project services ride along.
+func TestDeclaredGrantPutsEachGroupWhereItReaches(t *testing.T) {
+	root, scenario := syntheticKind(t, `    caller_project_services:
+      - billingbudgets.googleapis.com
+    groups:
+      - purpose: ManageInProject
+        permissions: [compute.networks.get, compute.networks.create]
+        provenance: derived
+        reach: target
+        privilege: ordinary
+        notes: n
+      - purpose: ProjectRole
+        permissions: [gkehub.features.create]
+        provenance: derived
+        reach: target
+        privilege: ordinary
+        predefined_role: roles/gkehub.admin
+        notes: n
+      - purpose: CreateUnderOrganization
+        permissions: [resourcemanager.projects.create]
+        provenance: derived
+        reach: organization
+        privilege: ordinary
+        notes: n
+      - purpose: OrganizationRole
+        permissions: [orgpolicy.policies.create]
+        provenance: derived
+        reach: organization
+        privilege: ordinary
+        predefined_role: roles/orgpolicy.policyAdmin
+        notes: n
+      - purpose: Budgets
+        permissions: [billing.budgets.create, billing.budgets.get]
+        provenance: derived
+        reach: billing_account
+        privilege: ordinary
+        predefined_role: roles/billing.costsManager
+        notes: n
+`)
+	grant, err := declaredGrant(root, "gcpsynthetic", []string{scenario})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := declaredGrantSet{
+		kind:                  "GcpSynthetic",
+		target:                scopeGrant{permissions: []string{"compute.networks.create", "compute.networks.get"}, predefinedRoles: []string{"roles/gkehub.admin"}, rolePermissions: []string{"gkehub.features.create"}},
+		organization:          scopeGrant{permissions: []string{"resourcemanager.projects.create"}, predefinedRoles: []string{"roles/orgpolicy.policyAdmin"}, rolePermissions: []string{"orgpolicy.policies.create"}},
+		billingAccount:        scopeGrant{predefinedRoles: []string{"roles/billing.costsManager"}, rolePermissions: []string{"billing.budgets.create", "billing.budgets.get"}},
+		callerProjectServices: []string{"billingbudgets.googleapis.com"},
+	}
+	if fmt.Sprintf("%+v", grant) != fmt.Sprintf("%+v", want) {
+		t.Fatalf("grant\n got %+v\nwant %+v", grant, want)
+	}
+	if got := grant.organization.awaited(); strings.Join(got, ",") != "orgpolicy.policies.create,resourcemanager.projects.create" {
+		t.Fatalf("organization awaits %v", got)
+	}
+}
+
+// A billing account group must name its predefined role: the harness cannot
+// bind a custom role there, and says so before anything is minted.
+func TestDeclaredGrantRefusesABillingAccountGroupWithoutARole(t *testing.T) {
+	root, scenario := syntheticKind(t, `    groups:
+      - purpose: Budgets
+        permissions: [billing.budgets.create]
+        provenance: derived
+        reach: billing_account
+        privilege: ordinary
+        notes: n
+`)
+	_, err := declaredGrant(root, "gcpsynthetic", []string{scenario})
+	if err == nil || !strings.Contains(err.Error(), `"Budgets"`) || !strings.Contains(err.Error(), "predefined role") {
+		t.Fatalf("err = %v, want a refusal naming the group and the missing predefined role", err)
+	}
+}
+
+// A grant above the project needs its scope's variable; without it the lane
+// fails naming the variable, and with it the scope is the variable's
+// resource, with or without its collection prefix.
+func TestGrantScopesNameTheMissingVariable(t *testing.T) {
+	h := NewHarness()
+	h.services = &verify.Services{Project: "harness-project"}
+	grant := declaredGrantSet{
+		kind:           "GcpSynthetic",
+		target:         scopeGrant{permissions: []string{"compute.networks.get"}},
+		organization:   scopeGrant{predefinedRoles: []string{"roles/orgpolicy.policyAdmin"}},
+		billingAccount: scopeGrant{predefinedRoles: []string{"roles/billing.costsManager"}},
+	}
+	t.Setenv(organizationEnv, "")
+	t.Setenv(billingAccountEnv, "012345-6789AB-CDEF01")
+	if _, err := h.grantScopes("harness-project", grant); err == nil || !strings.Contains(err.Error(), organizationEnv) {
+		t.Fatalf("err = %v, want the unset %s named", err, organizationEnv)
+	}
+	t.Setenv(organizationEnv, "organizations/123456789012")
+	t.Setenv(billingAccountEnv, "billingAccounts/012345-6789AB-CDEF01")
+	scopes, err := h.grantScopes("harness-project", grant)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var names []string
+	for _, scope := range scopes {
+		names = append(names, scope.policy.name)
+	}
+	if got := strings.Join(names, ","); got != "projects/harness-project,organizations/123456789012,billingAccounts/012345-6789AB-CDEF01" {
+		t.Fatalf("scopes = %s", got)
+	}
+	t.Setenv(billingAccountEnv, "")
+	if _, err := h.grantScopes("harness-project", grant); err == nil || !strings.Contains(err.Error(), billingAccountEnv) {
+		t.Fatalf("err = %v, want the unset %s named", err, billingAccountEnv)
+	}
+}
+
+// A billing account's IAM policy edits through Resource Manager's type and
+// back unchanged.
+func TestBillingAccountPolicyConvertsBothWays(t *testing.T) {
+	billing := &cloudbilling.Policy{Etag: "BwX", Version: 1, Bindings: []*cloudbilling.Binding{
+		{Role: "roles/billing.costsManager", Members: []string{"serviceAccount:pe2e-0123456789@p.iam.gserviceaccount.com"}},
+	}}
+	var edited cloudresourcemanager.Policy
+	if err := convertPolicy(billing, &edited); err != nil {
+		t.Fatal(err)
+	}
+	if !removeMember(&edited, "serviceAccount:pe2e-0123456789@p.iam.gserviceaccount.com") {
+		t.Fatal("the converted policy lost its member")
+	}
+	var back cloudbilling.Policy
+	if err := convertPolicy(&edited, &back); err != nil {
+		t.Fatal(err)
+	}
+	if back.Etag != "BwX" || len(back.Bindings) != 0 {
+		t.Fatalf("converted back: %+v", back)
 	}
 }
 
@@ -200,11 +355,16 @@ func TestPolicyMemberEdits(t *testing.T) {
 	if !isLaneOrDeletedMember("deleted:serviceAccount:x@p.iam.gserviceaccount.com?uid=1") || isLaneOrDeletedMember("user:someone@example.com") {
 		t.Fatal("leftover member classification is wrong")
 	}
+	// On a shared billing account only lane accounts go, deleted or not.
+	if !isLaneMember(member) || !isLaneMember("deleted:"+member+"?uid=1") ||
+		isLaneMember("deleted:serviceAccount:x@p.iam.gserviceaccount.com?uid=1") || isLaneMember("user:someone@example.com") {
+		t.Fatal("billing account leftover classification is wrong")
+	}
 }
 
 // Every GCP scenario that declares the identity has a grant the harness can
-// mint: no group above the project, no permission Google keeps out of custom
-// roles. A lane would refuse either at its IDENTITY phase; this finds it
+// mint: no permission Google keeps out of custom roles, no billing account
+// group without its predefined role. A lane would refuse either at its IDENTITY phase; this finds it
 // before any lane runs.
 func TestEveryDeclaredScenarioHasAMintableGrant(t *testing.T) {
 	root := repoRoot(t)
