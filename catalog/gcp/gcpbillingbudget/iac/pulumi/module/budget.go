@@ -153,10 +153,12 @@ func budget(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) erro
 		return errors.Wrap(err, "failed to create budget")
 	}
 
-	ctx.Export(OpName, created.Name)
+	// The resource id is the full resource name; the provider's own name
+	// attribute holds only the server-assigned id.
+	ctx.Export(OpName, created.ID())
 	// The server-assigned id is the last segment of the resource name.
-	ctx.Export(OpBudgetId, created.Name.ApplyT(func(name string) string {
-		parts := strings.Split(name, "/")
+	ctx.Export(OpBudgetId, created.ID().ApplyT(func(name pulumi.ID) string {
+		parts := strings.Split(string(name), "/")
 		return parts[len(parts)-1]
 	}).(pulumi.StringOutput))
 	ctx.Export(OpBillingAccount, pulumi.String("billingAccounts/"+locals.BillingAccount))
