@@ -20,3 +20,15 @@ spec:
         reach: target
         privilege: ordinary
         notes: "Covers google_tags_tag_key (Pulumi tags.TagKey) -- the modules' only resource. create on first apply; get on every refresh and import; update when the description or allowed_values_regex change (parent, short_name, purpose, and purpose_data are ForceNew and recreate instead); delete on destroy under deletion_policy DELETE (refused by Google while values exist; ABANDON and PREVENT call no delete API). Granted on the OWNER -- the organization for an organization-owned key, the project for a project-owned one (the shape that needs no organization-level grant). roles/resourcemanager.tagAdmin contains all four. Proven 2026-11-18 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
+      - purpose: ManageOrganizationTagKey
+        permissions:
+          - resourcemanager.tagKeys.create
+          - resourcemanager.tagKeys.get
+          - resourcemanager.tagKeys.update
+          - resourcemanager.tagKeys.delete
+        provenance: derived
+        reach: organization
+        privilege: ordinary
+        condition:
+          spec_field_set: parent.organization_id
+        notes: "The organization-owned shape of ManageTagKey: Google authorizes a tag key on its owner, so a key whose parent is the organization needs these permissions on the organization (roles/resourcemanager.tagAdmin there carries them). The project group above covers a project-owned key."

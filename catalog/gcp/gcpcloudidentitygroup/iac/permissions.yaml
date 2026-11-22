@@ -9,6 +9,8 @@ metadata:
   name: gcpcloudidentitygroup
 spec:
   gcp:
+    caller_project_services:
+      - cloudidentity.googleapis.com
     groups:
       - purpose: BillCloudIdentityCallsToQuotaProject
         permissions:

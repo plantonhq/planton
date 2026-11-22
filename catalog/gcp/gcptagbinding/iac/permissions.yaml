@@ -28,3 +28,29 @@ spec:
         reach: target
         privilege: ordinary
         notes: "Google also requires roles/resourcemanager.tagUser (or the equivalent tag-binding permission the tagged service defines, e.g. compute.instances.createTagBinding) on the RESOURCE being tagged (for a project, folder, or organization: resourcemanager.hierarchyNodes.createTagBinding, deleteTagBinding, and listTagBindings, which the refresh's list-by-parent reads). For a project parent that is tagUser on the project. projects.get is additionally needed when the manifest names the project by ID or names no parent at all: both modules read the project once to resolve its NUMBER (data.google_project on Terraform, organizations.LookupProject on Pulumi); a GcpProject reference or a numeric literal performs no read. Proven 2026-11-18 -- an identity holding only this manifest deployed and destroyed the kind on both engines (a binding has no in-place update)."
+      - purpose: BindTagOnFolder
+        permissions:
+          - resourcemanager.tagValueBindings.create
+          - resourcemanager.tagValueBindings.delete
+          - resourcemanager.hierarchyNodes.createTagBinding
+          - resourcemanager.hierarchyNodes.deleteTagBinding
+          - resourcemanager.hierarchyNodes.listTagBindings
+        provenance: derived
+        reach: organization
+        privilege: ordinary
+        condition:
+          spec_field_set: parent.folder_id
+        notes: "The folder-parented shape of BindTagValue: Google checks the hierarchyNodes binding permissions on the folder being tagged and tagValueBindings on the tag value, and only an organization-owned value can be bound to a folder -- both checks sit above the project (roles/resourcemanager.tagUser on the organization, or on the value and the folder)."
+      - purpose: BindTagOnOrganization
+        permissions:
+          - resourcemanager.tagValueBindings.create
+          - resourcemanager.tagValueBindings.delete
+          - resourcemanager.hierarchyNodes.createTagBinding
+          - resourcemanager.hierarchyNodes.deleteTagBinding
+          - resourcemanager.hierarchyNodes.listTagBindings
+        provenance: derived
+        reach: organization
+        privilege: ordinary
+        condition:
+          spec_field_set: parent.organization_id
+        notes: "The organization-parented shape of BindTagValue: Google checks the hierarchyNodes binding permissions on the organization being tagged and tagValueBindings on the organization-owned tag value -- both on the organization (roles/resourcemanager.tagUser there carries them)."

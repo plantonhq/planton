@@ -9,6 +9,8 @@ metadata:
   name: gcpsccnotificationconfig
 spec:
   gcp:
+    caller_project_services:
+      - securitycenter.googleapis.com
     groups:
       - purpose: EnableSecurityCenterApi
         permissions:
@@ -39,3 +41,27 @@ spec:
         reach: target
         privilege: ordinary
         notes: Creating a notification config makes Security Command Center grant its own service account roles/pubsub.publisher on the topic, as the caller -- so the caller must read and set the topic's IAM policy (roles/pubsub.admin on the topic carries all three). Measured live -- without them Google refuses the create with "User does not have permission to access PubSub topic". Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
+      - purpose: ManageFolderNotificationConfig
+        permissions:
+          - securitycenter.notificationconfig.create
+          - securitycenter.notificationconfig.get
+          - securitycenter.notificationconfig.update
+          - securitycenter.notificationconfig.delete
+        provenance: derived
+        reach: organization
+        privilege: ordinary
+        condition:
+          spec_field_set: scope.folder_id
+        notes: "The folder shape: Google authorizes the notification config on its scope, so a folder-scoped one needs these permissions on the folder (roles/securitycenter.admin, or the matching editor role, there carries them); its calls bill to the caller's project, where securitycenter.googleapis.com must be on. The project group covers the project shape."
+      - purpose: ManageOrganizationNotificationConfig
+        permissions:
+          - securitycenter.notificationconfig.create
+          - securitycenter.notificationconfig.get
+          - securitycenter.notificationconfig.update
+          - securitycenter.notificationconfig.delete
+        provenance: derived
+        reach: organization
+        privilege: ordinary
+        condition:
+          spec_field_set: scope.organization_id
+        notes: "The organization shape: Google authorizes the notification config on its scope, so an organization-scoped one needs these permissions on the organization (roles/securitycenter.admin, or the matching editor role, there carries them); its calls bill to the caller's project, where securitycenter.googleapis.com must be on. The project group covers the project shape."

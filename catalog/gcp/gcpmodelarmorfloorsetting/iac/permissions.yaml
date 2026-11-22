@@ -9,6 +9,8 @@ metadata:
   name: gcpmodelarmorfloorsetting
 spec:
   gcp:
+    caller_project_services:
+      - modelarmor.googleapis.com
     groups:
       - purpose: EnableModelArmorApi
         permissions:
@@ -28,3 +30,23 @@ spec:
         reach: target
         privilege: ordinary
         notes: Covers google_model_armor_floorsetting (Pulumi modelarmor.Floorsetting) -- create and update are the same PATCH on the scope's singleton, read on every refresh; delete makes no API call. Held at the floor's scope -- the project, the folder, or the organization (roles/modelarmor.floorSettingsAdmin there). The provider-default project lookup reads provider configuration only and needs no permission. Proven 2026-11-21 -- an identity holding only this manifest deployed and destroyed the kind on both engines; it has no in-place update.
+      - purpose: ManageFolderFloorSetting
+        permissions:
+          - modelarmor.floorSettings.get
+          - modelarmor.floorSettings.update
+        provenance: derived
+        reach: organization
+        privilege: ordinary
+        condition:
+          spec_field_set: scope.folder_id
+        notes: "The folder shape: Google authorizes the floor setting on its scope, so a folder-scoped one needs these permissions on the folder (roles/modelarmor.floorSettingsAdmin there carries them); its calls bill to the caller's project, where modelarmor.googleapis.com must be on. The project group covers the project shape."
+      - purpose: ManageOrganizationFloorSetting
+        permissions:
+          - modelarmor.floorSettings.get
+          - modelarmor.floorSettings.update
+        provenance: derived
+        reach: organization
+        privilege: ordinary
+        condition:
+          spec_field_set: scope.organization_id
+        notes: "The organization shape: Google authorizes the floor setting on its scope, so an organization-scoped one needs these permissions on the organization (roles/modelarmor.floorSettingsAdmin there carries them); its calls bill to the caller's project, where modelarmor.googleapis.com must be on. The project group covers the project shape."

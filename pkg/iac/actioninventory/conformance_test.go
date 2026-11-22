@@ -1,6 +1,7 @@
 package actioninventory
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -411,12 +412,18 @@ func TestCloudflareGroupsExist(t *testing.T) {
 	}
 }
 
-// TestGcpPermissionReach holds every GCP permission group's reach to
-// Google's own scope-typed inventory: a group's permissions share one
-// reach, and it is the reach the snapshot records for each of them. A
-// connection's project role can never hold an organization or billing
-// permission, so a wrong reach is a role that fails at creation or a check
-// that asks the project about something it cannot answer for.
+// TestGcpPermissionReach holds every GCP permission group's reach to where
+// Google authorizes it, never narrower than Google's own scope-typed
+// inventory. A group's permissions share one reach. It equals the reach the
+// snapshot records for each permission, and rises above a project-level
+// inventory reach in exactly two machine-checked cases: the shape the group
+// covers lives above the project (its condition names the scope, or the
+// kind's resource never lives in a project), or Google authorizes the
+// permission above a project only. A connection's project role can never
+// hold an organization or billing permission, and a project role holding a
+// permission Google checks on the organization never passes that check, so
+// a wrong reach is a role that fails at creation or a check that asks the
+// project about something it cannot answer for.
 func TestGcpPermissionReach(t *testing.T) {
 	inv, err := LoadGcp(packageDir(t))
 	if err != nil {
@@ -424,26 +431,139 @@ func TestGcpPermissionReach(t *testing.T) {
 	}
 	forEachManifest(t, func(provider, kind string, manifest *permissionsv1.CatalogKindPermissions) {
 		for _, group := range manifest.GetSpec().GetGcp().GetGroups() {
-			declared := group.GetReach().String()
-			if permissions.GcpRolesGrantedAboveAProject[group.GetPredefinedRole()] {
-				// Only this role carries the permissions, and Google grants it
-				// above a project only: the group is granted where the role is.
-				if group.GetReach() == permissionsv1.PermissionReach_target {
-					t.Errorf("%s/%s group %q: %s is granted above a project only, so the group's reach cannot be target", provider, kind, group.GetPurpose(), group.GetPredefinedRole())
-				}
-				continue
-			}
-			for _, permission := range group.GetPermissions() {
-				reach, ok := inv.Reach(permission)
-				if !ok {
-					continue // the existence gate names it
-				}
-				if reach != declared {
-					t.Errorf("%s/%s group %q: %s is granted at %s, but the group's reach is %s -- split the group or correct its reach", provider, kind, group.GetPurpose(), permission, reach, declared)
-				}
+			for _, problem := range gcpGroupReachProblems(inv, kind, group) {
+				t.Errorf("%s/%s group %q: %s", provider, kind, group.GetPurpose(), problem)
 			}
 		}
 	})
+}
+
+// gcpGroupReachProblems judges one group's reach against the inventory.
+func gcpGroupReachProblems(inv *Inventory, kindDir string, group *permissionsv1.GcpPermissionGroup) []string {
+	var problems []string
+	declared := group.GetReach().String()
+	if permissions.GcpRolesGrantedAboveAProject[group.GetPredefinedRole()] {
+		// Only this role carries the permissions, and Google grants it
+		// above a project only: the group is granted where the role is.
+		if group.GetReach() == permissionsv1.PermissionReach_target {
+			problems = append(problems, fmt.Sprintf("%s is granted above a project only, so the group's reach cannot be target", group.GetPredefinedRole()))
+		}
+		return problems
+	}
+	// Case 1: the shape lives above the project -- a condition naming the
+	// scope, or a kind whose resource never lives in one.
+	shapeReach, shapeAbove := permissions.GcpScopeConditionReach(group.GetCondition().GetSpecFieldSet())
+	if !shapeAbove && permissions.GcpKindLivesAboveAProject(kindDir) {
+		shapeReach, shapeAbove = permissionsv1.PermissionReach_organization, true
+	}
+	for _, permission := range group.GetPermissions() {
+		reach, ok := inv.Reach(permission)
+		if !ok {
+			continue // the existence gate names it
+		}
+		if reach == declared {
+			continue
+		}
+		if reach == permissionsv1.PermissionReach_target.String() {
+			if shapeAbove && group.GetReach() == shapeReach {
+				continue
+			}
+			// Case 2: Google authorizes the permission above a project only.
+			if permissions.GcpPermissionsGrantedAboveAProject[permission] && group.GetReach() == permissionsv1.PermissionReach_organization {
+				continue
+			}
+		}
+		problems = append(problems, fmt.Sprintf("%s is granted at %s, but the group's reach is %s -- split the group or correct its reach "+
+			"(a reach rises above a project only for a shape above the project, named by a condition ending in organization_id, folder_id "+
+			"or billing_account or by a kind on permissions.GcpKindsAboveAProject, or for a permission on permissions.GcpPermissionsGrantedAboveAProject)",
+			permission, reach, declared))
+	}
+	return problems
+}
+
+// reachGroup builds a GCP permission group for the reach fixtures below.
+func reachGroup(reach permissionsv1.PermissionReach, condition string, perms ...string) *permissionsv1.GcpPermissionGroup {
+	group := &permissionsv1.GcpPermissionGroup{Purpose: "Fixture", Permissions: perms, Reach: reach}
+	if condition != "" {
+		group.Condition = &permissionsv1.PermissionCondition{SpecFieldSet: condition}
+	}
+	return group
+}
+
+// A shape that lives above the project -- named by a condition ending in
+// organization_id, folder_id or billing_account -- is granted where Google
+// authorizes it, even though the inventory also lists the permissions on a
+// project. Without that condition, or under one naming something else, the
+// group stays at the inventory's reach.
+func TestGcpReachRisesForAShapeAboveTheProject(t *testing.T) {
+	inv, err := LoadGcp(packageDir(t))
+	if err != nil {
+		t.Fatalf("loading inventory: %v", err)
+	}
+	tagKeys := []string{"resourcemanager.tagKeys.create", "resourcemanager.tagKeys.get", "resourcemanager.tagKeys.update", "resourcemanager.tagKeys.delete"}
+	org := permissionsv1.PermissionReach_organization
+	if problems := gcpGroupReachProblems(inv, "gcptagkey", reachGroup(org, "parent.organization_id", tagKeys...)); len(problems) != 0 {
+		t.Errorf("an organization-owned tag key's group at organization was refused: %v", problems)
+	}
+	if problems := gcpGroupReachProblems(inv, "gcptagkey", reachGroup(org, "", tagKeys...)); len(problems) == 0 {
+		t.Error("the same group with no condition was accepted at organization")
+	}
+	if problems := gcpGroupReachProblems(inv, "gcptagkey", reachGroup(org, "short_name", tagKeys...)); len(problems) == 0 {
+		t.Error("the same group under a condition naming no scope was accepted at organization")
+	}
+}
+
+// Permissions Google authorizes above a project only
+// (permissions.GcpPermissionsGrantedAboveAProject) take their real reach
+// with no condition.
+func TestGcpReachRisesForPermissionsGrantedAboveAProject(t *testing.T) {
+	inv, err := LoadGcp(packageDir(t))
+	if err != nil {
+		t.Fatalf("loading inventory: %v", err)
+	}
+	group := reachGroup(permissionsv1.PermissionReach_organization, "",
+		"compute.firewallPolicies.create", "compute.firewallPolicies.get", "compute.firewallPolicies.update",
+		"compute.firewallPolicies.delete", "compute.firewallPolicies.use")
+	if problems := gcpGroupReachProblems(inv, "gcpsharedvpchost", group); len(problems) != 0 {
+		t.Errorf("hierarchical firewall policy permissions at organization were refused: %v", problems)
+	}
+}
+
+// A reach never sits below the inventory's: a permission Google answers only
+// above a project cannot be held by a project role, whatever the condition.
+func TestGcpReachNeverFallsBelowTheInventory(t *testing.T) {
+	inv, err := LoadGcp(packageDir(t))
+	if err != nil {
+		t.Fatalf("loading inventory: %v", err)
+	}
+	if reach, ok := inv.Reach("resourcemanager.folders.get"); !ok || reach != "organization" {
+		t.Fatalf("fixture premise: resourcemanager.folders.get is at %q in the inventory, want organization", reach)
+	}
+	for _, condition := range []string{"", "parent.folder_id"} {
+		group := reachGroup(permissionsv1.PermissionReach_target, condition, "resourcemanager.folders.get")
+		if problems := gcpGroupReachProblems(inv, "gcpfolder", group); len(problems) == 0 {
+			t.Errorf("resourcemanager.folders.get at target (condition %q) was accepted", condition)
+		}
+	}
+}
+
+// A kind whose resource never lives in a project
+// (permissions.GcpKindsAboveAProject) may grant any group above it: a
+// folder's create-time tags come from an organization-owned key and bind on
+// the folder. The same group in a project's manifest stays at target.
+func TestGcpReachRisesForAKindThatNeverLivesInAProject(t *testing.T) {
+	inv, err := LoadGcp(packageDir(t))
+	if err != nil {
+		t.Fatalf("loading inventory: %v", err)
+	}
+	group := reachGroup(permissionsv1.PermissionReach_organization, "tags",
+		"resourcemanager.tagValueBindings.create", "resourcemanager.hierarchyNodes.createTagBinding")
+	if problems := gcpGroupReachProblems(inv, "gcpfolder", group); len(problems) != 0 {
+		t.Errorf("GcpFolder's create-time tag group at organization was refused: %v", problems)
+	}
+	if problems := gcpGroupReachProblems(inv, "gcpproject", group); len(problems) == 0 {
+		t.Error("the same group in GcpProject's manifest was accepted at organization")
+	}
 }
 
 // TestPermissionPrivilege holds every AWS statement's, GCP group's and

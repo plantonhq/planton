@@ -9,6 +9,8 @@ metadata:
   name: gcpkmsautokeyconfig
 spec:
   gcp:
+    caller_project_services:
+      - cloudkms.googleapis.com
     groups:
       - purpose: EnableCloudKmsApi
         permissions:
@@ -28,3 +30,13 @@ spec:
         reach: target
         privilege: ordinary
         notes: Covers google_kms_autokey_config and google_kms_project_autokey_config (Pulumi kms.AutokeyConfig / kms.ProjectAutokeyConfig) -- create, update, and the DELETE destroy are all PATCHes of the scope's one configuration, read on every refresh. Held at the folder or the project (roles/cloudkms.autokeyAdmin there). The provider-default project lookup reads provider configuration only and needs no permission. Proven 2026-11-19 -- an identity holding only this manifest deployed and destroyed the kind on both engines; it has no in-place update.
+      - purpose: ManageFolderAutokeyConfig
+        permissions:
+          - cloudkms.autokeyConfigs.get
+          - cloudkms.autokeyConfigs.update
+        provenance: derived
+        reach: organization
+        privilege: ordinary
+        condition:
+          spec_field_set: scope.folder_id
+        notes: "The folder shape -- Autokey's main one: Google authorizes the folder's Autokey configuration on the folder (roles/cloudkms.autokeyAdmin there carries these). The folder configuration's calls bill to the caller's project, where cloudkms.googleapis.com must be on; the module enables the API on key_project, which serves the keys Autokey creates. The project group covers the project shape."

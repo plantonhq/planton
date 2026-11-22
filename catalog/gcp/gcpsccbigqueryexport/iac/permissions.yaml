@@ -9,6 +9,8 @@ metadata:
   name: gcpsccbigqueryexport
 spec:
   gcp:
+    caller_project_services:
+      - securitycenter.googleapis.com
     groups:
       - purpose: EnableSecurityCenterApi
         permissions:
@@ -40,3 +42,27 @@ spec:
         reach: target
         privilege: ordinary
         notes: Creating an export makes Security Command Center grant its service agent write access on the dataset, as the caller -- so the caller must change the dataset's access (roles/bigquery.dataOwner on the dataset carries these). Measured live -- with only bigquery.datasets.get Google refuses the create with "The caller does not have permission" though securitycenter.bigQueryExports.create is granted. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
+      - purpose: ManageFolderBigQueryExport
+        permissions:
+          - securitycenter.bigQueryExports.create
+          - securitycenter.bigQueryExports.get
+          - securitycenter.bigQueryExports.update
+          - securitycenter.bigQueryExports.delete
+        provenance: derived
+        reach: organization
+        privilege: ordinary
+        condition:
+          spec_field_set: scope.folder_id
+        notes: "The folder shape: Google authorizes the BigQuery export on its scope, so a folder-scoped one needs these permissions on the folder (bigquery.datasets.get stays in the project group: the dataset lives in a project) (roles/securitycenter.admin, or the matching editor role, there carries them); its calls bill to the caller's project, where securitycenter.googleapis.com must be on. The project group covers the project shape."
+      - purpose: ManageOrganizationBigQueryExport
+        permissions:
+          - securitycenter.bigQueryExports.create
+          - securitycenter.bigQueryExports.get
+          - securitycenter.bigQueryExports.update
+          - securitycenter.bigQueryExports.delete
+        provenance: derived
+        reach: organization
+        privilege: ordinary
+        condition:
+          spec_field_set: scope.organization_id
+        notes: "The organization shape: Google authorizes the BigQuery export on its scope, so an organization-scoped one needs these permissions on the organization (bigquery.datasets.get stays in the project group: the dataset lives in a project) (roles/securitycenter.admin, or the matching editor role, there carries them); its calls bill to the caller's project, where securitycenter.googleapis.com must be on. The project group covers the project shape."

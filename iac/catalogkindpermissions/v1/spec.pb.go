@@ -86,10 +86,15 @@ func (Provenance) EnumDescriptor() ([]byte, []int) {
 // renders, grants and checks each reach on its own: a connection's role
 // holds the target's entries, an organization-level grant holds the
 // organization's, and a check never asks the target about a permission it
-// cannot answer for. The value is a fact about the permissions, read from
-// the provider's own scope-typed inventory where it publishes one (GCP's
-// testable-permissions list), and the inventory gate holds every entry to
-// it. Unspecified is refused.
+// cannot answer for. The value is where the provider authorizes the group
+// for the shape it covers, never narrower than the provider's own
+// scope-typed inventory where it publishes one (GCP's testable-permissions
+// list). On GCP it sits above the inventory's reach in exactly two cases:
+// the shape lives above the project (the group's condition names an
+// organization_id, folder_id or billing_account, or the kind's resource
+// never lives in a project), or Google authorizes the permission above a
+// project only although the inventory also lists it on one. The inventory
+// gate holds every entry to this. Unspecified is refused.
 type PermissionReach int32
 
 const (

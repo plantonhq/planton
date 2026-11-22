@@ -16,11 +16,17 @@ spec:
         permissions:
           - compute.organizations.enableXpnHost
           - compute.organizations.disableXpnHost
+        provenance: derived
+        reach: organization
+        privilege: ordinary
+        notes: "Covers google_compute_shared_vpc_host_project (Pulumi compute.SharedVPCHostProject) -- the modules' only resource. enableXpnHost on first apply; disableXpnHost on destroy under deletion_policy DELETE (refused by Google while service projects are attached; ABANDON and PREVENT call no disable API). Both organizations.* permissions are granted on the ORGANIZATION or a folder above the project, never on the project alone; roles/compute.xpnAdmin contains them."
+      - purpose: ReadSharedVpcHostStatus
+        permissions:
           - compute.projects.get
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: "Covers google_compute_shared_vpc_host_project (Pulumi compute.SharedVPCHostProject) -- the modules' only resource. enableXpnHost on first apply; projects.get on every refresh and import (the provider reads the project's xpnProjectStatus); disableXpnHost on destroy under deletion_policy DELETE (refused by Google while service projects are attached; ABANDON and PREVENT call no disable API). Both organizations.* permissions are granted on the ORGANIZATION or a folder above the project, never on the project alone; roles/compute.xpnAdmin contains them."
+        notes: "The provider reads the host project's xpnProjectStatus with compute.projects.get on every refresh and import -- a project permission, held on the host project."
       - purpose: ResolveDefaultProject
         permissions:
           - resourcemanager.projects.get

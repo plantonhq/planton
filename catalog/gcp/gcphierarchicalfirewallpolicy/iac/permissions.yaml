@@ -20,14 +20,14 @@ spec:
           - compute.firewallPolicies.delete
           - compute.firewallPolicies.use
         provenance: derived
-        reach: target
+        reach: organization
         privilege: ordinary
         notes: "Covers google_compute_firewall_policy (Pulumi compute.FirewallPolicy) and its rules (google_compute_firewall_policy_rule -- addRule, patchRule, removeRule, getRule are all firewallPolicies.update/get on the policy). create on first apply; get on every refresh and import; update when the description changes or any rule is added, changed, or removed; delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). Granted on the ORGANIZATION (or on the parent folder) -- these are organization-level resources; roles/compute.orgFirewallPolicyAdmin contains all of these."
       - purpose: AssociateHierarchicalFirewallPolicy
         permissions:
           - compute.organizations.setFirewallPolicy
         provenance: derived
-        reach: target
+        reach: organization
         privilege: ordinary
         condition:
           spec_field_set: associations

@@ -9,6 +9,8 @@ metadata:
   name: gcpsccmuteconfig
 spec:
   gcp:
+    caller_project_services:
+      - securitycenter.googleapis.com
     groups:
       - purpose: EnableSecurityCenterApi
         permissions:
@@ -30,3 +32,27 @@ spec:
         reach: target
         privilege: ordinary
         notes: Covers the project, folder, and organization mute-config resources (Pulumi securitycenter.V2*MuteConfig) -- create, read on every refresh, PATCH updates of description, filter, and type, delete on destroy. Held at the scope (roles/securitycenter.muteConfigsEditor there). The provider-default project lookup reads provider configuration only and needs no permission. Proven 2026-11-19 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
+      - purpose: ManageFolderMuteConfig
+        permissions:
+          - securitycenter.muteconfigs.create
+          - securitycenter.muteconfigs.get
+          - securitycenter.muteconfigs.update
+          - securitycenter.muteconfigs.delete
+        provenance: derived
+        reach: organization
+        privilege: ordinary
+        condition:
+          spec_field_set: scope.folder_id
+        notes: "The folder shape: Google authorizes the mute config on its scope, so a folder-scoped one needs these permissions on the folder (roles/securitycenter.admin, or the matching editor role, there carries them); its calls bill to the caller's project, where securitycenter.googleapis.com must be on. The project group covers the project shape."
+      - purpose: ManageOrganizationMuteConfig
+        permissions:
+          - securitycenter.muteconfigs.create
+          - securitycenter.muteconfigs.get
+          - securitycenter.muteconfigs.update
+          - securitycenter.muteconfigs.delete
+        provenance: derived
+        reach: organization
+        privilege: ordinary
+        condition:
+          spec_field_set: scope.organization_id
+        notes: "The organization shape: Google authorizes the mute config on its scope, so an organization-scoped one needs these permissions on the organization (roles/securitycenter.admin, or the matching editor role, there carries them); its calls bill to the caller's project, where securitycenter.googleapis.com must be on. The project group covers the project shape."
