@@ -1,0 +1,38 @@
+# The second act of list-and-dry-run.yaml: the same policy denying one more
+# region, one update of the policy in place. Not a scenario of its own (the
+# second-act annotation keeps discovery from running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpOrgPolicy
+metadata:
+  name: planton-oss-e2e-gcporgp-list
+  id: planton-oss-e2e-gcporgp-list
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcporgpolicy
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: list-and-dry-run.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID
+  tags:
+    - planton-e2e
+spec:
+  constraint: gcp.resourceLocations
+  policy:
+    inheritFromParent: true
+    rules:
+      - values:
+          allowedValues:
+            - in:us-locations
+          deniedValues:
+            - us-west4
+            - us-west3
+  dryRunPolicy:
+    rules:
+      - values:
+          allowedValues:
+            - in:us-locations
+  deletionPolicy: DELETE

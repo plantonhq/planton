@@ -4,20 +4,18 @@ metadata:
   name: gcphierarchicalfirewallpolicy
 spec:
   # A hierarchical firewall policy exists only inside a Google Cloud
-  # Organization and every arm of this kind needs
-  # roles/compute.orgFirewallPolicyAdmin on the organization (or on the
-  # parent folder and every association target) -- a grant the shared test
-  # project's identity does not hold (the same class as GcpFolder and
-  # GcpOrgPolicyCustomConstraint). Offline bar met: both modules build and
-  # validate, offline plans for the reference manifest and both scenarios
-  # are clean on the pinned provider, and the accounting is total. Live
-  # proof waits for the organization-scoped test identity and the
-  # PLANTON_E2E_GCP_ORGANIZATION_ID token; validated_provisioners stays
-  # empty until the live lanes actually run. Every E2E manifest's short name
-  # and association name carry the run id because Google does not free a
-  # deleted policy's short name immediately.
+  # Organization. Both lanes run as the declared identity, granted on the
+  # test organization (PLANTON_E2E_GCP_ORGANIZATION_ID) the groups that reach
+  # it; each second act changes the policy's description in place, judged
+  # from the organization's and the folder's Admin Activity logs. Offline bar
+  # met: both modules build and validate, offline plans for the reference
+  # manifest and both scenarios are clean on the pinned provider, and the
+  # accounting is total. validated_provisioners stays empty until the live
+  # lanes actually run. Every E2E manifest's short name and association name
+  # carry the run id because Google does not free a deleted policy's short
+  # name immediately.
   tier: 2
   status: deferred
-  deferred_reason: hierarchical firewall policies require organization-level roles/compute.orgFirewallPolicyAdmin credentials the E2E test identity does not hold; offline plans only
+  deferred_reason: the live lanes wait for a test organization exported as PLANTON_E2E_GCP_ORGANIZATION_ID, where the harness grants the declared identity the groups that reach it; offline plans only until then
   validated_provisioners: []
   timeout_minutes: 20

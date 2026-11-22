@@ -1,0 +1,74 @@
+# The second act of threat-intel-geo.yaml: the same policy with a new description,
+# patched in place (the parent and the short name recreate it). Not a
+# scenario of its own (the second-act annotation keeps discovery from
+# running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpHierarchicalFirewallPolicy
+metadata:
+  name: planton-oss-e2e-gcphfwp-threat
+  id: planton-oss-e2e-gcphfwp-threat
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcphierarchicalfirewallpolicy
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: threat-intel-geo.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID
+  tags:
+    - planton-e2e
+spec:
+  parent:
+    organizationId: ${E2E_ENV:PLANTON_E2E_GCP_ORGANIZATION_ID}
+  shortName: planton-e2e-hfwp-threat-${E2E_RUN_ID}
+  description: Planton E2E threat-intelligence hierarchical policy, updated in place; safe to delete
+  rules:
+    - priority: 100
+      action: deny
+      direction: INGRESS
+      description: Known-malicious and Tor sources
+      enableLogging: true
+      match:
+        srcThreatIntelligences: ["iplist-known-malicious-ips", "iplist-tor-exit-nodes"]
+        layer4Configs:
+          - ipProtocol: all
+    - priority: 200
+      action: deny
+      direction: INGRESS
+      description: Countries not served
+      match:
+        srcRegionCodes: ["KP", "IR"]
+        layer4Configs:
+          - ipProtocol: tcp
+          - ipProtocol: udp
+          - ipProtocol: icmp
+    - priority: 300
+      action: deny
+      direction: EGRESS
+      description: No calling home
+      enableLogging: true
+      match:
+        destThreatIntelligences: ["iplist-known-malicious-ips"]
+        layer4Configs:
+          - ipProtocol: all
+    - priority: 400
+      action: deny
+      direction: INGRESS
+      description: Parked rule, kept but not enforced
+      disabled: true
+      match:
+        srcIpRanges: ["192.0.2.0/24"]
+        layer4Configs:
+          - ipProtocol: "6"
+            ports: ["3389"]
+    - priority: 2000
+      action: goto_next
+      direction: INGRESS
+      match:
+        layer4Configs:
+          - ipProtocol: all
+  associations: []
+  deletionPolicy: DELETE

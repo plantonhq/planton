@@ -1,0 +1,36 @@
+# Organization-by-literal GcpProject scenario: a project created directly
+# under the test organization (PLANTON_E2E_GCP_ORGANIZATION_ID), by
+# parent_type and parent_id. The declared identity holds the manifest's
+# organization permissions (resourcemanager.projects.create) in a custom
+# role on the organization. No billing account: nothing in the lane bills.
+# The default network is kept (auto_create_network true): the test
+# organization's policy already skips creating it, and asking the provider
+# to delete it instead calls Compute Engine, which needs billing on the new
+# project. The project id carries the run id: a deleted project's id stays
+# reserved for 30 days.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpProject
+metadata:
+  name: planton-oss-e2e-gcpprj-org-literal
+  id: planton-oss-e2e-gcpprj-org-literal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpproject
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: organization-by-literal.to.yaml # the update: the display name
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID
+  tags:
+    - planton-e2e
+spec:
+  projectId: planton-e2e-org-${E2E_RUN_ID}
+  # Explicit: the display name defaults to metadata.name, which is longer
+  # than Google's 30-character limit for this fixture's name.
+  displayName: planton e2e org literal
+  parentType: organization
+  parentId: ${E2E_ENV:PLANTON_E2E_GCP_ORGANIZATION_ID}
+  autoCreateNetwork: true
+  deletionPolicy: DELETE

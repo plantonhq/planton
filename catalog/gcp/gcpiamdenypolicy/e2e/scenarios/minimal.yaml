@@ -1,9 +1,9 @@
 # Minimal GcpIamDenyPolicy scenario: one deny rule with a break-glass
 # exception. parent is deliberately omitted — the module falls back to
-# the provider's default project. The profile is DEFERRED: creating deny
-# policies requires org-level roles/iam.denyAdmin, which the standalone
-# test project's credentials deliberately lack; this scenario is ready
-# for the day an org-scoped credential exists.
+# the provider's default project. Google grants roles/iam.denyAdmin only on
+# an organization, even for a project-attached policy, so the declared
+# identity holds it on the test organization (PLANTON_E2E_GCP_ORGANIZATION_ID),
+# which holds the harness project.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpIamDenyPolicy
 metadata:
@@ -16,6 +16,9 @@ metadata:
     e2e-catalog-kind: gcpiamdenypolicy
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the update: the rule's description
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID
   tags:
     - planton-e2e
 spec:

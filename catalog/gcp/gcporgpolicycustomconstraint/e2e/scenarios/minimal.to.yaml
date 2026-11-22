@@ -1,0 +1,33 @@
+# The second act of minimal.yaml: the same constraint with a new
+# description, updated in place (the name, the resource types and the
+# action recreate it). Not a scenario of its own (the second-act annotation
+# keeps discovery from running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpOrgPolicyCustomConstraint
+metadata:
+  name: planton-oss-e2e-gcpocc-minimal
+  id: planton-oss-e2e-gcpocc-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcporgpolicycustomconstraint
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: minimal.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID
+  tags:
+    - planton-e2e
+spec:
+  organizationId: ${E2E_ENV:PLANTON_E2E_GCP_ORGANIZATION_ID}
+  constraintName: plantonE2eMinimal${E2E_RUN_ID_UNDERSCORE}
+  description: Planton E2E fixture, updated in place; safe to delete
+  resourceTypes:
+    - container.googleapis.com/NodePool
+  methodTypes:
+    - CREATE
+    - UPDATE
+  condition: resource.management.autoUpgrade == false
+  actionType: DENY

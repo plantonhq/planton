@@ -3,19 +3,17 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpsharedvpchost
 spec:
-  # Enabling a Shared VPC host is authorized by roles/compute.xpnAdmin on the
-  # ORGANIZATION (or a folder above the project) -- Google checks
-  # compute.organizations.enableXpnHost there, never on the project -- and the
-  # shared test project's identity holds no organization-level grant (the same
-  # class as GcpFolder and GcpProject). Offline bar met: both modules build and
-  # validate, offline plans for the reference manifest (ambient project, one
-  # guarded client-config read) and the literal-project scenario are clean on
-  # the pinned provider, and the accounting is total. Live proof waits for the
-  # organization-scoped test identity; validated_provisioners stays empty until
-  # the live lanes actually run. Unblock: roles/compute.xpnAdmin on the
-  # organization for the E2E identity.
+  # Shared VPC exists only inside an organization. The lane runs as the
+  # declared identity in the test organization
+  # (PLANTON_E2E_GCP_ORGANIZATION_ID) that holds the harness project. It has
+  # no second act: the project is the host's only field, so nothing updates
+  # in place and the kind proves by deploy and destroy. Offline bar met: both
+  # modules build and validate, offline plans for the reference manifest
+  # (ambient project, one guarded client-config read) and the literal-project
+  # scenario are clean on the pinned provider, and the accounting is total.
+  # validated_provisioners stays empty until the live lanes actually run.
   tier: 2
   status: deferred
-  deferred_reason: enabling a Shared VPC host requires organization-level roles/compute.xpnAdmin credentials the E2E test identity does not hold; offline plans only
+  deferred_reason: the live lane waits for a test organization exported as PLANTON_E2E_GCP_ORGANIZATION_ID holding the harness project; offline plans only until then
   validated_provisioners: []
   timeout_minutes: 10

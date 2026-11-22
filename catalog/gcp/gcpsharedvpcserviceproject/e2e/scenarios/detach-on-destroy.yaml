@@ -1,0 +1,33 @@
+# GcpSharedVpcServiceProject scenario: the second test project attached to
+# the harness project as its Shared VPC host, and detached on destroy (the
+# empty deletion policy). The host is the GcpSharedVpcHost prerequisite, by
+# reference, which orders host-enable, attach, then detach before the host
+# is disabled. Shared VPC exists only inside an organization, so the lane
+# needs the test organization holding both projects. No second act: both
+# projects recreate the attachment and the deletion policy is the module's
+# own stance, so nothing updates in place.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSharedVpcServiceProject
+metadata:
+  name: planton-oss-e2e-gcpsvps-detach
+  id: planton-oss-e2e-gcpsvps-detach
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpsharedvpcserviceproject
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID,PLANTON_E2E_GCP_SECOND_PROJECT_ID
+  tags:
+    - planton-e2e
+spec:
+  hostProjectId:
+    valueFrom:
+      kind: GcpSharedVpcHost
+      name: planton-oss-e2e-gcpsvph-prereq
+      fieldPath: status.outputs.host_project_id
+  serviceProjectId:
+    value: ${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID}
+  deletionPolicy: ""

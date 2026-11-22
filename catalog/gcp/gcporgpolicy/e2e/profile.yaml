@@ -3,8 +3,11 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcporgpolicy
 spec:
-  # Awaiting the live proof lane on the PROJECT-scoped arm, which needs only
-  # roles/orgpolicy.policyAdmin on the harness project. Offline bar met:
+  # Awaiting the live proof lane on the PROJECT-scoped arm. Google grants
+  # roles/orgpolicy.policyAdmin only on an organization, never on a project,
+  # so both scenarios run as the declared identity holding it on the test
+  # organization (PLANTON_E2E_GCP_ORGANIZATION_ID), which holds the harness
+  # project; each second act updates the policy in place. Offline bar met:
   # both modules build and validate, offline plans for the reference
   # manifest and both scenarios are clean on the pinned provider, and the
   # accounting is total. Live facts the proof lane confirms: (1) the
@@ -12,8 +15,8 @@ spec:
   # apply-idempotency gate -- Google normalizes the "TRUE"/"FALSE" strings
   # and compares rules as a set; (2) dry_run_spec round-trips; (3) the
   # ambient-project resolution renders the same parent on both engines.
-  # The folder and organization arms stay offline-only until the
-  # organization-scoped test identity exists.
+  # The folder and organization arms stay offline-only: a policy there would
+  # bind every lane in the test organization.
   tier: 1
   status: pending_proof
   validated_provisioners: []

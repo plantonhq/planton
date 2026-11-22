@@ -3,7 +3,9 @@
 # and a dry-run policy beside the enforced one -- the depth of the rule
 # shape, round-tripped through Google's set-comparison of rules and the
 # "TRUE"/"FALSE" string normalization (the re-plan must be clean). Project
-# scope by the ambient project; needs only roles/orgpolicy.policyAdmin on it.
+# scope by the ambient project; the declared identity holds
+# roles/orgpolicy.policyAdmin on the test organization, the only place Google
+# grants it.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpOrgPolicy
 metadata:
@@ -16,6 +18,9 @@ metadata:
     e2e-catalog-kind: gcporgpolicy
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: list-and-dry-run.to.yaml # the update: one more denied region
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID
   tags:
     - planton-e2e
 spec:

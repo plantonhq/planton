@@ -3,19 +3,19 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpfolder
 spec:
-  # A folder exists only inside a Google Cloud Organization and every arm of
-  # this kind needs roles/resourcemanager.folderAdmin on the organization or
-  # a parent folder -- a grant the shared test project's identity does not
-  # hold (the same class as GcpProject). Offline bar met: both modules build
-  # and validate, offline plans for the reference manifest and both
-  # scenarios are clean on the pinned provider, and the accounting is
-  # total. Live proof waits for the organization-scoped test identity;
-  # validated_provisioners stays empty until the live lanes actually run.
-  # Every E2E manifest sets deletion_protection: false so the harness
-  # destroy succeeds, and display names carry the run id (30-day
-  # reservation).
+  # A folder exists only inside a Google Cloud Organization. Both lanes run
+  # as the declared identity, which the harness grants the manifest's folder
+  # permissions in a custom role on the test organization
+  # (PLANTON_E2E_GCP_ORGANIZATION_ID); each second act renames the folder in
+  # place, judged from the organization's and the folder's Admin Activity
+  # logs. Offline bar met: both modules build and validate, offline plans for
+  # the reference manifest and both scenarios are clean on the pinned
+  # provider, and the accounting is total. validated_provisioners stays empty
+  # until the live lanes actually run. Every E2E manifest sets
+  # deletion_protection: false so the harness destroy succeeds, and display
+  # names carry the run id (30-day reservation).
   tier: 2
   status: deferred
-  deferred_reason: folder creation requires organization-level roles/resourcemanager.folderAdmin credentials the E2E test identity does not hold; offline plans only
+  deferred_reason: the live lanes wait for a test organization exported as PLANTON_E2E_GCP_ORGANIZATION_ID, where the harness grants the declared identity the folder permissions; offline plans only until then
   validated_provisioners: []
   timeout_minutes: 20

@@ -3,19 +3,20 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpsharedvpcserviceproject
 spec:
-  # Attaching a service project needs two things the shared test identity does
-  # not have: roles/compute.xpnAdmin on the organization (Google checks
-  # compute.organizations.enableXpnResource there) and a SECOND project under
-  # the same organization to attach (the harness project is the host). Offline
-  # bar met: both modules build and validate, offline plans for the reference
-  # manifest (host by reference, service project through the owner-arranged
-  # PLANTON_E2E_GCP_SECOND_PROJECT_ID token) and the abandon scenario are clean
-  # on the pinned provider, and the accounting is total. Live proof waits for
-  # the organization-scoped identity and the second project; the abandon
-  # scenario additionally leaves an attachment behind by design and needs a
-  # detach step in the proof lane before the host prerequisite can be disabled.
+  # Attaching a service project needs an organization holding both the host
+  # (the harness project) and a second project
+  # (PLANTON_E2E_GCP_SECOND_PROJECT_ID). The live lane, detach-on-destroy,
+  # runs as the declared identity and detaches on destroy, so the host
+  # prerequisite can be disabled after it. It has no second act: both
+  # projects recreate the attachment, so the kind proves by deploy and
+  # destroy. The abandon arm leaves its attachment by design, which blocks the
+  # host's teardown, so it runs only where an operator sets
+  # PLANTON_E2E_GCP_SHARED_VPC_DETACH_BY_HAND and detaches by hand. Offline bar
+  # met: both modules build and validate, offline plans for the reference
+  # manifest and both scenarios are clean on the pinned provider, and the
+  # accounting is total.
   tier: 2
   status: deferred
-  deferred_reason: attaching a service project requires organization-level roles/compute.xpnAdmin credentials and a second project under the organization, neither of which the E2E test identity has; offline plans only
+  deferred_reason: the live lane waits for a test organization exported as PLANTON_E2E_GCP_ORGANIZATION_ID holding the harness project and the second project PLANTON_E2E_GCP_SECOND_PROJECT_ID; offline plans only until then
   validated_provisioners: []
   timeout_minutes: 10

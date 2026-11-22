@@ -1,0 +1,31 @@
+# The second act of organization-by-literal.yaml: the same project renamed,
+# updated in place (the project id and the parent recreate or move it). Not
+# a scenario of its own (the second-act annotation keeps discovery from
+# running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpProject
+metadata:
+  name: planton-oss-e2e-gcpprj-org-literal
+  id: planton-oss-e2e-gcpprj-org-literal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpproject
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: organization-by-literal.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID
+  tags:
+    - planton-e2e
+spec:
+  projectId: planton-e2e-org-${E2E_RUN_ID}
+  # Explicit: the display name defaults to metadata.name, which is longer
+  # than Google's 30-character limit for this fixture's name.
+  displayName: planton e2e org literal 2
+  parentType: organization
+  parentId: ${E2E_ENV:PLANTON_E2E_GCP_ORGANIZATION_ID}
+  autoCreateNetwork: true
+  deletionPolicy: DELETE

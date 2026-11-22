@@ -1,11 +1,14 @@
 # Folder-by-reference GcpProject scenario: the project is placed inside a
 # GcpFolder declared as a prerequisite, through the folder_id reference --
 # parent_type and parent_id stay empty and the module infers the folder
-# parent. Organization-level like every project creation (Project Creator
-# on the folder, plus roles/resourcemanager.folderAdmin for the prerequisite
-# folder); offline plans only until the organization identity exists. The
-# project id carries the run id: deleted project ids are reserved for 30
-# days.
+# parent. The folder fixture deploys as the harness; the project deploys as
+# the declared identity, whose organization custom role
+# (resourcemanager.projects.create) reaches the folder. The folder is
+# deleted after the project: Google deletes a folder that holds no ACTIVE
+# project, and a deleted project waits out its 30 days in DELETE_REQUESTED.
+# No billing account, and the default network kept, as in
+# organization-by-literal.yaml. The project id carries the run id: deleted
+# project ids are reserved for 30 days.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpProject
 metadata:
@@ -18,11 +21,13 @@ metadata:
     e2e-catalog-kind: gcpproject
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: folder-by-reference.to.yaml # the update: the display name
     planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID
   tags:
     - planton-e2e
 spec:
-  projectId: planton-e2e-${E2E_RUN_ID}
+  projectId: planton-e2e-fld-${E2E_RUN_ID}
   # Explicit: the display name defaults to metadata.name, which is longer
   # than Google's 30-character limit for this fixture's name.
   displayName: planton e2e folder ref
@@ -31,4 +36,5 @@ spec:
       kind: GcpFolder
       name: planton-oss-e2e-gcpfldr-prereq
       fieldPath: status.outputs.folder_id
+  autoCreateNetwork: true
   deletionPolicy: DELETE

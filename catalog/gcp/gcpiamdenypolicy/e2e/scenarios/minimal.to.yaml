@@ -1,0 +1,32 @@
+# The second act of minimal.yaml: the same deny policy with its rule's
+# description changed, one update of the policy in place. Not a scenario of
+# its own (the second-act annotation keeps discovery from running it as a
+# lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpIamDenyPolicy
+metadata:
+  name: planton-oss-e2e-gcpiamdenypolicy-min
+  id: planton-oss-e2e-gcpiamdenypolicy-min
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpiamdenypolicy
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: minimal.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID
+  tags:
+    - planton-e2e
+spec:
+  rules:
+    - description: E2E fixture rule, updated in place — denies secret-version access with a break-glass exception
+      denyRule:
+        deniedPrincipals:
+          - principalSet://goog/public:all
+        exceptionPrincipals:
+          - principal://iam.googleapis.com/projects/-/serviceAccounts/planton-e2e-breakglass@example-project.iam.gserviceaccount.com
+        deniedPermissions:
+          - secretmanager.googleapis.com/versions.access

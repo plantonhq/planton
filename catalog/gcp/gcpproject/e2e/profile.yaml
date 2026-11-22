@@ -3,13 +3,16 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpproject
 spec:
-  # Live E2E is conditional on org-level Project Creator credentials, which
-  # the shared test project's ambient ADC does not carry. Scenarios are
-  # exercised via offline converter plans only until an org-scoped test
-  # identity exists; validated_provisioners stays empty until the live
-  # lanes actually run.
+  # Both lanes create a project in the test organization
+  # (PLANTON_E2E_GCP_ORGANIZATION_ID) as the declared identity, which holds
+  # resourcemanager.projects.create in a custom role on the organization:
+  # one directly under the organization, one in a folder fixture. Neither
+  # links billing or deletes the default network, so neither bills. Each
+  # second act renames the project in place, judged from the organization's
+  # and the new project's Admin Activity logs. validated_provisioners stays
+  # empty until the live lanes actually run.
   tier: 2
   status: deferred
-  deferred_reason: project creation requires org-level Project Creator credentials the E2E test identity does not hold; offline plans only
+  deferred_reason: the live lanes wait for a test organization exported as PLANTON_E2E_GCP_ORGANIZATION_ID, where the harness grants the declared identity resourcemanager.projects.create; offline plans only until then
   validated_provisioners: []
   timeout_minutes: 45

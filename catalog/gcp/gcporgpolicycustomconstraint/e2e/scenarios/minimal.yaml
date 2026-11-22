@@ -1,6 +1,7 @@
 # Minimal GcpOrgPolicyCustomConstraint scenario: a DENY constraint over GKE
 # node pools, named from metadata (the module adds the custom. prefix).
-# Organization-level: needs roles/orgpolicy.policyAdmin on the organization.
+# Organization-level: the declared identity holds roles/orgpolicy.policyAdmin
+# on the test organization (PLANTON_E2E_GCP_ORGANIZATION_ID).
 # The name carries the run id so a re-run after a failed teardown does not
 # collide with a lingering constraint.
 apiVersion: gcp.planton.dev/v1alpha1
@@ -15,6 +16,8 @@ metadata:
     e2e-catalog-kind: gcporgpolicycustomconstraint
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the update: the description
     planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID
   tags:
     - planton-e2e

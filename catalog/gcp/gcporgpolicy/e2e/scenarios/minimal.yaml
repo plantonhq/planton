@@ -1,9 +1,10 @@
 # Minimal GcpOrgPolicy scenario: a boolean constraint enforced on the
 # harness project with NO scope named -- the module resolves the provider's
-# default project (exported by the harness as GOOGLE_PROJECT). The one
-# org-policy shape that proves live with only roles/orgpolicy.policyAdmin on
-# the project. The constraint is chosen so enforcing it on an ephemeral test
-# project changes nothing that is running.
+# default project (exported by the harness as GOOGLE_PROJECT). Google grants
+# roles/orgpolicy.policyAdmin only on an organization, so the declared
+# identity holds it on the test organization (PLANTON_E2E_GCP_ORGANIZATION_ID),
+# which holds the harness project. The constraint is chosen so enforcing it
+# on a test project changes nothing that is running.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpOrgPolicy
 metadata:
@@ -16,6 +17,9 @@ metadata:
     e2e-catalog-kind: gcporgpolicy
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml # the update: the rule stops enforcing
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID
   tags:
     - planton-e2e
 spec:

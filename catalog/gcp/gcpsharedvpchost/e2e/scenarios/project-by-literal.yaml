@@ -3,7 +3,10 @@
 # it. Names the harness project through the exported token so the plan and
 # the live run target the same project as the reference manifest's empty
 # form; the difference is the code path (an explicit project skips the
-# provider client-config read).
+# provider client-config read). Shared VPC exists only inside an
+# organization, so the lane needs the test organization holding the harness
+# project. No second act: the project is the host's only field, and
+# changing it makes another project the host.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpSharedVpcHost
 metadata:
@@ -16,6 +19,8 @@ metadata:
     e2e-catalog-kind: gcpsharedvpchost
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID
   tags:
     - planton-e2e
 spec:

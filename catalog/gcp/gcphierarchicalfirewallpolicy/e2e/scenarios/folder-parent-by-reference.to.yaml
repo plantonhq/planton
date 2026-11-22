@@ -1,0 +1,85 @@
+# The second act of folder-parent-by-reference.yaml: the same policy with a new description,
+# patched in place (the parent and the short name recreate it). Not a
+# scenario of its own (the second-act annotation keeps discovery from
+# running it as a lane).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpHierarchicalFirewallPolicy
+metadata:
+  name: planton-oss-e2e-gcphfwp-folder
+  id: planton-oss-e2e-gcphfwp-folder
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcphierarchicalfirewallpolicy
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-second-act: folder-parent-by-reference.yaml
+    planton.dev/e2e-expect-upgrade: in-place # judged from Google's audit log
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID
+    planton.dev/e2e-prerequisites: "GcpFolder"
+  tags:
+    - planton-e2e
+spec:
+  parent:
+    folderId:
+      valueFrom:
+        kind: GcpFolder
+        name: planton-oss-e2e-gcpfldr-prereq
+        fieldPath: status.outputs.folder_id
+  shortName: planton-e2e-hfwp-folder-${E2E_RUN_ID}
+  description: Planton E2E folder-scoped hierarchical firewall policy, updated in place; safe to delete
+  rules:
+    - priority: 100
+      action: deny
+      direction: INGRESS
+      description: Threat intelligence and geography
+      enableLogging: true
+      match:
+        srcThreatIntelligences: ["iplist-known-malicious-ips"]
+        srcRegionCodes: ["KP"]
+        srcNetworkContext: INTERNET
+        layer4Configs:
+          - ipProtocol: all
+    - priority: 200
+      action: allow
+      direction: EGRESS
+      description: Google APIs by name
+      match:
+        destFqdns: ["www.googleapis.com"]
+        destNetworkContext: INTERNET
+        layer4Configs:
+          - ipProtocol: tcp
+            ports: ["443"]
+    - priority: 300
+      action: allow
+      direction: INGRESS
+      description: Health checks to every backend
+      match:
+        srcIpRanges: ["35.191.0.0/16", "130.211.0.0/22"]
+        destIpRanges: ["10.0.0.0/8"]
+        layer4Configs:
+          - ipProtocol: tcp
+            ports: ["80", "443", "8000-8999"]
+    - priority: 2000
+      action: goto_next
+      direction: INGRESS
+      match:
+        layer4Configs:
+          - ipProtocol: all
+    - priority: 2100
+      action: goto_next
+      direction: EGRESS
+      match:
+        layer4Configs:
+          - ipProtocol: all
+  associations:
+    - name: planton-e2e-hfwp-folder-${E2E_RUN_ID}
+      target:
+        folderId:
+          valueFrom:
+            kind: GcpFolder
+            name: planton-oss-e2e-gcpfldr-prereq
+            fieldPath: status.outputs.folder_id
+  deletionPolicy: DELETE

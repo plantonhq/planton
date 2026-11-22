@@ -18,6 +18,8 @@ metadata:
     e2e-catalog-kind: gcphierarchicalfirewallpolicy
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: folder-parent-by-reference.to.yaml # the update: the description
     planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID
     planton.dev/e2e-prerequisites: "GcpFolder"
   tags:

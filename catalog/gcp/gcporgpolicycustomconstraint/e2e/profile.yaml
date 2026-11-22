@@ -3,16 +3,17 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcporgpolicycustomconstraint
 spec:
-  # A custom constraint's parent is always the organization and creating one
-  # needs roles/orgpolicy.policyAdmin on the organization -- a grant the
-  # shared test project's identity does not hold (the same class as
-  # GcpProject). Offline bar met: both modules build and validate, offline
-  # plans for the reference manifest and the scenario are clean on the
-  # pinned provider, and the accounting is total. Live proof waits for the
-  # organization-scoped test identity; validated_provisioners stays empty
-  # until the live lanes actually run.
+  # A custom constraint's parent is always the organization. Its lane runs as
+  # the declared identity, which the harness grants
+  # roles/orgpolicy.policyAdmin on the test organization
+  # (PLANTON_E2E_GCP_ORGANIZATION_ID); the second act changes the description
+  # in place, judged from the organization's Admin Activity log. Offline bar
+  # met: both modules build and validate, offline plans for the reference
+  # manifest and the scenario are clean on the pinned provider, and the
+  # accounting is total. validated_provisioners stays empty until the live
+  # lanes actually run.
   tier: 2
   status: deferred
-  deferred_reason: custom constraints are organization-scoped and require organization-level roles/orgpolicy.policyAdmin credentials the E2E test identity does not hold; offline plans only
+  deferred_reason: the live lanes wait for a test organization exported as PLANTON_E2E_GCP_ORGANIZATION_ID, where the harness grants the declared identity roles/orgpolicy.policyAdmin; offline plans only until then
   validated_provisioners: []
   timeout_minutes: 15
