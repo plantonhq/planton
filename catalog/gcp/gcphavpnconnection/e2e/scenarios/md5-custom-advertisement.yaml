@@ -6,10 +6,9 @@
 # distinct route priorities (active/passive), explicit IKE version, explicit
 # peer address, a cipher-suite restriction, tunnel labels and descriptions,
 # and a named session. Same Google-to-Google chain and fixtures as the
-# reference manifest; the reverse fixture runs without MD5, so the sessions
-# establish only if Google tolerates the asymmetry -- the proof lane records
-# which (a watch item). Names differ from the reference so both can plan
-# side by side.
+# reference manifest; the reverse fixture declares the same MD5 key on its
+# matching session, because Google keeps a session with MD5 on one side only
+# in Connect. Names differ from the reference so both can plan side by side.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpHaVpnConnection
 metadata:
