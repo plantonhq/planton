@@ -43,12 +43,13 @@ spec:
           - secretmanager.secrets.delete
           - secretmanager.versions.add
           - secretmanager.versions.access
+          - secretmanager.versions.enable
           - secretmanager.secrets.setIamPolicy
           - secretmanager.secrets.getIamPolicy
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: Covers google_secret_manager_secret (the "<metadata.name>-token" secret with automatic replication) plus its google_secret_manager_secret_version -- versions.add writes the token, versions.access reads it back during refresh (the value is spec material, so the provider round-trips it). setIamPolicy/getIamPolicy cover google_secret_manager_secret_iam_member -- the one secretAccessor grant to the runtime service account, placed ON the module-owned secret, never on the referenced account.
+        notes: Covers google_secret_manager_secret (the "<metadata.name>-token" secret with automatic replication) plus its google_secret_manager_secret_version -- versions.add writes the token, versions.access reads it back during refresh (the value is spec material, so the provider round-trips it); versions.enable is what Pulumi calls to set the new version enabled (measured live -- refused without it). setIamPolicy/getIamPolicy cover google_secret_manager_secret_iam_member -- the one secretAccessor grant to the runtime service account, placed ON the module-owned secret, never on the referenced account.
       - purpose: ManageRunnerService
         permissions:
           - run.services.create

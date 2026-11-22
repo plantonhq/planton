@@ -175,7 +175,10 @@ func (v *plantonRunnerVerifier) VerifyExpectedDeployFailure(ctx context.Context,
 		if logErr == nil {
 			var dialing bool
 			for _, entry := range resp.Entries {
-				if strings.Contains(entry.TextPayload, "joining as runner") {
+				// The runner's own line for a refused join: "the control
+				// plane at <endpoint> did not admit runner <name>: this
+				// runner token was not accepted".
+				if strings.Contains(entry.TextPayload, "did not admit runner") {
 					fmt.Printf("  [verify] CAUSE: deploy failed at revision readiness, the service object carries the full authored template, and Cloud Logging holds the join-step error -- the ONLY failure is the refused join\n")
 					return nil
 				}
