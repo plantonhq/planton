@@ -85,12 +85,21 @@ IPv6, TCP, or UDP header, optionally masked) — never through the HTTP
 `match`. Every listed field must match (AND); within a field any listed
 value matches (OR); an empty `networkMatch: {}` matches every packet and
 is how the default rule is written. A rule that names a user-defined
-field the policy never defined is rejected before deploy. Rules beyond the
-default rule need advanced network DDoS protection turned on in the region
-first: on a region with only `STANDARD`, Google refuses the policy
-("Creating network security policies with custom rules requires advanced
-network DDoS protection to be enabled in the region"), so a `STANDARD`
-policy carries the default rule alone.
+field the policy never defined is rejected before deploy.
+
+Packet rules and user-defined fields are a Cloud Armor Enterprise
+feature. Google's own setup enrolls the project in Enterprise, turns on
+advanced network DDoS protection in the region first (a separate
+`CLOUD_ARMOR_NETWORK` policy with `ddosProtection: ADVANCED` and
+`networkEdgeSecurityService`; Google says not to reuse that policy for
+rules), and only then creates the rules policy. What is measured: in a
+region without advanced network DDoS protection, Google refused a
+`CLOUD_ARMOR_NETWORK` policy carrying one user-defined field and the
+default rule written as an empty `networkMatch` ("Creating network
+security policies with custom rules requires advanced network DDoS
+protection to be enabled in the region"). A policy with no rules and no
+user-defined fields is the shape to use there; Google adds the default
+rule itself.
 
 `ddosProtectionConfig.ddosProtection` is the reason most network
 policies exist. `STANDARD` is Google's always-on protection, free with

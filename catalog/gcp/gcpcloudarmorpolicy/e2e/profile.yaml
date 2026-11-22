@@ -11,13 +11,14 @@ spec:
   # collection (google_compute_region_security_policy) as a CLOUD_ARMOR
   # policy with a priority-0 rule and a throttle exceeding to deny(429);
   # `regional-network-standard` proves the CLOUD_ARMOR_NETWORK type with
-  # STANDARD DDoS protection, a user-defined field, a network-match rule,
-  # and the default rule as an empty network match. Live facts the proof
-  # lane confirms: (1) priority 0 deploys and re-plans clean on both
-  # engines; (2) the regional rules list re-plans clean under Google's
-  # set-wise comparison regardless of manifest order; (3) the default rule
-  # shape Google returns for a network policy matches the empty
-  # network_match the manifest declares; (4) a regional policy carries no
+  # STANDARD DDoS protection, no rules and no user-defined fields (a region
+  # without advanced network DDoS protection refused the type carrying a
+  # user-defined field and an explicit default network-match rule). Live
+  # facts the proof lane confirms: (1) priority 0 deploys and re-plans clean
+  # on both engines; (2) the regional rules list re-plans clean under
+  # Google's set-wise comparison regardless of manifest order; (3) the
+  # network policy with no rules re-plans clean beside the default rule
+  # Google adds; (4) a regional policy carries no
   # labels and the verifier does not look for the label canary there.
   #
   # Offline-proven arms: adaptive protection (L7 DDoS defense),

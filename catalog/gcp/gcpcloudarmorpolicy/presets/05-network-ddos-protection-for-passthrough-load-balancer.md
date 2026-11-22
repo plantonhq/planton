@@ -8,27 +8,27 @@ Protect a region's passthrough Network Load Balancers (and protocol forwarding r
 
 - An internal or external passthrough NLB (the `INTERNAL` / `EXTERNAL` regional `GcpBackendService` behind a regional `GcpGlobalForwardingRule`)
 - Protocol forwarding or a fleet of VMs with public IPs in one region
-- The first step toward Cloud Armor Enterprise's advanced network DDoS protection (`ADVANCED_PREVIEW`, then `ADVANCED`, with `networkEdgeSecurityService` declared on one policy per region)
+- A project enrolled in Cloud Armor Enterprise, in a region where advanced network DDoS protection is already on
+
+## Before You Start
+
+Packet rules and user-defined fields are a Cloud Armor Enterprise feature. Google refuses this policy at create in a region without advanced network DDoS protection ("Creating network security policies with custom rules requires advanced network DDoS protection to be enabled in the region"). Turn it on first with a separate `GcpCloudArmorPolicy` in the same region: `type: CLOUD_ARMOR_NETWORK`, `ddosProtectionConfig.ddosProtection: ADVANCED` (or `ADVANCED_PREVIEW` to observe first), and `networkEdgeSecurityService` declared (one per region per project). Google says not to reuse that policy for rules, so this preset is the second policy. In a region on `STANDARD` protection only, a network policy carries no rules and no user-defined fields, and Google adds its default rule.
 
 ## What This Creates
 
-- A REGIONAL Cloud Armor policy of type `CLOUD_ARMOR_NETWORK` in `us-central1`
-- `STANDARD` network DDoS protection -- always on, free with the load balancer
+- A REGIONAL Cloud Armor policy of type `CLOUD_ARMOR_NETWORK` in `us-central1`, the region's packet filter
 - One user-defined field: two bytes at TCP offset 8, masked `0x8F00`
 - Priority 100 (preview): allow TCP/443 from `10.10.0.0/16` whose signed field reads `0x8F00`
 - Priority 200: deny(403) packets from two origin ASNs
 - Priority 2147483647: the mandatory default rule, written as an empty `networkMatch` (every packet)
-
-Google accepts the priority-100 and priority-200 rules only in a region where advanced network DDoS protection is already on (`ADVANCED_PREVIEW` or `ADVANCED` on one policy that declares the region's `networkEdgeSecurityService`). With `STANDARD` alone the create is refused ("Creating network security policies with custom rules requires advanced network DDoS protection to be enabled in the region"); keep only the default rule until the region is enrolled.
 
 ## Customize
 
 | Field | Default | Why Change |
 |-------|---------|------------|
 | `region` | `us-central1` | The region of the load balancers this policy protects. Immutable. |
-| `ddosProtection` | `STANDARD` | `ADVANCED_PREVIEW` to observe Enterprise mitigations, `ADVANCED` to enforce them -- both need the project enrolled in Cloud Armor Enterprise and `networkEdgeSecurityService` declared. |
 | `userDefinedFields` | one TCP field | Add fields for the bytes your protocol signs; up to 4 bytes each, names unique, referenced by name from rules. |
 | `srcAsns` (priority 200) | two documentation ASNs | The autonomous systems you never serve. To drop the rule, delete it: an empty network match matches every packet, so the rule with no ASNs would deny everything. |
 | default rule `action` | `allow` | `deny(403)` makes the allowlist the guard. |
 
-A network policy has no HTTP `match`, no labels, no Adaptive Protection, no redirect, and no header injection -- each is rejected before deploy. Without an Enterprise subscription, `ADVANCED` is accepted by the API and does nothing more than `STANDARD`; the module cannot check the subscription for you.
+A network policy has no HTTP `match`, no labels, no Adaptive Protection, no redirect, and no header injection -- each is rejected before deploy. The module cannot check the Enterprise subscription or the region's enrollment for you; Google's refusal at create is the check.

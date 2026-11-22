@@ -1,10 +1,12 @@
-# GcpCloudArmorPolicy scenario exercising the CLOUD_ARMOR_NETWORK type:
-# a regional packet-level policy with STANDARD network DDoS protection (no
-# subscription needed), one user-defined field, a preview network-match
-# rule keyed on that field and a source range, and the default rule written
-# as an empty network match. ADVANCED protection and the network edge
-# security service stay offline-only: they need a Cloud Armor Enterprise
-# subscription the harness project does not hold.
+# GcpCloudArmorPolicy scenario exercising the CLOUD_ARMOR_NETWORK type: a
+# regional packet-level policy with STANDARD network DDoS protection (no
+# subscription needed), no rules and no user-defined fields, so Google adds
+# its own default rule. A region without advanced network DDoS protection
+# refused this type carrying a user-defined field and the default rule
+# written as an empty network match; rules and user-defined fields, ADVANCED
+# protection and the network edge security service stay offline-only:
+# they need a Cloud Armor Enterprise subscription the harness project does
+# not hold.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpCloudArmorPolicy
 metadata:
@@ -29,20 +31,8 @@ spec:
   ddosProtectionConfig:
     ddosProtection: STANDARD
 
-  userDefinedFields:
-    - name: SIG1_AT_0
-      base: TCP
-      offset: 8
-      size: 2
-      mask: "0x8F00"
-
-  # The default rule alone: on a region with only STANDARD protection,
-  # Google refuses any other rule on a network policy.
-  rules:
-    - action: allow
-      priority: 2147483647
-      description: Default rule -- every packet
-      networkMatch: {}
+  # No rules: Google adds the default rule itself.
+  rules: []
 
   # Ephemeral test fixture: fully delete on destroy.
   deletionPolicy: DELETE

@@ -12,11 +12,12 @@ spec:
   # forwarding, and public-IP VMs, so their rules use networkMatch.
   region: us-central1
   type: CLOUD_ARMOR_NETWORK
-  ddosProtectionConfig:
-    # STANDARD is Google's always-on protection, free with the load
-    # balancer. ADVANCED / ADVANCED_PREVIEW need Cloud Armor Enterprise and
-    # the region enrolled through networkEdgeSecurityService.
-    ddosProtection: STANDARD
+  # Packet rules and user-defined fields need Cloud Armor Enterprise and
+  # advanced network DDoS protection already on in this region: a separate
+  # CLOUD_ARMOR_NETWORK policy with ddosProtection ADVANCED and
+  # networkEdgeSecurityService, applied first. Google says not to reuse that
+  # policy for rules, so this one carries no ddosProtectionConfig. Without
+  # the enrollment Google refuses this policy at create.
   userDefinedFields:
     # Two bytes at offset 8 of the TCP header, masked to the bits the
     # rule below inspects -- the shape Google's own example uses.

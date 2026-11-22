@@ -133,7 +133,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 **Regional WAF for a regional ALB** — The same allowlist, geo-block, and rate-limit rules on a regional policy a regional backend service attaches. Start from the **Regional WAF for a Regional Load Balancer** preset.
 
-**Network DDoS protection for a passthrough NLB** — A regional `CLOUD_ARMOR_NETWORK` policy with STANDARD DDoS protection and a packet-level allowlist on a user-defined field. Start from the **Network DDoS Protection for a Passthrough Load Balancer** preset.
+**Network DDoS protection for a passthrough NLB** — A regional `CLOUD_ARMOR_NETWORK` packet filter with an allowlist on a user-defined field, for a Cloud Armor Enterprise project whose region already has advanced network DDoS protection on. Start from the **Network DDoS Protection for a Passthrough Load Balancer** preset.
 
 ## Works With
 

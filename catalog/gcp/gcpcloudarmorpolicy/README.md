@@ -100,7 +100,7 @@ projectId:
 
 ## Regional network policy
 
-A `CLOUD_ARMOR_NETWORK` policy filters packets, not HTTP requests, so its rules use `networkMatch` instead of `match`:
+A `CLOUD_ARMOR_NETWORK` policy filters packets, not HTTP requests, so its rules use `networkMatch` instead of `match`. Packet rules and user-defined fields need Cloud Armor Enterprise and advanced network DDoS protection already on in the region (a separate network policy with `ddosProtection: ADVANCED` and `networkEdgeSecurityService`); Google refuses them at create otherwise. On `STANDARD` alone, declare the policy with no rules and no user-defined fields.
 
 ```yaml
 apiVersion: gcp.planton.dev/v1alpha1
@@ -110,8 +110,6 @@ metadata:
 spec:
   region: us-central1
   type: CLOUD_ARMOR_NETWORK
-  ddosProtectionConfig:
-    ddosProtection: STANDARD
   userDefinedFields:
     - name: SIG1_AT_0
       base: TCP
