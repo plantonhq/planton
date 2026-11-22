@@ -21,6 +21,6 @@ spec:
   # and the created stores under deletion_policy DELETE.
   tier: 2
   status: deferred
-  deferred_reason: a data connector authenticates to a third-party source tenant through Secret Manager secrets the harness project does not hold; proven offline on the pinned provider
+  deferred_reason: "unblocked by a third-party Jira or ServiceNow tenant arranged for the lanes, with its credentials in Secret Manager secrets the harness project holds; Google's first-party connectors (BigQuery, Google Drive) would instead need a Gemini Enterprise licence on the harness project. Proven offline on the pinned provider until then"
   validated_provisioners: []
   timeout_minutes: 60
