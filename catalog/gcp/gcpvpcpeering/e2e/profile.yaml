@@ -21,6 +21,10 @@ spec:
   #     Memorystore instance -- a fixture the harness does not carry. Unblock:
   #     a private-IP fixture exported as PLANTON_E2E_GCP_SERVICE_NETWORKING_VPC.
   tier: 1
+  # Parked (2026-11-22): Google deletes a CONSENSUS peering only after both network
+  # owners call networks.requestRemovePeering, which neither provider does, so both
+  # engines' destroys are refused; the lane needs a pre-destroy removal request on both
+  # sides (kind and fixture) before it can pass.
   status: pending_proof
   validated_provisioners: []
   timeout_minutes: 20

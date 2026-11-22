@@ -22,13 +22,14 @@ spec:
   # create and delete again. It carries no second act, as the IAM-member
   # kinds don't.
   #
-  # Zone stock (2026-11-21): Google refused an on-demand v2-8 request with
+  # Zone stock (2026-11-21, 2026-11-22): Google refused an on-demand v2-8 request with
   # "Insufficient capacity. Try again in a different zone or at a later
-  # time." in us-central1-f and in us-central1-b, on both engines -- a
+  # time." in us-central1-f, us-central1-b and us-central1-c, on both engines -- a
   # capacity event, not a quota or module defect (quota read live: v2 spot 48
-  # and on-demand 16 per zone). The scenario runs in us-central1-c, which
-  # lists v2-8 (europe-west4-a does too).
+  # and on-demand 16 per zone). The scenario runs in europe-west4-a,
+  # which lists v2-8.
   tier: 1
-  status: pending_proof
+  status: deferred
+  deferred_reason: "not performed: stock -- Google refused a v2-8 with \"Insufficient capacity. Try again in a different zone or at a later time.\" in us-central1-f and us-central1-b (2026-11-21) and in us-central1-c and europe-west4-a (2026-11-22), on both engines, with quota held (v2 spot 48, on-demand 16 per zone); re-run in a zone with v2-8 stock"
   validated_provisioners: []
   timeout_minutes: 30

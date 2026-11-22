@@ -26,6 +26,6 @@ spec:
   # and GCE_VM_IP groups ride the presets' offline plans -- a smoke fixture
   # cannot honestly stand up an on-premises address.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 20

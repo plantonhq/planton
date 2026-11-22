@@ -4,7 +4,7 @@ metadata:
   name: gcptpuvm
 spec:
   # Awaiting the live proof lane. The scenario proves in the harness
-  # project with roles/tpu.admin and TPU v2 spot quota in us-central1-c
+  # project with roles/tpu.admin and TPU v2 spot quota in europe-west4-a
   # (a fresh project's TPU quota and the zone's spot stock are on the
   # watch list); the module enables tpu.googleapis.com itself and attaches
   # the TPU through google-beta under the recorded admission. Offline bar
@@ -17,13 +17,13 @@ spec:
   # provider); (2) the verifier reads the attribution labels and a network
   # endpoint; (3) destroy deletes the TPU and the verifier reads 404.
   #
-  # Zone stock (2026-11-21): Google refused a spot v2-8 with "Insufficient
+  # Zone stock (2026-11-21, 2026-11-22): Google refused a spot v2-8 with "Insufficient
   # capacity. Try again in a different zone or at a later time." in
-  # us-central1-f and in us-central1-b, on both engines -- a capacity event,
+  # us-central1-f, us-central1-b and us-central1-c, on both engines -- a capacity event,
   # not a quota or module defect (quota read live: v2 spot 48 and on-demand
-  # 16 per zone). The scenario runs in us-central1-c, which lists v2-8
-  # (europe-west4-a does too).
+  # 16 per zone). The scenario runs in europe-west4-a, which lists v2-8.
   tier: 1
-  status: pending_proof
+  status: deferred
+  deferred_reason: "not performed: stock -- Google refused a v2-8 with \"Insufficient capacity. Try again in a different zone or at a later time.\" in us-central1-f and us-central1-b (2026-11-21) and in us-central1-c and europe-west4-a (2026-11-22), on both engines, with quota held (v2 spot 48, on-demand 16 per zone); re-run in a zone with v2-8 stock"
   validated_provisioners: []
   timeout_minutes: 30

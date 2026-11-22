@@ -36,6 +36,10 @@ spec:
   # create doesn't, and Google's audit log can't tell them apart. It carries
   # no second act, as the IAM-member kinds don't.
   tier: 1
+  # Parked (2026-11-22): the Redis cluster fixture (Pulumi) exported an empty
+  # discovery_service_attachment, so the PSC forwarding rule fixture had no target; the
+  # harness resolves the reference (checked offline). Next: read the cluster's
+  # psc_service_attachments live and fix the module's selection.
   status: pending_proof
   validated_provisioners: []
   timeout_minutes: 60

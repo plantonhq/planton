@@ -20,6 +20,10 @@ spec:
   # location must not diff; (4) destroy leaves the verifier reading 404
   # before the authority and pool go.
   tier: 1
+  # Parked (2026-11-22): Google answers the create with only "Config validation failed"
+  # on both engines, with the agent created and granted on the pool and a 90-day CA;
+  # grant propagation (six minutes of retries) and CA lifetime are ruled out. Untested:
+  # the DEVOPS pool tier and the config location against the pool region.
   status: pending_proof
   validated_provisioners: []
   timeout_minutes: 25

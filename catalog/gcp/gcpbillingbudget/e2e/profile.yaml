@@ -22,6 +22,6 @@ spec:
   # billingAccounts/{id}/budgets/{id} on both engines; (3) a last-period
   # budget over a MONTH filter is accepted.
   tier: 2
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 10

@@ -26,6 +26,6 @@ spec:
   # (a regional GcpGlobalForwardingRule with an empty scheme targeting the
   # attachment) is a chain this kind's lane does not carry.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 25

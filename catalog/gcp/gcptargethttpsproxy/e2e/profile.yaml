@@ -17,6 +17,6 @@ spec:
   # regional URL map chain; the classic scenarios re-prove the global arm
   # unchanged (offline plan equivalence already shows identical plans).
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 25

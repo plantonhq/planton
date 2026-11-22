@@ -31,6 +31,6 @@ spec:
   # hybrid-two-indexes creates one index and refuses the other; a re-apply
   # creates the second. The remedy is a provider-side retry on the 409.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 60
