@@ -21,4 +21,7 @@ The pair goes `ACTIVE` once both sides exist.
 ## When to choose something else
 
 A spoke that must never let the hub's route changes alter its traffic
-unilaterally adds `updateStrategy: CONSENSUS` on both sides.
+unilaterally adds `updateStrategy: CONSENSUS` on both sides. Taking such a
+pair down then needs both network owners to request the peering's removal
+before either side is destroyed (the GUIDE's "Consensus when two teams own
+the sides").

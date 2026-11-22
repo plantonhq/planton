@@ -1,0 +1,43 @@
+# GcpVpcPeering scenario for the INDEPENDENT update strategy, the kind's
+# default and what most peerings run: side A on the registry's prerequisite
+# network, an INDEPENDENT side-B fixture on the second network so the pair
+# goes ACTIVE, PREVENT held off so the harness can destroy. Either side's
+# change applies at once, so the second act (custom routes no longer
+# exported) is an updatePeering in place that the audit log judges.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVpcPeering
+metadata:
+  name: planton-oss-e2e-gcppeer-independent
+  id: planton-oss-e2e-gcppeer-independent
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcpvpcpeering
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-exclusive: gcp-network-pairs # two networks per lane against the project five: never beside the other two-network kind
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: independent-flags.to.yaml # the in-place update: custom routes no longer exported
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpvpcpeering/e2e/prerequisites/gcpvpcnetwork-peer.yaml,catalog/gcp/gcpvpcpeering/e2e/prerequisites/gcpvpcpeering-side-b-independent.yaml"
+  tags:
+    - planton-e2e
+spec:
+  peeringName: planton-oss-e2e-gcppeer-ind-a-${E2E_RUN_ID}
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpvpcnetwork-prereq
+      fieldPath: status.outputs.network_self_link
+  peerNetwork:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcppeer-peer-vpc
+      fieldPath: status.outputs.network_self_link
+  exportCustomRoutes: true
+  importCustomRoutes: true
+  exportSubnetRoutesWithPublicIp: false
+  importSubnetRoutesWithPublicIp: true
+  stackType: IPV4_ONLY
+  updateStrategy: INDEPENDENT
+  deletionPolicy: DELETE

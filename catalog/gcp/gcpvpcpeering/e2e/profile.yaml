@@ -3,16 +3,19 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpvpcpeering
 spec:
-  # Awaiting the live proof lane. Offline bar met: both modules build and
-  # validate, offline plans for the reference manifest, both scenarios, and the
-  # two fixture manifests are clean on the pinned provider, and the accounting
-  # is total. Live facts the proof lane confirms: (1) side A (under test) and
-  # the side-B fixture on the second network both reach ACTIVE -- the verifier
-  # polls the network's peering entry for the state; (2) the four route flags
-  # round-trip and RE-PLAN CLEAN under the apply-idempotency gate, including
-  # CONSENSUS; (3) the harness destroys side A before the fixture networks.
-  # Project-scoped; needs only roles/compute.networkAdmin on the harness
-  # project.
+  # Two live scenarios, each with an ACTIVE pair (side A under test, side B a
+  # fixture on the second network):
+  #   - independent-flags: the kind's default strategy; the second act turns
+  #     off custom-route export, an updatePeering in place judged from the
+  #     audit log.
+  #   - consensus-dual-stack-flags: CONSENSUS with complementary flags on the
+  #     two sides. No second act: Google applies a CONSENSUS change only after
+  #     the matching peering makes the complementary one, so one side's update
+  #     cannot be judged alone. Google deletes a CONSENSUS peering only after
+  #     both network owners call networks.requestRemovePeering, which neither
+  #     provider does; the harness makes both requests before each destroy
+  #     (planton.dev/e2e-prepare-destroy: consensus-peering), the step the
+  #     GUIDE gives the customer, so this scenario proves that teardown.
   #
   # Offline-proven-only arm (skips honestly through its required-env token):
   #   - routes-config-existing-peering: the ROUTES-CONFIG form targets the
@@ -21,10 +24,6 @@ spec:
   #     Memorystore instance -- a fixture the harness does not carry. Unblock:
   #     a private-IP fixture exported as PLANTON_E2E_GCP_SERVICE_NETWORKING_VPC.
   tier: 1
-  # Parked (2026-11-22): Google deletes a CONSENSUS peering only after both network
-  # owners call networks.requestRemovePeering, which neither provider does, so both
-  # engines' destroys are refused; the lane needs a pre-destroy removal request on both
-  # sides (kind and fixture) before it can pass.
   status: pending_proof
   validated_provisioners: []
   timeout_minutes: 20

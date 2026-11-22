@@ -1,11 +1,18 @@
-# GcpVpcPeering scenario exercising every create-form knob the reference
-# manifest leaves at its default: CONSENSUS update strategy, both public-IP
-# subnet-route flags flipped from their defaults, IPV4_ONLY stated
-# explicitly, and PREVENT held off so the harness can destroy. Same two
+# GcpVpcPeering scenario for the CONSENSUS update strategy, with both
+# public-IP subnet-route flags flipped from their defaults and IPV4_ONLY
+# stated explicitly; PREVENT held off so the harness can destroy. Same two
 # fixture networks and the same side-B fixture as the reference manifest, so
 # the pair goes ACTIVE. Under CONSENSUS Google refuses the second side
 # unless the two sides' flags are complementary, so the side-B fixture
 # carries the mirror of these flags.
+#
+# No second act: under CONSENSUS Google applies a change to the connection
+# only after the matching peering makes the complementary change, so one
+# side's update cannot be judged alone (independent-flags.yaml proves the
+# in-place update). Google deletes a CONSENSUS peering only after the owners
+# of both networks request its removal, which neither provider does; the
+# harness makes both requests before each destroy (e2e-prepare-destroy), the
+# step the GUIDE gives the customer, so this scenario proves that teardown.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpVpcPeering
 metadata:
@@ -20,7 +27,7 @@ metadata:
     planton.dev/e2e: "true"
     planton.dev/e2e-exclusive: gcp-network-pairs # two networks per lane against the project five: never beside the other two-network kind
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
-    planton.dev/e2e-upgrade-manifest: consensus-dual-stack-flags.to.yaml # the in-place update: custom routes no longer exported
+    planton.dev/e2e-prepare-destroy: consensus-peering # both owners request the removal before the destroy, as the GUIDE says
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpvpcpeering/e2e/prerequisites/gcpvpcnetwork-peer.yaml,catalog/gcp/gcpvpcpeering/e2e/prerequisites/gcpvpcpeering-side-b.yaml"
   tags:
     - planton-e2e
