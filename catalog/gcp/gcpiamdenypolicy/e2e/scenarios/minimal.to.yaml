@@ -27,6 +27,6 @@ spec:
         deniedPrincipals:
           - principalSet://goog/public:all
         exceptionPrincipals:
-          - principal://iam.googleapis.com/projects/-/serviceAccounts/planton-e2e-breakglass@example-project.iam.gserviceaccount.com
+          - principal://iam.googleapis.com/projects/-/serviceAccounts/${E2E_ENV:PLANTON_E2E_GCS_AGENT_EMAIL} # Google refuses a principal that does not exist; the harness project's Cloud Storage agent stands in for a break-glass account
         deniedPermissions:
           - secretmanager.googleapis.com/versions.access

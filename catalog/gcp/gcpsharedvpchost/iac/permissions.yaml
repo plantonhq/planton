@@ -27,6 +27,13 @@ spec:
         reach: target
         privilege: ordinary
         notes: "The provider reads the host project's xpnProjectStatus with compute.projects.get on every refresh and import -- a project permission, held on the host project."
+      - purpose: PollSharedVpcHostOperations
+        permissions:
+          - compute.globalOperations.get
+        provenance: derived
+        reach: target
+        privilege: ordinary
+        notes: "enableXpnHost and disableXpnHost return an operation in the host project that both engines poll, and Google authorizes the poll as compute.globalOperations.get on the host project (refused without it on both engines: \"Required 'compute.globalOperations.get' permission for 'projects/...'\")."
       - purpose: ResolveDefaultProject
         permissions:
           - resourcemanager.projects.get

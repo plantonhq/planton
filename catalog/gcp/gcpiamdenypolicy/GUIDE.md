@@ -21,7 +21,10 @@ the recovery identity — an on-call service account, a dedicated
 break-glass account — in `exceptionPrincipals` so the rule denies
 everyone (`principalSet://goog/public:all`) EXCEPT the path you will
 need at 3am. Verify the exception identity actually works before the
-policy ships; deny is not a layer to debug during an outage.
+policy ships; deny is not a layer to debug during an outage. Create the break-glass identity first, too: Google refuses a rule
+naming a service account that does not exist ("The principal specified by
+member ... was not found"), so the account must exist before the policy
+that excepts it.
 
 ## Conditions carve out spaces, not people
 

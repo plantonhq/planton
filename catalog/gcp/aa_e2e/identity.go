@@ -559,28 +559,43 @@ func (h *Harness) ensureDeclaredRole(ctx context.Context, parent, kind string, c
 		Stage:               "GA",
 	}
 	roles := h.roleStore(parent)
+	// The two engines' lanes of one kind write the same role at once, and
+	// Google refuses the slower write with 409 "There were concurrent role
+	// changes" (measured on an organization role): the whole read-modify-write
+	// is retried, as updatePolicy retries a policy's.
+	err := retryUntil(ctx, 2*time.Minute, func() (bool, error) {
+		err := writeDeclaredRole(ctx, roles, parent, roleID, name, desired)
+		if err != nil && (isStatus(err, 409) || strings.Contains(err.Error(), "concurrent role changes")) {
+			return false, nil
+		}
+		return err == nil, err
+	})
+	if err != nil {
+		return "", errors.Wrapf(err, "writing the declared role %s", name)
+	}
+	return name, nil
+}
+
+// writeDeclaredRole creates, undeletes or patches the role to desired.
+func writeDeclaredRole(ctx context.Context, roles roleStore, parent, roleID, name string, desired *iam.Role) error {
 	existing, err := roles.get(ctx, name)
 	switch {
 	case err != nil && isStatus(err, 404):
 		err = roles.create(ctx, parent, &iam.CreateRoleRequest{RoleId: roleID, Role: desired})
 		if err == nil {
-			return name, nil
+			return nil
 		}
-		// The other engine's lane of the same kind created it a moment ago.
-		if !isStatus(err, 409) {
-			return "", errors.Wrapf(err, "creating the declared role %s", name)
-		}
+		// The other engine's lane of the same kind created it a moment ago;
+		// a 409 here is retried, and the next read finds it.
+		return err
 	case err != nil:
-		return "", errors.Wrapf(err, "reading the declared role %s", name)
+		return errors.Wrapf(err, "reading the declared role %s", name)
 	case existing.Deleted:
 		if err := roles.undelete(ctx, name, existing.Etag); err != nil {
-			return "", errors.Wrapf(err, "undeleting the declared role %s", name)
+			return err
 		}
 	}
-	if err := roles.patch(ctx, name, desired); err != nil {
-		return "", errors.Wrapf(err, "writing the declared role %s", name)
-	}
-	return name, nil
+	return roles.patch(ctx, name, desired)
 }
 
 // roleStore is IAM's custom-role calls for one parent: a project's and an

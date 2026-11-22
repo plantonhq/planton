@@ -27,3 +27,11 @@ spec:
         reach: target
         privilege: ordinary
         notes: "The provider reads the HOST project with compute.projects.get on every refresh and import (it lists the host's xpnResources to find the attachment) -- a project permission, held on the host project."
+      - purpose: ResolveAndPollHostProject
+        permissions:
+          - resourcemanager.projects.get
+          - compute.globalOperations.get
+        provenance: derived
+        reach: target
+        privilege: ordinary
+        notes: "Before attaching, the provider reads the host project through Resource Manager (refused without resourcemanager.projects.get on both engines: \"Required 'resourcemanager.projects.get' permission for 'projects/<host>'\"), and enableXpnResource and disableXpnResource return an operation in the host project that both engines poll as compute.globalOperations.get. Held on the host project."
