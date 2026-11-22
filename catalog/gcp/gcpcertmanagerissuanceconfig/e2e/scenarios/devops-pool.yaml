@@ -18,6 +18,10 @@ metadata:
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e-upgrade-manifest: devops-pool.to.yaml # the in-place update: a label, the one field that is not immutable
     planton.dev/e2e-prerequisites: "GcpPrivateCaCertificateAuthority"
+    planton.dev/e2e-deploy-retry: >-
+      Google refuses the create with "Config validation failed" while the
+      Certificate Manager agent's grant on the pool, made in the same apply,
+      is still propagating, and accepts the same apply a minute later
   tags:
     - planton-e2e
 spec:
