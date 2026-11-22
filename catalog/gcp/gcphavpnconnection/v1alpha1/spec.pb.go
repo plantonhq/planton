@@ -267,14 +267,17 @@ func (x *GcpHaVpnConnectionPeer) GetGcpGateway() *v1.StringValueOrRef {
 
 // GcpHaVpnConnectionCipherSuitePhase1 restricts the IKE phase-1 (key
 // exchange) algorithms a tunnel negotiates. Each list is a set of Google's
-// algorithm names (e.g. AES-GCM-16-256, AES-CBC-256; SHA2-256; PRF-SHA2-256;
-// GROUP-14 / GROUP-20 / GROUP-21 for DH). Leave a list empty to accept
-// Google's default set for that class; set them to satisfy a device or a
-// compliance baseline that forbids weaker suites. The current accepted
-// names are Google's to publish (Cloud VPN "supported IKE ciphers"), so no
-// list is walled here, with one exception Google enforces at create: an
-// all-AEAD encryption list (AES-GCM-*) carries its own integrity, and Google
-// refuses a phase-1 integrity list beside it.
+// configuration values, spelled exactly as Cloud VPN's "supported IKE
+// ciphers" page writes them -- the case is part of the name (e.g.
+// AES-GCM-16-256 or AES-CBC-256 for encryption; HMAC-SHA2-256-128 for
+// integrity; PRF-HMAC-SHA2-256 for the PRF; Group-14 / Group-20 / Group-21
+// for DH). Leave a list empty to accept Google's default set for that
+// class; set them to satisfy a device or a compliance baseline that forbids
+// weaker suites. Google recommends one value per list, matched on the peer
+// device. The accepted names are Google's to publish, so no list is walled
+// here, with one exception Google enforces at create: an all-AEAD
+// encryption list (AES-GCM-*) carries its own integrity, and Google refuses
+// a phase-1 integrity list beside it.
 type GcpHaVpnConnectionCipherSuitePhase1 struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Encryption algorithms.
@@ -284,9 +287,11 @@ type GcpHaVpnConnectionCipherSuitePhase1 struct {
 	Integrity []string `protobuf:"bytes,2,rep,name=integrity,proto3" json:"integrity,omitempty"`
 	// Pseudo-random functions.
 	Prf []string `protobuf:"bytes,3,rep,name=prf,proto3" json:"prf,omitempty"`
-	// Diffie-Hellman groups. Google's supported set is narrower than IKE's:
-	// GROUP-14 is refused at create ("The specified Diffie-Hellman (DH) -
-	// GROUP-14 is not supported"), so check Cloud VPN's supported IKE ciphers.
+	// Diffie-Hellman groups, in Google's spelling: "Group-14", "Group-19",
+	// "Group-20", "modp-2048-256" and so on. Google matches the name exactly,
+	// so the IKE-style upper case "GROUP-14" is refused at create ("The
+	// specified Diffie-Hellman (DH) - GROUP-14 is not supported") although
+	// Group-14 is one of the groups Cloud VPN supports.
 	Dh            []string `protobuf:"bytes,4,rep,name=dh,proto3" json:"dh,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -351,14 +356,20 @@ func (x *GcpHaVpnConnectionCipherSuitePhase1) GetDh() []string {
 }
 
 // GcpHaVpnConnectionCipherSuitePhase2 restricts the IKE phase-2 (IPsec
-// data) algorithms. Same conventions as phase 1.
+// data) algorithms. Same conventions as phase 1, and the same AEAD rule:
+// Google's phase-2 AEAD suites (AES-GCM-16-128 / -192 / -256) are
+// encryption and integrity in one cipher and have no integrity role, so an
+// all-AES-GCM encryption list takes no integrity list.
 type GcpHaVpnConnectionCipherSuitePhase2 struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Encryption algorithms.
+	// Encryption algorithms (AES-GCM-16-* or AES-CBC-*).
 	Encryption []string `protobuf:"bytes,1,rep,name=encryption,proto3" json:"encryption,omitempty"`
-	// Integrity algorithms.
+	// Integrity algorithms (HMAC-SHA2-256-128, HMAC-SHA2-512-256,
+	// HMAC-SHA1-96). Leave empty when every encryption algorithm is AES-GCM
+	// (AEAD).
 	Integrity []string `protobuf:"bytes,2,rep,name=integrity,proto3" json:"integrity,omitempty"`
-	// Perfect-forward-secrecy groups.
+	// Perfect-forward-secrecy groups, spelled as the phase-1 DH groups
+	// ("Group-14"). Google always applies PFS in phase 2.
 	Pfs           []string `protobuf:"bytes,3,rep,name=pfs,proto3" json:"pfs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -1452,13 +1463,14 @@ const file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_rawDesc = "" +
 	"\tintegrity\x18\x02 \x03(\tR\tintegrity\x12\x10\n" +
 	"\x03prf\x18\x03 \x03(\tR\x03prf\x12\x0e\n" +
 	"\x02dh\x18\x04 \x03(\tR\x02dh:\x9b\x02\xbaH\x97\x02\x1a\x94\x02\n" +
-	"\x1ephase1_aead_takes_no_integrity\x12\x82\x01phase-1 encryption that is all AES-GCM (AEAD) needs no separate integrity algorithm, and Google refuses one: leave integrity empty\x1amthis.encryption.size() == 0 || !this.encryption.all(e, e.startsWith('AES-GCM')) || this.integrity.size() == 0\"u\n" +
+	"\x1ephase1_aead_takes_no_integrity\x12\x82\x01phase-1 encryption that is all AES-GCM (AEAD) needs no separate integrity algorithm, and Google refuses one: leave integrity empty\x1amthis.encryption.size() == 0 || !this.encryption.all(e, e.startsWith('AES-GCM')) || this.integrity.size() == 0\"\xa0\x03\n" +
 	"#GcpHaVpnConnectionCipherSuitePhase2\x12\x1e\n" +
 	"\n" +
 	"encryption\x18\x01 \x03(\tR\n" +
 	"encryption\x12\x1c\n" +
 	"\tintegrity\x18\x02 \x03(\tR\tintegrity\x12\x10\n" +
-	"\x03pfs\x18\x03 \x03(\tR\x03pfs\"\xf3\x01\n" +
+	"\x03pfs\x18\x03 \x03(\tR\x03pfs:\xa8\x02\xbaH\xa4\x02\x1a\xa1\x02\n" +
+	"\x1ephase2_aead_takes_no_integrity\x12\x8f\x01phase-2 encryption that is all AES-GCM (AEAD) carries its own integrity, and Google's AEAD suites have no integrity role: leave integrity empty\x1amthis.encryption.size() == 0 || !this.encryption.all(e, e.startsWith('AES-GCM')) || this.integrity.size() == 0\"\xf3\x01\n" +
 	"\x1dGcpHaVpnConnectionCipherSuite\x12h\n" +
 	"\x06phase1\x18\x01 \x01(\v2P.dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionCipherSuitePhase1R\x06phase1\x12h\n" +
 	"\x06phase2\x18\x02 \x01(\v2P.dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionCipherSuitePhase2R\x06phase2\"h\n" +

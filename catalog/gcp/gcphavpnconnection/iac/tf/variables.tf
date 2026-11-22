@@ -163,21 +163,26 @@ variable "spec" {
           # Pseudo-random functions.
           prf = optional(list(string), [])
 
-          # Diffie-Hellman groups. Google's supported set is narrower than IKE's:
-          # GROUP-14 is refused at create ("The specified Diffie-Hellman (DH) -
-          # GROUP-14 is not supported"), so check Cloud VPN's supported IKE ciphers.
+          # Diffie-Hellman groups, in Google's spelling: "Group-14", "Group-19",
+          # "Group-20", "modp-2048-256" and so on. Google matches the name exactly,
+          # so the IKE-style upper case "GROUP-14" is refused at create ("The
+          # specified Diffie-Hellman (DH) - GROUP-14 is not supported") although
+          # Group-14 is one of the groups Cloud VPN supports.
           dh = optional(list(string), [])
         }))
 
         # Phase-2 (child / IPsec SA) ciphers.
         phase2 = optional(object({
-          # Encryption algorithms.
+          # Encryption algorithms (AES-GCM-16-* or AES-CBC-*).
           encryption = optional(list(string), [])
 
-          # Integrity algorithms.
+          # Integrity algorithms (HMAC-SHA2-256-128, HMAC-SHA2-512-256,
+          # HMAC-SHA1-96). Leave empty when every encryption algorithm is AES-GCM
+          # (AEAD).
           integrity = optional(list(string), [])
 
-          # Perfect-forward-secrecy groups.
+          # Perfect-forward-secrecy groups, spelled as the phase-1 DH groups
+          # ("Group-14"). Google always applies PFS in phase 2.
           pfs = optional(list(string), [])
         }))
       }))

@@ -136,14 +136,17 @@ message GcpHaVpnConnectionPeer {
 
 // GcpHaVpnConnectionCipherSuitePhase1 restricts the IKE phase-1 (key
 // exchange) algorithms a tunnel negotiates. Each list is a set of Google's
-// algorithm names (e.g. AES-GCM-16-256, AES-CBC-256; SHA2-256; PRF-SHA2-256;
-// GROUP-14 / GROUP-20 / GROUP-21 for DH). Leave a list empty to accept
-// Google's default set for that class; set them to satisfy a device or a
-// compliance baseline that forbids weaker suites. The current accepted
-// names are Google's to publish (Cloud VPN "supported IKE ciphers"), so no
-// list is walled here, with one exception Google enforces at create: an
-// all-AEAD encryption list (AES-GCM-*) carries its own integrity, and Google
-// refuses a phase-1 integrity list beside it.
+// configuration values, spelled exactly as Cloud VPN's "supported IKE
+// ciphers" page writes them -- the case is part of the name (e.g.
+// AES-GCM-16-256 or AES-CBC-256 for encryption; HMAC-SHA2-256-128 for
+// integrity; PRF-HMAC-SHA2-256 for the PRF; Group-14 / Group-20 / Group-21
+// for DH). Leave a list empty to accept Google's default set for that
+// class; set them to satisfy a device or a compliance baseline that forbids
+// weaker suites. Google recommends one value per list, matched on the peer
+// device. The accepted names are Google's to publish, so no list is walled
+// here, with one exception Google enforces at create: an all-AEAD
+// encryption list (AES-GCM-*) carries its own integrity, and Google refuses
+// a phase-1 integrity list beside it.
 message GcpHaVpnConnectionCipherSuitePhase1 {
   option (buf.validate.message).cel = {
     id: "phase1_aead_takes_no_integrity"
@@ -158,20 +161,34 @@ message GcpHaVpnConnectionCipherSuitePhase1 {
   repeated string integrity = 2;
   // Pseudo-random functions.
   repeated string prf = 3;
-  // Diffie-Hellman groups. Google's supported set is narrower than IKE's:
-  // GROUP-14 is refused at create ("The specified Diffie-Hellman (DH) -
-  // GROUP-14 is not supported"), so check Cloud VPN's supported IKE ciphers.
+  // Diffie-Hellman groups, in Google's spelling: "Group-14", "Group-19",
+  // "Group-20", "modp-2048-256" and so on. Google matches the name exactly,
+  // so the IKE-style upper case "GROUP-14" is refused at create ("The
+  // specified Diffie-Hellman (DH) - GROUP-14 is not supported") although
+  // Group-14 is one of the groups Cloud VPN supports.
   repeated string dh = 4;
 }
 
 // GcpHaVpnConnectionCipherSuitePhase2 restricts the IKE phase-2 (IPsec
-// data) algorithms. Same conventions as phase 1.
+// data) algorithms. Same conventions as phase 1, and the same AEAD rule:
+// Google's phase-2 AEAD suites (AES-GCM-16-128 / -192 / -256) are
+// encryption and integrity in one cipher and have no integrity role, so an
+// all-AES-GCM encryption list takes no integrity list.
 message GcpHaVpnConnectionCipherSuitePhase2 {
-  // Encryption algorithms.
+  option (buf.validate.message).cel = {
+    id: "phase2_aead_takes_no_integrity"
+    message: "phase-2 encryption that is all AES-GCM (AEAD) carries its own integrity, and Google's AEAD suites have no integrity role: leave integrity empty"
+    expression: "this.encryption.size() == 0 || !this.encryption.all(e, e.startsWith('AES-GCM')) || this.integrity.size() == 0"
+  };
+
+  // Encryption algorithms (AES-GCM-16-* or AES-CBC-*).
   repeated string encryption = 1;
-  // Integrity algorithms.
+  // Integrity algorithms (HMAC-SHA2-256-128, HMAC-SHA2-512-256,
+  // HMAC-SHA1-96). Leave empty when every encryption algorithm is AES-GCM
+  // (AEAD).
   repeated string integrity = 2;
-  // Perfect-forward-secrecy groups.
+  // Perfect-forward-secrecy groups, spelled as the phase-1 DH groups
+  // ("Group-14"). Google always applies PFS in phase 2.
   repeated string pfs = 3;
 }
 

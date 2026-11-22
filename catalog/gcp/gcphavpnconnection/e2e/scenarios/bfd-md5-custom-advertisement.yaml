@@ -62,14 +62,12 @@ spec:
           prf:
             - PRF-HMAC-SHA2-256
           dh:
-            - GROUP-14
+            - Group-14
         phase2:
           encryption:
-            - AES-GCM-16-256
-          integrity:
-            - HMAC-SHA2-256-128
+            - AES-GCM-16-256 # AEAD: Google's phase-2 AEAD suites have no integrity role
           pfs:
-            - GROUP-14
+            - Group-14
       labels:
         tunnel: primary
       bgpSession:

@@ -170,8 +170,8 @@ var _ = ginkgo.Describe("GcpHaVpnConnectionSpec", func() {
 		t0.LocalTrafficSelector = []string{"10.0.0.0/8"}
 		t0.RemoteTrafficSelector = []string{"192.168.0.0/16"}
 		t0.CipherSuite = &GcpHaVpnConnectionCipherSuite{
-			Phase1: &GcpHaVpnConnectionCipherSuitePhase1{Encryption: []string{"AES-GCM-16-256"}, Prf: []string{"PRF-HMAC-SHA2-256"}, Dh: []string{"GROUP-14"}},
-			Phase2: &GcpHaVpnConnectionCipherSuitePhase2{Encryption: []string{"AES-GCM-16-256"}, Integrity: []string{"HMAC-SHA2-256-128"}, Pfs: []string{"GROUP-14"}},
+			Phase1: &GcpHaVpnConnectionCipherSuitePhase1{Encryption: []string{"AES-GCM-16-256"}, Prf: []string{"PRF-HMAC-SHA2-256"}, Dh: []string{"Group-14"}},
+			Phase2: &GcpHaVpnConnectionCipherSuitePhase2{Encryption: []string{"AES-GCM-16-256"}, Pfs: []string{"Group-14"}},
 		}
 		t0.Labels = map[string]string{"tunnel": "primary"}
 		t0.BgpSession = &GcpHaVpnConnectionBgpSession{
@@ -295,6 +295,26 @@ var _ = ginkgo.Describe("GcpHaVpnConnectionSpec", func() {
 		target = toGcp()
 		target.Spec.Tunnels[0].CipherSuite = &GcpHaVpnConnectionCipherSuite{
 			Phase1: &GcpHaVpnConnectionCipherSuitePhase1{Encryption: []string{"AES-CBC-256"}, Integrity: []string{"HMAC-SHA2-256-128"}},
+		}
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject a phase-2 integrity list beside all-AEAD encryption, and accept it beside CBC", func() {
+		target := toGcp()
+		target.Spec.Tunnels[0].CipherSuite = &GcpHaVpnConnectionCipherSuite{
+			Phase2: &GcpHaVpnConnectionCipherSuitePhase2{Encryption: []string{"AES-GCM-16-256"}, Integrity: []string{"HMAC-SHA2-256-128"}, Pfs: []string{"Group-14"}},
+		}
+		expectError(target, "Google's AEAD suites have no integrity role")
+
+		target = toGcp()
+		target.Spec.Tunnels[0].CipherSuite = &GcpHaVpnConnectionCipherSuite{
+			Phase2: &GcpHaVpnConnectionCipherSuitePhase2{Encryption: []string{"AES-GCM-16-256", "AES-CBC-256"}, Integrity: []string{"HMAC-SHA2-256-128"}, Pfs: []string{"Group-14"}},
+		}
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+
+		target = toGcp()
+		target.Spec.Tunnels[0].CipherSuite = &GcpHaVpnConnectionCipherSuite{
+			Phase2: &GcpHaVpnConnectionCipherSuitePhase2{Encryption: []string{"AES-CBC-256"}, Integrity: []string{"HMAC-SHA2-256-128"}, Pfs: []string{"Group-14"}},
 		}
 		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
 	})
