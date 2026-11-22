@@ -98,7 +98,7 @@ spec:
 | `spec.forwardingRuleName` | `string` |  |  |  |
 | `spec.description` | `string` |  |  |  |
 | `spec.region` | `string` |  |  |  |
-| `spec.target` | `string \| valueFrom` |  |  | GcpTargetHttpsProxy (`status.outputs.self_link`), GcpTargetHttpProxy (`status.outputs.self_link`), GcpPscServiceAttachment (`status.outputs.self_link`) |
+| `spec.target` | `string \| valueFrom` |  |  | GcpTargetHttpsProxy (`status.outputs.self_link`), GcpTargetHttpProxy (`status.outputs.self_link`), GcpPscServiceAttachment (`status.outputs.self_link`), GcpRedisCluster (`status.outputs.discovery_service_attachment`), GcpRedisCluster (`status.outputs.primary_service_attachment`), GcpRedisCluster (`status.outputs.reader_service_attachment`) |
 | `spec.backendService` | `string \| valueFrom` |  |  | GcpBackendService (`status.outputs.self_link`) |
 | `spec.ipAddress` | `string \| valueFrom` |  |  | GcpGlobalAddress (`status.outputs.address`), GcpGlobalAddress (`status.outputs.self_link`), GcpAddress (`status.outputs.address`), GcpAddress (`status.outputs.self_link`) |
 | `spec.ipProtocol` | `string` |  | `TCP` |  |
@@ -207,14 +207,17 @@ targets (target SSL/TCP proxies, target gRPC proxies, target instances,
 target pools) attach by self-link until they exist as Planton kinds. For
 Private Service Connect, pass the literal bundle name "all-apis" or
 "vpc-sc" (Google APIs, global rule), or reference the producer's
-GcpPscServiceAttachment (regional rule, in the attachment's region). All
-three kinds are declared candidates, so their self_link output fills in.
+GcpPscServiceAttachment (regional rule, in the attachment's region), or
+a GcpRedisCluster's discovery, primary or reader service attachment (a
+consumer endpoint a GcpRedisClusterEndpointSet registers; scheme NONE,
+in the cluster's region). Each is a declared candidate, so its output
+fills in.
 Exactly one of target and backend_service is set: a passthrough Network
 Load Balancer has no proxy and names its backend service instead.
 Mutable: GCP repoints it in place (a dedicated setTarget call), enabling
 zero-downtime frontend swaps.
 
-- references: GcpTargetHttpsProxy (`status.outputs.self_link`), GcpTargetHttpProxy (`status.outputs.self_link`), GcpPscServiceAttachment (`status.outputs.self_link`)
+- references: GcpTargetHttpsProxy (`status.outputs.self_link`), GcpTargetHttpProxy (`status.outputs.self_link`), GcpPscServiceAttachment (`status.outputs.self_link`), GcpRedisCluster (`status.outputs.discovery_service_attachment`), GcpRedisCluster (`status.outputs.primary_service_attachment`), GcpRedisCluster (`status.outputs.reader_service_attachment`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpTargetHttpsProxy, name: <that resource's name>, fieldPath: status.outputs.self_link}} -- a bare string does not parse
 
 ### spec.backendService
@@ -646,6 +649,9 @@ Fields that can point at another resource's outputs:
 | `spec.target` | GcpTargetHttpsProxy | `status.outputs.self_link` |
 | `spec.target` | GcpTargetHttpProxy | `status.outputs.self_link` |
 | `spec.target` | GcpPscServiceAttachment | `status.outputs.self_link` |
+| `spec.target` | GcpRedisCluster | `status.outputs.discovery_service_attachment` |
+| `spec.target` | GcpRedisCluster | `status.outputs.primary_service_attachment` |
+| `spec.target` | GcpRedisCluster | `status.outputs.reader_service_attachment` |
 | `spec.backendService` | GcpBackendService | `status.outputs.self_link` |
 | `spec.ipAddress` | GcpGlobalAddress | `status.outputs.address` |
 | `spec.ipAddress` | GcpGlobalAddress | `status.outputs.self_link` |

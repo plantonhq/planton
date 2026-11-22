@@ -107,8 +107,11 @@ type GcpGlobalForwardingRuleSpec struct {
 	// target pools) attach by self-link until they exist as Planton kinds. For
 	// Private Service Connect, pass the literal bundle name "all-apis" or
 	// "vpc-sc" (Google APIs, global rule), or reference the producer's
-	// GcpPscServiceAttachment (regional rule, in the attachment's region). All
-	// three kinds are declared candidates, so their self_link output fills in.
+	// GcpPscServiceAttachment (regional rule, in the attachment's region), or
+	// a GcpRedisCluster's discovery, primary or reader service attachment (a
+	// consumer endpoint a GcpRedisClusterEndpointSet registers; scheme NONE,
+	// in the cluster's region). Each is a declared candidate, so its output
+	// fills in.
 	// Exactly one of target and backend_service is set: a passthrough Network
 	// Load Balancer has no proxy and names its backend service instead.
 	// Mutable: GCP repoints it in place (a dedicated setTarget call), enabling
@@ -726,7 +729,7 @@ var File_catalog_gcp_gcpglobalforwardingrule_v1alpha1_spec_proto protoreflect.Fi
 
 const file_catalog_gcp_gcpglobalforwardingrule_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/gcp/gcpglobalforwardingrule/v1alpha1/spec.proto\x120dev.planton.gcp.gcpglobalforwardingrule.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xfaV\n" +
+	"7catalog/gcp/gcpglobalforwardingrule/v1alpha1/spec.proto\x120dev.planton.gcp.gcpglobalforwardingrule.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x91X\n" +
 	"\x1bGcpGlobalForwardingRuleSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x94\x03\n" +
@@ -734,8 +737,8 @@ const file_catalog_gcp_gcpglobalforwardingrule_v1alpha1_spec_proto_rawDesc = "" 
 	"\x1avalid_forwarding_rule_name\x12\xf9\x01forwarding_rule_name must be RFC1035-compliant: 1-63 lowercase letters, digits, or hyphens; must start with a letter and end with a letter or digit (Private Service Connect rules for Google APIs are limited to 20 characters, letters and digits only)\x1a?this == '' || this.matches('^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$')R\x12forwardingRuleName\x12*\n" +
 	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x10R\vdescription\x12\xce\x01\n" +
 	"\x06region\x18\x14 \x01(\tB\xb5\x01\xbaH\xb1\x01\xba\x01\xad\x01\n" +
-	"\fvalid_region\x12aregion must be a valid GCP region name such as us-central1, or empty for a global forwarding rule\x1a:this == '' || this.matches('^[a-z]([-a-z0-9]*[a-z0-9])?$')R\x06region\x12\xd1\x01\n" +
-	"\x06target\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x84\x01\x88\xd4a\xb9\x17\x92\xd4a\x18status.outputs.self_link\xa2\xd4a\x1d\b\xb9\x17\x12\x18status.outputs.self_link\xa2\xd4a\x1d\b\xd5\x17\x12\x18status.outputs.self_link\xa2\xd4a\x1d\b\xf2\x18\x12\x18status.outputs.self_linkR\x06target\x12~\n" +
+	"\fvalid_region\x12aregion must be a valid GCP region name such as us-central1, or empty for a global forwarding rule\x1a:this == '' || this.matches('^[a-z]([-a-z0-9]*[a-z0-9])?$')R\x06region\x12\xe8\x02\n" +
+	"\x06target\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x9b\x02\x88\xd4a\xb9\x17\x92\xd4a\x18status.outputs.self_link\xa2\xd4a\x1d\b\xb9\x17\x12\x18status.outputs.self_link\xa2\xd4a\x1d\b\xd5\x17\x12\x18status.outputs.self_link\xa2\xd4a\x1d\b\xf2\x18\x12\x18status.outputs.self_link\xa2\xd4a0\b\xf6\x18\x12+status.outputs.discovery_service_attachment\xa2\xd4a.\b\xf6\x18\x12)status.outputs.primary_service_attachment\xa2\xd4a-\b\xf6\x18\x12(status.outputs.reader_service_attachmentR\x06target\x12~\n" +
 	"\x0fbackend_service\x18\x15 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xd1\x17\x92\xd4a\x18status.outputs.self_linkR\x0ebackendService\x12\xf3\x01\n" +
 	"\n" +
 	"ip_address\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x9f\x01\x88\xd4a\xcd\x17\x92\xd4a\x16status.outputs.address\xa2\xd4a\x1b\b\xcd\x17\x12\x16status.outputs.address\xa2\xd4a\x1d\b\xcd\x17\x12\x18status.outputs.self_link\xa2\xd4a\x1b\b\xaa\x18\x12\x16status.outputs.address\xa2\xd4a\x1d\b\xaa\x18\x12\x18status.outputs.self_linkR\tipAddress\x12\x8c\x02\n" +

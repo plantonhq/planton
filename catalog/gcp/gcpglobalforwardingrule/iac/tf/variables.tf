@@ -63,8 +63,11 @@ variable "spec" {
     # target pools) attach by self-link until they exist as Planton kinds. For
     # Private Service Connect, pass the literal bundle name "all-apis" or
     # "vpc-sc" (Google APIs, global rule), or reference the producer's
-    # GcpPscServiceAttachment (regional rule, in the attachment's region). All
-    # three kinds are declared candidates, so their self_link output fills in.
+    # GcpPscServiceAttachment (regional rule, in the attachment's region), or
+    # a GcpRedisCluster's discovery, primary or reader service attachment (a
+    # consumer endpoint a GcpRedisClusterEndpointSet registers; scheme NONE,
+    # in the cluster's region). Each is a declared candidate, so its output
+    # fills in.
     # Exactly one of target and backend_service is set: a passthrough Network
     # Load Balancer has no proxy and names its backend service instead.
     # Mutable: GCP repoints it in place (a dedicated setTarget call), enabling

@@ -708,6 +708,9 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| GcpGlobalForwardingRule | `spec.target` | `status.outputs.discovery_service_attachment` |
+| GcpGlobalForwardingRule | `spec.target` | `status.outputs.primary_service_attachment` |
+| GcpGlobalForwardingRule | `spec.target` | `status.outputs.reader_service_attachment` |
 | GcpRedisCluster | `spec.crossClusterReplicationConfig.primaryCluster.cluster` | `status.outputs.name` |
 | GcpRedisCluster | `spec.crossClusterReplicationConfig.secondaryClusters[].cluster` | `status.outputs.name` |
 | GcpRedisClusterEndpointSet | `spec.cluster` | `status.outputs.name` |
