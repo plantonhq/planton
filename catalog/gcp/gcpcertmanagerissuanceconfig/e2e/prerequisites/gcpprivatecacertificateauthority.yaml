@@ -40,7 +40,7 @@ spec:
           crlSign: true
   keySpec:
     algorithm: EC_P256_SHA256
-  lifetime: 2592000s
+  lifetime: 7776000s # 90 days: a CA must outlive the 30-day certificates the issuance config requests
   deletionProtection: false
   skipGracePeriod: true
   ignoreActiveCertificatesOnDeletion: true
