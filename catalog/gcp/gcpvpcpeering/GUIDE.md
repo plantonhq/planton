@@ -53,6 +53,18 @@ effect only once both sides carry the same value. Use it when the other
 side is another team's chart, so nobody's one-sided flip can change what
 traffic flows.
 
+Consensus also governs deletion, and that changes how a stack comes
+down. Google removes a CONSENSUS peering only after both network owners
+have asked for it: each side calls `networks.requestRemovePeering` on its
+own network, which moves the connection's delete status to
+`DELETE_ACKNOWLEDGED`, and only then does removing either side's peering
+succeed. Neither engine's provider makes those requests, so destroying
+this kind alone is refused ("cannot be deleted unless the connection has
+delete_status=DELETE_ACKNOWLEDGED"). Request removal on both networks
+first, then destroy. Google also never switches a connection from
+CONSENSUS back to INDEPENDENT: changing `updateStrategy` that way means
+deleting the peering and creating it again.
+
 ## Limits Google enforces
 
 Subnet ranges must not overlap between the two networks (Google rejects

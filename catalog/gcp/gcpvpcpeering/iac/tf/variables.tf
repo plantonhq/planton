@@ -98,7 +98,11 @@ variable "spec" {
     # same update_strategy"). Under CONSENSUS the two sides' route flags must
     # also be complementary when the second side is added: this side's
     # export_custom_routes equals the other side's import_custom_routes, and
-    # so on for every flag. CREATE form only. Mutable.
+    # so on for every flag. A CONSENSUS peering is deleted only after both
+    # network owners request it (networks.requestRemovePeering on each
+    # side), which neither engine's provider does: request removal on both
+    # networks before destroying it. Google never moves a connection from
+    # CONSENSUS back to INDEPENDENT in place. CREATE form only. Mutable.
     update_strategy = optional(string, "")
 
     # What destroying this resource does to the peering in GCP (CREATE form
