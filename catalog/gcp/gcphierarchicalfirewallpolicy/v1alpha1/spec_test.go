@@ -50,13 +50,14 @@ var _ = ginkgo.Describe("GcpHierarchicalFirewallPolicySpec", func() {
 		}
 	}
 
-	// An organization-wide baseline: deny SSH from the internet, delegate
-	// the rest, enforced on the organization itself.
+	// An organization-wide baseline: deny SSH from the internet, hand the
+	// private ranges down, enforced on the organization itself.
 	orgBaseline := func() *GcpHierarchicalFirewallPolicy {
 		deny := rule(1000, "deny", "INGRESS", tcp("22"))
 		deny.Match.SrcIpRanges = []string{"0.0.0.0/0"}
 		deny.EnableLogging = true
 		next := rule(2000, "goto_next", "INGRESS", &GcpHierarchicalFirewallPolicyLayer4Config{IpProtocol: "all"})
+		next.Match.SrcIpRanges = []string{"10.0.0.0/8"}
 		return &GcpHierarchicalFirewallPolicy{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpHierarchicalFirewallPolicy",
@@ -121,6 +122,7 @@ var _ = ginkgo.Describe("GcpHierarchicalFirewallPolicySpec", func() {
 	ginkgo.It("should accept a security profile group rule with TLS inspection", func() {
 		target := orgBaseline()
 		r := rule(500, "apply_security_profile_group", "EGRESS", tcp("443"))
+		r.Match.DestNetworkContext = proto.String("INTERNET")
 		r.SecurityProfileGroup = "//networksecurity.googleapis.com/organizations/123456789012/locations/global/securityProfileGroups/ngfw"
 		r.TlsInspect = true
 		target.Spec.Rules = append(target.Spec.Rules, r)
@@ -150,6 +152,28 @@ var _ = ginkgo.Describe("GcpHierarchicalFirewallPolicySpec", func() {
 	})
 
 	// ──────────────── Negative Cases ────────────────
+
+	ginkgo.It("should reject an INGRESS rule that names no source, a catch-all goto_next included", func() {
+		target := orgBaseline()
+		target.Spec.Rules[1].Match.SrcIpRanges = nil
+		expectError(target, "an INGRESS rule must name where its traffic comes from")
+	})
+
+	ginkgo.It("should reject an EGRESS rule that names no destination", func() {
+		target := orgBaseline()
+		target.Spec.Rules = append(target.Spec.Rules, rule(2100, "goto_next", "EGRESS", &GcpHierarchicalFirewallPolicyLayer4Config{IpProtocol: "all"}))
+		expectError(target, "an EGRESS rule must name where its traffic goes")
+	})
+
+	ginkgo.It("should accept a network context as an INGRESS source and an EGRESS destination", func() {
+		target := orgBaseline()
+		target.Spec.Rules[1].Match.SrcIpRanges = nil
+		target.Spec.Rules[1].Match.SrcNetworkContext = proto.String("INTRA_VPC")
+		out := rule(2100, "deny", "EGRESS", tcp("25"))
+		out.Match.DestNetworkContext = proto.String("INTERNET")
+		target.Spec.Rules = append(target.Spec.Rules, out)
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+	})
 
 	ginkgo.It("should reject a parent with both arms or neither", func() {
 		target := orgBaseline()

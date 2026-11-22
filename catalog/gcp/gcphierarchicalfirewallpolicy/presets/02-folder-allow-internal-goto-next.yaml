@@ -36,13 +36,6 @@ spec:
         layer4Configs:
           - ipProtocol: tcp
             ports: ["22"]
-    - priority: 2000
-      action: goto_next
-      direction: INGRESS
-      description: Everything else is decided by the network policies and legacy rules
-      match:
-        layer4Configs:
-          - ipProtocol: all
   associations:
     - name: production-baseline-folder
       target:

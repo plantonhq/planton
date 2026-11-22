@@ -1,8 +1,8 @@
 # GcpHierarchicalFirewallPolicy Guide
 
 The judgment this guide protects: a hierarchical policy is the organization's
-word on what may never happen, plus a `goto_next` that leaves everything else
-to the people running the projects. Write it narrow and let it delegate.
+word on what may never happen, leaving everything else to the people running
+the projects. Write it narrow and let it delegate.
 
 ## Where it sits in the evaluation order
 
@@ -13,9 +13,15 @@ one, then legacy VPC firewall rules. `allow` and `deny` end the decision;
 `goto_next` passes it to the next level. An organization-level `deny` can
 therefore never be undone by a project, and an organization-level `allow`
 cannot be tightened below it -- which is why the everyday shape is a short
-list of denies (and allows for Google's own ranges) followed by `goto_next`.
+list of denies (and allows for Google's own ranges) and nothing else.
 Google appends two implied `goto_next` rules at 2147483646 and 2147483647 to
-every hierarchical policy; the spec keeps user priorities below them.
+every hierarchical policy, so whatever the list does not decide passes to the
+next level by itself; the spec keeps user priorities below them. An explicit
+catch-all `goto_next` is not only redundant but refused: Google requires
+every INGRESS rule to name a source and every EGRESS rule a destination
+(measured on both engines), and the spec refuses a rule without one before
+Google does. A `goto_next` that names a range still has its use: it hands
+that traffic down before a broader `deny` below it in the list.
 
 ## Parent versus associations
 

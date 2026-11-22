@@ -14,8 +14,6 @@ known-malicious destinations on egress, then delegate.
   in `srcRegionCodes`; logged.
 - Priority `300` — `deny` egress to `iplist-known-malicious-ips`, so a
   compromised VM cannot call home; logged.
-- Priorities `2000` and `2100` — `goto_next` for ingress and egress, the
-  delegation that leaves every other decision to the levels below.
 - `deletionPolicy: PREVENT`.
 
 ## Adjust before deploying

@@ -195,6 +195,22 @@ message GcpHierarchicalFirewallPolicyAttachmentTarget {
 // handling it (`target_*`), DO `action`. A rule is its own Google resource
 // keyed by `priority`.
 message GcpHierarchicalFirewallPolicyRule {
+  // Google refuses an INGRESS rule that names no source and an EGRESS rule
+  // that names no destination, whatever the action (measured on both
+  // engines, a catch-all goto_next included: "Must specify src_address_groups,
+  // src_fqdn, src_ip_ranges, src_network_context, ..."). Google's implied
+  // goto_next rules at the end of every policy already pass whatever the
+  // rules do not decide, so a catch-all is never needed.
+  option (buf.validate.message).cel = {
+    id: "ingress_rule_names_a_source"
+    message: "an INGRESS rule must name where its traffic comes from: set src_ip_ranges, src_fqdns, src_region_codes, src_threat_intelligences, src_address_groups, src_secure_tags, src_networks or src_network_context (Google's implied goto_next rules already pass everything the rules do not decide)"
+    expression: "this.direction != 'INGRESS' || (has(this.match) && (size(this.match.src_ip_ranges) + size(this.match.src_fqdns) + size(this.match.src_region_codes) + size(this.match.src_threat_intelligences) + size(this.match.src_address_groups) + size(this.match.src_secure_tags) + size(this.match.src_networks) > 0 || (has(this.match.src_network_context) && this.match.src_network_context != '' && this.match.src_network_context != 'UNSPECIFIED')))"
+  };
+  option (buf.validate.message).cel = {
+    id: "egress_rule_names_a_destination"
+    message: "an EGRESS rule must name where its traffic goes: set dest_ip_ranges, dest_fqdns, dest_region_codes, dest_threat_intelligences, dest_address_groups or dest_network_context (Google's implied goto_next rules already pass everything the rules do not decide)"
+    expression: "this.direction != 'EGRESS' || (has(this.match) && (size(this.match.dest_ip_ranges) + size(this.match.dest_fqdns) + size(this.match.dest_region_codes) + size(this.match.dest_threat_intelligences) + size(this.match.dest_address_groups) > 0 || (has(this.match.dest_network_context) && this.match.dest_network_context != '' && this.match.dest_network_context != 'UNSPECIFIED')))"
+  };
   option (buf.validate.message).cel = {
     id: "security_profile_group_matches_action"
     message: "security_profile_group is required when action is apply_security_profile_group and must be empty for every other action"

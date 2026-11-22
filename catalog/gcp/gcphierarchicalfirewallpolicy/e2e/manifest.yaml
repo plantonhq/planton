@@ -39,14 +39,6 @@ spec:
         layer4Configs:
           - ipProtocol: tcp
             ports: ["22"]
-    - priority: 2000
-      action: goto_next
-      direction: INGRESS
-      description: Everything else is decided lower down
-      match:
-        layer4Configs:
-          - ipProtocol: all
-
   # Where the policy is enforced: the organization itself. A node carries
   # one hierarchical policy association at a time.
   associations:

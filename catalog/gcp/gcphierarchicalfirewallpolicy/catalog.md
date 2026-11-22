@@ -53,13 +53,6 @@ spec:
         layer4Configs:
           - ipProtocol: tcp
             ports: ["22"]
-    - priority: 2000
-      action: goto_next
-      direction: INGRESS
-      description: Everything else is decided lower down
-      match:
-        layer4Configs:
-          - ipProtocol: all
   associations:
     - name: org-baseline-org
       target:
@@ -122,7 +115,7 @@ These are the most important decisions when configuring a hierarchical policy. E
 
 **Priority is identity** — Google keys rules by priority; renumbering recreates the rule. Leave gaps (1000, 2000, ...) so a rule can be slotted in later. Priorities 2147483646 and 2147483647 are Google's implied `goto_next` rules.
 
-**`goto_next` is the delegation lever** — an organization policy that ends every decision with `allow` or `deny` leaves the projects nothing to decide. The everyday shape is a few non-negotiable denies (and allows for Google's health-check and IAP ranges), then `goto_next` for the rest.
+**`goto_next` is the delegation lever** — an organization policy that ends every decision with `allow` or `deny` leaves the projects nothing to decide. The everyday shape is a few non-negotiable denies (and allows for Google's health-check and IAP ranges); Google's implied `goto_next` rules at the end pass the rest down. Every INGRESS rule must name a source and every EGRESS rule a destination, so a catch-all `goto_next` is refused.
 
 **Direction decides which match fields matter** — on `INGRESS`, the `src*` fields describe where traffic comes from; on `EGRESS`, the `dest*` fields describe where it goes. Secure tags and networks exist only on the VPC side, so `srcSecureTags` and `srcNetworks` are meaningful on ingress rules only.
 
@@ -157,7 +150,7 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 
 Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
-**Organization baseline** — a logged deny of SSH from the internet and `goto_next` for the rest, enforced on the organization. Start from the **Org Deny SSH From Internet** preset.
+**Organization baseline** — a logged deny of SSH and RDP from the internet, with everything else passed down, enforced on the organization. Start from the **Org Deny SSH From Internet** preset.
 
 **Folder allow-list with delegation** — allow intra-VPC traffic and Google's health-check ranges, delegate everything else, enforced on one folder by reference. Start from the **Folder Allow Internal Goto Next** preset.
 

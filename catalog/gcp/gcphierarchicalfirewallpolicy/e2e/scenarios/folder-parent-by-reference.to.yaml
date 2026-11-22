@@ -66,12 +66,14 @@ spec:
       action: goto_next
       direction: INGRESS
       match:
+        srcIpRanges: ["10.0.0.0/8"] # Google refuses an INGRESS rule that names no source
         layer4Configs:
           - ipProtocol: all
     - priority: 2100
       action: goto_next
       direction: EGRESS
       match:
+        destIpRanges: ["10.0.0.0/8"] # Google refuses an EGRESS rule that names no destination
         layer4Configs:
           - ipProtocol: all
   associations:

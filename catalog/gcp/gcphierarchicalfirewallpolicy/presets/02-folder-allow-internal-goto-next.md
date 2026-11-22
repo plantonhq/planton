@@ -3,7 +3,8 @@
 A folder-scoped baseline for a landing zone: the policy lives on the
 `production` folder declared by a `GcpFolder` in the same chart, allows the
 traffic every workload needs (private address space to itself, Google's
-health-check and IAP ranges), and delegates the rest with `goto_next`.
+health-check and IAP ranges), and leaves the rest to Google's implied
+`goto_next` rules, which pass every undecided connection to the levels below.
 
 ## What it configures
 
@@ -15,7 +16,6 @@ health-check and IAP ranges), and delegates the rest with `goto_next`.
   Google's health-check probers, so every load-balanced backend passes.
 - Priority `1200` — `allow` tcp:22 from `35.235.240.0/20`, Identity-Aware
   Proxy's TCP forwarding range, so SSH works without a public address.
-- Priority `2000` — `goto_next` on `all`.
 
 ## Adjust before deploying
 

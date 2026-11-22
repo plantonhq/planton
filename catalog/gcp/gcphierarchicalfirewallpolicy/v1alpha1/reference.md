@@ -88,14 +88,6 @@ spec:
         layer4Configs:
           - ipProtocol: tcp
             ports: ["22"]
-    - priority: 2000
-      action: goto_next
-      direction: INGRESS
-      description: Everything else is decided lower down
-      match:
-        layer4Configs:
-          - ipProtocol: all
-
   # Where the policy is enforced: the organization itself. A node carries
   # one hierarchical policy association at a time.
   associations:
@@ -225,6 +217,8 @@ is created) while every other rule is left alone; change a rule's
 content in place and it is updated in place. An empty list is a valid
 policy that decides nothing (Google's implied goto_next rules apply).
 
+- rule: an INGRESS rule must name where its traffic comes from: set src_ip_ranges, src_fqdns, src_region_codes, src_threat_intelligences, src_address_groups, src_secure_tags, src_networks or src_network_context (Google's implied goto_next rules already pass everything the rules do not decide)
+- rule: an EGRESS rule must name where its traffic goes: set dest_ip_ranges, dest_fqdns, dest_region_codes, dest_threat_intelligences, dest_address_groups or dest_network_context (Google's implied goto_next rules already pass everything the rules do not decide)
 - rule: security_profile_group is required when action is apply_security_profile_group and must be empty for every other action
 - rule: tls_inspect can be true only when action is apply_security_profile_group
 - rule: enable_logging cannot be set on a goto_next rule -- Google logs only the rule that decides

@@ -27,13 +27,6 @@ spec:
         layer4Configs:
           - ipProtocol: tcp
             ports: ["3389"]
-    - priority: 2000
-      action: goto_next
-      direction: INGRESS
-      description: Everything else is decided by the folder, network, and legacy rules below
-      match:
-        layer4Configs:
-          - ipProtocol: all
   associations:
     - name: org-baseline-org
       target:

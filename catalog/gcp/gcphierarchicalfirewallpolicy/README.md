@@ -44,12 +44,6 @@ spec:
         layer4Configs:
           - ipProtocol: tcp
             ports: ["22"]
-    - priority: 2000
-      action: goto_next
-      direction: INGRESS
-      match:
-        layer4Configs:
-          - ipProtocol: all
   associations:
     - target:
         organizationId: "123456789012"
@@ -102,6 +96,7 @@ planton apply -f org-baseline.yaml
 - Exactly one arm on `parent` and on every association `target`.
 - Rule priorities unique; association names unique.
 - `securityProfileGroup` present exactly when `action` is `apply_security_profile_group`; `tlsInspect` only then; no `enableLogging` on `goto_next`.
+- An `INGRESS` rule names a source and an `EGRESS` rule a destination (a network context counts); Google refuses either without one, and its implied `goto_next` rules already pass what the rules leave undecided.
 - `targetSecureTags` and `targetServiceAccounts` are mutually exclusive.
 - `ports` only with `tcp`, `udp`, `6`, or `17`; `ipProtocol` is a well-known name, `all`, or a number 0-255.
 

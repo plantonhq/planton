@@ -68,6 +68,7 @@ spec:
       action: goto_next
       direction: INGRESS
       match:
+        srcIpRanges: ["10.0.0.0/8"] # Google refuses an INGRESS rule that names no source
         layer4Configs:
           - ipProtocol: all
   associations: []

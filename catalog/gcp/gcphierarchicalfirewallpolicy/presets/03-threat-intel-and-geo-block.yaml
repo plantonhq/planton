@@ -37,18 +37,6 @@ spec:
           - iplist-known-malicious-ips
         layer4Configs:
           - ipProtocol: all
-    - priority: 2000
-      action: goto_next
-      direction: INGRESS
-      match:
-        layer4Configs:
-          - ipProtocol: all
-    - priority: 2100
-      action: goto_next
-      direction: EGRESS
-      match:
-        layer4Configs:
-          - ipProtocol: all
   associations:
     - name: org-threat-block-org
       target:

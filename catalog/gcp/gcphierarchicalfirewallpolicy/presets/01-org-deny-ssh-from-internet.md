@@ -1,8 +1,9 @@
 # Org Deny SSH From Internet
 
 The organization's baseline: two logged denies nobody in any project can
-undo -- SSH and RDP from the internet -- followed by `goto_next` so every
-other decision is left to the folders, the networks, and the projects.
+undo -- SSH and RDP from the internet. Google's implied `goto_next` rules
+then leave every other decision to the folders, the networks, and the
+projects.
 Enforced on the organization itself and guarded against destroy.
 
 ## What it configures
@@ -12,8 +13,6 @@ Enforced on the organization itself and guarded against destroy.
 - Priorities `1000` and `1100` — `deny` tcp:22 and tcp:3389 from
   `0.0.0.0/0`, each with `enableLogging: true` so a blocked connection is
   explainable in Cloud Logging.
-- Priority `2000` — `goto_next` on `all`, the delegation that lets the
-  levels below decide everything the baseline does not.
 - `deletionPolicy: PREVENT` — deleting a baseline silently reopens what it
   closed for every project.
 
