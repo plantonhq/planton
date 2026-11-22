@@ -61,9 +61,14 @@ locals {
 
   # One scalar handle per connection type, so a consumer's forwarding rule
   # (and GcpRedisClusterEndpointSet) can reference the attachment it needs
-  # -- a reference cannot index a repeated output. Empty when Google
-  # publishes no attachment of that type (no reader without replicas).
+  # -- a reference cannot index a repeated output. Google publishes two
+  # attachments for every cluster: the discovery one, typed
+  # CONNECTION_TYPE_DISCOVERY, and the primary one, whose connection type it
+  # leaves unset (measured on eleven clusters with 0 and 1 replicas), so an
+  # untyped attachment is keyed as the primary one. Empty when Google
+  # publishes no attachment of that type.
   service_attachments_by_type = {
-    for a in google_redis_cluster.this.psc_service_attachments : a.connection_type => a.service_attachment...
+    for a in google_redis_cluster.this.psc_service_attachments :
+    ((a.connection_type == null || a.connection_type == "" || a.connection_type == "CONNECTION_TYPE_UNSPECIFIED") ? "CONNECTION_TYPE_PRIMARY" : a.connection_type) => a.service_attachment...
   }
 }

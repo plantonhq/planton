@@ -680,8 +680,8 @@ Reference an output from another manifest as `valueFrom: {kind: GcpRedisCluster,
 | `status.outputs.discovery_endpoint_address` | `string` | IP address of the Google-placed discovery endpoint -- the address a Cluster-protocol client bootstraps from. Empty when psc_configs is unset (consumers build their own endpoints). |
 | `status.outputs.discovery_endpoint_port` | `int32` | Port of the discovery endpoint (6379 unless configured otherwise). 0 when psc_configs is unset. |
 | `status.outputs.discovery_service_attachment` | `string` | Service attachment a consumer's own forwarding rule targets to reach the DISCOVERY endpoint (projects/{project}/regions/{region}/serviceAttachments/{id}). The handle GcpRedisClusterEndpointSet registers a discovery connection against. |
-| `status.outputs.primary_service_attachment` | `string` | Service attachment for the PRIMARY endpoint (writes). Empty when Google publishes no separate primary attachment for this cluster shape. |
-| `status.outputs.reader_service_attachment` | `string` | Service attachment for the READER endpoint (replica reads). Empty when the cluster has no replicas. |
+| `status.outputs.primary_service_attachment` | `string` | Service attachment a consumer's own forwarding rule targets for the PRIMARY endpoint (writes). Google publishes it beside the discovery one for every cluster, without stamping a connection type on it, so this is the cluster's untyped attachment; GcpRedisClusterEndpointSet registers a primary connection against it. |
+| `status.outputs.reader_service_attachment` | `string` | Service attachment for the READER endpoint (replica reads). Google's API defines a READER attachment, but no cluster measured so far, with 0 or 1 replica, published one, so this reads empty. |
 | `status.outputs.size_gb` | `int32` | Redis memory across the whole cluster in GB, as Google reports it. |
 | `status.outputs.shard_count` | `int32` | The shard count in effect after provisioning. |
 | `status.outputs.replica_count` | `int32` | The replica count per shard in effect after provisioning. |

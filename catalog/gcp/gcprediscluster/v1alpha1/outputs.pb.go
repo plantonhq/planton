@@ -54,11 +54,15 @@ type GcpRedisClusterOutputs struct {
 	// handle GcpRedisClusterEndpointSet registers a discovery connection
 	// against.
 	DiscoveryServiceAttachment string `protobuf:"bytes,6,opt,name=discovery_service_attachment,json=discoveryServiceAttachment,proto3" json:"discovery_service_attachment,omitempty"`
-	// Service attachment for the PRIMARY endpoint (writes). Empty when Google
-	// publishes no separate primary attachment for this cluster shape.
+	// Service attachment a consumer's own forwarding rule targets for the
+	// PRIMARY endpoint (writes). Google publishes it beside the discovery one
+	// for every cluster, without stamping a connection type on it, so this is
+	// the cluster's untyped attachment; GcpRedisClusterEndpointSet registers a
+	// primary connection against it.
 	PrimaryServiceAttachment string `protobuf:"bytes,7,opt,name=primary_service_attachment,json=primaryServiceAttachment,proto3" json:"primary_service_attachment,omitempty"`
-	// Service attachment for the READER endpoint (replica reads). Empty when
-	// the cluster has no replicas.
+	// Service attachment for the READER endpoint (replica reads). Google's
+	// API defines a READER attachment, but no cluster measured so far, with
+	// 0 or 1 replica, published one, so this reads empty.
 	ReaderServiceAttachment string `protobuf:"bytes,8,opt,name=reader_service_attachment,json=readerServiceAttachment,proto3" json:"reader_service_attachment,omitempty"`
 	// Redis memory across the whole cluster in GB, as Google reports it.
 	SizeGb int32 `protobuf:"varint,9,opt,name=size_gb,json=sizeGb,proto3" json:"size_gb,omitempty"`

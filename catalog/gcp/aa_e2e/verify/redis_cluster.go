@@ -53,24 +53,34 @@ func (v *redisClusterVerifier) VerifyExists(ctx context.Context, svc *Services, 
 
 	// Each service attachment handle the module exported must be one Google
 	// publishes under the matching connection type -- what a consumer's
-	// forwarding rule and a GcpRedisClusterEndpointSet reference.
-	for output, connectionType := range map[string]string{
-		"discovery_service_attachment": "CONNECTION_TYPE_DISCOVERY",
-		"primary_service_attachment":   "CONNECTION_TYPE_PRIMARY",
-		"reader_service_attachment":    "CONNECTION_TYPE_READER",
+	// forwarding rule and a GcpRedisClusterEndpointSet reference. Google
+	// publishes a discovery and a primary attachment for every cluster, the
+	// primary one with no connection type stamped on it, so both handles
+	// must be set whenever the cluster lists attachments; the reader one is
+	// checked only when exported (no cluster measured has published one).
+	for _, handle := range []struct {
+		output, connectionType string
+		required               bool
+	}{
+		{"discovery_service_attachment", "CONNECTION_TYPE_DISCOVERY", true},
+		{"primary_service_attachment", "CONNECTION_TYPE_PRIMARY", true},
+		{"reader_service_attachment", "CONNECTION_TYPE_READER", false},
 	} {
-		want := outputs[output]
+		want := outputs[handle.output]
 		if want == "" {
+			if handle.required && len(cluster.PscServiceAttachments) > 0 {
+				return errors.Errorf("redis cluster %s: %s output is empty, but Google publishes %d service attachments for it", name, handle.output, len(cluster.PscServiceAttachments))
+			}
 			continue
 		}
 		found := false
 		for _, a := range cluster.PscServiceAttachments {
-			if a.ConnectionType == connectionType && a.ServiceAttachment == want {
+			if a.ServiceAttachment == want && attachmentHasType(a.ConnectionType, handle.connectionType) {
 				found = true
 			}
 		}
 		if !found {
-			return errors.Errorf("redis cluster %s: %s output %q matches no live %s attachment", name, output, want, connectionType)
+			return errors.Errorf("redis cluster %s: %s output %q matches no live %s attachment", name, handle.output, want, handle.connectionType)
 		}
 	}
 	return nil
@@ -91,4 +101,15 @@ func (v *redisClusterVerifier) VerifyAbsent(ctx context.Context, svc *Services, 
 		return errors.Wrapf(err, "unexpected error probing redis cluster %s after destroy", name)
 	}
 	return errors.Errorf("redis cluster %s still exists after destroy", name)
+}
+
+// attachmentHasType reports whether a published attachment is of the
+// connection type: Google leaves the primary attachment's type unset, so an
+// untyped attachment counts as the primary one.
+func attachmentHasType(published, connectionType string) bool {
+	if published == connectionType {
+		return true
+	}
+	untyped := published == "" || published == "CONNECTION_TYPE_UNSPECIFIED"
+	return untyped && connectionType == "CONNECTION_TYPE_PRIMARY"
 }

@@ -40,12 +40,16 @@ message GcpRedisClusterOutputs {
   // against.
   string discovery_service_attachment = 6;
 
-  // Service attachment for the PRIMARY endpoint (writes). Empty when Google
-  // publishes no separate primary attachment for this cluster shape.
+  // Service attachment a consumer's own forwarding rule targets for the
+  // PRIMARY endpoint (writes). Google publishes it beside the discovery one
+  // for every cluster, without stamping a connection type on it, so this is
+  // the cluster's untyped attachment; GcpRedisClusterEndpointSet registers a
+  // primary connection against it.
   string primary_service_attachment = 7;
 
-  // Service attachment for the READER endpoint (replica reads). Empty when
-  // the cluster has no replicas.
+  // Service attachment for the READER endpoint (replica reads). Google's
+  // API defines a READER attachment, but no cluster measured so far, with
+  // 0 or 1 replica, published one, so this reads empty.
   string reader_service_attachment = 8;
 
   // Redis memory across the whole cluster in GB, as Google reports it.

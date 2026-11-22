@@ -46,7 +46,12 @@ nothing else. Consumers in any VPC or project then reserve an address,
 create a regional `GcpGlobalForwardingRule` (empty scheme) targeting each
 attachment handle the cluster exposes (`discovery_service_attachment`,
 `primary_service_attachment`, `reader_service_attachment`), and register
-those rules on the cluster through `GcpRedisClusterEndpointSet`. This is
+those rules on the cluster through `GcpRedisClusterEndpointSet`. Google
+publishes two attachments for every cluster, with or without replicas: the
+discovery one, and the primary one, which Google leaves without a connection
+type in its own API (the outputs name it for you). No cluster shape measured
+so far has published a reader attachment, so `reader_service_attachment`
+reads empty and a consumer creates two forwarding rules, not three. This is
 the multi-VPC pattern and the only way to reach a cluster from a network
 the automation cannot own.
 

@@ -38,12 +38,12 @@ output "discovery_service_attachment" {
 }
 
 output "primary_service_attachment" {
-  description = "Service attachment for the primary endpoint (empty when Google publishes none)"
+  description = "Service attachment a consumer forwarding rule targets for the primary endpoint"
   value       = try(local.service_attachments_by_type["CONNECTION_TYPE_PRIMARY"][0], "")
 }
 
 output "reader_service_attachment" {
-  description = "Service attachment for the reader endpoint (empty without replicas)"
+  description = "Service attachment for the reader endpoint (empty in every cluster shape measured)"
   value       = try(local.service_attachments_by_type["CONNECTION_TYPE_READER"][0], "")
 }
 

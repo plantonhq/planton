@@ -14,6 +14,8 @@ const (
 	connectionTypeDiscovery = "CONNECTION_TYPE_DISCOVERY"
 	connectionTypePrimary   = "CONNECTION_TYPE_PRIMARY"
 	connectionTypeReader    = "CONNECTION_TYPE_READER"
+	// The value Google's API defines for an attachment it does not type.
+	connectionTypeUnspecified = "CONNECTION_TYPE_UNSPECIFIED"
 )
 
 // cluster provisions the Memorystore for Redis Cluster. Connectivity is
@@ -298,15 +300,15 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 
 	// One scalar handle per connection type, so a consumer's forwarding
 	// rule (and GcpRedisClusterEndpointSet) can reference the attachment it
-	// needs -- a reference cannot index a repeated output.
+	// needs -- a reference cannot index a repeated output. Google publishes
+	// two attachments for every cluster: the discovery one, typed
+	// CONNECTION_TYPE_DISCOVERY, and the primary one, whose connection type
+	// it leaves unset (measured on eleven clusters with 0 and 1 replicas), so
+	// the primary handle is the PRIMARY-typed attachment or, as Google
+	// publishes it, the untyped one.
 	serviceAttachmentOfType := func(connectionType string) pulumi.StringOutput {
 		return createdCluster.PscServiceAttachments.ApplyT(func(attachments []redis.ClusterPscServiceAttachment) string {
-			for _, a := range attachments {
-				if a.ConnectionType != nil && *a.ConnectionType == connectionType && a.ServiceAttachment != nil {
-					return *a.ServiceAttachment
-				}
-			}
-			return ""
+			return pickServiceAttachment(attachments, connectionType)
 		}).(pulumi.StringOutput)
 	}
 
@@ -327,4 +329,25 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 	ctx.Export(OpAvailableMaintenanceVersions, createdCluster.AvailableMaintenanceVersions)
 
 	return nil
+}
+
+// pickServiceAttachment returns the attachment of the connection type, or ""
+// when Google publishes none. The primary attachment is the PRIMARY-typed one
+// or, since Google leaves its type unset, the attachment with no type.
+func pickServiceAttachment(attachments []redis.ClusterPscServiceAttachment, connectionType string) string {
+	for _, a := range attachments {
+		if a.ConnectionType != nil && *a.ConnectionType == connectionType && a.ServiceAttachment != nil {
+			return *a.ServiceAttachment
+		}
+	}
+	if connectionType != connectionTypePrimary {
+		return ""
+	}
+	for _, a := range attachments {
+		untyped := a.ConnectionType == nil || *a.ConnectionType == "" || *a.ConnectionType == connectionTypeUnspecified
+		if untyped && a.ServiceAttachment != nil {
+			return *a.ServiceAttachment
+		}
+	}
+	return ""
 }
