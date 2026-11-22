@@ -21,13 +21,15 @@ spec:
   # indexes -> collection -- a resourceInUse on teardown means the fold's
   # dependency edge was lost.
   #
-  # Parked (2026-11-21). minimal passed both engines (the description moved
-  # in place, UpdateCollection). hybrid-two-indexes taught three facts: a
+  # Measured 2026-11-21: minimal passed both engines (the description moved
+  # in place, UpdateCollection). hybrid-two-indexes measured that a
   # STORAGE_OPTIMIZED index takes only DOT_PRODUCT and no ScaNN options (the
-  # spec refuses both now), and Google runs one index operation at a time
-  # per collection (409 "unable to queue the operation"). The Pulumi module
-  # chains its indexes; the Terraform module's for_each cannot, so the lane
-  # waits on a Terraform shape that creates indexes one at a time.
+  # spec refuses both), and that Google runs one index operation per
+  # collection at a time (409 "unable to queue the operation"). The Pulumi
+  # module chains its indexes and creates both in one apply. Terraform
+  # creates the for_each instances concurrently, so its first apply of
+  # hybrid-two-indexes creates one index and refuses the other; a re-apply
+  # creates the second. The remedy is a provider-side retry on the 409.
   tier: 1
   status: pending_proof
   validated_provisioners: []

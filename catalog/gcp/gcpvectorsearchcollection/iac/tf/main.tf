@@ -76,6 +76,16 @@ resource "google_vector_search_collection" "this" {
 # distance_metric, dense_scann, dedicated infrastructure and its replica
 # bounds -- are sent only when set so Google's defaults stay in charge
 # (the Pulumi module's posture).
+#
+# Google runs one index operation per collection at a time and refuses the
+# others with 409 ("unable to queue the operation"). Terraform creates the
+# instances of one for_each resource concurrently and cannot order them
+# against each other, so a first apply with several indexes creates one and
+# a re-apply creates the next; the Pulumi module chains its indexes and
+# creates them all in one apply. for_each stays keyed by index_id so that
+# removing a middle index destroys that index alone: a fixed set of chained
+# count-gated slots would shift every later index into a new slot and
+# rebuild it. The remedy is a provider-side retry on the 409.
 resource "google_vector_search_index" "this" {
   for_each = local.indexes
 

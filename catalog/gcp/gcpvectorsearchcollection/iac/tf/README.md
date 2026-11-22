@@ -4,7 +4,11 @@ This directory contains the Terraform implementation for a Vector Search
 collection and its folded indexes from the Planton spec: one
 `google_project_service` (API enablement), one
 `google_vector_search_collection`, and one `google_vector_search_index` per
-`spec.indexes[]` entry (`for_each` keyed by `index_id`).
+`spec.indexes[]` entry (`for_each` keyed by `index_id`). Google runs one
+index operation per collection at a time and refuses the others with 409,
+and Terraform creates the instances of one `for_each` resource
+concurrently: a first apply with several indexes creates one, and each
+re-apply creates the next (the Pulumi module chains them).
 
 ## Provider
 

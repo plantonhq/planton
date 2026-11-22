@@ -40,15 +40,27 @@ Google keeps what the index has, nodes included. The collection's labels
 and the platform attribution labels land on every index and win on a key
 conflict. Choose `COSINE_DISTANCE` with `UNIT_L2_NORM` for embeddings
 that are not already normalized; `DOT_PRODUCT` (Google's default) for
-ones that are. Google builds one index at a time per collection and refuses a
-second operation while one runs (409, "unable to queue the operation"):
-the Pulumi module creates the indexes one after another, while Terraform
-starts them together and Google refuses all but one, so a Terraform apply
-of a collection with several indexes needs a second apply for the rest. A `STORAGE_OPTIMIZED` index takes only `DOT_PRODUCT` and
-no ScaNN options such as the norm (Google refuses both): unit-normalize the
-vectors before ingestion there to get cosine similarity. Push into `filterFields` the fields searches filter on and
+ones that are. A `STORAGE_OPTIMIZED` index takes only `DOT_PRODUCT` and
+no ScaNN options such as the norm (Google refuses both):
+unit-normalize the vectors before ingestion there to get cosine
+similarity. Push into `filterFields` the fields searches filter on and
 into `storeFields` the ones results should return inline, so a hit needs
 no second lookup.
+
+## Several indexes on Terraform take several applies
+
+Google runs one index operation per collection at a time and refuses the
+others with 409 ("unable to queue the operation"). The Pulumi module
+chains the indexes, each waiting for the one before, so one apply creates
+them all. Terraform creates a collection's indexes concurrently, because
+the module declares them as one resource keyed by `indexId` and Terraform
+cannot order the instances of one resource. So a first Terraform or
+OpenTofu apply of a collection with several indexes creates one index and
+fails on the rest, and each re-apply creates the next. Adding one index to
+a collection that already has its others is a single apply on both
+engines. Keying by `indexId` is deliberate: removing an index from the
+middle of the list destroys that index alone and never rebuilds the ones
+after it.
 
 ## Pooled or dedicated
 

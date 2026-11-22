@@ -101,6 +101,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 ## Important Notes
 
+- **Several indexes take several Terraform applies.** Google runs one index operation per collection at a time and refuses the others (409). The Pulumi module chains the indexes and creates them in one apply; Terraform and OpenTofu create them concurrently, so a first apply creates one index and each re-apply creates the next.
 - **Most index changes replace the index.** Only the display name, description, labels, and replica bounds change in place; any other change rebuilds the index from the collection's data, and searches against it wait for the rebuild.
 - **Field names and index IDs are unique,** and every index serves a declared vector field. A dense field states its `dimensions` or a `vertexEmbeddingConfig`; an empty one would reach Google with no shape.
 - **Data is not part of this block.** Objects are written by applications through the Vector Search API or its SDKs; this block declares the store and its indexes.
