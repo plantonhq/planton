@@ -26,6 +26,6 @@ spec:
   # than Google's 30-character limit for this fixture's name.
   displayName: planton e2e org literal 2
   parentType: organization
-  parentId: ${E2E_ENV:PLANTON_E2E_GCP_ORGANIZATION_ID}
+  parentId: "${E2E_ENV:PLANTON_E2E_GCP_ORGANIZATION_ID}" # quoted: the id is digits, and the field is a string
   autoCreateNetwork: true
   deletionPolicy: DELETE

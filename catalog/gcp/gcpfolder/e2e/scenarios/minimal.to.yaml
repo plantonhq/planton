@@ -21,6 +21,6 @@ metadata:
     - planton-e2e
 spec:
   parent:
-    organizationId: ${E2E_ENV:PLANTON_E2E_GCP_ORGANIZATION_ID}
+    organizationId: "${E2E_ENV:PLANTON_E2E_GCP_ORGANIZATION_ID}" # quoted: the id is digits, and the field is a string
   displayName: planton-e2e-min2-${E2E_RUN_ID}
   deletionProtection: false

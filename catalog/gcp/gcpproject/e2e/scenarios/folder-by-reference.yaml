@@ -24,6 +24,7 @@ metadata:
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e-upgrade-manifest: folder-by-reference.to.yaml # the update: the display name
     planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID
+    planton.dev/e2e-prerequisites: "GcpFolder" # the folder the project is created in
   tags:
     - planton-e2e
 spec:

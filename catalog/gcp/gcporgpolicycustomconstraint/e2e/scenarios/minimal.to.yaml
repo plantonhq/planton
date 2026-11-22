@@ -21,7 +21,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  organizationId: ${E2E_ENV:PLANTON_E2E_GCP_ORGANIZATION_ID}
+  organizationId: "${E2E_ENV:PLANTON_E2E_GCP_ORGANIZATION_ID}" # quoted: the id is digits, and the field is a string
   constraintName: plantonE2eMinimal${E2E_RUN_ID_UNDERSCORE}
   description: Planton E2E fixture, updated in place; safe to delete
   resourceTypes:

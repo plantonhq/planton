@@ -20,6 +20,7 @@ metadata:
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
     planton.dev/e2e-upgrade-manifest: nested.to.yaml # the update: the display name
     planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpfolder/e2e/prerequisite.yaml" # the parent folder; by path, since a kind is never its own prerequisite by name
   tags:
     - planton-e2e
 spec:
