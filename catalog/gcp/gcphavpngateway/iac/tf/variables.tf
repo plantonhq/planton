@@ -138,8 +138,9 @@ variable "spec" {
         # Interval in seconds between BGP keepalive messages (20-60; 20 when
         # empty). Hold time -- how long a peer waits before declaring the session
         # dead -- is three times this value. Lower values fail over faster at
-        # the cost of more control traffic; BFD on the session is the precise
-        # tool for sub-second detection.
+        # the cost of more control traffic. Keepalives are the only failure
+        # detection a VPN session has: Google refuses BFD on VPN tunnel
+        # interfaces.
         keepalive_interval = optional(number, 0)
 
         # Explicit range of valid BGP identifiers (what other vendors call the

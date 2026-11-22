@@ -172,8 +172,9 @@ type GcpHaVpnGatewayRouterBgp struct {
 	// Interval in seconds between BGP keepalive messages (20-60; 20 when
 	// empty). Hold time -- how long a peer waits before declaring the session
 	// dead -- is three times this value. Lower values fail over faster at
-	// the cost of more control traffic; BFD on the session is the precise
-	// tool for sub-second detection.
+	// the cost of more control traffic. Keepalives are the only failure
+	// detection a VPN session has: Google refuses BFD on VPN tunnel
+	// interfaces.
 	KeepaliveInterval int32 `protobuf:"varint,5,opt,name=keepalive_interval,json=keepaliveInterval,proto3" json:"keepalive_interval,omitempty"`
 	// Explicit range of valid BGP identifiers (what other vendors call the
 	// router ID), as a link-local IPv4 CIDR from 169.254.0.0/16 of size at
