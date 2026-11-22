@@ -5,7 +5,7 @@ metadata:
 spec:
   scope:
     organizationId: "123456789012"
-  constraint: iam.disableServiceAccountKeyCreation
+  constraint: iam.managed.disableServiceAccountKeyCreation
   policy:
     rules:
       - enforce: true

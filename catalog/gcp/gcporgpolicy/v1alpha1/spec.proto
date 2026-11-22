@@ -31,6 +31,15 @@ import "shared/foreignkey/v1/foreign_key.proto";
 // immutable -- changing either recreates the policy (and the API serializes
 // the create behind the delete, so the old rules lapse for a moment).
 message GcpOrgPolicySpec {
+  // Google accepts a dry-run policy only for custom constraints, managed
+  // constraints (`<service>.managed.<name>`) and four legacy ones; any other
+  // constraint is refused at create ("DryRun feature is not available for
+  // the resource", measured on both engines with gcp.resourceLocations).
+  option (buf.validate.message).cel = {
+    id: "dry_run_needs_a_supported_constraint"
+    message: "dry_run_policy needs a custom constraint, a managed constraint (such as compute.managed.disableSerialPortAccess), or one of gcp.restrictServiceUsage, gcp.restrictEndpointUsage, gcp.restrictTLSVersion, gcp.restrictTLSCipherSuites -- Google refuses a dry run on every other constraint"
+    expression: "!has(this.dry_run_policy) || this.constraint == '' || this.constraint.contains('.managed.') || this.constraint in ['gcp.restrictServiceUsage', 'gcp.restrictEndpointUsage', 'gcp.restrictTLSVersion', 'gcp.restrictTLSCipherSuites']"
+  };
   option (buf.validate.message).cel = {
     id: "exactly_one_constraint"
     message: "set exactly one of constraint (a predefined or managed constraint such as compute.disableSerialPortAccess) or custom_constraint (a reference to a GcpOrgPolicyCustomConstraint)"
@@ -77,6 +86,11 @@ message GcpOrgPolicySpec {
   // (`cloudaudit.googleapis.com/policy`, `dryRunPolicyViolation`), nothing
   // is blocked. Set it beside `policy` to preview a tightening before it
   // bites, or alone to measure a new guardrail against live traffic first.
+  // Google takes a dry run only on a custom constraint, a managed constraint
+  // (`compute.managed.disableSerialPortAccess`), or gcp.restrictServiceUsage,
+  // gcp.restrictEndpointUsage, gcp.restrictTLSVersion and
+  // gcp.restrictTLSCipherSuites; a legacy constraint such as
+  // gcp.resourceLocations is refused. A dry run needs billing on the project.
   GcpOrgPolicyRuleSet dry_run_policy = 5;
 
   // What destroying this resource does to the policy in GCP:

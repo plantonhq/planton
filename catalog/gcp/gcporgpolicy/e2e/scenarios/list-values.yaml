@@ -1,7 +1,6 @@
 # List-constraint GcpOrgPolicy scenario on the harness project: a values
-# rule with a value group, a conditional rule by tag, inherit_from_parent,
-# and a dry-run policy beside the enforced one -- the depth of the rule
-# shape, round-tripped through Google's set-comparison of rules and the
+# rule with a value group, a conditional rule by tag, and inherit_from_parent
+# -- the depth of the rule shape, round-tripped through Google's set-comparison of rules and the
 # "TRUE"/"FALSE" string normalization (the re-plan must be clean). Project
 # scope by the ambient project; the declared identity holds
 # roles/orgpolicy.policyAdmin on the test organization, the only place Google
@@ -19,7 +18,7 @@ metadata:
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
-    planton.dev/e2e-upgrade-manifest: list-and-dry-run.to.yaml # the update: one more denied region
+    planton.dev/e2e-upgrade-manifest: list-values.to.yaml # the update: one more denied region
     planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID
   tags:
     - planton-e2e
@@ -33,9 +32,4 @@ spec:
             - in:us-locations
           deniedValues:
             - us-west4
-  dryRunPolicy:
-    rules:
-      - values:
-          allowedValues:
-            - in:us-locations
   deletionPolicy: DELETE

@@ -59,7 +59,9 @@ func orgPolicy(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) e
 		return errors.Wrap(err, "failed to create organization policy")
 	}
 
-	ctx.Export(OpName, createdPolicy.Name)
+	// The full resource name is the resource id: the provider keeps only the
+	// bare constraint in its name attribute after the first read.
+	ctx.Export(OpName, createdPolicy.ID())
 	ctx.Export(OpEtag, createdPolicy.Etag)
 
 	return nil

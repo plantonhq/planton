@@ -1,0 +1,33 @@
+# Managed-constraint GcpOrgPolicy scenario on the harness project: the
+# managed boolean constraint compute.managed.disableSerialPortAccess enforced,
+# with a dry-run policy beside it. Google accepts a dry-run policy only for
+# custom constraints, managed constraints and four legacy ones (service and
+# endpoint usage, TLS versions and cipher suites), never for a legacy
+# boolean or list constraint such as gcp.resourceLocations. No scope is
+# named, so the module resolves the harness project; the declared identity
+# holds roles/orgpolicy.policyAdmin on the test organization.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpOrgPolicy
+metadata:
+  name: planton-oss-e2e-gcporgp-managed
+  id: planton-oss-e2e-gcporgp-managed
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-catalog-kind: gcporgpolicy
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: managed-dry-run.to.yaml # the update: the rule stops enforcing
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID
+  tags:
+    - planton-e2e
+spec:
+  constraint: compute.managed.disableSerialPortAccess
+  policy:
+    rules:
+      - enforce: true
+  dryRunPolicy:
+    rules:
+      - enforce: true

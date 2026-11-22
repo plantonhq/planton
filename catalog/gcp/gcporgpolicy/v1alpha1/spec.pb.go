@@ -80,6 +80,11 @@ type GcpOrgPolicySpec struct {
 	// (`cloudaudit.googleapis.com/policy`, `dryRunPolicyViolation`), nothing
 	// is blocked. Set it beside `policy` to preview a tightening before it
 	// bites, or alone to measure a new guardrail against live traffic first.
+	// Google takes a dry run only on a custom constraint, a managed constraint
+	// (`compute.managed.disableSerialPortAccess`), or gcp.restrictServiceUsage,
+	// gcp.restrictEndpointUsage, gcp.restrictTLSVersion and
+	// gcp.restrictTLSCipherSuites; a legacy constraint such as
+	// gcp.resourceLocations is refused. A dry run needs billing on the project.
 	DryRunPolicy *GcpOrgPolicyRuleSet `protobuf:"bytes,5,opt,name=dry_run_policy,json=dryRunPolicy,proto3" json:"dry_run_policy,omitempty"`
 	// What destroying this resource does to the policy in GCP:
 	//
@@ -621,7 +626,7 @@ var File_catalog_gcp_gcporgpolicy_v1alpha1_spec_proto protoreflect.FileDescripto
 
 const file_catalog_gcp_gcporgpolicy_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	",catalog/gcp/gcporgpolicy/v1alpha1/spec.proto\x12%dev.planton.gcp.gcporgpolicy.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xcb\t\n" +
+	",catalog/gcp/gcporgpolicy/v1alpha1/spec.proto\x12%dev.planton.gcp.gcporgpolicy.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xf8\r\n" +
 	"\x10GcpOrgPolicySpec\x12N\n" +
 	"\x05scope\x18\x01 \x01(\v28.dev.planton.gcp.gcporgpolicy.v1alpha1.GcpOrgPolicyScopeR\x05scope\x12\xf6\x01\n" +
 	"\n" +
@@ -632,7 +637,8 @@ const file_catalog_gcp_gcporgpolicy_v1alpha1_spec_proto_rawDesc = "" +
 	"\x06policy\x18\x04 \x01(\v2:.dev.planton.gcp.gcporgpolicy.v1alpha1.GcpOrgPolicyRuleSetR\x06policy\x12`\n" +
 	"\x0edry_run_policy\x18\x05 \x01(\v2:.dev.planton.gcp.gcporgpolicy.v1alpha1.GcpOrgPolicyRuleSetR\fdryRunPolicy\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\x06 \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
-	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy:\xf3\x02\xbaH\xef\x02\x1a\xec\x02\n" +
+	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy:\xa0\a\xbaH\x9c\a\x1a\xaa\x04\n" +
+	"$dry_run_needs_a_supported_constraint\x12\x9a\x02dry_run_policy needs a custom constraint, a managed constraint (such as compute.managed.disableSerialPortAccess), or one of gcp.restrictServiceUsage, gcp.restrictEndpointUsage, gcp.restrictTLSVersion, gcp.restrictTLSCipherSuites -- Google refuses a dry run on every other constraint\x1a\xe4\x01!has(this.dry_run_policy) || this.constraint == '' || this.constraint.contains('.managed.') || this.constraint in ['gcp.restrictServiceUsage', 'gcp.restrictEndpointUsage', 'gcp.restrictTLSVersion', 'gcp.restrictTLSCipherSuites']\x1a\xec\x02\n" +
 	"\x16exactly_one_constraint\x12\xaf\x01set exactly one of constraint (a predefined or managed constraint such as compute.disableSerialPortAccess) or custom_constraint (a reference to a GcpOrgPolicyCustomConstraint)\x1a\x9f\x01[this.constraint != '', has(this.custom_constraint) && (this.custom_constraint.value != '' || has(this.custom_constraint.value_from))].filter(x, x).size() == 1\"\xbd\x06\n" +
 	"\x11GcpOrgPolicyScope\x12u\n" +
 	"\n" +

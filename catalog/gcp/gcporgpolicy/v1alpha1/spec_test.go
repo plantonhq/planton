@@ -128,6 +128,7 @@ var _ = ginkgo.Describe("GcpOrgPolicySpec", func() {
 				},
 			},
 		}
+		target.Spec.Constraint = "compute.managed.disableSerialPortAccess"
 		target.Spec.Policy = &GcpOrgPolicyRuleSet{Rules: rules}
 		target.Spec.DryRunPolicy = &GcpOrgPolicyRuleSet{Rules: rules}
 		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
@@ -139,9 +140,31 @@ var _ = ginkgo.Describe("GcpOrgPolicySpec", func() {
 		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
 
 		target = minimal()
+		target.Spec.Constraint = "compute.managed.disableSerialPortAccess"
 		target.Spec.DryRunPolicy = target.Spec.Policy
 		target.Spec.Policy = nil
 		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should accept a dry run on a custom constraint and on the four legacy constraints Google allows", func() {
+		target := minimal()
+		target.Spec.Constraint = ""
+		target.Spec.CustomConstraint = &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "custom.denyPublicBuckets"}}
+		target.Spec.DryRunPolicy = target.Spec.Policy
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+		for _, constraint := range []string{"gcp.restrictServiceUsage", "gcp.restrictEndpointUsage", "gcp.restrictTLSVersion", "gcp.restrictTLSCipherSuites"} {
+			target = minimal()
+			target.Spec.Constraint = constraint
+			target.Spec.Policy = &GcpOrgPolicyRuleSet{Rules: []*GcpOrgPolicyRule{{Kind: &GcpOrgPolicyRule_DenyAll{DenyAll: true}}}}
+			target.Spec.DryRunPolicy = target.Spec.Policy
+			gomega.Expect(validator.Validate(target)).To(gomega.Succeed(), constraint)
+		}
+	})
+
+	ginkgo.It("should reject a dry run on a legacy constraint Google refuses it for", func() {
+		target := minimal()
+		target.Spec.DryRunPolicy = target.Spec.Policy
+		expectError(target, "dry_run_policy needs a custom constraint, a managed constraint")
 	})
 
 	ginkgo.It("should accept a custom constraint by reference or as the custom.<name> literal", func() {

@@ -14,7 +14,9 @@ spec:
   # or customConstraint (a reference to a GcpOrgPolicyCustomConstraint's
   # constraint output). Immutable. A boolean constraint takes `enforce`; a
   # list constraint takes `values`, `allowAll`, or `denyAll`.
-  constraint: compute.disableSerialPortAccess
+  # The managed form of the guardrail: Google takes a dry-run policy only on
+  # managed and custom constraints (and four legacy ones).
+  constraint: compute.managed.disableSerialPortAccess
 
   # The ENFORCED rules. A boolean constraint needs exactly one unconditional
   # rule; conditional rules (by tag) set the opposite and refine it.

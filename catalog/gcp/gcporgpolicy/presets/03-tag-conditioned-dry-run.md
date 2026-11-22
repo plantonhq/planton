@@ -7,6 +7,11 @@ exemption would break, so the tightening can be watched before it bites.
 
 ## What it configures
 
+- `constraint: iam.managed.disableServiceAccountKeyCreation` — the managed
+  form of the key-creation guardrail. Google takes a dry-run policy only on
+  managed and custom constraints (and four legacy ones), so the legacy
+  `iam.disableServiceAccountKeyCreation` would be refused here.
+
 - `policy.rules[0].enforce: true` — the unconditional rule a boolean
   constraint needs.
 - `policy.rules[1]` — `enforce: false` with a `condition` on the tag: the

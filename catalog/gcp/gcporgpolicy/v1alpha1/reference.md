@@ -53,7 +53,9 @@ spec:
   # or customConstraint (a reference to a GcpOrgPolicyCustomConstraint's
   # constraint output). Immutable. A boolean constraint takes `enforce`; a
   # list constraint takes `values`, `allowAll`, or `denyAll`.
-  constraint: compute.disableSerialPortAccess
+  # The managed form of the guardrail: Google takes a dry-run policy only on
+  # managed and custom constraints (and four legacy ones).
+  constraint: compute.managed.disableSerialPortAccess
 
   # The ENFORCED rules. A boolean constraint needs exactly one unconditional
   # rule; conditional rules (by tag) set the opposite and refine it.
@@ -344,6 +346,11 @@ The same rule shape, evaluated in AUDIT mode: violations are logged
 (`cloudaudit.googleapis.com/policy`, `dryRunPolicyViolation`), nothing
 is blocked. Set it beside `policy` to preview a tightening before it
 bites, or alone to measure a new guardrail against live traffic first.
+Google takes a dry run only on a custom constraint, a managed constraint
+(`compute.managed.disableSerialPortAccess`), or gcp.restrictServiceUsage,
+gcp.restrictEndpointUsage, gcp.restrictTLSVersion and
+gcp.restrictTLSCipherSuites; a legacy constraint such as
+gcp.resourceLocations is refused. A dry run needs billing on the project.
 
 - rule: a rule set with reset: true must carry no rules and must not set inherit_from_parent -- reset restores the constraint's default and discards everything inherited
 
@@ -496,6 +503,7 @@ What destroying this resource does to the policy in GCP:
 
 ## Validation Rules
 
+- `dry_run_needs_a_supported_constraint`: dry_run_policy needs a custom constraint, a managed constraint (such as compute.managed.disableSerialPortAccess), or one of gcp.restrictServiceUsage, gcp.restrictEndpointUsage, gcp.restrictTLSVersion, gcp.restrictTLSCipherSuites -- Google refuses a dry run on every other constraint
 - `exactly_one_constraint`: set exactly one of constraint (a predefined or managed constraint such as compute.disableSerialPortAccess) or custom_constraint (a reference to a GcpOrgPolicyCustomConstraint)
 
 ## Outputs
