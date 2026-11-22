@@ -22,7 +22,7 @@ spec:
       name: planton-oss-e2e-gcptpu-vpc
       fieldPath: status.outputs.network_self_link
   subnetworkName: e2e-gcptpu-subnet-${E2E_RUN_ID}
-  region: us-central1
+  region: europe-west4
   ipCidrRange: 10.9.40.0/24
   privateIpGoogleAccess: true
   description: Ephemeral subnetwork for the gcptpuvm E2E chain; safe to delete
