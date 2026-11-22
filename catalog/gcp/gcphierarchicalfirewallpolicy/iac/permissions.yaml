@@ -19,10 +19,11 @@ spec:
           - compute.firewallPolicies.update
           - compute.firewallPolicies.delete
           - compute.firewallPolicies.use
+          - compute.globalOperations.get
         provenance: derived
         reach: organization
         privilege: ordinary
-        notes: "Covers google_compute_firewall_policy (Pulumi compute.FirewallPolicy) and its rules (google_compute_firewall_policy_rule -- addRule, patchRule, removeRule, getRule are all firewallPolicies.update/get on the policy). create on first apply; get on every refresh and import; update when the description changes or any rule is added, changed, or removed; delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). Granted on the ORGANIZATION (or on the parent folder) -- these are organization-level resources; roles/compute.orgFirewallPolicyAdmin contains all of these."
+        notes: "Every create, update and delete returns an organization-level operation (locations/global/operations/org-...) that both engines poll, and Google authorizes that poll as compute.globalOperations.get (a refusal names it, measured on both engines). Covers google_compute_firewall_policy (Pulumi compute.FirewallPolicy) and its rules (google_compute_firewall_policy_rule -- addRule, patchRule, removeRule, getRule are all firewallPolicies.update/get on the policy). create on first apply; get on every refresh and import; update when the description changes or any rule is added, changed, or removed; delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). Granted on the ORGANIZATION (or on the parent folder) -- these are organization-level resources; roles/compute.orgFirewallPolicyAdmin contains all of these."
       - purpose: AssociateHierarchicalFirewallPolicy
         permissions:
           - compute.organizations.setFirewallPolicy

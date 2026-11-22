@@ -3,16 +3,20 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpproject
 spec:
-  # Both lanes create a project in the test organization
-  # (PLANTON_E2E_GCP_ORGANIZATION_ID) as the declared identity, which holds
-  # resourcemanager.projects.create in a custom role on the organization:
-  # one directly under the organization, one in a folder fixture. Neither
+  # Proven live on both engines (2026-11-23, test organization
+  # planton-e2e.com) as the declared identity, which holds
+  # resourcemanager.projects.create in a custom role on the organization: one
+  # project directly under the organization, one in a folder fixture. Neither
   # links billing or deletes the default network, so neither bills. Each
-  # second act renames the project in place, judged from the organization's
-  # and the new project's Admin Activity logs. validated_provisioners stays
-  # empty until the live lanes actually run.
+  # second act renames the project, judged in place from the new project's
+  # Admin Activity log (UpdateProject). What the run proves of the target
+  # groups is narrower: Google makes the creating identity the new project's
+  # owner, so the rename and the delete pass through that ownership, and
+  # ManageProject, MoveProjectParent, EnableApis and DeleteDefaultNetwork stay
+  # derived (the gap accepted 2026-11-22). Destroy leaves the project
+  # DELETE_REQUESTED for 30 days; Google still deletes the folder fixture that
+  # holds it, so a project can be created in a throwaway folder.
   tier: 2
-  status: deferred
-  deferred_reason: the live lanes wait for a test organization exported as PLANTON_E2E_GCP_ORGANIZATION_ID, where the harness grants the declared identity resourcemanager.projects.create; offline plans only until then
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 45

@@ -54,3 +54,8 @@ which attaches and detaches without touching the folder.
 A deleted folder keeps its display name reserved under the same parent
 for the 30-day soft-delete window, and siblings can never share a name.
 Ephemeral folders (test fixtures) need a fresh name per lifetime.
+
+A folder can be deleted while it still holds projects or folders that are
+themselves pending deletion: Google counts only active children. So a stack
+that creates a folder and the projects inside it comes down in one destroy,
+children first, without waiting out their 30 days.
