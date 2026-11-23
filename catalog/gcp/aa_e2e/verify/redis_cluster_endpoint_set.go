@@ -49,8 +49,8 @@ func (v *redisClusterEndpointSetVerifier) VerifyExists(ctx context.Context, svc 
 				continue
 			}
 			live++
-			if conn.PscConnection.PscConnectionStatus != "" && conn.PscConnection.PscConnectionStatus != "ACTIVE" {
-				return errors.Errorf("redis cluster %s: connection %s status is %q, want ACTIVE", path, conn.PscConnection.PscConnectionId, conn.PscConnection.PscConnectionStatus)
+			if conn.PscConnection.PscConnectionStatus != "" && conn.PscConnection.PscConnectionStatus != "PSC_CONNECTION_STATUS_ACTIVE" {
+				return errors.Errorf("redis cluster %s: connection %s status is %q, want PSC_CONNECTION_STATUS_ACTIVE", path, conn.PscConnection.PscConnectionId, conn.PscConnection.PscConnectionStatus)
 			}
 		}
 	}

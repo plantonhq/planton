@@ -3,27 +3,17 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpcertmanagerissuanceconfig
 spec:
-  # Awaiting the live proof lane. One leaf scenario: a global issuance
-  # config naming a consumer-scoped DevOps pool that holds a self-signed
-  # root authority. The config itself is free; the authority bills Certificate
-  # Authority Service for as long as the run holds it, and the scenario issues
-  # no certificate. Offline bar met: both modules build and validate, offline
-  # plans for the reference manifest, the scenario, its prerequisites, and the
-  # presets are clean on the pinned provider, and the accounting is total.
-  # Live facts the proof lane confirms: (1) Certificate Manager accepts a
-  # DevOps-tier pool -- the provider's own acceptance test uses an Enterprise
-  # pool; (2) the module creates the Certificate Manager service agent and
-  # grants it roles/privateca.certificateRequester on the pool before the
-  # config, which Google checks at create (without the grant the create is
-  # refused with "Config validation failed", measured on both engines); (3) the config reads back with the platform attribution labels
-  # and RE-PLANS CLEAN on both engines -- the provider-defaulted "global"
-  # location must not diff; (4) destroy leaves the verifier reading 404
-  # before the authority and pool go.
+  # Proven live on both engines (2026-11-23): a global issuance config naming
+  # a DevOps-tier pool that holds a self-signed root authority, as the
+  # declared identity. Google accepts a DevOps pool. What the runs taught:
+  # the module must create the Certificate Manager service agent and grant it
+  # certificate requester on the pool before the config; the creator itself
+  # needs privateca.caPools.use on the pool, and without it Google answers
+  # only "Config validation failed"; and neither provider updates a config in
+  # place, so the second act's label change is judged as the replacement it
+  # is. The config is free; the authority bills only for the minutes the run
+  # holds it, and no certificate is issued.
   tier: 1
-  # Parked 2026-11-22 with "Config validation failed" on both engines, with the
-  # agent created and granted; grant propagation and CA lifetime were ruled out.
-  # Google's issuance-config documentation names the missing piece: the creator
-  # itself needs privateca.caPools.use on the pool (UseCaPool in permissions.yaml).
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 25
