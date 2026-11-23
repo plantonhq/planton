@@ -3,8 +3,8 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpvpcpeering
 spec:
-  # Two live scenarios, each with an ACTIVE pair (side A under test, side B a
-  # fixture on the second network):
+  # Proven live on both engines (2026-11-23). Two live scenarios, each with an
+  # ACTIVE pair (side A under test, side B a fixture on the second network):
   #   - independent-flags: the kind's default strategy; the second act turns
   #     off custom-route export, an updatePeering in place judged from the
   #     audit log.
@@ -24,6 +24,6 @@ spec:
   #     Memorystore instance -- a fixture the harness does not carry. Unblock:
   #     a private-IP fixture exported as PLANTON_E2E_GCP_SERVICE_NETWORKING_VPC.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 20
