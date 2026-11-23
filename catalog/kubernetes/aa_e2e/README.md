@@ -125,6 +125,8 @@ a new provider (e.g., AWS), create `catalog/aws/aa_e2e/`.
 ```
 aa_e2e/
   harness.go    -- Kind cluster lifecycle (Setup / Teardown / VerifyDeployed / VerifyDestroyed)
+  hostaddress.go -- How a kind pod reaches a server on this machine (host.docker.internal, else the kind network's gateway)
+  fakemodel/    -- A fake of Anthropic's messages API, for lanes whose software calls a model (no key, no spend)
   README.md     -- This file
   verify/       -- Manifest-driven resource verification (separate package)
     manifest.go           -- ManifestInfo struct + ParseManifestInfo
@@ -141,6 +143,20 @@ aa_e2e/
     perconaoperator.go    -- PsmdbOperatorInstallVerifier / PxcOperatorInstallVerifier (Percona operators)
     generic.go            -- GenericVerifier (fallback, always passes)
 ```
+
+## Lanes whose software calls a model
+
+An agent runtime under test (KubernetesStigmer) needs a model to answer an
+agent turn. Its entrypoints serve `fakemodel` on this machine and hand the
+manifests its address through `${E2E_ENV:PLANTON_E2E_FAKE_MODEL_URL}` (with
+`_IP` and `_CIDR` for a selectorless Service or an egress allow list); the
+runtime is configured the way a user points it at a model gateway, an API
+key plus a base URL. `ResolveHostAddress` finds the address pods dial: the
+IPv4 address of `host.docker.internal` on Docker Desktop, where the kind
+network's gateway is inside Docker's VM, else that gateway on Linux. The
+verifier reads the running fake (`fakemodel.Running()`) to prove the turn
+reached it. On an external cluster nothing is served, and the scenarios'
+`e2e-required-env` skips them with the reason.
 
 ## Harness (`harness.go`)
 
@@ -179,6 +195,7 @@ code.
 | `PxcClusterVerifier` | `perconamysql.go` | 3 | PerconaXtraDBCluster in state `ready` + proxy write Service. Behavioral proof: Galera durability (write a marker row through the proxy, DELETE a database node, read it back at full strength). Backup proof: drives a real XtraBackup to `Succeeded` in the declared store |
 | `PsmdbClusterVerifier` | `perconamongodb.go` | 3 | PerconaServerMongoDB in state `ready` + replica-set Service. Behavioral proof: failover durability (majority-write a marker document, DELETE the primary, read it back through the newly elected primary). Backup proof: drives a real PBM backup to `ready` in the declared store |
 | `PsmdbOperatorInstallVerifier` / `PxcOperatorInstallVerifier` | `perconaoperator.go` | 4 | Operator Deployment Available + CRDs Established, for both Percona flavors (MongoDB and MySQL). On destroy, asserts only the Deployment's absence — the CRDs intentionally survive uninstall |
+| `StigmerVerifier` | `stigmer.go` | 4 | Stigmer Ready at the declared version, then an agent turn through Stigmer's Go SDK against `fakemodel`; per lane, an on-demand backup, a restore holding the earlier run, an upgrade recorded with its backup, a run in a per-session Sandbox, or the front door serving the bundled sign-in over HTTPS and refusing a caller who has not signed in. Destroy keeps the encryption keys and the definition and removes what the operator installed. Refusal lanes pin the kind's three-part texts |
 | `GenericVerifier` | `generic.go` | -- | Always passes (logs a skip message) |
 
 ### Dispatch (`verifier.go`)

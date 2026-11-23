@@ -1,0 +1,25 @@
+# CloudNativePG's definitions left on the cluster by a Helm release that no
+# longer runs anything (fixture-orphaned-cloudnativepg.yaml), the state a
+# destroyed catalog CloudNativePG leaves. Stigmer's operator would trust them
+# and wait forever for a database nothing creates, so the kind refuses before
+# installing, with the command that clears them. This lane runs no clean
+# slate: the leftover is its subject.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesStigmer
+metadata:
+  name: stigmer
+  annotations:
+    planton.dev/e2e-prerequisites: "catalog/kubernetes/kubernetesstigmer/e2e/fixture-namespace.yaml, catalog/kubernetes/kubernetesstigmer/e2e/fixture-orphaned-cloudnativepg.yaml"
+    planton.dev/e2e-expect-deploy-failure: stigmer-prerequisite-orphaned
+spec:
+  namespace:
+    value: stigmer
+  version: 0.3.2
+  operator:
+    namespace:
+      value: stigmer-system
+    create_namespace: true
+  runner:
+    model:
+      keys:
+        anthropic_api_key: sk-ant-e2e-fake

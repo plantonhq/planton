@@ -1,0 +1,23 @@
+# The bring-your-own lane's Temporal, on the same Postgres as the Stigmer
+# (prerequisites/kubernetespostgres.yaml), as the database's owner. Stigmer
+# with its own Postgres needs its own Temporal: the operator creates
+# Temporal's databases only on a Postgres it runs.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesTemporal
+metadata:
+  name: e2e-stigmer-temporal
+spec:
+  namespace:
+    value: stigmer
+  database:
+    postgres:
+      host:
+        valueFrom:
+          name: e2e-stigmer-pg
+      username: stigmer
+      passwordSecret:
+        secretName:
+          valueFrom:
+            name: e2e-stigmer-pg
+  temporalNamespaces:
+    - name: default

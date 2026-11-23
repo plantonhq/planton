@@ -1,0 +1,25 @@
+# The bring-your-own lane's database: one Postgres holding Stigmer's database
+# and Temporal's two, in the Stigmer's namespace, so the Stigmer can name the
+# password Secret this resource writes instead of being given the password
+# again. It creates the namespace, because path-declared fixtures (the
+# namespace fixture) deploy after the kind chain this file is a link of.
+# CloudNativePG, its registry prerequisite, deploys first from its own
+# install profile.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPostgres
+metadata:
+  name: e2e-stigmer-pg
+spec:
+  namespace:
+    value: stigmer
+  create_namespace: true
+  instances: 1
+  storage:
+    size: 2Gi
+  bootstrap:
+    initdb:
+      database: stigmer
+      owner: stigmer
+      post_init_sql:
+        - CREATE DATABASE temporal OWNER stigmer;
+        - CREATE DATABASE temporal_visibility OWNER stigmer;

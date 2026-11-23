@@ -42,6 +42,7 @@ go_test(
     name = "module_test",
     srcs = [
         "parity_test.go",
+        "preflight_test.go",
         "render_test.go",
     ],
     embed = [":module"],
@@ -51,6 +52,10 @@ go_test(
         "//pkg/iac/tofu/generators",
         "//shared",
         "//shared/foreignkey/v1:foreignkey",
+        "@io_k8s_apimachinery//pkg/apis/meta/v1/unstructured",
+        "@io_k8s_apimachinery//pkg/runtime",
+        "@io_k8s_apimachinery//pkg/runtime/schema",
+        "@io_k8s_client_go//dynamic/fake",
         "@io_k8s_sigs_yaml//:yaml",
     ],
 )

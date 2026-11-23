@@ -694,6 +694,13 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 	case "kubernetesagentsubstrate":
 		return newAgentSubstrateVerifier(manifestPath), nil
 
+	// Stigmer: Ready at the declared version, then an agent answers a message
+	// through Stigmer's own SDK against the fake model the lane serves; destroy
+	// keeps the encryption keys and the definition and removes what the
+	// operator installed. Refusal lanes pin the kind's three-part texts.
+	case "kubernetesstigmer":
+		return newStigmerVerifier(manifestPath), nil
+
 	// The resources that run on Agent Substrate: every field reads back, a
 	// SandboxConfig is resolved by the API server for a template of its class,
 	// and a WorkerPool's workers register with the API (and, on the actor

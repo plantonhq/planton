@@ -15,7 +15,7 @@ Installs Stigmer: the `stigmer-operator` Helm chart (`oci://ghcr.io/stigmer/char
 - **The Stigmer is a `kubectl_manifest`** (alekc/kubectl, server-side apply), which needs no definition at plan time: on a clean cluster the definition arrives with the release the Stigmer depends on.
 - **Stigmers are read only when their definition exists**: a read of a kind the cluster does not serve fails the plan instead of returning nothing. Reads are in the Stigmer's own namespace; the data source has no cluster-wide list.
 - **The cleanup wait is a state-only `terraform_data`** whose input holds the script and its inputs, because a destroy-time step can read only its own state. Nobody with access to the cluster can change what the runner executes. A fix to the script reaches a destroy after one apply.
-- **The restore check is a `kubectl_manifest` ConfigMap** with `force_new` and a create-time `local-exec`, so it runs again whenever the namespace or the archive moves.
+- **The restore check is a `terraform_data`** with a create-time `local-exec`, re-created by `triggers_replace` whenever the namespace or the archive moves, so it runs again exactly then. The ConfigMap the Pulumi twin writes is a plain `kubectl_manifest` record beside it, so `tofu import` adopts the record in place and re-runs the check.
 - **Both scripts need `kubectl` on PATH** and read the kubeconfig from the process environment (`KUBECONFIG`, else `KUBE_CONFIG_PATH`, and `KUBE_CTX`), never from state.
 
 ## Usage

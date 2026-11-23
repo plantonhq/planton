@@ -1,0 +1,20 @@
+# The refused second act of downgrade-refused: version back to 0.3.1.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesStigmer
+metadata:
+  name: stigmer
+  annotations:
+    planton.dev/e2e-second-act: downgrade-refused.yaml
+spec:
+  namespace:
+    value: stigmer
+  version: 0.3.1
+  operator:
+    namespace:
+      value: stigmer-system
+    create_namespace: true
+  runner:
+    model:
+      keys:
+        anthropic_api_key: sk-ant-e2e-fake
+        anthropic_base_url: ${E2E_ENV:PLANTON_E2E_FAKE_MODEL_URL}

@@ -57,11 +57,41 @@ resource "kubernetes_secret_v1" "declared" {
   depends_on = [terraform_data.preflight]
 }
 
-# The restore check (scripts.tf keys_check_script), Tekton's gate shape: a
-# ConfigMap whose creation runs the check, re-created (force_new), and so
-# re-checked, whenever the namespace or the archive moves, which is when a
-# new database could be created from an archive. A failing check fails the
-# create, so the next apply checks again. The Stigmer depends on it.
+# The restore check (scripts.tf keys_check_script). It runs when this
+# terraform_data is created, and triggers_replace re-creates it, and so
+# re-checks, whenever the namespace or the archive moves, which is when a new
+# database could be created from an archive. A failing check fails the create
+# and leaves nothing recorded, so the next apply checks again. The check
+# lives in OpenTofu state rather than on the record below, so adopting an
+# install with `tofu import` re-runs the check and imports the record in
+# place, instead of replacing it.
+resource "terraform_data" "keys_check" {
+  triggers_replace = {
+    namespace    = local.namespace
+    recover_from = try(var.spec.database.bundled.recover_from.server_name, "")
+  }
+
+  # The script rides the environment and the command only evals it, so the
+  # deploy log shows one line rather than the whole script.
+  provisioner "local-exec" {
+    interpreter = ["/bin/sh", "-c"]
+    command     = "eval \"$STIGMER_KEYS_CHECK\""
+    environment = {
+      STIGMER_KEYS_CHECK   = local.keys_check_script
+      STIGMER_NAMESPACE    = local.namespace
+      STIGMER_NAME         = local.stigmer_name
+      STIGMER_KEYS_SECRET  = local.keys_secret
+      STIGMER_RECOVER_FROM = try(var.spec.database.bundled.recover_from.server_name, "")
+    }
+  }
+
+  depends_on = [helm_release.operator, kubernetes_secret_v1.declared]
+}
+
+# The record that the restore check passed for this namespace and archive,
+# the same ConfigMap the Pulumi twin's check writes (module/gates.go
+# keysGate). The Stigmer depends on it, so the check runs before the Stigmer
+# is declared.
 resource "kubectl_manifest" "keys_gate" {
   yaml_body = yamlencode({
     apiVersion = "v1"
@@ -80,23 +110,8 @@ resource "kubectl_manifest" "keys_gate" {
 
   server_side_apply = true
   force_conflicts   = true
-  force_new         = true
 
-  # The script rides the environment and the command only evals it, so the
-  # deploy log shows one line rather than the whole script.
-  provisioner "local-exec" {
-    interpreter = ["/bin/sh", "-c"]
-    command     = "eval \"$STIGMER_KEYS_CHECK\""
-    environment = {
-      STIGMER_KEYS_CHECK   = local.keys_check_script
-      STIGMER_NAMESPACE    = local.namespace
-      STIGMER_NAME         = local.stigmer_name
-      STIGMER_KEYS_SECRET  = local.keys_secret
-      STIGMER_RECOVER_FROM = try(var.spec.database.bundled.recover_from.server_name, "")
-    }
-  }
-
-  depends_on = [helm_release.operator, kubernetes_secret_v1.declared]
+  depends_on = [terraform_data.keys_check]
 }
 
 # The cleanup wait (scripts.tf cleanup_wait_script). It depends on the

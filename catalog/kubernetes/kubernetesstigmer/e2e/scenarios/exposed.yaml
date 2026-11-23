@@ -1,0 +1,42 @@
+# Stigmer at a hostname with the bundled sign-in, behind an Ingress whose
+# certificate cert-manager issues from the lane's self-signed ClusterIssuer.
+# The verifier enters through the ingress controller with the hostname: the
+# certificate names it and the sign-in answers its discovery document; a
+# caller who has not signed in is refused. The second act
+# (exposed.gateway.yaml) moves the same front door to a Gateway in place,
+# proven the same way through the Gateway's own Service.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesStigmer
+metadata:
+  name: stigmer
+  annotations:
+    planton.dev/e2e-prerequisites: "KubernetesClusterIssuer, KubernetesIstio, catalog/kubernetes/kubernetesstigmer/e2e/fixture-namespace.yaml, catalog/kubernetes/kubernetesstigmer/e2e/fixture-ingress-nginx.yaml, catalog/kubernetes/kubernetesstigmer/e2e/fixture-gateway-certificate.yaml, catalog/kubernetes/kubernetesstigmer/e2e/fixture-gateway.yaml"
+    planton.dev/e2e-setup-script: "catalog/kubernetes/kubernetesstigmer/e2e/scenarios/clean-slate.setup.sh"
+    planton.dev/e2e-upgrade-manifest: exposed.gateway.yaml
+spec:
+  namespace:
+    value: stigmer
+  version: 0.3.2
+  operator:
+    namespace:
+      value: stigmer-system
+    create_namespace: true
+  owner:
+    email: owner@acme.example
+  runner:
+    model:
+      keys:
+        anthropic_api_key: sk-ant-e2e-fake
+  ingress:
+    hostname: stigmer.e2e.internal
+    class_name: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/backend-protocol: GRPC
+    tls:
+      issuer:
+        name:
+          valueFrom:
+            kind: KubernetesClusterIssuer
+            name: e2e-clusterissuer-fixture
+            fieldPath: status.outputs.cluster_issuer_name
+        kind: ClusterIssuer

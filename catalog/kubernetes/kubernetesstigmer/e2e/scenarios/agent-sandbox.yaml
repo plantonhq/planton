@@ -1,0 +1,46 @@
+# Each session in a sandbox of its own on agent-sandbox, which the operator
+# installs, behind the sandbox egress fence: the fake model's address is the
+# one private range sandboxes may reach. Per-session sandboxes move a run's
+# files through the bucket, so the catalog's S3 store is composed in. The
+# agent's run must execute in a Sandbox in the sandbox namespace; destroy
+# removes agent-sandbox and that namespace with the rest.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesStigmer
+metadata:
+  name: stigmer
+  annotations:
+    planton.dev/e2e-prerequisites: "catalog/kubernetes/kubernetesstigmer/e2e/fixture-namespace.yaml, catalog/kubernetes/kubernetesstigmer/e2e/fixture-s3-store.yaml"
+    planton.dev/e2e-setup-script: "catalog/kubernetes/kubernetesstigmer/e2e/scenarios/clean-slate.setup.sh"
+    planton.dev/e2e-required-env: "PLANTON_E2E_FAKE_MODEL_URL, PLANTON_E2E_FAKE_MODEL_CIDR"
+spec:
+  namespace:
+    value: stigmer
+  version: 0.3.2
+  operator:
+    namespace:
+      value: stigmer-system
+    create_namespace: true
+  runner:
+    model:
+      keys:
+        anthropic_api_key: sk-ant-e2e-fake
+        anthropic_base_url: ${E2E_ENV:PLANTON_E2E_FAKE_MODEL_URL}
+  object_store:
+    s3:
+      bucket:
+        value: stigmer
+      endpoint:
+        valueFrom:
+          kind: KubernetesSeaweedFs
+          name: e2e-stigmer-s3
+          fieldPath: status.outputs.s3_endpoint
+      credentials:
+        access_key:
+          access_key_id: e2e-stigmer-admin
+          secret_access_key: e2e-stigmer-admin-secret-not-a-real-secret
+  sandboxes:
+    driver: agentSandbox
+    idle_seconds: 60
+    agent_sandbox:
+      egress_allow_cidrs:
+        - ${E2E_ENV:PLANTON_E2E_FAKE_MODEL_CIDR}

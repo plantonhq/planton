@@ -1,0 +1,13 @@
+# The exposed lane's ingress controller. A kind cluster has no load
+# balancer, so the controller's Service is a NodePort; the verifier enters
+# through it by port-forward, sending the lane's hostname.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesIngressNginx
+metadata:
+  name: e2e-stigmer-ingress
+spec:
+  namespace:
+    value: e2e-stigmer-ingress
+  createNamespace: true
+  service:
+    type: node_port

@@ -1,0 +1,37 @@
+# The upgrade's second act: the same Stigmer with version moved to 0.3.2.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesStigmer
+metadata:
+  name: stigmer
+  annotations:
+    planton.dev/e2e-second-act: upgrade.yaml
+spec:
+  namespace:
+    value: stigmer
+  version: 0.3.2
+  operator:
+    namespace:
+      value: stigmer-system
+    create_namespace: true
+  runner:
+    model:
+      keys:
+        anthropic_api_key: sk-ant-e2e-fake
+        anthropic_base_url: ${E2E_ENV:PLANTON_E2E_FAKE_MODEL_URL}
+  object_store:
+    s3:
+      bucket:
+        value: stigmer
+      endpoint:
+        valueFrom:
+          kind: KubernetesSeaweedFs
+          name: e2e-stigmer-s3
+          fieldPath: status.outputs.s3_endpoint
+      credentials:
+        access_key:
+          access_key_id: e2e-stigmer-admin
+          secret_access_key: e2e-stigmer-admin-secret-not-a-real-secret
+  database:
+    bundled:
+      backup:
+        retention: 7d

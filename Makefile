@@ -599,7 +599,7 @@ e2e-test-kubernetes-tier3:  ## Run Kubernetes Tier 3 (operator-dependent) E2E te
 
 .PHONY: e2e-test-kubernetes-tier4
 e2e-test-kubernetes-tier4:  ## Run Kubernetes Tier 4 (operators, addons, cluster infra) E2E tests
-	go test -tags=e2e -timeout=150m -v -count=1 -run "Test(KubernetesStrimziKafkaOperator|KubernetesOpenSearchOperator|KubernetesAltinityOperator|KubernetesRabbitMqOperator|KubernetesGhaRunnerScaleSetController|KubernetesTektonOperator|KubernetesPlantonOperator|KubernetesKeycloakOperator|KubernetesOtelOperator|KubernetesKubeRayOperator|KubernetesFlinkOperator|KubernetesAgentSandboxController|KubernetesAgentSubstrate|KubernetesAgentSubstrateWorkerPool|KubernetesAgentSubstrateSandboxConfig|KubernetesAgentSubstrateCsiDriverConfig)_" ./e2e/
+	go test -tags=e2e -timeout=150m -v -count=1 -run "Test(KubernetesStrimziKafkaOperator|KubernetesOpenSearchOperator|KubernetesAltinityOperator|KubernetesRabbitMqOperator|KubernetesGhaRunnerScaleSetController|KubernetesTektonOperator|KubernetesPlantonOperator|KubernetesKeycloakOperator|KubernetesOtelOperator|KubernetesKubeRayOperator|KubernetesFlinkOperator|KubernetesAgentSandboxController|KubernetesAgentSubstrate|KubernetesAgentSubstrateWorkerPool|KubernetesAgentSubstrateSandboxConfig|KubernetesAgentSubstrateCsiDriverConfig|KubernetesStigmer)_" ./e2e/
 
 # ── Terraform-only E2E targets (requires kind, tofu/terraform, kubectl, Docker) ──
 
@@ -617,7 +617,7 @@ e2e-test-kubernetes-terraform-tier3:  ## Run Kubernetes Tier 3 Terraform (operat
 
 .PHONY: e2e-test-kubernetes-terraform-tier4
 e2e-test-kubernetes-terraform-tier4:  ## Run Kubernetes Tier 4 Terraform (operators, addons) E2E tests
-	go test -tags=e2e -timeout=150m -v -count=1 -run "Test(KubernetesStrimziKafkaOperator|KubernetesOpenSearchOperator|KubernetesAltinityOperator|KubernetesRabbitMqOperator|KubernetesGhaRunnerScaleSetController|KubernetesTektonOperator|KubernetesPlantonOperator|KubernetesKeycloakOperator|KubernetesOtelOperator|KubernetesKubeRayOperator|KubernetesFlinkOperator|KubernetesAgentSandboxController|KubernetesAgentSubstrate|KubernetesAgentSubstrateWorkerPool|KubernetesAgentSubstrateSandboxConfig|KubernetesAgentSubstrateCsiDriverConfig)_Terraform" ./e2e/
+	go test -tags=e2e -timeout=150m -v -count=1 -run "Test(KubernetesStrimziKafkaOperator|KubernetesOpenSearchOperator|KubernetesAltinityOperator|KubernetesRabbitMqOperator|KubernetesGhaRunnerScaleSetController|KubernetesTektonOperator|KubernetesPlantonOperator|KubernetesKeycloakOperator|KubernetesOtelOperator|KubernetesKubeRayOperator|KubernetesFlinkOperator|KubernetesAgentSandboxController|KubernetesAgentSubstrate|KubernetesAgentSubstrateWorkerPool|KubernetesAgentSubstrateSandboxConfig|KubernetesAgentSubstrateCsiDriverConfig|KubernetesStigmer)_Terraform" ./e2e/
 
 # ── Auth0 E2E targets ────────────────────────────────────────────────────────
 

@@ -1,0 +1,50 @@
+# The catalog's own CloudNativePG operator and backup plugin in front of the
+# Stigmer, ordered first by depends_on (preset 07). Stigmer's auto mode
+# trusts a prerequisite someone else installed and touches nothing of it: the
+# database runs and backs up through the catalog's controllers, and destroy
+# leaves both in place.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesStigmer
+metadata:
+  name: stigmer
+  relationships:
+    - kind: KubernetesCloudNativePgOperator
+      name: e2e-cnpg-fixture
+      type: depends_on
+    - kind: KubernetesCnpgBarmanCloudPlugin
+      name: e2e-barman-plugin-fixture
+      type: depends_on
+  annotations:
+    planton.dev/e2e-prerequisites: "KubernetesCloudNativePgOperator, KubernetesCnpgBarmanCloudPlugin, catalog/kubernetes/kubernetesstigmer/e2e/fixture-namespace.yaml, catalog/kubernetes/kubernetesstigmer/e2e/fixture-s3-store.yaml"
+    planton.dev/e2e-setup-script: "catalog/kubernetes/kubernetesstigmer/e2e/scenarios/clean-slate.setup.sh"
+    planton.dev/e2e-required-env: "PLANTON_E2E_FAKE_MODEL_URL"
+spec:
+  namespace:
+    value: stigmer
+  version: 0.3.2
+  operator:
+    namespace:
+      value: stigmer-system
+    create_namespace: true
+  runner:
+    model:
+      keys:
+        anthropic_api_key: sk-ant-e2e-fake
+        anthropic_base_url: ${E2E_ENV:PLANTON_E2E_FAKE_MODEL_URL}
+  object_store:
+    s3:
+      bucket:
+        value: stigmer
+      endpoint:
+        valueFrom:
+          kind: KubernetesSeaweedFs
+          name: e2e-stigmer-s3
+          fieldPath: status.outputs.s3_endpoint
+      credentials:
+        access_key:
+          access_key_id: e2e-stigmer-admin
+          secret_access_key: e2e-stigmer-admin-secret-not-a-real-secret
+  database:
+    bundled:
+      backup:
+        retention: 7d

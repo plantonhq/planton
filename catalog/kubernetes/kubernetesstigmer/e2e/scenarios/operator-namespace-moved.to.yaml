@@ -1,0 +1,21 @@
+# The refused second act of operator-namespace-moved: the operator moved to
+# another namespace in place.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesStigmer
+metadata:
+  name: stigmer
+  annotations:
+    planton.dev/e2e-second-act: operator-namespace-moved.yaml
+spec:
+  namespace:
+    value: stigmer
+  version: 0.3.2
+  operator:
+    namespace:
+      value: stigmer-moved
+    create_namespace: true
+  runner:
+    model:
+      keys:
+        anthropic_api_key: sk-ant-e2e-fake
+        anthropic_base_url: ${E2E_ENV:PLANTON_E2E_FAKE_MODEL_URL}

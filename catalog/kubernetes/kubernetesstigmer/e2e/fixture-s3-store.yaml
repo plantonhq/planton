@@ -1,0 +1,26 @@
+# The bucket for the lanes that keep files and backups in object storage: the
+# catalog's own S3-compatible store, composed as a platform engineer composes
+# it (the Stigmer's object_store.s3.endpoint references this resource's
+# s3_endpoint output), with the bucket stigmer created at install.
+#
+# The admin key pair is fixed through the chart's own s3.credentials.admin
+# values, so the Stigmer can carry the same pair and the two agree by
+# construction. Nothing here is a real secret; the store lives and dies with
+# the lane.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesSeaweedFs
+metadata:
+  name: e2e-stigmer-s3
+spec:
+  namespace:
+    value: e2e-stigmer-s3
+  createNamespace: true
+  s3:
+    buckets:
+      - name: stigmer
+  helmValues: |
+    s3:
+      credentials:
+        admin:
+          accessKey: e2e-stigmer-admin
+          secretKey: e2e-stigmer-admin-secret-not-a-real-secret

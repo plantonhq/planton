@@ -1,0 +1,20 @@
+# The certificate the exposed lane's Gateway listener presents for the
+# hostname, issued by the lane's self-signed ClusterIssuer into the
+# Stigmer's namespace, where the Gateway runs.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesCertificate
+metadata:
+  name: e2e-stigmer-gateway-tls
+spec:
+  namespace:
+    value: stigmer
+  secretName: stigmer-gateway-tls
+  issuerRef:
+    clusterIssuer:
+      name:
+        valueFrom:
+          kind: KubernetesClusterIssuer
+          name: e2e-clusterissuer-fixture
+          fieldPath: status.outputs.cluster_issuer_name
+  dnsNames:
+    - stigmer.e2e.internal

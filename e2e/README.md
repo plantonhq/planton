@@ -682,7 +682,12 @@ regenerated tfvars in the same working directory for Terraform):
 - **`planton.dev/e2e-reinstall: "true"`** appends REINSTALL ->
   VERIFY-REINSTALLED -> DESTROY-AGAIN -> VERIFY-CLN-AGAIN after the first
   VERIFY-CLN: the same manifest deployed onto a cluster that may still
-  carry what the first install deliberately kept.
+  carry what the first install deliberately kept. Naming a second-act file
+  instead of `"true"` reinstalls that manifest, verified against itself
+  with the first act's manifest on the context: a restore from the first
+  install's backup, for software that runs one install per cluster and so
+  cannot restore into a second one beside the first (KubernetesStigmer's
+  `bucket-and-restore`).
 
 - **`planton.dev/e2e-out-of-band-delete: <recovery>`** adds
   OUT-OF-BAND-DELETE -> DRIFT-PLAN -> RECOVER -> VERIFY-RECOVERED after
@@ -765,7 +770,21 @@ module refuses in place wherever HCL can see the fact, and a failure that
 kills the read itself (an unresolvable host, an API server answering
 Forbidden) arrives as the provider's raw text and is explained by the
 layer that runs the engine. Lanes therefore assert the exact text a CLI
-user reads, on both engines.
+user reads, on both engines. A classifier compares words with every run of
+whitespace collapsed to one space: OpenTofu wraps a precondition's message
+at 80 columns, so a phrase the Pulumi lane reads on one line arrives split
+across two.
+
+A refusal of something a kind KEEPS on uninstall (a definition its chart
+stamps `helm.sh/resource-policy: keep`) cannot be staged by planting a
+stand-in under the kept object's name: once any earlier lane kept it, the
+Pulumi `KubernetesManifest` fixture refuses to create over it ("already
+exists") while OpenTofu's server-side apply takes it over, so the lane
+passes on one engine and not the other, and only in some orders. Stage it
+from the lane's own install instead, as a refused second act
+(KubernetesStigmer's `operator-namespace-moved` moves the operator to
+another namespace in place, which makes the kept definition another
+release's).
 
 ### Deploying as a different identity: `planton.dev/e2e-identity`
 

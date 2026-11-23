@@ -4,10 +4,13 @@ package e2e
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"strings"
 	"testing"
 
+	kubernetese2e "github.com/plantonhq/planton/catalog/kubernetes/aa_e2e"
+	"github.com/plantonhq/planton/catalog/kubernetes/aa_e2e/fakemodel"
 	"github.com/plantonhq/planton/e2e/framework/discovery"
 	"github.com/plantonhq/planton/e2e/framework/provider"
 	"github.com/plantonhq/planton/e2e/framework/runner"
@@ -162,6 +165,10 @@ var kubernetesTier4Kinds = []string{
 	"kubernetesagentsubstrateworkerpool",
 	"kubernetesagentsubstratesandboxconfig",
 	"kubernetesagentsubstratecsidriverconfig",
+	// Stigmer, the agent platform: its operator and its one install per
+	// cluster. Every lane answers an agent turn against the fake model the
+	// entrypoints serve (serveFakeModel).
+	"kubernetesstigmer",
 }
 
 // Kubernetes Tier 2 kinds: Helm-based, self-contained chart installs.
@@ -920,6 +927,10 @@ func TestKubernetesAgentSubstrateSandboxConfig_Pulumi(t *testing.T) {
 func TestKubernetesAgentSubstrateCsiDriverConfig_Pulumi(t *testing.T) {
 	runAllScenariosForKind(t, "kubernetesagentsubstratecsidriverconfig", "pulumi")
 }
+func TestKubernetesStigmer_Pulumi(t *testing.T) {
+	serveFakeModel(t)
+	runAllScenariosForKind(t, "kubernetesstigmer", "pulumi")
+}
 func TestKubernetesPlantonOperator_Pulumi(t *testing.T) {
 	runAllScenariosForKind(t, "kubernetesplantonoperator", "pulumi")
 }
@@ -982,6 +993,10 @@ func TestKubernetesAgentSubstrateSandboxConfig_Terraform(t *testing.T) {
 }
 func TestKubernetesAgentSubstrateCsiDriverConfig_Terraform(t *testing.T) {
 	runAllScenariosForKind(t, "kubernetesagentsubstratecsidriverconfig", "terraform")
+}
+func TestKubernetesStigmer_Terraform(t *testing.T) {
+	serveFakeModel(t)
+	runAllScenariosForKind(t, "kubernetesstigmer", "terraform")
 }
 func TestKubernetesPlantonOperator_Terraform(t *testing.T) {
 	runAllScenariosForKind(t, "kubernetesplantonoperator", "terraform")
@@ -1130,6 +1145,42 @@ func TestKubernetesTelemetry_Terraform(t *testing.T) {
 
 // runAllScenariosForKind discovers and runs all E2E scenarios for a kind
 // using the specified IaC engine ("pulumi" or "terraform").
+// serveFakeModel serves the fake Anthropic model (aa_e2e/fakemodel) for the
+// test's lanes and tells their manifests where pods reach it, through the
+// variables a scenario reads as ${E2E_ENV:...}:
+//
+//   - PLANTON_E2E_FAKE_MODEL_URL: the address a pod dials, set as a
+//     runtime's ANTHROPIC_BASE_URL;
+//   - PLANTON_E2E_FAKE_MODEL_IP and PLANTON_E2E_FAKE_MODEL_PORT: its IPv4
+//     address and port alone, for a selectorless Service that gives the
+//     fake a name inside the cluster;
+//   - PLANTON_E2E_FAKE_MODEL_CIDR: that address as a /32, for an egress
+//     allow list.
+//
+// On an external cluster pods cannot reach this machine, so nothing is
+// served, and each scenario's e2e-required-env annotation skips it with the
+// reason.
+func serveFakeModel(t *testing.T) {
+	t.Helper()
+	if testHarness.External() {
+		return
+	}
+	host, err := kubernetese2e.ResolveHostAddress(context.Background(), testHarness.ClusterName())
+	if err != nil {
+		t.Fatalf("finding how kind pods reach the fake model on this machine: %v", err)
+	}
+	model, err := fakemodel.Start()
+	if err != nil {
+		t.Fatalf("starting the fake model: %v", err)
+	}
+	t.Cleanup(func() { _ = model.Close() })
+	t.Setenv("PLANTON_E2E_FAKE_MODEL_URL", fmt.Sprintf("http://%s:%d", host.IP, model.Port()))
+	t.Setenv("PLANTON_E2E_FAKE_MODEL_IP", host.IP)
+	t.Setenv("PLANTON_E2E_FAKE_MODEL_PORT", fmt.Sprint(model.Port()))
+	t.Setenv("PLANTON_E2E_FAKE_MODEL_CIDR", host.IP+"/32")
+	t.Logf("fake model serving on port %d, reached from kind at %s (%s)", model.Port(), host.IP, host.Source)
+}
+
 func runAllScenariosForKind(t *testing.T, kindDir, engine string) {
 	t.Helper()
 

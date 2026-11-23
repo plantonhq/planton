@@ -85,3 +85,57 @@ spec:
 		t.Fatalf("annotation = %q, %v; want it read from the YAML", got, err)
 	}
 }
+
+// A reinstall names either "true" (the scenario again) or a second act beside
+// it, which must declare itself the scenario's second act so discovery never
+// runs it as a lane of its own.
+func TestReadLifecycleAnnotations_ReinstallSecondAct(t *testing.T) {
+	scenario := func(t *testing.T, reinstall string, files map[string]string) string {
+		t.Helper()
+		dir := t.TempDir()
+		first := filepath.Join(dir, "restore.yaml")
+		body := "apiVersion: kubernetes.planton.dev/v1alpha1\nkind: KubernetesStigmer\nmetadata:\n  name: stigmer\n  annotations:\n    planton.dev/e2e-reinstall: \"" + reinstall + "\"\nspec: {}\n"
+		if err := os.WriteFile(first, []byte(body), 0o644); err != nil {
+			t.Fatal(err)
+		}
+		for name, content := range files {
+			if err := os.WriteFile(filepath.Join(dir, name), []byte(content), 0o644); err != nil {
+				t.Fatal(err)
+			}
+		}
+		return first
+	}
+	secondAct := func(firstAct string) string {
+		return "apiVersion: kubernetes.planton.dev/v1alpha1\nkind: KubernetesStigmer\nmetadata:\n  name: stigmer\n  annotations:\n    planton.dev/e2e-second-act: " + firstAct + "\nspec: {}\n"
+	}
+
+	t.Run("true reinstalls the scenario itself", func(t *testing.T) {
+		la, err := readLifecycleAnnotations(scenario(t, "true", nil))
+		if err != nil || !la.reinstall || la.reinstallManifest != "" {
+			t.Fatalf("got %+v, %v; want a reinstall of the scenario itself", la, err)
+		}
+	})
+	t.Run("a file reinstalls that second act", func(t *testing.T) {
+		first := scenario(t, "restore.again.yaml", map[string]string{"restore.again.yaml": secondAct("restore.yaml")})
+		la, err := readLifecycleAnnotations(first)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !la.reinstall || la.reinstallManifest != filepath.Join(filepath.Dir(first), "restore.again.yaml") {
+			t.Fatalf("got %+v; want the second act beside the scenario", la)
+		}
+	})
+	t.Run("a missing file is refused", func(t *testing.T) {
+		_, err := readLifecycleAnnotations(scenario(t, "restore.again.yaml", nil))
+		if err == nil || !strings.Contains(err.Error(), "does not exist beside the scenario") {
+			t.Fatalf("err %v, want the missing file named", err)
+		}
+	})
+	t.Run("a file not marked as this scenario's second act is refused", func(t *testing.T) {
+		first := scenario(t, "restore.again.yaml", map[string]string{"restore.again.yaml": secondAct("other.yaml")})
+		_, err := readLifecycleAnnotations(first)
+		if err == nil || !strings.Contains(err.Error(), "planton.dev/e2e-second-act: restore.yaml") {
+			t.Fatalf("err %v, want the missing second-act mark named", err)
+		}
+	})
+}

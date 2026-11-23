@@ -1,0 +1,34 @@
+apiVersion: qa.planton.dev/v1
+kind: CatalogKindE2EProfile
+metadata:
+  name: kubernetesstigmer
+spec:
+  tier: 4
+  # Stigmer v0.3.2 from its published operator chart, and the one Stigmer
+  # resource the operator reconciles. Every lane proves what a platform
+  # engineer is promised: the install reaches Ready at the declared version,
+  # and an agent answers a message, driven through Stigmer's own Go SDK
+  # against the fake Anthropic model the entrypoints serve
+  # (catalog/kubernetes/aa_e2e/fakemodel), so no key is needed and nothing
+  # is spent. Destroy keeps the namespace's encryption keys and the Stigmer
+  # definition and removes what the operator installed.
+  #
+  # Stigmer runs one operator and one install per cluster, so every lane
+  # uses the same fixed names (the namespace stigmer, the operator in
+  # stigmer-system), which also makes the framework run this kind alone:
+  # no other kind's CloudNativePG can come and go under a running lane.
+  # Each lane first clears definitions an earlier lane on the shared
+  # cluster left with no controller running them
+  # (scenarios/clean-slate.setup.sh).
+  #
+  # pending_proof: every scenario is authored and the offline gates are green.
+  # Green live on both engines: minimal (with the import round trip),
+  # bring-your-own, prerequisite-orphaned, operator-namespace-moved,
+  # downgrade-refused and keys-missing; upgrade on Pulumi. Still to run:
+  # agent-sandbox, exposed and substrate; bucket-and-restore and
+  # composed-prerequisites after the fixes their first runs led to; upgrade on
+  # OpenTofu, whose operator held the upgrade when its pre-upgrade backup failed
+  # right after the lane's own. Unblock: flip to green and run the lanes, one at
+  # a time.
+  status: pending_proof
+  timeout_minutes: 150

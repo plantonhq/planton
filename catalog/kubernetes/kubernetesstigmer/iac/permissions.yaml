@@ -117,6 +117,16 @@ spec:
         provenance: derived
         notes: Read-only, for the release's readiness wait -- Helm judges a Deployment ready by reading its ReplicaSets and their Pods.
       - api_groups:
+          - apps
+        resources:
+          - deployments
+        verbs:
+          - get
+          - list
+        cluster_scoped: true
+        provenance: derived
+        notes: Read-only, for the preflight's leftover-prerequisite check -- a CloudNativePG or backup-plugin definition a Helm release installed is judged by whether that release still runs a Deployment, in the namespace its Helm annotations name, which may be any.
+      - api_groups:
           - ""
         resources:
           - pods

@@ -27,6 +27,14 @@ var vars = struct {
 	// The annotation that releases one held upgrade without its backup.
 	UpgradeWithoutBackupAnnotation string
 
+	// The definitions Stigmer's operator detects CloudNativePG and its backup
+	// plugin by, and the label it marks what it installed itself with
+	// (deploy/operator/internal/render/names.go in stigmer/stigmer).
+	CloudNativePgDefinition string
+	BackupPluginDefinition  string
+	StigmerManagedByLabel   string
+	StigmerManagedByValue   string
+
 	// The Secret the operator keeps the encryption keys in (<name>-keys).
 	KeysSecret string
 
@@ -72,6 +80,10 @@ var vars = struct {
 	StigmerResource:                "stigmers",
 	StigmerDefinition:              "stigmers.stigmer.ai",
 	UpgradeWithoutBackupAnnotation: "stigmer.ai/upgrade-without-backup",
+	CloudNativePgDefinition:        "clusters.postgresql.cnpg.io",
+	BackupPluginDefinition:         "objectstores.barmancloud.cnpg.io",
+	StigmerManagedByLabel:          "app.kubernetes.io/managed-by",
+	StigmerManagedByValue:          "stigmer-operator",
 	KeysSecret:                     "stigmer-keys",
 	ServerPort:                     7234,
 	ArtifactsPort:                  7235,

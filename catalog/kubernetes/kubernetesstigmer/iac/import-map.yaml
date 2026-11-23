@@ -1,0 +1,101 @@
+apiVersion: iac.planton.dev/v1
+kind: CatalogKindImportMap
+metadata:
+  name: kubernetesstigmer
+spec:
+  # The module installs the operator chart as one Helm release, writes the
+  # Secrets the spec gives values for (one kubernetes_secret_v1 per Secret,
+  # keyed by its name), declares the restore check's record and the one
+  # Stigmer through kubectl_manifest, and creates the operator's namespace
+  # when create_namespace is true. Every name is fixed or comes from the spec,
+  # so an install made by hand with the same names adopts without guessing.
+  #
+  # The two terraform_data steps have no importer upstream, and adopting an
+  # install creates them fresh, which writes nothing to the cluster: the
+  # restore check runs once (and passes, unless a restore's keys are missing),
+  # and the cleanup wait only runs at destroy, to wait for the operator's
+  # cleanup.
+  values:
+    # -- the operator release (helm_release) and its namespace ----------------
+    - name: release_name
+      derivations:
+        - from_output: operator_release
+      where_to_find: >-
+        Always "stigmer-operator" -- the module fixes the release name
+        (Stigmer runs one operator per cluster). Confirm with `helm list -A`
+        (NAME column).
+    - name: release_namespace
+      derivations:
+        - from_output: operator_namespace
+        - from_spec_field: operator.namespace.value
+      where_to_find: >-
+        The operator's namespace, spec.operator.namespace;
+        conventionally "stigmer-system". `helm list -A` (NAMESPACE column).
+    - name: namespace_name
+      derivations:
+        - from_output: operator_namespace
+        - from_spec_field: operator.namespace.value
+      where_to_find: >-
+        Only imported when spec.operator.create_namespace is true: the
+        operator's namespace itself.
+    # -- the Secrets the spec gives values for (kubernetes_secret_v1) ---------
+    - name: secret_name
+      derivations:
+        - from_address_key: true
+      where_to_find: >-
+        Each Secret's name (the for_each key): stigmer-model-key,
+        stigmer-object-store-key, stigmer-database-password,
+        stigmer-temporal-api-key, stigmer-temporal-tls, stigmer-smtp-login,
+        stigmer-license, stigmer-server-extra-env or
+        stigmer-runner-extra-env -- whichever the spec gives values for.
+        `kubectl -n <namespace> get secret -l planton.ai/kind=KubernetesStigmer`.
+    - name: secret_namespace
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: The Stigmer's namespace, spec.namespace.
+    # -- the restore check's record and the Stigmer (kubectl_manifest) -------
+    - name: api_version
+      tofu_resource_name: keys_gate
+      derivations:
+        - literal: v1
+      where_to_find: Always "v1" -- the record is a ConfigMap.
+    - name: kind
+      tofu_resource_name: keys_gate
+      derivations:
+        - literal: ConfigMap
+      where_to_find: Always "ConfigMap".
+    - name: name
+      tofu_resource_name: keys_gate
+      derivations:
+        - literal: stigmer-keys-check
+      where_to_find: Always "stigmer-keys-check".
+    - name: namespace
+      tofu_resource_name: keys_gate
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: The Stigmer's namespace, spec.namespace.
+    - name: api_version
+      tofu_resource_name: stigmer
+      derivations:
+        - literal: stigmer.ai/v1
+      where_to_find: Always "stigmer.ai/v1".
+    - name: kind
+      tofu_resource_name: stigmer
+      derivations:
+        - literal: Stigmer
+      where_to_find: Always "Stigmer".
+    - name: name
+      tofu_resource_name: stigmer
+      derivations:
+        - literal: stigmer
+      where_to_find: >-
+        Always "stigmer" -- the module names the one Stigmer it declares.
+        `kubectl get stigmer -A`.
+    - name: namespace
+      tofu_resource_name: stigmer
+      derivations:
+        - from_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: The Stigmer's namespace, spec.namespace.

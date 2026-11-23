@@ -240,6 +240,9 @@ func RunKindTest(ctx context.Context, tc *provider.KindTestContext, harness prov
 	if lifecycleErr == nil && lifecycle.upgradeManifest != "" {
 		lifecycle.upgradeManifest, lifecycleErr = prepareSecondAct(lifecycle.upgradeManifest, expandRunID, ScenarioSlug(sourceManifest), laneClock, depOutputs)
 	}
+	if lifecycleErr == nil && lifecycle.reinstallManifest != "" {
+		lifecycle.reinstallManifest, lifecycleErr = prepareSecondAct(lifecycle.reinstallManifest, expandRunID, ScenarioSlug(sourceManifest), laneClock, depOutputs)
+	}
 	if lifecycleErr != nil {
 		result.Passed = false
 		result.Phases = append(result.Phases, PhaseResult{Phase: PhaseValidate, Passed: false, Error: lifecycleErr})
@@ -396,12 +399,20 @@ func RunKindTest(ctx context.Context, tc *provider.KindTestContext, harness prov
 			lifecyclePhase{PhaseDestroy, func() error { return runDestroyMaybeRetry(tc, prepareDestroy) }},
 			lifecyclePhase{PhaseVerifyCln, func() error { return runVerifyCleanup(cleanupCtx, tc, harness) }},
 		)
-		// The third act: the same manifest again, on a cluster that may still
-		// carry what the first install deliberately kept.
+		// The third act: the same manifest again, or the reinstall's second
+		// act, on a cluster that may still carry what the first install
+		// deliberately kept. A second act is verified against itself, with
+		// the first act's manifest beside it, as an upgrade is.
 		if lifecycle.reinstall {
+			reinstallManifest, reinstallCtx := originalManifest, verifyCtx
+			if lifecycle.reinstallManifest != "" {
+				reinstallManifest = lifecycle.reinstallManifest
+				reinstallCtx = verifyContext(ctx, reinstallManifest, depOutputs)
+				reinstallCtx = context.WithValue(reinstallCtx, provider.FirstActManifestPathKey{}, originalManifest)
+			}
 			phases = append(phases,
 				lifecyclePhase{PhaseReinstall, func() error {
-					if err := bindManifest(tc, originalManifest); err != nil {
+					if err := bindManifest(tc, reinstallManifest); err != nil {
 						return err
 					}
 					return runReinstall(tc)
@@ -410,10 +421,10 @@ func RunKindTest(ctx context.Context, tc *provider.KindTestContext, harness prov
 					if err := runVerifyOutputs(tc); err != nil {
 						return err
 					}
-					return runVerifyResources(verifyCtx, tc, harness)
+					return runVerifyResources(reinstallCtx, tc, harness)
 				}},
 				lifecyclePhase{PhaseDestroyAgain, func() error { return runDestroyMaybeRetry(tc, prepareDestroy) }},
-				lifecyclePhase{PhaseVerifyClnAgain, func() error { return runVerifyCleanup(verifyCtx, tc, harness) }},
+				lifecyclePhase{PhaseVerifyClnAgain, func() error { return runVerifyCleanup(reinstallCtx, tc, harness) }},
 			)
 		}
 	}

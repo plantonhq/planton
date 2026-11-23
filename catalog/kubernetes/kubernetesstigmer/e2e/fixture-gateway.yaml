@@ -1,0 +1,26 @@
+# The Gateway the exposed lane's second act moves the front door to: Istio
+# implements it, and its HTTPS listener for the hostname terminates TLS with
+# the lane's certificate (fixture-gateway-certificate.yaml). Stigmer only
+# attaches its routes to it; it never edits the Gateway.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGateway
+metadata:
+  name: e2e-stigmer-gw
+spec:
+  namespace:
+    value: stigmer
+  gateway_class_name:
+    value: istio
+  listeners:
+    - name: https
+      hostname: stigmer.e2e.internal
+      port: 443
+      protocol: HTTPS
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name:
+              value: stigmer-gateway-tls
+      allowed_routes:
+        namespaces:
+          from: Same

@@ -1,0 +1,11 @@
+# The Stigmer's namespace and its owner. The kind takes its namespace by
+# reference and never creates it, because deleting the namespace would delete
+# the encryption keys and make every backup unreadable; so every lane has a
+# KubernetesNamespace create it first. Its teardown runs after the verifier
+# has seen the keys Secret outlive the Stigmer's destroy.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesNamespace
+metadata:
+  name: e2e-stigmer-namespace
+spec:
+  name: stigmer

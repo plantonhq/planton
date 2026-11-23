@@ -16,7 +16,8 @@ import (
 )
 
 // keysGate declares the ConfigMap whose creation runs the restore check
-// (keysCheckScript). Terraform twin: kubectl_manifest.keys_gate in
+// (keysCheckScript). Terraform twin: terraform_data.keys_check, which runs
+// the check, and kubectl_manifest.keys_gate, the record, in
 // iac/tf/main.tf. It is a BeforeCreate hook, as the Tekton operator's
 // readiness gate is: a failing hook fails the step before the ConfigMap is
 // recorded, so the next deploy checks again. Its data holds what the check

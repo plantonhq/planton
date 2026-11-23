@@ -25,6 +25,7 @@ From the Stigmer, the operator creates the server and the shared runner, Postgre
 - **Kubernetes 1.30 or newer with a default storage class**, or a storage class named in the volume settings (GKE 1.37 has no default).
 - **The Stigmer's namespace exists** — this kind never creates or deletes it, because it holds the encryption keys. Give it a Kubernetes Namespace of its own.
 - **No other Stigmer operator** — one runs per cluster; another install is refused before anything is applied.
+- **No CloudNativePG left behind without its controller** — the definitions a destroyed CloudNativePG leaves are refused before anything is applied, with the command that clears them, because Stigmer's operator would trust them and wait forever.
 - **cert-manager** (only for backups, or a certificate issued by an issuer) — the backup plugin needs it, and nothing here installs it.
 - **An ingress controller or a Gateway** (only with a hostname).
 - **A CNI that enforces NetworkPolicy** (only for egress fences and sandbox isolation).

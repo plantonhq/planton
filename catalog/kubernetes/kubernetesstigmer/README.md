@@ -27,7 +27,8 @@ The plan refuses, in a sentence that says what it saw, what it means and what to
 - creating the operator's namespace in the Stigmer's own namespace (destroy would delete the keys);
 - a Stigmer definition another Helm release owns: another operator install, or this one moved to another namespace in place;
 - a Stigmer in the namespace that this resource did not declare;
-- a `version` below the one the server runs: Stigmer's server refuses to start on a database a newer release migrated, so going back is a restore, not a downgrade.
+- a `version` below the one the server runs: Stigmer's server refuses to start on a database a newer release migrated, so going back is a restore, not a downgrade;
+- CloudNativePG's definitions, or its backup plugin's, left on the cluster by a Helm release that no longer runs a controller (the catalog's CloudNativePG kinds keep their definitions when destroyed). Stigmer's operator would trust them and wait forever for a database nothing creates; the refusal names the command that clears them.
 
 `planton validate` refuses every contradiction Stigmer's own definition refuses, before any deploy, with the kind's own field paths: your own Postgres without your own Temporal, the bundled sign-in without a hostname or an owner, Enterprise without your own issuer, a license, or a per-session sandbox driver, backups or sandboxes without a bucket, and more.
 
@@ -60,7 +61,7 @@ Move `version` to a newer release. With backups on, the operator backs the datab
 | `ingress.tls.issuer.name` | KubernetesClusterIssuer |
 | `ingress.gateway` | KubernetesGateway |
 
-When the catalog's CloudNativePG, its backup plugin, agent-sandbox or Agent Substrate run on the cluster, order them first with a `depends_on` relationship (preset `07-composed-prerequisites`): Stigmer's operator leaves a copy someone else installed alone, but if it installed its own first, the catalog's resource would find it and refuse.
+When the catalog's CloudNativePG, its backup plugin, agent-sandbox or Agent Substrate run on the cluster, order them first with a `depends_on` relationship (preset `07-composed-prerequisites`): Stigmer's operator leaves a copy someone else installed alone, but if it installed its own first, the catalog's resource would find it and refuse. A backup plugin someone else runs must be plugin v0.16.0 or newer (KubernetesCnpgBarmanCloudPlugin `chart_version` 0.9.0 or later), the release Stigmer bundles: with an S3 endpoint, Stigmer writes object-store settings older releases do not declare, and the database's archive is refused in the Stigmer's status.
 
 ## Accepted limits
 
@@ -69,6 +70,7 @@ When the catalog's CloudNativePG, its backup plugin, agent-sandbox or Agent Subs
 - **A restore into a brand-new cluster** needs the keys file saved with `keys_export_command`, applied before the deploy; the restore check names this step, it does not automate it.
 - **Requests above limits** and memory below what a workload needs are refused by the operator in the Stigmer's status, not at validation.
 - **A Stigmer in another namespace** is refused by Stigmer's own operator, which serves only the oldest Stigmer on a cluster, in that Stigmer's status.
+- **A leftover prerequisite installed without Helm** (CloudNativePG or agent-sandbox applied from upstream's release files and later removed, leaving their definitions) names no controller the plan can look for, so it is trusted, as Stigmer's operator trusts it, and the install waits on it. Delete the leftover definitions first, once no object of theirs is left.
 - **GKE 1.37 has no default StorageClass**: name one in the volume settings.
 - **Stigmer's own open limits stay Stigmer's**: Agent Substrate's snapshots cannot use Cloud Storage's S3 endpoint (stigmer/stigmer#3415), a failed Substrate template is not retried (#3417), and switching the driver away from Substrate leaves it running (#3418).
 

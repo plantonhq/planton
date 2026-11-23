@@ -14,7 +14,11 @@
 //     first install is destroyed normally.
 //   - reinstall: after DESTROY and VERIFY-CLN, the same manifest is deployed
 //     AGAIN, verified, destroyed, and verified absent. This is how "kept
-//     resources are re-adopted on reinstall" becomes a fact.
+//     resources are re-adopted on reinstall" becomes a fact. Named with a
+//     file instead of "true", the reinstall deploys that second act: the
+//     install declared anew around what the first one kept, which is how a
+//     restore from the first install's backup becomes a fact for software
+//     that runs one install per cluster.
 //
 // All three reuse the engine-specific input binding runValidate performs,
 // so a second manifest reaches the engine exactly the way the first did.
@@ -29,6 +33,7 @@ import (
 
 	tt "github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/pkg/errors"
+	"github.com/plantonhq/planton/e2e/framework/discovery"
 	"github.com/plantonhq/planton/e2e/framework/provider"
 	"github.com/plantonhq/planton/pkg/failure"
 )
@@ -46,8 +51,11 @@ const (
 	// "crd-schema-downgrade").
 	ExpectUpgradeFailureAnnotation = "planton.dev/e2e-expect-upgrade-failure"
 
-	// ReinstallAnnotation ("true") deploys the scenario a second time after
-	// the first destroy has been verified, then destroys and verifies again.
+	// ReinstallAnnotation deploys a second install after the first destroy
+	// has been verified, then destroys and verifies again. "true" reinstalls
+	// the scenario itself; a file name, relative to the scenario, reinstalls
+	// that second act instead (it carries SecondActAnnotation naming the
+	// scenario, so it never runs as a lane of its own).
 	ReinstallAnnotation = "planton.dev/e2e-reinstall"
 )
 
@@ -67,6 +75,7 @@ type lifecycleAnnotations struct {
 	upgradeManifest      string
 	expectUpgradeFailure string
 	reinstall            bool
+	reinstallManifest    string             // the second act a reinstall deploys; empty reinstalls the scenario itself
 	outOfBand            *outOfBandRecovery // nil unless the scenario declares the out-of-band act (outofband.go)
 }
 
@@ -84,7 +93,21 @@ func readLifecycleAnnotations(manifestPath string) (lifecycleAnnotations, error)
 		return la, errors.Errorf("%s requires %s to name the manifest whose deploy must fail", ExpectUpgradeFailureAnnotation, UpgradeManifestAnnotation)
 	}
 	reinstall, _ := ManifestAnnotation(manifestPath, ReinstallAnnotation)
-	la.reinstall = reinstall == "true"
+	switch reinstall {
+	case "", "false":
+	case "true":
+		la.reinstall = true
+	default:
+		la.reinstall = true
+		la.reinstallManifest = filepath.Join(filepath.Dir(manifestPath), reinstall)
+		if _, err := os.Stat(la.reinstallManifest); err != nil {
+			return la, errors.Wrapf(err, "%s names %q, which does not exist beside the scenario", ReinstallAnnotation, reinstall)
+		}
+		if firstAct, _ := ManifestAnnotation(la.reinstallManifest, discovery.SecondActAnnotation); firstAct != filepath.Base(manifestPath) {
+			return la, errors.Errorf("%s names %q, which must carry %s: %s, so discovery never runs it as a lane of its own",
+				ReinstallAnnotation, reinstall, discovery.SecondActAnnotation, filepath.Base(manifestPath))
+		}
+	}
 	if value, _ := ManifestAnnotation(manifestPath, OutOfBandDeleteAnnotation); value != "" {
 		recovery, err := parseOutOfBandRecovery(value)
 		if err != nil {
@@ -184,7 +207,8 @@ func runUpgradeExpectFailure(ctx context.Context, tc *provider.KindTestContext, 
 		"the upgrade failed as expected, but the failure could not be attributed to the expected cause")
 }
 
-// runReinstall deploys the original manifest again after a verified destroy.
+// runReinstall deploys the bound manifest (the original, or the reinstall's
+// second act) after a verified destroy.
 // The Terraform state is empty and the Pulumi stack exists with no
 // resources, so this is a plain deploy from the engine's point of view; what
 // it proves is on the cluster (kept resources adopted, nothing conflicting).

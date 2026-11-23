@@ -31,6 +31,7 @@ go_library(
     importpath = "github.com/plantonhq/planton/e2e/framework/runner",
     visibility = ["//visibility:public"],
     deps = [
+        "//e2e/framework/discovery",
         "//e2e/framework/provider",
         "//internal/manifest",
         "//pkg/catalogkindreflect",

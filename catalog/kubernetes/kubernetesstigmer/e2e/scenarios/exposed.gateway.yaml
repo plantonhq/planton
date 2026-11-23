@@ -1,0 +1,31 @@
+# The exposed lane's second act: the same Stigmer, its front door moved in
+# place from the Ingress to the lane's Gateway and its HTTPS listener.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesStigmer
+metadata:
+  name: stigmer
+  annotations:
+    planton.dev/e2e-second-act: exposed.yaml
+spec:
+  namespace:
+    value: stigmer
+  version: 0.3.2
+  operator:
+    namespace:
+      value: stigmer-system
+    create_namespace: true
+  owner:
+    email: owner@acme.example
+  runner:
+    model:
+      keys:
+        anthropic_api_key: sk-ant-e2e-fake
+  ingress:
+    hostname: stigmer.e2e.internal
+    gateway:
+      name:
+        valueFrom:
+          kind: KubernetesGateway
+          name: e2e-stigmer-gw
+          fieldPath: status.outputs.gateway_name
+      section_name: https

@@ -1,0 +1,13 @@
+# The catalog's backup plugin in front of the composed-prerequisites lane's
+# Stigmer, at the release Stigmer 0.3.2 bundles (plugin v0.16.0, chart
+# 0.9.0). Stigmer writes ObjectStore fields older releases do not declare
+# (s3AddressingStyle for a named S3 endpoint), so a plugin someone else runs
+# must be at least that new. Otherwise the catalog's own install profile.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesCnpgBarmanCloudPlugin
+metadata:
+  name: e2e-barman-plugin-fixture
+spec:
+  namespace:
+    value: cnpg-system
+  chart_version: 0.9.0

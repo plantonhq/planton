@@ -1,0 +1,45 @@
+# Files and the database's archive in the catalog's own S3 store, with
+# cert-manager for the backup plugin. The verifier waits for the archive to be
+# healthy, takes an on-demand backup, and has an agent answer. Destroy keeps
+# the encryption keys; then the reinstall declares the Stigmer anew, restoring
+# from that archive (bucket-and-restore.restore.yaml), and the restored
+# install must hold the run made before it.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesStigmer
+metadata:
+  name: stigmer
+  annotations:
+    planton.dev/e2e-prerequisites: "KubernetesCertManager, catalog/kubernetes/kubernetesstigmer/e2e/fixture-namespace.yaml, catalog/kubernetes/kubernetesstigmer/e2e/fixture-s3-store.yaml"
+    planton.dev/e2e-setup-script: "catalog/kubernetes/kubernetesstigmer/e2e/scenarios/clean-slate.setup.sh"
+    planton.dev/e2e-required-env: "PLANTON_E2E_FAKE_MODEL_URL"
+    planton.dev/e2e-reinstall: bucket-and-restore.restore.yaml
+spec:
+  namespace:
+    value: stigmer
+  version: 0.3.2
+  operator:
+    namespace:
+      value: stigmer-system
+    create_namespace: true
+  runner:
+    model:
+      keys:
+        anthropic_api_key: sk-ant-e2e-fake
+        anthropic_base_url: ${E2E_ENV:PLANTON_E2E_FAKE_MODEL_URL}
+  object_store:
+    s3:
+      bucket:
+        value: stigmer
+      endpoint:
+        valueFrom:
+          kind: KubernetesSeaweedFs
+          name: e2e-stigmer-s3
+          fieldPath: status.outputs.s3_endpoint
+      credentials:
+        access_key:
+          access_key_id: e2e-stigmer-admin
+          secret_access_key: e2e-stigmer-admin-secret-not-a-real-secret
+  database:
+    bundled:
+      backup:
+        retention: 7d

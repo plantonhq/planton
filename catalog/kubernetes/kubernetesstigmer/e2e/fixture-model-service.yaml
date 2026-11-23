@@ -1,0 +1,42 @@
+# A name for the fake model inside the cluster. Agent Substrate's egress lets
+# a sandbox reach host:port addresses whose host is a DNS name, never an IP,
+# so the substrate lane reaches the fake model (served on the machine that
+# runs the cluster) through a Service with no selector and an EndpointSlice
+# pointing at that machine's address.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesManifest
+metadata:
+  name: e2e-stigmer-model-service
+spec:
+  skip_await: true
+  manifest_yaml: |
+    apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: e2e-stigmer-model
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: fake-model
+      namespace: e2e-stigmer-model
+    spec:
+      ports:
+        - name: http
+          port: 8080
+          targetPort: ${E2E_ENV:PLANTON_E2E_FAKE_MODEL_PORT}
+    ---
+    apiVersion: discovery.k8s.io/v1
+    kind: EndpointSlice
+    metadata:
+      name: fake-model-host
+      namespace: e2e-stigmer-model
+      labels:
+        kubernetes.io/service-name: fake-model
+    addressType: IPv4
+    ports:
+      - name: http
+        port: ${E2E_ENV:PLANTON_E2E_FAKE_MODEL_PORT}
+    endpoints:
+      - addresses:
+          - ${E2E_ENV:PLANTON_E2E_FAKE_MODEL_IP}

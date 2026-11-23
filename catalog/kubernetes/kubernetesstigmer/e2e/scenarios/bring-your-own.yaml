@@ -1,0 +1,51 @@
+# Your own Postgres and Temporal (the catalog's KubernetesPostgres and
+# KubernetesTemporal, consumer-scoped in e2e/prerequisites/), wired the way a
+# platform engineer composes them: the database's address and Temporal's
+# frontend through valueFrom, and the database password by naming the Secret
+# KubernetesPostgres writes, never given again. No CloudNativePG of the
+# operator's own is installed; the run reaches the model through them.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesStigmer
+metadata:
+  name: stigmer
+  annotations:
+    planton.dev/e2e-prerequisites: "KubernetesPostgres, KubernetesTemporal"
+    planton.dev/e2e-setup-script: "catalog/kubernetes/kubernetesstigmer/e2e/scenarios/clean-slate.setup.sh"
+    planton.dev/e2e-required-env: "PLANTON_E2E_FAKE_MODEL_URL"
+spec:
+  namespace:
+    value: stigmer
+  version: 0.3.2
+  operator:
+    namespace:
+      value: stigmer-system
+    create_namespace: true
+  runner:
+    model:
+      keys:
+        anthropic_api_key: sk-ant-e2e-fake
+        anthropic_base_url: ${E2E_ENV:PLANTON_E2E_FAKE_MODEL_URL}
+  database:
+    external:
+      host:
+        valueFrom:
+          kind: KubernetesPostgres
+          name: e2e-stigmer-pg
+          fieldPath: status.outputs.rw_service
+      user: stigmer
+      database: stigmer
+      password:
+        existing_secret:
+          name:
+            valueFrom:
+              kind: KubernetesPostgres
+              name: e2e-stigmer-pg
+              fieldPath: status.outputs.password_secret.name
+  temporal:
+    external:
+      host_port:
+        valueFrom:
+          kind: KubernetesTemporal
+          name: e2e-stigmer-temporal
+          fieldPath: status.outputs.frontend_endpoint
+      namespace: default

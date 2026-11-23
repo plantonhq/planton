@@ -1,0 +1,31 @@
+# The Stigmer definition belongs to the Helm release that installed the
+# operator, and Stigmer runs one operator per cluster, so a definition owned
+# by any other release is refused. This lane stages that from its own
+# install: the second act (operator-namespace-moved.to.yaml) moves the
+# operator to another namespace in place, which makes the definition another
+# release's; the move is refused before anything changes, in the same words
+# on both engines, naming the way back. The first install is then destroyed
+# as built.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesStigmer
+metadata:
+  name: stigmer
+  annotations:
+    planton.dev/e2e-prerequisites: "catalog/kubernetes/kubernetesstigmer/e2e/fixture-namespace.yaml"
+    planton.dev/e2e-setup-script: "catalog/kubernetes/kubernetesstigmer/e2e/scenarios/clean-slate.setup.sh"
+    planton.dev/e2e-required-env: "PLANTON_E2E_FAKE_MODEL_URL"
+    planton.dev/e2e-upgrade-manifest: operator-namespace-moved.to.yaml
+    planton.dev/e2e-expect-upgrade-failure: stigmer-operator-owned-elsewhere
+spec:
+  namespace:
+    value: stigmer
+  version: 0.3.2
+  operator:
+    namespace:
+      value: stigmer-system
+    create_namespace: true
+  runner:
+    model:
+      keys:
+        anthropic_api_key: sk-ant-e2e-fake
+        anthropic_base_url: ${E2E_ENV:PLANTON_E2E_FAKE_MODEL_URL}

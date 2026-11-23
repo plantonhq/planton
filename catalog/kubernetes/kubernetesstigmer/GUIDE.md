@@ -28,7 +28,7 @@ Stigmer's rule, mirrored in validation: with no `ingress`, nobody signs in and e
 
 ## Restore needs the keys
 
-`database.bundled.recover_from` creates the database from an archive in the bucket, and only when the database is created; on a running install it changes nothing. The archive is sealed with the source install's keys. If `stigmer-keys` is missing, the operator mints new ones and the restored records cannot be read, so the restore check stops the deploy before the Stigmer is declared and names the fix: apply the file `keys_export_command` saved. The check runs again whenever the namespace or the archive changes, and passes while a Stigmer already runs.
+`database.bundled.recover_from` creates the database from an archive in the bucket, and only when the database is created; on a running install it changes nothing. With no `target_time` it restores the newest moment the archive holds, and the newest changes reach the archive only when the database moves on to its next WAL file, which can lag by minutes: take an on-demand backup before a destroy whose data you mean to restore. The archive is sealed with the source install's keys. If `stigmer-keys` is missing, the operator mints new ones and the restored records cannot be read, so the restore check stops the deploy before the Stigmer is declared and names the fix: apply the file `keys_export_command` saved. The check runs again whenever the namespace or the archive changes, and passes while a Stigmer already runs.
 
 ## Upgrades and the way back
 
@@ -40,7 +40,9 @@ The Stigmer has no finalizer, so deleting it returns at once, and the operator's
 
 ## Prerequisites from the catalog
 
-Stigmer's operator installs CloudNativePG, its backup plugin, agent-sandbox and Agent Substrate when `prerequisites` says `auto` (the default) and the cluster lacks them, and leaves a copy someone else installed alone. The only conflict is order: if the operator installs its copy first, the catalog's kind later finds it and refuses it. When the environment holds those kinds, give this one a `depends_on` relationship to each.
+Stigmer's operator installs CloudNativePG, its backup plugin, agent-sandbox and Agent Substrate when `prerequisites` says `auto` (the default) and the cluster lacks them, and leaves a copy someone else installed alone. The only conflict is order: if the operator installs its copy first, the catalog's kind later finds it and refuses it. When the environment holds those kinds, give this one a `depends_on` relationship to each. A copy someone else runs is used as it is, so it must be at least as new as what Stigmer bundles where Stigmer relies on newer fields: the backup plugin from v0.16.0 (KubernetesCnpgBarmanCloudPlugin `chart_version` 0.9.0), because with an S3 endpoint Stigmer writes the object store's addressing style, which older releases do not declare.
+
+The operator recognizes someone else's copy by its definition alone, and trusts it without asking whether anything runs it. The catalog's CloudNativePG kinds keep their definitions when destroyed, so a cluster where one was removed looks to the operator like a CloudNativePG it must leave alone, and the bundled database waits forever. In `auto` mode the plan therefore reads each definition the install needs; one a Helm release put there whose release has no Deployment left is refused, with the command that clears it. A definition installed without Helm names no controller to look for, and is trusted.
 
 ## On the diagram
 

@@ -10,6 +10,7 @@ Stigmer on a cluster where CloudNativePG and its Barman Cloud backup plugin come
 ## Key Configuration Choices
 
 - **`metadata.relationships`** — `depends_on` the KubernetesCloudNativePgOperator and the KubernetesCnpgBarmanCloudPlugin, so the InfraPipeline deploys them first. Without the order, Stigmer's operator could install its own copies first, and the catalog's resources would then find someone else's install and refuse it
+- **The plugin's release** — the KubernetesCnpgBarmanCloudPlugin needs `chart_version` 0.9.0 or later (plugin v0.16.0, what Stigmer bundles): with a bucket at an S3 endpoint (any store but AWS S3 itself), Stigmer writes object-store settings older releases do not declare
 - **`prerequisites`** — left at `auto`: the operator finds the catalog's copies and never touches them. `skip` would also work, and refuses in the status if one is missing
 - **The same shape** fits agent-sandbox (KubernetesAgentSandboxController) and Agent Substrate (KubernetesAgentSubstrate) when sessions run in sandboxes
 

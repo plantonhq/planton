@@ -4,6 +4,7 @@ go_library(
     name = "aa_e2e",
     srcs = [
         "harness.go",
+        "hostaddress.go",
         "identity.go",
     ],
     importpath = "github.com/plantonhq/planton/catalog/kubernetes/aa_e2e",
@@ -25,6 +26,7 @@ go_test(
     srcs = [
         "harness_kind_version_test.go",
         "harness_sysctl_test.go",
+        "hostaddress_test.go",
         "identity_test.go",
     ],
     embed = [":aa_e2e"],

@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+	"github.com/plantonhq/planton/e2e/framework/discovery"
 	"github.com/plantonhq/planton/internal/manifest"
 	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/e2e/profile"
@@ -68,8 +69,16 @@ func (f FixtureIntegrityFinding) String() string {
 // Findings are defects to fix in the manifests (or the kind's registry
 // prerequisites); the returned error is reserved for I/O-level failures of
 // the checker itself.
+//
+// A second act (discovery.SecondActAnnotation) deploys against its first
+// act's prerequisites, so its references are checked against the chain the
+// first act's annotation resolves.
 func CheckScenarioFixtureIntegrity(repoRoot, kindProvider, kindDir, scenarioPath string) ([]FixtureIntegrityFinding, error) {
-	deps, err := ResolveDependencies(repoRoot, kindProvider, kindDir, scenarioPath)
+	chainPath := scenarioPath
+	if firstAct, _ := ManifestAnnotation(scenarioPath, discovery.SecondActAnnotation); firstAct != "" {
+		chainPath = filepath.Join(filepath.Dir(scenarioPath), firstAct)
+	}
+	deps, err := ResolveDependencies(repoRoot, kindProvider, kindDir, chainPath)
 	if err != nil {
 		// A chain that cannot even resolve (missing install manifest, unknown
 		// annotation kind, cycle) is the first thing a live run would die on.
