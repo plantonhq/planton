@@ -16,32 +16,32 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service (Pulumi projects.Service) enabling certificatemanager.googleapis.com on the target project -- the provider lists the project's enabled services before enabling one and reads the service back on refresh. disable_on_destroy is false in both modules, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Also covers google_project_service_identity (google-beta; Pulumi projects.ServiceIdentity), which calls Service Usage services.generateServiceIdentity for certificatemanager.googleapis.com in the config's project and reads the agent's email back. IAM defines no serviceusage.services.generateServiceIdentity permission (it is absent from IAM's testable-permissions inventory) and Google's method reference names none, so the method rides the Service Usage write this group already holds (serviceusage.services.enable); the live capture lane confirms which permission Google checks. Its delete is a no-op in the provider.
+        notes: Covers google_project_service (Pulumi projects.Service) enabling certificatemanager.googleapis.com on the target project -- the provider lists the project's enabled services before enabling one and reads the service back on refresh. disable_on_destroy is false in both modules, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Also covers google_project_service_identity (google-beta; Pulumi projects.ServiceIdentity), which calls Service Usage services.generateServiceIdentity for certificatemanager.googleapis.com in the config's project and reads the agent's email back. IAM defines no serviceusage.services.generateServiceIdentity permission (it is absent from IAM's testable-permissions inventory) and Google's method reference names none, so the method rides the Service Usage write this group already holds (serviceusage.services.enable); the live capture lane confirms which permission Google checks. Its delete is a no-op in the provider. Proven 2026-11-23 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageCertificateIssuanceConfig
         permissions:
           - certificatemanager.certissuanceconfigs.create
           - certificatemanager.certissuanceconfigs.get
           - certificatemanager.certissuanceconfigs.delete
           - certificatemanager.operations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_certificate_manager_certificate_issuance_config (Pulumi certificatemanager.CertificateIssuanceConfig) -- create, read/refresh, and destroy. Neither provider updates a config in place -- any change, labels included, deletes and re-creates it (measured on both engines), so no update permission is needed. Certificate Manager mutations return long-running operations the provider polls under certificatemanager.operations.get. Issuance from the pool runs as the Certificate Manager service agent (roles/privateca.certificateRequester on the pool, granted by this component before the config), never as the runner; Google also checks the caller's own use of the pool at create (UseCaPool).
+        notes: Covers google_certificate_manager_certificate_issuance_config (Pulumi certificatemanager.CertificateIssuanceConfig) -- create, read/refresh, and destroy. Neither provider updates a config in place -- any change, labels included, deletes and re-creates it (measured on both engines), so no update permission is needed. Certificate Manager mutations return long-running operations the provider polls under certificatemanager.operations.get. Issuance from the pool runs as the Certificate Manager service agent (roles/privateca.certificateRequester on the pool, granted by this component before the config), never as the runner; Google also checks the caller's own use of the pool at create (UseCaPool). Proven 2026-11-23 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: UseCaPool
         permissions:
           - privateca.caPools.use
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Certificate Manager checks at create that the caller may issue from the pool spec.ca_pool names -- Google's issuance-config documentation states "the caller must have the privateca.capools.use permission" -- and refuses a caller without it with only "Config validation failed", naming no permission. Held on the pool's project (or the pool), which may differ from the config's.
+        notes: Certificate Manager checks at create that the caller may issue from the pool spec.ca_pool names -- Google's issuance-config documentation states "the caller must have the privateca.capools.use permission" -- and refuses a caller without it with only "Config validation failed", naming no permission. Held on the pool's project (or the pool), which may differ from the config's. Proven 2026-11-23 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: GrantServiceAgentOnCaPool
         permissions:
           - privateca.caPools.getIamPolicy
           - privateca.caPools.setIamPolicy
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_privateca_ca_pool_iam_member (Pulumi certificateauthority.CaPoolIamMember) granting the Certificate Manager service agent roles/privateca.certificateRequester on the pool spec.ca_pool names -- read-modify-write of the pool's IAM policy on create and destroy, a policy read on every refresh. Held on the pool's project (or the pool), which may differ from the config's. Granting on one pool a kind relies on is part of managing it, so the entry is ordinary.
+        notes: Covers google_privateca_ca_pool_iam_member (Pulumi certificateauthority.CaPoolIamMember) granting the Certificate Manager service agent roles/privateca.certificateRequester on the pool spec.ca_pool names -- read-modify-write of the pool's IAM policy on create and destroy, a policy read on every refresh. Held on the pool's project (or the pool), which may differ from the config's. Granting on one pool a kind relies on is part of managing it, so the entry is ordinary. Proven 2026-11-23 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

@@ -20,37 +20,37 @@ spec:
           - compute.firewallPolicies.delete
           - compute.firewallPolicies.use
           - compute.globalOperations.get
-        provenance: derived
+        provenance: proven
         reach: organization
         privilege: ordinary
-        notes: "Every create, update and delete returns an organization-level operation (locations/global/operations/org-...) that both engines poll, and Google authorizes that poll as compute.globalOperations.get (a refusal names it, measured on both engines). Covers google_compute_firewall_policy (Pulumi compute.FirewallPolicy) and its rules (google_compute_firewall_policy_rule -- addRule, patchRule, removeRule, getRule are all firewallPolicies.update/get on the policy). create on first apply; get on every refresh and import; update when the description changes or any rule is added, changed, or removed; delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). Granted on the ORGANIZATION (or on the parent folder) -- these are organization-level resources; roles/compute.orgFirewallPolicyAdmin contains all of these."
+        notes: "Every create, update and delete returns an organization-level operation (locations/global/operations/org-...) that both engines poll, and Google authorizes that poll as compute.globalOperations.get (a refusal names it, measured on both engines). Covers google_compute_firewall_policy (Pulumi compute.FirewallPolicy) and its rules (google_compute_firewall_policy_rule -- addRule, patchRule, removeRule, getRule are all firewallPolicies.update/get on the policy). create on first apply; get on every refresh and import; update when the description changes or any rule is added, changed, or removed; delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). Granted on the ORGANIZATION (or on the parent folder) -- these are organization-level resources; roles/compute.orgFirewallPolicyAdmin contains all of these. Proven 2026-11-23 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: AssociateHierarchicalFirewallPolicy
         permissions:
           - compute.organizations.setFirewallPolicy
-        provenance: derived
+        provenance: proven
         reach: organization
         privilege: ordinary
         condition:
           spec_field_set: associations
-        notes: "Covers google_compute_firewall_policy_association (Pulumi compute.FirewallPolicyAssociation), one per associations entry: the addAssociation and removeAssociation calls authorize as firewallPolicies.use on the policy (listed above) and setFirewallPolicy on every organization or folder the policy is attached to (Google checks it on the attachment target) -- GCP defines no firewallPolicies.addAssociation or removeAssociation permission. roles/compute.orgFirewallPolicyAdmin on the organization contains them; a folder-scoped grant must cover both the policy's parent and every association target."
+        notes: "Covers google_compute_firewall_policy_association (Pulumi compute.FirewallPolicyAssociation), one per associations entry: the addAssociation and removeAssociation calls authorize as firewallPolicies.use on the policy (listed above) and setFirewallPolicy on every organization or folder the policy is attached to (Google checks it on the attachment target) -- GCP defines no firewallPolicies.addAssociation or removeAssociation permission. roles/compute.orgFirewallPolicyAdmin on the organization contains them; a folder-scoped grant must cover both the policy's parent and every association target. Proven 2026-11-23 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: ResolveParentFolder
         permissions:
           - resourcemanager.folders.get
-        provenance: derived
+        provenance: proven
         reach: organization
         privilege: ordinary
         condition:
           spec_field_set: parent.folder_id
-        notes: Google validates that the folder parent.folder_id names exists before creating the policy in it.
+        notes: Google validates that the folder parent.folder_id names exists before creating the policy in it. Proven 2026-11-23 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ResolveAssociationTargetFolders
         permissions:
           - resourcemanager.folders.get
-        provenance: derived
+        provenance: proven
         reach: organization
         privilege: ordinary
         condition:
           spec_field_set: associations.target.folder_id
-        notes: Google validates that each folder an association's target.folder_id names exists before attaching the policy to it.
+        notes: Google validates that each folder an association's target.folder_id names exists before attaching the policy to it. Proven 2026-11-23 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ResolveRuleTargetNetworks
         permissions:
           - compute.networks.get

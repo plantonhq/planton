@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling compute.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling compute.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-22 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageTargetHttpsProxy
         permissions:
           - compute.targetHttpsProxies.create
@@ -32,10 +32,10 @@ spec:
           - compute.targetHttpsProxies.setQuicOverride
           - compute.targetHttpsProxies.setCertificateMap
           - compute.globalOperations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_compute_target_https_proxy -- create, read/refresh, destroy, and polling the global operation every mutation returns. The provider mutates each in-place field through its dedicated RPC (setUrlMap, setSslCertificates, setSslPolicy, setQuicOverride, setCertificateMap), while server_tls_policy and certificate_manager_certificates changes PATCH the proxy, which authorizes as update.
+        notes: Covers google_compute_target_https_proxy -- create, read/refresh, destroy, and polling the global operation every mutation returns. The provider mutates each in-place field through its dedicated RPC (setUrlMap, setSslCertificates, setSslPolicy, setQuicOverride, setCertificateMap), while server_tls_policy and certificate_manager_certificates changes PATCH the proxy, which authorizes as update. Proven 2026-11-22 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageRegionalTargetHttpsProxy
         permissions:
           - compute.regionTargetHttpsProxies.create
@@ -45,39 +45,39 @@ spec:
           - compute.regionTargetHttpsProxies.setUrlMap
           - compute.regionTargetHttpsProxies.setSslCertificates
           - compute.regionOperations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: region
-        notes: Covers google_compute_region_target_https_proxy (created when spec.region is set). Regional proxies authorize against their own compute.regionTargetHttpsProxies family (no certificate-map or QUIC RPCs exist there) and return region operations the provider polls. Referenced regional certificates and SSL policies authorize with compute.regionSslCertificates.get and compute.regionSslPolicies.use on the referenced resources.
+        notes: Covers google_compute_region_target_https_proxy (created when spec.region is set). Regional proxies authorize against their own compute.regionTargetHttpsProxies family (no certificate-map or QUIC RPCs exist there) and return region operations the provider polls. Referenced regional certificates and SSL policies authorize with compute.regionSslCertificates.get and compute.regionSslPolicies.use on the referenced resources. Proven 2026-11-22 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: UseReferencedUrlMap
         permissions:
           - compute.urlMaps.use
           - compute.regionUrlMaps.use
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Service-side check GCP's targetHttpsProxies.insert reference documents on the referenced urlMap -- always needed, since url_map is required. A regional proxy checks compute.regionUrlMaps.use on its URL map (measured live -- refused without it on both engines).
+        notes: Service-side check GCP's targetHttpsProxies.insert reference documents on the referenced urlMap -- always needed, since url_map is required. A regional proxy checks compute.regionUrlMaps.use on its URL map (measured live -- refused without it on both engines). Proven 2026-11-22 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: UseReferencedSslCertificates
         permissions:
           - compute.sslCertificates.get
           - compute.regionSslCertificates.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: ssl_certificates
-        notes: Service-side check on each attached certificate. GCP defines NO compute.sslCertificates.use -- attaching authorizes with GET, verified against the testable-permissions inventory. A regional proxy reads its regional certificates as compute.regionSslCertificates.get (measured live -- refused without it on both engines).
+        notes: Service-side check on each attached certificate. GCP defines NO compute.sslCertificates.use -- attaching authorizes with GET, verified against the testable-permissions inventory. A regional proxy reads its regional certificates as compute.regionSslCertificates.get (measured live -- refused without it on both engines). Proven 2026-11-22 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: UseReferencedSslPolicy
         permissions:
           - compute.sslPolicies.use
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: ssl_policy
-        notes: Service-side check GCP's targetHttpsProxies.insert reference documents on the referenced SSL policy.
+        notes: Service-side check GCP's targetHttpsProxies.insert reference documents on the referenced SSL policy. Proven 2026-11-22 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: UseReferencedCertificateMap
         permissions:
           - certificatemanager.certmaps.use

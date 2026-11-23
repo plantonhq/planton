@@ -18,12 +18,11 @@ spec:
   # engines, all phases green under the apply-idempotency gate. The GKE
   # chain lives in us-east1 (see the cluster profile).
   #
-  # Awaiting re-proof: the pool gained graceful-shutdown grace periods (the
-  # autoscaling-spot scenario sets 120/30), a boot-time init script, and the
-  # end-of-support upgrade hold; the earlier live proof predates them. The
-  # next proof confirms the grace periods round-trip on a Spot pool and re-
-  # plan clean (both are API-computed when unset); the init script and the
-  # hold stay offline-proven.
+  # Proven live on both engines with graceful-shutdown grace periods on a
+  # Spot pool (the autoscaling-spot scenario sets 120/30), which round-trip
+  # and re-plan clean although both are API-computed when unset. The
+  # boot-time init script and the end-of-support upgrade hold are proven
+  # offline only.
   status: green
   validated_provisioners: [pulumi, terraform]
   # Deferred arm — node_drain_config (customized node drain): GKE gates

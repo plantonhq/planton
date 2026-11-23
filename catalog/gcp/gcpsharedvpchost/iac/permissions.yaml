@@ -16,24 +16,24 @@ spec:
         permissions:
           - compute.organizations.enableXpnHost
           - compute.organizations.disableXpnHost
-        provenance: derived
+        provenance: proven
         reach: organization
         privilege: ordinary
-        notes: "Covers google_compute_shared_vpc_host_project (Pulumi compute.SharedVPCHostProject) -- the modules' only resource. enableXpnHost on first apply; disableXpnHost on destroy under deletion_policy DELETE (refused by Google while service projects are attached; ABANDON and PREVENT call no disable API). Both organizations.* permissions are granted on the ORGANIZATION or a folder above the project, never on the project alone; roles/compute.xpnAdmin contains them."
+        notes: "Covers google_compute_shared_vpc_host_project (Pulumi compute.SharedVPCHostProject) -- the modules' only resource. enableXpnHost on first apply; disableXpnHost on destroy under deletion_policy DELETE (refused by Google while service projects are attached; ABANDON and PREVENT call no disable API). Both organizations.* permissions are granted on the ORGANIZATION or a folder above the project, never on the project alone; roles/compute.xpnAdmin contains them. Proven 2026-11-23 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: ReadSharedVpcHostStatus
         permissions:
           - compute.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: "The provider reads the host project's xpnProjectStatus with compute.projects.get on every refresh and import -- a project permission, held on the host project."
+        notes: "The provider reads the host project's xpnProjectStatus with compute.projects.get on every refresh and import -- a project permission, held on the host project. Proven 2026-11-23 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: PollSharedVpcHostOperations
         permissions:
           - compute.globalOperations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: "enableXpnHost and disableXpnHost return an operation in the host project that both engines poll, and Google authorizes the poll as compute.globalOperations.get on the host project (refused without it on both engines: \"Required 'compute.globalOperations.get' permission for 'projects/...'\")."
+        notes: "enableXpnHost and disableXpnHost return an operation in the host project that both engines poll, and Google authorizes the poll as compute.globalOperations.get on the host project (refused without it on both engines: \"Required 'compute.globalOperations.get' permission for 'projects/...'\"). Proven 2026-11-23 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: ResolveDefaultProject
         permissions:
           - resourcemanager.projects.get

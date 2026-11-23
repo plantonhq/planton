@@ -11,11 +11,9 @@ spec:
   # replica_count resize in place in CLUSTER mode (the provider updates them).
   tier: 1
   #
-  # Awaiting re-proof: the instance gained acl_policy (a shared Valkey ACL
-  # policy attached by name); the earlier live proof predates it. Attaching
-  # needs an ACL policy resource the catalog does not yet model, so the arm
-  # stays offline-proven; the next proof confirms the untouched shape still
-  # re-plans clean with the new argument unset.
+  # Proven live on both engines with acl_policy unset. Attaching a shared
+  # Valkey ACL policy needs an ACL policy resource the catalog does not model
+  # yet, so that arm is proven offline only.
   status: green
   validated_provisioners: [pulumi, terraform]
   timeout_minutes: 120

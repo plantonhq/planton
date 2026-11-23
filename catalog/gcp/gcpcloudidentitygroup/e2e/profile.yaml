@@ -23,6 +23,6 @@ spec:
   # Identity answers 403, not 404, for a deleted group).
   tier: 2
   status: deferred
-  deferred_reason: a Cloud Identity group needs a customer the E2E identity can administer (Groups Admin) and a verified domain, exported as PLANTON_E2E_GCP_CLOUD_IDENTITY_CUSTOMER_ID and PLANTON_E2E_VERIFIED_DOMAIN, neither of which the E2E test identity has; offline plans only
+  deferred_reason: "a Cloud Identity group's lane runs as an identity holding Groups Admin in a Cloud Identity directory, and only a super admin can assign that role, so a per-lane identity cannot be granted it; offline plans only until the lane gets a standing identity the super admin assigns the role to once"
   validated_provisioners: []
   timeout_minutes: 10

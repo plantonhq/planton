@@ -19,15 +19,15 @@ spec:
           - orgpolicy.policies.update
           - orgpolicy.policies.delete
           - orgpolicy.constraints.list
-        provenance: derived
+        provenance: proven
         reach: organization
         privilege: ordinary
         predefined_role: roles/orgpolicy.policyAdmin
-        notes: "Covers google_org_policy_policy (Pulumi orgpolicy.Policy) -- the modules' only resource. create on first apply; get on every refresh and import (the provider reads the policy by name); update when the enforced or dry-run rule set changes; delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). constraints.list is what the provider needs to validate a constraint name exists at the scope. Granted on the organization, even for a project-scoped policy: Google grants roles/orgpolicy.policyAdmin at the organization only (it is not in a project's grantable roles), so the kind needs Organization Access. roles/orgpolicy.policyAdmin contains all five."
+        notes: "Covers google_org_policy_policy (Pulumi orgpolicy.Policy) -- the modules' only resource. create on first apply; get on every refresh and import (the provider reads the policy by name); update when the enforced or dry-run rule set changes; delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). constraints.list is what the provider needs to validate a constraint name exists at the scope. Granted on the organization, even for a project-scoped policy: Google grants roles/orgpolicy.policyAdmin at the organization only (it is not in a project's grantable roles), so the kind needs Organization Access. roles/orgpolicy.policyAdmin contains all five. Proven 2026-11-23 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: ResolveDefaultProject
         permissions:
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Needed only when spec.scope is empty: both modules read the provider's default project once to render the policy parent (data.google_project on Terraform, the provider client config on Pulumi). Every project-level predefined role carries it."
+        notes: "Needed only when spec.scope is empty: both modules read the provider's default project once to render the policy parent (data.google_project on Terraform, the provider client config on Pulumi). Every project-level predefined role carries it. Proven 2026-11-23 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."

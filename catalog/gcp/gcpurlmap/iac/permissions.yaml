@@ -16,10 +16,10 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling compute.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling compute.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-22 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageUrlMap
         permissions:
           - compute.urlMaps.create
@@ -27,10 +27,10 @@ spec:
           - compute.urlMaps.update
           - compute.urlMaps.delete
           - compute.globalOperations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_compute_url_map -- create, read/refresh, in-place updates (description, defaults, host rules, path matchers, tests are all mutable), destroy, and polling the global operation every mutation returns.
+        notes: Covers google_compute_url_map -- create, read/refresh, in-place updates (description, defaults, host rules, path matchers, tests are all mutable), destroy, and polling the global operation every mutation returns. Proven 2026-11-22 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageRegionalUrlMap
         permissions:
           - compute.regionUrlMaps.create
@@ -38,18 +38,18 @@ spec:
           - compute.regionUrlMaps.update
           - compute.regionUrlMaps.delete
           - compute.regionOperations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: region
-        notes: Covers google_compute_region_url_map, built instead of the global map when region is set. Regional maps authorize against their own compute.regionUrlMaps family and return region operations the provider polls; the referenced regional backend services authorize with compute.regionBackendServices.use.
+        notes: Covers google_compute_region_url_map, built instead of the global map when region is set. Regional maps authorize against their own compute.regionUrlMaps family and return region operations the provider polls; the referenced regional backend services authorize with compute.regionBackendServices.use. Proven 2026-11-22 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: UseReferencedBackends
         permissions:
           - compute.backendServices.use
           - compute.backendBuckets.use
           - compute.regionBackendServices.use
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Service-side checks, not module API calls -- GCP's urlMaps.insert reference documents that every backend target named in the map (default_service, path matcher defaults, path/route rule services, weighted_backend_services, request_mirror_policy, custom error services) authorizes with compute.backendServices.use or compute.backendBuckets.use on the referenced resource. Grant the one(s) matching what the map actually targets: backendBuckets.use is needed only when a bucket is a target (e.g. a custom error service or static-content path). A regional URL map checks compute.regionBackendServices.use on the services it routes to (measured live -- refused without it on both engines)."
+        notes: "Service-side checks, not module API calls -- GCP's urlMaps.insert reference documents that every backend target named in the map (default_service, path matcher defaults, path/route rule services, weighted_backend_services, request_mirror_policy, custom error services) authorizes with compute.backendServices.use or compute.backendBuckets.use on the referenced resource. Grant the one(s) matching what the map actually targets: backendBuckets.use is needed only when a bucket is a target (e.g. a custom error service or static-content path). A regional URL map checks compute.regionBackendServices.use on the services it routes to (measured live -- refused without it on both engines). Proven 2026-11-22 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."

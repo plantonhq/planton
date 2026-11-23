@@ -17,7 +17,7 @@ spec:
           - redis.clusters.get
           - redis.clusters.update
           - redis.operations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Covers google_redis_cluster_user_created_connections (Pulumi redis.ClusterUserCreatedConnections): the registration is an update of the cluster's clusterEndpoints (create, in-place change, and destroy under deletion_policy DELETE are all cluster updates; ABANDON and PREVENT call no API), read on every refresh, and the long-running operation the provider polls as redis.operations.get. roles/redis.admin contains all three."
+        notes: "Covers google_redis_cluster_user_created_connections (Pulumi redis.ClusterUserCreatedConnections): the registration is an update of the cluster's clusterEndpoints (create, in-place change, and destroy under deletion_policy DELETE are all cluster updates; ABANDON and PREVENT call no API), read on every refresh, and the long-running operation the provider polls as redis.operations.get. roles/redis.admin contains all three. Proven 2026-11-23 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."

@@ -23,10 +23,10 @@ spec:
           - compute.networks.get
           - compute.subnetworks.get
           - compute.subnetworks.use
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Covers google_compute_network_endpoint_group (Pulumi compute.NetworkEndpointGroup) and the bulk google_compute_network_endpoints (Pulumi compute.NetworkEndpointList), built when spec.zone is set. create on first apply, get on every refresh, attach/detach when the endpoint list changes in place, delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API); every other group argument is immutable, so a change is a delete plus create. Naming a VM as an endpoint requires compute.instances.use on that VM; Google validates the network and subnetwork at create. roles/compute.networkAdmin contains all of them except instances.use, which roles/compute.instanceAdmin.v1 carries. Google checks compute.subnetworks.use on the subnetwork a zonal group names at create (measured live -- refused without it on both engines)."
+        notes: "Covers google_compute_network_endpoint_group (Pulumi compute.NetworkEndpointGroup) and the bulk google_compute_network_endpoints (Pulumi compute.NetworkEndpointList), built when spec.zone is set. create on first apply, get on every refresh, attach/detach when the endpoint list changes in place, delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API); every other group argument is immutable, so a change is a delete plus create. Naming a VM as an endpoint requires compute.instances.use on that VM; Google validates the network and subnetwork at create. roles/compute.networkAdmin contains all of them except instances.use, which roles/compute.instanceAdmin.v1 carries. Google checks compute.subnetworks.use on the subnetwork a zonal group names at create (measured live -- refused without it on both engines). Proven 2026-11-22 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: ManageGlobalNetworkEndpointGroup
         permissions:
           - compute.globalNetworkEndpointGroups.create
@@ -34,7 +34,7 @@ spec:
           - compute.globalNetworkEndpointGroups.delete
           - compute.globalNetworkEndpointGroups.attachNetworkEndpoints
           - compute.globalNetworkEndpointGroups.detachNetworkEndpoints
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Covers google_compute_global_network_endpoint_group (Pulumi compute.GlobalNetworkEndpointGroup) and its per-member google_compute_global_network_endpoint (Pulumi compute.GlobalNetworkEndpoint), built when spec.zone is empty. Every argument is immutable, so a changed endpoint is detached and re-attached. roles/compute.networkAdmin contains all five."
+        notes: "Covers google_compute_global_network_endpoint_group (Pulumi compute.GlobalNetworkEndpointGroup) and its per-member google_compute_global_network_endpoint (Pulumi compute.GlobalNetworkEndpoint), built when spec.zone is empty. Every argument is immutable, so a changed endpoint is detached and re-attached. roles/compute.networkAdmin contains all five. Proven 2026-11-22 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."

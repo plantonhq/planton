@@ -13,10 +13,10 @@ spec:
       - purpose: CreateProject
         permissions:
           - resourcemanager.projects.create
-        provenance: derived
+        provenance: proven
         reach: organization
         privilege: ordinary
-        notes: Covers creating the google_project. resourcemanager.projects.create authorizes on the PARENT node (the organization or folder named by parent_type/parent_id), never on the project itself -- it lives in IAM's org/folder-scoped inventory and is the grant inside roles/resourcemanager.projectCreator -- so it is granted to the deploying principal on the destination parent.
+        notes: Covers creating the google_project. resourcemanager.projects.create authorizes on the PARENT node (the organization or folder named by parent_type/parent_id), never on the project itself -- it lives in IAM's org/folder-scoped inventory and is the grant inside roles/resourcemanager.projectCreator -- so it is granted to the deploying principal on the destination parent. Proven 2026-11-23 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageProject
         permissions:
           - resourcemanager.projects.get
@@ -25,14 +25,14 @@ spec:
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: Covers the rest of the google_project lifecycle -- read/refresh, in-place updates (display name, labels), and destroy. delete performs the shutdown that starts the 30-day pending-deletion window; deletion_policy PREVENT and ABANDON are client-side stances that never call the API.
+        notes: Covers the rest of the google_project lifecycle -- read/refresh, in-place updates (display name, labels), and destroy. delete performs the shutdown that starts the 30-day pending-deletion window; deletion_policy PREVENT and ABANDON are client-side stances that never call the API. Stays derived, because the lane's identity creates the project and Google makes the creator the new project's owner, so a run cannot show these permissions are enough on their own.
       - purpose: MoveProjectParent
         permissions:
           - resourcemanager.projects.move
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: Required only when a plan changes parent_type/parent_id -- migrating the project within the hierarchy authorizes as a move on the project itself, paired with CreateProject's permission on the destination parent.
+        notes: Required only when a plan changes parent_type/parent_id -- migrating the project within the hierarchy authorizes as a move on the project itself, paired with CreateProject's permission on the destination parent. Stays derived, because the lane's identity creates the project and Google makes the creator the new project's owner, so a run cannot show these permissions are enough on their own.
       - purpose: LinkBillingAccount
         permissions:
           - resourcemanager.projects.createBillingAssignment
@@ -62,7 +62,7 @@ spec:
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service for every enabled_apis entry, plus the provider's own enablement of compute.googleapis.com when auto_create_network is false (the module default) -- the provider documents that it enables the Compute API on the new project to delete the default network. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service for every enabled_apis entry, plus the provider's own enablement of compute.googleapis.com when auto_create_network is false (the module default) -- the provider documents that it enables the Compute API on the new project to delete the default network. disable_on_destroy is false in the module, so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Stays derived, because the lane's identity creates the project and Google makes the creator the new project's owner, so a run cannot show these permissions are enough on their own.
       - purpose: DeleteDefaultNetwork
         permissions:
           - compute.networks.get
@@ -71,4 +71,4 @@ spec:
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: Exercised on the module's DEFAULT path -- with auto_create_network false, GCP still creates the default VPC momentarily and the provider deletes it immediately after project creation, polling the global operation the delete returns. Not needed only when a spec opts INTO keeping the default network (auto_create_network true).
+        notes: Exercised on the module's DEFAULT path -- with auto_create_network false, GCP still creates the default VPC momentarily and the provider deletes it immediately after project creation, polling the global operation the delete returns. Not needed only when a spec opts INTO keeping the default network (auto_create_network true). Stays derived, because the lane's identity creates the project and Google makes the creator the new project's owner, so a run cannot show these permissions are enough on their own.

@@ -16,26 +16,26 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
           - resourcemanager.projects.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_project_service enabling run.googleapis.com on the target project so a fresh project works on the first deploy. disable_on_destroy is false in both modules -- tearing down one runner must never disable the API for everything else -- so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live).
+        notes: Covers google_project_service enabling run.googleapis.com on the target project so a fresh project works on the first deploy. disable_on_destroy is false in both modules -- tearing down one runner must never disable the API for everything else -- so the disable permission is never needed. The provider reads the project with resourcemanager.projects.get before its services on every refresh, so a re-plan or destroy needs it (measured live). Proven 2026-11-22 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageRuntimeServiceAccount
         permissions:
           - iam.serviceAccounts.create
           - iam.serviceAccounts.get
           - iam.serviceAccounts.delete
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_service_account -- the dedicated permissionless runtime account created ONLY when spec.service_account is unset (a referenced account is never created or mutated); get is needed for refresh of the module-owned account.
+        notes: Covers google_service_account -- the dedicated permissionless runtime account created ONLY when spec.service_account is unset (a referenced account is never created or mutated); get is needed for refresh of the module-owned account. Proven 2026-11-22 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ActAsRuntimeServiceAccount
         permissions:
           - iam.serviceAccounts.actAs
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: uses_identity
-        notes: Cloud Run's deployment-permissions contract requires iam.serviceAccounts.actAs on the service identity for every create or update of google_cloud_run_v2_service -- on the module-created runtime account or the referenced spec.service_account, whichever the service runs as. There is no shape of this component that escapes the requirement.
+        notes: Cloud Run's deployment-permissions contract requires iam.serviceAccounts.actAs on the service identity for every create or update of google_cloud_run_v2_service -- on the module-created runtime account or the referenced spec.service_account, whichever the service runs as. There is no shape of this component that escapes the requirement. Proven 2026-11-22 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageTokenSecret
         permissions:
           - secretmanager.secrets.create
@@ -48,10 +48,10 @@ spec:
           - secretmanager.versions.destroy
           - secretmanager.secrets.setIamPolicy
           - secretmanager.secrets.getIamPolicy
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_secret_manager_secret (the "<metadata.name>-token" secret with automatic replication) plus its google_secret_manager_secret_version -- versions.add writes the token, versions.get reads the version's metadata and versions.access its value back during refresh (the value is spec material, so the provider round-trips it); versions.enable is what Pulumi calls to set the new version enabled, and versions.destroy is how a version is deleted at destroy (both measured live -- refused without them). setIamPolicy/getIamPolicy cover google_secret_manager_secret_iam_member -- the one secretAccessor grant to the runtime service account, placed ON the module-owned secret, never on the referenced account.
+        notes: Covers google_secret_manager_secret (the "<metadata.name>-token" secret with automatic replication) plus its google_secret_manager_secret_version -- versions.add writes the token, versions.get reads the version's metadata and versions.access its value back during refresh (the value is spec material, so the provider round-trips it); versions.enable is what Pulumi calls to set the new version enabled, and versions.destroy is how a version is deleted at destroy (both measured live -- refused without them). setIamPolicy/getIamPolicy cover google_secret_manager_secret_iam_member -- the one secretAccessor grant to the runtime service account, placed ON the module-owned secret, never on the referenced account. Proven 2026-11-22 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
       - purpose: ManageRunnerService
         permissions:
           - run.services.create
@@ -59,7 +59,7 @@ spec:
           - run.services.update
           - run.services.delete
           - run.operations.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: Covers google_cloud_run_v2_service -- create, read/refresh, in-place updates (template, scaling, env, resources), and destroy of the always-on runner service. Service mutations on the Cloud Run Admin API v2 return long-running operations the provider polls, which authorize as run.operations.get.
+        notes: Covers google_cloud_run_v2_service -- create, read/refresh, in-place updates (template, scaling, env, resources), and destroy of the always-on runner service. Service mutations on the Cloud Run Admin API v2 return long-running operations the provider polls, which authorize as run.operations.get. Proven 2026-11-22 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.

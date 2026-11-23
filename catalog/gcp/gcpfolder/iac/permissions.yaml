@@ -17,10 +17,10 @@ spec:
           - resourcemanager.folders.update
           - resourcemanager.folders.move
           - resourcemanager.folders.delete
-        provenance: derived
+        provenance: proven
         reach: organization
         privilege: ordinary
-        notes: "Covers google_folder (Pulumi organizations.Folder) -- the modules' only resource. create on first apply; get on every refresh and import; update when display_name changes; move when the parent changes (the provider calls folders.move, an in-place operation); delete on destroy under deletion_policy DELETE (a soft delete; ABANDON and PREVENT call no delete API, and the client-side deletion_protection guard fails the destroy before any call). Granted on the PARENT organization or folder -- folder permissions are never project-scoped. roles/resourcemanager.folderAdmin contains all five; folderCreator plus folderEditor is the narrower pair."
+        notes: "Covers google_folder (Pulumi organizations.Folder) -- the modules' only resource. create on first apply; get on every refresh and import; update when display_name changes; move when the parent changes (the provider calls folders.move, an in-place operation); delete on destroy under deletion_policy DELETE (a soft delete; ABANDON and PREVENT call no delete API, and the client-side deletion_protection guard fails the destroy before any call). Granted on the PARENT organization or folder -- folder permissions are never project-scoped. roles/resourcemanager.folderAdmin contains all five; folderCreator plus folderEditor is the narrower pair. Proven 2026-11-23 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: BindCreateTimeTags
         permissions:
           - resourcemanager.tagValueBindings.create

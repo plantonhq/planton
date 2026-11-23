@@ -18,17 +18,17 @@ spec:
           - billing.budgets.get
           - billing.budgets.update
           - billing.budgets.delete
-        provenance: derived
+        provenance: proven
         reach: billing_account
         privilege: ordinary
         predefined_role: roles/billing.costsManager
-        notes: "Covers google_billing_budget (Pulumi billing.Budget): create on first apply, get on every refresh, update when any field but the billing account changes in place, delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). These are BILLING ACCOUNT permissions -- granted on the account (roles/billing.costsManager or roles/billing.admin contain all four), never on a project. Publishing notifications to the Pub/Sub topic is the Billing service agent's permission on the topic (roles/pubsub.publisher), arranged on the topic, not the runner."
+        notes: "Covers google_billing_budget (Pulumi billing.Budget): create on first apply, get on every refresh, update when any field but the billing account changes in place, delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). These are BILLING ACCOUNT permissions -- granted on the account (roles/billing.costsManager or roles/billing.admin contain all four), never on a project. Publishing notifications to the Pub/Sub topic is the Billing service agent's permission on the topic (roles/pubsub.publisher), arranged on the topic, not the runner. Proven 2026-11-22 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: LinkMonitoringNotificationChannels
         permissions:
           - monitoring.notificationChannels.get
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
         condition:
           spec_field_set: notifications.monitoring_notification_channels
-        notes: "Covers linking existing Cloud Monitoring notification channels to the budget (google_billing_budget all_updates_rule.monitoring_notification_channels; Pulumi billing.Budget allUpdatesRule.monitoringNotificationChannels). Google's budget documentation (https://docs.cloud.google.com/billing/docs/how-to/budgets-notification-recipients) requires roles/monitoring.viewer on the project that stores the channels to link existing channels to a budget; Google checks the caller's read of each channel when the budget is written. Held on the channels' project, which may differ from the billing account's. The channels themselves are created by GcpMonitoringNotificationChannel, never by this kind."
+        notes: "Covers linking existing Cloud Monitoring notification channels to the budget (google_billing_budget all_updates_rule.monitoring_notification_channels; Pulumi billing.Budget allUpdatesRule.monitoringNotificationChannels). Google's budget documentation (https://docs.cloud.google.com/billing/docs/how-to/budgets-notification-recipients) requires roles/monitoring.viewer on the project that stores the channels to link existing channels to a budget; Google checks the caller's read of each channel when the budget is written. Held on the channels' project, which may differ from the billing account's. The channels themselves are created by GcpMonitoringNotificationChannel, never by this kind. Proven 2026-11-22 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."

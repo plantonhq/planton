@@ -22,15 +22,12 @@ spec:
   # regional create failed on GCE_STOCKOUT for its transient default-pool
   # instances (the recurring zonal-capacity class in e2e/README.md).
   #
-  # Awaiting re-proof: the cluster gained the time-of-day recurring
-  # maintenance window (the private-cluster scenario now uses it), rollback-
-  # safe upgrades, and the checkpointing and node-readiness addons; the
-  # earlier live proof predates them. The next proof confirms the new window
-  # form round-trips (the provider normalizes durations, so the re-plan must
-  # be clean) while the upgrade and addon levers stay offline-proven. It
-  # also gained the fleet_membership output (empty without fleet_project);
-  # the GcpGkeFleetScope bind-fleet-registered-cluster scenario proves it
-  # end to end.
+  # Proven live on both engines with the time-of-day recurring maintenance
+  # window (the private-cluster scenario), which round-trips and re-plans
+  # clean although the provider normalizes durations. Rollback-safe upgrades
+  # and the checkpointing and node-readiness addons are proven offline only.
+  # The fleet_membership output (empty without fleet_project) is proven end
+  # to end by the GcpGkeFleetScope bind-fleet-registered-cluster scenario.
   status: green
   validated_provisioners: [pulumi, terraform]
   timeout_minutes: 180

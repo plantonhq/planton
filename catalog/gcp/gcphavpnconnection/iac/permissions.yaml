@@ -19,10 +19,10 @@ spec:
           - compute.externalVpnGateways.delete
           - compute.externalVpnGateways.setLabels
           - compute.externalVpnGateways.use
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Covers google_compute_external_vpn_gateway (Pulumi compute.ExternalVpnGateway), created only when spec.peer.external_gateway is set. create on first apply; get on refresh and import; setLabels when labels change (every other argument is ForceNew); delete on destroy under deletion_policy DELETE; use when a tunnel references it as peer_external_gateway. roles/compute.networkAdmin contains all five."
+        notes: "Covers google_compute_external_vpn_gateway (Pulumi compute.ExternalVpnGateway), created only when spec.peer.external_gateway is set. create on first apply; get on refresh and import; setLabels when labels change (every other argument is ForceNew); delete on destroy under deletion_policy DELETE; use when a tunnel references it as peer_external_gateway. roles/compute.networkAdmin contains all five. Proven 2026-11-22 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: ManageVpnTunnels
         permissions:
           - compute.vpnTunnels.create
@@ -31,16 +31,16 @@ spec:
           - compute.vpnTunnels.setLabels
           - compute.vpnGateways.use
           - compute.routers.use
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Covers google_compute_vpn_tunnel (Pulumi compute.VPNTunnel), one per spec.tunnels entry. create on first apply; get on refresh and import; setLabels when labels change (every other argument is ForceNew and recreates the tunnel); delete on destroy under deletion_policy DELETE; vpnGateways.use on the referenced GcpHaVpnGateway and routers.use on its router at create. For a Google peer, vpnGateways.use is also needed on the PEER gateway (peer_gcp_gateway). roles/compute.networkAdmin contains all of these."
+        notes: "Covers google_compute_vpn_tunnel (Pulumi compute.VPNTunnel), one per spec.tunnels entry. create on first apply; get on refresh and import; setLabels when labels change (every other argument is ForceNew and recreates the tunnel); delete on destroy under deletion_policy DELETE; vpnGateways.use on the referenced GcpHaVpnGateway and routers.use on its router at create. For a Google peer, vpnGateways.use is also needed on the PEER gateway (peer_gcp_gateway). roles/compute.networkAdmin contains all of these. Proven 2026-11-22 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
       - purpose: ManageRouterInterfacesAndPeers
         permissions:
           - compute.routers.get
           - compute.routers.update
           - compute.networks.updatePolicy
-        provenance: derived
+        provenance: proven
         reach: target
         privilege: ordinary
-        notes: "Covers google_compute_router_interface and google_compute_router_peer (Pulumi compute.RouterInterface, compute.RouterPeer), one each per tunnel. Both are nested objects on the Cloud Router: create, update (BGP policy, MD5 key -- which the peer writes into the router's key table), and delete are all routers.update PATCHes, and every refresh is routers.get. Google also checks compute.networks.updatePolicy on the router's VPC network for every router PATCH, so adding or changing an interface or peer is refused without it. roles/compute.networkAdmin contains all three."
+        notes: "Covers google_compute_router_interface and google_compute_router_peer (Pulumi compute.RouterInterface, compute.RouterPeer), one each per tunnel. Both are nested objects on the Cloud Router: create, update (BGP policy, MD5 key -- which the peer writes into the router's key table), and delete are all routers.update PATCHes, and every refresh is routers.get. Google also checks compute.networks.updatePolicy on the router's VPC network for every router PATCH, so adding or changing an interface or peer is refused without it. roles/compute.networkAdmin contains all three. Proven 2026-11-22 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."

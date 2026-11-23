@@ -24,6 +24,7 @@ spec:
   # organization; until then it skips. The runtime template fixture now
   # brings its own network, because the project has no "default" network.
   tier: 1
-  status: pending_proof
+  status: deferred
+  deferred_reason: "Google refuses a service account as a Colab runtime user (\"Can not use service account as runtime user\"), so a lane needs a person's account in the organization named in PLANTON_E2E_GCP_COLAB_RUNTIME_USER, and the E2E identities are all service accounts; offline plans only until a person's account in the test organization is arranged for the lane"
   validated_provisioners: []
   timeout_minutes: 25

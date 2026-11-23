@@ -16,13 +16,10 @@ spec:
   # accepted by the live API + explicit deletionPolicy DELETE) x 2
   # engines, all phases green under the apply-idempotency gate.
   #
-  # Awaiting re-proof: the user gained service_account: an IAM service-account
-  # user wired by reference to a GcpServiceAccount, with both engines deriving
-  # the database username Cloud SQL expects. The new iam-service-account
-  # scenario (a new GcpServiceAccount prerequisite,
-  # cloudsql.iam_authentication=on on the prerequisite instance) proves the
-  # derived name exists under the account's identity and re-plans clean,
-  # beside the BUILT_IN smoke.
+  # Proven live on both engines: the iam-service-account scenario (a
+  # GcpServiceAccount prerequisite, cloudsql.iam_authentication=on on the
+  # prerequisite instance) shows the derived database username exists under
+  # the account's identity and re-plans clean, beside the BUILT_IN user.
   #
   # The minimal scenario's second act rotates the BUILT_IN user's password in
   # place. The iam-service-account scenario carries no second act: an IAM
