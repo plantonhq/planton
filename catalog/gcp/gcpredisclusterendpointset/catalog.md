@@ -82,7 +82,7 @@ When deploying as part of a multi-resource environment, the whole chain — clus
 
 These are the most important decisions when configuring an endpoint set. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**One connection per attachment, per network** — a cluster publishes a discovery attachment, a primary attachment, and (with replicas) a reader attachment; each `endpoints[]` entry is one VPC's group and must carry a connection for each. Reference the cluster's `*_service_attachment` output on each connection.
+**One connection per attachment, per network** — a cluster publishes a discovery attachment and a primary attachment (Google's API also defines a reader attachment, which no cluster measured has published); each `endpoints[]` entry is one VPC's group and must carry a connection for each. Reference the cluster's `*_service_attachment` output on each connection.
 
 **The rule is named twice** — `forwardingRule` takes its `self_link`, `pscConnectionId` takes its `psc_connection_id`; a reference names one output path, so the same rule appears on both fields.
 

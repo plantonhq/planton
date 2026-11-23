@@ -19,14 +19,15 @@ rule. Deploy in that order; destroy in reverse.
 
 ## One connection per attachment, per network
 
-A cluster publishes a discovery attachment and a primary attachment, and
-a reader attachment when it has replicas. Each `endpoints[]` entry is one
+A cluster publishes a discovery attachment and a primary attachment.
+Google's API also defines a reader attachment, but no cluster measured,
+with 0 or 1 replica, has published one. Each `endpoints[]` entry is one
 consumer VPC's group, and Google requires a connection in that group for
 every attachment -- a group with only the discovery connection is
 rejected at apply. The spec cannot count the cluster's attachments, so
 the rule is Google's to enforce; the cluster's three `*_service_attachment`
-outputs tell you which exist (the reader handle is empty without
-replicas).
+outputs tell you which exist (the reader handle reads empty on every
+shape measured).
 
 ## Everything is a reference
 
