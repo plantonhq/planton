@@ -1,6 +1,8 @@
 package module
 
 import (
+	"regexp"
+
 	"github.com/pkg/errors"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/redis"
@@ -31,7 +33,7 @@ func endpointSet(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider)
 		connections := redis.ClusterUserCreatedConnectionsClusterEndpointConnectionArray{}
 		for _, connection := range endpoint.Connections {
 			pscConnection := &redis.ClusterUserCreatedConnectionsClusterEndpointConnectionPscConnectionArgs{
-				ForwardingRule:    pulumi.String(connection.ForwardingRule.GetValue()),
+				ForwardingRule:    pulumi.String(forwardingRulePath(connection.ForwardingRule.GetValue())),
 				PscConnectionId:   pulumi.String(connection.PscConnectionId.GetValue()),
 				Address:           pulumi.String(connection.Address.GetValue()),
 				Network:           pulumi.String(connection.Network.GetValue()),
@@ -78,4 +80,15 @@ func endpointSet(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider)
 	ctx.Export(OpRegion, createdSet.Region)
 
 	return nil
+}
+
+// computeAPIPrefix is a Compute self link's scheme, host and API version.
+var computeAPIPrefix = regexp.MustCompile(`^https://[^/]+/compute/[^/]+/`)
+
+// forwardingRulePath turns a forwarding rule's self link (what a
+// GcpGlobalForwardingRule reference resolves to) into the path Google takes,
+// projects/{project}/regions/{region}/forwardingRules/{name}; a path passes
+// through. Google refuses the self link.
+func forwardingRulePath(rule string) string {
+	return computeAPIPrefix.ReplaceAllString(rule, "")
 }

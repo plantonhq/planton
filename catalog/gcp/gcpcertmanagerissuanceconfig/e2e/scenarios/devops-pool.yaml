@@ -16,7 +16,7 @@ metadata:
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
-    planton.dev/e2e-upgrade-manifest: devops-pool.to.yaml # the in-place update: a label, the one field that is not immutable
+    planton.dev/e2e-upgrade-manifest: devops-pool.to.yaml # the update: a label, which both providers apply by replacing the config
     planton.dev/e2e-prerequisites: "GcpPrivateCaCertificateAuthority"
   tags:
     - planton-e2e

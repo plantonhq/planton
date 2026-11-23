@@ -23,9 +23,9 @@ The grant is a member grant, not counted per config. Two issuance configs over o
 - **Lifetime** — 21 to 30 days. Renewal is automatic, so the only cost of a shorter lifetime is more issuance from the pool.
 - **Rotation window** — Google renews when this percentage of the lifetime has passed, and demands at least 7 days on each side. With 30 days the range is 24–76; with 21 days it is 34–66. Validation computes the rule for any lifetime, so an out-of-range window is refused before deploy.
 
-## Everything but labels replaces
+## Every change replaces
 
-The pool, key algorithm, lifetime, window, and location are all immutable. A change creates a new config, and certificates still naming the old one keep serving until their own renewal. To change policy for live certificates, create a second config, point the certificates at it, then remove the first.
+The pool, key algorithm, lifetime, window, and location are all immutable, and so are the labels: both providers delete and re-create the config for any change, a label from the manifest's metadata included (measured on both engines). A change creates a new config, and certificates still naming the old one keep serving until their own renewal. To change policy for live certificates, create a second config, point the certificates at it, then remove the first.
 
 ## Conventions and gotchas
 

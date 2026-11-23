@@ -68,7 +68,7 @@ spec:
 
 1. **One config per policy, many certificates** — share a config across every certificate with the same key algorithm and lifetime.
 2. **Pick the rotation window from the lifetime** — Google requires renewal at least 7 days after issuance and 7 days before expiry: 34–66 for 21 days, 24–76 for 30 days.
-3. **Treat every field but labels as immutable** — changing the pool, key algorithm, lifetime, or window replaces the config; certificates already issued keep serving until their own renewal.
+3. **Treat every field as immutable, labels included** — any change (the pool, key algorithm, lifetime, window, or a metadata label) deletes and re-creates the config; certificates already issued keep serving until their own renewal.
 4. **Set `deletionPolicy: PREVENT`** while certificates depend on the config; Google also refuses deletion while a certificate references it.
 
 ## Related Kinds

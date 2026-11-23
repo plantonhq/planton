@@ -28,7 +28,11 @@ resource "google_redis_cluster_user_created_connections" "this" {
         for_each = cluster_endpoints.value.connections
         content {
           psc_connection {
-            forwarding_rule    = connections.value.forwarding_rule
+            # Google takes the rule only as its path,
+            # projects/{project}/regions/{region}/forwardingRules/{name}; a
+            # self link (what a GcpGlobalForwardingRule reference resolves to)
+            # is refused, so its API prefix is dropped here.
+            forwarding_rule    = replace(connections.value.forwarding_rule, "/^https://[^/]+/compute/[^/]+//", "")
             psc_connection_id  = connections.value.psc_connection_id
             address            = connections.value.address
             network            = connections.value.network

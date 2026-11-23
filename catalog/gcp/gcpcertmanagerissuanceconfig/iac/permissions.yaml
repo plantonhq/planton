@@ -24,13 +24,12 @@ spec:
         permissions:
           - certificatemanager.certissuanceconfigs.create
           - certificatemanager.certissuanceconfigs.get
-          - certificatemanager.certissuanceconfigs.update
           - certificatemanager.certissuanceconfigs.delete
           - certificatemanager.operations.get
         provenance: derived
         reach: target
         privilege: ordinary
-        notes: Covers google_certificate_manager_certificate_issuance_config (Pulumi certificatemanager.CertificateIssuanceConfig) -- create, read/refresh, in-place label updates (every other argument forces replacement), and destroy. Certificate Manager mutations return long-running operations the provider polls under certificatemanager.operations.get. Issuance from the pool runs as the Certificate Manager service agent (roles/privateca.certificateRequester on the pool, granted by this component before the config), never as the runner; Google also checks the caller's own use of the pool at create (UseCaPool).
+        notes: Covers google_certificate_manager_certificate_issuance_config (Pulumi certificatemanager.CertificateIssuanceConfig) -- create, read/refresh, and destroy. Neither provider updates a config in place -- any change, labels included, deletes and re-creates it (measured on both engines), so no update permission is needed. Certificate Manager mutations return long-running operations the provider polls under certificatemanager.operations.get. Issuance from the pool runs as the Certificate Manager service agent (roles/privateca.certificateRequester on the pool, granted by this component before the config), never as the runner; Google also checks the caller's own use of the pool at create (UseCaPool).
       - purpose: UseCaPool
         permissions:
           - privateca.caPools.use

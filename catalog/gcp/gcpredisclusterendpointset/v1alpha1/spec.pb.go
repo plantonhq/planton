@@ -30,9 +30,11 @@ const (
 // them are outputs of the catalog blocks that built it.
 type GcpRedisClusterEndpointSetConnection struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The consumer-side forwarding rule, as its URI. A GcpGlobalForwardingRule
+	// The consumer-side forwarding rule, as its self link or its path. A GcpGlobalForwardingRule
 	// reference (the regional PSC form: empty scheme, the cluster's service
-	// attachment as target) resolves to its self_link output.
+	// attachment as target) resolves to its self_link output; Google takes
+	// only the path (projects/{project}/regions/{region}/forwardingRules/{name}),
+	// so the modules drop a self link's API prefix.
 	ForwardingRule *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=forwarding_rule,json=forwardingRule,proto3" json:"forwarding_rule,omitempty"`
 	// The PSC connection ID Google assigned to that forwarding rule. The SAME
 	// GcpGlobalForwardingRule as forwarding_rule, referenced on its

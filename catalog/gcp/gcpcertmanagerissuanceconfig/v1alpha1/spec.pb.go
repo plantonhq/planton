@@ -41,9 +41,11 @@ const (
 // needs roles/privateca.certificateRequester on the pool. Google's docs
 // describe both; neither is created by this kind.
 //
-// Every field except labels and deletion_policy is immutable: changing the
-// pool, key algorithm, lifetime, or rotation window replaces the config.
-// Certificates already issued keep serving until their own renewal.
+// Every field except deletion_policy is immutable, the labels Planton stamps
+// from the manifest's metadata included: both providers replace the config
+// on any change (a label change was measured deleting and re-creating it on
+// both engines). Certificates already issued keep serving until their own
+// renewal.
 type GcpCertManagerIssuanceConfigSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The GCP project to create the issuance config in: a literal project ID

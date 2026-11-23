@@ -184,9 +184,11 @@ attachment, all in one consumer VPC.
 
 `string | valueFrom` · required
 
-The consumer-side forwarding rule, as its URI. A GcpGlobalForwardingRule
+The consumer-side forwarding rule, as its self link or its path. A GcpGlobalForwardingRule
 reference (the regional PSC form: empty scheme, the cluster's service
-attachment as target) resolves to its self_link output.
+attachment as target) resolves to its self_link output; Google takes
+only the path (projects/{project}/regions/{region}/forwardingRules/{name}),
+so the modules drop a self link's API prefix.
 
 - references: GcpGlobalForwardingRule (`status.outputs.self_link`)
 - rule: {"required":true}
