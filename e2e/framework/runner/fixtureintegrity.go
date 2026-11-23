@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -100,7 +101,7 @@ func CheckScenarioFixtureIntegrity(repoRoot, kindProvider, kindDir, scenarioPath
 		for _, docPath := range docPaths {
 			findings = append(findings, manifestRefFindings(scenarioPath, dep.ManifestPath, docPath, deployed)...)
 
-			name, err := manifestMetadataName(docPath)
+			name, err := fixtureManifestName(docPath)
 			if err != nil {
 				findings = append(findings, FixtureIntegrityFinding{
 					ScenarioPath: scenarioPath,
@@ -131,6 +132,13 @@ func manifestRefFindings(scenarioPath, reportPath, docPath string, deployed map[
 			ScenarioPath: scenarioPath,
 			ManifestPath: reportPath,
 			Reason:       "run-clock token cannot expand: " + err.Error(),
+		}}
+	}
+	if loadPath, err = withNumericEnvTokens(loadPath); err != nil {
+		return []FixtureIntegrityFinding{{
+			ScenarioPath: scenarioPath,
+			ManifestPath: reportPath,
+			Reason:       "manifest cannot be read: " + err.Error(),
 		}}
 	}
 	manifestObject, err := manifest.LoadManifest(loadPath)
@@ -322,4 +330,48 @@ func withRunClockExpanded(path string) (string, error) {
 	}
 	copyPath := filepath.Join(dir, filepath.Base(path))
 	return copyPath, os.WriteFile(copyPath, []byte(expanded), 0o600)
+}
+
+// numericEnvToken matches the protojson refusal of an owner-arranged
+// ${E2E_ENV:NAME} token standing in a number field (a GitHub App
+// installation id), naming the token.
+var numericEnvToken = regexp.MustCompile(`invalid value for (?:u?int(?:32|64)|s?fixed(?:32|64)|float|double) field \w+: "(\$\{E2E_ENV:[A-Z0-9_]+\})"`)
+
+// withNumericEnvTokens returns a path to the manifest as a lane loads it
+// once its environment tokens expand: a lane writes a number where a number
+// field holds a token, so offline each such token is replaced with 0 until
+// the manifest loads. A token in a string field stays as it is, and a
+// manifest that loads already is returned unchanged.
+func withNumericEnvTokens(path string) (string, error) {
+	for attempt := 0; attempt < 10; attempt++ {
+		_, err := manifest.LoadManifest(path)
+		match := numericEnvToken.FindStringSubmatch(fmt.Sprint(err))
+		if err == nil || match == nil {
+			return path, nil
+		}
+		raw, err := os.ReadFile(path)
+		if err != nil {
+			return "", err
+		}
+		dir, err := os.MkdirTemp("", "planton-e2e-fixture-*")
+		if err != nil {
+			return "", err
+		}
+		next := filepath.Join(dir, filepath.Base(path))
+		if err := os.WriteFile(next, []byte(strings.ReplaceAll(string(raw), match[1], "0")), 0o600); err != nil {
+			return "", err
+		}
+		path = next
+	}
+	return path, nil
+}
+
+// fixtureManifestName reads an install manifest's metadata.name as a lane
+// reads it once the manifest's environment tokens expand.
+func fixtureManifestName(path string) (string, error) {
+	loadable, err := withNumericEnvTokens(path)
+	if err != nil {
+		return "", err
+	}
+	return manifestMetadataName(loadable)
 }

@@ -409,3 +409,29 @@ func findRepoRoot() (string, error) {
 		dir = parent
 	}
 }
+
+// An owner-arranged token in a number field loads offline as a lane loads it
+// once the token expands; the same token in a string field is left as text.
+func TestFixtureIntegrity_NumericEnvTokenLoads(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "connection.yaml")
+	body := `apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudBuildConnection
+metadata:
+  name: c
+spec:
+  location: us-central1
+  connectionId: c
+  githubConfig:
+    appInstallationId: ${E2E_ENV:PLANTON_E2E_GCP_GITHUB_APP_INSTALLATION_ID}
+    authorizerCredential:
+      oauthTokenSecretVersion:
+        value: ${E2E_ENV:PLANTON_E2E_GCP_GITHUB_TOKEN_SECRET_VERSION}
+`
+	if err := os.WriteFile(path, []byte(body), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	name, err := fixtureManifestName(path)
+	if err != nil || name != "c" {
+		t.Fatalf("fixtureManifestName = %q, %v; want c", name, err)
+	}
+}

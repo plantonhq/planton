@@ -15,6 +15,8 @@ metadata:
     e2e-catalog-kind: gcpcloudbuildconnection
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-identity: declared # the kind runs as exactly what its permissions manifest grants
+    planton.dev/e2e-upgrade-manifest: github-connection.to.yaml # the update: an annotation, in place
     planton.dev/e2e-required-env: PLANTON_E2E_GCP_GITHUB_APP_INSTALLATION_ID,PLANTON_E2E_GCP_GITHUB_TOKEN_SECRET_VERSION
   tags:
     - planton-e2e
