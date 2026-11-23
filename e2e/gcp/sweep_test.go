@@ -98,9 +98,26 @@ func sweepProject(ctx context.Context, t *testing.T, project string, harness har
 	}
 	readers := newLiveReaders(ctx, t, opts)
 	var leftovers []string
+	var results []*cloudasset.ResourceSearchResult
 	err = assets.V1.SearchAllResources("projects/"+project).Context(ctx).Pages(ctx, func(page *cloudasset.SearchAllResourcesResponse) error {
-		for _, resource := range page.Results {
-			if standingResource(project, harness, resource) {
+		results = append(results, page.Results...)
+		return nil
+	})
+	if err != nil {
+		t.Fatalf("listing %s's resources through Cloud Asset Inventory: %v", project, err)
+	}
+	// An owner-arranged resource the lanes read between runs (a code host's
+	// token in Secret Manager) says it stands with the label
+	// standingLabel; it and everything under it (a secret's versions) stay.
+	var standingRoots []string
+	for _, resource := range results {
+		if resource.Labels[standingLabel] != "" {
+			standingRoots = append(standingRoots, resource.Name+"/")
+		}
+	}
+	err = func() error {
+		for _, resource := range results {
+			if standingResource(project, harness, resource) || underAny(resource.Name, standingRoots) {
 				continue
 			}
 			if read, ok := readers.lookup(resource.AssetType); ok {
@@ -115,9 +132,9 @@ func sweepProject(ctx context.Context, t *testing.T, project string, harness har
 			leftovers = append(leftovers, fmt.Sprintf("%s: %s %s", project, resource.AssetType, resource.Name))
 		}
 		return nil
-	})
+	}()
 	if err != nil {
-		t.Fatalf("listing %s's resources through Cloud Asset Inventory: %v", project, err)
+		t.Fatalf("reading %s's resources: %v", project, err)
 	}
 
 	crm, err := cloudresourcemanager.NewService(ctx, opts...)
@@ -146,6 +163,11 @@ func sweepProject(ctx context.Context, t *testing.T, project string, harness har
 // creates when an API is turned on. Each entry says why it stands.
 func standingResource(project string, harness harnessAccount, resource *cloudasset.ResourceSearchResult) bool {
 	name := resource.Name
+	if resource.Labels[standingLabel] != "" {
+		// An owner-arranged resource the lanes read between runs; the
+		// label's value says what it is for.
+		return true
+	}
 	switch resource.AssetType {
 	case "cloudresourcemanager.googleapis.com/Project",
 		"serviceusage.googleapis.com/Service",
@@ -656,4 +678,18 @@ func sweepBillingAccount(ctx context.Context, t *testing.T, account, quotaProjec
 		}
 	}
 	return leftovers
+}
+
+// standingLabel marks an owner-arranged resource the lanes read between runs
+// and the sweep leaves in place, with what it is for as the value.
+const standingLabel = "planton-e2e-standing"
+
+// underAny reports whether a resource name sits under one of the roots.
+func underAny(name string, roots []string) bool {
+	for _, root := range roots {
+		if strings.HasPrefix(name, root) {
+			return true
+		}
+	}
+	return false
 }

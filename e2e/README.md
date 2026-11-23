@@ -3170,7 +3170,7 @@ inside such a scenario inherit its declaration.
 | `PLANTON_E2E_VERIFIED_DOMAIN` | a domain verified for the identity (group email addresses, Cloud Run domain mappings) | `GcpCloudIdentityGroup`, `GcpCloudRunDomainMapping` |
 | `PLANTON_E2E_GCP_COLAB_RUNTIME_USER` | the email a Colab Enterprise runtime is assigned to | `GcpColabRuntime` |
 | `PLANTON_E2E_GCP_GITHUB_APP_INSTALLATION_ID` | the Cloud Build GitHub App installed on a test organization or account | `GcpCloudBuildConnection`, `GcpCloudBuildRepository` |
-| `PLANTON_E2E_GCP_GITHUB_TOKEN_SECRET_VERSION` | a Secret Manager secret version holding that account's OAuth token, readable by the Cloud Build service agent | `GcpCloudBuildConnection`, `GcpCloudBuildRepository` |
+| `PLANTON_E2E_GCP_GITHUB_TOKEN_SECRET_VERSION` | a Secret Manager secret version holding that account's OAuth token, readable by the Cloud Build service agent; the secret carries the label `planton-e2e-standing` (its value says what it is for), which the sweep leaves in place with everything under it | `GcpCloudBuildConnection`, `GcpCloudBuildRepository` |
 | `PLANTON_E2E_GCP_GITHUB_REPO_URI` | a repository the installation can read | `GcpCloudBuildRepository` |
 | `PLANTON_E2E_RUNNER_ENDPOINT` | a Planton control plane a runner can join, as `host:port` | `GcpPlantonRunner` |
 | `PLANTON_E2E_RUNNER_TOKEN` | a throwaway runner token that control plane issued | `GcpPlantonRunner` |
