@@ -3,27 +3,17 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpredisclusterendpointset
 spec:
-  # Awaiting the live proof lane. The scenario proves in the harness
-  # project with roles/redis.admin and roles/compute.networkAdmin: the
-  # registry's prerequisite cluster is pinned WITHOUT psc_configs so it
-  # publishes a discovery and a primary service attachment, two reserved
+  # Proven live on both engines (2026-11-23) as the declared identity: the
+  # registry's prerequisite cluster is pinned WITHOUT psc_configs, so it
+  # publishes a discovery and a primary service attachment; two reserved
   # internal addresses and two PSC-form forwarding rules deploy as
-  # extra-instance fixtures on the prerequisite subnet, then the set
-  # registers both connections. Offline bar met: both modules build and
-  # validate, offline plans for the reference manifest and the scenario are
-  # clean on the pinned provider, and the accounting is total. Live facts
-  # the proof lane confirms: (1) a cluster without psc_configs creates and
-  # publishes exactly a discovery and a primary attachment on a zero-replica
-  # cluster (the *_service_attachment handles populate by connection type);
-  # (2) a regional forwarding rule in the PSC form (scheme NONE) accepts a
-  # Redis Cluster service attachment as target and reports a
-  # psc_connection_id; (3) Google accepts the registration with exactly one
-  # connection per attachment and reports each connection ACTIVE; (4) the
-  # set RE-PLANS CLEAN under the apply-idempotency gate on both engines with
-  # project_id left unset (Optional+Computed, sent only when set); (5)
-  # destroy order is set -> rules -> addresses -> cluster -> subnet -> policy
-  # -> network -- a resourceInUseByAnotherResource on teardown means the
-  # fixture chain was listed out of order.
+  # extra-instance fixtures on the prerequisite subnet; then the set
+  # registers both connections, each reported PSC_CONNECTION_STATUS_ACTIVE,
+  # and re-plans clean. What the runs taught: Google leaves the primary
+  # attachment's connection type unset, so GcpRedisCluster now takes the
+  # untyped attachment as the primary one; and Google takes a connection's
+  # forwarding rule only as projects/{project}/regions/{region}/forwardingRules/{name},
+  # so the modules drop a self link's API prefix.
   #
   # A live attempt (2026-11-20) settled two of the PSC rule's shapes: Google
   # wants the reserved address resource (its self link), never a literal IP,
@@ -36,10 +26,6 @@ spec:
   # create doesn't, and Google's audit log can't tell them apart. It carries
   # no second act, as the IAM-member kinds don't.
   tier: 1
-  # Parked (2026-11-22): the Redis cluster fixture (Pulumi) exported an empty
-  # discovery_service_attachment, so the PSC forwarding rule fixture had no target; the
-  # harness resolves the reference (checked offline). Next: read the cluster's
-  # psc_service_attachments live and fix the module's selection.
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 60
