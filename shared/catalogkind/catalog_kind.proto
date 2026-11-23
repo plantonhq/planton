@@ -6209,7 +6209,8 @@ enum CatalogKind {
 
   // 4000–4999: Kubernetes resources, organized in family sub-bands
   // (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts
-  // analytics & ML; 4180–4199 hosts agent sandbox runtimes)
+  // analytics & ML; 4180–4199 hosts agent sandbox runtimes; 4200–4209
+  // hosts AI agent platforms)
   // 4000–4029: Kubernetes building blocks (core API primitives)
   KubernetesNamespace = 4000 [(kind_meta) = {
     provider: kubernetes
@@ -7418,6 +7419,16 @@ enum CatalogKind {
       kind: "CSIDriverConfig"
     }
     service_group: kubernetes_operators_controllers
+  }];
+
+  // 4200–4209: Kubernetes AI agent platforms
+  // KubernetesStigmer installs the Stigmer operator and declares the one
+  // Stigmer it reconciles, so it carries no prerequisite.
+  KubernetesStigmer = 4200 [(kind_meta) = {
+    provider: kubernetes
+    version: "v1alpha1"
+    id_prefix: "k8sstg"
+    service_group: kubernetes_open_source_software
   }];
 
   // 5000–5999: DigitalOcean resources

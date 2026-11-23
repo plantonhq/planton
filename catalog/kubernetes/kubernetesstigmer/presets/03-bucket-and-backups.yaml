@@ -1,0 +1,39 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesStigmer
+metadata:
+  name: my-stigmer
+spec:
+  namespace:
+    value: stigmer
+  version: 0.3.2 # replace with the Stigmer release you validated
+  operator:
+    namespace:
+      value: stigmer-system
+    create_namespace: true
+  owner:
+    email: owner@acme.example # replace
+  runner:
+    model:
+      keys:
+        anthropic_api_key: $secret/anthropic-api-key
+  # Files and the database's archive in a bucket. Backups need cert-manager
+  # on the cluster (the backup plugin needs it; nothing here installs it).
+  object_store:
+    s3:
+      bucket:
+        value: stigmer # create it in the store first
+      endpoint:
+        valueFrom:
+          kind: KubernetesSeaweedFs
+          name: storage
+          fieldPath: status.outputs.s3_endpoint
+      credentials:
+        access_key:
+          access_key_id: stigmer
+          secret_access_key: $secret/stigmer-bucket-secret-key
+  database:
+    bundled:
+      instances: 2 # a primary and a standby
+      backup:
+        schedule: "0 0 2 * * *" # six fields, seconds first, UTC
+        retention: 30d

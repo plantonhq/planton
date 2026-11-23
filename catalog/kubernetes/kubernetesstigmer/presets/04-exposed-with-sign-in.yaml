@@ -1,0 +1,42 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesStigmer
+metadata:
+  name: my-stigmer
+spec:
+  namespace:
+    value: stigmer
+  version: 0.3.2 # replace with the Stigmer release you validated
+  operator:
+    namespace:
+      value: stigmer-system
+    create_namespace: true
+  owner:
+    email: owner@acme.example # replace; their account is created first
+  runner:
+    model:
+      keys:
+        anthropic_api_key: $secret/anthropic-api-key
+  ingress:
+    hostname: stigmer.acme.example # replace
+    class_name: nginx # replace with your IngressClass
+    annotations:
+      nginx.ingress.kubernetes.io/backend-protocol: GRPC
+    tls:
+      issuer:
+        name:
+          valueFrom:
+            kind: KubernetesClusterIssuer
+            name: letsencrypt
+            fieldPath: status.outputs.cluster_issuer_name
+  identity:
+    bundled:
+      sign_up_email_domains:
+        - acme.example # replace; people with these addresses may sign up
+      smtp:
+        host: smtp.acme.example # replace
+        from: stigmer@acme.example # replace
+        starttls: true
+        credentials:
+          login:
+            username: stigmer # replace
+            password: $secret/stigmer-smtp-password

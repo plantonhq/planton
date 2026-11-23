@@ -1800,6 +1800,7 @@ Fields on other kinds that can point at this resource:
 | KubernetesLangfuse | `spec.blobStorage.mediaUpload.target.s3.region` | `status.outputs.region` |
 | KubernetesLangfuse | `spec.blobStorage.batchExport.target.s3.bucket` | `status.outputs.bucket_id` |
 | KubernetesLangfuse | `spec.blobStorage.batchExport.target.s3.region` | `status.outputs.region` |
+| KubernetesStigmer | `spec.objectStore.s3.bucket` | `status.outputs.bucket_id` |
 
 ## See Also
 

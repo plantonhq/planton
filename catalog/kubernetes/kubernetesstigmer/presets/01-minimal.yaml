@@ -1,0 +1,18 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesStigmer
+metadata:
+  name: my-stigmer
+spec:
+  namespace:
+    value: stigmer # must exist; give it a KubernetesNamespace of its own
+  version: 0.3.2 # replace with the Stigmer release you validated
+  operator:
+    namespace:
+      value: stigmer-system # the convention; only the operator runs here
+    create_namespace: true # this resource creates (and owns) it
+  owner:
+    email: owner@acme.example # replace with the person who runs this install
+  runner:
+    model:
+      keys:
+        anthropic_api_key: $secret/anthropic-api-key # a Planton secret reference

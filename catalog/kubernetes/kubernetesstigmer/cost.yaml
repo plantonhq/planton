@@ -1,0 +1,41 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: CatalogKindCostProfile
+metadata:
+  name: kubernetesstigmer
+spec:
+  billing_model: cluster_capacity
+  cost_drivers:
+    - field_path: database
+      sku_meter: cluster CPU and memory reservations, persistent volume storage (GB-month)
+      impact: Left unset, the operator runs Postgres (one instance on a 10Gi volume) and Temporal's four services on the cluster. Your own database and Temporal move that footprint to wherever they run.
+    - field_path: database.bundled.instances
+      sku_meter: cluster CPU and memory reservations, persistent volume storage (GB-month)
+      impact: Each Postgres instance reserves its resources again and claims its own volume; a standby doubles the database's footprint.
+    - field_path: database.bundled.storage
+      sku_meter: persistent volume storage (GB-month)
+      impact: Each instance's volume, billed by the cluster's storage class while it exists. A destroy deletes it with the database.
+    - field_path: server.resources
+      sku_meter: cluster CPU and memory reservations
+      impact: The server's reservation. Empty means the operator's defaults.
+    - field_path: runner.resources
+      sku_meter: cluster CPU and memory reservations
+      impact: The shared runner's reservation; every session runs here unless sandboxes say otherwise.
+    - field_path: sandboxes.driver
+      sku_meter: cluster CPU and memory reservations
+      impact: A per-session driver runs a pod (agentSandbox) or a gVisor actor on a pool of workers (substrate) for each live session, and installs its runtime; sleeping sandboxes reserve nothing until they wake.
+    - field_path: sandboxes.substrate.workers
+      sku_meter: cluster CPU and memory reservations
+      impact: Each worker reserves its resources whether or not sessions run on it; sessions beyond what the pool holds wait for a seat.
+    - field_path: object_store
+      sku_meter: object storage (GB-month, operations)
+      impact: Files, Skills and the database's archive, billed by the store. Retention (database.bundled.backup.retention) bounds the archive.
+    - field_path: server.storage
+      sku_meter: persistent volume storage (GB-month)
+      impact: The server's own volume, 5Gi by default; with no bucket, server.artifacts adds a 20Gi shared volume.
+  estimate_exclusions:
+    - the model calls agents make are billed by the model provider, which this catalog cannot see
+    - the price of reserved CPU, memory and volumes is the target cluster's node and storage economics, which this catalog cannot know
+  notes: "This component creates no cloud SKU of its own: its cost is the share of the cluster the operator and the install it runs reserve, plus the bucket when one is declared. The operator itself is a single small Deployment."

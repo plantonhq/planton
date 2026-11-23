@@ -408,6 +408,12 @@ Fields on other kinds that can point at this resource:
 | KubernetesSolrOperator | `spec.mtls.clientCertSecret` | `status.outputs.secret_name` |
 | KubernetesSolrOperator | `spec.mtls.caCertSecret` | `status.outputs.secret_name` |
 | KubernetesStatefulSet | `spec.pod.imagePullSecrets` | `spec.name` |
+| KubernetesStigmer | `spec.runner.model.existingSecretName` | `status.outputs.secret_name` |
+| KubernetesStigmer | `spec.temporal.external.tls.existingSecret.name` | `status.outputs.secret_name` |
+| KubernetesStigmer | `spec.temporal.external.apiKey.existingSecret.name` | `status.outputs.secret_name` |
+| KubernetesStigmer | `spec.objectStore.s3.credentials.existingSecretName` | `status.outputs.secret_name` |
+| KubernetesStigmer | `spec.identity.bundled.smtp.credentials.existingSecretName` | `status.outputs.secret_name` |
+| KubernetesStigmer | `spec.enterprise.license.existingSecret.name` | `status.outputs.secret_name` |
 
 ## See Also
 

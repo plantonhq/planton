@@ -2238,7 +2238,8 @@ const (
 	CatalogKind_GcpDeployCustomTargetType CatalogKind = 3262
 	// 4000–4999: Kubernetes resources, organized in family sub-bands
 	// (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts
-	// analytics & ML; 4180–4199 hosts agent sandbox runtimes)
+	// analytics & ML; 4180–4199 hosts agent sandbox runtimes; 4200–4209
+	// hosts AI agent platforms)
 	// 4000–4029: Kubernetes building blocks (core API primitives)
 	CatalogKind_KubernetesNamespace      CatalogKind = 4000
 	CatalogKind_KubernetesDeployment     CatalogKind = 4001
@@ -2524,6 +2525,10 @@ const (
 	// ate.dev definition the CSIDriverConfig is an instance of, and the API
 	// server and node agent that look a driver up in it.
 	CatalogKind_KubernetesAgentSubstrateCsiDriverConfig CatalogKind = 4193
+	// 4200–4209: Kubernetes AI agent platforms
+	// KubernetesStigmer installs the Stigmer operator and declares the one
+	// Stigmer it reconciles, so it carries no prerequisite.
+	CatalogKind_KubernetesStigmer CatalogKind = 4200
 	// 5000–5999: DigitalOcean resources
 	CatalogKind_DigitalOceanApp               CatalogKind = 5000
 	CatalogKind_DigitalOceanBucket            CatalogKind = 5001
@@ -3598,6 +3603,7 @@ var (
 		4191:  "KubernetesAgentSubstrateWorkerPool",
 		4192:  "KubernetesAgentSubstrateSandboxConfig",
 		4193:  "KubernetesAgentSubstrateCsiDriverConfig",
+		4200:  "KubernetesStigmer",
 		5000:  "DigitalOceanApp",
 		5001:  "DigitalOceanBucket",
 		5002:  "DigitalOceanContainerRegistry",
@@ -4454,6 +4460,7 @@ var (
 		"KubernetesAgentSubstrateWorkerPool":             4191,
 		"KubernetesAgentSubstrateSandboxConfig":          4192,
 		"KubernetesAgentSubstrateCsiDriverConfig":        4193,
+		"KubernetesStigmer":                              4200,
 		"DigitalOceanApp":                                5000,
 		"DigitalOceanBucket":                             5001,
 		"DigitalOceanContainerRegistry":                  5002,
@@ -5037,7 +5044,7 @@ const file_shared_catalogkind_catalog_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\x9c\x9e\x03\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*ў\x03\n" +
 	"\vCatalogKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12`\n" +
 	"\x16TestCatalogKindGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tckgJ,\n" +
@@ -5850,7 +5857,8 @@ const file_shared_catalogkind_catalog_kind_proto_rawDesc = "" +
 	"'KubernetesAgentSubstrateCsiDriverConfig\x10\xe1 \x1aB\xa2\xf7\x04>\b\x13\x12\bv1alpha1\"\n" +
 	"k8sasubcsi:\x02\xde B\x1d\n" +
 	"\n" +
-	"ate.dev/v1\x12\x0fCSIDriverConfigP\x91\x03\x120\n" +
+	"ate.dev/v1\x12\x0fCSIDriverConfigP\x91\x03\x123\n" +
+	"\x11KubernetesStigmer\x10\xe8 \x1a\x1b\xa2\xf7\x04\x17\b\x13\x12\bv1alpha1\"\x06k8sstgP\x92\x03\x120\n" +
 	"\x0fDigitalOceanApp\x10\x88'\x1a\x1a\xa2\xf7\x04\x16\b\x11\x12\bv1alpha1\"\x05doappP\xf6\x03\x123\n" +
 	"\x12DigitalOceanBucket\x10\x89'\x1a\x1a\xa2\xf7\x04\x16\b\x11\x12\bv1alpha1\"\x05dobktP\xf8\x03\x12=\n" +
 	"\x1dDigitalOceanContainerRegistry\x10\x8a'\x1a\x19\xa2\xf7\x04\x15\b\x11\x12\bv1alpha1\"\x04docrP\xfa\x03\x12=\n" +

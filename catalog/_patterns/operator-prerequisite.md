@@ -15,6 +15,8 @@ kinds:
   - KubernetesAgentSubstrateSandboxConfig
   - KubernetesAgentSubstrateCsiDriverConfig
   - KubernetesAgentSubstrate
+  - KubernetesStigmer
+  - KubernetesCnpgBarmanCloudPlugin
 ---
 
 # Operator Prerequisite: the Controller a Custom-Resource Kind Needs
@@ -68,6 +70,10 @@ shared-cluster layer, and its own namespace is the sole-tenant case of
 [namespace-ownership](namespace-ownership.md) (`createNamespace: true` is
 correct there). Application environments declare the CR kinds; they never
 declare their own operator.
+
+## An operator that installs its own prerequisites
+
+KubernetesStigmer inverts the rule: its operator installs the operators its declaration needs (CloudNativePG, the Barman Cloud backup plugin, agent-sandbox, Agent Substrate) when the cluster lacks them, and leaves a copy someone else installed alone. Only order can go wrong. If the catalog's KubernetesCloudNativePgOperator, KubernetesCnpgBarmanCloudPlugin, KubernetesAgentSandboxController or KubernetesAgentSubstrate deploys after Stigmer's operator installed its own copy, the catalog's kind finds that copy and refuses it. So when an environment holds them, give the KubernetesStigmer a `depends_on` relationship to each: they deploy first, Stigmer's operator uses them, and a destroy of Stigmer never removes them.
 
 ## On the diagram
 

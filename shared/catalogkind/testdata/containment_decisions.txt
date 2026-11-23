@@ -758,6 +758,7 @@ contained dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolrSpec.name
 contained dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperatorSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperatorSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesstatefulset.v1alpha1.KubernetesStatefulSetSpec.namespace -> KubernetesNamespace
+contained dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesstrimzikafkaoperator.v1alpha1.KubernetesStrimziKafkaOperatorSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetessuperset.v1alpha1.KubernetesSupersetSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetestcproute.v1alpha1.KubernetesTcpRouteSpec.namespace -> KubernetesNamespace
@@ -1079,3 +1080,4 @@ exempt    dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcp
 exempt    dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.key_ring -> GcpKmsKeyRing
 exempt    dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.project -> GcpProject
 exempt    dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacServiceAccountSubject.namespace -> KubernetesNamespace
+exempt    dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperator.namespace -> KubernetesNamespace

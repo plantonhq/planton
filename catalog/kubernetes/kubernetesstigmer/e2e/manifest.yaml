@@ -1,0 +1,95 @@
+# A complete install for the reference page and the e2e framework: the
+# operator in its own namespace, files and backups in an S3-compatible
+# bucket, a front door with a certificate cert-manager issues, the bundled
+# sign-in with sign-up for one domain, and each session in a sandbox of its
+# own. Every reference is written as a literal, as the e2e manifest must be.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesStigmer
+metadata:
+  name: stigmer
+spec:
+  namespace:
+    value: stigmer
+  version: 0.3.2
+  operator:
+    namespace:
+      value: stigmer-system
+    create_namespace: true
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        memory: 512Mi
+    log_level: info
+  owner:
+    email: owner@acme.example
+    name: Priya
+  server:
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+    storage:
+      size: 5Gi
+    help:
+      url: https://help.acme.example/stigmer
+      label: Ask the platform team
+    internal_accounts:
+      - "*@acme.example"
+  runner:
+    model:
+      keys:
+        anthropic_api_key: sk-ant-example-not-a-real-key
+    storage:
+      size: 10Gi
+  database:
+    bundled:
+      instances: 2
+      storage:
+        size: 20Gi
+      backup:
+        schedule: "0 0 2 * * *"
+        retention: 30d
+  object_store:
+    s3:
+      bucket:
+        value: stigmer
+      endpoint:
+        value: http://seaweedfs-s3.storage.svc.cluster.local:8333
+      credentials:
+        access_key:
+          access_key_id: stigmer
+          secret_access_key: example-secret-access-key
+  ingress:
+    hostname: stigmer.acme.example
+    class_name: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/backend-protocol: GRPC
+    tls:
+      issuer:
+        name:
+          value: letsencrypt
+        kind: ClusterIssuer
+  identity:
+    bundled:
+      sign_up_email_domains:
+        - acme.example
+      smtp:
+        host: smtp.acme.example
+        from: stigmer@acme.example
+        starttls: true
+        credentials:
+          login:
+            username: stigmer
+            password: example-smtp-password
+  sandboxes:
+    driver: agentSandbox
+    idle_seconds: 300
+    agent_sandbox:
+      egress_allow_cidrs:
+        - 10.20.0.0/16
+  prerequisites:
+    postgres_operator: auto
+    postgres_backup_plugin: auto
+    agent_sandbox: auto

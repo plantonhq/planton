@@ -2114,6 +2114,8 @@ Fields on other kinds that can point at this resource:
 | KubernetesOpenFga | `spec.datastore.postgres.host` | `status.outputs.rw_service` |
 | KubernetesOpenFga | `spec.datastore.postgres.passwordSecret.secretName` | `status.outputs.password_secret.name` |
 | KubernetesOpenFga | `spec.datastore.mysql.passwordSecret.secretName` | `status.outputs.password_secret.name` |
+| KubernetesStigmer | `spec.database.external.host` | `status.outputs.rw_service` |
+| KubernetesStigmer | `spec.database.external.password.existingSecret.name` | `status.outputs.password_secret.name` |
 | KubernetesSuperset | `spec.metadataDatabase.host` | `status.outputs.rw_service` |
 | KubernetesSuperset | `spec.metadataDatabase.passwordSecret.secretName` | `status.outputs.password_secret.name` |
 | KubernetesTemporal | `spec.database.postgres.host` | `status.outputs.rw_service` |

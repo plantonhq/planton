@@ -1,0 +1,176 @@
+# Least-privilege permissions the IaC runner's Kubernetes principal needs to
+# provision, update, and destroy this component with the platform modules.
+# Every entry is `derived` (static analysis of the module sources, the two
+# cluster-side scripts, and the stigmer-operator 0.3.2 chart's template
+# census: crd.yaml, deployment.yaml, rbac.yaml, serviceaccount.yaml) until
+# the live capture lane upgrades it to `proven`. Schema:
+# iac/catalogkindpermissions/v1.
+#
+# NOTE the asymmetry with what the OPERATOR ITSELF needs: the chart grants the
+# operator a broad ClusterRole (it installs prerequisites and runs an entire
+# install). The runner's principal only needs to CREATE that grant, which
+# Kubernetes allows a principal that does not hold it only with the escalate
+# verb on the role kind and the bind verb on the binding kind.
+apiVersion: iac.planton.dev/v1
+kind: CatalogKindPermissions
+metadata:
+  name: kubernetesstigmer
+spec:
+  kubernetes:
+    rules:
+      - api_groups:
+          - ""
+        resources:
+          - namespaces
+        verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: true
+        provenance: derived
+        notes: The operator's namespace, created and deleted with operator.create_namespace. get and list also serve the preflight (both namespaces must exist and be owned as declared) and the cleanup wait (sandbox namespaces the operator stamps); watch serves the Pulumi provider's deletion await.
+      - api_groups:
+          - apiextensions.k8s.io
+        resources:
+          - customresourcedefinitions
+        verbs:
+          - get
+          - list
+          - create
+          - update
+          - patch
+        cluster_scoped: true
+        provenance: derived
+        notes: The stigmers.stigmer.ai definition, a template of the chart's release that Helm keeps on uninstall (helm.sh/resource-policy keep), so delete is never exercised. get and list also serve the preflight (whose Helm release owns it) and the cleanup wait (which prerequisite definitions remain, and whether the operator stamped them).
+      - api_groups:
+          - ""
+        resources:
+          - secrets
+        verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: Helm's release-state Secret in the operator's namespace, the Secrets this resource writes in the Stigmer's namespace (the model key, the bucket's key pair, the database password, Temporal's key and certificates, the SMTP login, the license, secret extra settings), and the restore check's read of stigmer-keys. watch serves the Pulumi provider's deletion await.
+      - api_groups:
+          - ""
+        resources:
+          - configmaps
+        verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: The restore check's ConfigMap (stigmer-keys-check) on both engines, and on Pulumi the cleanup marker (stigmer-cleanup-wait), in the Stigmer's namespace. watch serves the Pulumi provider's deletion await.
+      - api_groups:
+          - ""
+        resources:
+          - serviceaccounts
+        verbs:
+          - get
+          - list
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: The chart's ServiceAccount for the operator pod (serviceaccount.yaml).
+      - api_groups:
+          - apps
+        resources:
+          - deployments
+        verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: The chart's operator Deployment (deployment.yaml), and the cleanup wait's read of its ready replicas.
+      - api_groups:
+          - apps
+        resources:
+          - replicasets
+        verbs:
+          - get
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Read-only, for the release's readiness wait -- Helm judges a Deployment ready by reading its ReplicaSets and their Pods.
+      - api_groups:
+          - ""
+        resources:
+          - pods
+        verbs:
+          - get
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Read-only, for the release's readiness wait, and for the cleanup wait, which waits for the database's pods (cnpg.io/cluster) to stop.
+      - api_groups:
+          - rbac.authorization.k8s.io
+        resources:
+          - clusterroles
+          - clusterrolebindings
+        verbs:
+          - get
+          - create
+          - update
+          - patch
+          - delete
+          - escalate
+          - bind
+        cluster_scoped: true
+        provenance: derived
+        notes: The chart's ClusterRole and ClusterRoleBinding (rbac.yaml), named after the release. escalate and bind because the operator's role grants far more than the installer holds.
+      - api_groups:
+          - stigmer.ai
+        resources:
+          - stigmers
+        verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: The Stigmer this resource declares, the preflight's read of the namespace's Stigmers (foreign installs, the running version), and the scripts' reads. watch serves the Pulumi provider's deletion await.
+      - api_groups:
+          - postgresql.cnpg.io
+          - barmancloud.cnpg.io
+          - agents.x-k8s.io
+          - ate.dev
+        resources:
+          - clusters
+          - objectstores
+          - sandboxes
+          - workerpools
+        verbs:
+          - get
+          - list
+        cluster_scoped: false
+        provenance: derived
+        notes: Read-only, for the cleanup wait -- this Stigmer's database Cluster and backup ObjectStore, and whether any install still holds objects of each prerequisite the operator would otherwise remove.

@@ -851,6 +851,7 @@ go_library(
         "//catalog/kubernetes/kubernetessolroperator/v1alpha1",
         "//catalog/kubernetes/kubernetessparkoperator/v1alpha1",
         "//catalog/kubernetes/kubernetesstatefulset/v1alpha1",
+        "//catalog/kubernetes/kubernetesstigmer/v1alpha1",
         "//catalog/kubernetes/kubernetesstorageclass/v1alpha1",
         "//catalog/kubernetes/kubernetesstrimzikafkaoperator/v1alpha1",
         "//catalog/kubernetes/kubernetessuperset/v1alpha1",

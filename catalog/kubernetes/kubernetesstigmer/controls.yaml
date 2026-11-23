@@ -1,0 +1,98 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the platform modules. Schema:
+# compliance/catalogkindcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: CatalogKindControlProfile
+metadata:
+  name: kubernetesstigmer
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: module_default
+        reference: Stigmer's server encrypts every credential it stores with STIGMER_ENCRYPTION_KEY, which the operator mints into the stigmer-keys Secret; volumes and the bucket rely on the cluster's storage and the store's own encryption.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: The encryption key is minted by Stigmer's operator into a Kubernetes Secret; customer-managed keys apply to the cluster's etcd and storage encryption and to the bucket's, owned outside this component.
+    - control_id: enc-in-transit
+      status: configurable
+      field_path: ingress
+      evidence:
+        type: spec_default
+        reference: The front door requires TLS (ingress.tls, a certificate you keep or one cert-manager issues) or a Gateway whose HTTPS listener holds it; without ingress the install is reached by port-forward. Your own Postgres and Temporal take TLS through database.external.ssl_mode and temporal.external.tls.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: module_default
+        reference: Without ingress the server is a ClusterIP Service reached by port-forward. A hostname exposes it, and then the bundled sign-in runs unless server.allow_unauthenticated_exposure says, on purpose, to sign nobody in.
+    - control_id: restricted-ingress
+      status: configurable
+      field_path: server.egress
+      evidence:
+        type: spec_default
+        reference: server.egress.fenced limits the server's outbound calls; per-session sandboxes run behind a default-deny fence that admits the server, the bucket, DNS, the public internet and sandboxes.agent_sandbox.egress_allow_cidrs. Fences need a CNI that enforces NetworkPolicy.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: Web application firewalls belong to the ingress controller or Gateway that serves the hostname, outside this component.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: module_default
+        reference: The chart ships the operator's ClusterRole and ClusterRoleBinding as fixed documents. Inside Stigmer, the bundled sign-in or your own issuer authenticates people, and Stigmer's own organization roles authorize them.
+      notes: The operator's role is necessarily broad -- it installs prerequisites and runs an entire install across namespaces by design.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: Stigmer's workloads hold no cloud identity of their own here -- the bucket is reached with the key pair in object_store.s3.credentials, which only the server and the database's backups read; runners get short-lived signed URLs.
+    - control_id: no-legacy-auth
+      status: enforced_by_default
+      evidence:
+        type: module_default
+        reference: Sign-in is OpenID Connect (the bundled sign-in or identity.oidc); runners authenticate with tokens signed by STIGMER_RUNNER_TOKEN_KEY. No static shared passwords are exposed to people.
+    - control_id: strong-user-auth
+      status: configurable
+      field_path: identity
+      evidence:
+        type: spec_default
+        reference: identity.oidc delegates sign-in to your own issuer and its policies (multi-factor included); the bundled sign-in verifies sign-ups by email when sign_up_email_domains is set. Enterprise requires identity.oidc.
+    - control_id: audit-logging
+      status: configurable
+      field_path: enterprise.access_history_retention_days
+      evidence:
+        type: spec_default
+        reference: Stigmer Enterprise keeps an access history, retained for enterprise.access_history_retention_days (every entry when unset). Every change this component makes is a Kubernetes API operation, captured by the cluster's audit policy.
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: No monitoring seam is modeled -- the install's health is its status (phase, components, and the Ready sentence status_command shows), and its workloads are watched by the cluster's workload monitoring.
+    - control_id: backup-recovery
+      status: configurable
+      field_path: database.bundled.backup
+      evidence:
+        type: spec_default
+        reference: With object_store declared, the bundled database archives every change to the bucket from its first minute and takes a full backup on database.bundled.backup.schedule; database.bundled.recover_from restores a new install from it, refused until the source install's keys Secret is present.
+      notes: A restore is readable only with the stigmer-keys Secret, which keys_export_command saves.
+    - control_id: backup-retention-policy
+      status: configurable
+      field_path: database.bundled.backup.retention
+      evidence:
+        type: spec_default
+        reference: Backups and the archive are kept for database.bundled.backup.retention (30d when unset).
+    - control_id: multi-zone-ha
+      status: configurable
+      field_path: database.bundled.instances
+      evidence:
+        type: spec_default
+        reference: database.bundled.instances runs standbys beside the primary; operator.replicas runs leader-elected operator standbys.
+    - control_id: deletion-protection
+      status: enforced_by_default
+      evidence:
+        type: module_default
+        reference: The modules never create or delete the Stigmer's namespace, and the operator keeps stigmer-keys and the bucket's archive when the Stigmer is deleted, so a destroy never loses what a restore needs. A version below the one the server runs is refused at plan time.
+    - control_id: managed-patching
+      status: configurable
+      field_path: version
+      evidence:
+        type: spec_default
+        reference: version is required and never defaulted, so upgrades are deliberate; the operator backs the database up before every upgrade when backups are on, and holds the upgrade while the backup fails.

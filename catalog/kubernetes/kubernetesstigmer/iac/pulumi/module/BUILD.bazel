@@ -1,0 +1,56 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "module",
+    srcs = [
+        "gates.go",
+        "locals.go",
+        "main.go",
+        "outputs.go",
+        "preflight.go",
+        "render.go",
+        "scripts.go",
+        "vars.go",
+    ],
+    importpath = "github.com/plantonhq/planton/catalog/kubernetes/kubernetesstigmer/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//catalog/kubernetes",
+        "//catalog/kubernetes/kubernetesstigmer/v1alpha1",
+        "//pkg/failure",
+        "//pkg/iac/pulumi/pulumimodule/iacinput",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/containerenv",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/workloadowner",
+        "//shared/catalogkind",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/apiextensions",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/core/v1:core",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/helm/v3:helm",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/meta/v1:meta",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+        "@io_k8s_apimachinery//pkg/api/errors",
+        "@io_k8s_apimachinery//pkg/apis/meta/v1:meta",
+        "@io_k8s_apimachinery//pkg/apis/meta/v1/unstructured",
+        "@io_k8s_apimachinery//pkg/runtime/schema",
+        "@io_k8s_client_go//dynamic",
+    ],
+)
+
+go_test(
+    name = "module_test",
+    srcs = [
+        "parity_test.go",
+        "render_test.go",
+    ],
+    embed = [":module"],
+    deps = [
+        "//catalog/kubernetes",
+        "//catalog/kubernetes/kubernetesstigmer/v1alpha1",
+        "//pkg/iac/tofu/generators",
+        "//shared",
+        "//shared/foreignkey/v1:foreignkey",
+        "@io_k8s_sigs_yaml//:yaml",
+    ],
+)

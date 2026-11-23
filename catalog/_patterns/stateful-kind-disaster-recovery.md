@@ -9,6 +9,7 @@ kinds:
   - KubernetesMongodb
   - KubernetesOpenBao
   - KubernetesPlantonPlatform
+  - KubernetesStigmer
 ---
 
 # Stateful Kind Disaster Recovery: the Backup Store, the Identity, and the Restore
@@ -370,6 +371,8 @@ since — change the declaration to restore deliberately; never delete the
 object to "clean up". PostgreSQL's recovery is the cluster's bootstrap: it
 runs once, when the cluster is first created, and a second recovery is a
 second cluster.
+
+Stigmer, the AI agent platform, follows the same shape with one more piece. With an `object_store`, its bundled database archives to the bucket from its first minute; a fresh install declares `database.bundled.recover_from` with the source's archive name. Every record it stores is sealed with the keys in the `stigmer-keys` Secret, which the operator keeps through a destroy and mints anew only when it is missing. So the step that stays yours is the keys: save them with the kind's `keys_export_command` while the source runs, and apply that file in the new namespace before the restore. A KubernetesStigmer refuses to declare a restore until the keys are there, in one sentence that names the file.
 
 ## When not to use this
 

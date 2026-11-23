@@ -1,0 +1,1702 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesstigmer.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/kubernetes/container_env.proto";
+import "catalog/kubernetes/core_v1_api.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+/**
+ * **KubernetesStigmerSpec** installs Stigmer, the open-source AI agent
+ * platform, on a Kubernetes cluster: the Stigmer operator (the
+ * `stigmer-operator` Helm chart, oci://ghcr.io/stigmer/charts) and the one
+ * `stigmer.ai/v1 Stigmer` resource it reconciles into a running install (the
+ * server, the shared runner, Postgres through CloudNativePG, Temporal, the
+ * front door, sign-in and per-session sandboxes, each only when declared).
+ *
+ * WHY ONE KIND: Stigmer allows one operator and one Stigmer per cluster, and
+ * the operator's version IS Stigmer's version (the resource has no version
+ * field of its own). So the version is declared, upgraded and removed in the
+ * one place the install is declared. A cluster already running Stigmer's
+ * operator, or a Stigmer this kind did not declare, is refused before
+ * anything is applied.
+ *
+ * WHAT THE MODULES DO, in order: create the operator's namespace when asked;
+ * install the chart; write the Secrets this spec gives values for (the model
+ * key, the bucket's key pair, the database password, SMTP credentials, the
+ * license, Temporal's key and certificates, extra secret settings) under the
+ * exact key names the operator reads, and only the keys declared; check that
+ * a restore has the encryption keys it needs; declare the Stigmer. Keys this
+ * spec leaves unset are not rendered, so the operator's own defaults stay
+ * authoritative.
+ *
+ * DESTROY removes the Stigmer first, then waits, bounded, for the operator's
+ * own cleanup (the bundled database and its volumes, the sandbox namespace,
+ * and the prerequisites it installed: Agent Substrate, agent-sandbox, the
+ * Barman Cloud plugin, CloudNativePG), then removes the Secrets and the
+ * chart. If the operator cannot finish (no ready replica, or the wait runs
+ * out), the destroy continues and prints what stays on the cluster and the
+ * commands that remove it. The operator keeps three things on purpose: the
+ * keys Secret `stigmer-keys` (so a backup stays restorable), the bucket's
+ * archive, and an issued certificate. The chart keeps the `stigmers.stigmer.ai`
+ * definition (`helm.sh/resource-policy: keep`).
+ *
+ * KEEP THE KEYS: `stigmer-keys` holds the encryption key every stored secret
+ * and every backup is sealed with. Deleting the Stigmer's namespace deletes
+ * it, and with it the ability to read any backup. Save it outside the
+ * cluster with `keys_export_command` (an output) before you delete the
+ * namespace or the cluster.
+ *
+ * Validated against Stigmer 0.3.2.
+ */
+message KubernetesStigmerSpec {
+  /**
+   * The namespace the Stigmer lives in: its server, runner, database,
+   * Temporal and Secrets, and the keys Secret the operator keeps. It must
+   * already exist; this kind never creates or deletes it, because deleting it
+   * would delete the encryption keys and make every backup unreadable. Give it
+   * a KubernetesNamespace of its own, or name one you keep.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  /**
+   * The Stigmer version: the chart version, which is also the operator's and
+   * the server's version (chart 0.3.2 runs Stigmer v0.3.2). Exact semver, at
+   * 0.3.1 or later: 0.3.0 was never published as a chart. There is no default
+   * on purpose: a default that moved with catalog updates would upgrade a
+   * running install on an ordinary re-apply. Moving it below the version the
+   * server runs is refused before anything is applied, because Stigmer's
+   * server refuses to start on a database a newer version migrated; go back by
+   * restoring a backup instead. Released versions:
+   * https://github.com/stigmer/stigmer/releases
+   */
+  string version = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "version.semver"
+      message: "version must be an exact Stigmer release such as \"0.3.2\": the chart, the operator and the server share it, and a range or a leading \"v\" names no chart"
+      expression: "this.matches('^[0-9]+\\\\.[0-9]+\\\\.[0-9]+$')"
+    },
+    (buf.validate.field).cel = {
+      id: "version.minimum"
+      message: "version must be 0.3.1 or later: Stigmer's operator chart starts at 0.3.1"
+      expression: "!this.matches('^0\\\\.([0-2]\\\\.[0-9]+|3\\\\.0)$')"
+    }
+  ];
+
+  /**
+   * The operator: where it runs and how its chart is tuned.
+   */
+  KubernetesStigmerOperator operator = 3 [(buf.validate.field).required = true];
+
+  /**
+   * Where Stigmer's own images (server, runner, sandboxes) are pulled from.
+   * The tag is always `version`.
+   */
+  KubernetesStigmerImage image = 4;
+
+  /**
+   * The person who runs this install. With sign-in on, they own the
+   * organization (the bundled sign-in creates their account first); with it
+   * off, every action is attributed to them. Required whenever the bundled
+   * sign-in is on.
+   */
+  KubernetesStigmerOwner owner = 5;
+
+  /**
+   * The Stigmer server.
+   */
+  KubernetesStigmerServer server = 6;
+
+  /**
+   * The shared runner: the worker that runs agents beside the server, and
+   * the model key agents call their model with.
+   */
+  KubernetesStigmerRunner runner = 7;
+
+  /**
+   * Where Stigmer keeps its records. Unset: the operator runs Postgres for
+   * you (through CloudNativePG, which it installs when missing).
+   */
+  KubernetesStigmerDatabase database = 8;
+
+  /**
+   * The workflow engine Stigmer's runs execute on. Unset: the operator runs
+   * Temporal for you on the bundled database.
+   */
+  KubernetesStigmerTemporal temporal = 9;
+
+  /**
+   * The bucket Stigmer keeps its files in: what a run stores beside its
+   * record, Skills, and the database's archive. Declared, the server and the
+   * runner share no disk, runners read and write files through short-lived
+   * URLs without ever holding the bucket's keys, and the bundled database
+   * archives to the bucket from its first minute. Unset: files live on a
+   * volume the server and the shared runner share. Backups, restores and
+   * per-session sandboxes all need it.
+   */
+  KubernetesStigmerObjectStore object_store = 10;
+
+  /**
+   * The front door: the one hostname people reach Stigmer at, for the
+   * console, the API, sign-in and files. Unset: the install is reached by
+   * port-forward (`port_forward_command`).
+   */
+  KubernetesStigmerIngress ingress = 11;
+
+  /**
+   * How people sign in. Unset on an install with a front door: the operator
+   * runs the bundled sign-in. Unset on one without: the server signs nobody
+   * in and every caller acts as the owner, which is safe only while the
+   * install is reachable from inside the cluster.
+   */
+  KubernetesStigmerIdentity identity = 12;
+
+  /**
+   * Stigmer Enterprise, under a license.
+   */
+  KubernetesStigmerEnterprise enterprise = 13;
+
+  /**
+   * Where engineers' agents run: on the shared runner beside the server, or
+   * each session in a sandbox of its own.
+   */
+  KubernetesStigmerSandboxes sandboxes = 14;
+
+  /**
+   * Which cluster-level operators Stigmer's operator may install when they
+   * are missing. A copy someone else installed is always left alone.
+   */
+  KubernetesStigmerPrerequisites prerequisites = 15;
+
+  /**
+   * Lets one upgrade proceed without the backup the operator takes first.
+   * With backups on, the operator backs the database up before it rolls the
+   * server to a new version, and holds the upgrade while that backup fails.
+   * Set this to the same value as `version` to release that one held upgrade
+   * without a backup (it becomes the `stigmer.ai/upgrade-without-backup`
+   * annotation). It must equal `version`: remove it after the upgrade, so the
+   * next upgrade is backed up again.
+   */
+  string upgrade_without_backup_to = 16 [(buf.validate.field).cel = {
+    id: "upgrade_without_backup_to.format"
+    message: "upgrade_without_backup_to must be an exact Stigmer release such as \"0.3.2\""
+    expression: "this == '' || this.matches('^[0-9]+\\\\.[0-9]+\\\\.[0-9]+$')"
+  }];
+
+  option (buf.validate.message).cel = {
+    id: "spec.upgrade_without_backup_to.matches_version"
+    message: "upgrade_without_backup_to releases the upgrade to version without a backup, so it must equal version; remove it once the upgrade is done, so the next one is backed up"
+    expression: "this.upgrade_without_backup_to == '' || this.upgrade_without_backup_to == this.version"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.operator_namespace.not_created_in_stigmer_namespace"
+    message: "operator.create_namespace creates operator.namespace and deletes it on destroy, and namespace names the same namespace, where the encryption keys live: deleting it would make every backup unreadable. Install the operator in a namespace of its own (stigmer-system by convention), or turn operator.create_namespace off"
+    expression: "!has(this.operator) || !this.operator.create_namespace || !has(this.operator.namespace) || !has(this.namespace) || this.operator.namespace.value == '' || this.operator.namespace.value != this.namespace.value"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.database.external_needs_temporal_external"
+    message: "database.external names your own Postgres, and Stigmer's operator does not create Temporal's databases on a Postgres it does not run: bring your own Temporal too (temporal.external), or let the operator run the database"
+    expression: "!has(this.database) || !has(this.database.external) || (has(this.temporal) && has(this.temporal.external))"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.enterprise.needs_oidc"
+    message: "Stigmer Enterprise signs every caller in, and a licensed server refuses to boot without sign-in: set identity.oidc"
+    expression: "!has(this.enterprise) || (has(this.identity) && has(this.identity.oidc))"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.enterprise.temporal_must_authenticate"
+    message: "under a Stigmer Enterprise license, temporal.external must authenticate: whoever reaches a plaintext Temporal can start work on the runner's queue, and a licensed install serves many organizations. Set temporal.external.tls or temporal.external.api_key"
+    expression: "!has(this.enterprise) || !has(this.temporal) || !has(this.temporal.external) || has(this.temporal.external.tls) || has(this.temporal.external.api_key)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.enterprise.needs_per_session_sandboxes"
+    message: "a licensed Stigmer runs each session in a sandbox of its own, and refuses to run sessions side by side on the shared runner: set sandboxes.driver to agentSandbox or substrate"
+    expression: "!has(this.enterprise) || (has(this.sandboxes) && (this.sandboxes.driver == 'agentSandbox' || this.sandboxes.driver == 'substrate'))"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.database.backup_needs_object_store"
+    message: "the database's backups and restores live in the bucket: declare object_store to use database.bundled.backup or database.bundled.recover_from"
+    expression: "has(this.object_store) || !has(this.database) || !has(this.database.bundled) || (!has(this.database.bundled.backup) && !has(this.database.bundled.recover_from))"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.server.artifacts_without_object_store"
+    message: "server.artifacts sizes the artifacts volume, and an install with object_store keeps its artifacts in the bucket instead: remove server.artifacts"
+    expression: "!has(this.object_store) || !has(this.server) || !has(this.server.artifacts)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.identity.bundled_needs_ingress"
+    message: "the bundled sign-in serves people's browsers at the front door: declare ingress with the hostname they reach Stigmer at"
+    expression: "!has(this.identity) || !has(this.identity.bundled) || has(this.ingress)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.owner.required_with_bundled_sign_in"
+    message: "the bundled sign-in creates the owner's account first, so an exposed install needs owner.email; or name your own issuer in identity.oidc"
+    expression: "!(has(this.identity) ? has(this.identity.bundled) : (has(this.ingress) && !(has(this.server) && this.server.allow_unauthenticated_exposure))) || has(this.owner)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.database.external_without_bundled_sign_in"
+    message: "the bundled sign-in keeps its accounts on the bundled database, and database.external names your own: sign people in with your own issuer (identity.oidc), or let the operator run the database"
+    expression: "!(has(this.identity) ? has(this.identity.bundled) : (has(this.ingress) && !(has(this.server) && this.server.allow_unauthenticated_exposure))) || !has(this.database) || !has(this.database.external)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.server.unauthenticated_exposure_without_identity"
+    message: "server.allow_unauthenticated_exposure exposes the install with sign-in off, and identity turns sign-in on: keep one"
+    expression: "!(has(this.server) && this.server.allow_unauthenticated_exposure) || !has(this.identity)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.sandboxes.per_session_needs_object_store"
+    message: "a sandbox on any node reads and writes a run's files through the bucket, never through a shared disk: declare object_store to run agents in per-session sandboxes"
+    expression: "!has(this.sandboxes) || this.sandboxes.driver == '' || this.sandboxes.driver == 'shared' || has(this.object_store)"
+  };
+}
+
+/**
+ * The Stigmer operator: its namespace and its chart's settings. The Helm
+ * release is always named `stigmer-operator`, as Stigmer's own guide
+ * installs it, because its cluster-wide role and the definition it owns are
+ * named after the release. One operator runs per cluster; Stigmer's operator
+ * stops at startup beside a second copy, and a running copy anywhere else is
+ * refused before anything is applied.
+ */
+message KubernetesStigmerOperator {
+  /**
+   * The namespace the operator runs in ("stigmer-system" by convention).
+   * Only the controller lives here; the Stigmer lives in `namespace`. To move
+   * the operator to another namespace, destroy and re-create: an in-place
+   * move is refused, because the release's cluster-wide objects and the kept
+   * definition belong to the old one.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name",
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true
+  ];
+
+  /**
+   * When true, the operator's namespace is created before the chart is
+   * installed and deleted with this resource. When false, it must already
+   * exist (a KubernetesNamespace of its own, or one you keep for its quotas
+   * and policies).
+   */
+  bool create_namespace = 2;
+
+  /**
+   * The operator image repository, for a registry mirror. Empty = the
+   * chart's own (ghcr.io/stigmer/stigmer-operator). The tag is always
+   * `version`: the chart has no setting this kind exposes for it, because a
+   * different tag would run a different Stigmer from the one declared.
+   */
+  string image_repository = 3;
+
+  /**
+   * When the kubelet pulls the operator image. Empty = the chart's own
+   * (IfNotPresent).
+   */
+  string image_pull_policy = 4 [(buf.validate.field).string = {
+    in: [
+      "",
+      "Always",
+      "IfNotPresent",
+      "Never"
+    ]
+  }];
+
+  /**
+   * Names of image-pull Secrets in the operator's namespace, for a private
+   * mirror.
+   */
+  repeated string image_pull_secrets = 5 [
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Names of existing Kubernetes Secrets (references), not secret material",
+    (buf.validate.field).repeated.items.string.min_len = 1
+  ];
+
+  /**
+   * Operator replicas. Empty = the chart's own (1). More replicas are
+   * leader-elected warm standbys that shorten the operator's own failover.
+   */
+  optional int32 replicas = 6 [(buf.validate.field).int32.gte = 1];
+
+  /**
+   * The operator container's requests and limits: cpu, memory and
+   * ephemeral-storage. Empty = the chart's own (requests 50m and 128Mi,
+   * memory limit 512Mi).
+   */
+  KubernetesStigmerOperatorResources resources = 7;
+
+  /**
+   * The operator's log level. Empty = the chart's own (info).
+   */
+  string log_level = 8 [(buf.validate.field).string = {
+    in: [
+      "",
+      "info",
+      "debug"
+    ]
+  }];
+
+  /**
+   * Node selector for the operator pod.
+   */
+  map<string, string> node_selector = 9;
+
+  /**
+   * Tolerations for the operator pod.
+   */
+  repeated dev.planton.kubernetes.KubernetesCoreV1ApiToleration tolerations = 10;
+}
+
+/**
+ * The operator container's resources, in the chart's own shape: only cpu,
+ * memory and ephemeral-storage are accepted.
+ */
+message KubernetesStigmerOperatorResources {
+  /**
+   * Requests, keyed by cpu, memory or ephemeral-storage.
+   */
+  map<string, string> requests = 1 [
+    (buf.validate.field).map.keys.string = {
+      in: [
+        "cpu",
+        "memory",
+        "ephemeral-storage"
+      ]
+    },
+    (buf.validate.field).map.values.string.pattern = "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+  ];
+
+  /**
+   * Limits, keyed by cpu, memory or ephemeral-storage.
+   */
+  map<string, string> limits = 2 [
+    (buf.validate.field).map.keys.string = {
+      in: [
+        "cpu",
+        "memory",
+        "ephemeral-storage"
+      ]
+    },
+    (buf.validate.field).map.values.string.pattern = "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+  ];
+}
+
+/**
+ * Where Stigmer's images are pulled from, for a mirror or a private registry.
+ */
+message KubernetesStigmerImage {
+  /**
+   * The registry that holds every Stigmer image under its usual name.
+   * Empty = Stigmer's own (ghcr.io/stigmer).
+   */
+  string registry = 1;
+
+  /**
+   * When the kubelet pulls Stigmer's images. Empty = IfNotPresent.
+   */
+  string pull_policy = 2 [(buf.validate.field).string = {
+    in: [
+      "",
+      "Always",
+      "IfNotPresent",
+      "Never"
+    ]
+  }];
+
+  /**
+   * Names of image-pull Secrets in the Stigmer's namespace.
+   */
+  repeated string pull_secrets = 3 [
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Names of existing Kubernetes Secrets (references), not secret material",
+    (buf.validate.field).repeated.items.string.min_len = 1
+  ];
+}
+
+/**
+ * The person who runs the install.
+ */
+message KubernetesStigmerOwner {
+  /**
+   * The owner's sign-in address.
+   */
+  string email = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "owner.email.format"
+      message: "owner.email must be an email address"
+      expression: "this.contains('@')"
+    }
+  ];
+
+  /**
+   * How the owner is shown.
+   */
+  string name = 2;
+}
+
+/**
+ * The Stigmer server.
+ */
+message KubernetesStigmerServer {
+  /**
+   * The server container's requests and limits. Empty = the operator's
+   * defaults. A request above its limit, or memory below what the server
+   * needs, is refused by the operator in the install's status.
+   */
+  dev.planton.kubernetes.KubernetesCoreV1ApiResourceRequirements resources = 1;
+
+  /**
+   * The server's own volume: the skill store and everything under its home
+   * except artifacts. Empty = 5Gi on the cluster's default storage class.
+   */
+  KubernetesStigmerVolume storage = 2;
+
+  /**
+   * The volume the server writes artifacts to and the shared runner reads
+   * them from, when no object_store is declared. Empty = 20Gi.
+   */
+  KubernetesStigmerVolume artifacts = 3;
+
+  /**
+   * Where your people ask for help, shown in the console.
+   */
+  KubernetesStigmerHelp help = 4;
+
+  /**
+   * Your own team's sign-in addresses, each exact (sam@example.com) or with
+   * one * (*@example.com), left out of the onboarding count.
+   */
+  repeated string internal_accounts = 5;
+
+  /**
+   * Says, on purpose, that an install with a front door signs nobody in:
+   * everyone who reaches the hostname acts as the owner. Without it, a front
+   * door brings the bundled sign-in.
+   */
+  bool allow_unauthenticated_exposure = 6;
+
+  /**
+   * Fences the server's own outbound calls. Off by default: a server reaches
+   * an issuer or an MCP server on your private network, which a fence would
+   * cut.
+   */
+  KubernetesStigmerServerEgress egress = 7;
+
+  /**
+   * Extra settings for the server container. `variables` are written into
+   * the server's spec; `secrets` are kept in a Secret this resource writes
+   * (or read from your own) and reach the container by reference. A name the
+   * operator sets itself is refused, so nothing here can silently undo the
+   * declaration; `env_from` is not accepted, because Stigmer takes single
+   * settings only.
+   */
+  dev.planton.kubernetes.ContainerEnv extra_env = 8 [
+    (buf.validate.field).cel = {
+      id: "server.extra_env.no_env_from"
+      message: "server.extra_env.env_from is not accepted: Stigmer takes single settings, so list each one under variables or secrets"
+      expression: "size(this.env_from) == 0"
+    },
+    (buf.validate.field).cel = {
+      id: "server.extra_env.unique_names"
+      message: "a setting may be declared in server.extra_env.variables or server.extra_env.secrets, not both"
+      expression: "!this.variables.exists(v, this.secrets.exists(s, s.name == v.name))"
+    },
+    (buf.validate.field).cel = {
+      id: "server.extra_env.not_operator_owned"
+      message: "server.extra_env names a setting Stigmer's operator sets from the declaration, and a second value would silently replace it: set it through its own field, or remove the entry. The operator sets ANTHROPIC_*, OPENAI_API_KEY, AWS_BEARER_TOKEN_BEDROCK, DATABASE_URL, PG*, S3_*, TEMPORAL_*, GRPC_PORT, ARTIFACT_*, SANDBOX_PROVISIONER_TYPE, SKILL_* and most STIGMER_* settings"
+      expression: "!this.variables.exists(v, v.name in ['ANTHROPIC_API_KEY','ANTHROPIC_BASE_URL','ANTHROPIC_FOUNDRY_API_KEY','ARTIFACT_LOCAL_BASE_PATH','ARTIFACT_LOCAL_SERVE_URL','ARTIFACT_STORAGE_TYPE','AWS_BEARER_TOKEN_BEDROCK','DATABASE_URL','GRPC_PORT','OPENAI_API_KEY','PGDATABASE','PGPASSWORD','PGSSLMODE','S3_ACCESS_KEY_ID','S3_BUCKET','S3_ENDPOINT','S3_REGION','S3_RUNNER_ENDPOINT','S3_SECRET_ACCESS_KEY','SANDBOX_PROVISIONER_TYPE','SKILL_ARTIFACT_STORAGE_TYPE','SKILL_TRANSFER_BASE_URL','STIGMER_ACCESS_HISTORY_RETENTION_DAYS','STIGMER_ACTIVITY_ROUTING','STIGMER_DEFAULT_EXECUTION_TARGET','STIGMER_ENCRYPTION_KEY','STIGMER_HELP_LABEL','STIGMER_HELP_URL','STIGMER_INTERNAL_ACCOUNTS','STIGMER_LICENSE_KEY','STIGMER_OIDC_AUDIENCE','STIGMER_OIDC_CONSOLE_CLIENT_ID','STIGMER_OIDC_DISCOVERY_URL','STIGMER_OIDC_ISSUER','STIGMER_OIDC_NATIVE_CLIENT_ID','STIGMER_OPERATOR_EMAIL','STIGMER_OPERATOR_NAME','STIGMER_ORGANIZATION_CREATORS','STIGMER_OUTBOUND_EGRESS','STIGMER_PLATFORM_TOKEN_KEY','STIGMER_RUNNER_API_KEY','STIGMER_RUNNER_TOKEN_KEY','STIGMER_SANDBOX_AGENT_SANDBOX_SUSPEND_AFTER_SECONDS','STIGMER_SANDBOX_BACKEND_ENDPOINT','STIGMER_SANDBOX_K8S_NAMESPACE','STIGMER_SANDBOX_MCP_PUBLIC_ENDPOINT','STIGMER_SANDBOX_RUNNER_ENV','STIGMER_SANDBOX_RUNNER_IMAGE','STIGMER_SANDBOX_RUNNER_SECRETS','STIGMER_SANDBOX_SUBSTRATE_API_CA_FILE','STIGMER_SANDBOX_SUBSTRATE_API_ENDPOINT','STIGMER_SANDBOX_SUBSTRATE_API_SERVER_NAME','STIGMER_SANDBOX_SUBSTRATE_API_TOKEN_FILE','STIGMER_SANDBOX_SUBSTRATE_ATESPACE','STIGMER_SANDBOX_SUBSTRATE_CPU_MILLICORES','STIGMER_SANDBOX_SUBSTRATE_EGRESS_HTTP','STIGMER_SANDBOX_SUBSTRATE_EGRESS_HTTPS_PLATFORM','STIGMER_SANDBOX_SUBSTRATE_MEMORY_MIB','STIGMER_SANDBOX_SUBSTRATE_ROUTER_CA_FILE','STIGMER_SANDBOX_SUBSTRATE_ROUTER_CLIENT_CERT_FILE','STIGMER_SANDBOX_SUBSTRATE_ROUTER_SERVER_NAME','STIGMER_SANDBOX_SUBSTRATE_ROUTER_URL','STIGMER_SANDBOX_SUBSTRATE_SUSPEND_AFTER_SECONDS','STIGMER_SANDBOX_SUBSTRATE_WORKER_SELECTOR','STIGMER_TEMPORAL_API_KEY','STIGMER_TEMPORAL_TLS','STIGMER_TEMPORAL_TLS_CLIENT_CERT_DATA','STIGMER_TEMPORAL_TLS_CLIENT_KEY_DATA','STIGMER_TEMPORAL_TLS_SERVER_CA_CERT_DATA','STIGMER_TEMPORAL_TLS_SERVER_NAME','TEMPORAL_AGENT_EXECUTION_RUNNER_TASK_QUEUE','TEMPORAL_HOST_PORT','TEMPORAL_NAMESPACE']) && !this.secrets.exists(s, s.name in ['ANTHROPIC_API_KEY','ANTHROPIC_BASE_URL','ANTHROPIC_FOUNDRY_API_KEY','ARTIFACT_LOCAL_BASE_PATH','ARTIFACT_LOCAL_SERVE_URL','ARTIFACT_STORAGE_TYPE','AWS_BEARER_TOKEN_BEDROCK','DATABASE_URL','GRPC_PORT','OPENAI_API_KEY','PGDATABASE','PGPASSWORD','PGSSLMODE','S3_ACCESS_KEY_ID','S3_BUCKET','S3_ENDPOINT','S3_REGION','S3_RUNNER_ENDPOINT','S3_SECRET_ACCESS_KEY','SANDBOX_PROVISIONER_TYPE','SKILL_ARTIFACT_STORAGE_TYPE','SKILL_TRANSFER_BASE_URL','STIGMER_ACCESS_HISTORY_RETENTION_DAYS','STIGMER_ACTIVITY_ROUTING','STIGMER_DEFAULT_EXECUTION_TARGET','STIGMER_ENCRYPTION_KEY','STIGMER_HELP_LABEL','STIGMER_HELP_URL','STIGMER_INTERNAL_ACCOUNTS','STIGMER_LICENSE_KEY','STIGMER_OIDC_AUDIENCE','STIGMER_OIDC_CONSOLE_CLIENT_ID','STIGMER_OIDC_DISCOVERY_URL','STIGMER_OIDC_ISSUER','STIGMER_OIDC_NATIVE_CLIENT_ID','STIGMER_OPERATOR_EMAIL','STIGMER_OPERATOR_NAME','STIGMER_ORGANIZATION_CREATORS','STIGMER_OUTBOUND_EGRESS','STIGMER_PLATFORM_TOKEN_KEY','STIGMER_RUNNER_API_KEY','STIGMER_RUNNER_TOKEN_KEY','STIGMER_SANDBOX_AGENT_SANDBOX_SUSPEND_AFTER_SECONDS','STIGMER_SANDBOX_BACKEND_ENDPOINT','STIGMER_SANDBOX_K8S_NAMESPACE','STIGMER_SANDBOX_MCP_PUBLIC_ENDPOINT','STIGMER_SANDBOX_RUNNER_ENV','STIGMER_SANDBOX_RUNNER_IMAGE','STIGMER_SANDBOX_RUNNER_SECRETS','STIGMER_SANDBOX_SUBSTRATE_API_CA_FILE','STIGMER_SANDBOX_SUBSTRATE_API_ENDPOINT','STIGMER_SANDBOX_SUBSTRATE_API_SERVER_NAME','STIGMER_SANDBOX_SUBSTRATE_API_TOKEN_FILE','STIGMER_SANDBOX_SUBSTRATE_ATESPACE','STIGMER_SANDBOX_SUBSTRATE_CPU_MILLICORES','STIGMER_SANDBOX_SUBSTRATE_EGRESS_HTTP','STIGMER_SANDBOX_SUBSTRATE_EGRESS_HTTPS_PLATFORM','STIGMER_SANDBOX_SUBSTRATE_MEMORY_MIB','STIGMER_SANDBOX_SUBSTRATE_ROUTER_CA_FILE','STIGMER_SANDBOX_SUBSTRATE_ROUTER_CLIENT_CERT_FILE','STIGMER_SANDBOX_SUBSTRATE_ROUTER_SERVER_NAME','STIGMER_SANDBOX_SUBSTRATE_ROUTER_URL','STIGMER_SANDBOX_SUBSTRATE_SUSPEND_AFTER_SECONDS','STIGMER_SANDBOX_SUBSTRATE_WORKER_SELECTOR','STIGMER_TEMPORAL_API_KEY','STIGMER_TEMPORAL_TLS','STIGMER_TEMPORAL_TLS_CLIENT_CERT_DATA','STIGMER_TEMPORAL_TLS_CLIENT_KEY_DATA','STIGMER_TEMPORAL_TLS_SERVER_CA_CERT_DATA','STIGMER_TEMPORAL_TLS_SERVER_NAME','TEMPORAL_AGENT_EXECUTION_RUNNER_TASK_QUEUE','TEMPORAL_HOST_PORT','TEMPORAL_NAMESPACE'])"
+    }
+  ];
+}
+
+/**
+ * Fences the server's outbound calls.
+ */
+message KubernetesStigmerServerEgress {
+  /**
+   * Lets the server reach only DNS, the Kubernetes API, what the install
+   * runs (its database, Temporal, the bundled sign-in, Agent Substrate), the
+   * bucket, the public internet and allow_cidrs.
+   */
+  bool fenced = 1;
+
+  /**
+   * Private ranges the fenced server may also reach, such as an external
+   * database, Temporal, issuer or MCP server (10.20.0.0/16).
+   */
+  repeated string allow_cidrs = 2 [
+    (buf.validate.field).repeated.max_items = 64,
+    (buf.validate.field).repeated.items.string.max_len = 43,
+    (buf.validate.field).repeated.items.string.ip_prefix = true
+  ];
+}
+
+/**
+ * The console's help link.
+ */
+message KubernetesStigmerHelp {
+  /**
+   * Where the link goes.
+   */
+  string url = 1 [(buf.validate.field).required = true];
+
+  /**
+   * The link's text.
+   */
+  string label = 2;
+}
+
+/**
+ * One persistent volume claim's size and class.
+ */
+message KubernetesStigmerVolume {
+  /**
+   * The claim's requested capacity, as a Kubernetes quantity (10Gi). Empty =
+   * the operator's default for this volume.
+   */
+  string size = 1 [(buf.validate.field).cel = {
+    id: "volume.size.quantity"
+    message: "size must be a Kubernetes quantity such as 10Gi"
+    expression: "this == '' || this.matches('^([0-9]+(\\\\.[0-9]*)?|\\\\.[0-9]+)([KMGTPE]i|[numkMGTPE])?$')"
+  }];
+
+  /**
+   * The storage class the claim binds with. Empty = the cluster's default
+   * class (some clusters, GKE 1.37 among them, have none: name one).
+   */
+  string storage_class_name = 2;
+}
+
+/**
+ * The shared runner.
+ */
+message KubernetesStigmerRunner {
+  /**
+   * The key agents call their model with. Agents cannot run without one.
+   */
+  KubernetesStigmerModel model = 1;
+
+  /**
+   * The runner container's requests and limits. Empty = the operator's
+   * defaults.
+   */
+  dev.planton.kubernetes.KubernetesCoreV1ApiResourceRequirements resources = 2;
+
+  /**
+   * The runner's own volume: paused sessions, their approvals and agent
+   * workspaces. Empty = 10Gi.
+   */
+  KubernetesStigmerVolume storage = 3;
+
+  /**
+   * Extra settings for the runner container, as for the server. A name the
+   * operator sets itself is refused; `env_from` is not accepted.
+   */
+  dev.planton.kubernetes.ContainerEnv extra_env = 4 [
+    (buf.validate.field).cel = {
+      id: "runner.extra_env.no_env_from"
+      message: "runner.extra_env.env_from is not accepted: Stigmer takes single settings, so list each one under variables or secrets"
+      expression: "size(this.env_from) == 0"
+    },
+    (buf.validate.field).cel = {
+      id: "runner.extra_env.unique_names"
+      message: "a setting may be declared in runner.extra_env.variables or runner.extra_env.secrets, not both"
+      expression: "!this.variables.exists(v, this.secrets.exists(s, s.name == v.name))"
+    },
+    (buf.validate.field).cel = {
+      id: "runner.extra_env.not_operator_owned"
+      message: "runner.extra_env names a setting Stigmer's operator sets from the declaration, and a second value would silently replace it: set it through its own field, or remove the entry. The operator sets ANTHROPIC_*, OPENAI_API_KEY, AWS_BEARER_TOKEN_BEDROCK, ARTIFACT_STORAGE_TYPE, LOCAL_ARTIFACT_PATH, MODE, TEMPORAL_NAMESPACE, TEMPORAL_SERVICE_ADDRESS, WORKSPACE_ROOT_DIR and the runner's STIGMER_* settings"
+      expression: "!this.variables.exists(v, v.name in ['ANTHROPIC_API_KEY','ANTHROPIC_BASE_URL','ANTHROPIC_FOUNDRY_API_KEY','ARTIFACT_STORAGE_TYPE','AWS_BEARER_TOKEN_BEDROCK','LOCAL_ARTIFACT_PATH','MODE','OPENAI_API_KEY','STIGMER_AGENT_HOME','STIGMER_ARTIFACT_PROXY_ENDPOINT','STIGMER_BACKEND_ENDPOINT','STIGMER_MCP_PUBLIC_ENDPOINT','STIGMER_TASK_QUEUE','STIGMER_TEMPORAL_API_KEY','STIGMER_TEMPORAL_TLS','STIGMER_TEMPORAL_TLS_CLIENT_CERT_DATA','STIGMER_TEMPORAL_TLS_CLIENT_KEY_DATA','STIGMER_TEMPORAL_TLS_SERVER_CA_CERT_DATA','STIGMER_TEMPORAL_TLS_SERVER_NAME','STIGMER_TOKEN','STIGMER_WEB_FETCH_ALLOW_PRIVATE','TEMPORAL_NAMESPACE','TEMPORAL_SERVICE_ADDRESS','WORKSPACE_ROOT_DIR']) && !this.secrets.exists(s, s.name in ['ANTHROPIC_API_KEY','ANTHROPIC_BASE_URL','ANTHROPIC_FOUNDRY_API_KEY','ARTIFACT_STORAGE_TYPE','AWS_BEARER_TOKEN_BEDROCK','LOCAL_ARTIFACT_PATH','MODE','OPENAI_API_KEY','STIGMER_AGENT_HOME','STIGMER_ARTIFACT_PROXY_ENDPOINT','STIGMER_BACKEND_ENDPOINT','STIGMER_MCP_PUBLIC_ENDPOINT','STIGMER_TASK_QUEUE','STIGMER_TEMPORAL_API_KEY','STIGMER_TEMPORAL_TLS','STIGMER_TEMPORAL_TLS_CLIENT_CERT_DATA','STIGMER_TEMPORAL_TLS_CLIENT_KEY_DATA','STIGMER_TEMPORAL_TLS_SERVER_CA_CERT_DATA','STIGMER_TEMPORAL_TLS_SERVER_NAME','STIGMER_TOKEN','STIGMER_WEB_FETCH_ALLOW_PRIVATE','TEMPORAL_NAMESPACE','TEMPORAL_SERVICE_ADDRESS','WORKSPACE_ROOT_DIR'])"
+    }
+  ];
+}
+
+/**
+ * The model key agents use: given here (this resource writes it into a
+ * Secret under the names Stigmer's runner reads), or an existing Secret you
+ * keep that already holds them.
+ */
+message KubernetesStigmerModel {
+  oneof source {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * The model provider's key, and optionally a gateway address.
+     */
+    KubernetesStigmerModelKeys keys = 1;
+
+    /**
+     * A Secret in the Stigmer's namespace holding the keys by Stigmer's own
+     * names: ANTHROPIC_API_KEY, ANTHROPIC_BASE_URL, OPENAI_API_KEY,
+     * ANTHROPIC_FOUNDRY_API_KEY or AWS_BEARER_TOKEN_BEDROCK.
+     */
+    dev.planton.shared.foreignkey.v1.StringValueOrRef existing_secret_name = 2 [
+      (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesSecret,
+      (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.secret_name"
+    ];
+  }
+}
+
+/**
+ * The model provider's key. Give at least one key; the runner uses the one
+ * its provider needs.
+ */
+message KubernetesStigmerModelKeys {
+  /**
+   * An Anthropic API key (ANTHROPIC_API_KEY).
+   */
+  string anthropic_api_key = 1 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * A model gateway's address (ANTHROPIC_BASE_URL), for a proxy or gateway
+   * that speaks Anthropic's API, such as http://models.ai.svc.cluster.local:8080.
+   * It needs a key beside it.
+   */
+  string anthropic_base_url = 2 [(buf.validate.field).cel = {
+    id: "model.anthropic_base_url.format"
+    message: "anthropic_base_url must be an http or https URL"
+    expression: "this == '' || this.startsWith('https://') || this.startsWith('http://')"
+  }];
+
+  /**
+   * An OpenAI API key (OPENAI_API_KEY).
+   */
+  string openai_api_key = 3 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * An Anthropic-on-Microsoft-Foundry key (ANTHROPIC_FOUNDRY_API_KEY).
+   */
+  string anthropic_foundry_api_key = 4 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * An Amazon Bedrock bearer token (AWS_BEARER_TOKEN_BEDROCK).
+   */
+  string aws_bearer_token_bedrock = 5 [(dev.planton.shared.options.sensitive) = true];
+
+  option (buf.validate.message).cel = {
+    id: "model.keys.at_least_one"
+    message: "runner.model.keys needs a key: anthropic_api_key, openai_api_key, anthropic_foundry_api_key or aws_bearer_token_bedrock (a gateway address alone signs no request)"
+    expression: "this.anthropic_api_key != '' || this.openai_api_key != '' || this.anthropic_foundry_api_key != '' || this.aws_bearer_token_bedrock != ''"
+  };
+}
+
+/**
+ * Where Stigmer keeps its records: the Postgres the operator runs, or yours.
+ */
+message KubernetesStigmerDatabase {
+  oneof postgresql {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * The Postgres the operator runs, through CloudNativePG.
+     */
+    KubernetesStigmerBundledPostgres bundled = 1;
+
+    /**
+     * A Postgres you run. It needs your own Temporal (temporal.external) and
+     * your own sign-in issuer when the install has a front door.
+     */
+    KubernetesStigmerExternalPostgres external = 2;
+  }
+}
+
+/**
+ * The bundled Postgres.
+ */
+message KubernetesStigmerBundledPostgres {
+  /**
+   * Postgres instances: one primary, the rest standbys.
+   */
+  optional int32 instances = 1 [
+    (dev.planton.shared.options.default) = "1",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 5
+    }
+  ];
+
+  /**
+   * Each instance's volume. Empty = 10Gi.
+   */
+  KubernetesStigmerVolume storage = 2;
+
+  /**
+   * Each instance's requests and limits. Empty = the operator's defaults.
+   */
+  dev.planton.kubernetes.KubernetesCoreV1ApiResourceRequirements resources = 3;
+
+  /**
+   * Backups. With object_store declared, the database archives every change
+   * to the bucket from its first minute and takes a full backup on this
+   * schedule; these settings tune that. Needs object_store, and cert-manager
+   * on the cluster (the backup plugin needs it; nothing here installs it).
+   */
+  KubernetesStigmerPostgresBackup backup = 4;
+
+  /**
+   * Creates the database from an archive in the bucket instead of empty.
+   * Honored only when the database is created; on a running install it
+   * changes nothing. A restore also needs the source install's keys Secret
+   * in this namespace (see keys_export_command): without it the encryption
+   * key would be minted fresh and the restored records unreadable, so this
+   * resource refuses to declare the Stigmer until the keys are there.
+   */
+  KubernetesStigmerRecoverFrom recover_from = 5;
+}
+
+/**
+ * The bundled database's backup schedule and retention.
+ */
+message KubernetesStigmerPostgresBackup {
+  /**
+   * When a full backup is taken: a six-field cron with seconds first, in
+   * UTC. Empty = daily at 02:00 ("0 0 2 * * *").
+   */
+  string schedule = 1 [(buf.validate.field).cel = {
+    id: "backup.schedule.six_fields"
+    message: "backup.schedule is a six-field cron with seconds first, such as \"0 0 2 * * *\""
+    expression: "this == '' || this.matches('^\\\\S+( \\\\S+){5}$')"
+  }];
+
+  /**
+   * How long backups and the archive are kept: a number and d, w or m.
+   * Empty = 30d.
+   */
+  string retention = 2 [(buf.validate.field).cel = {
+    id: "backup.retention.format"
+    message: "backup.retention is a number and d, w or m, such as 30d"
+    expression: "this == '' || this.matches('^[1-9][0-9]*[dwm]$')"
+  }];
+}
+
+/**
+ * The archive a database is restored from.
+ */
+message KubernetesStigmerRecoverFrom {
+  /**
+   * The archive's name in the bucket: the source install's backup server
+   * name (its status.backup.serverName).
+   */
+  string server_name = 1 [(buf.validate.field).required = true];
+
+  /**
+   * The moment to restore to, in RFC 3339 (2026-11-20T08:00:00Z). Empty =
+   * the newest moment the archive holds.
+   */
+  string target_time = 2 [(buf.validate.field).cel = {
+    id: "recover_from.target_time.rfc3339"
+    message: "recover_from.target_time must be an RFC 3339 time such as 2026-11-20T08:00:00Z"
+    expression: "this == '' || this.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$')"
+  }];
+}
+
+/**
+ * A Postgres you run.
+ */
+message KubernetesStigmerExternalPostgres {
+  /**
+   * The server's address. Composes a KubernetesPostgres's read-write
+   * Service; any reachable Postgres works as a literal.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef host = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesPostgres,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.rw_service"
+  ];
+
+  /**
+   * The server's port.
+   */
+  optional int32 port = 2 [
+    (dev.planton.shared.options.default) = "5432",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+
+  /**
+   * The role Stigmer signs in as. It must own `database`, where Stigmer
+   * creates its schemas.
+   */
+  string user = 3 [(buf.validate.field).required = true];
+
+  /**
+   * The database Stigmer uses.
+   */
+  optional string database = 4 [(dev.planton.shared.options.default) = "stigmer"];
+
+  /**
+   * The role's password: given here (this resource writes it into a Secret),
+   * or read from a Secret in the Stigmer's namespace.
+   */
+  KubernetesStigmerPassword password = 5 [(buf.validate.field).required = true];
+
+  /**
+   * libpq's sslmode for the connection. Empty = libpq's default (prefer).
+   */
+  string ssl_mode = 6 [(buf.validate.field).string = {
+    in: [
+      "",
+      "disable",
+      "allow",
+      "prefer",
+      "require",
+      "verify-ca",
+      "verify-full"
+    ]
+  }];
+}
+
+/**
+ * A password, given or read from a Secret.
+ */
+message KubernetesStigmerPassword {
+  oneof source {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * The password. This resource writes it into a Secret in the Stigmer's
+     * namespace.
+     */
+    string value = 1 [(dev.planton.shared.options.sensitive) = true];
+
+    /**
+     * A Secret in the Stigmer's namespace that holds it. Composes a
+     * KubernetesPostgres's application credential Secret when the database
+     * runs in the same namespace.
+     */
+    KubernetesStigmerPostgresPasswordSecret existing_secret = 2;
+  }
+}
+
+/**
+ * The Secret holding a Postgres password.
+ */
+message KubernetesStigmerPostgresPasswordSecret {
+  /**
+   * The Secret's name.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesPostgres,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.password_secret.name"
+  ];
+
+  /**
+   * The key holding the password.
+   */
+  optional string key = 2 [(dev.planton.shared.options.default) = "password"];
+}
+
+/**
+ * A key in an existing Secret in the Stigmer's namespace.
+ */
+message KubernetesStigmerSecretKeyRef {
+  /**
+   * The Secret's name.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.secret_name"
+  ];
+
+  /**
+   * The key within the Secret.
+   */
+  string key = 2 [(buf.validate.field).required = true];
+}
+
+/**
+ * The workflow engine: the Temporal the operator runs, or yours.
+ */
+message KubernetesStigmerTemporal {
+  oneof mode {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * The Temporal the operator runs on the bundled database.
+     */
+    KubernetesStigmerBundledTemporal bundled = 1;
+
+    /**
+     * A Temporal frontend you run.
+     */
+    KubernetesStigmerExternalTemporal external = 2;
+  }
+}
+
+/**
+ * The bundled Temporal.
+ */
+message KubernetesStigmerBundledTemporal {
+  /**
+   * Requests and limits for each Temporal service (frontend, history,
+   * matching, worker). Empty = the operator's defaults.
+   */
+  dev.planton.kubernetes.KubernetesCoreV1ApiResourceRequirements resources = 1;
+}
+
+/**
+ * A Temporal frontend you run.
+ */
+message KubernetesStigmerExternalTemporal {
+  /**
+   * The frontend's gRPC address, host:port (an IPv6 address in brackets).
+   * Composes a KubernetesTemporal's frontend endpoint.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef host_port = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesTemporal,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.frontend_endpoint"
+  ];
+
+  /**
+   * The Temporal namespace Stigmer's runs use.
+   */
+  optional string namespace = 2 [(dev.planton.shared.options.default) = "default"];
+
+  /**
+   * TLS to the frontend. Without certificates named, the frontend's
+   * certificate is checked against the system's trusted roots.
+   */
+  KubernetesStigmerTemporalTls tls = 3;
+
+  /**
+   * The frontend's API key (Temporal Cloud, or a frontend with a JWT
+   * authorizer). An API key implies TLS.
+   */
+  KubernetesStigmerSecretValue api_key = 4;
+}
+
+/**
+ * TLS to an external Temporal frontend.
+ */
+message KubernetesStigmerTemporalTls {
+  /**
+   * The name the frontend's certificate is checked against, when it differs
+   * from the host.
+   */
+  string server_name = 1;
+
+  oneof certificates {
+    /**
+     * The certificates, given here as PEM. This resource writes them into a
+     * Secret in the Stigmer's namespace.
+     */
+    KubernetesStigmerTemporalTlsPem pem = 2;
+
+    /**
+     * A Secret in the Stigmer's namespace holding the certificates as PEM,
+     * read by key.
+     */
+    KubernetesStigmerTemporalTlsSecret existing_secret = 3;
+  }
+}
+
+/**
+ * Temporal TLS material as PEM.
+ */
+message KubernetesStigmerTemporalTlsPem {
+  /**
+   * The CA that signed the frontend's certificate. Empty = the system's
+   * trusted roots.
+   */
+  string ca_certificate = 1;
+
+  /**
+   * The client certificate, for mutual TLS.
+   */
+  string client_certificate = 2;
+
+  /**
+   * The client certificate's private key.
+   */
+  string client_private_key = 3 [(dev.planton.shared.options.sensitive) = true];
+
+  option (buf.validate.message).cel = {
+    id: "temporal.tls.pem.client_pair"
+    message: "temporal.external.tls.pem: client_certificate and client_private_key go together; mutual TLS needs the certificate and its key"
+    expression: "(this.client_certificate == '') == (this.client_private_key == '')"
+  };
+}
+
+/**
+ * A Secret holding Temporal TLS material, read by key.
+ */
+message KubernetesStigmerTemporalTlsSecret {
+  /**
+   * The Secret's name.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.secret_name"
+  ];
+
+  /**
+   * The key of the CA that signed the frontend's certificate.
+   */
+  string ca_key = 2;
+
+  /**
+   * The key of the client certificate, for mutual TLS.
+   */
+  string certificate_key = 3;
+
+  /**
+   * The key of the client certificate's private key.
+   */
+  string private_key_key = 4 [(dev.planton.shared.options.sensitive_exempt_reason) = "Key NAME within an existing Secret (a reference), not secret material"];
+
+  option (buf.validate.message).cel = {
+    id: "temporal.tls.existing_secret.client_pair"
+    message: "temporal.external.tls.existing_secret: certificate_key and private_key_key go together; mutual TLS needs the certificate and its key"
+    expression: "(this.certificate_key == '') == (this.private_key_key == '')"
+  };
+}
+
+/**
+ * A secret value: given here (this resource writes it into a Secret in the
+ * Stigmer's namespace), or a key in a Secret you keep there.
+ */
+message KubernetesStigmerSecretValue {
+  oneof source {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * The value.
+     */
+    string value = 1 [(dev.planton.shared.options.sensitive) = true];
+
+    /**
+     * A key in an existing Secret in the Stigmer's namespace.
+     */
+    KubernetesStigmerSecretKeyRef existing_secret = 2;
+  }
+}
+
+/**
+ * The bucket Stigmer keeps its files in.
+ */
+message KubernetesStigmerObjectStore {
+  /**
+   * Any S3-compatible bucket: AWS S3, Cloudflare R2, SeaweedFS, MinIO, or
+   * Google Cloud Storage through its S3 API (Agent Substrate's snapshots
+   * need a store other than Cloud Storage, whose S3 API refuses them).
+   */
+  KubernetesStigmerS3 s3 = 1 [(buf.validate.field).required = true];
+}
+
+/**
+ * One S3-compatible bucket.
+ */
+message KubernetesStigmerS3 {
+  /**
+   * The bucket's name (3 to 63 characters). Composes an AwsS3Bucket.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef bucket = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsS3Bucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_id"
+  ];
+
+  /**
+   * The bucket's region; R2 also accepts us-east-1.
+   */
+  optional string region = 2 [(dev.planton.shared.options.default) = "us-east-1"];
+
+  /**
+   * The store's URL, such as https://<account>.r2.cloudflarestorage.com or
+   * http://seaweedfs-s3.storage.svc.cluster.local:8333. Empty = AWS S3
+   * itself. Composes a KubernetesSeaweedFs's S3 endpoint.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef endpoint = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesSeaweedFs,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.s3_endpoint"
+  ];
+
+  /**
+   * The bucket's access key, which the server and the database's backups
+   * use; no runner ever holds it.
+   */
+  KubernetesStigmerS3Credentials credentials = 4 [(buf.validate.field).required = true];
+
+  /**
+   * The address runners reach the store at, when it is not `endpoint`: URLs
+   * handed to runners are signed for it, since a signed URL's host is part
+   * of its signature.
+   */
+  string runner_endpoint = 5 [(buf.validate.field).cel = {
+    id: "s3.runner_endpoint.format"
+    message: "object_store.s3.runner_endpoint must be an http or https URL"
+    expression: "this == '' || this.startsWith('https://') || this.startsWith('http://')"
+  }];
+}
+
+/**
+ * The bucket's access key: given here, or an existing Secret.
+ */
+message KubernetesStigmerS3Credentials {
+  oneof source {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * The key pair. This resource writes it into a Secret under the names
+     * Stigmer reads (ACCESS_KEY_ID, SECRET_ACCESS_KEY).
+     */
+    KubernetesStigmerS3AccessKey access_key = 1;
+
+    /**
+     * A Secret in the Stigmer's namespace that already holds the pair as
+     * ACCESS_KEY_ID and SECRET_ACCESS_KEY.
+     */
+    dev.planton.shared.foreignkey.v1.StringValueOrRef existing_secret_name = 2 [
+      (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesSecret,
+      (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.secret_name"
+    ];
+  }
+}
+
+/**
+ * An S3 key pair.
+ */
+message KubernetesStigmerS3AccessKey {
+  /**
+   * The access key id.
+   */
+  string access_key_id = 1 [(buf.validate.field).required = true];
+
+  /**
+   * The secret access key.
+   */
+  string secret_access_key = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+}
+
+/**
+ * The front door.
+ */
+message KubernetesStigmerIngress {
+  /**
+   * The one name people reach Stigmer at, on port 443 (the CLI and the
+   * desktop app speak TLS to a server on 443).
+   */
+  string hostname = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)+$"
+  ];
+
+  oneof route {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * An Ingress the cluster's controller serves, with its certificate.
+     */
+    KubernetesStigmerIngressTls tls = 2;
+
+    /**
+     * Routes on a Gateway the cluster runs, whose HTTPS listener for the
+     * hostname holds the certificate. Stigmer never edits the Gateway.
+     */
+    KubernetesStigmerGatewayRef gateway = 3;
+  }
+
+  /**
+   * The IngressClass that serves the front door (with `tls`).
+   */
+  string class_name = 4;
+
+  /**
+   * Annotations on the Ingress, for a controller that needs a hint to speak
+   * gRPC to the server.
+   */
+  map<string, string> annotations = 5;
+
+  /**
+   * Annotations on the server's Service, for a controller that reads its
+   * gRPC hint there (Traefik's
+   * traefik.ingress.kubernetes.io/service.serversscheme: h2c).
+   */
+  map<string, string> service_annotations = 6;
+}
+
+/**
+ * The front door's certificate.
+ */
+message KubernetesStigmerIngressTls {
+  oneof certificate {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * A TLS Secret in the Stigmer's namespace that you keep current.
+     */
+    string secret_name = 1;
+
+    /**
+     * A cert-manager issuer that issues the certificate. cert-manager must
+     * run on the cluster.
+     */
+    KubernetesStigmerIssuerRef issuer = 2;
+  }
+}
+
+/**
+ * A cert-manager issuer.
+ */
+message KubernetesStigmerIssuerRef {
+  /**
+   * The issuer's name. Composes a KubernetesClusterIssuer.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesClusterIssuer,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.cluster_issuer_name"
+  ];
+
+  /**
+   * ClusterIssuer (the default) or Issuer (in the Stigmer's namespace).
+   */
+  string kind = 2 [(buf.validate.field).string = {
+    in: [
+      "",
+      "ClusterIssuer",
+      "Issuer"
+    ]
+  }];
+}
+
+/**
+ * A Gateway API Gateway and, optionally, its listener.
+ */
+message KubernetesStigmerGatewayRef {
+  /**
+   * The Gateway's name. Composes a KubernetesGateway.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesGateway,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.gateway_name"
+  ];
+
+  /**
+   * The Gateway's namespace. Empty = the Stigmer's namespace.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesGateway,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.namespace"
+  ];
+
+  /**
+   * The listener the routes attach to.
+   */
+  string section_name = 3;
+}
+
+/**
+ * How people sign in.
+ */
+message KubernetesStigmerIdentity {
+  oneof provider {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * The sign-in the operator runs beside Stigmer, at <hostname>/idp. The
+     * owner's account is created with a one-time password
+     * (`owner_password_command`).
+     */
+    KubernetesStigmerBundledIdentity bundled = 1;
+
+    /**
+     * Your own OpenID Connect issuer. Its realm or tenant, the console and
+     * native clients, the audience, the owner's account and sign-up are
+     * yours to set up.
+     */
+    KubernetesStigmerOidc oidc = 2;
+  }
+}
+
+/**
+ * The bundled sign-in.
+ */
+message KubernetesStigmerBundledIdentity {
+  /**
+   * The domains whose addresses may sign up once the owner has signed in,
+   * such as acme.dev. Empty = only the owner signs in. Needs smtp, because
+   * without a verification email anyone could claim an address.
+   */
+  repeated string sign_up_email_domains = 1 [(buf.validate.field).repeated.items.string.pattern = "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)+$"];
+
+  /**
+   * The mail server the sign-in sends verification and password mail
+   * through.
+   */
+  KubernetesStigmerSmtp smtp = 2;
+
+  option (buf.validate.message).cel = {
+    id: "identity.bundled.sign_up_needs_smtp"
+    message: "sign-up for your email domains needs mail: without a verification email anyone could claim an address in the domain. Set identity.bundled.smtp"
+    expression: "size(this.sign_up_email_domains) == 0 || has(this.smtp)"
+  };
+}
+
+/**
+ * A mail server.
+ */
+message KubernetesStigmerSmtp {
+  /**
+   * The mail server's address.
+   */
+  string host = 1 [(buf.validate.field).required = true];
+
+  /**
+   * The mail server's port.
+   */
+  optional int32 port = 2 [
+    (dev.planton.shared.options.default) = "587",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+
+  /**
+   * The address mail is sent from.
+   */
+  string from = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "smtp.from.format"
+      message: "identity.bundled.smtp.from must be an email address"
+      expression: "this.contains('@')"
+    }
+  ];
+
+  /**
+   * Upgrade the connection to TLS.
+   */
+  bool starttls = 4;
+
+  /**
+   * The user name and password, when the mail server asks for them.
+   */
+  KubernetesStigmerSmtpCredentials credentials = 5;
+}
+
+/**
+ * SMTP sign-in: given here, or an existing Secret.
+ */
+message KubernetesStigmerSmtpCredentials {
+  oneof source {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * The user name and password. This resource writes them into a Secret
+     * under the names Stigmer reads (username, password).
+     */
+    KubernetesStigmerSmtpLogin login = 1;
+
+    /**
+     * A Secret in the Stigmer's namespace with the keys username and
+     * password.
+     */
+    dev.planton.shared.foreignkey.v1.StringValueOrRef existing_secret_name = 2 [
+      (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesSecret,
+      (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.secret_name"
+    ];
+  }
+}
+
+/**
+ * An SMTP user name and password.
+ */
+message KubernetesStigmerSmtpLogin {
+  /**
+   * The user name.
+   */
+  string username = 1 [(buf.validate.field).required = true];
+
+  /**
+   * The password.
+   */
+  string password = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+}
+
+/**
+ * An OpenID Connect issuer and the clients Stigmer is registered as.
+ */
+message KubernetesStigmerOidc {
+  /**
+   * The issuer's URL, exactly as its discovery document names it: https, or
+   * plain http only for a loopback issuer.
+   */
+  string issuer = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "oidc.issuer.format"
+      message: "identity.oidc.issuer must be an https URL (plain http is allowed only for a loopback issuer)"
+      expression: "this.startsWith('https://') || this.matches('^http://(localhost|127[.]0[.]0[.]1)(:[0-9]+)?(/.*)?$')"
+    }
+  ];
+
+  /**
+   * The audience the issuer puts in Stigmer's tokens.
+   */
+  string audience = 2 [(buf.validate.field).required = true];
+
+  /**
+   * The web console's client.
+   */
+  string console_client_id = 3;
+
+  /**
+   * The desktop app's and the CLI's client.
+   */
+  string native_client_id = 4;
+
+  /**
+   * Where the server fetches the issuer's discovery document when it cannot
+   * reach the issuer's public name from inside the cluster. The document
+   * must still name `issuer`.
+   */
+  string discovery_url = 5;
+}
+
+/**
+ * Stigmer Enterprise.
+ */
+message KubernetesStigmerEnterprise {
+  /**
+   * The license key you were sent. The server runs the Enterprise image and
+   * verifies it at boot.
+   */
+  KubernetesStigmerSecretValue license = 1 [(buf.validate.field).required = true];
+
+  /**
+   * The account ids (ida_ and 26 characters, as `stigmer auth whoami`
+   * prints them) who may create an organization. Empty = anyone signed in.
+   */
+  repeated string organization_creators = 2;
+
+  /**
+   * How long the access history is kept, in days. Empty = every entry is
+   * kept.
+   */
+  optional int32 access_history_retention_days = 3 [(buf.validate.field).int32.gte = 1];
+
+  /**
+   * Which addresses the server dials when it reaches a URL a person wrote.
+   * Empty = strict.
+   */
+  string outbound_egress = 4 [(buf.validate.field).string = {
+    in: [
+      "",
+      "strict",
+      "relaxed"
+    ]
+  }];
+}
+
+/**
+ * Where engineers' agents run.
+ */
+message KubernetesStigmerSandboxes {
+  /**
+   * Where each session runs: shared (every session on the shared runner
+   * beside the server, one pod and one disk), agentSandbox (each session in a
+   * pod of its own through agent-sandbox, agents.x-k8s.io) or substrate (each
+   * session in an Agent Substrate actor, a gVisor sandbox on a pool of
+   * workers, snapshotted to the bucket while it sleeps). Empty = shared. Both
+   * per-session drivers need object_store, and the operator installs what
+   * they run on.
+   */
+  string driver = 1 [(buf.validate.field).string = {
+    in: [
+      "",
+      "shared",
+      "agentSandbox",
+      "substrate"
+    ]
+  }];
+
+  /**
+   * How long a quiet sandbox stays awake before it sleeps; it wakes with its
+   * files on the session's next message. Empty = the driver's own default.
+   */
+  optional int32 idle_seconds = 2 [(buf.validate.field).int32.gte = 30];
+
+  /**
+   * Tunes the agentSandbox driver.
+   */
+  KubernetesStigmerAgentSandbox agent_sandbox = 3;
+
+  /**
+   * Tunes the substrate driver.
+   */
+  KubernetesStigmerSubstrate substrate = 4;
+
+  option (buf.validate.message).cel = {
+    id: "sandboxes.agent_sandbox_needs_driver"
+    message: "sandboxes.agent_sandbox tunes the agentSandbox driver: set sandboxes.driver to agentSandbox, or remove it"
+    expression: "!has(this.agent_sandbox) || this.driver == 'agentSandbox'"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "sandboxes.substrate_needs_driver"
+    message: "sandboxes.substrate tunes the substrate driver: set sandboxes.driver to substrate, or remove it"
+    expression: "!has(this.substrate) || this.driver == 'substrate'"
+  };
+}
+
+/**
+ * The agentSandbox driver.
+ */
+message KubernetesStigmerAgentSandbox {
+  /**
+   * Private ranges a sandbox may reach besides the server and the bucket,
+   * such as a model gateway or an MCP server on your network. Sandboxes
+   * always reach the server, the bucket, DNS and the public internet.
+   */
+  repeated string egress_allow_cidrs = 1 [
+    (buf.validate.field).repeated.max_items = 64,
+    (buf.validate.field).repeated.items.string.max_len = 43,
+    (buf.validate.field).repeated.items.string.ip_prefix = true
+  ];
+}
+
+/**
+ * The substrate driver.
+ */
+message KubernetesStigmerSubstrate {
+  /**
+   * How many gVisor workers the pool keeps. Sessions beyond what they hold
+   * wait for a free seat.
+   */
+  optional int32 workers = 1 [
+    (dev.planton.shared.options.default) = "1",
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  /**
+   * Each worker pod's requests and limits; the limits are the room every
+   * sandbox on it shares.
+   */
+  dev.planton.kubernetes.KubernetesCoreV1ApiResourceRequirements worker_resources = 2;
+
+  /**
+   * Places the workers on matching nodes.
+   */
+  map<string, string> worker_node_selector = 3;
+
+  /**
+   * Lets the workers run on tainted nodes.
+   */
+  repeated dev.planton.kubernetes.KubernetesCoreV1ApiToleration worker_tolerations = 4;
+
+  /**
+   * Each sandbox's processor ceiling, in millicores. Empty = 2000.
+   */
+  optional int32 sandbox_cpu_millicores = 5 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 999999
+  }];
+
+  /**
+   * Each sandbox's memory ceiling, in MiB. Empty = 2048.
+   */
+  optional int32 sandbox_memory_mib = 6 [(buf.validate.field).int32.gte = 1];
+
+  /**
+   * host:port addresses a sandbox may reach over plain HTTP, such as an
+   * in-cluster model gateway (models.ai.svc.cluster.local:8080). Each host is
+   * a DNS name of two or more labels, never an address. The server and the
+   * bucket are added by the operator.
+   */
+  repeated string egress_http = 7 [
+    (buf.validate.field).repeated.max_items = 64,
+    (buf.validate.field).repeated.items.string.max_len = 259,
+    (buf.validate.field).cel = {
+      id: "substrate.egress_http.format"
+      message: "sandboxes.substrate.egress_http holds host:port addresses whose host is a DNS name of two or more labels, such as models.ai.svc.cluster.local:8080"
+      expression: "this.all(h, h.matches('^[a-z0-9]([a-z0-9-]*[a-z0-9])?([.][a-z0-9]([a-z0-9-]*[a-z0-9])?)+:[0-9]{1,5}$') && !h.matches('^[0-9.]+:[0-9]+$'))"
+    }
+  ];
+}
+
+/**
+ * Which cluster-level operators Stigmer's operator may install. Each is
+ * auto (install when missing, leave someone else's copy alone) or skip
+ * (trust that it is installed; a missing one is refused in the status).
+ * Empty = auto.
+ */
+message KubernetesStigmerPrerequisites {
+  /**
+   * CloudNativePG, which runs the bundled Postgres.
+   */
+  string postgres_operator = 1 [(buf.validate.field).string = {
+    in: [
+      "",
+      "auto",
+      "skip"
+    ]
+  }];
+
+  /**
+   * CloudNativePG's Barman Cloud plugin, which backs the bundled Postgres up
+   * to the bucket. It needs cert-manager, which nothing here installs.
+   */
+  string postgres_backup_plugin = 2 [(buf.validate.field).string = {
+    in: [
+      "",
+      "auto",
+      "skip"
+    ]
+  }];
+
+  /**
+   * agent-sandbox's controller, which runs the agentSandbox driver's pods.
+   */
+  string agent_sandbox = 3 [(buf.validate.field).string = {
+    in: [
+      "",
+      "auto",
+      "skip"
+    ]
+  }];
+
+  /**
+   * Agent Substrate's control plane, which runs the substrate driver's
+   * actors.
+   */
+  string substrate = 4 [(buf.validate.field).string = {
+    in: [
+      "",
+      "auto",
+      "skip"
+    ]
+  }];
+}

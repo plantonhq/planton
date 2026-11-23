@@ -794,3 +794,37 @@ questions:
       - kind: StripeTaxRegistration
         file: reference.md
         pattern: '`spec\.expiresAt`'
+
+  - id: q32
+    class: wisdom
+    question: >
+      A platform engineer wants Stigmer on their GKE cluster, on the
+      KubernetesPostgres they already run, exposed at a hostname with sign-in.
+      Which kind does this, what must the manifest carry for that
+      combination, and what must they do before deleting the namespace so a
+      backup stays restorable?
+    answer: >
+      KubernetesStigmer installs the Stigmer operator and its one Stigmer.
+      Their own Postgres (database.external) needs their own Temporal
+      (temporal.external), and cannot back the bundled sign-in, which keeps
+      its accounts on the bundled database, so the exposed install signs
+      people in through their own issuer (identity.oidc). The Stigmer's
+      namespace holds the encryption keys (stigmer-keys) and is never created
+      or deleted by the kind; before deleting it they run the
+      keys_export_command output and keep the file, because a restore
+      (database.bundled.recover_from) is refused until those keys are back.
+    checks:
+      - provider: kubernetes
+        pattern: 'KubernetesStigmer'
+      - kind: KubernetesStigmer
+        file: GUIDE.md
+        pattern: '## Sign-in follows the front door'
+      - kind: KubernetesStigmer
+        file: GUIDE.md
+        pattern: 'cannot run on your own Postgres: that combination needs `identity\.oidc`'
+      - kind: KubernetesStigmer
+        file: GUIDE.md
+        pattern: '## Restore needs the keys'
+      - kind: KubernetesStigmer
+        file: reference.md
+        pattern: 'keys_export_command'

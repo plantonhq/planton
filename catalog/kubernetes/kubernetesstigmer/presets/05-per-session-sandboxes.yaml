@@ -1,0 +1,38 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesStigmer
+metadata:
+  name: my-stigmer
+spec:
+  namespace:
+    value: stigmer
+  version: 0.3.2 # replace with the Stigmer release you validated
+  operator:
+    namespace:
+      value: stigmer-system
+    create_namespace: true
+  owner:
+    email: owner@acme.example # replace
+  runner:
+    model:
+      keys:
+        anthropic_api_key: $secret/anthropic-api-key
+  # A sandbox on any node reads and writes a run's files through the bucket.
+  object_store:
+    s3:
+      bucket:
+        value: stigmer
+      endpoint:
+        valueFrom:
+          kind: KubernetesSeaweedFs
+          name: storage
+          fieldPath: status.outputs.s3_endpoint
+      credentials:
+        access_key:
+          access_key_id: stigmer
+          secret_access_key: $secret/stigmer-bucket-secret-key
+  sandboxes:
+    driver: agentSandbox # each session in a pod of its own
+    idle_seconds: 300 # a quiet sandbox sleeps after five minutes
+    agent_sandbox:
+      egress_allow_cidrs:
+        - 10.20.0.0/16 # replace; private ranges sandboxes may also reach

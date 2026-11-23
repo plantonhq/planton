@@ -1,0 +1,44 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesStigmer
+metadata:
+  name: my-stigmer
+  # The catalog's CloudNativePG and its backup plugin deploy first, so
+  # Stigmer's operator finds them installed and leaves them alone.
+  relationships:
+    - kind: KubernetesCloudNativePgOperator
+      name: cloudnative-pg
+      type: depends_on
+    - kind: KubernetesCnpgBarmanCloudPlugin
+      name: barman-cloud
+      type: depends_on
+spec:
+  namespace:
+    value: stigmer
+  version: 0.3.2 # replace with the Stigmer release you validated
+  operator:
+    namespace:
+      value: stigmer-system
+    create_namespace: true
+  owner:
+    email: owner@acme.example # replace
+  runner:
+    model:
+      keys:
+        anthropic_api_key: $secret/anthropic-api-key
+  object_store:
+    s3:
+      bucket:
+        value: stigmer
+      endpoint:
+        valueFrom:
+          kind: KubernetesSeaweedFs
+          name: storage
+          fieldPath: status.outputs.s3_endpoint
+      credentials:
+        access_key:
+          access_key_id: stigmer
+          secret_access_key: $secret/stigmer-bucket-secret-key
+  database:
+    bundled:
+      backup:
+        retention: 30d

@@ -968,6 +968,8 @@ Fields on other kinds that can point at this resource:
 | KubernetesPlantonPlatform | `spec.ingress.gatewayRef.name` | `status.outputs.gateway_name` |
 | KubernetesPlantonPlatform | `spec.ingress.gatewayRef.namespace` | `status.outputs.namespace` |
 | KubernetesRequestAuthentication | `spec.targetRefs[].name` | `status.outputs.gateway_name` |
+| KubernetesStigmer | `spec.ingress.gateway.name` | `status.outputs.gateway_name` |
+| KubernetesStigmer | `spec.ingress.gateway.namespace` | `status.outputs.namespace` |
 | KubernetesTcpRoute | `spec.parentRefs[].name` | `status.outputs.gateway_name` |
 | KubernetesTelemetry | `spec.targetRefs[].name` | `status.outputs.gateway_name` |
 | KubernetesTlsRoute | `spec.parentRefs[].name` | `status.outputs.gateway_name` |

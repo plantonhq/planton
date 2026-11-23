@@ -829,6 +829,7 @@ import (
 	kubernetessolroperatorv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetessolroperator/v1alpha1"
 	kubernetessparkoperatorv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetessparkoperator/v1alpha1"
 	kubernetesstatefulsetv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesstatefulset/v1alpha1"
+	kubernetesstigmerv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesstigmer/v1alpha1"
 	kubernetesstorageclassv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesstorageclass/v1alpha1"
 	kubernetesstrimzikafkaoperatorv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesstrimzikafkaoperator/v1alpha1"
 	kubernetessupersetv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetessuperset/v1alpha1"
@@ -1718,6 +1719,7 @@ var ProviderKubernetesMap = map[catalogkind.CatalogKind]proto.Message{
 	catalogkind.CatalogKind_KubernetesSolrOperator:                  &kubernetessolroperatorv1alpha1.KubernetesSolrOperator{},
 	catalogkind.CatalogKind_KubernetesSparkOperator:                 &kubernetessparkoperatorv1alpha1.KubernetesSparkOperator{},
 	catalogkind.CatalogKind_KubernetesStatefulSet:                   &kubernetesstatefulsetv1alpha1.KubernetesStatefulSet{},
+	catalogkind.CatalogKind_KubernetesStigmer:                       &kubernetesstigmerv1alpha1.KubernetesStigmer{},
 	catalogkind.CatalogKind_KubernetesStorageClass:                  &kubernetesstorageclassv1alpha1.KubernetesStorageClass{},
 	catalogkind.CatalogKind_KubernetesStrimziKafkaOperator:          &kubernetesstrimzikafkaoperatorv1alpha1.KubernetesStrimziKafkaOperator{},
 	catalogkind.CatalogKind_KubernetesSuperset:                      &kubernetessupersetv1alpha1.KubernetesSuperset{},

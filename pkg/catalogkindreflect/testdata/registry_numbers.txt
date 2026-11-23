@@ -732,6 +732,7 @@ KubernetesAgentSubstrate=4190
 KubernetesAgentSubstrateWorkerPool=4191
 KubernetesAgentSubstrateSandboxConfig=4192
 KubernetesAgentSubstrateCsiDriverConfig=4193
+KubernetesStigmer=4200
 DigitalOceanApp=5000
 DigitalOceanBucket=5001
 DigitalOceanContainerRegistry=5002

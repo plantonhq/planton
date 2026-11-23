@@ -1751,6 +1751,14 @@ Fields that can point at another resource's outputs:
 | `spec.database.visibility.mysql.host` | KubernetesMysql | `status.outputs.primary_service` |
 | `spec.database.visibility.mysql.passwordSecret.secretName` | KubernetesMysql | `status.outputs.root_password_secret.name` |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| KubernetesStigmer | `spec.temporal.external.hostPort` | `status.outputs.frontend_endpoint` |
+
 ## See Also
 
 - [Overview](../README.md)

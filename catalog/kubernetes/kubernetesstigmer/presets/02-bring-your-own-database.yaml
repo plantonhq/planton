@@ -1,0 +1,40 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesStigmer
+metadata:
+  name: my-stigmer
+spec:
+  namespace:
+    value: stigmer
+  version: 0.3.2 # replace with the Stigmer release you validated
+  operator:
+    namespace:
+      value: stigmer-system
+    create_namespace: true
+  owner:
+    email: owner@acme.example # replace
+  runner:
+    model:
+      keys:
+        anthropic_api_key: $secret/anthropic-api-key
+  # Your own Postgres needs your own Temporal: the operator creates
+  # Temporal's databases only on a Postgres it runs.
+  database:
+    external:
+      host:
+        valueFrom:
+          kind: KubernetesPostgres
+          name: stigmer-db
+          fieldPath: status.outputs.rw_service
+      user: stigmer # owns the database, where Stigmer creates its schemas
+      database: stigmer
+      password:
+        value: $secret/stigmer-db-password
+      ssl_mode: require
+  temporal:
+    external:
+      host_port:
+        valueFrom:
+          kind: KubernetesTemporal
+          name: stigmer-temporal
+          fieldPath: status.outputs.frontend_endpoint
+      namespace: default

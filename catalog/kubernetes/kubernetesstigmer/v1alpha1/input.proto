@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesstigmer.v1alpha1;
+
+import "catalog/kubernetes/kubernetesstigmer/v1alpha1/api.proto";
+import "catalog/kubernetes/provider.proto";
+
+// KubernetesStigmerIacInput provides the input for the Stigmer IaC stack.
+message KubernetesStigmerIacInput {
+  // the catalog object to deploy
+  KubernetesStigmer target = 1;
+
+  // provider-config for Kubernetes provider
+  dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

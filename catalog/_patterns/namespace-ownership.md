@@ -4,6 +4,7 @@ kinds:
   - KubernetesPostgres
   - KubernetesValkey
   - KubernetesAgentSubstrate
+  - KubernetesStigmer
 ---
 
 # Namespace Ownership: Dedicated Component vs the createNamespace Flag
@@ -122,6 +123,8 @@ other tenant will ever join, so the flag is the NORMAL shape there, not a
 violation of this pattern.
 
 One sole-tenant case still wants the dedicated component: a kind that reads Secrets someone must put in its namespace before it starts. KubernetesAgentSubstrate is the instance. Its namespace, `ate-system`, is fixed by upstream, and with S3 storage or an external database it reads the store's key and the connection strings from Secrets there. With the flag, those Secrets could only be created after the control plane they are meant for. So a KubernetesNamespace owns `ate-system`, the Secrets follow it, and the control plane comes last with `createNamespace: false`. It is also the shape that keeps the bundled database's volume across a destroy of the control plane, because the namespace it lives in is not the control plane's to delete.
+
+One kind has no flag at all: KubernetesStigmer never creates or deletes the namespace its Stigmer lives in. Stigmer's operator keeps the encryption keys there (`stigmer-keys`), and they must outlive every destroy, because every backup is sealed with them. So a KubernetesNamespace owns that namespace, and deleting it, an environment teardown included, deletes the keys: run the kind's `keys_export_command` first. The operator's own namespace is the ordinary sole-tenant case, where `operator.create_namespace` is the normal shape.
 
 ## See also
 

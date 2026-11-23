@@ -1067,6 +1067,7 @@ Fields on other kinds that can point at this resource:
 | KubernetesMetricsServer | `spec.tls.certManagerIssuer.clusterIssuer.name` | `status.outputs.cluster_issuer_name` |
 | KubernetesMongodb | `spec.tls.issuer` | `metadata.name` |
 | KubernetesMysql | `spec.tls.issuer` | `metadata.name` |
+| KubernetesStigmer | `spec.ingress.tls.issuer.name` | `status.outputs.cluster_issuer_name` |
 
 ## See Also
 

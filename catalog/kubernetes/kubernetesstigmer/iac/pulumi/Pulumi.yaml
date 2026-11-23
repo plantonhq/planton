@@ -1,0 +1,3 @@
+name: kubernetes-stigmer
+runtime: go
+description: Stigmer, the open-source AI agent platform, on Kubernetes - the stigmer-operator Helm chart (OCI) and the one Stigmer resource it reconciles into a running install

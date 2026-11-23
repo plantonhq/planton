@@ -1,0 +1,55 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesStigmer
+metadata:
+  name: my-stigmer
+spec:
+  namespace:
+    value: stigmer
+  version: 0.3.2 # replace with the Stigmer release you validated
+  operator:
+    namespace:
+      value: stigmer-system
+    create_namespace: true
+  runner:
+    model:
+      keys:
+        anthropic_api_key: $secret/anthropic-api-key
+  object_store:
+    s3:
+      bucket:
+        value: stigmer
+      endpoint:
+        valueFrom:
+          kind: KubernetesSeaweedFs
+          name: storage
+          fieldPath: status.outputs.s3_endpoint
+      credentials:
+        access_key:
+          access_key_id: stigmer
+          secret_access_key: $secret/stigmer-bucket-secret-key
+  ingress:
+    hostname: stigmer.acme.example # replace
+    gateway:
+      name:
+        valueFrom:
+          kind: KubernetesGateway
+          name: edge
+          fieldPath: status.outputs.gateway_name
+      namespace:
+        valueFrom:
+          kind: KubernetesGateway
+          name: edge
+          fieldPath: status.outputs.namespace
+  # Enterprise signs every caller in through your own issuer.
+  identity:
+    oidc:
+      issuer: https://auth.acme.example/realms/stigmer # replace
+      audience: stigmer
+      console_client_id: stigmer-console
+      native_client_id: stigmer-native
+  enterprise:
+    license:
+      value: $secret/stigmer-license-key
+    access_history_retention_days: 365
+  sandboxes:
+    driver: agentSandbox # a licensed install runs each session on its own

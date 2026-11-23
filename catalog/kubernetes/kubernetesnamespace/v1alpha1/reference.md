@@ -550,6 +550,8 @@ Fields on other kinds that can point at this resource:
 | KubernetesSolrOperator | `spec.namespace` | `spec.name` |
 | KubernetesSparkOperator | `spec.namespace` | `spec.name` |
 | KubernetesStatefulSet | `spec.namespace` | `spec.name` |
+| KubernetesStigmer | `spec.namespace` | `spec.name` |
+| KubernetesStigmer | `spec.operator.namespace` | `spec.name` |
 | KubernetesStrimziKafkaOperator | `spec.namespace` | `spec.name` |
 | KubernetesSuperset | `spec.namespace` | `spec.name` |
 | KubernetesTcpRoute | `spec.namespace` | `spec.name` |

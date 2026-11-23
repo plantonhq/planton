@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesstigmer.v1alpha1;
+
+/**
+ * **KubernetesStigmerOutputs** are the handles a deployed Stigmer exports:
+ * where to reach it, how to open it from a workstation, how to read its
+ * state, the owner's first password, and how to save its keys. Every value
+ * derives from the declaration (the operator names everything after the
+ * Stigmer, which this kind always calls `stigmer`), so they are stable from
+ * the first apply and read no status.
+ */
+message KubernetesStigmerOutputs {
+  // The namespace the Stigmer lives in.
+  string namespace = 1;
+
+  // The namespace the operator runs in.
+  string operator_namespace = 2;
+
+  // The operator's Helm release ("stigmer-operator").
+  string operator_release = 3;
+
+  // The server's in-cluster gRPC and console address,
+  // http://stigmer.<namespace>.svc.cluster.local:7234: what an in-cluster
+  // client or a gateway points at.
+  string server_endpoint = 4;
+
+  // The server's in-cluster files address (port 7235), for artifacts kept
+  // on a volume.
+  string artifacts_endpoint = 5;
+
+  // Where people open Stigmer: https://<hostname> with a front door, or
+  // http://localhost:7234 through port_forward_command without one.
+  string url = 6;
+
+  // The command that opens the server on this machine (ports 7234 and 7235).
+  string port_forward_command = 7;
+
+  // The command that shows the install's phase, version and the one sentence
+  // that explains it.
+  string status_command = 8;
+
+  // The command that reads the owner's one-time password, when the bundled
+  // sign-in is on; empty otherwise.
+  string owner_password_command = 9;
+
+  // The Secret holding the install's encryption keys ("stigmer-keys"). Every
+  // backup is sealed with them; the operator keeps the Secret when the
+  // Stigmer is deleted.
+  string keys_secret = 10;
+
+  // The command that saves the keys Secret to a file. Keep that file outside
+  // the cluster: a restore into a new cluster applies it before the Stigmer
+  // is declared.
+  string keys_export_command = 11;
+}
