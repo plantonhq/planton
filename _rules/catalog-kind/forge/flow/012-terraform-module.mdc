@@ -259,6 +259,22 @@ NOTES
   source, referencing it as `data.google_project.this[0]`. This also mirrors the
   Pulumi side's only-when-needed `GetClientConfig` lookup, keeping the engines'
   resolution behavior identical.
+- **`data "kubernetes_resources"` lists ONE namespace, never the cluster.** With
+  `namespace` omitted, a read of a namespaced kind returns an empty list rather
+  than every namespace's objects, so a check written as "any X anywhere on the
+  cluster" passes silently. Read namespaced objects in the namespace the check
+  is about (and mirror that scope in the Pulumi preflight), or read a
+  cluster-scoped object that carries the same fact (a CRD's
+  `meta.helm.sh/release-name` and `release-namespace` annotations name the Helm
+  release that owns it). A read of a kind the cluster does not serve fails the
+  plan ("no matches for kind"): gate it with `count` on a CustomResourceDefinition
+  read by `field_selector`, and never give either read a `depends_on`, which
+  postpones it to apply.
+- **Never add an optional key with `cond ? { k = v } : {}`.** HCL refuses a
+  conditional whose two branches are objects of different shapes (and, where it
+  can unify them to a map, silently turns a bool into a string). Build the object
+  with null for an undeclared key and filter it:
+  `{ for k, v in { k = cond ? v : null, ... } : k => v if v != null }`.
 - **A provider the default deploy never uses must still configure with nothing but
   the connection's own credential.** OpenTofu and Terraform configure EVERY provider
   a module references, even when the only block reading through it has `count = 0`

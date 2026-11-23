@@ -74,8 +74,12 @@ SEQUENTIAL STEPS
    - Identify provider's range from PROVIDER RANGES above
    - Place the kind in the family sub-band its comment names (the
      autoscaling kinds sit together, the observability kinds together), at
-     the next free number inside that sub-band; only a kind with no family
-     takes the provider's highest number + 1
+     the next free number inside that sub-band. A kind with no family opens
+     a new sub-band after the last one any section comment reserves (a band
+     is reserved by its comment even where its numbers are not yet used, so
+     the highest number + 1 can land inside another family's band), with a
+     section comment naming the family, and adds it to the provider's band
+     summary comment
    - Ensure it's within the provider's range
 
 3) Generate ID Prefix:
