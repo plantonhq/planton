@@ -3,18 +3,15 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpcloudbuildconnection
 spec:
-  # Deferred: a working connection needs credentials only a person can
-  # mint -- Cloud Build's GitHub App installed on a test organization (its
-  # installation ID) and the authorizing account's OAuth token stored as a
-  # Secret Manager secret version the Cloud Build service agent can read.
-  # The scenario declares both as owner-arranged env tokens. Offline bar
-  # met: both modules build and validate, offline plans for the reference
-  # manifest, the scenario, and every code-host arm are clean on the pinned
-  # provider, and the accounting is total. Live facts the proof lane
-  # confirms once the tokens exist: (1) the connection creates and reaches
-  # installation_stage COMPLETE; (2) an annotation change updates in
-  # place; (3) destroy removes it (the verifier accepts 404).
+  # Proven live on both engines (2026-11-23) as the declared identity: a
+  # github.com connection through Cloud Build's GitHub App installed on the
+  # fixture organization planton-e2e-fixtures, authorized by a classic token
+  # of its machine account planton-e2e-bot (repo, read:user, read:org) held
+  # as a Secret Manager version the Cloud Build service agent reads. The
+  # connection reaches installation_stage COMPLETE, re-plans clean, takes an
+  # annotation change in place (UpdateConnection in the audit log) and is
+  # destroyed.
   tier: 2
-  status: deferred
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 20

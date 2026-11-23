@@ -3,18 +3,13 @@ kind: CatalogKindE2EProfile
 metadata:
   name: gcpcloudbuildrepository
 spec:
-  # Deferred: Google links a repository only through a connection whose
-  # installation is complete, and that needs owner-arranged credentials
-  # (see gcpcloudbuildconnection's profile) plus a test repository the
-  # installation can see. The scenario's connection fixture and the
-  # repository URI are owner-arranged env tokens. Offline bar met: both
-  # modules build and validate, offline plans for the reference manifest
-  # and the scenario are clean on the pinned provider, and the accounting
-  # is total. Live facts the proof lane confirms: (1) the link creates
-  # under the fixture connection and re-plans clean; (2) its name output
-  # is the full repository name a trigger accepts; (3) destroy removes the
-  # link before the connection (the verifier accepts 404).
+  # Proven live on both engines (2026-11-23) as the declared identity: one
+  # repository of the fixture organization linked through a connection
+  # fixture (the consumer-scoped prerequisites/gcpcloudbuildconnection.yaml);
+  # it re-plans clean, exports the full repository name, and is destroyed
+  # before the connection. No second act: every field of a linked
+  # repository recreates it, so it proves by create and destroy.
   tier: 2
-  status: deferred
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 20
