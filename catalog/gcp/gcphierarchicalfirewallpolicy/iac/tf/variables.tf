@@ -107,7 +107,10 @@ variable "spec" {
         # matches when it fits any entry.
         layer4_configs = list(object({
           # The IP protocol: a well-known name (tcp, udp, icmp, esp, ah, ipip,
-          # sctp), `all` for every protocol, or a protocol number (0-255).
+          # sctp), `all` for every protocol, or the number (0-255) of a protocol
+          # with no name here. Write a named protocol by its name: Google stores the
+          # name for its number (`6` reads back as `tcp`, measured on both engines),
+          # so a rule written with the number re-plans forever.
           ip_protocol = string
 
           # Ports or port ranges the rule applies to, for tcp and udp only:

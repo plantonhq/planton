@@ -144,6 +144,11 @@ variable "spec" {
     # (`cloudaudit.googleapis.com/policy`, `dryRunPolicyViolation`), nothing
     # is blocked. Set it beside `policy` to preview a tightening before it
     # bites, or alone to measure a new guardrail against live traffic first.
+    # Google takes a dry run only on a custom constraint, a managed constraint
+    # (`compute.managed.disableSerialPortAccess`), or gcp.restrictServiceUsage,
+    # gcp.restrictEndpointUsage, gcp.restrictTLSVersion and
+    # gcp.restrictTLSCipherSuites; a legacy constraint such as
+    # gcp.resourceLocations is refused. A dry run needs billing on the project.
     dry_run_policy = optional(object({
       # For LIST constraints only: whether the values allowed or denied by
       # policies higher in the hierarchy stay in effect here alongside this

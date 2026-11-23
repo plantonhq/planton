@@ -45,6 +45,8 @@ spec:
     machineType: n1-standard-8
     acceleratorType: NVIDIA_TESLA_T4
     acceleratorCount: 1
+  networkSpec:
+    enableInternetAccess: true
   idleTimeout: 3600s
 ```
 

@@ -80,7 +80,7 @@ excluded with a recorded reason -- and every spec field must reach provider
 surface. **Accounted** means both directions hold with zero unexplained
 gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind runs on.
 
-**169 of 186 kinds are at total accounting; 158 proven live.**
+**169 of 186 kinds are at total accounting; 180 proven live.**
 
 | Kind | Provider args | Matched | Mapped | Excluded | Open gaps | Accounted | Proven |
 |---|---|---|---|---|---|---|---|
@@ -100,17 +100,17 @@ gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind 
 | GcpBigQueryTable | 98 | 86 | 12 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpBigtableInstance | 19 | 6 | 13 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpBigtableTable | 23 | 8 | 14 | 1 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpBillingBudget | 29 | 24 | 5 | 0 | 0 | ✅ | — |
+| GcpBillingBudget | 29 | 24 | 5 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpBinaryAuthorizationAttestor | 20 | 11 | 9 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpBinaryAuthorizationPolicy | 12 | 10 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCertManagerCert | 14 | 10 | 2 | 2 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCertManagerDnsAuthorization | 8 | 6 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpCertManagerIssuanceConfig | 10 | 7 | 3 | 0 | 0 | ✅ | — |
+| GcpCertManagerIssuanceConfig | 10 | 7 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCertManagerTrustConfig | 9 | 4 | 5 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCertificateMap | 14 | 4 | 9 | 1 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpCloudArmorPolicy | 120 | 26 | 93 | 1 | 0 | ✅ | — |
-| GcpCloudBuildConnection | 32 | 30 | 2 | 0 | 0 | ✅ | — |
-| GcpCloudBuildRepository | 7 | 4 | 3 | 0 | 0 | ✅ | — |
+| GcpCloudArmorPolicy | 120 | 26 | 93 | 1 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpCloudBuildConnection | 32 | 30 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpCloudBuildRepository | 7 | 4 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCloudBuildTrigger | 131 | 110 | 18 | 3 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCloudBuildWorkerPool | 14 | 12 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCloudComposerEnvironment | 89 | 3 | 67 | 19 | 0 | ✅ | ✅ pulumi, terraform |
@@ -159,7 +159,7 @@ gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind 
 | GcpFirestoreDatabase | 15 | 11 | 4 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpFirestoreIndex | 17 | 16 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpFirewallRule | 20 | 13 | 7 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpFolder | 5 | 4 | 1 | 0 | 0 | ✅ | — |
+| GcpFolder | 5 | 4 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpGcsBucket | 78 | 39 | 31 | 8 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpGcsBucketIamMember | 6 | 6 | 0 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpGkeCluster | 538 | 63 | 147 | 328 | 0 | ✅ | ✅ pulumi, terraform |
@@ -171,12 +171,12 @@ gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind 
 | GcpGkeWorkloadIdentityBinding | 6 | 3 | 0 | 3 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpGlobalAddress | 11 | 9 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpGlobalForwardingRule | 51 | 43 | 8 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpHaVpnConnection | 84 | 40 | 25 | 19 | 0 | ✅ | — |
+| GcpHaVpnConnection | 84 | 40 | 25 | 19 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpHaVpnGateway | 30 | 11 | 16 | 3 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpHealthCheck | 100 | 14 | 86 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpHierarchicalFirewallPolicy | 37 | 29 | 6 | 2 | 0 | ✅ | — |
+| GcpHierarchicalFirewallPolicy | 37 | 29 | 6 | 2 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpIamCustomRole | 7 | 6 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpIamDenyPolicy | 13 | 11 | 2 | 0 | 0 | ✅ | — |
+| GcpIamDenyPolicy | 13 | 11 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpIamOauthClient | 18 | 12 | 3 | 3 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpIdentityPlatformConfig | 55 | 42 | 10 | 3 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpIdentityPlatformTenant | 36 | 24 | 6 | 6 | 0 | ✅ | ✅ pulumi, terraform |
@@ -202,24 +202,24 @@ gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind 
 | GcpMonitoringNotificationChannel | 18 | 9 | 3 | 6 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpMonitoringSlo | 53 | 9 | 44 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpMonitoringUptimeCheck | 38 | 33 | 3 | 2 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpNetworkEndpointGroup | 28 | 15 | 11 | 2 | 0 | ✅ | — |
+| GcpNetworkEndpointGroup | 28 | 15 | 11 | 2 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpNetworkFirewallPolicy | 87 | 63 | 20 | 4 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpOrgPolicy | 27 | 1 | 26 | 0 | 0 | ✅ | — |
-| GcpOrgPolicyCustomConstraint | 9 | 7 | 2 | 0 | 0 | ✅ | — |
-| GcpPlantonRunner | 0 | 0 | 0 | 0 | 0 | ✅ | — |
+| GcpOrgPolicy | 27 | 1 | 26 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpOrgPolicyCustomConstraint | 9 | 7 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpPlantonRunner | 0 | 0 | 0 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpPrivateCaCertificate | 59 | 54 | 3 | 2 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpPrivateCaCertificateAuthority | 67 | 62 | 3 | 2 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpPrivateCaCertificateTemplate | 49 | 45 | 2 | 2 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpPrivateCaPool | 57 | 51 | 4 | 2 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpProject | 14 | 5 | 5 | 4 | 0 | ✅ | — |
+| GcpProject | 14 | 5 | 5 | 4 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpProjectIamMember | 6 | 5 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpPscServiceAttachment | 20 | 14 | 4 | 1 | 1 | ❌ | — |
+| GcpPscServiceAttachment | 20 | 14 | 4 | 1 | 1 | ❌ | ✅ pulumi, terraform |
 | GcpPubSubSchema | 5 | 3 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpPubSubSubscription | 44 | 41 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpPubSubTopic | 44 | 41 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpPubSubTopicIamMember | 7 | 3 | 0 | 4 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpRedisCluster | 36 | 29 | 4 | 3 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpRedisClusterEndpointSet | 10 | 2 | 8 | 0 | 0 | ✅ | — |
+| GcpRedisClusterEndpointSet | 10 | 2 | 8 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpRedisInstance | 32 | 24 | 6 | 2 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpRegionNetworkEndpointGroup | 18 | 16 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpRouterNat | 54 | 28 | 21 | 5 | 0 | ✅ | ✅ pulumi, terraform |
@@ -232,8 +232,8 @@ gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind 
 | GcpServiceAccountIamMember | 6 | 6 | 0 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpServiceConnectionPolicy | 12 | 9 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpServiceNetworkingConnection | 5 | 5 | 0 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpSharedVpcHost | 2 | 1 | 1 | 0 | 0 | ✅ | — |
-| GcpSharedVpcServiceProject | 3 | 1 | 2 | 0 | 0 | ✅ | — |
+| GcpSharedVpcHost | 2 | 1 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpSharedVpcServiceProject | 3 | 1 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpSpannerBackupSchedule | 10 | 7 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpSpannerDatabase | 12 | 10 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpSpannerInstance | 28 | 21 | 7 | 0 | 0 | ✅ | ✅ pulumi, terraform |
@@ -244,11 +244,11 @@ gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind 
 | GcpTagKey | 7 | 6 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpTagValue | 4 | 3 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpTargetHttpProxy | 14 | 10 | 4 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpTargetHttpsProxy | 25 | 21 | 4 | 0 | 0 | ✅ | — |
+| GcpTargetHttpsProxy | 25 | 21 | 4 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpTpuQueuedResource | 14 | 2 | 11 | 1 | 0 | ✅ | — |
 | GcpTpuVm | 31 | 27 | 4 | 0 | 0 | ✅ | — |
-| GcpUrlMap | 558 | 124 | 429 | 1 | 4 | ❌ | — |
-| GcpVectorSearchCollection | 30 | 18 | 12 | 0 | 0 | ✅ | — |
+| GcpUrlMap | 558 | 124 | 429 | 1 | 4 | ❌ | ✅ pulumi, terraform |
+| GcpVectorSearchCollection | 30 | 18 | 12 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVertexAiAgentEngine | 104 | 50 | 41 | 13 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVertexAiDataset | 7 | 4 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVertexAiDeployedIndex | 16 | 12 | 4 | 0 | 0 | ✅ | ✅ pulumi, terraform |
@@ -266,7 +266,7 @@ gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind 
 | GcpVertexAiSearchEngine | 160 | 124 | 29 | 2 | 5 | ❌ | ✅ pulumi, terraform |
 | GcpVertexAiTensorboard | 25 | 11 | 12 | 2 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVpcNetwork | 17 | 10 | 6 | 1 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpVpcPeering | 17 | 14 | 2 | 1 | 0 | ✅ | — |
+| GcpVpcPeering | 17 | 14 | 2 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpWorkflow | 23 | 10 | 5 | 8 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpWorkloadIdentityPool | 16 | 15 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpWorkloadIdentityPoolProvider | 16 | 15 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |

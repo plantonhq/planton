@@ -88,7 +88,7 @@ The InfraPipeline deploys the namespace and the Deployment first, then creates t
 
 These are the most important decisions when configuring a Kubernetes HorizontalPodAutoscaler. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**One controller per replica count** — Leave the target workload's own `availability.replicas` unset: a KubernetesDeployment or KubernetesStatefulSet without it leaves its size to this HPA, so a redeploy never resets the count the HPA chose, while a set `replicas` is a size every apply holds the workload to. Pointing this AND the workload's built-in autoscaling at the same target flaps the fleet.
+**One controller per replica count** — Leave the target workload's own `availability.replicas` unset: a Kubernetes Deployment or Kubernetes StatefulSet without it leaves its size to this HPA, so a redeploy never resets the count the HPA chose, while a set `replicas` is a size every apply holds the workload to. Pointing this AND the workload's built-in autoscaling at the same target flaps the fleet.
 
 **The ceiling is the capacity conversation** — `maxReplicas` is required and deliberate: an autoscaler without a ceiling is a blank check to the metric driving it. The floor (default 1) is what survives quiet hours.
 

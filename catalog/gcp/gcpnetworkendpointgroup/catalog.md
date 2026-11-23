@@ -53,11 +53,21 @@ spec:
           kind: GcpComputeInstance
           name: web-1
           fieldPath: status.outputs.instance_name
+      ipAddress:
+        valueFrom:
+          kind: GcpComputeInstance
+          name: web-1
+          fieldPath: status.outputs.internal_ip
     - instance:
         valueFrom:
           kind: GcpComputeInstance
           name: web-2
           fieldPath: status.outputs.instance_name
+      ipAddress:
+        valueFrom:
+          kind: GcpComputeInstance
+          name: web-2
+          fieldPath: status.outputs.internal_ip
       port: 8081
 ```
 

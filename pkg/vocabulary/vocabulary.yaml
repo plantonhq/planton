@@ -237,7 +237,7 @@ allow:
     reason: Google's own resource-name type in workload identity and BigQuery
   - pattern: '(?i)cloud[ _-]?resource[ _-]?service[ _-]?account'
     reason: the service account BigQuery creates for a Cloud Resource connection
-  - pattern: '(?i)gcp[ _-]?big[ _-]?query[ _-]?connection[ _-]?cloud[ _-]?resource|cloud[ _-]?resource[ _-]?(connection|arm)|\bcloud_resource\b|\bcloudResource\b|\bGetCloudResource\b|\bCloudResource\b|\bConnectionCloudResource\w*|biglake-cloud-resource|scenarios/cloud-resource'
+  - pattern: '(?i)gcp[ _-]?big[ _-]?query[ _-]?connection[ _-]?cloud[ _-]?resource|cloud[ _-]?resource[ _-]?(connection|arm)|\bcloud_resource\b|\bcloudResource\b|\bGetCloudResource\b|\bCloudResource\b|\bConnectionCloudResource\w*|biglake-cloud-resource|scenarios/cloud-resource|\bcloud-resource(\.to)?\.yaml\b'
     paths: ['**/gcpbigqueryconnection/**', '**/gcpdatastreamstream/**', 'catalog/gcp/aa_e2e/verify/bigquery_connection.go']
     reason: BigQuery's own Cloud Resource connection type, its field, its REST key, the files named after it, and the Datastream stream that writes through one
   - pattern: '(?i)cloud_?resource'
