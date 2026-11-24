@@ -43,8 +43,6 @@ const (
 	stigmerAgentSandboxNs       = "agent-sandbox-system"
 	stigmerAgentSandboxCrd      = "sandboxes.agents.x-k8s.io"
 	stigmerBarmanObjectStoreCrd = "objectstores.barmancloud.cnpg.io"
-	stigmerSubstrateNs          = "ate-system"
-	stigmerSubstrateCrd         = "workerpools.ate.dev"
 
 	// The agent every lane talks to: one with no tools, which answers in one
 	// turn. A fixed slug, so a later act (a restore, an upgrade) finds the
@@ -224,6 +222,19 @@ func (v *StigmerVerifier) VerifyAbsent(ctx context.Context, kubeconfig string) e
 		fmt.Printf("  [verify] the refused deploy installed nothing\n")
 		return nil
 	}
+	if v.SandboxDriver == "substrate" {
+		// The accepted limit (README, "What a destroy leaves"): Stigmer's
+		// operator never ends a session's Substrate actor, so its worker
+		// drains for up to an hour after the Stigmer is gone, the operator's
+		// cleanup waits behind it, and the kind's bounded wait goes on and
+		// names what stays. What the kind promises here is that: the Stigmer
+		// and its operator gone, the keys and the definition kept.
+		if err := v.requireKept(ctx, kubeconfig); err != nil {
+			return err
+		}
+		fmt.Printf("  [verify] destroy removed the Stigmer and its operator and kept the keys; with the substrate driver the operator's own cleanup is not awaited (README, What a destroy leaves)\n")
+		return nil
+	}
 	if v.BundledDatabase {
 		if v.CatalogCloudNativePg {
 			if err := v.requireNotStigmers(ctx, kubeconfig, stigmerCloudNativePgCrd); err != nil {
@@ -241,18 +252,22 @@ func (v *StigmerVerifier) VerifyAbsent(ctx context.Context, kubeconfig string) e
 			return errors.Wrap(err, "the operator's cleanup left the sandbox namespace")
 		}
 	}
-	if v.SandboxDriver == "substrate" {
-		if err := v.requireStigmersGone(ctx, kubeconfig, stigmerSubstrateCrd, stigmerSubstrateNs); err != nil {
-			return err
-		}
+	if err := v.requireKept(ctx, kubeconfig); err != nil {
+		return err
 	}
+	fmt.Printf("  [verify] destroy left the keys %s/%s and the definition %s, and removed the rest\n", v.Namespace, stigmerKeysSecret, stigmerResource)
+	return nil
+}
+
+// requireKept asserts what every destroy keeps: the encryption keys and
+// the Stigmer definition.
+func (v *StigmerVerifier) requireKept(ctx context.Context, kubeconfig string) error {
 	if err := KubectlResourceExists(ctx, kubeconfig, "secret", stigmerKeysSecret, v.Namespace); err != nil {
 		return errors.Wrapf(err, "the encryption keys (%s/%s) must outlive the destroy, or every backup becomes unreadable", v.Namespace, stigmerKeysSecret)
 	}
 	if err := KubectlResourceExists(ctx, kubeconfig, "crd", stigmerResource, ""); err != nil {
 		return errors.Wrapf(err, "the Stigmer definition %s is kept on uninstall by Stigmer's chart", stigmerResource)
 	}
-	fmt.Printf("  [verify] destroy left the keys %s/%s and the definition %s, and removed the rest\n", v.Namespace, stigmerKeysSecret, stigmerResource)
 	return nil
 }
 

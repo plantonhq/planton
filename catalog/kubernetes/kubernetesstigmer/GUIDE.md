@@ -36,7 +36,7 @@ A `version` move rolls the operator, which rolls the server. With backups on, th
 
 ## Destroy
 
-The Stigmer has no finalizer, so deleting it returns at once, and the operator's janitor cleans up only once no Stigmer is left. A destroy that removed the chart right away would kill the janitor mid-sweep and strand CloudNativePG and the sandbox namespace. So the destroy waits between the Stigmer and the chart, by the janitor's own rules: this Stigmer's database objects and pods first (their last step archives the final changes, which needs the bucket's credentials, still in place), then the sandbox namespace, then each prerequisite to be gone, someone else's, or still holding another install's objects. The wait is bounded and never fails a destroy.
+The Stigmer has no finalizer, so deleting it returns at once, and the operator's janitor cleans up only once no Stigmer is left. A destroy that removed the chart right away would kill the janitor mid-sweep and strand CloudNativePG and the sandbox namespace. So the destroy waits between the Stigmer and the chart, by the janitor's own rules: this Stigmer's database objects and pods first (their last step archives the final changes, which needs the bucket's credentials, still in place), then the sandbox namespace, then each prerequisite to be gone, someone else's, or still holding another install's objects. The wait is bounded and never fails a destroy. Under the `substrate` driver it runs out: the janitor deletes the sandbox namespace but never ends a live session's Substrate actor, whose worker then drains for up to an hour (its termination grace), so the destroy names the prerequisites that stay and the commands that remove them.
 
 ## Prerequisites from the catalog
 

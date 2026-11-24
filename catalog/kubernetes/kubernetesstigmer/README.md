@@ -42,6 +42,8 @@ Three things outlive a destroy on purpose:
 - **The bucket's archive.**
 - **The `stigmers.stigmer.ai` definition**, which the chart keeps. A later install under the same release adopts it.
 
+With the `substrate` sandbox driver, the operator's cleanup does not finish inside the wait. Stigmer's operator does not end a live session's Substrate actor when the Stigmer goes, so that actor's worker drains for up to an hour, the operator's cleanup waits behind it, and the destroy goes on and names what stays: CloudNativePG, the backup plugin, Agent Substrate and the sandbox namespace. Remove them with the commands it prints once the worker has stopped.
+
 Deleting the Stigmer's namespace, including through an environment teardown that removes its KubernetesNamespace, deletes the keys. Run `keys_export_command` first.
 
 ## Upgrades
@@ -71,6 +73,7 @@ When the catalog's CloudNativePG, its backup plugin, agent-sandbox or Agent Subs
 - **Requests above limits** and memory below what a workload needs are refused by the operator in the Stigmer's status, not at validation.
 - **A Stigmer in another namespace** is refused by Stigmer's own operator, which serves only the oldest Stigmer on a cluster, in that Stigmer's status.
 - **A leftover prerequisite installed without Helm** (CloudNativePG or agent-sandbox applied from upstream's release files and later removed, leaving their definitions) names no controller the plan can look for, so it is trusted, as Stigmer's operator trusts it, and the install waits on it. Delete the leftover definitions first, once no object of theirs is left.
+- **A destroy under the `substrate` driver leaves the operator's prerequisites behind** (see "What a destroy leaves"): Stigmer's operator does not end live sessions' Substrate actors, so their workers drain for up to an hour and its cleanup cannot finish inside the destroy's wait.
 - **GKE 1.37 has no default StorageClass**: name one in the volume settings.
 - **Stigmer's own open limits stay Stigmer's**: Agent Substrate's snapshots cannot use Cloud Storage's S3 endpoint (stigmer/stigmer#3415), a failed Substrate template is not retried (#3417), and switching the driver away from Substrate leaves it running (#3418).
 

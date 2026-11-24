@@ -21,14 +21,19 @@ spec:
   # cluster left with no controller running them
   # (scenarios/clean-slate.setup.sh).
   #
-  # pending_proof: every scenario is authored and the offline gates are green.
-  # Green live on both engines: minimal (with the import round trip),
+  # Green on both engines: minimal (with the import round trip),
   # bring-your-own, prerequisite-orphaned, operator-namespace-moved,
-  # downgrade-refused and keys-missing; upgrade on Pulumi. Still to run:
-  # agent-sandbox, exposed and substrate; bucket-and-restore and
-  # composed-prerequisites after the fixes their first runs led to; upgrade on
-  # OpenTofu, whose operator held the upgrade when its pre-upgrade backup failed
-  # right after the lane's own. Unblock: flip to green and run the lanes, one at
-  # a time.
-  status: pending_proof
-  timeout_minutes: 150
+  # downgrade-refused, keys-missing, upgrade, bucket-and-restore,
+  # composed-prerequisites, agent-sandbox, exposed and substrate. Substrate's
+  # destroy is held to the kind's accepted limit (README, "What a destroy
+  # leaves"): Stigmer's operator does not end a live session's Substrate
+  # actor, so its cleanup cannot finish inside the destroy's wait.
+  #
+  # timeout_minutes: one engine's twelve scenarios take about 150 minutes on
+  # a laptop kind cluster (substrate's destroy alone waits its full ten
+  # minutes); 180 leaves headroom.
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
+  timeout_minutes: 180
