@@ -16,7 +16,7 @@ semantic twin of the Terraform module's `helm_release` with
    labels when `create_namespace` is true; normally false, because the
    namespace is the OPERATOR's and already exists
 2. **Helm Release `plugin-barman-cloud`** -- the plugin chart (pinned
-   default 0.7.0 = plugin v0.13.0): the plugin Deployment, its
+   default 0.9.0 = plugin v0.16.0): the plugin Deployment, its
    ServiceAccount and RBAC, the fixed-name gRPC Service `barman-cloud`
    labeled `cnpg.io/pluginName` (how the operator discovers it), the
    config ConfigMap carrying the sidecar image, the cert-manager
@@ -83,8 +83,8 @@ planton pulumi up --manifest e2e/manifest.yaml --module-dir <path-to-this-module
   escape-hatch merge, and the fixed-identity pins
 - `module/locals.go`: resolved namespace and chart version -- kept in
   lockstep with the Terraform module's `locals.tf`
-- `module/vars.go`: chart identity, pinned default version (0.7.0 =
-  plugin v0.13.0), the fixed release, plugin, and Service names, the
+- `module/vars.go`: chart identity, pinned default version (0.9.0 =
+  plugin v0.16.0), the fixed release, plugin, and Service names, the
   600s timeout
 - `module/helpers.go`: shared shape renderers (resources, tolerations,
   the image split, the Helm `-f` merge)

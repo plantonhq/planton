@@ -94,7 +94,7 @@ literal string before Terraform runs.
 ## Parity
 
 Kept in lockstep with the Pulumi module (`../pulumi/module/`): same
-chart identity and pinned default version (0.7.0 = plugin v0.13.0), same
+chart identity and pinned default version (0.9.0 = plugin v0.16.0), same
 fixed release, plugin, and Service names, same values rendering (the
 image split, the divergence-only rendering of chart defaults, the
 fixed-identity pins merged last), same atomic/wait posture, same

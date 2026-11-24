@@ -96,8 +96,6 @@ spec:
     model:
       keys:
         anthropic_api_key: sk-ant-example-not-a-real-key
-    storage:
-      size: 10Gi
   database:
     bundled:
       instances: 2
@@ -163,9 +161,12 @@ spec:
 | `spec.operator.imagePullPolicy` | `string` |  |  |  |
 | `spec.operator.imagePullSecrets` | `[]string` |  |  |  |
 | `spec.operator.replicas` | `int32` |  |  |  |
-| `spec.operator.resources` | `KubernetesStigmerOperatorResources` |  |  |  |
-| `spec.operator.resources.requests` | `map<string, string>` |  |  |  |
+| `spec.operator.resources` | `KubernetesCoreV1ApiResourceRequirements` |  |  |  |
 | `spec.operator.resources.limits` | `map<string, string>` |  |  |  |
+| `spec.operator.resources.requests` | `map<string, string>` |  |  |  |
+| `spec.operator.resources.claims` | `[]KubernetesCoreV1ApiResourceClaim` |  |  |  |
+| `spec.operator.resources.claims[].name` | `string` | yes |  |  |
+| `spec.operator.resources.claims[].request` | `string` |  |  |  |
 | `spec.operator.logLevel` | `string` |  |  |  |
 | `spec.operator.nodeSelector` | `map<string, string>` |  |  |  |
 | `spec.operator.tolerations` | `[]KubernetesCoreV1ApiToleration` |  |  |  |
@@ -544,27 +545,64 @@ leader-elected warm standbys that shorten the operator's own failover.
 
 ### spec.operator.resources
 
-`KubernetesStigmerOperatorResources`
+`KubernetesCoreV1ApiResourceRequirements`
 
-The operator container's requests and limits: cpu, memory and
-ephemeral-storage. Empty = the chart's own (requests 50m and 128Mi,
-memory limit 512Mi).
+The operator container's requests and limits, by cpu, memory and
+ephemeral-storage, the resources the operator chart sizes. Empty = the
+chart's own (requests 50m and 128Mi, memory limit 512Mi).
 
-### spec.operator.resources.requests
-
-`map<string, string>`
-
-Requests, keyed by cpu, memory or ephemeral-storage.
-
-- rule: {"map":{"keys":{"string":{"in":["cpu","memory","ephemeral-storage"]}},"values":{"string":{"pattern":"^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"}}}}
+- rule: operator.resources sizes the operator container by cpu, memory and ephemeral-storage, the resources its chart takes: remove any other name and any claims
 
 ### spec.operator.resources.limits
 
 `map<string, string>`
 
-Limits, keyed by cpu, memory or ephemeral-storage.
+`limits` describes the maximum amount of compute resources allowed. More
+info:
+https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 
-- rule: {"map":{"keys":{"string":{"in":["cpu","memory","ephemeral-storage"]}},"values":{"string":{"pattern":"^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"}}}}
+- rule: {"map":{"values":{"string":{"pattern":"^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"}}}}
+
+### spec.operator.resources.requests
+
+`map<string, string>`
+
+`requests` describes the minimum amount of compute resources required. If
+Requests is omitted for a container, it defaults to Limits if that is
+explicitly specified, otherwise to an implementation-defined value.
+Requests cannot exceed Limits. More info:
+https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+
+- rule: {"map":{"values":{"string":{"pattern":"^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"}}}}
+
+### spec.operator.resources.claims
+
+`[]KubernetesCoreV1ApiResourceClaim`
+
+`claims` lists the names of resources, defined in spec.resourceClaims, that
+are used by this container.
+
+This field depends on the DynamicResourceAllocation feature gate.
+
+This field is immutable. It can only be set for containers.
+
+### spec.operator.resources.claims[].name
+
+`string` · required
+
+`name` must match the name of one entry in pod.spec.resourceClaims of the
+Pod where this field is used. It makes that resource available inside a
+container.
+
+- rule: {"string":{"minLen":"1"}}
+
+### spec.operator.resources.claims[].request
+
+`string`
+
+`request` is the name chosen for a request in the referenced claim. If
+empty, everything from the claim is made available, otherwise only the
+result of this request.
 
 ### spec.operator.logLevel
 
@@ -2929,7 +2967,8 @@ ANTHROPIC_FOUNDRY_API_KEY or AWS_BEARER_TOKEN_BEDROCK.
 `KubernetesCoreV1ApiResourceRequirements`
 
 The runner container's requests and limits. Empty = the operator's
-defaults.
+defaults. Only the shared runner has them: under a per-session sandbox
+driver there is no shared runner, and they are refused.
 
 ### spec.runner.resources.limits
 
@@ -2987,7 +3026,8 @@ result of this request.
 `KubernetesStigmerVolume`
 
 The runner's own volume: paused sessions, their approvals and agent
-workspaces. Empty = 10Gi.
+workspaces. Empty = 10Gi. Only the shared runner has one: under a
+per-session sandbox driver it is refused.
 
 ### spec.runner.storage.size
 
@@ -6177,6 +6217,7 @@ next upgrade is backed up again.
 - `spec.database.external_without_bundled_sign_in`: the bundled sign-in keeps its accounts on the bundled database, and database.external names your own: sign people in with your own issuer (identity.oidc), or let the operator run the database
 - `spec.server.unauthenticated_exposure_without_identity`: server.allow_unauthenticated_exposure exposes the install with sign-in off, and identity turns sign-in on: keep one
 - `spec.sandboxes.per_session_needs_object_store`: a sandbox on any node reads and writes a run's files through the bucket, never through a shared disk: declare object_store to run agents in per-session sandboxes
+- `spec.runner.sizes_need_the_shared_runner`: runner.resources and runner.storage size the shared runner, and a per-session sandbox driver runs every session in a sandbox of its own, with no shared runner: remove them
 
 ## Outputs
 

@@ -267,6 +267,12 @@ message KubernetesStigmerSpec {
     message: "a sandbox on any node reads and writes a run's files through the bucket, never through a shared disk: declare object_store to run agents in per-session sandboxes"
     expression: "!has(this.sandboxes) || this.sandboxes.driver == '' || this.sandboxes.driver == 'shared' || has(this.object_store)"
   };
+
+  option (buf.validate.message).cel = {
+    id: "spec.runner.sizes_need_the_shared_runner"
+    message: "runner.resources and runner.storage size the shared runner, and a per-session sandbox driver runs every session in a sandbox of its own, with no shared runner: remove them"
+    expression: "!has(this.sandboxes) || this.sandboxes.driver == '' || this.sandboxes.driver == 'shared' || !has(this.runner) || (!has(this.runner.resources) && !has(this.runner.storage))"
+  };
 }
 
 /**
@@ -337,11 +343,15 @@ message KubernetesStigmerOperator {
   optional int32 replicas = 6 [(buf.validate.field).int32.gte = 1];
 
   /**
-   * The operator container's requests and limits: cpu, memory and
-   * ephemeral-storage. Empty = the chart's own (requests 50m and 128Mi,
-   * memory limit 512Mi).
+   * The operator container's requests and limits, by cpu, memory and
+   * ephemeral-storage, the resources the operator chart sizes. Empty = the
+   * chart's own (requests 50m and 128Mi, memory limit 512Mi).
    */
-  KubernetesStigmerOperatorResources resources = 7;
+  dev.planton.kubernetes.KubernetesCoreV1ApiResourceRequirements resources = 7 [(buf.validate.field).cel = {
+    id: "operator.resources.chart_resources"
+    message: "operator.resources sizes the operator container by cpu, memory and ephemeral-storage, the resources its chart takes: remove any other name and any claims"
+    expression: "this.requests.all(name, name in ['cpu', 'memory', 'ephemeral-storage']) && this.limits.all(name, name in ['cpu', 'memory', 'ephemeral-storage']) && size(this.claims) == 0"
+  }];
 
   /**
    * The operator's log level. Empty = the chart's own (info).
@@ -363,40 +373,6 @@ message KubernetesStigmerOperator {
    * Tolerations for the operator pod.
    */
   repeated dev.planton.kubernetes.KubernetesCoreV1ApiToleration tolerations = 10;
-}
-
-/**
- * The operator container's resources, in the chart's own shape: only cpu,
- * memory and ephemeral-storage are accepted.
- */
-message KubernetesStigmerOperatorResources {
-  /**
-   * Requests, keyed by cpu, memory or ephemeral-storage.
-   */
-  map<string, string> requests = 1 [
-    (buf.validate.field).map.keys.string = {
-      in: [
-        "cpu",
-        "memory",
-        "ephemeral-storage"
-      ]
-    },
-    (buf.validate.field).map.values.string.pattern = "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
-  ];
-
-  /**
-   * Limits, keyed by cpu, memory or ephemeral-storage.
-   */
-  map<string, string> limits = 2 [
-    (buf.validate.field).map.keys.string = {
-      in: [
-        "cpu",
-        "memory",
-        "ephemeral-storage"
-      ]
-    },
-    (buf.validate.field).map.values.string.pattern = "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
-  ];
 }
 
 /**
@@ -596,13 +572,15 @@ message KubernetesStigmerRunner {
 
   /**
    * The runner container's requests and limits. Empty = the operator's
-   * defaults.
+   * defaults. Only the shared runner has them: under a per-session sandbox
+   * driver there is no shared runner, and they are refused.
    */
   dev.planton.kubernetes.KubernetesCoreV1ApiResourceRequirements resources = 2;
 
   /**
    * The runner's own volume: paused sessions, their approvals and agent
-   * workspaces. Empty = 10Gi.
+   * workspaces. Empty = 10Gi. Only the shared runner has one: under a
+   * per-session sandbox driver it is refused.
    */
   KubernetesStigmerVolume storage = 3;
 

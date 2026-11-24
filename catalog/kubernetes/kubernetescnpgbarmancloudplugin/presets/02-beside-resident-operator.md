@@ -33,9 +33,10 @@ plugin leaves the resident operator running.
   and the operator never finds it
 - **`create_namespace: false`** — the namespace is the resident
   operator's
-- **`chart_version: "0.7.0"`** — plugin v0.13.0 requires the resident
-  CloudNativePG to be 1.26 or later (1.27 or later recommended); check
-  the resident's version before installing
+- **`chart_version: "0.9.0"`** — plugin v0.16.0 requires the resident
+  CloudNativePG to be 1.30 or later; check the resident's version before
+  installing, and pin `0.8.1` (plugin v0.15.1) beside a resident 1.26 to
+  1.29
 - **cert-manager is a hard prerequisite** — the chart renders
   cert-manager Certificates unconditionally; a resident cert-manager
   serves, a missing one fails the install cleanly (atomic)

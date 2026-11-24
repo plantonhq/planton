@@ -13,7 +13,7 @@ spec:
   namespace:
     value: hack-cnpg-system
   createNamespace: false
-  chartVersion: "0.7.0"
+  chartVersion: "0.9.0"
   crds:
     install: true
   replicas: 2
@@ -26,10 +26,10 @@ spec:
       memory: 256Mi
   image:
     repository: mirror.example.com/cloudnative-pg/plugin-barman-cloud
-    tag: v0.13.0
+    tag: v0.16.0
   sidecarImage:
     repository: mirror.example.com/cloudnative-pg/plugin-barman-cloud-sidecar
-    tag: v0.13.0
+    tag: v0.16.0
   imagePullSecrets:
     - hack-registry-credentials
   priorityClassName: system-cluster-critical
@@ -45,7 +45,6 @@ spec:
       effect: NoExecute
       tolerationSeconds: 300
   helmValues: |
-    additionalArgs:
-      - --log-level=info
+    logLevel: debug
     service:
       name: renamed-by-mistake

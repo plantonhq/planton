@@ -13,7 +13,7 @@ spec:
     value: cnpg-system
   # The namespace belongs to the resident operator; the plugin joins it.
   create_namespace: false
-  chart_version: "0.7.0" # spec default (ships plugin v0.13.0); needs CloudNativePG 1.26+
+  chart_version: "0.9.0" # spec default (ships plugin v0.16.0); needs CloudNativePG 1.30+ (pin 0.8.1 beside 1.26 to 1.29)
   replicas: 1
   resources:
     requests:

@@ -74,5 +74,5 @@ spec:
       field_path: chart_version
       evidence:
         type: spec_default
-        reference: Unset installs the pinned default chart (0.7.0, which ships plugin v0.13.0); upgrades are deliberate chart_version changes re-running the release with the new chart. Plugin v0.13.0 requires CloudNativePG 1.26 or later (1.27 or later recommended upstream).
+        reference: Unset installs the pinned default chart (0.9.0, which ships plugin v0.16.0); upgrades are deliberate chart_version changes re-running the release with the new chart. Plugin v0.16.0 requires CloudNativePG 1.30 or later.
       notes: Plugin upgrades roll the plugin Deployment (Recreate); the sidecar image the databases pull follows the new chart's appVersion on their next instance rollout.

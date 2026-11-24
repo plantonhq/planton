@@ -342,10 +342,10 @@ type KubernetesStigmerOperator struct {
 	// leader-elected warm standbys that shorten the operator's own failover.
 	Replicas *int32 `protobuf:"varint,6,opt,name=replicas,proto3,oneof" json:"replicas,omitempty"`
 	// *
-	// The operator container's requests and limits: cpu, memory and
-	// ephemeral-storage. Empty = the chart's own (requests 50m and 128Mi,
-	// memory limit 512Mi).
-	Resources *KubernetesStigmerOperatorResources `protobuf:"bytes,7,opt,name=resources,proto3" json:"resources,omitempty"`
+	// The operator container's requests and limits, by cpu, memory and
+	// ephemeral-storage, the resources the operator chart sizes. Empty = the
+	// chart's own (requests 50m and 128Mi, memory limit 512Mi).
+	Resources *kubernetes.KubernetesCoreV1ApiResourceRequirements `protobuf:"bytes,7,opt,name=resources,proto3" json:"resources,omitempty"`
 	// *
 	// The operator's log level. Empty = the chart's own (info).
 	LogLevel string `protobuf:"bytes,8,opt,name=log_level,json=logLevel,proto3" json:"log_level,omitempty"`
@@ -431,7 +431,7 @@ func (x *KubernetesStigmerOperator) GetReplicas() int32 {
 	return 0
 }
 
-func (x *KubernetesStigmerOperator) GetResources() *KubernetesStigmerOperatorResources {
+func (x *KubernetesStigmerOperator) GetResources() *kubernetes.KubernetesCoreV1ApiResourceRequirements {
 	if x != nil {
 		return x.Resources
 	}
@@ -460,65 +460,6 @@ func (x *KubernetesStigmerOperator) GetTolerations() []*kubernetes.KubernetesCor
 }
 
 // *
-// The operator container's resources, in the chart's own shape: only cpu,
-// memory and ephemeral-storage are accepted.
-type KubernetesStigmerOperatorResources struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// *
-	// Requests, keyed by cpu, memory or ephemeral-storage.
-	Requests map[string]string `protobuf:"bytes,1,rep,name=requests,proto3" json:"requests,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	// *
-	// Limits, keyed by cpu, memory or ephemeral-storage.
-	Limits        map[string]string `protobuf:"bytes,2,rep,name=limits,proto3" json:"limits,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *KubernetesStigmerOperatorResources) Reset() {
-	*x = KubernetesStigmerOperatorResources{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *KubernetesStigmerOperatorResources) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*KubernetesStigmerOperatorResources) ProtoMessage() {}
-
-func (x *KubernetesStigmerOperatorResources) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use KubernetesStigmerOperatorResources.ProtoReflect.Descriptor instead.
-func (*KubernetesStigmerOperatorResources) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *KubernetesStigmerOperatorResources) GetRequests() map[string]string {
-	if x != nil {
-		return x.Requests
-	}
-	return nil
-}
-
-func (x *KubernetesStigmerOperatorResources) GetLimits() map[string]string {
-	if x != nil {
-		return x.Limits
-	}
-	return nil
-}
-
-// *
 // Where Stigmer's images are pulled from, for a mirror or a private registry.
 type KubernetesStigmerImage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -538,7 +479,7 @@ type KubernetesStigmerImage struct {
 
 func (x *KubernetesStigmerImage) Reset() {
 	*x = KubernetesStigmerImage{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[3]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -550,7 +491,7 @@ func (x *KubernetesStigmerImage) String() string {
 func (*KubernetesStigmerImage) ProtoMessage() {}
 
 func (x *KubernetesStigmerImage) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[3]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -563,7 +504,7 @@ func (x *KubernetesStigmerImage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerImage.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerImage) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{3}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *KubernetesStigmerImage) GetRegistry() string {
@@ -603,7 +544,7 @@ type KubernetesStigmerOwner struct {
 
 func (x *KubernetesStigmerOwner) Reset() {
 	*x = KubernetesStigmerOwner{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[4]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -615,7 +556,7 @@ func (x *KubernetesStigmerOwner) String() string {
 func (*KubernetesStigmerOwner) ProtoMessage() {}
 
 func (x *KubernetesStigmerOwner) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[4]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -628,7 +569,7 @@ func (x *KubernetesStigmerOwner) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerOwner.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerOwner) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{4}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *KubernetesStigmerOwner) GetEmail() string {
@@ -693,7 +634,7 @@ type KubernetesStigmerServer struct {
 
 func (x *KubernetesStigmerServer) Reset() {
 	*x = KubernetesStigmerServer{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[5]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -705,7 +646,7 @@ func (x *KubernetesStigmerServer) String() string {
 func (*KubernetesStigmerServer) ProtoMessage() {}
 
 func (x *KubernetesStigmerServer) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[5]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -718,7 +659,7 @@ func (x *KubernetesStigmerServer) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerServer.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerServer) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{5}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *KubernetesStigmerServer) GetResources() *kubernetes.KubernetesCoreV1ApiResourceRequirements {
@@ -796,7 +737,7 @@ type KubernetesStigmerServerEgress struct {
 
 func (x *KubernetesStigmerServerEgress) Reset() {
 	*x = KubernetesStigmerServerEgress{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[6]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -808,7 +749,7 @@ func (x *KubernetesStigmerServerEgress) String() string {
 func (*KubernetesStigmerServerEgress) ProtoMessage() {}
 
 func (x *KubernetesStigmerServerEgress) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[6]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -821,7 +762,7 @@ func (x *KubernetesStigmerServerEgress) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerServerEgress.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerServerEgress) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{6}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *KubernetesStigmerServerEgress) GetFenced() bool {
@@ -854,7 +795,7 @@ type KubernetesStigmerHelp struct {
 
 func (x *KubernetesStigmerHelp) Reset() {
 	*x = KubernetesStigmerHelp{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[7]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -866,7 +807,7 @@ func (x *KubernetesStigmerHelp) String() string {
 func (*KubernetesStigmerHelp) ProtoMessage() {}
 
 func (x *KubernetesStigmerHelp) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[7]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -879,7 +820,7 @@ func (x *KubernetesStigmerHelp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerHelp.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerHelp) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{7}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *KubernetesStigmerHelp) GetUrl() string {
@@ -914,7 +855,7 @@ type KubernetesStigmerVolume struct {
 
 func (x *KubernetesStigmerVolume) Reset() {
 	*x = KubernetesStigmerVolume{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[8]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -926,7 +867,7 @@ func (x *KubernetesStigmerVolume) String() string {
 func (*KubernetesStigmerVolume) ProtoMessage() {}
 
 func (x *KubernetesStigmerVolume) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[8]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -939,7 +880,7 @@ func (x *KubernetesStigmerVolume) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerVolume.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerVolume) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *KubernetesStigmerVolume) GetSize() string {
@@ -965,11 +906,13 @@ type KubernetesStigmerRunner struct {
 	Model *KubernetesStigmerModel `protobuf:"bytes,1,opt,name=model,proto3" json:"model,omitempty"`
 	// *
 	// The runner container's requests and limits. Empty = the operator's
-	// defaults.
+	// defaults. Only the shared runner has them: under a per-session sandbox
+	// driver there is no shared runner, and they are refused.
 	Resources *kubernetes.KubernetesCoreV1ApiResourceRequirements `protobuf:"bytes,2,opt,name=resources,proto3" json:"resources,omitempty"`
 	// *
 	// The runner's own volume: paused sessions, their approvals and agent
-	// workspaces. Empty = 10Gi.
+	// workspaces. Empty = 10Gi. Only the shared runner has one: under a
+	// per-session sandbox driver it is refused.
 	Storage *KubernetesStigmerVolume `protobuf:"bytes,3,opt,name=storage,proto3" json:"storage,omitempty"`
 	// *
 	// Extra settings for the runner container, as for the server. A name the
@@ -981,7 +924,7 @@ type KubernetesStigmerRunner struct {
 
 func (x *KubernetesStigmerRunner) Reset() {
 	*x = KubernetesStigmerRunner{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[9]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -993,7 +936,7 @@ func (x *KubernetesStigmerRunner) String() string {
 func (*KubernetesStigmerRunner) ProtoMessage() {}
 
 func (x *KubernetesStigmerRunner) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[9]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1006,7 +949,7 @@ func (x *KubernetesStigmerRunner) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerRunner.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerRunner) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *KubernetesStigmerRunner) GetModel() *KubernetesStigmerModel {
@@ -1054,7 +997,7 @@ type KubernetesStigmerModel struct {
 
 func (x *KubernetesStigmerModel) Reset() {
 	*x = KubernetesStigmerModel{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[10]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1066,7 +1009,7 @@ func (x *KubernetesStigmerModel) String() string {
 func (*KubernetesStigmerModel) ProtoMessage() {}
 
 func (x *KubernetesStigmerModel) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[10]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1079,7 +1022,7 @@ func (x *KubernetesStigmerModel) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerModel.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerModel) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *KubernetesStigmerModel) GetSource() isKubernetesStigmerModel_Source {
@@ -1157,7 +1100,7 @@ type KubernetesStigmerModelKeys struct {
 
 func (x *KubernetesStigmerModelKeys) Reset() {
 	*x = KubernetesStigmerModelKeys{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[11]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1169,7 +1112,7 @@ func (x *KubernetesStigmerModelKeys) String() string {
 func (*KubernetesStigmerModelKeys) ProtoMessage() {}
 
 func (x *KubernetesStigmerModelKeys) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[11]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1182,7 +1125,7 @@ func (x *KubernetesStigmerModelKeys) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerModelKeys.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerModelKeys) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *KubernetesStigmerModelKeys) GetAnthropicApiKey() string {
@@ -1235,7 +1178,7 @@ type KubernetesStigmerDatabase struct {
 
 func (x *KubernetesStigmerDatabase) Reset() {
 	*x = KubernetesStigmerDatabase{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[12]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1247,7 +1190,7 @@ func (x *KubernetesStigmerDatabase) String() string {
 func (*KubernetesStigmerDatabase) ProtoMessage() {}
 
 func (x *KubernetesStigmerDatabase) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[12]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1260,7 +1203,7 @@ func (x *KubernetesStigmerDatabase) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerDatabase.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerDatabase) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{12}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *KubernetesStigmerDatabase) GetPostgresql() isKubernetesStigmerDatabase_Postgresql {
@@ -1342,7 +1285,7 @@ type KubernetesStigmerBundledPostgres struct {
 
 func (x *KubernetesStigmerBundledPostgres) Reset() {
 	*x = KubernetesStigmerBundledPostgres{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[13]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1354,7 +1297,7 @@ func (x *KubernetesStigmerBundledPostgres) String() string {
 func (*KubernetesStigmerBundledPostgres) ProtoMessage() {}
 
 func (x *KubernetesStigmerBundledPostgres) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[13]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1367,7 +1310,7 @@ func (x *KubernetesStigmerBundledPostgres) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerBundledPostgres.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerBundledPostgres) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{13}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *KubernetesStigmerBundledPostgres) GetInstances() int32 {
@@ -1423,7 +1366,7 @@ type KubernetesStigmerPostgresBackup struct {
 
 func (x *KubernetesStigmerPostgresBackup) Reset() {
 	*x = KubernetesStigmerPostgresBackup{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[14]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1435,7 +1378,7 @@ func (x *KubernetesStigmerPostgresBackup) String() string {
 func (*KubernetesStigmerPostgresBackup) ProtoMessage() {}
 
 func (x *KubernetesStigmerPostgresBackup) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[14]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1448,7 +1391,7 @@ func (x *KubernetesStigmerPostgresBackup) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerPostgresBackup.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerPostgresBackup) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{14}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *KubernetesStigmerPostgresBackup) GetSchedule() string {
@@ -1483,7 +1426,7 @@ type KubernetesStigmerRecoverFrom struct {
 
 func (x *KubernetesStigmerRecoverFrom) Reset() {
 	*x = KubernetesStigmerRecoverFrom{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[15]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1495,7 +1438,7 @@ func (x *KubernetesStigmerRecoverFrom) String() string {
 func (*KubernetesStigmerRecoverFrom) ProtoMessage() {}
 
 func (x *KubernetesStigmerRecoverFrom) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[15]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1508,7 +1451,7 @@ func (x *KubernetesStigmerRecoverFrom) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerRecoverFrom.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerRecoverFrom) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{15}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *KubernetesStigmerRecoverFrom) GetServerName() string {
@@ -1556,7 +1499,7 @@ type KubernetesStigmerExternalPostgres struct {
 
 func (x *KubernetesStigmerExternalPostgres) Reset() {
 	*x = KubernetesStigmerExternalPostgres{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[16]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1568,7 +1511,7 @@ func (x *KubernetesStigmerExternalPostgres) String() string {
 func (*KubernetesStigmerExternalPostgres) ProtoMessage() {}
 
 func (x *KubernetesStigmerExternalPostgres) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[16]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1581,7 +1524,7 @@ func (x *KubernetesStigmerExternalPostgres) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use KubernetesStigmerExternalPostgres.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerExternalPostgres) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{16}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *KubernetesStigmerExternalPostgres) GetHost() *v1.StringValueOrRef {
@@ -1641,7 +1584,7 @@ type KubernetesStigmerPassword struct {
 
 func (x *KubernetesStigmerPassword) Reset() {
 	*x = KubernetesStigmerPassword{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[17]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1653,7 +1596,7 @@ func (x *KubernetesStigmerPassword) String() string {
 func (*KubernetesStigmerPassword) ProtoMessage() {}
 
 func (x *KubernetesStigmerPassword) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[17]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1666,7 +1609,7 @@ func (x *KubernetesStigmerPassword) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerPassword.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerPassword) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{17}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *KubernetesStigmerPassword) GetSource() isKubernetesStigmerPassword_Source {
@@ -1733,7 +1676,7 @@ type KubernetesStigmerPostgresPasswordSecret struct {
 
 func (x *KubernetesStigmerPostgresPasswordSecret) Reset() {
 	*x = KubernetesStigmerPostgresPasswordSecret{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[18]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1745,7 +1688,7 @@ func (x *KubernetesStigmerPostgresPasswordSecret) String() string {
 func (*KubernetesStigmerPostgresPasswordSecret) ProtoMessage() {}
 
 func (x *KubernetesStigmerPostgresPasswordSecret) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[18]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1758,7 +1701,7 @@ func (x *KubernetesStigmerPostgresPasswordSecret) ProtoReflect() protoreflect.Me
 
 // Deprecated: Use KubernetesStigmerPostgresPasswordSecret.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerPostgresPasswordSecret) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{18}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *KubernetesStigmerPostgresPasswordSecret) GetName() *v1.StringValueOrRef {
@@ -1791,7 +1734,7 @@ type KubernetesStigmerSecretKeyRef struct {
 
 func (x *KubernetesStigmerSecretKeyRef) Reset() {
 	*x = KubernetesStigmerSecretKeyRef{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[19]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1803,7 +1746,7 @@ func (x *KubernetesStigmerSecretKeyRef) String() string {
 func (*KubernetesStigmerSecretKeyRef) ProtoMessage() {}
 
 func (x *KubernetesStigmerSecretKeyRef) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[19]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1816,7 +1759,7 @@ func (x *KubernetesStigmerSecretKeyRef) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerSecretKeyRef.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerSecretKeyRef) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{19}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *KubernetesStigmerSecretKeyRef) GetName() *v1.StringValueOrRef {
@@ -1848,7 +1791,7 @@ type KubernetesStigmerTemporal struct {
 
 func (x *KubernetesStigmerTemporal) Reset() {
 	*x = KubernetesStigmerTemporal{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[20]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1860,7 +1803,7 @@ func (x *KubernetesStigmerTemporal) String() string {
 func (*KubernetesStigmerTemporal) ProtoMessage() {}
 
 func (x *KubernetesStigmerTemporal) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[20]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1873,7 +1816,7 @@ func (x *KubernetesStigmerTemporal) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerTemporal.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerTemporal) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{20}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *KubernetesStigmerTemporal) GetMode() isKubernetesStigmerTemporal_Mode {
@@ -1935,7 +1878,7 @@ type KubernetesStigmerBundledTemporal struct {
 
 func (x *KubernetesStigmerBundledTemporal) Reset() {
 	*x = KubernetesStigmerBundledTemporal{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[21]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1947,7 +1890,7 @@ func (x *KubernetesStigmerBundledTemporal) String() string {
 func (*KubernetesStigmerBundledTemporal) ProtoMessage() {}
 
 func (x *KubernetesStigmerBundledTemporal) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[21]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1960,7 +1903,7 @@ func (x *KubernetesStigmerBundledTemporal) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerBundledTemporal.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerBundledTemporal) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{21}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *KubernetesStigmerBundledTemporal) GetResources() *kubernetes.KubernetesCoreV1ApiResourceRequirements {
@@ -1995,7 +1938,7 @@ type KubernetesStigmerExternalTemporal struct {
 
 func (x *KubernetesStigmerExternalTemporal) Reset() {
 	*x = KubernetesStigmerExternalTemporal{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[22]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2007,7 +1950,7 @@ func (x *KubernetesStigmerExternalTemporal) String() string {
 func (*KubernetesStigmerExternalTemporal) ProtoMessage() {}
 
 func (x *KubernetesStigmerExternalTemporal) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[22]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2020,7 +1963,7 @@ func (x *KubernetesStigmerExternalTemporal) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use KubernetesStigmerExternalTemporal.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerExternalTemporal) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{22}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *KubernetesStigmerExternalTemporal) GetHostPort() *v1.StringValueOrRef {
@@ -2070,7 +2013,7 @@ type KubernetesStigmerTemporalTls struct {
 
 func (x *KubernetesStigmerTemporalTls) Reset() {
 	*x = KubernetesStigmerTemporalTls{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[23]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2082,7 +2025,7 @@ func (x *KubernetesStigmerTemporalTls) String() string {
 func (*KubernetesStigmerTemporalTls) ProtoMessage() {}
 
 func (x *KubernetesStigmerTemporalTls) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[23]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2095,7 +2038,7 @@ func (x *KubernetesStigmerTemporalTls) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerTemporalTls.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerTemporalTls) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{23}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *KubernetesStigmerTemporalTls) GetServerName() string {
@@ -2172,7 +2115,7 @@ type KubernetesStigmerTemporalTlsPem struct {
 
 func (x *KubernetesStigmerTemporalTlsPem) Reset() {
 	*x = KubernetesStigmerTemporalTlsPem{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[24]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2184,7 +2127,7 @@ func (x *KubernetesStigmerTemporalTlsPem) String() string {
 func (*KubernetesStigmerTemporalTlsPem) ProtoMessage() {}
 
 func (x *KubernetesStigmerTemporalTlsPem) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[24]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2197,7 +2140,7 @@ func (x *KubernetesStigmerTemporalTlsPem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerTemporalTlsPem.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerTemporalTlsPem) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{24}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *KubernetesStigmerTemporalTlsPem) GetCaCertificate() string {
@@ -2243,7 +2186,7 @@ type KubernetesStigmerTemporalTlsSecret struct {
 
 func (x *KubernetesStigmerTemporalTlsSecret) Reset() {
 	*x = KubernetesStigmerTemporalTlsSecret{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[25]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2255,7 +2198,7 @@ func (x *KubernetesStigmerTemporalTlsSecret) String() string {
 func (*KubernetesStigmerTemporalTlsSecret) ProtoMessage() {}
 
 func (x *KubernetesStigmerTemporalTlsSecret) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[25]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2268,7 +2211,7 @@ func (x *KubernetesStigmerTemporalTlsSecret) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use KubernetesStigmerTemporalTlsSecret.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerTemporalTlsSecret) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{25}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *KubernetesStigmerTemporalTlsSecret) GetName() *v1.StringValueOrRef {
@@ -2315,7 +2258,7 @@ type KubernetesStigmerSecretValue struct {
 
 func (x *KubernetesStigmerSecretValue) Reset() {
 	*x = KubernetesStigmerSecretValue{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[26]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2327,7 +2270,7 @@ func (x *KubernetesStigmerSecretValue) String() string {
 func (*KubernetesStigmerSecretValue) ProtoMessage() {}
 
 func (x *KubernetesStigmerSecretValue) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[26]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2340,7 +2283,7 @@ func (x *KubernetesStigmerSecretValue) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerSecretValue.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerSecretValue) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{26}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *KubernetesStigmerSecretValue) GetSource() isKubernetesStigmerSecretValue_Source {
@@ -2403,7 +2346,7 @@ type KubernetesStigmerObjectStore struct {
 
 func (x *KubernetesStigmerObjectStore) Reset() {
 	*x = KubernetesStigmerObjectStore{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[27]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2415,7 +2358,7 @@ func (x *KubernetesStigmerObjectStore) String() string {
 func (*KubernetesStigmerObjectStore) ProtoMessage() {}
 
 func (x *KubernetesStigmerObjectStore) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[27]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2428,7 +2371,7 @@ func (x *KubernetesStigmerObjectStore) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerObjectStore.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerObjectStore) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{27}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *KubernetesStigmerObjectStore) GetS3() *KubernetesStigmerS3 {
@@ -2468,7 +2411,7 @@ type KubernetesStigmerS3 struct {
 
 func (x *KubernetesStigmerS3) Reset() {
 	*x = KubernetesStigmerS3{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[28]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2480,7 +2423,7 @@ func (x *KubernetesStigmerS3) String() string {
 func (*KubernetesStigmerS3) ProtoMessage() {}
 
 func (x *KubernetesStigmerS3) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[28]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2493,7 +2436,7 @@ func (x *KubernetesStigmerS3) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerS3.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerS3) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{28}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *KubernetesStigmerS3) GetBucket() *v1.StringValueOrRef {
@@ -2546,7 +2489,7 @@ type KubernetesStigmerS3Credentials struct {
 
 func (x *KubernetesStigmerS3Credentials) Reset() {
 	*x = KubernetesStigmerS3Credentials{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[29]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2558,7 +2501,7 @@ func (x *KubernetesStigmerS3Credentials) String() string {
 func (*KubernetesStigmerS3Credentials) ProtoMessage() {}
 
 func (x *KubernetesStigmerS3Credentials) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[29]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2571,7 +2514,7 @@ func (x *KubernetesStigmerS3Credentials) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerS3Credentials.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerS3Credentials) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{29}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *KubernetesStigmerS3Credentials) GetSource() isKubernetesStigmerS3Credentials_Source {
@@ -2637,7 +2580,7 @@ type KubernetesStigmerS3AccessKey struct {
 
 func (x *KubernetesStigmerS3AccessKey) Reset() {
 	*x = KubernetesStigmerS3AccessKey{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[30]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2649,7 +2592,7 @@ func (x *KubernetesStigmerS3AccessKey) String() string {
 func (*KubernetesStigmerS3AccessKey) ProtoMessage() {}
 
 func (x *KubernetesStigmerS3AccessKey) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[30]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2662,7 +2605,7 @@ func (x *KubernetesStigmerS3AccessKey) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerS3AccessKey.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerS3AccessKey) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{30}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *KubernetesStigmerS3AccessKey) GetAccessKeyId() string {
@@ -2710,7 +2653,7 @@ type KubernetesStigmerIngress struct {
 
 func (x *KubernetesStigmerIngress) Reset() {
 	*x = KubernetesStigmerIngress{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[31]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2722,7 +2665,7 @@ func (x *KubernetesStigmerIngress) String() string {
 func (*KubernetesStigmerIngress) ProtoMessage() {}
 
 func (x *KubernetesStigmerIngress) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[31]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2735,7 +2678,7 @@ func (x *KubernetesStigmerIngress) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerIngress.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerIngress) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{31}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *KubernetesStigmerIngress) GetHostname() string {
@@ -2827,7 +2770,7 @@ type KubernetesStigmerIngressTls struct {
 
 func (x *KubernetesStigmerIngressTls) Reset() {
 	*x = KubernetesStigmerIngressTls{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[32]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2839,7 +2782,7 @@ func (x *KubernetesStigmerIngressTls) String() string {
 func (*KubernetesStigmerIngressTls) ProtoMessage() {}
 
 func (x *KubernetesStigmerIngressTls) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[32]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2852,7 +2795,7 @@ func (x *KubernetesStigmerIngressTls) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerIngressTls.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerIngressTls) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{32}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *KubernetesStigmerIngressTls) GetCertificate() isKubernetesStigmerIngressTls_Certificate {
@@ -2917,7 +2860,7 @@ type KubernetesStigmerIssuerRef struct {
 
 func (x *KubernetesStigmerIssuerRef) Reset() {
 	*x = KubernetesStigmerIssuerRef{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[33]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2929,7 +2872,7 @@ func (x *KubernetesStigmerIssuerRef) String() string {
 func (*KubernetesStigmerIssuerRef) ProtoMessage() {}
 
 func (x *KubernetesStigmerIssuerRef) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[33]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2942,7 +2885,7 @@ func (x *KubernetesStigmerIssuerRef) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerIssuerRef.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerIssuerRef) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{33}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *KubernetesStigmerIssuerRef) GetName() *v1.StringValueOrRef {
@@ -2978,7 +2921,7 @@ type KubernetesStigmerGatewayRef struct {
 
 func (x *KubernetesStigmerGatewayRef) Reset() {
 	*x = KubernetesStigmerGatewayRef{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[34]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2990,7 +2933,7 @@ func (x *KubernetesStigmerGatewayRef) String() string {
 func (*KubernetesStigmerGatewayRef) ProtoMessage() {}
 
 func (x *KubernetesStigmerGatewayRef) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[34]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3003,7 +2946,7 @@ func (x *KubernetesStigmerGatewayRef) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerGatewayRef.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerGatewayRef) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{34}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *KubernetesStigmerGatewayRef) GetName() *v1.StringValueOrRef {
@@ -3042,7 +2985,7 @@ type KubernetesStigmerIdentity struct {
 
 func (x *KubernetesStigmerIdentity) Reset() {
 	*x = KubernetesStigmerIdentity{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[35]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3054,7 +2997,7 @@ func (x *KubernetesStigmerIdentity) String() string {
 func (*KubernetesStigmerIdentity) ProtoMessage() {}
 
 func (x *KubernetesStigmerIdentity) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[35]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3067,7 +3010,7 @@ func (x *KubernetesStigmerIdentity) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerIdentity.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerIdentity) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{35}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *KubernetesStigmerIdentity) GetProvider() isKubernetesStigmerIdentity_Provider {
@@ -3138,7 +3081,7 @@ type KubernetesStigmerBundledIdentity struct {
 
 func (x *KubernetesStigmerBundledIdentity) Reset() {
 	*x = KubernetesStigmerBundledIdentity{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[36]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3150,7 +3093,7 @@ func (x *KubernetesStigmerBundledIdentity) String() string {
 func (*KubernetesStigmerBundledIdentity) ProtoMessage() {}
 
 func (x *KubernetesStigmerBundledIdentity) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[36]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3163,7 +3106,7 @@ func (x *KubernetesStigmerBundledIdentity) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerBundledIdentity.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerBundledIdentity) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{36}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *KubernetesStigmerBundledIdentity) GetSignUpEmailDomains() []string {
@@ -3205,7 +3148,7 @@ type KubernetesStigmerSmtp struct {
 
 func (x *KubernetesStigmerSmtp) Reset() {
 	*x = KubernetesStigmerSmtp{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[37]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3217,7 +3160,7 @@ func (x *KubernetesStigmerSmtp) String() string {
 func (*KubernetesStigmerSmtp) ProtoMessage() {}
 
 func (x *KubernetesStigmerSmtp) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[37]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3230,7 +3173,7 @@ func (x *KubernetesStigmerSmtp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerSmtp.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerSmtp) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{37}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{36}
 }
 
 func (x *KubernetesStigmerSmtp) GetHost() string {
@@ -3283,7 +3226,7 @@ type KubernetesStigmerSmtpCredentials struct {
 
 func (x *KubernetesStigmerSmtpCredentials) Reset() {
 	*x = KubernetesStigmerSmtpCredentials{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[38]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3295,7 +3238,7 @@ func (x *KubernetesStigmerSmtpCredentials) String() string {
 func (*KubernetesStigmerSmtpCredentials) ProtoMessage() {}
 
 func (x *KubernetesStigmerSmtpCredentials) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[38]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3308,7 +3251,7 @@ func (x *KubernetesStigmerSmtpCredentials) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerSmtpCredentials.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerSmtpCredentials) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{38}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{37}
 }
 
 func (x *KubernetesStigmerSmtpCredentials) GetSource() isKubernetesStigmerSmtpCredentials_Source {
@@ -3375,7 +3318,7 @@ type KubernetesStigmerSmtpLogin struct {
 
 func (x *KubernetesStigmerSmtpLogin) Reset() {
 	*x = KubernetesStigmerSmtpLogin{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[39]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3387,7 +3330,7 @@ func (x *KubernetesStigmerSmtpLogin) String() string {
 func (*KubernetesStigmerSmtpLogin) ProtoMessage() {}
 
 func (x *KubernetesStigmerSmtpLogin) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[39]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3400,7 +3343,7 @@ func (x *KubernetesStigmerSmtpLogin) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerSmtpLogin.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerSmtpLogin) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{39}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{38}
 }
 
 func (x *KubernetesStigmerSmtpLogin) GetUsername() string {
@@ -3445,7 +3388,7 @@ type KubernetesStigmerOidc struct {
 
 func (x *KubernetesStigmerOidc) Reset() {
 	*x = KubernetesStigmerOidc{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[40]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3457,7 +3400,7 @@ func (x *KubernetesStigmerOidc) String() string {
 func (*KubernetesStigmerOidc) ProtoMessage() {}
 
 func (x *KubernetesStigmerOidc) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[40]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3470,7 +3413,7 @@ func (x *KubernetesStigmerOidc) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerOidc.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerOidc) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{40}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{39}
 }
 
 func (x *KubernetesStigmerOidc) GetIssuer() string {
@@ -3534,7 +3477,7 @@ type KubernetesStigmerEnterprise struct {
 
 func (x *KubernetesStigmerEnterprise) Reset() {
 	*x = KubernetesStigmerEnterprise{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[41]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3546,7 +3489,7 @@ func (x *KubernetesStigmerEnterprise) String() string {
 func (*KubernetesStigmerEnterprise) ProtoMessage() {}
 
 func (x *KubernetesStigmerEnterprise) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[41]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3559,7 +3502,7 @@ func (x *KubernetesStigmerEnterprise) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerEnterprise.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerEnterprise) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{41}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{40}
 }
 
 func (x *KubernetesStigmerEnterprise) GetLicense() *KubernetesStigmerSecretValue {
@@ -3619,7 +3562,7 @@ type KubernetesStigmerSandboxes struct {
 
 func (x *KubernetesStigmerSandboxes) Reset() {
 	*x = KubernetesStigmerSandboxes{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[42]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3631,7 +3574,7 @@ func (x *KubernetesStigmerSandboxes) String() string {
 func (*KubernetesStigmerSandboxes) ProtoMessage() {}
 
 func (x *KubernetesStigmerSandboxes) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[42]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3644,7 +3587,7 @@ func (x *KubernetesStigmerSandboxes) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerSandboxes.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerSandboxes) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{42}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{41}
 }
 
 func (x *KubernetesStigmerSandboxes) GetDriver() string {
@@ -3690,7 +3633,7 @@ type KubernetesStigmerAgentSandbox struct {
 
 func (x *KubernetesStigmerAgentSandbox) Reset() {
 	*x = KubernetesStigmerAgentSandbox{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[43]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3702,7 +3645,7 @@ func (x *KubernetesStigmerAgentSandbox) String() string {
 func (*KubernetesStigmerAgentSandbox) ProtoMessage() {}
 
 func (x *KubernetesStigmerAgentSandbox) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[43]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3715,7 +3658,7 @@ func (x *KubernetesStigmerAgentSandbox) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerAgentSandbox.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerAgentSandbox) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{43}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{42}
 }
 
 func (x *KubernetesStigmerAgentSandbox) GetEgressAllowCidrs() []string {
@@ -3761,7 +3704,7 @@ type KubernetesStigmerSubstrate struct {
 
 func (x *KubernetesStigmerSubstrate) Reset() {
 	*x = KubernetesStigmerSubstrate{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[44]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3773,7 +3716,7 @@ func (x *KubernetesStigmerSubstrate) String() string {
 func (*KubernetesStigmerSubstrate) ProtoMessage() {}
 
 func (x *KubernetesStigmerSubstrate) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[44]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3786,7 +3729,7 @@ func (x *KubernetesStigmerSubstrate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerSubstrate.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerSubstrate) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{44}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{43}
 }
 
 func (x *KubernetesStigmerSubstrate) GetWorkers() int32 {
@@ -3865,7 +3808,7 @@ type KubernetesStigmerPrerequisites struct {
 
 func (x *KubernetesStigmerPrerequisites) Reset() {
 	*x = KubernetesStigmerPrerequisites{}
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[45]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3877,7 +3820,7 @@ func (x *KubernetesStigmerPrerequisites) String() string {
 func (*KubernetesStigmerPrerequisites) ProtoMessage() {}
 
 func (x *KubernetesStigmerPrerequisites) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[45]
+	mi := &file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3890,7 +3833,7 @@ func (x *KubernetesStigmerPrerequisites) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesStigmerPrerequisites.ProtoReflect.Descriptor instead.
 func (*KubernetesStigmerPrerequisites) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{45}
+	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP(), []int{44}
 }
 
 func (x *KubernetesStigmerPrerequisites) GetPostgresOperator() string {
@@ -3925,7 +3868,7 @@ var File_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto protoreflect.F
 
 const file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/kubernetes/kubernetesstigmer/v1alpha1/spec.proto\x121dev.planton.kubernetes.kubernetesstigmer.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&catalog/kubernetes/container_env.proto\x1a$catalog/kubernetes/core_v1_api.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xbb4\n" +
+	"8catalog/kubernetes/kubernetesstigmer/v1alpha1/spec.proto\x121dev.planton.kubernetes.kubernetesstigmer.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&catalog/kubernetes/container_env.proto\x1a$catalog/kubernetes/core_v1_api.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xc47\n" +
 	"\x15KubernetesStigmerSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12\x89\x03\n" +
 	"\aversion\x18\x02 \x01(\tB\xee\x02\xbaH\xea\x02\xba\x01\xd5\x01\n" +
@@ -3948,7 +3891,7 @@ const file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDesc = ""
 	"\tsandboxes\x18\x0e \x01(\v2M.dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSandboxesR\tsandboxes\x12w\n" +
 	"\rprerequisites\x18\x0f \x01(\v2Q.dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerPrerequisitesR\rprerequisites\x12\xec\x01\n" +
 	"\x19upgrade_without_backup_to\x18\x10 \x01(\tB\xb0\x01\xbaH\xac\x01\xba\x01\xa8\x01\n" +
-	" upgrade_without_backup_to.format\x12Jupgrade_without_backup_to must be an exact Stigmer release such as \"0.3.2\"\x1a8this == '' || this.matches('^[0-9]+\\\\.[0-9]+\\\\.[0-9]+$')R\x16upgradeWithoutBackupTo:\xcf#\xbaH\xcb#\x1a\xb1\x02\n" +
+	" upgrade_without_backup_to.format\x12Jupgrade_without_backup_to must be an exact Stigmer release such as \"0.3.2\"\x1a8this == '' || this.matches('^[0-9]+\\\\.[0-9]+\\\\.[0-9]+$')R\x16upgradeWithoutBackupTo:\xd8&\xbaH\xd4&\x1a\xb1\x02\n" +
 	".spec.upgrade_without_backup_to.matches_version\x12\xa6\x01upgrade_without_backup_to releases the upgrade to version without a backup, so it must equal version; remove it once the upgrade is done, so the next one is backed up\x1aVthis.upgrade_without_backup_to == '' || this.upgrade_without_backup_to == this.version\x1a\xcb\x04\n" +
 	"8spec.operator_namespace.not_created_in_stigmer_namespace\x12\xbc\x02operator.create_namespace creates operator.namespace and deletes it on destroy, and namespace names the same namespace, where the encryption keys live: deleting it would make every backup unreadable. Install the operator in a namespace of its own (stigmer-system by convention), or turn operator.create_namespace off\x1a\xcf\x01!has(this.operator) || !this.operator.create_namespace || !has(this.operator.namespace) || !has(this.namespace) || this.operator.namespace.value == '' || this.operator.namespace.value != this.namespace.value\x1a\xfa\x02\n" +
 	".spec.database.external_needs_temporal_external\x12\xdb\x01database.external names your own Postgres, and Stigmer's operator does not create Temporal's databases on a Postgres it does not run: bring your own Temporal too (temporal.external), or let the operator run the database\x1aj!has(this.database) || !has(this.database.external) || (has(this.temporal) && has(this.temporal.external))\x1a\xda\x01\n" +
@@ -3961,15 +3904,18 @@ const file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDesc = ""
 	"(spec.owner.required_with_bundled_sign_in\x12\x88\x01the bundled sign-in creates the owner's account first, so an exposed install needs owner.email; or name your own issuer in identity.oidc\x1a\xa0\x01!(has(this.identity) ? has(this.identity.bundled) : (has(this.ingress) && !(has(this.server) && this.server.allow_unauthenticated_exposure))) || has(this.owner)\x1a\xb9\x03\n" +
 	".spec.database.external_without_bundled_sign_in\x12\xbf\x01the bundled sign-in keeps its accounts on the bundled database, and database.external names your own: sign people in with your own issuer (identity.oidc), or let the operator run the database\x1a\xc4\x01!(has(this.identity) ? has(this.identity.bundled) : (has(this.ingress) && !(has(this.server) && this.server.allow_unauthenticated_exposure))) || !has(this.database) || !has(this.database.external)\x1a\x86\x02\n" +
 	"5spec.server.unauthenticated_exposure_without_identity\x12sserver.allow_unauthenticated_exposure exposes the install with sign-in off, and identity turns sign-in on: keep one\x1aX!(has(this.server) && this.server.allow_unauthenticated_exposure) || !has(this.identity)\x1a\xc7\x02\n" +
-	"-spec.sandboxes.per_session_needs_object_store\x12\xa1\x01a sandbox on any node reads and writes a run's files through the bucket, never through a shared disk: declare object_store to run agents in per-session sandboxes\x1ar!has(this.sandboxes) || this.sandboxes.driver == '' || this.sandboxes.driver == 'shared' || has(this.object_store)\"\xb9\a\n" +
+	"-spec.sandboxes.per_session_needs_object_store\x12\xa1\x01a sandbox on any node reads and writes a run's files through the bucket, never through a shared disk: declare object_store to run agents in per-session sandboxes\x1ar!has(this.sandboxes) || this.sandboxes.driver == '' || this.sandboxes.driver == 'shared' || has(this.object_store)\x1a\x86\x03\n" +
+	"(spec.runner.sizes_need_the_shared_runner\x12\xab\x01runner.resources and runner.storage size the shared runner, and a per-session sandbox driver runs every session in a sandbox of its own, with no shared runner: remove them\x1a\xab\x01!has(this.sandboxes) || this.sandboxes.driver == '' || this.sandboxes.driver == 'shared' || !has(this.runner) || (!has(this.runner.resources) && !has(this.runner.storage))\"\x9c\n" +
+	"\n" +
 	"\x19KubernetesStigmerOperator\x12n\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1c\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.name\x98\xd4a\x01R\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x12)\n" +
 	"\x10image_repository\x18\x03 \x01(\tR\x0fimageRepository\x12P\n" +
 	"\x11image_pull_policy\x18\x04 \x01(\tB$\xbaH!r\x1fR\x00R\x06AlwaysR\fIfNotPresentR\x05NeverR\x0fimagePullPolicy\x12\x84\x01\n" +
 	"\x12image_pull_secrets\x18\x05 \x03(\tBV\xbaH\t\x92\x01\x06\"\x04r\x02\x10\x01\xaa\xa6\x1dFNames of existing Kubernetes Secrets (references), not secret materialR\x10imagePullSecrets\x12(\n" +
-	"\breplicas\x18\x06 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01H\x00R\breplicas\x88\x01\x01\x12s\n" +
-	"\tresources\x18\a \x01(\v2U.dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperatorResourcesR\tresources\x121\n" +
+	"\breplicas\x18\x06 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01H\x00R\breplicas\x88\x01\x01\x12\xd5\x03\n" +
+	"\tresources\x18\a \x01(\v2?.dev.planton.kubernetes.KubernetesCoreV1ApiResourceRequirementsB\xf5\x02\xbaH\xf1\x02\xba\x01\xed\x02\n" +
+	"\"operator.resources.chart_resources\x12\x99\x01operator.resources sizes the operator container by cpu, memory and ephemeral-storage, the resources its chart takes: remove any other name and any claims\x1a\xaa\x01this.requests.all(name, name in ['cpu', 'memory', 'ephemeral-storage']) && this.limits.all(name, name in ['cpu', 'memory', 'ephemeral-storage']) && size(this.claims) == 0R\tresources\x121\n" +
 	"\tlog_level\x18\b \x01(\tB\x14\xbaH\x11r\x0fR\x00R\x04infoR\x05debugR\blogLevel\x12\x83\x01\n" +
 	"\rnode_selector\x18\t \x03(\v2^.dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperator.NodeSelectorEntryR\fnodeSelector\x12W\n" +
 	"\vtolerations\x18\n" +
@@ -3977,16 +3923,7 @@ const file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDesc = ""
 	"\x11NodeSelectorEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\v\n" +
-	"\t_replicas\"\xe6\x05\n" +
-	"\"KubernetesStigmerOperatorResources\x12\xa5\x02\n" +
-	"\brequests\x18\x01 \x03(\v2c.dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperatorResources.RequestsEntryB\xa3\x01\xbaH\x9f\x01\x9a\x01\x9b\x01\"\"r R\x03cpuR\x06memoryR\x11ephemeral-storage*urs2q^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$R\brequests\x12\x9f\x02\n" +
-	"\x06limits\x18\x02 \x03(\v2a.dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperatorResources.LimitsEntryB\xa3\x01\xbaH\x9f\x01\x9a\x01\x9b\x01\"\"r R\x03cpuR\x06memoryR\x11ephemeral-storage*urs2q^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$R\x06limits\x1a;\n" +
-	"\rRequestsEntry\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a9\n" +
-	"\vLimitsEntry\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xf6\x01\n" +
+	"\t_replicas\"\xf6\x01\n" +
 	"\x16KubernetesStigmerImage\x12\x1a\n" +
 	"\bregistry\x18\x01 \x01(\tR\bregistry\x12E\n" +
 	"\vpull_policy\x18\x02 \x01(\tB$\xbaH!r\x1fR\x00R\x06AlwaysR\fIfNotPresentR\x05NeverR\n" +
@@ -4247,150 +4184,145 @@ func file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescGZIP()
 	return file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDescData
 }
 
-var file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 52)
+var file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 49)
 var file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_goTypes = []any{
 	(*KubernetesStigmerSpec)(nil),                              // 0: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec
 	(*KubernetesStigmerOperator)(nil),                          // 1: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperator
-	(*KubernetesStigmerOperatorResources)(nil),                 // 2: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperatorResources
-	(*KubernetesStigmerImage)(nil),                             // 3: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerImage
-	(*KubernetesStigmerOwner)(nil),                             // 4: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOwner
-	(*KubernetesStigmerServer)(nil),                            // 5: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerServer
-	(*KubernetesStigmerServerEgress)(nil),                      // 6: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerServerEgress
-	(*KubernetesStigmerHelp)(nil),                              // 7: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerHelp
-	(*KubernetesStigmerVolume)(nil),                            // 8: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerVolume
-	(*KubernetesStigmerRunner)(nil),                            // 9: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerRunner
-	(*KubernetesStigmerModel)(nil),                             // 10: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerModel
-	(*KubernetesStigmerModelKeys)(nil),                         // 11: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerModelKeys
-	(*KubernetesStigmerDatabase)(nil),                          // 12: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerDatabase
-	(*KubernetesStigmerBundledPostgres)(nil),                   // 13: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledPostgres
-	(*KubernetesStigmerPostgresBackup)(nil),                    // 14: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerPostgresBackup
-	(*KubernetesStigmerRecoverFrom)(nil),                       // 15: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerRecoverFrom
-	(*KubernetesStigmerExternalPostgres)(nil),                  // 16: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerExternalPostgres
-	(*KubernetesStigmerPassword)(nil),                          // 17: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerPassword
-	(*KubernetesStigmerPostgresPasswordSecret)(nil),            // 18: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerPostgresPasswordSecret
-	(*KubernetesStigmerSecretKeyRef)(nil),                      // 19: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSecretKeyRef
-	(*KubernetesStigmerTemporal)(nil),                          // 20: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporal
-	(*KubernetesStigmerBundledTemporal)(nil),                   // 21: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledTemporal
-	(*KubernetesStigmerExternalTemporal)(nil),                  // 22: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerExternalTemporal
-	(*KubernetesStigmerTemporalTls)(nil),                       // 23: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporalTls
-	(*KubernetesStigmerTemporalTlsPem)(nil),                    // 24: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporalTlsPem
-	(*KubernetesStigmerTemporalTlsSecret)(nil),                 // 25: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporalTlsSecret
-	(*KubernetesStigmerSecretValue)(nil),                       // 26: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSecretValue
-	(*KubernetesStigmerObjectStore)(nil),                       // 27: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerObjectStore
-	(*KubernetesStigmerS3)(nil),                                // 28: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerS3
-	(*KubernetesStigmerS3Credentials)(nil),                     // 29: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerS3Credentials
-	(*KubernetesStigmerS3AccessKey)(nil),                       // 30: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerS3AccessKey
-	(*KubernetesStigmerIngress)(nil),                           // 31: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngress
-	(*KubernetesStigmerIngressTls)(nil),                        // 32: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngressTls
-	(*KubernetesStigmerIssuerRef)(nil),                         // 33: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIssuerRef
-	(*KubernetesStigmerGatewayRef)(nil),                        // 34: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerGatewayRef
-	(*KubernetesStigmerIdentity)(nil),                          // 35: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIdentity
-	(*KubernetesStigmerBundledIdentity)(nil),                   // 36: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledIdentity
-	(*KubernetesStigmerSmtp)(nil),                              // 37: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSmtp
-	(*KubernetesStigmerSmtpCredentials)(nil),                   // 38: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSmtpCredentials
-	(*KubernetesStigmerSmtpLogin)(nil),                         // 39: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSmtpLogin
-	(*KubernetesStigmerOidc)(nil),                              // 40: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOidc
-	(*KubernetesStigmerEnterprise)(nil),                        // 41: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerEnterprise
-	(*KubernetesStigmerSandboxes)(nil),                         // 42: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSandboxes
-	(*KubernetesStigmerAgentSandbox)(nil),                      // 43: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerAgentSandbox
-	(*KubernetesStigmerSubstrate)(nil),                         // 44: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSubstrate
-	(*KubernetesStigmerPrerequisites)(nil),                     // 45: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerPrerequisites
-	nil,                                                        // 46: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperator.NodeSelectorEntry
-	nil,                                                        // 47: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperatorResources.RequestsEntry
-	nil,                                                        // 48: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperatorResources.LimitsEntry
-	nil,                                                        // 49: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngress.AnnotationsEntry
-	nil,                                                        // 50: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngress.ServiceAnnotationsEntry
-	nil,                                                        // 51: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSubstrate.WorkerNodeSelectorEntry
-	(*v1.StringValueOrRef)(nil),                                // 52: dev.planton.shared.foreignkey.v1.StringValueOrRef
-	(*kubernetes.KubernetesCoreV1ApiToleration)(nil),           // 53: dev.planton.kubernetes.KubernetesCoreV1ApiToleration
-	(*kubernetes.KubernetesCoreV1ApiResourceRequirements)(nil), // 54: dev.planton.kubernetes.KubernetesCoreV1ApiResourceRequirements
-	(*kubernetes.ContainerEnv)(nil),                            // 55: dev.planton.kubernetes.ContainerEnv
+	(*KubernetesStigmerImage)(nil),                             // 2: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerImage
+	(*KubernetesStigmerOwner)(nil),                             // 3: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOwner
+	(*KubernetesStigmerServer)(nil),                            // 4: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerServer
+	(*KubernetesStigmerServerEgress)(nil),                      // 5: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerServerEgress
+	(*KubernetesStigmerHelp)(nil),                              // 6: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerHelp
+	(*KubernetesStigmerVolume)(nil),                            // 7: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerVolume
+	(*KubernetesStigmerRunner)(nil),                            // 8: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerRunner
+	(*KubernetesStigmerModel)(nil),                             // 9: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerModel
+	(*KubernetesStigmerModelKeys)(nil),                         // 10: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerModelKeys
+	(*KubernetesStigmerDatabase)(nil),                          // 11: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerDatabase
+	(*KubernetesStigmerBundledPostgres)(nil),                   // 12: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledPostgres
+	(*KubernetesStigmerPostgresBackup)(nil),                    // 13: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerPostgresBackup
+	(*KubernetesStigmerRecoverFrom)(nil),                       // 14: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerRecoverFrom
+	(*KubernetesStigmerExternalPostgres)(nil),                  // 15: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerExternalPostgres
+	(*KubernetesStigmerPassword)(nil),                          // 16: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerPassword
+	(*KubernetesStigmerPostgresPasswordSecret)(nil),            // 17: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerPostgresPasswordSecret
+	(*KubernetesStigmerSecretKeyRef)(nil),                      // 18: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSecretKeyRef
+	(*KubernetesStigmerTemporal)(nil),                          // 19: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporal
+	(*KubernetesStigmerBundledTemporal)(nil),                   // 20: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledTemporal
+	(*KubernetesStigmerExternalTemporal)(nil),                  // 21: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerExternalTemporal
+	(*KubernetesStigmerTemporalTls)(nil),                       // 22: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporalTls
+	(*KubernetesStigmerTemporalTlsPem)(nil),                    // 23: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporalTlsPem
+	(*KubernetesStigmerTemporalTlsSecret)(nil),                 // 24: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporalTlsSecret
+	(*KubernetesStigmerSecretValue)(nil),                       // 25: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSecretValue
+	(*KubernetesStigmerObjectStore)(nil),                       // 26: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerObjectStore
+	(*KubernetesStigmerS3)(nil),                                // 27: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerS3
+	(*KubernetesStigmerS3Credentials)(nil),                     // 28: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerS3Credentials
+	(*KubernetesStigmerS3AccessKey)(nil),                       // 29: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerS3AccessKey
+	(*KubernetesStigmerIngress)(nil),                           // 30: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngress
+	(*KubernetesStigmerIngressTls)(nil),                        // 31: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngressTls
+	(*KubernetesStigmerIssuerRef)(nil),                         // 32: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIssuerRef
+	(*KubernetesStigmerGatewayRef)(nil),                        // 33: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerGatewayRef
+	(*KubernetesStigmerIdentity)(nil),                          // 34: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIdentity
+	(*KubernetesStigmerBundledIdentity)(nil),                   // 35: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledIdentity
+	(*KubernetesStigmerSmtp)(nil),                              // 36: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSmtp
+	(*KubernetesStigmerSmtpCredentials)(nil),                   // 37: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSmtpCredentials
+	(*KubernetesStigmerSmtpLogin)(nil),                         // 38: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSmtpLogin
+	(*KubernetesStigmerOidc)(nil),                              // 39: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOidc
+	(*KubernetesStigmerEnterprise)(nil),                        // 40: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerEnterprise
+	(*KubernetesStigmerSandboxes)(nil),                         // 41: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSandboxes
+	(*KubernetesStigmerAgentSandbox)(nil),                      // 42: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerAgentSandbox
+	(*KubernetesStigmerSubstrate)(nil),                         // 43: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSubstrate
+	(*KubernetesStigmerPrerequisites)(nil),                     // 44: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerPrerequisites
+	nil,                                                        // 45: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperator.NodeSelectorEntry
+	nil,                                                        // 46: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngress.AnnotationsEntry
+	nil,                                                        // 47: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngress.ServiceAnnotationsEntry
+	nil,                                                        // 48: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSubstrate.WorkerNodeSelectorEntry
+	(*v1.StringValueOrRef)(nil),                                // 49: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*kubernetes.KubernetesCoreV1ApiResourceRequirements)(nil), // 50: dev.planton.kubernetes.KubernetesCoreV1ApiResourceRequirements
+	(*kubernetes.KubernetesCoreV1ApiToleration)(nil),           // 51: dev.planton.kubernetes.KubernetesCoreV1ApiToleration
+	(*kubernetes.ContainerEnv)(nil),                            // 52: dev.planton.kubernetes.ContainerEnv
 }
 var file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_depIdxs = []int32{
-	52, // 0: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	49, // 0: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	1,  // 1: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.operator:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperator
-	3,  // 2: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.image:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerImage
-	4,  // 3: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.owner:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOwner
-	5,  // 4: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.server:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerServer
-	9,  // 5: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.runner:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerRunner
-	12, // 6: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.database:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerDatabase
-	20, // 7: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.temporal:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporal
-	27, // 8: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.object_store:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerObjectStore
-	31, // 9: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.ingress:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngress
-	35, // 10: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.identity:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIdentity
-	41, // 11: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.enterprise:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerEnterprise
-	42, // 12: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.sandboxes:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSandboxes
-	45, // 13: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.prerequisites:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerPrerequisites
-	52, // 14: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperator.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	2,  // 15: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperator.resources:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperatorResources
-	46, // 16: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperator.node_selector:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperator.NodeSelectorEntry
-	53, // 17: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperator.tolerations:type_name -> dev.planton.kubernetes.KubernetesCoreV1ApiToleration
-	47, // 18: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperatorResources.requests:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperatorResources.RequestsEntry
-	48, // 19: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperatorResources.limits:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperatorResources.LimitsEntry
-	54, // 20: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerServer.resources:type_name -> dev.planton.kubernetes.KubernetesCoreV1ApiResourceRequirements
-	8,  // 21: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerServer.storage:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerVolume
-	8,  // 22: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerServer.artifacts:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerVolume
-	7,  // 23: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerServer.help:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerHelp
-	6,  // 24: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerServer.egress:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerServerEgress
-	55, // 25: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerServer.extra_env:type_name -> dev.planton.kubernetes.ContainerEnv
-	10, // 26: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerRunner.model:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerModel
-	54, // 27: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerRunner.resources:type_name -> dev.planton.kubernetes.KubernetesCoreV1ApiResourceRequirements
-	8,  // 28: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerRunner.storage:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerVolume
-	55, // 29: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerRunner.extra_env:type_name -> dev.planton.kubernetes.ContainerEnv
-	11, // 30: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerModel.keys:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerModelKeys
-	52, // 31: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerModel.existing_secret_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	13, // 32: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerDatabase.bundled:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledPostgres
-	16, // 33: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerDatabase.external:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerExternalPostgres
-	8,  // 34: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledPostgres.storage:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerVolume
-	54, // 35: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledPostgres.resources:type_name -> dev.planton.kubernetes.KubernetesCoreV1ApiResourceRequirements
-	14, // 36: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledPostgres.backup:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerPostgresBackup
-	15, // 37: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledPostgres.recover_from:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerRecoverFrom
-	52, // 38: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerExternalPostgres.host:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	17, // 39: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerExternalPostgres.password:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerPassword
-	18, // 40: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerPassword.existing_secret:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerPostgresPasswordSecret
-	52, // 41: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerPostgresPasswordSecret.name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	52, // 42: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSecretKeyRef.name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	21, // 43: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporal.bundled:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledTemporal
-	22, // 44: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporal.external:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerExternalTemporal
-	54, // 45: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledTemporal.resources:type_name -> dev.planton.kubernetes.KubernetesCoreV1ApiResourceRequirements
-	52, // 46: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerExternalTemporal.host_port:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	23, // 47: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerExternalTemporal.tls:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporalTls
-	26, // 48: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerExternalTemporal.api_key:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSecretValue
-	24, // 49: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporalTls.pem:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporalTlsPem
-	25, // 50: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporalTls.existing_secret:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporalTlsSecret
-	52, // 51: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporalTlsSecret.name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	19, // 52: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSecretValue.existing_secret:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSecretKeyRef
-	28, // 53: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerObjectStore.s3:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerS3
-	52, // 54: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerS3.bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	52, // 55: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerS3.endpoint:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	29, // 56: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerS3.credentials:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerS3Credentials
-	30, // 57: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerS3Credentials.access_key:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerS3AccessKey
-	52, // 58: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerS3Credentials.existing_secret_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	32, // 59: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngress.tls:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngressTls
-	34, // 60: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngress.gateway:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerGatewayRef
-	49, // 61: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngress.annotations:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngress.AnnotationsEntry
-	50, // 62: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngress.service_annotations:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngress.ServiceAnnotationsEntry
-	33, // 63: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngressTls.issuer:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIssuerRef
-	52, // 64: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIssuerRef.name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	52, // 65: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerGatewayRef.name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	52, // 66: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerGatewayRef.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	36, // 67: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIdentity.bundled:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledIdentity
-	40, // 68: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIdentity.oidc:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOidc
-	37, // 69: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledIdentity.smtp:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSmtp
-	38, // 70: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSmtp.credentials:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSmtpCredentials
-	39, // 71: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSmtpCredentials.login:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSmtpLogin
-	52, // 72: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSmtpCredentials.existing_secret_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	26, // 73: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerEnterprise.license:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSecretValue
-	43, // 74: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSandboxes.agent_sandbox:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerAgentSandbox
-	44, // 75: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSandboxes.substrate:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSubstrate
-	54, // 76: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSubstrate.worker_resources:type_name -> dev.planton.kubernetes.KubernetesCoreV1ApiResourceRequirements
-	51, // 77: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSubstrate.worker_node_selector:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSubstrate.WorkerNodeSelectorEntry
-	53, // 78: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSubstrate.worker_tolerations:type_name -> dev.planton.kubernetes.KubernetesCoreV1ApiToleration
-	79, // [79:79] is the sub-list for method output_type
-	79, // [79:79] is the sub-list for method input_type
-	79, // [79:79] is the sub-list for extension type_name
-	79, // [79:79] is the sub-list for extension extendee
-	0,  // [0:79] is the sub-list for field type_name
+	2,  // 2: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.image:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerImage
+	3,  // 3: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.owner:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOwner
+	4,  // 4: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.server:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerServer
+	8,  // 5: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.runner:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerRunner
+	11, // 6: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.database:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerDatabase
+	19, // 7: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.temporal:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporal
+	26, // 8: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.object_store:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerObjectStore
+	30, // 9: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.ingress:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngress
+	34, // 10: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.identity:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIdentity
+	40, // 11: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.enterprise:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerEnterprise
+	41, // 12: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.sandboxes:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSandboxes
+	44, // 13: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSpec.prerequisites:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerPrerequisites
+	49, // 14: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperator.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	50, // 15: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperator.resources:type_name -> dev.planton.kubernetes.KubernetesCoreV1ApiResourceRequirements
+	45, // 16: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperator.node_selector:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperator.NodeSelectorEntry
+	51, // 17: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOperator.tolerations:type_name -> dev.planton.kubernetes.KubernetesCoreV1ApiToleration
+	50, // 18: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerServer.resources:type_name -> dev.planton.kubernetes.KubernetesCoreV1ApiResourceRequirements
+	7,  // 19: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerServer.storage:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerVolume
+	7,  // 20: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerServer.artifacts:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerVolume
+	6,  // 21: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerServer.help:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerHelp
+	5,  // 22: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerServer.egress:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerServerEgress
+	52, // 23: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerServer.extra_env:type_name -> dev.planton.kubernetes.ContainerEnv
+	9,  // 24: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerRunner.model:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerModel
+	50, // 25: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerRunner.resources:type_name -> dev.planton.kubernetes.KubernetesCoreV1ApiResourceRequirements
+	7,  // 26: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerRunner.storage:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerVolume
+	52, // 27: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerRunner.extra_env:type_name -> dev.planton.kubernetes.ContainerEnv
+	10, // 28: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerModel.keys:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerModelKeys
+	49, // 29: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerModel.existing_secret_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	12, // 30: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerDatabase.bundled:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledPostgres
+	15, // 31: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerDatabase.external:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerExternalPostgres
+	7,  // 32: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledPostgres.storage:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerVolume
+	50, // 33: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledPostgres.resources:type_name -> dev.planton.kubernetes.KubernetesCoreV1ApiResourceRequirements
+	13, // 34: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledPostgres.backup:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerPostgresBackup
+	14, // 35: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledPostgres.recover_from:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerRecoverFrom
+	49, // 36: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerExternalPostgres.host:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	16, // 37: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerExternalPostgres.password:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerPassword
+	17, // 38: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerPassword.existing_secret:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerPostgresPasswordSecret
+	49, // 39: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerPostgresPasswordSecret.name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	49, // 40: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSecretKeyRef.name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	20, // 41: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporal.bundled:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledTemporal
+	21, // 42: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporal.external:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerExternalTemporal
+	50, // 43: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledTemporal.resources:type_name -> dev.planton.kubernetes.KubernetesCoreV1ApiResourceRequirements
+	49, // 44: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerExternalTemporal.host_port:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	22, // 45: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerExternalTemporal.tls:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporalTls
+	25, // 46: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerExternalTemporal.api_key:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSecretValue
+	23, // 47: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporalTls.pem:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporalTlsPem
+	24, // 48: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporalTls.existing_secret:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporalTlsSecret
+	49, // 49: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerTemporalTlsSecret.name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	18, // 50: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSecretValue.existing_secret:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSecretKeyRef
+	27, // 51: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerObjectStore.s3:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerS3
+	49, // 52: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerS3.bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	49, // 53: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerS3.endpoint:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	28, // 54: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerS3.credentials:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerS3Credentials
+	29, // 55: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerS3Credentials.access_key:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerS3AccessKey
+	49, // 56: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerS3Credentials.existing_secret_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	31, // 57: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngress.tls:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngressTls
+	33, // 58: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngress.gateway:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerGatewayRef
+	46, // 59: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngress.annotations:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngress.AnnotationsEntry
+	47, // 60: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngress.service_annotations:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngress.ServiceAnnotationsEntry
+	32, // 61: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIngressTls.issuer:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIssuerRef
+	49, // 62: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIssuerRef.name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	49, // 63: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerGatewayRef.name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	49, // 64: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerGatewayRef.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	35, // 65: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIdentity.bundled:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledIdentity
+	39, // 66: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerIdentity.oidc:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerOidc
+	36, // 67: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerBundledIdentity.smtp:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSmtp
+	37, // 68: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSmtp.credentials:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSmtpCredentials
+	38, // 69: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSmtpCredentials.login:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSmtpLogin
+	49, // 70: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSmtpCredentials.existing_secret_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	25, // 71: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerEnterprise.license:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSecretValue
+	42, // 72: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSandboxes.agent_sandbox:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerAgentSandbox
+	43, // 73: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSandboxes.substrate:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSubstrate
+	50, // 74: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSubstrate.worker_resources:type_name -> dev.planton.kubernetes.KubernetesCoreV1ApiResourceRequirements
+	48, // 75: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSubstrate.worker_node_selector:type_name -> dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSubstrate.WorkerNodeSelectorEntry
+	51, // 76: dev.planton.kubernetes.kubernetesstigmer.v1alpha1.KubernetesStigmerSubstrate.worker_tolerations:type_name -> dev.planton.kubernetes.KubernetesCoreV1ApiToleration
+	77, // [77:77] is the sub-list for method output_type
+	77, // [77:77] is the sub-list for method input_type
+	77, // [77:77] is the sub-list for extension type_name
+	77, // [77:77] is the sub-list for extension extendee
+	0,  // [0:77] is the sub-list for field type_name
 }
 
 func init() { file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_init() }
@@ -4399,66 +4331,66 @@ func file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_init() {
 		return
 	}
 	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[1].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[10].OneofWrappers = []any{
+	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[9].OneofWrappers = []any{
 		(*KubernetesStigmerModel_Keys)(nil),
 		(*KubernetesStigmerModel_ExistingSecretName)(nil),
 	}
-	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[12].OneofWrappers = []any{
+	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[11].OneofWrappers = []any{
 		(*KubernetesStigmerDatabase_Bundled)(nil),
 		(*KubernetesStigmerDatabase_External)(nil),
 	}
-	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[13].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[16].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[17].OneofWrappers = []any{
+	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[12].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[15].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[16].OneofWrappers = []any{
 		(*KubernetesStigmerPassword_Value)(nil),
 		(*KubernetesStigmerPassword_ExistingSecret)(nil),
 	}
-	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[18].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[20].OneofWrappers = []any{
+	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[17].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[19].OneofWrappers = []any{
 		(*KubernetesStigmerTemporal_Bundled)(nil),
 		(*KubernetesStigmerTemporal_External)(nil),
 	}
-	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[22].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[23].OneofWrappers = []any{
+	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[21].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[22].OneofWrappers = []any{
 		(*KubernetesStigmerTemporalTls_Pem)(nil),
 		(*KubernetesStigmerTemporalTls_ExistingSecret)(nil),
 	}
-	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[26].OneofWrappers = []any{
+	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[25].OneofWrappers = []any{
 		(*KubernetesStigmerSecretValue_Value)(nil),
 		(*KubernetesStigmerSecretValue_ExistingSecret)(nil),
 	}
-	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[28].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[29].OneofWrappers = []any{
+	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[27].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[28].OneofWrappers = []any{
 		(*KubernetesStigmerS3Credentials_AccessKey)(nil),
 		(*KubernetesStigmerS3Credentials_ExistingSecretName)(nil),
 	}
-	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[31].OneofWrappers = []any{
+	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[30].OneofWrappers = []any{
 		(*KubernetesStigmerIngress_Tls)(nil),
 		(*KubernetesStigmerIngress_Gateway)(nil),
 	}
-	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[32].OneofWrappers = []any{
+	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[31].OneofWrappers = []any{
 		(*KubernetesStigmerIngressTls_SecretName)(nil),
 		(*KubernetesStigmerIngressTls_Issuer)(nil),
 	}
-	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[35].OneofWrappers = []any{
+	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[34].OneofWrappers = []any{
 		(*KubernetesStigmerIdentity_Bundled)(nil),
 		(*KubernetesStigmerIdentity_Oidc)(nil),
 	}
-	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[37].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[38].OneofWrappers = []any{
+	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[36].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[37].OneofWrappers = []any{
 		(*KubernetesStigmerSmtpCredentials_Login)(nil),
 		(*KubernetesStigmerSmtpCredentials_ExistingSecretName)(nil),
 	}
+	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[40].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[41].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[42].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[44].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_msgTypes[43].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDesc), len(file_catalog_kubernetes_kubernetesstigmer_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   52,
+			NumMessages:   49,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -1,8 +1,9 @@
 // Package capacityestimator evaluates a kind's capacity derivation
 // against one typed manifest. It is the execution engine of the
 // capacity-derivation standard, the cluster-capacity twin of the cost
-// estimator: workload bindings locate the manifest's ContainerResources
-// blocks, instance counts, and per-instance volumes, and the engine sums
+// estimator: workload bindings locate the manifest's requests/limits
+// blocks (one of the shared resources types, IsResourcesMessage), instance
+// counts, and per-instance volumes, and the engine sums
 // them into the capacity footprint the workload reserves from its target
 // cluster -- exact Kubernetes-quantity arithmetic, never a float. A
 // manifest that states no reservation at all refuses honestly instead of
@@ -19,6 +20,7 @@ package capacityestimator
 import (
 	"fmt"
 	"math/big"
+	"sort"
 	"strings"
 
 	"google.golang.org/protobuf/proto"
@@ -201,7 +203,7 @@ func instanceCount(specMsg protoreflect.Message, workload *capacityv1.WorkloadBi
 	}
 }
 
-// workloadResources reads the workload's ContainerResources block, adds
+// workloadResources reads the workload's requests/limits block, adds
 // count x each quantity into the totals, and renders the per-instance
 // basis fragment, e.g. "(1 CPU / 2Gi memory requests, 2 CPU / 4Gi
 // limits)". When the manifest omits the block, the resolution falls back
@@ -209,7 +211,10 @@ func instanceCount(specMsg protoreflect.Message, workload *capacityv1.WorkloadBi
 // annotation -- the defaults the modules apply at deploy time, so a
 // manifest relying on them reserves exactly what the footprint states --
 // with the basis naming the defaults' origin. A field carrying neither a
-// manifest value nor the annotation contributes nothing.
+// manifest value nor the annotation contributes nothing -- the case of
+// every KubernetesCoreV1ApiResourceRequirements field, which has no
+// default annotation: a block left unset is sized by whatever deploys the
+// workload, and the derivation's notes say so instead of a guessed number.
 func workloadResources(specMsg protoreflect.Message, workload *capacityv1.WorkloadBinding, count *big.Int, totals *footprintTotals) (bool, string, error) {
 	path := workload.GetResourcesPath()
 	if path == "" {
@@ -297,12 +302,56 @@ func declaredDefaultResources(field protoreflect.FieldDescriptor) protoreflect.M
 	return declared.ProtoReflect()
 }
 
-// cpuMemory reads one CpuMemory block ("requests" or "limits") off a
-// ContainerResources message, returning empty strings for absent halves.
+// IsResourcesMessage reports whether a message is one of the shared
+// requests/limits types a workload binding's resources_path may terminate
+// at -- capacity is read by TYPE, never by guessed field names:
+//
+//   - ContainerResources, the catalog's narrowed shape: requests and limits
+//     as CpuMemory messages;
+//   - KubernetesCoreV1ApiResourceRequirements, the full Kubernetes type:
+//     requests and limits as resource lists keyed by resource name, of
+//     which cpu and memory are read (other resources and claims reserve
+//     nothing this footprint states).
+func IsResourcesMessage(message protoreflect.MessageDescriptor) bool {
+	_, ok := resourcesMessages[message.FullName()]
+	return ok
+}
+
+// resourcesMessages is IsResourcesMessage's set, keyed by full name.
+var resourcesMessages = map[protoreflect.FullName]struct{}{
+	(&kubernetes.ContainerResources{}).ProtoReflect().Descriptor().FullName():                      {},
+	(&kubernetes.KubernetesCoreV1ApiResourceRequirements{}).ProtoReflect().Descriptor().FullName(): {},
+}
+
+// ResourcesMessageNames lists IsResourcesMessage's types for a refusal.
+func ResourcesMessageNames() string {
+	names := make([]string, 0, len(resourcesMessages))
+	for name := range resourcesMessages {
+		names = append(names, string(name))
+	}
+	sort.Strings(names)
+	return strings.Join(names, " or ")
+}
+
+// cpuMemory reads one block ("requests" or "limits") off a resources
+// message (IsResourcesMessage), returning empty strings for absent halves:
+// a CpuMemory message's cpu and memory fields, or a resource list's cpu and
+// memory keys.
 func cpuMemory(resources protoreflect.Message, block string) (string, string) {
 	field := resources.Descriptor().Fields().ByName(protoreflect.Name(block))
 	if field == nil || !resources.Has(field) {
 		return "", ""
+	}
+	if field.IsMap() {
+		list := resources.Get(field).Map()
+		read := func(name string) string {
+			value := list.Get(protoreflect.ValueOfString(name).MapKey())
+			if !value.IsValid() {
+				return ""
+			}
+			return value.String()
+		}
+		return read("cpu"), read("memory")
 	}
 	pair := resources.Get(field).Message()
 	read := func(name string) string {

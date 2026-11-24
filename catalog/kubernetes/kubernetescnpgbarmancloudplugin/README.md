@@ -52,8 +52,8 @@ on both engines) for anything beyond it.
 **Key design points:**
 
 - **Its own release, its own kind** — the plugin is a different chart
-  with a different pin than the operator (chart `0.7.0` = plugin
-  `v0.13.0`; the operator chart `0.29.0` = CloudNativePG `1.30.0`), a
+  with a different pin than the operator (chart `0.9.0` = plugin
+  `v0.16.0`; the operator chart `0.29.0` = CloudNativePG `1.30.0`), a
   different dependency (it needs cert-manager; the operator does not),
   and on many clusters a different owner. Upstream forbids folding it
   into the operator's release, so one kind per release is also the
@@ -98,11 +98,14 @@ on both engines) for anything beyond it.
   the operator's and already exists; true is only correct when this
   resource is the first to claim it (and then destroying the plugin
   deletes the namespace)
-- **`spec.chart_version`**: pinned chart version (default `0.7.0`, which
-  ships plugin v0.13.0 — chart and app versions move separately; the
-  chart pin governs). Plugin v0.13.0 needs CloudNativePG 1.26 or later;
-  upstream strongly recommends 1.27 or later for its plugin error
-  reporting on the Cluster status
+- **`spec.chart_version`**: pinned chart version (default `0.9.0`, which
+  ships plugin v0.16.0 — chart and app versions move separately; the
+  chart pin governs). Plugin v0.16.0 needs CloudNativePG 1.30 or later;
+  against an older resident operator (1.26 to 1.29), pin chart `0.8.1`
+  (plugin v0.15.1), the last release that runs there. v0.16.0 is the
+  first plugin to declare an ObjectStore's `s3AddressingStyle`, which
+  software writing its own ObjectStores for a named S3 endpoint (Stigmer
+  among them) relies on
 - **`spec.crds`**: `install` (chart default true) — disable only when
   something else manages the ObjectStore CRD; it carries the keep policy
   either way
@@ -121,8 +124,11 @@ on both engines) for anything beyond it.
   scheduling for the plugin pod — archiving falls behind while the
   plugin is evicted; keep it at the operator's priority
 - **`spec.helm_values`**: escape hatch for chart values beyond the typed
-  fields (`additionalArgs`, `additionalEnv`, update strategy, security
-  contexts, topology spread, host network, certificate durations, ...)
+  fields (`logLevel`, `additionalArgs`, `additionalEnv`, update
+  strategy, security contexts, topology spread, host network, the RBAC
+  `cnpgGroup` for a CloudNativePG-based operator under another API group,
+  certificate durations, your own issuer through `certificate.createIssuer`
+  and `certificate.issuerName`, ...)
   — never the primary interface. The fixed identities (`service.name`,
   the name overrides) are re-pinned after it.
 

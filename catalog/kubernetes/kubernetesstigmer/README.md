@@ -30,7 +30,7 @@ The plan refuses, in a sentence that says what it saw, what it means and what to
 - a `version` below the one the server runs: Stigmer's server refuses to start on a database a newer release migrated, so going back is a restore, not a downgrade;
 - CloudNativePG's definitions, or its backup plugin's, left on the cluster by a Helm release that no longer runs a controller (the catalog's CloudNativePG kinds keep their definitions when destroyed). Stigmer's operator would trust them and wait forever for a database nothing creates; the refusal names the command that clears them.
 
-`planton validate` refuses every contradiction Stigmer's own definition refuses, before any deploy, with the kind's own field paths: your own Postgres without your own Temporal, the bundled sign-in without a hostname or an owner, Enterprise without your own issuer, a license, or a per-session sandbox driver, backups or sandboxes without a bucket, and more.
+`planton validate` refuses every contradiction Stigmer's own definition refuses, before any deploy, with the kind's own field paths: your own Postgres without your own Temporal, the bundled sign-in without a hostname or an owner, Enterprise without your own issuer, a license, or a per-session sandbox driver, backups or sandboxes without a bucket, runner sizes under a per-session sandbox driver (which runs no shared runner), and more.
 
 ## What a destroy leaves
 
@@ -61,7 +61,7 @@ Move `version` to a newer release. With backups on, the operator backs the datab
 | `ingress.tls.issuer.name` | KubernetesClusterIssuer |
 | `ingress.gateway` | KubernetesGateway |
 
-When the catalog's CloudNativePG, its backup plugin, agent-sandbox or Agent Substrate run on the cluster, order them first with a `depends_on` relationship (preset `07-composed-prerequisites`): Stigmer's operator leaves a copy someone else installed alone, but if it installed its own first, the catalog's resource would find it and refuse. A backup plugin someone else runs must be plugin v0.16.0 or newer (KubernetesCnpgBarmanCloudPlugin `chart_version` 0.9.0 or later), the release Stigmer bundles: with an S3 endpoint, Stigmer writes object-store settings older releases do not declare, and the database's archive is refused in the Stigmer's status.
+When the catalog's CloudNativePG, its backup plugin, agent-sandbox or Agent Substrate run on the cluster, order them first with a `depends_on` relationship (preset `07-composed-prerequisites`): Stigmer's operator leaves a copy someone else installed alone, but if it installed its own first, the catalog's resource would find it and refuse. A backup plugin someone else runs must be plugin v0.16.0 or newer, the release Stigmer bundles and KubernetesCnpgBarmanCloudPlugin's default (`chart_version` 0.9.0): with a named S3 endpoint, Stigmer writes object-store settings older releases do not declare, and the database's archive is refused in the Stigmer's status.
 
 ## Accepted limits
 

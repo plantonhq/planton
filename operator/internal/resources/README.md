@@ -33,7 +33,7 @@ Embedded .tgz → RenderHelmChart(chartData, releaseName, namespace, values) →
 | Valkey (redis-protocol cache) | bitnamicharts/valkey | 3.0.31 | Always (no mode field) |
 | OpenFGA | openfga/openfga | 0.3.13 | Always |
 | Temporal | temporal/temporal | 0.62.0 | Always |
-| Barman Cloud plugin (CloudNativePG backups; a shared sub-operator, not a platform component) | cnpg/plugin-barman-cloud | 0.7.0 (plugin v0.13.0) | When cert-manager is present or a backup is declared |
+| Barman Cloud plugin (CloudNativePG backups; a shared sub-operator, not a platform component) | cnpg/plugin-barman-cloud | 0.9.0 (plugin v0.16.0) | When cert-manager is present or a backup is declared |
 
 ## Credential Generation
 

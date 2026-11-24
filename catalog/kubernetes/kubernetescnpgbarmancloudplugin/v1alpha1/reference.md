@@ -38,11 +38,12 @@ installer also owns a plugin toggle, in which case enable it THERE; two
 owners of the singleton collide.
 
 REQUIRES cert-manager on the cluster (KubernetesCertManager): the chart
-renders a self-signed Issuer and two Certificates for the operator <->
-plugin gRPC TLS unconditionally, and the release fails to install without
-it. Requires a CloudNativePG at 1.26 or later (1.27 or later strongly
-recommended upstream for its plugin error reporting); the catalog
-operator's default chart ships 1.30.0.
+renders two Certificates for the operator <-> plugin gRPC TLS
+unconditionally, from a self-signed Issuer it also renders unless
+helm_values names your own, and the release fails to install without
+it. The default plugin (v0.16.0) requires a CloudNativePG at 1.30 or
+later, which the catalog operator's default chart ships (1.30.0);
+beside an older resident operator (1.26 to 1.29), pin chart 0.8.1.
 
 The typed fields below cover the chart's meaningful configuration
 surface; `helm_values` remains as the escape hatch for chart values
@@ -67,7 +68,7 @@ spec:
   namespace:
     value: hack-cnpg-system
   createNamespace: false
-  chartVersion: "0.7.0"
+  chartVersion: "0.9.0"
   crds:
     install: true
   replicas: 2
@@ -80,10 +81,10 @@ spec:
       memory: 256Mi
   image:
     repository: mirror.example.com/cloudnative-pg/plugin-barman-cloud
-    tag: v0.13.0
+    tag: v0.16.0
   sidecarImage:
     repository: mirror.example.com/cloudnative-pg/plugin-barman-cloud-sidecar
-    tag: v0.13.0
+    tag: v0.16.0
   imagePullSecrets:
     - hack-registry-credentials
   priorityClassName: system-cluster-critical
@@ -99,8 +100,7 @@ spec:
       effect: NoExecute
       tolerationSeconds: 300
   helmValues: |
-    additionalArgs:
-      - --log-level=info
+    logLevel: debug
     service:
       name: renamed-by-mistake
 ```
@@ -111,7 +111,7 @@ spec:
 |---|---|---|---|---|
 | `spec.namespace` | `string \| valueFrom` | yes |  | KubernetesCloudNativePgOperator (`status.outputs.namespace`) |
 | `spec.createNamespace` | `bool` |  |  |  |
-| `spec.chartVersion` | `string` |  | `0.7.0` |  |
+| `spec.chartVersion` | `string` |  | `0.9.0` |  |
 | `spec.crds` | `KubernetesCnpgBarmanCloudPluginCrds` |  |  |  |
 | `spec.crds.install` | `bool` |  | `true` |  |
 | `spec.replicas` | `int32` |  | `1` |  |
@@ -174,17 +174,19 @@ deletes the operator's namespace with it.
 
 `string` · optional (explicit presence)
 
-Helm chart version to install (e.g. "0.7.0", which ships plugin
-v0.13.0 -- chart and app versions move separately; the chart pin
+Helm chart version to install (e.g. "0.9.0", which ships plugin
+v0.16.0 -- chart and app versions move separately; the chart pin
 governs). Pin deliberately; upgrades re-run the release with the new
 chart. Pick versions from the chart repository's index
 (`helm search repo`): the served chart is the contract. Plugin
-v0.13.0 requires CloudNativePG 1.26 or later and upstream strongly
-recommends 1.27 or later (it reports plugin errors on the Cluster's
-status instead of only in logs); check the plugin's release notes
-when moving the pin against an older operator.
+v0.16.0 requires CloudNativePG 1.30 or later; beside an older
+operator (1.26 to 1.29), pin chart 0.8.1 (plugin v0.15.1), and check
+the plugin's release notes whenever the pin moves. Plugin v0.16.0 is
+the first to declare an ObjectStore's `s3AddressingStyle`, which
+software that writes its own ObjectStores for a named S3 endpoint
+(Stigmer among them) relies on.
 
-- default: `0.7.0`
+- default: `0.9.0`
 
 ### spec.crds
 
@@ -379,8 +381,10 @@ after the taint appears. Unset means tolerate forever.
 Escape hatch: additional chart values as a YAML document, merged LAST
 over everything the typed fields render (Helm `-f` semantics,
 identical on both engines). For the chart surface beyond the typed
-fields (additionalArgs, additionalEnv, update strategy, security
-contexts, topology spread, host network, certificate durations, ...)
+fields (logLevel, additionalArgs, additionalEnv, update strategy,
+security contexts, topology spread, host network, rbac.cnpgGroup,
+certificate durations, your own issuer through
+certificate.createIssuer and certificate.issuerName, ...)
 -- never the substitute for them. The chart's fixed identities
 (`service.name`, the name overrides) are re-pinned after this merge:
 the Service name is baked into the plugin's TLS certificate and the

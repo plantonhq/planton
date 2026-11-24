@@ -19,7 +19,7 @@ When you deploy this Infra Component, the IaC module provisions:
 
 ### Kubernetes Cluster
 
-- **CloudNativePG on the cluster** — a deployed [CloudNativePG Operator](/infra-catalog/kubernetes-cloud-native-pg-operator) (reference it), or a resident operator installed by another hand (name its namespace). Plugin v0.13.0 needs CloudNativePG 1.26 or later; 1.27 or later is strongly recommended upstream.
+- **CloudNativePG on the cluster** — a deployed [CloudNativePG Operator](/infra-catalog/kubernetes-cloud-native-pg-operator) (reference it), or a resident operator installed by another hand (name its namespace). Plugin v0.16.0 (the default) needs CloudNativePG 1.30 or later; beside an older resident operator, pin chart 0.8.1 (plugin v0.15.1).
 - **cert-manager on the cluster** — a deployed [Cert Manager](/infra-catalog/kubernetes-cert-manager); the chart's Certificates never issue without it and the install rolls back.
 - **Not already installed by the operator's own installer** — a self-hosted platform operator that offers a plugin toggle owns the plugin; enable it there instead of declaring this kind.
 
@@ -43,7 +43,7 @@ metadata:
 spec:
   namespace:
     value: cnpg-system
-  chartVersion: "0.7.0"
+  chartVersion: "0.9.0"
   priorityClassName: system-cluster-critical
 ```
 
@@ -78,7 +78,7 @@ These are the most important decisions when configuring the plugin. Explore the 
 
 **Install it before the first backup block** — a PostgreSQL declaring `backup` or an object-store `bootstrap.recovery` on a cluster without the plugin is parked by the operator in the phase "Cluster cannot proceed to reconciliation due to an unknown plugin being required" — visible in `kubectl get cluster`, invisible to an apply waiting on Ready. In a chart, give backup-declaring databases a `dependsOn` edge to this resource.
 
-**The chart pin governs** — chart and plugin versions move separately (chart `0.7.0` ships plugin `v0.13.0`). Pick versions from the served chart index; editing the pin later IS the upgrade. Keep the operator at 1.26 or later (1.27 or later recommended).
+**The chart pin governs** — chart and plugin versions move separately (chart `0.9.0` ships plugin `v0.16.0`). Pick versions from the served chart index; editing the pin later IS the upgrade. Plugin v0.16.0 needs the operator at 1.30 or later.
 
 **The ObjectStore CRD survives uninstall** — the chart stamps `helm.sh/resource-policy: keep` on it, so removing the plugin never takes the ObjectStore resources (and the backup configuration they carry) with it. A re-install with the same release name adopts the kept CRD.
 

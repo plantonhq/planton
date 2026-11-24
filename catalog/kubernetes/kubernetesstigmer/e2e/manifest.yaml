@@ -41,8 +41,6 @@ spec:
     model:
       keys:
         anthropic_api_key: sk-ant-example-not-a-real-key
-    storage:
-      size: 10Gi
   database:
     bundled:
       instances: 2

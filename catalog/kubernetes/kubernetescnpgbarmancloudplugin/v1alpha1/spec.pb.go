@@ -56,11 +56,12 @@ const (
 // owners of the singleton collide.
 //
 // REQUIRES cert-manager on the cluster (KubernetesCertManager): the chart
-// renders a self-signed Issuer and two Certificates for the operator <->
-// plugin gRPC TLS unconditionally, and the release fails to install without
-// it. Requires a CloudNativePG at 1.26 or later (1.27 or later strongly
-// recommended upstream for its plugin error reporting); the catalog
-// operator's default chart ships 1.30.0.
+// renders two Certificates for the operator <-> plugin gRPC TLS
+// unconditionally, from a self-signed Issuer it also renders unless
+// helm_values names your own, and the release fails to install without
+// it. The default plugin (v0.16.0) requires a CloudNativePG at 1.30 or
+// later, which the catalog operator's default chart ships (1.30.0);
+// beside an older resident operator (1.26 to 1.29), pin chart 0.8.1.
 //
 // The typed fields below cover the chart's meaningful configuration
 // surface; `helm_values` remains as the escape hatch for chart values
@@ -88,15 +89,17 @@ type KubernetesCnpgBarmanCloudPluginSpec struct {
 	// deletes the operator's namespace with it.
 	CreateNamespace bool `protobuf:"varint,2,opt,name=create_namespace,json=createNamespace,proto3" json:"create_namespace,omitempty"`
 	// *
-	// Helm chart version to install (e.g. "0.7.0", which ships plugin
-	// v0.13.0 -- chart and app versions move separately; the chart pin
+	// Helm chart version to install (e.g. "0.9.0", which ships plugin
+	// v0.16.0 -- chart and app versions move separately; the chart pin
 	// governs). Pin deliberately; upgrades re-run the release with the new
 	// chart. Pick versions from the chart repository's index
 	// (`helm search repo`): the served chart is the contract. Plugin
-	// v0.13.0 requires CloudNativePG 1.26 or later and upstream strongly
-	// recommends 1.27 or later (it reports plugin errors on the Cluster's
-	// status instead of only in logs); check the plugin's release notes
-	// when moving the pin against an older operator.
+	// v0.16.0 requires CloudNativePG 1.30 or later; beside an older
+	// operator (1.26 to 1.29), pin chart 0.8.1 (plugin v0.15.1), and check
+	// the plugin's release notes whenever the pin moves. Plugin v0.16.0 is
+	// the first to declare an ObjectStore's `s3AddressingStyle`, which
+	// software that writes its own ObjectStores for a named S3 endpoint
+	// (Stigmer among them) relies on.
 	ChartVersion *string `protobuf:"bytes,3,opt,name=chart_version,json=chartVersion,proto3,oneof" json:"chart_version,omitempty"`
 	// *
 	// The plugin's custom resource definition (`ObjectStore`, the object
@@ -150,8 +153,10 @@ type KubernetesCnpgBarmanCloudPluginSpec struct {
 	// Escape hatch: additional chart values as a YAML document, merged LAST
 	// over everything the typed fields render (Helm `-f` semantics,
 	// identical on both engines). For the chart surface beyond the typed
-	// fields (additionalArgs, additionalEnv, update strategy, security
-	// contexts, topology spread, host network, certificate durations, ...)
+	// fields (logLevel, additionalArgs, additionalEnv, update strategy,
+	// security contexts, topology spread, host network, rbac.cnpgGroup,
+	// certificate durations, your own issuer through
+	// certificate.createIssuer and certificate.issuerName, ...)
 	// -- never the substitute for them. The chart's fixed identities
 	// (`service.name`, the name overrides) are re-pinned after this merge:
 	// the Service name is baked into the plugin's TLS certificate and the
@@ -409,7 +414,7 @@ const file_catalog_kubernetes_kubernetescnpgbarmancloudplugin_v1alpha1_spec_prot
 	"#KubernetesCnpgBarmanCloudPluginSpec\x12y\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\x84 \x92\xd4a\x18status.outputs.namespaceR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x123\n" +
-	"\rchart_version\x18\x03 \x01(\tB\t\x8a\xa6\x1d\x050.7.0H\x00R\fchartVersion\x88\x01\x01\x12x\n" +
+	"\rchart_version\x18\x03 \x01(\tB\t\x8a\xa6\x1d\x050.9.0H\x00R\fchartVersion\x88\x01\x01\x12x\n" +
 	"\x04crds\x18\x04 \x01(\v2d.dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1.KubernetesCnpgBarmanCloudPluginCrdsR\x04crds\x12-\n" +
 	"\breplicas\x18\x05 \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x01R\breplicas\x88\x01\x01\x12H\n" +
 	"\tresources\x18\x06 \x01(\v2*.dev.planton.kubernetes.ContainerResourcesR\tresources\x12{\n" +

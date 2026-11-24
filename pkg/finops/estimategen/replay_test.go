@@ -182,6 +182,49 @@ func TestPresetReplayHonesty(t *testing.T) {
 		}
 	})
 
+	t.Run("kubernetesstigmer", func(t *testing.T) {
+		// A kind whose sizes the full Kubernetes requirements type carries,
+		// and whose operator fills every size left out: only a preset that
+		// writes its sizes out gets a footprint -- the operator's defaults
+		// move with the declared version, so an unsized preset is absent,
+		// never a guessed number. Temporal's one size counts once per
+		// service.
+		presets := generatedPresets(t, summary, "kubernetesstigmer")
+		if _, exists := presets["01-minimal"]; exists {
+			t.Error("the minimal preset has a footprint -- it declares no size, and the operator's defaults are never counted")
+		}
+		sized, ok := presets["08-sized-for-one-team"]
+		if !ok {
+			t.Fatal("the sized-for-one-team preset is missing")
+		}
+		footprint := sized.GetCapacityFootprint()
+		for _, check := range []struct{ name, got, want string }{
+			{"cpu_requests", footprint.GetCpuRequests(), "1300m"},
+			{"memory_requests", footprint.GetMemoryRequests(), "3456Mi"},
+			{"cpu_limits", footprint.GetCpuLimits(), ""},
+			{"memory_limits", footprint.GetMemoryLimits(), "11776Mi"},
+			{"persistent_storage", footprint.GetPersistentStorage(), "45Gi"},
+		} {
+			if check.got != check.want {
+				t.Errorf("sized-for-one-team %s: got %q, want %q", check.name, check.got, check.want)
+			}
+		}
+		if !strings.Contains(footprint.GetBasis(), "4 Temporal services x") {
+			t.Errorf("basis reads %q -- Temporal's one size must count once per service", footprint.GetBasis())
+		}
+	})
+
+	t.Run("kubernetesagentsubstrateworkerpool", func(t *testing.T) {
+		presets := generatedPresets(t, summary, "kubernetesagentsubstrateworkerpool")
+		pool, ok := presets["01-gvisor-worker-pool"]
+		if !ok {
+			t.Fatal("the gVisor worker pool preset is missing")
+		}
+		if got := pool.GetCapacityFootprint().GetBasis(); got != "3 workers x (1 CPU / 8Gi memory requests, 4 CPU / 8Gi limits)" {
+			t.Errorf("basis reads %q", got)
+		}
+	})
+
 	t.Run("kubernetespostgres", func(t *testing.T) {
 		// The capacity standard's acceptance oracle: replaying the presets
 		// through the capacity derivation reproduces the hand-verified

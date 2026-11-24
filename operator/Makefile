@@ -350,10 +350,11 @@ CNPG_MANIFESTS_DIR := internal/resources/manifests/cloudnative-pg
 # path was deprecated. It ships as a Helm chart, rendered at runtime into
 # CloudNativePG's own namespace -- the operator discovers plugins only there.
 # The pin matches the OSS catalog's kubernetescnpgbarmancloudplugin kind
-# (chart 0.7.0 == plugin v0.13.0) so a platform-operator cluster and a
+# (chart 0.9.0 == plugin v0.16.0) so a platform-operator cluster and a
 # catalog-installed cluster run the same plugin; move the two pins together
-# and read the plugin's CloudNativePG floor at the new pin (1.26+ today).
-BARMAN_PLUGIN_HELM_CHART_VERSION ?= 0.7.0
+# and read the plugin's CloudNativePG floor at the new pin (1.30+ today,
+# which CNPG_VERSION meets).
+BARMAN_PLUGIN_HELM_CHART_VERSION ?= 0.9.0
 BARMAN_PLUGIN_HELM_CHART_REPO_NAME := cnpg
 BARMAN_PLUGIN_HELM_CHART_REPO_URL := https://cloudnative-pg.github.io/charts
 BARMAN_PLUGIN_CHART_DIR := internal/resources/manifests/barman-plugin-chart

@@ -1,0 +1,28 @@
+# GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
+# This file replays the kind's presets through its capacity derivation
+# (../capacity/, the machine-executable value-to-capacity rules): each
+# preset states the CPU/memory requests and limits and the persistent
+# volume storage it reserves from its target cluster, with a basis sentence
+# tracing every total back to the manifest's values. Cluster-capacity
+# kinds carry no priced lines -- the dollar value of the reservation
+# is the target cluster's node and storage-class economics, which this
+# catalog cannot know. Schema: finops/catalogkindcostestimate/v1.
+apiVersion: finops.planton.dev/v1
+kind: CatalogKindCostEstimate
+metadata:
+  name: kubernetesstigmer
+spec:
+  presets:
+    - preset: 08-sized-for-one-team
+      capacity_footprint:
+        cpu_requests: 1300m
+        memory_requests: 3456Mi
+        memory_limits: 11776Mi
+        persistent_storage: 45Gi
+        basis: 1 operator replica x (50m CPU / 128Mi memory requests, 512Mi limits); 1 server x (250m CPU / 1Gi memory requests, 2Gi limits) + 1 x (5Gi server data + 20Gi artifacts) volumes; 1 shared runner x (500m CPU / 1Gi memory requests, 4Gi limits) + 1 x 10Gi runner data volume; 1 Postgres instance x (100m CPU / 256Mi memory requests, 1Gi limits) + 1 x 10Gi data volume; 4 Temporal services x (100m CPU / 256Mi memory requests, 1Gi limits)
+      exclusions:
+        - the dollar value of this capacity is the target cluster's node and storage-class economics
+        - the model calls agents make are billed by the model provider
+        - what the operator installs when the cluster lacks it (CloudNativePG, the backup plugin, agent-sandbox, Agent Substrate's control plane) runs at its own chart sizes
+        - only the cpu and memory of each size are counted; ephemeral storage, other resources and resource claims are not
+      notes: a size a block leaves out (a memory limit, say) is filled from the operator's default for that version and is not counted

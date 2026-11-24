@@ -47,8 +47,8 @@ locals {
   # engines install the same chart whether or not the platform's
   # defaulting middleware ran -- mirror of the Pulumi module's
   # DefaultChartVersion. Chart and app versions move SEPARATELY (chart
-  # 0.7.0 ships plugin v0.13.0) -- the chart pin governs.
-  chart_version = coalesce(try(var.spec.chart_version, null), "0.7.0")
+  # 0.9.0 ships plugin v0.16.0) -- the chart pin governs.
+  chart_version = coalesce(try(var.spec.chart_version, null), "0.9.0")
 
   # The operator's namespace, by requirement (the platform resolves a
   # reference to the operator resource's namespace output before the module
@@ -103,8 +103,8 @@ locals {
   # in force. Mapping a combined reference verbatim onto a split-shaped
   # chart renders "<default-registry>/<mirror>/..." -- an ImagePullBackOff
   # identical on both engines that no parity review can see.
-  image_repository_raw   = try(var.spec.image.repository, "")
-  image_parts            = local.image_repository_raw != "" ? split("/", local.image_repository_raw) : []
+  image_repository_raw    = try(var.spec.image.repository, "")
+  image_parts             = local.image_repository_raw != "" ? split("/", local.image_repository_raw) : []
   image_first_is_registry = length(local.image_parts) > 1 && (can(regex("[.:]", local.image_parts[0])) || local.image_parts[0] == "localhost")
   image_values = {
     for k, v in {
@@ -117,8 +117,8 @@ locals {
   # The sidecar image is what the DATABASE pods pull -- the plugin publishes
   # it through its config ConfigMap and injects the container into every
   # instance pod. Same split rule.
-  sidecar_repository_raw   = try(var.spec.sidecar_image.repository, "")
-  sidecar_parts            = local.sidecar_repository_raw != "" ? split("/", local.sidecar_repository_raw) : []
+  sidecar_repository_raw    = try(var.spec.sidecar_image.repository, "")
+  sidecar_parts             = local.sidecar_repository_raw != "" ? split("/", local.sidecar_repository_raw) : []
   sidecar_first_is_registry = length(local.sidecar_parts) > 1 && (can(regex("[.:]", local.sidecar_parts[0])) || local.sidecar_parts[0] == "localhost")
   sidecar_image_values = {
     for k, v in {

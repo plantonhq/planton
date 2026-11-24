@@ -1,0 +1,149 @@
+# Capacity derivation: the machine-executable rules turning any
+# KubernetesStigmer manifest's spec values into the capacity footprint it
+# reserves from its target cluster. The estimate generator replays the
+# catalog presets through these rules to emit
+# ../estimates/kubernetesstigmer.yaml; a server-side estimator can evaluate
+# the same rules against live manifests. Stigmer's operator runs every
+# workload: its own controller, the server and the shared runner (two
+# containers of one single-replica Deployment), the bundled Postgres
+# instances, Temporal's four services (one replica each) and Agent
+# Substrate's workers. Each binds the size the manifest declares; a size
+# left out is applied by the operator from its own defaults for the
+# declared version, which this catalog does not count -- the notes name
+# each one instead of guessing a number that moves with the version.
+# Schema: finops/catalogkindcapacityderivation/v1.
+apiVersion: finops.planton.dev/v1
+kind: CatalogKindCapacityDerivation
+metadata:
+  name: kubernetesstigmer
+spec:
+  workloads:
+    - label: operator replica
+      resources_path: operator.resources
+      instances:
+        field_value:
+          field_path: operator.replicas
+          default_when_unset: "1"
+    - label: server
+      resources_path: server.resources
+      instances:
+        constant: "1"
+      volumes:
+        - label: server data
+          size_path: server.storage.size
+        - label: artifacts
+          size_path: server.artifacts.size
+    - label: shared runner
+      resources_path: runner.resources
+      instances:
+        constant: "1"
+      volumes:
+        - label: runner data
+          size_path: runner.storage.size
+    - label: Postgres instance
+      resources_path: database.bundled.resources
+      instances:
+        field_value:
+          field_path: database.bundled.instances
+          default_when_unset: "1"
+      volumes:
+        - label: data
+          size_path: database.bundled.storage.size
+    - label: Temporal service
+      resources_path: temporal.bundled.resources
+      instances:
+        constant: "4"
+    - label: Substrate worker
+      resources_path: sandboxes.substrate.worker_resources
+      instances:
+        field_value:
+          field_path: sandboxes.substrate.workers
+          default_when_unset: "1"
+  exclusions:
+    - text: the dollar value of this capacity is the target cluster's node and storage-class economics
+    - text: the model calls agents make are billed by the model provider
+    - text: what the operator installs when the cluster lacks it (CloudNativePG, the backup plugin, agent-sandbox, Agent Substrate's control plane) runs at its own chart sizes
+    - text: only the cpu and memory of each size are counted; ephemeral storage, other resources and resource claims are not
+    - applies_when:
+        - field_path: ingress
+          op: is_set
+        - field_path: identity.oidc
+          op: is_unset
+        - field_path: server.allow_unauthenticated_exposure
+          op: not_equals
+          value: "true"
+      text: the bundled sign-in (Keycloak) runs at the size the operator gives it, which the spec does not expose
+    - applies_when:
+        - field_path: sandboxes.driver
+          op: equals
+          value: agentSandbox
+      text: each live session's sandbox pod reserves its own size while it runs, which grows with the sessions running at once
+    - applies_when:
+        - field_path: object_store
+          op: is_set
+      text: files, Skills and the database's archive grow in the bucket, billed by the store
+  notes:
+    - applies_when:
+        - field_path: operator.resources
+          op: is_unset
+      text: the operator runs at its chart's own size for the declared version, not counted here
+    - applies_when:
+        - field_path: server.resources
+          op: is_unset
+      text: the server runs at the operator's default size for the declared version, not counted here
+    - applies_when:
+        - field_path: server.storage.size
+          op: is_unset
+      text: the server's volume takes the operator's default size, not counted here
+    - applies_when:
+        - field_path: object_store
+          op: is_unset
+        - field_path: server.artifacts.size
+          op: is_unset
+      text: with no bucket, the artifacts volume takes the operator's default size, not counted here
+    - applies_when:
+        - field_path: sandboxes.driver
+          op: not_equals
+          value: agentSandbox
+        - field_path: sandboxes.driver
+          op: not_equals
+          value: substrate
+        - field_path: runner.resources
+          op: is_unset
+      text: the shared runner runs at the operator's default size for the declared version, not counted here
+    - applies_when:
+        - field_path: sandboxes.driver
+          op: not_equals
+          value: agentSandbox
+        - field_path: sandboxes.driver
+          op: not_equals
+          value: substrate
+        - field_path: runner.storage.size
+          op: is_unset
+      text: the shared runner's volume takes the operator's default size, not counted here
+    - applies_when:
+        - field_path: database.external
+          op: is_unset
+        - field_path: database.bundled.resources
+          op: is_unset
+      text: each Postgres instance runs at the operator's default size for the declared version, not counted here
+    - applies_when:
+        - field_path: database.external
+          op: is_unset
+        - field_path: database.bundled.storage.size
+          op: is_unset
+      text: each Postgres instance's volume takes the operator's default size, not counted here
+    - applies_when:
+        - field_path: temporal.external
+          op: is_unset
+        - field_path: temporal.bundled.resources
+          op: is_unset
+      text: Temporal's four services run at the operator's default size for the declared version, not counted here
+    - applies_when:
+        - field_path: sandboxes.driver
+          op: equals
+          value: substrate
+        - field_path: sandboxes.substrate.worker_resources
+          op: is_unset
+      text: each Substrate worker runs at the operator's default size for the declared version, not counted here
+    - text: a size a block leaves out (a memory limit, say) is filled from the operator's default for that version and is not counted

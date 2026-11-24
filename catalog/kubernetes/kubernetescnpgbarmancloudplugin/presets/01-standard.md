@@ -26,9 +26,9 @@ release name is fixed to `plugin-barman-cloud`.
   the operator
 - **`create_namespace: false`** — the namespace is the operator's; the
   plugin joins it
-- **`chart_version: "0.7.0"`** (spec default, plugin v0.13.0) — requires
-  CloudNativePG 1.26 or later (1.27 or later recommended); the catalog
-  operator's default chart ships 1.30.0
+- **`chart_version: "0.9.0"`** (spec default, plugin v0.16.0) — requires
+  CloudNativePG 1.30 or later; the catalog operator's default chart
+  ships 1.30.0
 - **`replicas: 1`** (chart default) — extra replicas are leader-elected
   warm standbys that shorten failover of the plugin itself
 - **Explicit resources** — the chart ships no requests/limits by default;

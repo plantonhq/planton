@@ -40,9 +40,13 @@ The Stigmer has no finalizer, so deleting it returns at once, and the operator's
 
 ## Prerequisites from the catalog
 
-Stigmer's operator installs CloudNativePG, its backup plugin, agent-sandbox and Agent Substrate when `prerequisites` says `auto` (the default) and the cluster lacks them, and leaves a copy someone else installed alone. The only conflict is order: if the operator installs its copy first, the catalog's kind later finds it and refuses it. When the environment holds those kinds, give this one a `depends_on` relationship to each. A copy someone else runs is used as it is, so it must be at least as new as what Stigmer bundles where Stigmer relies on newer fields: the backup plugin from v0.16.0 (KubernetesCnpgBarmanCloudPlugin `chart_version` 0.9.0), because with an S3 endpoint Stigmer writes the object store's addressing style, which older releases do not declare.
+Stigmer's operator installs CloudNativePG, its backup plugin, agent-sandbox and Agent Substrate when `prerequisites` says `auto` (the default) and the cluster lacks them, and leaves a copy someone else installed alone. The only conflict is order: if the operator installs its copy first, the catalog's kind later finds it and refuses it. When the environment holds those kinds, give this one a `depends_on` relationship to each. A copy someone else runs is used as it is, so it must be at least as new as what Stigmer bundles where Stigmer relies on newer fields: the backup plugin from v0.16.0 (KubernetesCnpgBarmanCloudPlugin's default, `chart_version` 0.9.0), because with a named S3 endpoint Stigmer writes the object store's addressing style, which older releases do not declare.
 
 The operator recognizes someone else's copy by its definition alone, and trusts it without asking whether anything runs it. The catalog's CloudNativePG kinds keep their definitions when destroyed, so a cluster where one was removed looks to the operator like a CloudNativePG it must leave alone, and the bundled database waits forever. In `auto` mode the plan therefore reads each definition the install needs; one a Helm release put there whose release has no Deployment left is refused, with the command that clears it. A definition installed without Helm names no controller to look for, and is trusted.
+
+## Sizes and what they reserve
+
+Every size is optional: the operator fills what you leave out from its own defaults for the declared version, sized for one team, key by key (declare only a memory limit and the requests stay the operator's). Planton's capacity estimate counts only the sizes you declare, because the defaults move with the version; preset `08-sized-for-one-team` writes the 0.3.2 defaults out, so its estimate shows what one install reserves. Temporal takes one size for each of its four services. The shared runner exists only without a per-session sandbox driver, so its sizes are refused with one.
 
 ## On the diagram
 
@@ -71,7 +75,7 @@ The chart's values schema is closed, so there is no free-form escape hatch: the 
 | `owner` | `owner` |
 | `server.resources`, `.storage`, `.artifacts`, `.help`, `.internalAccounts`, `.allowUnauthenticatedExposure`, `.egress`, `.extraEnv` | `server.*`, with `extra_env` as ContainerEnv |
 | `runner.llm.secretName` | `runner.model` (`keys`, or `existing_secret_name`) |
-| `runner.resources`, `.storage`, `.extraEnv` | `runner.*` |
+| `runner.resources`, `.storage`, `.extraEnv` | `runner.*`; `resources` and `storage` are refused under a per-session sandbox driver, which runs no shared runner for them to size |
 | `database.postgresql.bundled` | `database.bundled` |
 | `database.postgresql.external` | `database.external`, with `password` as a value or a Secret |
 | `temporal.bundled`, `temporal.external` | `temporal.*`; `external.tls` as PEM values or a Secret, `external.apiKey` as `api_key` |

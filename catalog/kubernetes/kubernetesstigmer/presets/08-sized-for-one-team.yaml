@@ -1,0 +1,66 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesStigmer
+metadata:
+  name: my-stigmer
+spec:
+  namespace:
+    value: stigmer # must exist; give it a KubernetesNamespace of its own
+  version: 0.3.2 # replace with the Stigmer release you validated
+  operator:
+    namespace:
+      value: stigmer-system # the convention; only the operator runs here
+    create_namespace: true # this resource creates (and owns) it
+    resources: # the chart's own size, written out
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        memory: 512Mi
+  owner:
+    email: owner@acme.example # replace with the person who runs this install
+  # Every size below is the one the operator applies for 0.3.2 when it is
+  # left out, sized for one team: CPU is requested and never limited, so a
+  # burst is not throttled; memory is requested and limited, so a leak is a
+  # restart, not a node.
+  server:
+    resources:
+      requests:
+        cpu: 250m
+        memory: 1Gi
+      limits:
+        memory: 2Gi
+    storage:
+      size: 5Gi
+    artifacts:
+      size: 20Gi
+  runner:
+    model:
+      keys:
+        anthropic_api_key: $secret/anthropic-api-key # a Planton secret reference
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        memory: 4Gi
+    storage:
+      size: 10Gi
+  database:
+    bundled:
+      instances: 1
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          memory: 1Gi
+      storage:
+        size: 10Gi
+  temporal:
+    bundled:
+      resources: # each of Temporal's four services: frontend, history, matching, worker
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          memory: 1Gi

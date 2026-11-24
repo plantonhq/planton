@@ -8,8 +8,8 @@ var vars = struct {
 	HelmChartName string
 	// DefaultChartVersion is the fallback when spec.chart_version is unset
 	// AND the platform's defaulting middleware did not run. Keep aligned
-	// with the spec default and the chart-repo index (chart 0.7.0 ships
-	// plugin v0.13.0 -- chart and app versions move SEPARATELY; the chart
+	// with the spec default and the chart-repo index (chart 0.9.0 ships
+	// plugin v0.16.0 -- chart and app versions move SEPARATELY; the chart
 	// pin governs).
 	DefaultChartVersion string
 	// ReleaseName is FIXED: the chart bakes the plugin's gRPC Service name
@@ -41,7 +41,7 @@ var vars = struct {
 	// (cross-engine chart drift installs different software per engine).
 	HelmChartRepo:       "https://cloudnative-pg.github.io/charts",
 	HelmChartName:       "plugin-barman-cloud",
-	DefaultChartVersion: "0.7.0",
+	DefaultChartVersion: "0.9.0",
 	ReleaseName:         "plugin-barman-cloud",
 	PluginName:          "barman-cloud.cloudnative-pg.io",
 	ServiceName:         "barman-cloud",

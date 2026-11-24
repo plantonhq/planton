@@ -21,11 +21,6 @@ import (
 	"github.com/plantonhq/planton/pkg/specpath"
 )
 
-// containerResourcesMessage is the shared requests/limits message every
-// resources_path must terminate at -- capacity is read by TYPE, never by
-// guessed field names.
-const containerResourcesMessage = "dev.planton.kubernetes.ContainerResources"
-
 var decimalPattern = regexp.MustCompile(`^[0-9]+(\.[0-9]+)?$`)
 
 // TestCapacityDerivationConformance holds every capacity derivation to
@@ -39,8 +34,10 @@ var decimalPattern = regexp.MustCompile(`^[0-9]+(\.[0-9]+)?$`)
 //     cost derivation beside this document -- a kind's quantities
 //     have exactly one home.
 //  3. Every workload binds real spec structure: resources_path resolves
-//     to the shared ContainerResources message, the instance count is a
-//     literal decimal or a numeric spec field, every volume's size_path
+//     to one of the shared requests/limits types
+//     (capacityestimator.IsResourcesMessage -- capacity is read by TYPE,
+//     never by guessed field names), the instance count is a literal
+//     decimal or a numeric spec field, every volume's size_path
 //     resolves to a string scalar (the Kubernetes quantity shape), and
 //     labels are non-empty and unique (they carry the basis prose).
 //  4. Conditions on exclusions and notes name resolvable paths, carry an
@@ -143,9 +140,9 @@ func checkWorkload(t *testing.T, specDescriptor protoreflect.MessageDescriptor, 
 		if err != nil {
 			t.Errorf("workload %d resources_path: %v", index, err)
 		} else if terminal.Kind() != protoreflect.MessageKind ||
-			string(terminal.Message().FullName()) != containerResourcesMessage {
+			!capacityestimator.IsResourcesMessage(terminal.Message()) {
 			t.Errorf("workload %d resources_path %q terminates at %s, want the shared %s -- capacity is read by type",
-				index, path, describeTerminal(terminal), containerResourcesMessage)
+				index, path, describeTerminal(terminal), capacityestimator.ResourcesMessageNames())
 		} else if err := capacityestimator.CheckDeclaredDefaults(terminal); err != nil {
 			t.Errorf("workload %d resources_path %q: the spec's own default annotation is malformed -- %v", index, path, err)
 		}

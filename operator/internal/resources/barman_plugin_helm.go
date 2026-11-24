@@ -39,11 +39,11 @@ const (
 // re-asserted over the chart's defaults so nothing can rename them.
 const (
 	// BarmanCloudPluginChartVersion is the vendored chart's version
-	// (Makefile: BARMAN_PLUGIN_HELM_CHART_VERSION). Chart 0.7.0 ships plugin
-	// v0.13.0; the pin is the same one the OSS catalog's
+	// (Makefile: BARMAN_PLUGIN_HELM_CHART_VERSION). Chart 0.9.0 ships plugin
+	// v0.16.0, which needs CloudNativePG 1.30 or later; the pin is the same one the OSS catalog's
 	// kubernetescnpgbarmancloudplugin kind renders, so a platform-operator
 	// cluster and a catalog-installed cluster run the same plugin.
-	BarmanCloudPluginChartVersion = "0.7.0"
+	BarmanCloudPluginChartVersion = "0.9.0"
 
 	// BarmanCloudPluginReleaseName is the fixed Helm release name (equal to
 	// the chart name, so the chart's fullname collapses to it). The ObjectStore

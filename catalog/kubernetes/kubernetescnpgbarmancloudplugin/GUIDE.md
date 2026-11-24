@@ -58,12 +58,14 @@ condition, not silence.
 
 ## Version pairing
 
-Plugin v0.13.0 (chart 0.7.0) requires CloudNativePG 1.26 or later, and
-upstream strongly recommends 1.27 or later, which reports plugin errors
-on the Cluster's status instead of only in the operator's logs. The
-catalog operator's default chart ships 1.30.0. Move the two pins
-together and read the plugin's release notes for the floor when moving
-against an older resident operator.
+Plugin v0.16.0 (chart 0.9.0, the default) requires CloudNativePG 1.30
+or later; the catalog operator's default chart ships 1.30.0. Beside an
+older resident operator (1.26 to 1.29), pin chart 0.8.1 (plugin
+v0.15.1), the last release that runs there, and lose what v0.16.0 added:
+an ObjectStore's `s3AddressingStyle`, which software writing its own
+ObjectStores for a named S3 endpoint (Stigmer among them) relies on.
+Move the two pins together and read the plugin's release notes for the
+floor whenever either moves.
 
 ## Air-gapped clusters
 

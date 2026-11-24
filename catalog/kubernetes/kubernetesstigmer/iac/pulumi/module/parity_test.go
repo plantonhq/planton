@@ -300,7 +300,7 @@ func bundledEverything() *v1.KubernetesStigmerSpec {
 		ImagePullPolicy:  "Always",
 		ImagePullSecrets: []string{"mirror-pull"},
 		Replicas:         i32(2),
-		Resources:        &v1.KubernetesStigmerOperatorResources{Requests: map[string]string{"cpu": "100m"}, Limits: map[string]string{"memory": "1Gi"}},
+		Resources:        &kubernetes.KubernetesCoreV1ApiResourceRequirements{Requests: map[string]string{"cpu": "100m"}, Limits: map[string]string{"memory": "1Gi"}},
 		LogLevel:         "debug",
 		NodeSelector:     map[string]string{"kubernetes.io/os": "linux"},
 		Tolerations:      []*kubernetes.KubernetesCoreV1ApiToleration{{Key: "platform", Operator: &exists, Effect: &noExecute, TolerationSeconds: &tolerationSeconds}},

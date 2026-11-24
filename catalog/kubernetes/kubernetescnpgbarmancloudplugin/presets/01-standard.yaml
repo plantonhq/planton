@@ -13,7 +13,7 @@ spec:
       name: cnpg
   # The namespace is the operator's and already exists; the plugin joins it.
   create_namespace: false
-  chart_version: "0.7.0" # spec default (ships plugin v0.13.0) -- pin deliberately
+  chart_version: "0.9.0" # spec default (ships plugin v0.16.0) -- pin deliberately
   # Chart default -- one plugin replica; extras are leader-elected warm
   # standbys that shorten failover of the PLUGIN itself, not throughput.
   replicas: 1

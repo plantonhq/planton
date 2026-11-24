@@ -86,7 +86,7 @@ var _ = ginkgo.Describe("KubernetesCnpgBarmanCloudPlugin Validation Tests", func
 		})
 
 		ginkgo.It("a pinned chart_version should be valid", func() {
-			input.Spec.ChartVersion = stringPtr("0.7.0")
+			input.Spec.ChartVersion = stringPtr("0.9.0")
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
@@ -99,7 +99,7 @@ var _ = ginkgo.Describe("KubernetesCnpgBarmanCloudPlugin Validation Tests", func
 			input.Spec = &KubernetesCnpgBarmanCloudPluginSpec{
 				Namespace:       valueFrom(catalogkind.CatalogKind_KubernetesCloudNativePgOperator, "cnpg", "status.outputs.namespace"),
 				CreateNamespace: false,
-				ChartVersion:    stringPtr("0.7.0"),
+				ChartVersion:    stringPtr("0.9.0"),
 				Crds:            &KubernetesCnpgBarmanCloudPluginCrds{Install: boolPtr(true)},
 				Replicas:        int32Ptr(2),
 				Resources: &kubernetes.ContainerResources{
@@ -108,11 +108,11 @@ var _ = ginkgo.Describe("KubernetesCnpgBarmanCloudPlugin Validation Tests", func
 				},
 				Image: &KubernetesCnpgBarmanCloudPluginImage{
 					Repository: "my-mirror.example.com/cloudnative-pg/plugin-barman-cloud",
-					Tag:        "v0.13.0",
+					Tag:        "v0.16.0",
 				},
 				SidecarImage: &KubernetesCnpgBarmanCloudPluginImage{
 					Repository: "my-mirror.example.com/cloudnative-pg/plugin-barman-cloud-sidecar",
-					Tag:        "v0.13.0",
+					Tag:        "v0.16.0",
 				},
 				ImagePullSecrets:  []string{"registry-pull"},
 				PriorityClassName: "system-cluster-critical",
@@ -120,7 +120,7 @@ var _ = ginkgo.Describe("KubernetesCnpgBarmanCloudPlugin Validation Tests", func
 				Tolerations: []*kubernetes.WorkloadToleration{
 					{Key: "dedicated", Operator: "Equal", Value: "operators", Effect: "NoSchedule"},
 				},
-				HelmValues: "additionalArgs:\n  - --log-level=info\n",
+				HelmValues: "logLevel: debug\n",
 			}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})

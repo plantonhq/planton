@@ -1,0 +1,51 @@
+# GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
+# This file replays the kind's presets through its capacity derivation
+# (../capacity/, the machine-executable value-to-capacity rules): each
+# preset states the CPU/memory requests and limits and the persistent
+# volume storage it reserves from its target cluster, with a basis sentence
+# tracing every total back to the manifest's values. Cluster-capacity
+# kinds carry no priced lines -- the dollar value of the reservation
+# is the target cluster's node and storage-class economics, which this
+# catalog cannot know. Schema: finops/catalogkindcostestimate/v1.
+apiVersion: finops.planton.dev/v1
+kind: CatalogKindCostEstimate
+metadata:
+  name: kubernetesagentsubstrateworkerpool
+spec:
+  presets:
+    - preset: 01-gvisor-worker-pool
+      capacity_footprint:
+        cpu_requests: "3"
+        memory_requests: 24Gi
+        cpu_limits: "12"
+        memory_limits: 24Gi
+        basis: 3 workers x (1 CPU / 8Gi memory requests, 4 CPU / 8Gi limits)
+      exclusions:
+        - the dollar value of this capacity is the target cluster's node economics
+        - suspended actors cost no worker -- their snapshots bill as object storage in the control plane's bucket (KubernetesAgentSubstrate's storage)
+        - only the cpu and memory of the worker template's size are counted; ephemeral storage, other resources and resource claims are not
+      notes: each worker's limits are the budget the actors it hosts share -- size the pool for the actors running at the same moment, not for the actors that exist
+    - preset: 02-dedicated-tenant-pool
+      capacity_footprint:
+        cpu_requests: "5"
+        memory_requests: 10Gi
+        cpu_limits: "10"
+        memory_limits: 10Gi
+        basis: 5 workers x (1 CPU / 2Gi memory requests, 2 CPU / 2Gi limits)
+      exclusions:
+        - the dollar value of this capacity is the target cluster's node economics
+        - suspended actors cost no worker -- their snapshots bill as object storage in the control plane's bucket (KubernetesAgentSubstrate's storage)
+        - only the cpu and memory of the worker template's size are counted; ephemeral storage, other resources and resource claims are not
+      notes: each worker's limits are the budget the actors it hosts share -- size the pool for the actors running at the same moment, not for the actors that exist
+    - preset: 03-microvm-worker-pool
+      capacity_footprint:
+        cpu_requests: "4"
+        memory_requests: 8Gi
+        cpu_limits: "4"
+        memory_limits: 8Gi
+        basis: 2 workers x (2 CPU / 4Gi memory requests, 2 CPU / 4Gi limits)
+      exclusions:
+        - the dollar value of this capacity is the target cluster's node economics
+        - suspended actors cost no worker -- their snapshots bill as object storage in the control plane's bucket (KubernetesAgentSubstrate's storage)
+        - only the cpu and memory of the worker template's size are counted; ephemeral storage, other resources and resource claims are not
+      notes: each worker's limits are the budget the actors it hosts share -- size the pool for the actors running at the same moment, not for the actors that exist

@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	kubernetes "github.com/plantonhq/planton/catalog/kubernetes"
+	workerpoolv1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesagentsubstrateworkerpool/v1alpha1"
 	grafanav1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesgrafana/v1alpha1"
 	keycloakv1 "github.com/plantonhq/planton/catalog/kubernetes/kuberneteskeycloak/v1alpha1"
 	kpgv1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetespostgres/v1alpha1"
@@ -315,4 +316,116 @@ func TestQuantityGrammar(t *testing.T) {
 	if _, err := parseQuantity("0.3m", true); err == nil {
 		t.Error("0.3m parsed -- fractional millicores must refuse, never round")
 	}
+}
+
+// workerPoolBinding is a workload whose resources_path terminates at the
+// full Kubernetes KubernetesCoreV1ApiResourceRequirements (Agent
+// Substrate's worker pool): requests and limits are resource lists, read
+// by their cpu and memory entries.
+func workerPoolBinding() *capacityv1.CatalogKindCapacityDerivationSpec {
+	return &capacityv1.CatalogKindCapacityDerivationSpec{
+		Workloads: []*capacityv1.WorkloadBinding{{
+			Label:         "worker",
+			ResourcesPath: "template.resources",
+			Instances: &capacityv1.InstanceCount{Count: &capacityv1.InstanceCount_FieldValue{
+				FieldValue: &derivationv1.FieldValue{FieldPath: "replicas"},
+			}},
+		}},
+	}
+}
+
+func workerPool(replicas int32, requirements *kubernetes.KubernetesCoreV1ApiResourceRequirements) *workerpoolv1.KubernetesAgentSubstrateWorkerPool {
+	return &workerpoolv1.KubernetesAgentSubstrateWorkerPool{Spec: &workerpoolv1.KubernetesAgentSubstrateWorkerPoolSpec{
+		Replicas: proto.Int32(replicas),
+		Template: &workerpoolv1.KubernetesAgentSubstrateWorkerPoolPodTemplate{Resources: requirements},
+	}}
+}
+
+// TestKubernetesResourceRequirements pins the full Kubernetes type: the cpu
+// and memory entries of each resource list are summed exactly like a
+// ContainerResources pair, every other entry (GPUs, ephemeral storage)
+// reserves nothing this footprint states, and a block that declares only
+// limits totals only limits -- the engine reports what the manifest says,
+// never what a scheduler or an operator would fill in.
+func TestKubernetesResourceRequirements(t *testing.T) {
+	cases := []struct {
+		name                        string
+		requirements                *kubernetes.KubernetesCoreV1ApiResourceRequirements
+		cpuRequests, memoryRequests string
+		cpuLimits, memoryLimits     string
+		basis                       string
+	}{
+		{
+			name: "requests and limits",
+			requirements: &kubernetes.KubernetesCoreV1ApiResourceRequirements{
+				Requests: map[string]string{"cpu": "500m", "memory": "1Gi"},
+				Limits:   map[string]string{"cpu": "4", "memory": "8Gi"},
+			},
+			cpuRequests: "1500m", memoryRequests: "3Gi", cpuLimits: "12", memoryLimits: "24Gi",
+			basis: "3 workers x (500m CPU / 1Gi memory requests, 4 CPU / 8Gi limits)",
+		},
+		{
+			name: "limits only",
+			requirements: &kubernetes.KubernetesCoreV1ApiResourceRequirements{
+				Limits: map[string]string{"cpu": "2", "memory": "4Gi"},
+			},
+			cpuLimits: "6", memoryLimits: "12Gi",
+			basis: "3 workers x (2 CPU / 4Gi limits)",
+		},
+		{
+			name: "entries other than cpu and memory are not read",
+			requirements: &kubernetes.KubernetesCoreV1ApiResourceRequirements{
+				Requests: map[string]string{"cpu": "1", "memory": "2Gi", "nvidia.com/gpu": "1", "ephemeral-storage": "10Gi"},
+			},
+			cpuRequests: "3", memoryRequests: "6Gi",
+			basis: "3 workers x (1 CPU / 2Gi memory requests)",
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			preset, refusal, err := Evaluate(workerPool(3, c.requirements), workerPoolBinding())
+			if err != nil || refusal != nil {
+				t.Fatalf("Evaluate: err=%v refusal=%+v", err, refusal)
+			}
+			footprint := preset.GetCapacityFootprint()
+			for _, check := range []struct{ name, got, want string }{
+				{"cpu_requests", footprint.GetCpuRequests(), c.cpuRequests},
+				{"memory_requests", footprint.GetMemoryRequests(), c.memoryRequests},
+				{"cpu_limits", footprint.GetCpuLimits(), c.cpuLimits},
+				{"memory_limits", footprint.GetMemoryLimits(), c.memoryLimits},
+				{"basis", footprint.GetBasis(), c.basis},
+			} {
+				if check.got != check.want {
+					t.Errorf("%s: got %q, want %q", check.name, check.got, check.want)
+				}
+			}
+		})
+	}
+
+	t.Run("an unset block reserves nothing", func(t *testing.T) {
+		_, refusal, err := Evaluate(workerPool(3, nil), workerPoolBinding())
+		if err != nil || refusal == nil {
+			t.Fatalf("want a refusal for a pool that states no reservation, got err=%v refusal=%+v", err, refusal)
+		}
+	})
+
+	t.Run("a quantity outside the reader's grammar is refused by value", func(t *testing.T) {
+		_, _, err := Evaluate(workerPool(1, &kubernetes.KubernetesCoreV1ApiResourceRequirements{
+			Requests: map[string]string{"cpu": "500000u"},
+		}), workerPoolBinding())
+		if err == nil || !strings.Contains(err.Error(), "500000u") {
+			t.Fatalf("want an error naming 500000u, got %v", err)
+		}
+	})
+
+	t.Run("both shared types are resources messages", func(t *testing.T) {
+		for _, message := range []proto.Message{&kubernetes.ContainerResources{}, &kubernetes.KubernetesCoreV1ApiResourceRequirements{}} {
+			if !IsResourcesMessage(message.ProtoReflect().Descriptor()) {
+				t.Errorf("%s is not a resources message", message.ProtoReflect().Descriptor().FullName())
+			}
+		}
+		if IsResourcesMessage((&kubernetes.CpuMemory{}).ProtoReflect().Descriptor()) {
+			t.Error("CpuMemory is a resources message -- only the two shared requests/limits types are")
+		}
+	})
 }

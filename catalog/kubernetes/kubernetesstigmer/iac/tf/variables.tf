@@ -28,8 +28,12 @@ variable "spec" {
       image_pull_secrets = optional(list(string), [])
       replicas           = optional(number)
       resources = optional(object({
-        requests = optional(map(string), {})
         limits   = optional(map(string), {})
+        requests = optional(map(string), {})
+        claims = optional(list(object({
+          name    = string
+          request = optional(string, "")
+        })), [])
       }))
       log_level     = optional(string, "")
       node_selector = optional(map(string), {})

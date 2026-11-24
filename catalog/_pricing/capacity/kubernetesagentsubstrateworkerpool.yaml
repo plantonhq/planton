@@ -1,0 +1,31 @@
+# Capacity derivation: the machine-executable rules turning any
+# KubernetesAgentSubstrateWorkerPool manifest's spec values into the
+# capacity footprint it reserves from its target cluster. The estimate
+# generator replays the catalog presets through these rules to emit
+# ../estimates/kubernetesagentsubstrateworkerpool.yaml; a server-side
+# estimator can evaluate the same rules against live manifests. The
+# footprint is the pool's workers: replicas times the worker template's
+# requests and limits. replicas is required and zero is meaningful (a pool
+# defined with no workers), so it carries no default.
+# Schema: finops/catalogkindcapacityderivation/v1.
+apiVersion: finops.planton.dev/v1
+kind: CatalogKindCapacityDerivation
+metadata:
+  name: kubernetesagentsubstrateworkerpool
+spec:
+  workloads:
+    - label: worker
+      resources_path: template.resources
+      instances:
+        field_value:
+          field_path: replicas
+  exclusions:
+    - text: the dollar value of this capacity is the target cluster's node economics
+    - text: suspended actors cost no worker -- their snapshots bill as object storage in the control plane's bucket (KubernetesAgentSubstrate's storage)
+    - text: only the cpu and memory of the worker template's size are counted; ephemeral storage, other resources and resource claims are not
+  notes:
+    - text: each worker's limits are the budget the actors it hosts share -- size the pool for the actors running at the same moment, not for the actors that exist
+    - applies_when:
+        - field_path: template.resources
+          op: is_unset
+      text: the worker template declares no size, so each worker schedules unbounded and reserves nothing stated here

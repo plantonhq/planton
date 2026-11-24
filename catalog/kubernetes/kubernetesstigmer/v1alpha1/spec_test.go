@@ -488,10 +488,49 @@ var _ = ginkgo.Describe("KubernetesStigmerSpec", func() {
 			expectRule(in, "server.extra_env.unique_names")
 		})
 
+		ginkgo.It("accepts operator sizes by cpu, memory and ephemeral-storage", func() {
+			in := minimalStigmer()
+			in.Spec.Operator.Resources = &kubernetes.KubernetesCoreV1ApiResourceRequirements{
+				Requests: map[string]string{"cpu": "100m", "memory": "256Mi", "ephemeral-storage": "1Gi"},
+				Limits:   map[string]string{"memory": "1Gi"},
+			}
+			expectValid(in)
+		})
+
 		ginkgo.It("refuses an operator resource name the chart does not accept", func() {
 			in := minimalStigmer()
-			in.Spec.Operator.Resources = &KubernetesStigmerOperatorResources{Requests: map[string]string{"nvidia.com/gpu": "1"}}
-			expectRule(in, "resources")
+			in.Spec.Operator.Resources = &kubernetes.KubernetesCoreV1ApiResourceRequirements{Requests: map[string]string{"nvidia.com/gpu": "1"}}
+			expectRule(in, "operator.resources.chart_resources")
+		})
+
+		ginkgo.It("refuses operator resource claims, which the chart does not take", func() {
+			in := minimalStigmer()
+			in.Spec.Operator.Resources = &kubernetes.KubernetesCoreV1ApiResourceRequirements{
+				Claims: []*kubernetes.KubernetesCoreV1ApiResourceClaim{{Name: "gpu"}},
+			}
+			expectRule(in, "operator.resources.chart_resources")
+		})
+
+		ginkgo.It("accepts runner sizes on the shared runner", func() {
+			in := minimalStigmer()
+			in.Spec.Runner.Resources = &kubernetes.KubernetesCoreV1ApiResourceRequirements{Requests: map[string]string{"cpu": "1", "memory": "2Gi"}}
+			in.Spec.Runner.Storage = &KubernetesStigmerVolume{Size: "20Gi"}
+			expectValid(in)
+		})
+
+		ginkgo.It("refuses runner sizes under a per-session sandbox driver, which runs no shared runner", func() {
+			for _, sized := range []func(*KubernetesStigmerRunner){
+				func(r *KubernetesStigmerRunner) {
+					r.Resources = &kubernetes.KubernetesCoreV1ApiResourceRequirements{Requests: map[string]string{"cpu": "1"}}
+				},
+				func(r *KubernetesStigmerRunner) { r.Storage = &KubernetesStigmerVolume{Size: "20Gi"} },
+			} {
+				in := minimalStigmer()
+				in.Spec.ObjectStore = objectStore()
+				in.Spec.Sandboxes = &KubernetesStigmerSandboxes{Driver: "agentSandbox"}
+				sized(in.Spec.Runner)
+				expectRule(in, "spec.runner.sizes_need_the_shared_runner")
+			}
 		})
 
 		ginkgo.It("refuses an owner email that is not one", func() {

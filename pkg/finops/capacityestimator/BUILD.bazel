@@ -28,6 +28,7 @@ go_test(
     embed = [":capacityestimator"],
     deps = [
         "//catalog/kubernetes",
+        "//catalog/kubernetes/kubernetesagentsubstrateworkerpool/v1alpha1",
         "//catalog/kubernetes/kubernetesgrafana/v1alpha1",
         "//catalog/kubernetes/kuberneteskeycloak/v1alpha1",
         "//catalog/kubernetes/kubernetespostgres/v1alpha1",
