@@ -6,12 +6,11 @@ import { Box, Typography } from '@mui/material';
 import { CheckIcon } from '@/components/marketing';
 
 /**
- * One quiet line directly under the plan grid: self-hosted runners are
- * included on every plan, and a runner inside a private network reaches
- * the platform outbound-only. This fact lives HERE, visibly, because the
- * value matrix renders row descriptions as hover tooltips — a scanning
- * buyer would never see it there. Deliberately a single line, not a
- * second band: the enterprise band directly below keeps its weight.
+ * One quiet line directly under the plan grid: where deploys run on each
+ * kind of plan, and that runner minutes are never billed. This fact lives
+ * HERE, visibly, because the value matrix renders row descriptions as hover
+ * tooltips — a scanning buyer would never see it there. Deliberately a
+ * single line, not a second band.
  */
 export const RunnersNote: FC = () => {
   return (
@@ -21,9 +20,9 @@ export const RunnersNote: FC = () => {
           <CheckIcon />
         </Box>
         <Typography className="text-xs md:text-sm text-[#616161] max-w-[820px]">
-          Self-hosted runners are included in every plan — they run inside
-          your private network and connect outbound-only, so you never open
-          an inbound firewall port.{' '}
+          Deploys run on Planton’s runners on every hosted plan, and runner
+          minutes are never billed. A runner of your own, inside your
+          network, is included on self-hosted and coming soon on hosted.{' '}
           <Link
             href="/distributions/hosted"
             className="text-[#454545] underline underline-offset-4 hover:text-[#171717] transition-colors"

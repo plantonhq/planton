@@ -111,7 +111,7 @@ export const TRUST_PAGES: readonly TrustPage[] = [
         { label: 'environment', value: 'prod \u00b7 protected \u00b7 budget $250/mo' },
         { label: 'verified cost', value: '~$312/mo est.' },
         { label: 'verdict', value: 'over budget by ~$62/mo \u00b7 paused for a decision' },
-        { label: 'who may approve', value: 'anyone with approve access on prod \u00b7 never the requester' },
+        { label: 'who may approve', value: 'anyone with approve access on prod \u00b7 not the requester when someone else can approve' },
         { label: 'resolution', value: 'approved by a.patel \u00b7 2026-09-17 09:14 \u00b7 \u201cthe replica is intentional\u201d' },
       ],
       footer: illustratedFooter({ figures: true }),
@@ -134,7 +134,7 @@ export const TRUST_PAGES: readonly TrustPage[] = [
     ],
     honesty: [
       'The record is a fact about each deployment. It is not a compliance dashboard and it does not declare a deployment audit-ready for any framework.',
-      'Drift detection is not shipped. The record tells you what was deployed; it does not yet tell you what changed behind Planton\u2019s back.',
+      'Drift is checked when you ask; there are no scheduled checks.',
       'This page states no retention period, because the platform does not publish one: every job is kept and queryable today, and a retention policy is not a setting you can change.',
     ],
     artifact: {
@@ -160,13 +160,12 @@ export const TRUST_PAGES: readonly TrustPage[] = [
   {
     path: '/trust/security-posture',
     chapter: 'verified-before-it-exists',
-    lede: 'Every kind states which technical controls it enforces, with evidence, and how those controls serve the frameworks your reviewers ask about. Nothing is called compliant, because nothing should be.',
+    lede: 'Every kind states which technical controls it enforces, with evidence. Nothing is called compliant, because nothing should be.',
     forWhom: 'For the security reviewer who will read every word here looking for the one that over-claims.',
     points: [
       { label: 'Seventeen Controls, Six Categories', text: 'The platform has one vocabulary of technical controls: data protection, network exposure, identity and access, observability, resilience, and change safety. Every claim a kind makes cites one of them.' },
       { label: 'Evidence, Per Kind', text: verified.proof[3] },
-      { label: 'Four Framework Crosswalks', text: 'The HIPAA Security Rule, SOC 2 Trust Services Criteria, FedRAMP Moderate, and the CIS AWS Foundations Benchmark are mapped onto the control vocabulary, requirement by requirement, quoted from the published source.' },
-      { label: 'Computed, Never Stored', text: 'A kind\u2019s framework posture is computed when you look at it, from its controls and the crosswalks. No verdict is ever stored on a kind.' },
+      { label: 'Computed, Never Stored', text: 'A kind\u2019s posture is computed when you look at it, from its controls. No verdict is ever stored on a kind.' },
       { label: 'Least-Privilege Runners', text: 'The deploy runs under an identity built from the kind\u2019s own permissions file: exactly the actions that kind needs to create and manage itself, and nothing else.' },
     ],
     artifact: {
@@ -177,16 +176,12 @@ export const TRUST_PAGES: readonly TrustPage[] = [
         { label: 'customer-managed keys', value: 'exposed \u00b7 set encryption.kms_key_id' },
         { label: 'encryption in transit', value: 'enforced \u00b7 TLS on every request' },
         { label: 'no public exposure', value: 'enforced \u00b7 public access blocked at the bucket' },
-        { label: 'HIPAA 164.312(a)(2)(iv)', value: 'served by encryption at rest, customer-managed keys' },
-        { label: 'SOC 2 CC6.1', value: 'served by no public exposure, role-based access control' },
-        { label: 'verdict', value: 'none' },
+        { label: 'compliance verdict', value: 'none, by design' },
       ],
-      footer: illustratedFooter({ note: 'Two crosswalk rows are shown; evidence is quoted from the kind\u2019s profile. There is no verdict that says compliant, because a kind enforces controls and is never called compliant.' }),
+      footer: illustratedFooter({ note: 'Evidence is quoted from the kind\u2019s profile. There is no verdict that says compliant, because a kind enforces controls and is never called compliant.' }),
     },
     honesty: [
-      'Posture never becomes \u201ccompliant.\u201d The correct sentence is: this kind enforces these controls, which serve these requirements. SOC 2 reports on an organization\u2019s controls, not a product\u2019s; HIPAA compliance is a property of an entity\u2019s program.',
-      '\u201cFedRAMP authorized\u201d is never said of any kind, chart, or deployment. The crosswalk is evidence an assessment consumes.',
-      'Requirements only organizational process can serve (incident response, physical security, personnel screening) are left out of the crosswalks on purpose, and the page says which ones rather than blurring them.',
+      'Posture never becomes \u201ccompliant.\u201d The correct sentence is: this kind enforces these controls. A security framework judges an organization\u2019s program, never a product.',
       'A kind without a control profile is honestly uncovered, and every surface says so.',
     ],
     next: [

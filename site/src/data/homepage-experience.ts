@@ -5,11 +5,12 @@ export const HERO = {
   version: 1,
   title: 'Your team. One path to your cloud.',
   description:
-    'Platform engineers define reusable environments and controls. Developers work in Planton or through their coding agent. GitHub supplies source changes. Planton deploys infrastructure and applications into your cloud and returns execution details.',
-  team: ['Platform Engineers', 'Developers'],
-  compactTeam: ['Platform', 'Engineers', 'Developers', 'Editor + Agent'],
+    // ch 9 (who it is for): one buyer, the developer who inherited ops, and their coding agent.
+    'You and your coding agent push to GitHub. Planton deploys infrastructure and applications into your cloud and returns execution details.',
+  team: ['Developers', 'Coding Agents'],
+  compactTeam: ['Your', 'Developers', 'Coding Agents', 'In Your Editor'],
   engineLabel: 'Infrastructure + Delivery',
-  inputDetails: ['Reusable Environments', 'Editor + Coding Agent', 'Source Changes'],
+  inputDetails: ['Pushes and Approvals', 'In Your Editor', 'Source Changes'],
   repository: 'GitHub',
   controls: 'Access & Approvals',
   cloud: 'Your Cloud',

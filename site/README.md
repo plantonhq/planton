@@ -22,7 +22,7 @@ This is the source for the planton.ai website, living in the `site/` folder of t
 
 ## What this is
 
-The public website at planton.ai: a Next.js static export, deployed on every push to `main` that touches `site/` to the Cloudflare Worker `planton-website` (`wrangler.jsonc`; static assets only, no code). The push is the deploy, so all work happens on a branch and merges only when the founder approves.
+The public website at planton.ai: a Next.js static export, deployed on every push to `main` that touches `site/` to the Cloudflare Worker `planton-website` (`wrangler.jsonc`; static assets only, no code). The push is the deploy, so the team's work lands on `main` and is pushed only after the founder has approved the page's after (its before/after); a contributor's pull request is merged the same way.
 
 **Every pull request that changes `site/` gets a preview** at `https://review-<pull request number>.planton.dev`, the exact build production would serve. Every push updates it, the pull request's one "Website preview" comment links it, and it closes when the pull request is merged or closed. `.github/workflows/preview.site.yaml` builds it with no key, for every pull request including forks; `.github/workflows/publish.site-preview.yaml`, which runs from `main` only, uploads it. A contributor's pull request from a fork gets its preview once a maintainer approves the `website-preview-fork` deployment in its run, once per push; until then its comment says the preview is waiting. Previews carry `noindex`, and a link into the console (`/login`, `/signup`) shows the site's 404 there: the console is tested on planton.ai.
 
@@ -39,7 +39,7 @@ yarn install
 yarn dev           # builds the website-shell package, generates the desktop release pointer, starts Next
 ```
 
-`make build` is what CI runs: install, lint, typecheck, then the full build with every guard, then the asset-prefix copy. Run it before opening a PR.
+`make build` is what CI runs: install, lint, typecheck, then the full build with every guard, then the asset-prefix copy. Run it before every push.
 
 ## How the site is built
 
@@ -48,30 +48,28 @@ The site is data first. Every sentence that states what Planton is or does lives
 | File | Holds | Read by |
 |------|-------|---------|
 | `src/data/story.ts` | The thirteen chapters of the Planton story: claim, proof, never-say. Mirrors `company/marketing/positioning/the-planton-story.md` in the company repository. | the landing page, the Trust pages, `llms.txt` |
-| `src/data/positioning.ts` | The vocabulary law: the umbrella tagline (never an analogy) and each hub's one line and one analogy. | `story.ts`, the hero, the hub cards |
-| `src/data/personas.ts` | The five people the story is told to: headline, wall, deciding proof, the chapters in their order and at their weight, objections, quotes by name, doors by key. | `src/components/solutions/PersonaPage.tsx`, `src/components/decks/`, the landing's persona router and cards, `llms.txt` |
-| `src/data/artifacts.ts` | The proof a page shows, found by the page's path, so a persona beat or a Compare section shows the record its proving page shows. | `PersonaPage`, `ComparePage`, the persona decks |
+| `src/data/positioning.ts` | What Planton is in one sentence (never an analogy), the first action under it, and each hub's one plain line. | `story.ts`, the Product index, the 404, the hub pages |
 | `src/data/trust.ts` | The five Trust pages: lede, proof points, the illustrated record, the honesty statements, the sibling pages. | `src/components/trust/TrustPage.tsx` |
 | `src/data/product.ts` | The seven Product pages: lede, how it works, proof points, the record or the commands, the Trust pages that prove them, the siblings. | `src/components/product/ProductPage.tsx` |
 | `src/data/distributions.ts` | The hosted and self-hosted pages: lede, proof points, the record or the install, what stays yours. | `src/components/distributions/DistributionPage.tsx` |
 | `src/data/desktop.ts` | Planton Desktop's landing and download pages: every section's words, the measured figures with their provenance, the first-launch beats and follow-ons; each sentence names its chapter or document. | `src/components/desktop/`, `llms.txt` |
 | `src/data/desktop-download.ts` | The one source for what can be downloaded: platforms, installers, install steps, one-command installs, verify commands, the CDN pointers, the platform detector, and the ways line derived from them. | `src/components/desktop/`, `doors.ts` |
 | `src/data/desktop-screenshots.ts` | The desktop pages' screenshot slots: a real capture of the app or `null`, never a placeholder. | `src/components/desktop/` |
-| `src/data/compare.ts` | The Compare page: three kinds of tool described and never named, what the reader keeps when they run both, what Planton does at the same moment, the proving page whose record is shown beside it, the questions a comparer asks. | `src/components/compare/ComparePage.tsx`, `llms.txt` |
-| `src/data/doors.ts` | Every call to action once: label and destination by key; the user's pair and the buyer's pair. | the `Doors` primitive; a record names its pair |
-| `src/data/page-shapes.ts` | The shapes the page records share: a proof point, a record or commands artifact, a step; and the one footer vocabulary every illustrated record uses (`illustratedFooter`). | `trust.ts`, `product.ts`, `distributions.ts`, `compare.ts` |
+| `src/data/doors.ts` | Every call to action once: label and destination by key; Start Free leads every pair. | the `Doors` primitive; a record names its pair |
+| `src/data/not-found.ts` | The 404's words and doors; the sentence read from `positioning.ts`. | `src/app/not-found.tsx` |
+| `src/data/page-shapes.ts` | The shapes the page records share: a proof point, a record or commands artifact, a step; and the one footer vocabulary every illustrated record uses (`illustratedFooter`). | `trust.ts`, `product.ts`, `distributions.ts` |
 | `src/data/site-pages.ts` | The route registry: every non-content page with its title, description, group, chapters, and index flag; and the heading each group gets in `llms.txt` (`PAGE_GROUP_HEADINGS`), so a new group cannot be forgotten by the index. | `sitemap.ts`, `robots.ts`, `lib/page-metadata.ts`, `generate-llms.mjs`, `check-apex-routing.mjs` |
 | `src/data/pricing.ts` | Every price, cap, and free tier. | the pricing page and any sentence that names a price |
 | `src/data/platform-stats.ts` | The counts a page prints, with how each was counted. | the proof strip, `llms.txt` |
-| `src/data/testimonials.ts` | Customer quotes, verbatim, attributed, with approval on record; `testimonial(name)` throws on a name not on record. | the proof section, the persona pages and decks |
+| `src/data/testimonials.ts` | Customer quotes, verbatim, attributed, with approval on record; `testimonial(name)` throws on a name not on record. | the proof section |
 
 Data files import each other with `.ts` extensions so Node can run them directly (the generators do); `tsconfig.json` allows it.
 
-Components come from one library, `src/components/marketing/`, on the palette's role classes (`bg-canvas`, `bg-card`, `text-fg-secondary`, `border-edge`, `text-ok`). The library holds the primitives (card, badge, buttons, record window) and the page sections every story page composes (`PageHero`, `ProofList`, `PageCard`, `PageArtifact`, `Doors`, `CommandBlock`, `ProviderStrip`, `ChapterSection`, `PlatformCounts`, `PersonaCard`, `QuestionCard`, `CommandTabs`); a page template is a thin composition of those in its reader's order and states nothing. The palette is defined once in `packages/website-shell/src/theme/tokens.ts` and projected into the MUI theme and Tailwind; a component never types a hex. The published law is `public/branding/design-system.md`.
+Components come from one library, `src/components/marketing/`, on the palette's role classes (`bg-canvas`, `bg-card`, `text-fg-secondary`, `border-edge`, `text-ok`). The library holds the primitives (card, badge, buttons, record window) and the page sections every story page composes (`PageHero`, `ProofList`, `PageCard`, `PageArtifact`, `Doors`, `CommandBlock`, `ProviderStrip`, `ChapterSection`, `PlatformCounts`, `QuestionCard`, `CommandTabs`); a page template is a thin composition of those in its reader's order and states nothing. The palette is defined once in `packages/website-shell/src/theme/tokens.ts` and projected into the MUI theme and Tailwind; a component never types a hex. The published law is `public/branding/design-system.md`.
 
-The landing page is versioned: `src/components/landing-page/v<N>-<date>/` holds only that version's section composition; `src/components/landing-page/index.ts` points at the active one and is the rollback switch. Nothing outside a versioned folder imports from inside one.
+The landing page is versioned: `src/components/landing-page/v<N>-<date>/` holds only that version's section composition, and `src/components/landing-page/index.ts` points at the active one. Only the active version stays in the tree; earlier ones live in git history. Nothing outside a versioned folder imports from inside one.
 
-Decks run on one engine, `src/components/deck/` (hash navigation, keyboard, touch, presenter notes). Meeting decks are hand-written slides on the engine's older slide kit, filed under `src/components/meetings/`. Persona decks are data: `src/components/decks/registry.ts` builds each persona's slides once from its record with `bindSlide`, six generic slides in `slides.tsx` compose the marketing primitives inside the engine's palette-native `SlideFrame`, and the presenter notes are derived (the chapter's claim to say, the proof on the slide, the chapter's never-say list as what not to say). A chapter edit in `story.ts` changes five pages, five decks, and what the presenter is told to say, in one commit. The roadmap chapter renders only on the deck's `What Is Next` slide, with its disclosure line beside it.
+Decks run on one engine, `src/components/deck/` (hash navigation, keyboard, touch, presenter notes). Meeting decks are hand-written slides on the engine's slide kit, filed under `src/components/meetings/`.
 
 ## The laws
 
@@ -87,20 +85,18 @@ Decks run on one engine, `src/components/deck/` (hash navigation, keyboard, touc
 
 ```
 src/app/(site)/          pages inside the website shell (header, footer, theme)
-src/app/(standalone)/    surfaces without the shell: decks, book-demo, the desktop handoff, investor pages
+src/app/(standalone)/    surfaces without the shell: meeting decks, book-demo, the desktop handoff, investor pages
+src/app/not-found.tsx    the 404 every address without a page answers, inside the shell
 src/app/sitemap.ts       generated from the registry and the content folders
 src/app/robots.ts        generated
 src/components/marketing/   the primitive library
 src/components/landing-page/ the versioned landing compositions
 src/components/trust/    the Trust template and index
 src/components/product/  the Product template and index
-src/components/solutions/ the persona page template and the Solutions index
-src/components/compare/  the Compare page template
 src/components/desktop/  the Planton Desktop landing and download templates and their sections
 src/components/distributions/ the Distributions template and index
-src/components/deck/     the deck engine, bindSlide, the palette-native slide frame, and the meeting decks' older slide kit
+src/components/deck/     the deck engine and the meeting decks' slide kit
 src/components/meetings/ meeting decks and their registry
-src/components/decks/    the persona decks: six generic slides and the registry that binds each persona's record to them
 src/data/                every claim, price, count, route
 src/lib/                 page-metadata, content-routes, assets, console-handoff
 scripts/                 the guards and generators (below)
@@ -141,11 +137,10 @@ What a day-one architect would not have done, and which work retires it. The bui
 
 | Legacy | Where | Retired by |
 |--------|-------|-----------|
-| Hex literals in components; MUI icons beside lucide; `'use client'` on components with no hooks | `pricing`, `enterprise`, `blog`, `docs`, `tutorials`, `changelog`, `common`, `book-demo`, `legal`, `branding`, `invest` | each of these page groups' own rebuild (pricing and enterprise are data-driven and refreshed 2026-08-20; the content pages are the docs follow-up's; book-demo and legal are small standalone slices; invest is named below) |
-| Two landing versions kept for rollback (`v3`, `v4`) | `components/landing-page/` | v3 and v4 after v5 has held for one release |
+| Hex literals in components; MUI icons beside lucide; `'use client'` on components with no hooks | `pricing`, `blog`, `docs`, `tutorials`, `changelog`, `common`, `book-demo`, `legal`, `branding`, `invest` | each of these page groups' own rebuild (pricing is data-driven and refreshed 2026-08-20; the content pages are the docs follow-up's; book-demo and legal are small standalone slices; invest is named below) |
 | The investor deck and explainer on their own primitive set (including the deck's own button, which came from the retired tour's kit), and the one Tailwind color the pricing FAQ still reads (`text.secondary`) | `components/invest`, `tailwind.config.ts`, `components/pricing/faqs.tsx` | invest onto the deck engine, by the founder's decision a later slice; the color with pricing's rebuild |
-| The meeting decks' slide kit types its own colors and gradients (`deck/primitives.tsx`, `meets/meets.css`) | `components/deck/primitives.tsx`, `app/(standalone)/meets/meets.css` | the meeting decks' convergence onto `SlideFrame` and the marketing primitives, the way the persona decks already compose them |
-| Images under `public/_site/` instead of the asset CDN; 87 literal `/_site/` paths, in the rollback landings (`v3`, `v4`), the investor pages, the meeting decks, and the content pages | `public/_site/images`, `src/**` | v3 and v4 with their deletion; invest and the meeting decks with their convergence slices; the content pages with the docs follow-up; the Open Graph posters and the logo stay under the prefix `lib/assets.ts` names once |
+| The meeting decks' slide kit types its own colors and gradients (`deck/primitives.tsx`, `meets/meets.css`) | `components/deck/primitives.tsx`, `app/(standalone)/meets/meets.css` | the meeting decks' convergence onto the marketing primitives |
+| Images under `public/_site/` instead of the asset CDN; 87 literal `/_site/` paths, in the investor pages, the meeting decks, and the content pages | `public/_site/images`, `src/**` | invest and the meeting decks with their convergence slices; the content pages with the docs follow-up; the Open Graph posters and the logo stay under the prefix `lib/assets.ts` names once |
 | The `/_site` asset prefix and the post-build copy of the bundle | `next.config.ts`, `Makefile` | the apex routing decision |
 | MUI's styles ship in `@layer mui` and Tailwind v3's preflight ships unlayered, and an unlayered rule beats a layered one, so every border MUI declares (`sx` borders, `Divider`, outlined `Paper`) computes to zero on this site; the shell draws its edges with inline styles for that reason, and the footer's dividers and pricing's outlined panels are lost | `src/app/globals.css`, `src/providers/theme.tsx`, every MUI border on the site | Tailwind v4, whose border utilities carry their own style and whose layers order `theme, base, mui, components, utilities`; lowering the v3 preflight below MUI was tried and breaks every Tailwind border on a MUI button and every `all: unset` heading, so it is not the fix |
 | The Windows install step that warns about SmartScreen is rendered as prose under the button it concerns; the download data's install-step shape has no warning kind | `src/data/desktop-download.ts`, `components/desktop/DownloadHero.tsx` | a `kind: 'warning'` on the step and a callout in the card, one small slice |
@@ -279,19 +274,19 @@ Examples:
 For detailed documentation, see `content/assets/_rules/README.md`.
 
 
-## Homepage v6 — engineering-leader demo journey
+## Homepage v6
 
 The active homepage is `v6-2026-09-23`, with copy and internal source attribution in `src/data/homepage.ts`. Its source inventory, draft, handoff, and verification record live in `content/copywriting/_stage-area/2026-09-23-homepage/`. Homepage markdown and the llms.txt introduction render the same record; the older story remains the source for other story pages.
 
 The hero is `HeroExperience` with a pure `HeroScene`; the product example is `ProductProof`, and controls and placement share `ControlOwnership`. Their copy lives in `src/data/homepage-experience.ts`, with its source and review record under `content/copywriting/_stage-area/2026-09-23-homepage-product-story/`. The supplied product capture is kept intact and explicitly distinguished from live deployment status. The symmetric hero uses the Planton mark without repeating its name; requests and results share the same connector lanes.
 
-`DemoLink` reads the demo door and records a fixed placement label. All public website routes share the light appearance; the shared shell's optional `navigationVariant="homepage"` emphasizes demos only on `/`, with typed callbacks for attribution. Other consumers retain default navigation and logged-in Dashboard behavior. The demo journey uses `LightMarketingSurface`. Resource icons retain their canonical colors; the AWS light-selector lettering is derived from the same provider paths.
+`ExperienceLink` renders Start Free, the primary door in every pair, and `DemoLink` the demo door beside it; each records a fixed placement label. All public website routes share the light appearance and one header: four plain links, Sign In, and Start Free, with an optional callback that attributes Start Free clicks on `/`. A signed-in visitor sees the way back to the console instead. The demo journey uses `LightMarketingSurface`. Resource icons retain their canonical colors; the AWS light-selector lettering is derived from the same provider paths.
 
 The `/book-demo` payload and Cal.com destination are unchanged. The form now clearly hands off to scheduling; analytics count a booking only on the SDK's accepted, non-payment-required booking event. No customer details or calendar event payloads enter analytics.
 
 After `make build`, run `node scripts/check-homepage.mjs` for responsive captures and mocked conversion checks, and `node scripts/preview-homepage.mjs` for a local preview at port 4177. `HOMEPAGE_CAPTURES` changes the capture directory. Generate the social card with `node scripts/capture-homepage-og.mjs`; commit that PNG along with its editable source components. The browser checks mock all external traffic, including form submission and the scheduler.
 
-The landing index can switch the visual composition back to v5's retained `Homepage` export. A complete copy rollback also restores the homepage registry metadata and discovery generator changes. Other pages do not import version-specific components.
+Earlier landing versions are in git history, not in the tree. Other pages do not import version-specific components.
 
 Canonical icons are selected from `catalog/<provider>/<kind>/logo.svg` and the existing provider marks. Run `node --experimental-strip-types scripts/generate-workflow-icons.mjs` after changing a story inventory; the build checks the generated `workflow-icons.ts` registry for drift. Embedded SVG bytes are shared with video exports; no runtime catalog or CDN request is needed. The layout module keeps authored positions separate from relationships. Any new relationship needs a source-backed explanation: typed output reference, explicit prerequisite, or grouped configuration dependency.
 

@@ -1,14 +1,15 @@
 /**
  * The Planton story as data: thirteen chapters in the order every surface
- * tells them. The landing page, the Trust pages, the persona pages and
- * decks, and llms.txt all render from this file, so a sentence about what
+ * tells them, told to one buyer, the developer who inherited ops at a team of
+ * 2 to 10. The landing page, the Product and Trust pages, and llms.txt all
+ * render from this file, so a sentence about what
  * Planton is or does appears here once and nowhere else.
  *
  * The canonical narrative lives in the company repository as
  * company/marketing/positioning/the-planton-story.md; every claim below
  * names its chapter, and a chapter's `neverSay` list is the honesty rail
- * its surfaces are graded against. The umbrella and hub sentences come from
- * ./positioning.ts (the vocabulary law); numbers come from ./platform-stats.ts
+ * its surfaces are graded against. The one sentence and the hub lines come
+ * from ./positioning.ts (the vocabulary law); numbers come from ./platform-stats.ts
  * and prices from ./pricing.ts, never from here.
  *
  * Relative imports carry their `.ts` extension so Node can execute this file
@@ -52,12 +53,9 @@ export interface Chapter {
   decksOnly?: boolean;
 }
 
-/** The disclosure every deck attaches to chapter 13. Never rendered on the site. */
-export const ROADMAP_DISCLOSURE = 'Roadmap. Not yet shipped; shown so you know where this is going.';
-
 /** The spine, in one sentence, for a hero or a deck cover. */
 export const STORY_SPINE =
-  'Proof at creation, not observation after: every change Planton deploys is priced before it exists with its coverage stated, judged against a budget, held to your rules, stamped with the controls it enforces, and left behind as an immutable record.';
+  'Proof at creation, not observation after: every infrastructure change Planton deploys is planned before it exists, with its cost and the coverage of that cost stated, judged against a budget, held to your rules, and left behind as an immutable record.';
 
 /** The first sentence of every demo (chapter 1): the desktop line in full. */
 export const OPENING_LINE = POSITIONING.desktop.line;
@@ -69,14 +67,6 @@ export const OPENING_LINE = POSITIONING.desktop.line;
  * the doors rather than in the headline. Derived, never retyped.
  */
 export const HERO_HEADLINE = `${OPENING_LINE.split(' \u2014 ')[0]}.`;
-
-/**
- * The hero's second sentence: where Planton sits relative to the agent and
- * the CLI the visitor already has, and the three things it adds. Answers the
- * first objection on the first screen.
- */
-export const HERO_SUBHEAD =
-  'It sits beside the coding agent and cloud CLI you already use. Verifiable: cost, permissions, and controls checked before anything exists. Recorded: every change kept where you can query it. Reusable: a template your team redeploys.';
 
 export const CHAPTERS: readonly Chapter[] = [
   {
@@ -95,14 +85,21 @@ export const CHAPTERS: readonly Chapter[] = [
     // Chapter 2
     id: 'what-planton-is',
     number: 2,
-    title: POSITIONING.umbrella.tagline,
-    claim: POSITIONING.umbrella.sentence,
+    title: 'What Planton Is',
+    claim: `${POSITIONING.umbrella.sentence} ${POSITIONING.umbrella.firstAction}`,
     proof: [
       `${POSITIONING.infraHub.name}: ${POSITIONING.infraHub.line}`,
       `${POSITIONING.serviceHub.name}: ${POSITIONING.serviceHub.line}`,
       'Your coding agent reaches Planton through the Planton skills and the Planton MCP server, or through the CLI. It sits beside the tools you already use; nothing about how you work changes.',
     ],
-    neverSay: ['an analogy for the umbrella', 'either hub analogy about the whole product', '"Template" capitalized as a product name'],
+    neverSay: [
+      '"The Self-Service Cloud Platform"',
+      '"AI designs your infrastructure"',
+      'any in-product Assistant',
+      'an analogy for Planton',
+      '"production waits for a person" without "Team plan" beside it',
+      '"Template" capitalized as a product name',
+    ],
   },
   {
     // Chapter 3
@@ -116,7 +113,7 @@ export const CHAPTERS: readonly Chapter[] = [
       'The cost names the catalog release its prices came from and, when both can be priced exactly, how much more or less this will cost each month than what is deployed today.',
       'The least-privilege permission policy is derived from exactly what is composed, per kind.',
       'Every covered kind states which of a fixed list of 17 technical controls it enforces, with evidence for each claim.',
-      'The console, the CLI, and the assistant render the same server-stamped statement word for word.',
+      'The console and the CLI render the same server-stamped statement word for word.',
     ],
     neverSay: ['saves you $X', 'compliant', 'an estimate presented as a bill', 'estimate versus actual (not shipped)'],
   },
@@ -126,10 +123,10 @@ export const CHAPTERS: readonly Chapter[] = [
     number: 4,
     title: 'Your Rules Hold No Matter Who Asked',
     claim:
-      'A platform team writes the rules once and every request obeys them, whether it came from a person in the console, a script on the CLI, or a coding agent at two in the morning.',
+      'You write the rules once and every request obeys them, whether it came from a person in the console, a script on the CLI, or a coding agent at two in the morning.',
     proof: [
       'An environment can carry a deployment budget. A deploy whose verified cost exceeds it pauses for a human decision, and who approved, when, and why is stamped on the record.',
-      'A change to a protected environment is a request: an approver reads the exact plan the engines previewed, and only that plan applies. Nobody approves work they initiated, the assistant included.',
+      'A change to a protected environment is a request: an approver reads the exact plan the engines previewed, and only that plan applies. A coding agent never approves its own person\u2019s run, and on the Team plan production can require a second person.',
       'The catalog can be curated to the catalog kinds your organization allows. The console, the CLI, and the agent all see the same list and refuse the same things, because one answer serves both.',
       'A field the schema marks sensitive takes a managed secret. There is no way to type a raw secret into it.',
     ],
@@ -148,7 +145,7 @@ export const CHAPTERS: readonly Chapter[] = [
       'One event stream drives the console, the CLI, and the audit log, so every surface tells the same story.',
       'Every resource Planton creates in your cloud carries identity tags naming its organization, environment, kind, and id.',
     ],
-    neverSay: ['audit-ready for SOC 2', 'any framework verdict about a deployment', 'drift detection (a future consideration)', 'compliance dashboard'],
+    neverSay: ['audit-ready for SOC 2', 'any framework verdict about a deployment', 'scheduled drift checks (drift is checked on demand only)', 'compliance dashboard'],
   },
   {
     // Chapter 6
@@ -156,14 +153,14 @@ export const CHAPTERS: readonly Chapter[] = [
     number: 6,
     title: 'Services Ship from Git',
     claim:
-      'Once the infrastructure exists, your services ship onto it straight from Git. Connect a repository; every push is built, containerized, and deployed, with the result written back into GitHub as checks and deployments.',
+      'Once the infrastructure exists, your services ship onto it straight from Git. Connect a repository; every push is built, containerized, and deployed, with the result written back to GitHub.',
     proof: [
       'No pipeline YAML and no Dockerfile required.',
       'Builds can be manual, from a branch, or from an exact commit; promotion follows your Promotion Paths, one per product line; protected environments carry a manual gate.',
       'A rejected environment is never touched, and a service with deployments in a protected environment refuses deletion outright.',
       'Runner minutes are never billed.',
     ],
-    neverSay: ['"Vercel for backend" about Planton', 'image scanning, SBOMs, or signing (not shipped)', 'post-deploy health checks (not shipped)'],
+    neverSay: ['"Vercel for backend", about Planton or any hub', 'GitHub "deployments" written back (the apps lack that permission)', 'image scanning, SBOMs, or signing (not shipped)', 'post-deploy health checks (not shipped)'],
   },
   {
     // Chapter 7
@@ -200,13 +197,12 @@ export const CHAPTERS: readonly Chapter[] = [
     number: 9,
     title: 'Who It Is For',
     claim:
-      'The platform engineer is the user: they write the rules, curate the catalog, publish the Infra Charts, and hand developers and agents a self-service platform that cannot break those rules. The engineering leader is who signs: what reaches them is the proof.',
+      'A developer who inherited ops, on a team of 2 to 10 with no platform team: you own the cloud account and the deploys because nobody else would, you already use a coding agent, and you want every push to land in your own cloud without a surprise bill or a surprise permission. If you already have CI, a production approval gate and an audit trail you trust, you may not need Planton.',
     proof: [
       'A junior DevOps engineer served a seven-person team without learning AWS from scratch.',
-      'A consultancy delivered GCP infrastructure with no GCP expertise on the team, and runs one organization per client.',
       'Developers create and deploy services to dev, staging, and production without waiting on anyone.',
     ],
-    neverSay: ['built for developers as the headline', 'replaces your DevOps team', 'a persona we have not sold to described as a customer'],
+    neverSay: ['replaces your DevOps team', 'a persona we have not sold to described as a customer', 'a page per persona'],
   },
   {
     // Chapter 10
@@ -216,11 +212,11 @@ export const CHAPTERS: readonly Chapter[] = [
     claim:
       'Teams have run production on Planton since 2023. Here is what the people running it say, in their own words.',
     proof: [
-      'Catalog kinds, providers, controls, and crosswalks are counted from the open-source tree, and the date of the count is printed beside the numbers.',
+      'Catalog kinds, providers, and controls are counted from the open-source tree, and the date of the count is printed beside the numbers.',
       'Every testimonial is verbatim and attributed to the person who said it.',
       'Planton runs on Planton: its own infrastructure and the pipelines that ship it go through the platform.',
     ],
-    neverSay: ['any savings figure', '50+ charts', 'an exact kind count in prose', 'a paraphrased or company-attributed quote'],
+    neverSay: ['any savings figure', 'any count of charts Planton ships', 'a framework name on a public page', 'an exact kind count in prose', 'a paraphrased or company-attributed quote'],
   },
   {
     // Chapter 11
@@ -228,25 +224,25 @@ export const CHAPTERS: readonly Chapter[] = [
     number: 11,
     title: 'How It Compares',
     claim:
-      'Governance platforms observe your estate after the fact and tell you what to fix; Planton prevents at the moment of creation and stamps the proof on the record, alongside those tools rather than instead of them. Infrastructure-as-code tools work on Terraform you still write, field name by field name; Planton gives you typed self-service: every kind a typed schema over an open-source module, and controls stated against one fixed list rather than a hundred field names. Developer portals catalog what you have; Planton deploys what you need.',
+      'The question is \u201cwhy not my coding agent plus Terraform and a GitHub Action?\u201d The agent writes the change and stops when the chat ends. Planton is the loop that keeps going: it builds and deploys every push through your environments in order, prices and permission-checks every infrastructure change before it runs, holds production for a person on the Team plan, and records who asked and which agent made each change, with no stored cloud keys.',
     proof: [
-      'Prevent at creation versus observe after: a complement to posture tools, never a replacement.',
-      'Your Terraform stays yours: the modules are open-source Terraform and Pulumi, and what you already run is adopted, not rewritten. Every covered kind reports its controls against the same fixed list, so what you check is one vocabulary, not each kind\u2019s field names.',
-      'The execution layer behind the catalog: it deploys, with the record attached.',
+      'The agent writes the change; Planton keeps deploying after the chat ends.',
+      'Every infrastructure change is a plan with its cost and permissions, applied only as reviewed.',
+      'Every change records who asked and which coding agent made it.',
     ],
-    neverSay: ['any vendor name', 'DevSecOps platform', 'FinOps', 'a feature table with a competitor column'],
+    neverSay: ['any vendor name', 'DevSecOps platform', 'FinOps', 'a feature table with a competitor column', 'that the agent is the problem'],
   },
   {
     // Chapter 12
     id: 'start',
     number: 12,
     title: 'Start',
-    claim: `Start free today. Planton Desktop is free for individuals forever, commercial use included. The hosted free tier is free for up to ${FREE_TIER_SEATS} seats with no card. The self-hosted community edition is free for up to ${COMMUNITY_SEAT_LIMIT} seats, and a ${EVALUATION_DAYS}-day evaluation of the full edition needs only an email.`,
+    claim: `Start free today on planton.ai: free for up to ${FREE_TIER_SEATS} seats with no card, and the first thing you do is paste one prompt into your coding agent. Planton Desktop is free for individuals forever, commercial use included. The self-hosted community edition is free for up to ${COMMUNITY_SEAT_LIMIT} seats, and a ${EVALUATION_DAYS}-day evaluation of the full edition needs only an email.`,
     proof: [
       'Every number on the pricing page reads from one data file and is checked against the enforced entitlements at build time.',
       'Teams pay per seat; below the self-serve ceiling, nobody talks to sales.',
     ],
-    neverSay: ['a price as a literal in prose', 'a per-minute runner rate', 'a monthly free AI allowance as live'],
+    neverSay: ['a price as a literal in prose', 'a per-minute runner rate', 'AI credits or an AI allowance'],
   },
   {
     // Chapter 13
@@ -267,6 +263,3 @@ export function chapter(id: ChapterId): Chapter {
   if (!found) throw new Error(`the story has no chapter "${id}"`);
   return found;
 }
-
-/** The chapters a website page may render (everything but the roadmap). */
-export const SITE_CHAPTERS: readonly Chapter[] = CHAPTERS.filter((c) => !c.decksOnly);

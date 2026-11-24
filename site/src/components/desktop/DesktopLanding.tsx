@@ -74,23 +74,14 @@ export const DesktopLanding: FC = () => {
             <SectionTitle>{d.ask.title}</SectionTitle>
             <SectionSubtitle className="mx-auto">{d.ask.lede}</SectionSubtitle>
           </Box>
-          <Grid cols={2} gap="lg">
+          <Box className="max-w-3xl mx-auto">
             <Card hover={false} className="!p-6 md:!p-8">
               <FeatureTitle className="mb-3">{d.ask.agent.title}</FeatureTitle>
               <BodyText className="mb-4">{d.ask.agent.body}</BodyText>
               {/* A phone cannot run the command; the sentence above still says what it does. */}
               <CommandBlock commands={[d.ask.agent.command]} label="Copy the skills install command" className="hidden sm:block" />
             </Card>
-            <Card hover={false} className="!p-6 md:!p-8">
-              <FeatureTitle className="mb-3">{d.ask.assistant.title}</FeatureTitle>
-              {d.ask.assistant.body.map((sentence) => (
-                <BodyText key={sentence} className="mb-4">
-                  {sentence}
-                </BodyText>
-              ))}
-              <Screenshot shot={DESKTOP_SCREENSHOTS.chooser} className="mt-6" />
-            </Card>
-          </Grid>
+          </Box>
           <Box className="mt-12">
             <Typography component="h3" className="text-center text-base md:text-lg font-semibold text-white mb-6">
               {d.ask.addsTitle}
@@ -128,7 +119,6 @@ export const DesktopLanding: FC = () => {
       <Section id="infra-hub">
         <Box className="max-w-5xl mx-auto">
           <Box className="text-center mb-10">
-            <Typography className="text-xs font-medium tracking-wide text-fg-muted mb-3">{d.infraHub.kicker}</Typography>
             <SectionTitle>{d.infraHub.title}</SectionTitle>
             <SectionSubtitle className="mx-auto !max-w-3xl">{d.infraHub.lede}</SectionSubtitle>
           </Box>
@@ -152,7 +142,6 @@ export const DesktopLanding: FC = () => {
       <Section id="service-hub">
         <Box className="max-w-5xl mx-auto">
           <Box className="text-center mb-10">
-            <Typography className="text-xs font-medium tracking-wide text-fg-muted mb-3">{d.serviceHub.kicker}</Typography>
             <SectionTitle>{d.serviceHub.title}</SectionTitle>
             <SectionSubtitle className="mx-auto !max-w-3xl">{d.serviceHub.lede}</SectionSubtitle>
           </Box>

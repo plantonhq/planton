@@ -11,7 +11,7 @@ tags:
 
 # Platform Overview
 
-Planton turns your own cloud account into a self-service platform. AI designs the infrastructure, verifies the cost and permissions before anything is created, and publishes it as templates your whole team can deploy. Your services then ship onto that infrastructure straight from Git. It deploys to your own cloud accounts (AWS, GCP, Azure, Kubernetes) while managing the workflow, governance, and operational complexity.
+Planton deploys every push to GitHub into your own cloud, and shows the cost and permissions of every infrastructure change before it runs. Start by pasting one prompt into your coding agent. It deploys to your own cloud accounts (AWS, GCP, Azure, Kubernetes) while managing the workflow, governance, and operational complexity.
 
 The platform is organized around a clear resource hierarchy and a set of interconnected parts.
 
@@ -65,7 +65,7 @@ Invite team members, organize them into teams, and manage permissions. Role-base
 
 ### Billing
 
-Seat-based pricing — automation is never metered for billing, and on planton.ai the AI Assistant runs on prepaid credits.
+Seat-based pricing — automation is never metered for billing.
 
 [View billing details](/docs/teams-and-access/billing)
 

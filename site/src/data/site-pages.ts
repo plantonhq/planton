@@ -28,8 +28,6 @@ export type PageGroup =
   | 'product'
   | 'distributions'
   | 'trust'
-  | 'solutions'
-  | 'compare'
   | 'pricing'
   | 'content'
   | 'company'
@@ -48,8 +46,6 @@ export const PAGE_GROUP_HEADINGS: Readonly<Partial<Record<PageGroup, string>>> =
   trust: 'Trust',
   product: 'Product',
   distributions: 'Distributions',
-  solutions: 'Solutions',
-  compare: 'Compare',
   pricing: 'Pricing',
   company: 'Company',
   legal: 'Legal',
@@ -67,8 +63,8 @@ export interface SitePage {
   chapters?: readonly ChapterId[];
   /**
    * False keeps the page out of the sitemap and marks it noindex. Shared-by-URL
-   * surfaces (decks, investor pages) and single-task frames are not search
-   * results.
+   * surfaces (meeting decks, investor pages) and single-task frames are not
+   * search results.
    */
   index?: boolean;
 }
@@ -156,7 +152,7 @@ export const SITE_PAGES: readonly SitePage[] = [
     path: '/trust/security-posture',
     title: 'Security Posture',
     description:
-      'Seventeen technical controls with evidence per kind, crosswalked to four frameworks, stated honestly: a kind enforces controls; it is never called compliant.',
+      'Seventeen technical controls with evidence per kind, stated honestly: a kind enforces controls; it is never called compliant.',
     group: 'trust',
     chapters: ['verified-before-it-exists', 'runs-where-you-decide'],
   },
@@ -164,17 +160,17 @@ export const SITE_PAGES: readonly SitePage[] = [
     path: '/trust/your-cloud-your-keys',
     title: 'Your Cloud, Your Keys',
     description:
-      'Planton runs in your account with your keys, your state, and your bill. Keyless connections store nothing; every module is open source; you can leave with your manifests.',
+      'Planton deploys into your account with your keys, your state, and your bill. Keyless connections store nothing; every module is open source; you can leave with your manifests.',
     group: 'trust',
     chapters: ['runs-where-you-decide'],
   },
 
-  // Product: the platform engineer's half of the story, one page per thing a person uses
+  // Product: one page per thing a person uses
   {
     path: '/product',
     title: 'Product',
     description:
-      'Infra Hub, Service Hub, your coding agent, the CLI, the catalog, import, and the open source underneath: what Planton is, as a platform engineer meets it.',
+      'Infra Hub, Service Hub, your coding agent, the CLI, the catalog, import, and the open source underneath: what Planton does in your cloud.',
     group: 'product',
     chapters: ['what-planton-is'],
   },
@@ -182,7 +178,7 @@ export const SITE_PAGES: readonly SitePage[] = [
     path: '/product/infra-hub',
     title: 'Infra Hub',
     description:
-      'Describe what you need, see the monthly cost and the IAM policy before anything is created, deploy, and publish it as an Infra Chart your team reuses.',
+      'Every infrastructure change as a plan with its monthly cost and the permissions it needs, applied only after you review it, and saved as an Infra Chart your team redeploys.',
     group: 'product',
     chapters: ['what-planton-is', 'verified-before-it-exists', 'your-rules-hold', 'every-deployment-leaves-a-record'],
   },
@@ -260,22 +256,8 @@ export const SITE_PAGES: readonly SitePage[] = [
   { path: '/desktop', title: 'Planton Desktop', description: 'The whole platform on your laptop, deploying to your own cloud with the sign-ins already on your machine. No account. Free for individuals, commercial use too.', group: 'distributions', chapters: ['runs-where-you-decide', 'the-wall'] },
   { path: '/desktop/download', title: 'Download Planton Desktop', description: 'Install Planton Desktop for macOS, Windows, or Linux. Free for individuals, including commercial use.', group: 'distributions', chapters: ['start'] },
 
-  // Solutions: chapter 9 as the index, then one page per persona. The five
-  // slugs are the personas' own (src/data/personas.ts); a page's chapters are
-  // its persona's beats, in that person's order.
-  { path: '/solutions', title: 'Solutions', description: 'Planton for the platform engineer who runs the platform, the leader who signs for it, the IT consulting firm that delivers it, the founder who ships on it, and the security leader who governs it.', group: 'solutions', chapters: ['who-it-is-for'] },
-  { path: '/solutions/platform-engineer', title: 'Planton for Platform Engineers', description: 'Self-service your developers and their coding agents cannot break: rules written once, cost and permissions verified before anything exists, a record of every deploy.', group: 'solutions', chapters: ['your-rules-hold', 'verified-before-it-exists', 'every-deployment-leaves-a-record', 'what-planton-is', 'runs-where-you-decide', 'services-ship-from-git', 'bring-what-you-have'] },
-  { path: '/solutions/engineering-leader', title: 'Planton for Engineering Leaders', description: 'What your team deploys, proven before it exists: the cost, the rule that held, and the record, without a new team and without opening a console.', group: 'solutions', chapters: ['verified-before-it-exists', 'your-rules-hold', 'every-deployment-leaves-a-record', 'who-it-is-for', 'what-planton-is', 'runs-where-you-decide'] },
-  { path: '/solutions/it-consultancy', title: 'Planton for IT Consulting Firms', description: 'One organization per client, a client environment from a published template, and everything handed back as manifests when the engagement ends.', group: 'solutions', chapters: ['what-planton-is', 'runs-where-you-decide', 'verified-before-it-exists', 'every-deployment-leaves-a-record', 'services-ship-from-git'] },
-  { path: '/solutions/startup-founder', title: 'Planton for Startup Founders', description: 'Ship without an ops hire: push to deploy, the monthly cost before it exists, free to start, and nothing redone when you become a team.', group: 'solutions', chapters: ['what-planton-is', 'services-ship-from-git', 'verified-before-it-exists', 'runs-where-you-decide', 'every-deployment-leaves-a-record'] },
-  { path: '/solutions/security-and-governance-leader', title: 'Planton for Security and Governance Leaders', description: 'Rules that hold at the moment of creation, controls stated with evidence and never called compliant, and a record of every change; a complement to your posture tools.', group: 'solutions', chapters: ['your-rules-hold', 'verified-before-it-exists', 'every-deployment-leaves-a-record', 'how-it-compares', 'runs-where-you-decide', 'what-planton-is'] },
-
-  // Compare: chapter 11, the three kinds of tool near Planton described by what they do, never by name
-  { path: '/compare', title: 'How Planton Compares', description: 'Governance platforms observe after the fact, IaC tools work on Terraform you write, portals catalog what you have. Planton proves at creation, beside all three.', group: 'compare', chapters: ['how-it-compares', 'what-planton-is'] },
-
   // Pricing
   { path: '/pricing', title: 'Pricing', description: 'Plans for every stage, on planton.ai or your own infrastructure. A free tier that never bills, one team plan, and self-hosted licenses that verify offline.', group: 'pricing', chapters: ['start'] },
-  { path: '/pricing/enterprise', title: 'Enterprise', description: 'Enterprise at Planton: a published rate card in your market, enterprise identity, air-gap, compliance reporting, and real SLAs. Self-serve below 25 seats.', group: 'pricing', chapters: ['start'] },
 
   // Content indexes (their children are walked from markdown)
   { path: '/docs', title: 'Documentation', description: 'Guides and reference for Planton: getting started, Infra Hub, Service Hub, distributions, the CLI, and the catalog.', group: 'content' },
@@ -293,15 +275,6 @@ export const SITE_PAGES: readonly SitePage[] = [
   { path: '/book-demo', title: 'Book a Demo', description: 'See how Planton connects cloud infrastructure and application delivery. Share your details, then choose a time for a walkthrough.', group: 'standalone', index: false },
   { path: '/desktop/open', title: 'Open Planton Desktop', description: 'Hands a link off to the desktop app installed on this machine.', group: 'standalone', index: false },
 
-  // The persona decks: the story told for one person, with presenter notes,
-  // at a stable address the founder pastes into a meeting invite. Registered
-  // so one helper gives each its title, canonical, and noindex; unindexed
-  // because a deck is opened by the person it was sent to, not found.
-  { path: '/decks/platform-engineer', title: 'The Planton Story for Platform Engineers', description: 'The Planton story told for platform engineers, with presenter notes under every slide.', group: 'standalone', index: false },
-  { path: '/decks/engineering-leader', title: 'The Planton Story for Engineering Leaders', description: 'The Planton story told for engineering leaders, with presenter notes under every slide.', group: 'standalone', index: false },
-  { path: '/decks/it-consultancy', title: 'The Planton Story for IT Consulting Firms', description: 'The Planton story told for IT consulting firms, with presenter notes under every slide.', group: 'standalone', index: false },
-  { path: '/decks/startup-founder', title: 'The Planton Story for Startup Founders', description: 'The Planton story told for startup founders, with presenter notes under every slide.', group: 'standalone', index: false },
-  { path: '/decks/security-and-governance-leader', title: 'The Planton Story for Security and Governance Leaders', description: 'The Planton story told for security and governance leaders, with presenter notes under every slide.', group: 'standalone', index: false },
 ] as const;
 
 export function sitePage(path: string): SitePage {

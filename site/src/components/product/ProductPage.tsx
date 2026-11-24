@@ -34,7 +34,7 @@ export const ProductPage: FC<{ path: string }> = ({ path }) => {
 
   return (
     <main className="overflow-x-hidden">
-      <PageHero eyebrow={{ label: 'Product', href: '/product' }} title={page.title} kicker={record.analogy} lede={record.lede} forWhom={record.forWhom}>
+      <PageHero eyebrow={{ label: 'Product', href: '/product' }} title={page.title} lede={record.lede} forWhom={record.forWhom}>
         <Doors {...doors} className="justify-center mt-2" />
       </PageHero>
       {record.strip === 'providers' ? (

@@ -123,53 +123,13 @@ const faqs: IFaq[] = [
     ),
   },
   {
-    title: 'How do AI credits work?',
-    description: (
-      <Stack gap={2}>
-        <TypoB2Regular className="text-text-secondary">
-          AI usage is prepaid: you load a credit pack, usage draws it down,
-          and at zero the AI pauses until you reload — it can never run up a
-          bill behind your back. Every movement on your balance is a visible,
-          explainable entry.
-        </TypoB2Regular>
-        <TypoB2Regular className="text-text-secondary">
-          Auto-reload is opt-in and requires a monthly ceiling you set. Past
-          the ceiling, usage pauses like any prepaid account.
-        </TypoB2Regular>
-        <TypoB2Regular className="text-text-secondary">
-          Credits fund the assistant on planton.ai organizations and in the
-          Planton desktop app. Self-hosted deployments don&apos;t use
-          credits — see the next question.
-        </TypoB2Regular>
-      </Stack>
-    ),
-  },
-  {
-    title: 'Does the AI Assistant work on my own infrastructure?',
-    description: (
-      <Stack gap={2}>
-        <TypoB2Regular className="text-text-secondary">
-          Not yet. Today the assistant runs on planton.ai organizations and
-          in the Planton desktop app; self-hosted deployments don&apos;t
-          include it yet.
-        </TypoB2Regular>
-        <TypoB2Regular className="text-text-secondary">
-          It is coming: the assistant will run inside your own cluster using
-          your own LLM provider key, so nothing leaves your infrastructure
-          and no Planton credits are involved.
-        </TypoB2Regular>
-      </Stack>
-    ),
-  },
-  {
     title: 'Can I cancel or get a refund?',
     description: (
       <Stack gap={2}>
         <TypoB2Regular className="text-text-secondary">
           Cancel anytime — no forms, no interviews. Subscriptions run out
           their paid period and stop. Licenses carry a 14-day money-back
-          guarantee. Unused AI credit packs are refundable within 14 days of
-          purchase.
+          guarantee.
         </TypoB2Regular>
         <TypoB2Regular className="text-text-secondary">
           To stop a license auto-renewal, email{' '}

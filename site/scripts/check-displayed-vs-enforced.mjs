@@ -264,9 +264,6 @@ function checkLimits(pricing, offers, communityEditionPath) {
     `published community edition ${path.relative(path.dirname(path.dirname(communityEditionPath)), communityEditionPath)} (limits.seats)`,
     communitySeats);
 
-  // Deliberately not pinned: the enterprise packages' seat ceilings. No
-  // catalog row carries them yet (the enterprise offer is authored at the
-  // enterprise rehearsal, after which they join this law).
 }
 
 // ---------------------------------------------------------------------------

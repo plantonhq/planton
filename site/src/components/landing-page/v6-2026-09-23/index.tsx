@@ -16,7 +16,7 @@ import {
 import styles from '@/components/marketing/homepage.module.css';
 import workflowStyles from '@/components/marketing/workflows/workflows.module.css';
 
-/** Engineering leaders: understand the platform, see the proof, then choose a next step. */
+/** Home: what Planton does, the proof, then Start Free as the first door and a demo as the second. */
 export function Homepage() {
   return (
     <HomepageAppearance>
@@ -24,7 +24,6 @@ export function Homepage() {
         <div className={styles.container}>
           <section className={styles.hero} aria-labelledby="homepage-title">
             <div className={styles.heroCopy}>
-              <p className={styles.eyebrow}>{H.eyebrow}</p>
               <h1 id="homepage-title">
                 {H.headline.map((line) => (
                   <span key={line}>{line}</span>
@@ -32,11 +31,8 @@ export function Homepage() {
               </h1>
               <p className={styles.intro}>{H.intro}</p>
               <div className={styles.actions}>
+                <ExperienceLink door="hosted" location="hero" primary />
                 <DemoLink location="hero" />
-                <a className={styles.textLink} href="#how-it-works">
-                  {H.seeHow}
-                  <span aria-hidden="true">↓</span>
-                </a>
               </div>
               <p className={styles.heroCaption}>{H.caption}</p>
             </div>
@@ -134,8 +130,8 @@ export function Homepage() {
             <ControlOwnership />
             <p className={styles.adoptionNote}>{C.adoption}</p>
             <div className={styles.actions}>
+              <ExperienceLink door="hosted" location="controls" primary />
               <DemoLink location="controls" />
-              <ExperienceLink door="hosted" location="controls" />
             </div>
           </section>
           <section className={styles.proof} aria-labelledby="proof-title">
@@ -183,8 +179,8 @@ export function Homepage() {
             </h2>
             <p>{H.close.text}</p>
             <div className={styles.closeActions}>
+              <ExperienceLink door="hosted" location="close" primary />
               <DemoLink location="close" />
-              <ExperienceLink door="hosted" location="close" />
             </div>
             <small>{H.close.note}</small>
           </section>

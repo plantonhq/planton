@@ -3,21 +3,22 @@ import { Box, Typography } from '@mui/material';
 import { CenteredCards, Doors, Metric, PageCard, PageHero, Section } from '@/components/marketing';
 import { PLATFORM_COUNTS, PLATFORM_STATS } from '@/data/platform-stats';
 import { START_DOORS } from '@/data/doors';
+import { PRODUCT_INDEX } from '@/data/product';
 import { chapter } from '@/data/story';
 import { SITE_PAGES } from '@/data/site-pages';
 
 /**
- * The door to the Product section: the umbrella as the headline, its sentence
- * as the promise, and the product pages as cards with the registry's own
- * descriptions, in the order a platform engineer meets them. For the developer who clicked "Product" to find out what this
- * actually is.
+ * The door to the Product section: chapter 2's title as the headline, the
+ * one sentence and the first action as the promise, and the product pages
+ * as cards with the registry's own descriptions. For the developer who
+ * clicked "Product" to find out what this actually is.
  */
 export const ProductIndex: FC = () => {
   const what = chapter('what-planton-is');
   const pages = SITE_PAGES.filter((p) => p.group === 'product' && p.path !== '/product');
   return (
     <main className="overflow-x-hidden">
-      <PageHero eyebrow={{ label: 'Product' }} title={what.title} lede={what.claim} forWhom="For the platform engineer deciding what to hand their team, and the developer who wants to see what their agent gets.">
+      <PageHero eyebrow={{ label: 'Product' }} title={what.title} lede={what.claim} forWhom={PRODUCT_INDEX.forWhom}>
         <Doors {...START_DOORS} className="justify-center mt-2" />
         <Box className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-10 w-full">
           <Metric value={PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} label="Catalog Kinds" />

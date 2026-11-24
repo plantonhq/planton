@@ -14,7 +14,7 @@ export interface PageHeroProps {
   /** The section this page belongs to: a door to its index, or, on the index itself, the section's name alone. */
   eyebrow?: { label: string; href?: string };
   title: string;
-  /** Title Case; a short line under the title, e.g. a hub's one analogy. */
+  /** Title Case; a short line under the title. */
   kicker?: string;
   lede: string;
   /** Sentence case; who this page is written for and what it answers, in one line. */

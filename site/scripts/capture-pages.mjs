@@ -98,15 +98,15 @@ const UA = {
  */
 const SCENES = [
   // The marketing pages a "zero visual change" commit is proven against: the
-  // landing page, the Product, Distributions, Trust, and Solutions groups,
-  // pricing, and the decks that ride the deck engine. Two review widths for
-  // a group's first page, one for its siblings.
+  // landing page, the Product, Distributions, and Trust groups, pricing, the
+  // 404, and the meeting decks that ride the deck engine. Two review widths
+  // for a group's first page, one for its siblings.
   { name: 'landing-1680', route: '/', width: 1680, ua: UA.mac },
   { name: 'landing-1280', route: '/', width: 1280, ua: UA.mac },
   { name: 'landing-phone', route: '/', width: 390, ua: UA.iphone },
-  // The header's Product mega-menu open: the one place the shell's menu data
-  // is seen, and the only way a menu change is graded rather than eyeballed.
-  { name: 'menu-product-1280', route: '/', width: 1280, height: 800, ua: UA.mac, viewportOnly: true, open: '[aria-haspopup="true"]' },
+  // The header's mobile drawer open: the only place the drawer's links and
+  // doors are seen, so a navigation change is graded rather than eyeballed.
+  { name: 'menu-phone', route: '/', width: 390, height: 800, ua: UA.iphone, viewportOnly: true, open: '[aria-label="Open navigation"]' },
   { name: 'product-1280', route: '/product', width: 1280, ua: UA.mac },
   { name: 'infra-hub-1680', route: '/product/infra-hub', width: 1680, ua: UA.mac },
   { name: 'infra-hub-1280', route: '/product/infra-hub', width: 1280, ua: UA.mac },
@@ -120,31 +120,11 @@ const SCENES = [
   { name: 'hosted-1680', route: '/distributions/hosted', width: 1680, ua: UA.mac },
   { name: 'hosted-1280', route: '/distributions/hosted', width: 1280, ua: UA.mac },
   { name: 'self-hosted-1280', route: '/distributions/self-hosted', width: 1280, ua: UA.mac },
-  { name: 'solutions-1680', route: '/solutions', width: 1680, ua: UA.mac },
-  { name: 'solutions-1280', route: '/solutions', width: 1280, ua: UA.mac },
-  { name: 'platform-engineer-1680', route: '/solutions/platform-engineer', width: 1680, ua: UA.mac },
-  { name: 'platform-engineer-1280', route: '/solutions/platform-engineer', width: 1280, ua: UA.mac },
-  { name: 'platform-engineer-phone', route: '/solutions/platform-engineer', width: 390, ua: UA.iphone },
-  { name: 'engineering-leader-1680', route: '/solutions/engineering-leader', width: 1680, ua: UA.mac },
-  { name: 'engineering-leader-1280', route: '/solutions/engineering-leader', width: 1280, ua: UA.mac },
-  { name: 'it-consultancy-1280', route: '/solutions/it-consultancy', width: 1280, ua: UA.mac },
-  { name: 'startup-founder-1280', route: '/solutions/startup-founder', width: 1280, ua: UA.mac },
-  { name: 'security-leader-1280', route: '/solutions/security-and-governance-leader', width: 1280, ua: UA.mac },
-  { name: 'compare-1680', route: '/compare', width: 1680, ua: UA.mac },
-  { name: 'compare-1280', route: '/compare', width: 1280, ua: UA.mac },
-  { name: 'compare-phone', route: '/compare', width: 390, ua: UA.iphone },
-  // The persona decks: each cover, and the roadmap slide of one deck by its
-  // hash so the disclosure line is in a capture. The engine reads the hash
-  // on load, inside the virtual clock.
-  { name: 'deck-platform-engineer-1280', route: '/decks/platform-engineer', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
-  { name: 'deck-platform-engineer-rules-1280', route: '/decks/platform-engineer#your-rules-hold', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
-  { name: 'deck-platform-engineer-next-1280', route: '/decks/platform-engineer#what-is-next', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
-  { name: 'deck-engineering-leader-1280', route: '/decks/engineering-leader', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
-  { name: 'deck-it-consultancy-1280', route: '/decks/it-consultancy', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
-  { name: 'deck-startup-founder-1280', route: '/decks/startup-founder', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
-  { name: 'deck-security-leader-1280', route: '/decks/security-and-governance-leader', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
   { name: 'pricing-1680', route: '/pricing', width: 1680, ua: UA.mac },
   { name: 'pricing-1280', route: '/pricing', width: 1280, ua: UA.mac },
+  // The 404 every address without a page answers, the retired pages' included.
+  { name: 'not-found-1280', route: '/404', width: 1280, ua: UA.mac },
+  { name: 'not-found-phone', route: '/404', width: 390, ua: UA.iphone },
   { name: 'trust-1680', route: '/trust', width: 1680, ua: UA.mac },
   { name: 'trust-1280', route: '/trust', width: 1280, ua: UA.mac },
   { name: 'trust-verified-1680', route: '/trust/verified-before-deploy', width: 1680, ua: UA.mac },

@@ -218,13 +218,13 @@ spec:
     spec: ...   # declares the platform contract, image-name, node-version
 ```
 
-**Publishing is one `planton apply -f` per record, tasks first.** The publish check runs before the record is written — at the CLI, through the assistant's tools, and at the API: the same compiler that runs at dispatch verifies the document shape, the name law, every task reference (against the bundled tasks, the organization's published tasks, and the catalog), the parameter contract, workspaces, result references, and Tekton's own admission rules. A record that would not compile is refused with the verdicts above in one sentence, and nothing is written. A pipeline that references a task the organization has not published yet is refused with `unresolved_task_ref`: publish the task first, or bundle it as a second document.
+**Publishing is one `planton apply -f` per record, tasks first.** The publish check runs before the record is written — at the CLI and at the API: the same compiler that runs at dispatch verifies the document shape, the name law, every task reference (against the bundled tasks, the organization's published tasks, and the catalog), the parameter contract, workspaces, result references, and Tekton's own admission rules. A record that would not compile is refused with the verdicts above in one sentence, and nothing is written. A pipeline that references a task the organization has not published yet is refused with `unresolved_task_ref`: publish the task first, or bundle it as a second document.
 
 **Consuming is verified when the service is applied**: a `build.tektonPipeline.pipeline` naming no published record is refused there, with the fix in the sentence — never at the first build. Each run of a consuming service stamps `source: org_published` and the pin `<record id>@<record spec updated-at>`; updating a record changes what the next fresh run compiles, while reruns replay the stamp they carry.
 
 **Deleting is refused while anything depends on the record**: a `TektonPipeline` any service still builds from (the refusal names the services), a `TektonTask` any published pipeline still references (the refusal names the pipelines). Repository pipelines that reference a deleted task learn at their next compile through `unresolved_task_ref`.
 
-There is no catalog page. `planton search --kind TektonPipeline` (or `TektonTask`) lists what the organization has published; `planton get TektonPipeline <name>` shows a record with its documentation; the assistant reads the same through its `get_tekton_pipeline` / `get_tekton_task` tools and search.
+There is no catalog page. `planton search --kind TektonPipeline` (or `TektonTask`) lists what the organization has published; `planton get TektonPipeline <name>` shows a record with its documentation.
 
 ## Related Documentation
 

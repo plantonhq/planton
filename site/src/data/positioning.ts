@@ -1,16 +1,17 @@
 /**
  * THE single source of positioning truth for the website.
  *
- * The product positioning follows a three-level rule, and this file exists
- * so the rule cannot drift the way the last one did (the "Vercel for
- * backend" line was coined for Service Hub, escaped its scope, and spent
- * six months describing the whole product):
+ * What Planton is, is said in one sentence (`umbrella.sentence`), with no
+ * analogy and no category label. It was chosen by cold readers spanning the
+ * knowledge spectrum, from a non-technical founder to a platform engineer,
+ * and it changes only when real conversations show it confuses people. The
+ * line under it (`umbrella.firstAction`) says what to do first. The story's
+ * chapter 2 (`company/marketing/positioning/the-planton-story.md` in the
+ * company repository, mirrored in `story.ts`) carries both.
  *
- *   Level 1 — Planton, the umbrella. Never uses an analogy.
- *   Level 2 — each hub gets exactly one analogy, and the analogy never
- *             escapes its hub. Infra Hub is "Cursor for Cloud
- *             Infrastructure"; Service Hub is "Vercel for Backend, In
- *             Your Own Cloud".
+ * The two hubs keep their names and one plain line each. They wear no
+ * analogy: an analogy coined for one hub once escaped its scope and spent
+ * six months describing the whole product.
  *
  * Any sentence on the site that states what Planton IS must read from
  * here — the same law src/data/pricing.ts applies to prices.
@@ -21,11 +22,11 @@
  */
 
 export const POSITIONING = {
-  /** Level 1 — the umbrella. No analogy, ever. */
+  /** What Planton is, in one sentence, and the first thing a visitor does. */
   umbrella: {
-    tagline: 'The Self-Service Cloud Platform',
     sentence:
-      'Planton turns your own cloud account into a self-service platform. AI designs the infrastructure, verifies the cost and permissions before anything is created, and publishes it as templates your whole team can deploy. Your services then ship onto that infrastructure straight from Git.',
+      'Planton deploys every push to GitHub into your own cloud, and shows the cost and permissions of every infrastructure change before it runs.',
+    firstAction: 'Start by pasting one prompt into your coding agent.',
     /**
      * The mission, in the founder's words (2026-09-11). Platforms that hide
      * the cloud trade control for convenience; Planton's bet is that you can
@@ -62,15 +63,13 @@ export const POSITIONING = {
     concession: 'For a one-off bucket, the agent alone wins. Planton earns its place on anything you will still be running in a month.',
   },
 
-  /** Level 2 — one analogy per hub, scoped to that hub only. */
+  /** The two hubs: a name and one plain line each, never an analogy. */
   infraHub: {
     name: 'Infra Hub',
-    analogy: 'Cursor for Cloud Infrastructure',
-    line: 'Describe what you need, watch it compose on a live canvas, see the monthly cost and the IAM policy before anything is created, deploy, and publish it as an Infra Chart — a template your team reuses.',
+    line: 'Every infrastructure change is a plan that shows its monthly cost and the exact permissions it needs before anything is created. Only the plan you reviewed is applied, and what you built can be saved as an Infra Chart your team redeploys.',
   },
   serviceHub: {
     name: 'Service Hub',
-    analogy: 'Vercel for Backend, In Your Own Cloud',
-    line: 'Connect a Git repository and every push becomes a running deployment — no pipeline YAML, no Dockerfile required, with results written back into GitHub checks and deployments.',
+    line: 'Connect a GitHub repository and every push is built on Planton’s runners and deployed into your own Kubernetes, Google Cloud Run or Amazon ECS, with results written back to GitHub. No pipeline YAML, no Dockerfile required.',
   },
 } as const;

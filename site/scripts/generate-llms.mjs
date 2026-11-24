@@ -4,7 +4,7 @@
  *
  * An agent reading planton.ai/llms.txt gets the exact sentences a person
  * reads on the page, because both come from src/data: the story's chapters,
- * the route registry's titles and descriptions, the personas, the platform
+ * the route registry's titles and descriptions, the platform
  * statistics, and the prices. Nothing here is hand-written prose about the
  * product; it is the data, projected as Markdown.
  *
@@ -123,12 +123,10 @@ function pageMarkdown(
   page,
   {
     story,
-    personas,
     stats,
     site,
     product,
     distributions,
-    compare,
     desktop,
     desktopDownload,
     homepage,
@@ -239,70 +237,6 @@ function pageMarkdown(
       lines.push('');
     }
   }
-  // A persona page states the story through one person's framing: the agent
-  // reads that person's record, not all five. The Solutions index names the
-  // five people.
-  const persona = personas.find((p) => `/solutions/${p.slug}` === page.path);
-  if (persona) {
-    lines.push(
-      `## ${persona.headline}`,
-      '',
-      `**Who.** ${persona.who}`,
-      '',
-      `**The wall.** ${persona.wall}`,
-      ''
-    );
-    lines.push('## What decides it', '');
-    for (const point of persona.decidingProof) lines.push(`- **${point.label}.** ${point.text}`);
-    lines.push('', '## The story, in this order', '');
-    for (const beat of persona.beats) {
-      const c = story.chapter(beat.chapter);
-      lines.push(`### ${c.title}`, '', beat.angle, '');
-      for (const i of beat.proof) lines.push(`- ${c.proof[i]}`);
-      lines.push('');
-    }
-    lines.push('## You will ask', '');
-    for (const o of persona.objections) lines.push(`- **${o.question}** ${o.answer}`);
-    lines.push('');
-  } else if (page.group === 'solutions') {
-    lines.push('## Who Planton is for', '');
-    for (const p of personas) lines.push(`- **${p.name}.** ${p.who} ${p.wall}`);
-    lines.push('');
-  }
-  // The Compare page states chapter 11 category by category: what each kind
-  // of tool does, what Planton does at the same moment, when a team runs
-  // both, and the questions a comparer asks.
-  if (page.path === '/compare') {
-    lines.push(
-      `## ${compare.COMPARE.headline}`,
-      '',
-      compare.COMPARE.lede,
-      '',
-      compare.COMPARE.difference.claim,
-      ''
-    );
-    for (const c of compare.COMPARE.categories) {
-      lines.push(
-        `## Beside ${c.title}`,
-        '',
-        `**What they do.** ${c.theyDo}`,
-        '',
-        '**What Planton does at the same moment.**',
-        ''
-      );
-      for (const point of c.planton) lines.push(`- **${point.label}.** ${point.text}`);
-      lines.push(
-        '',
-        `**When you run both.** ${c.both}`,
-        '',
-        `Proven at: ${site.url}${c.provenAt}`,
-        ''
-      );
-    }
-    lines.push('## You will ask', '');
-    for (const q of compare.COMPARE.questions) lines.push(`- **${q.question}** ${q.answer}`);
-    lines.push('');
-  }
   // The desktop pages state their own record: the landing's sections in the
   // reader's order, and the download page's first-launch beats and follow-ons
   // (the platform-neutral parts; installers and commands are the download data's).
@@ -319,12 +253,7 @@ function pageMarkdown(
       `**${d.ask.agent.title}.** ${d.ask.agent.body}`,
       ''
     );
-    lines.push(
-      `**${d.ask.assistant.title}.** ${d.ask.assistant.body.join(' ')}`,
-      '',
-      `**${d.ask.addsTitle}.**`,
-      ''
-    );
+    lines.push(`**${d.ask.addsTitle}.**`, '');
     for (const a of d.ask.adds) lines.push(`- ${a}`);
     lines.push('');
     for (const section of [d.runs, d.infraHub, d.serviceHub]) {
@@ -362,7 +291,7 @@ function pageMarkdown(
       '## By the numbers',
       '',
       `- ${stats.PLATFORM_COUNTS.catalogKinds} catalog kinds across ${stats.PLATFORM_COUNTS.providers} providers`,
-      `- ${stats.PLATFORM_COUNTS.controls} technical controls in ${stats.PLATFORM_COUNTS.controlCategories} categories, ${stats.PLATFORM_COUNTS.frameworkCrosswalks} framework crosswalks`,
+      `- ${stats.PLATFORM_COUNTS.controls} technical controls in ${stats.PLATFORM_COUNTS.controlCategories} categories`,
       `- Counted from the open-source repository on ${stats.PLATFORM_COUNTS.countedOn}`,
       ''
     );
@@ -378,18 +307,15 @@ async function main() {
   const registry = await load('src/data/site-pages.ts');
   const story = await load('src/data/story.ts');
   const homepage = await load('src/data/homepage.ts');
-  const personasModule = await load('src/data/personas.ts');
   const stats = await load('src/data/platform-stats.ts');
   const pricing = await load('src/data/pricing.ts');
   const product = await load('src/data/product.ts');
   const distributions = await load('src/data/distributions.ts');
-  const compare = await load('src/data/compare.ts');
   const desktop = await load('src/data/desktop.ts');
   const desktopDownload = await load('src/data/desktop-download.ts');
 
   const site = registry.SITE;
   const pages = registry.SITE_PAGES;
-  const personas = personasModule.PERSONAS;
   const contentIndexes = pages.filter((p) => p.group === 'content').map((p) => p.path);
 
   // ---- coverage -----------------------------------------------------------
@@ -419,12 +345,10 @@ async function main() {
   // Everything a page's markdown may quote: the story and the records the pages render from.
   const data = {
     story,
-    personas,
     stats,
     site,
     product,
     distributions,
-    compare,
     desktop,
     desktopDownload,
     homepage,
@@ -465,9 +389,7 @@ async function main() {
   for (const step of homepage.HOMEPAGE.overview.steps)
     index.push(`- **${step.title}.** ${step.text}`);
   index.push('');
-  index.push('## Who it is for', '');
-  for (const p of personas) index.push(`- ${p.name}: ${p.who}`);
-  index.push('');
+  index.push('## Who it is for', '', story.chapter('who-it-is-for').claim, '');
   index.push(
     '## Start',
     '',

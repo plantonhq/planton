@@ -15,7 +15,7 @@
  */
 import type { DoorPair } from './doors.ts';
 import { illustratedFooter, type Artifact, type ProofPoint } from './page-shapes.ts';
-import { COMMUNITY_SEAT_LIMIT, EVALUATION_DAYS, FREE_TIER_SEATS, SELF_SERVE_SEAT_CEILING } from './pricing.ts';
+import { COMMUNITY_SEAT_LIMIT, EVALUATION_DAYS, FREE_TIER_SEATS } from './pricing.ts';
 import { chapter } from './story.ts';
 
 export interface DistributionPage {
@@ -45,10 +45,10 @@ export const DISTRIBUTION_PAGES: readonly DistributionPage[] = [
       { label: 'What Lives at planton.ai', text: 'The control plane: your organization\u2019s records (the manifests you declared, every Infra Job with its cost fact and verdicts), the console, and the identity server. Secrets are held as references and resolved on the runner at the moment of use; they can live in your own secrets manager.' },
       { label: 'What Lives in Your Account', text: 'Everything Planton deploys, under connections you own, tagged with its organization, environment, kind, and id. The bill is your cloud invoice.' },
       { label: 'Keyless Connections', text: runs.proof[0] },
-      { label: 'Where the Work Runs', text: 'A deploy executes on a runner: one Planton operates, your own laptop with the cloud sign-in already on it, or a standing appliance inside your network. Credentials are resolved at the moment of use: keyless where the cloud supports it, otherwise from the secrets manager just in time.' },
+      { label: 'Where the Work Runs', text: 'A deploy executes on a runner Planton operates. Credentials are resolved at the moment of use: keyless where the cloud supports it, otherwise from the secrets manager just in time. A runner of your own, on your laptop or inside your network, is coming to hosted organizations.' },
       { label: 'Usage Never Becomes an Invoice Line', text: 'Runner minutes are never billed. Usage is recorded for abuse protection and nothing else.' },
       { label: 'Nothing Redone When You Grow', text: runs.proof[3] },
-      { label: 'Per Seat, Self-Serve', text: `Teams pay per seat. Up to ${SELF_SERVE_SEAT_CEILING} seats, nobody talks to sales: the plan is a card away.` },
+      { label: 'Per Seat, Self-Serve', text: 'Teams pay per seat, by card. Nobody has to talk to sales.' },
     ],
     artifact: {
       kind: 'record',
@@ -56,10 +56,10 @@ export const DISTRIBUTION_PAGES: readonly DistributionPage[] = [
       rows: [
         { label: 'control plane', value: 'planton.ai' },
         { label: 'cloud account', value: 'yours \u00b7 AWS 123456789012 \u00b7 keyless connection' },
-        { label: 'runner', value: 'Planton\u2019s, your laptop, or an appliance in your network' },
+        { label: 'runner', value: 'Planton\u2019s \u00b7 a runner of your own is coming soon' },
         { label: 'state', value: 'Planton\u2019s store by default \u00b7 or a bucket you name: S3, GCS, or Azure Blob' },
         { label: 'bill', value: 'your cloud invoice \u00b7 runner minutes never billed' },
-        { label: 'seats', value: `${FREE_TIER_SEATS} free \u00b7 then per seat \u00b7 no sales call up to ${SELF_SERVE_SEAT_CEILING}` },
+        { label: 'seats', value: `${FREE_TIER_SEATS} free \u00b7 then per seat, by card` },
       ],
       footer: illustratedFooter({ note: 'The identifiers are examples.' }),
     },
@@ -82,7 +82,7 @@ export const DISTRIBUTION_PAGES: readonly DistributionPage[] = [
       { label: 'Expiry Never Bricks', text: 'The seat limit applies to people joining, never to the people already there. An install that holds more people than the community edition allows keeps every one of them working; a lapsed key never reaches into a running deployment.' },
       { label: 'Or Through Infrastructure as Code', text: 'The same two steps exist as catalog resources, so an agent or a pipeline installs Planton the way it installs everything else: two manifests, applied in order, through OpenTofu or Pulumi.' },
       { label: 'Several Plantons, One Cluster', text: 'Platforms are namespaced and one operator serves the whole cluster, so staging and production, or one platform per team, run side by side.' },
-      { label: 'Guided From the Desktop', text: 'Planton Desktop offers the same install as a guided experience: pick a cluster from your kubeconfig, preflight it, choose the front door, and watch the install converge.' },
+      { label: 'Guided From the Desktop', text: 'Planton Desktop offers the same install as a guided experience: pick a cluster, preflight it, choose the front door, and watch the install converge.' },
     ],
     artifact: {
       kind: 'commands',

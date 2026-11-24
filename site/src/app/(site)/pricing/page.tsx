@@ -1,7 +1,6 @@
 import { pageMetadata } from '@/lib/page-metadata';
 import { Box } from '@mui/material';
 import {
-  EnterpriseBand,
   Faqs,
   PlanGrid,
   PricingCta,
@@ -20,7 +19,6 @@ export default function PricingPage() {
         <PricingHero />
         <PlanGrid />
         <RunnersNote />
-        <EnterpriseBand />
         <ValueMatrix />
         <Faqs />
         <PricingCta />

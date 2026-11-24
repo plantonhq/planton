@@ -17,7 +17,7 @@ An Infra Component is a deployed instance of a catalog kind — an AWS VPC, a GC
 
 Managing infrastructure across multiple cloud providers typically means juggling different APIs, CLIs, and consoles — each with its own conventions for creating, updating, and destroying resources. A VPC in AWS has nothing in common with a GKE cluster in GCP, at least at the API level.
 
-Infra Components provide a single, unified interface for all of it. Regardless of which provider or catalog kind you are working with, you define what you want, Planton provisions it through the appropriate Infrastructure-as-Code engine (Pulumi, Terraform, or OpenTofu), and the resource is tracked through its full lifecycle — from creation through updates to eventual teardown. One API, one CLI, one web console for infrastructure across 8 cloud providers and 700+ resource types.
+Infra Components provide a single, unified interface for all of it. Regardless of which provider or catalog kind you are working with, you define what you want, Planton provisions it through the appropriate Infrastructure-as-Code engine (Pulumi, Terraform, or OpenTofu), and the resource is tracked through its full lifecycle — from creation through updates to eventual teardown. One API, one CLI, one web console for infrastructure across 9 cloud providers and 850+ resource types.
 
 ## What an Infra Component Represents
 

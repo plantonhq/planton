@@ -30,10 +30,6 @@ try {
     [class*="intro"] {font-size:16px!important}
   `,
   });
-  await page.evaluate(() => {
-    const label = document.querySelector('[class*="eyebrow"]');
-    label.textContent = 'PLANTON / THE SELF-SERVICE CLOUD PLATFORM';
-  });
   fs.mkdirSync('public/_site/images/og', { recursive: true });
   await page.screenshot({ path: 'public/_site/images/og/homepage.png' });
   console.log('Wrote public/_site/images/og/homepage.png (1200 × 630)');

@@ -4,18 +4,14 @@
 
 # Planton
 
-> **Deploy real infrastructure to your own cloud — without writing Terraform.**
+> **Planton deploys every push to GitHub into your own cloud, and shows the cost and permissions of every infrastructure change before it runs.**
 
-Planton is a free desktop app and CLI you download and open. It finds the cloud
-you're already signed into; pick a stack and fill a short form, or
-`planton apply -f` a manifest from your terminal — and watch it deploy, with
-clean, auditable infrastructure-as-code running underneath. No account. No
-connections. No ceremony.
+Start by pasting one prompt into your coding agent. On planton.ai, a new organization gets a Setup Prompt: paste it into Claude Code, Codex or Cursor from your app's repository, and the agent installs the CLI, connects the cloud you're already signed into, and ships your first deployment, asking before anything changes your cloud or costs money. Underneath is clean, auditable infrastructure-as-code from the open-source modules in this repository.
 
 <p align="center">
-  <b><a href="https://planton.ai">Download Planton</a></b>
-  &nbsp;·&nbsp; Free forever, including for commercial use
-  &nbsp;·&nbsp; Runs on macOS · Linux · Windows
+  <b><a href="https://planton.ai/signup">Start free on planton.ai</a></b>
+  &nbsp;·&nbsp; Free for up to 3 seats, no card
+  &nbsp;·&nbsp; Or <a href="https://planton.ai/desktop">Planton Desktop</a>, free on macOS · Linux · Windows
 </p>
 
 **[Website](https://planton.ai)** · **[Getting Started](https://planton.ai/docs/getting-started)** · **[Documentation](https://planton.ai/docs)**
@@ -34,8 +30,9 @@ environment — the `kubectl apply` and `helm install` gestures, freed from
 Kubernetes and extended to every cloud.
 
 Whichever way you deploy, it's real infrastructure-as-code the whole way down —
-stored, versioned, every change a diff. On your own cloud. Nothing to lock you
-in.
+stored, versioned, every change a diff. On your own cloud. If you leave, you
+keep the modules and your manifests, and the open-source CLI keeps deploying
+them.
 
 ## What's in this repository
 
@@ -47,9 +44,9 @@ yourself.
      the authoritative source: shared/catalogkind/catalog_kind.proto
      (count non-test `(kind_meta)` annotations and distinct providers). Never re-type a stale number. -->
 
-- **[`catalog/`](catalog)** — **700+ catalog kinds**
-  across **8 cloud providers** (AWS, GCP, Azure, Kubernetes, DigitalOcean,
-  Cloudflare, Auth0, and OpenFGA). Each kind is a
+- **[`catalog/`](catalog)** — **850+ catalog kinds**
+  across **9 cloud providers** (AWS, GCP, Azure, Kubernetes, DigitalOcean,
+  Cloudflare, Auth0, Stripe, and OpenFGA). Each kind is a
   Protocol Buffer definition in the Kubernetes Resource Model shape
   (`apiVersion`/`kind`/`metadata`/`spec`) with field-level validations and
   auto-generated SDKs in Go, Python, TypeScript, and Java — plus verified,
@@ -109,10 +106,9 @@ and the deploy streams live output from the underlying IaC module. See the
 
 In the Planton console (planton.ai, or your own self-hosted Planton), your organization's Getting Started hands you a **Setup Prompt**: paste it into your coding agent from your app's repository, and the agent installs the CLI and the skills, signs in as you with a one-time code, and takes the repository to its first deployment, asking before anything changes your cloud or costs money.
 
-Planton ships its assistant's knowledge as agent skills in the open Agent
-Skills format, so Cursor, Claude Code, Codex, and any other coding agent can
-compose, validate, price, and deploy from the same craft the platform's own
-assistant uses. Install them once:
+Planton ships its knowledge as agent skills in the open Agent Skills format,
+so Cursor, Claude Code, Codex, and any other coding agent can compose,
+validate, price, and deploy from the same craft. Install them once:
 
 ```bash
 npx skills add plantonhq/skills

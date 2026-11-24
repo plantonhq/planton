@@ -5,11 +5,11 @@
  * section writes its own button, so the same door reads the same way on
  * every page and a destination changes in one place.
  *
- * Labels are Title Case (they are chrome). The hosted free tier leads on the
- * user's pages because it works on every device a link is opened on,
- * including the phone a thread link is often read on; the free desktop app is
- * the second door and the one the fine print explains. Trust pages lead with
- * a demo because their reader signs rather than installs.
+ * Labels are Title Case (they are chrome). Hosted is the front door, so the
+ * hosted free tier leads on every page: it opens sign-up, whose first step
+ * is the Setup Prompt, and it works on every device a link is opened on,
+ * including the phone a thread link is often read on. The free desktop app
+ * and a demo are second doors, never first.
  *
  * Relative imports carry their `.ts` extension so Node can execute this file
  * for the build-time generators without a bundler.
@@ -18,6 +18,7 @@ import { DESKTOP_DOWNLOAD_PATH } from './desktop-download.ts';
 
 export type DoorId =
   | 'hosted'
+  | 'home'
   | 'desktop'
   | 'demo'
   | 'pricing'
@@ -37,7 +38,8 @@ export interface Door {
 }
 
 export const DOORS: Record<DoorId, Door> = {
-  hosted: { label: 'Start Free', href: 'https://planton.ai/login' },
+  hosted: { label: 'Start Free', href: 'https://planton.ai/signup' },
+  home: { label: 'Go to Home', href: '/' },
   desktop: { label: 'Download Planton Desktop', href: DESKTOP_DOWNLOAD_PATH },
   demo: { label: 'Book a Demo', href: '/book-demo' },
   pricing: { label: 'Pricing', href: '/pricing' },
@@ -60,5 +62,8 @@ export interface DoorPair {
 /** The user's pair (landing, Product pages): start free, or download the desktop app. */
 export const START_DOORS: DoorPair = { primary: 'hosted', secondary: 'desktop' };
 
-/** The buyer's pair (Trust pages): book a demo, or read the pricing. */
-export const BUYER_DOORS: DoorPair = { primary: 'demo', secondary: 'pricing' };
+/** The buyer's pair (Trust pages): start free, or read the pricing. */
+export const BUYER_DOORS: DoorPair = { primary: 'hosted', secondary: 'pricing' };
+
+/** The lost visitor's pair (the 404): start free, or go home. */
+export const NOT_FOUND_DOORS: DoorPair = { primary: 'hosted', secondary: 'home' };

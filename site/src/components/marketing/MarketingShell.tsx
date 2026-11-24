@@ -1,5 +1,5 @@
 'use client';
-import { trackDemo, trackExperience } from '@/lib/demo-analytics';
+import { trackExperience } from '@/lib/demo-analytics';
 import { usePathname } from 'next/navigation';
 import { WebsiteShell } from '@planton/website-shell';
 import { lightVariables } from '@/theme/homepage';
@@ -21,8 +21,6 @@ export function MarketingShell({ children }: { children: ReactNode }) {
     >
       <WebsiteShell
         theme={lightWebsiteTheme}
-        navigationVariant={homepage ? 'homepage' : 'default'}
-        onPrimaryAction={homepage ? () => trackDemo('demo_cta_click', 'navigation') : undefined}
         onSelfServiceAction={
           homepage
             ? () =>

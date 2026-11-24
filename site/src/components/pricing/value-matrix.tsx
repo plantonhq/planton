@@ -54,11 +54,11 @@ export const ValueMatrix: FC = () => {
           <SectionTitle>What Each Plan Includes</SectionTitle>
           <SectionSubtitle className="mx-auto">
             Almost everything Planton does is included everywhere — the paid
-            tiers add organizational scale and enterprise identity.
+            plans add more seats and team controls.
           </SectionSubtitle>
         </Stack>
         <Box className="overflow-x-auto rounded-xl border border-[#c7c7c4] bg-[#eeeeeb]">
-          <table className="w-full border-collapse min-w-[880px]">
+          <table className="w-full border-collapse min-w-[760px]">
             <thead>
               <tr className="sticky top-0 z-10">
                 <th className="text-left p-4 sticky left-0 bg-[#eeeeeb] min-w-[240px]" />

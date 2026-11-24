@@ -8,18 +8,20 @@
  * checked against each other mechanically. A capability that is decided
  * packaging but not yet shipped renders as "Coming Soon", never as live.
  *
- * Numbers in cells come from the pricing-truth module (`./pricing`), never
- * from literals here.
+ * Numbers in cells come from the pricing-truth module (`./pricing`) and the
+ * counts module (`./platform-stats`), never from literals here. Only plans
+ * the platform sells have a column: there is no enterprise plan in the
+ * catalog, so there is no enterprise column.
  */
 
 import {
   FREE_TIER_SEATS,
   COMMUNITY_SEAT_LIMIT,
-  MARKETS,
   SELF_HOSTED_LICENSE_SEAT_CEILINGS,
 } from './pricing.ts';
+import { PLATFORM_STATS } from './platform-stats.ts';
 
-export type PlanColumnId = 'free' | 'team' | 'community' | 'license' | 'enterprise';
+export type PlanColumnId = 'free' | 'team' | 'community' | 'license';
 
 export interface PlanColumn {
   id: PlanColumnId;
@@ -32,7 +34,6 @@ export const VALUE_MATRIX_COLUMNS: PlanColumn[] = [
   { id: 'team', label: 'Team', sublabel: 'Planton.ai' },
   { id: 'community', label: 'Community', sublabel: 'Your Infrastructure' },
   { id: 'license', label: 'Licensed', sublabel: 'Your Infrastructure' },
-  { id: 'enterprise', label: 'Enterprise' },
 ];
 
 export type MatrixCell =
@@ -51,7 +52,6 @@ const everywhere: Record<PlanColumnId, MatrixCell> = {
   team: YES,
   community: YES,
   license: YES,
-  enterprise: YES,
 };
 
 const unlimitedEverywhere: Record<PlanColumnId, MatrixCell> = {
@@ -59,7 +59,6 @@ const unlimitedEverywhere: Record<PlanColumnId, MatrixCell> = {
   team: { kind: 'text', label: 'Unlimited' },
   community: { kind: 'text', label: 'Unlimited' },
   license: { kind: 'text', label: 'Unlimited' },
-  enterprise: { kind: 'text', label: 'Unlimited' },
 };
 
 export interface MatrixRow {
@@ -76,12 +75,6 @@ export interface MatrixCategory {
 }
 
 const licenseSeatText = SELF_HOSTED_LICENSE_SEAT_CEILINGS.join(' or ');
-// Seat ceilings are market-independent; any market's tier list carries them.
-// Each enterprise package is named beside its own ceiling — a bare
-// "100 — 250" read as a range (and as a maximum), which is neither.
-const enterpriseSeatText = `Up to ${MARKETS.us.enterprise
-  .map((t) => `${t.seatCeiling} (${t.name.replace('Enterprise ', '')})`)
-  .join(' · ')}`;
 
 export const VALUE_MATRIX: MatrixCategory[] = [
   {
@@ -96,7 +89,6 @@ export const VALUE_MATRIX: MatrixCategory[] = [
           team: text('Per seat — grow as you go'),
           community: text(`Up to ${COMMUNITY_SEAT_LIMIT}`),
           license: text(`${licenseSeatText} by license size`),
-          enterprise: text(enterpriseSeatText),
         },
       },
       {
@@ -106,7 +98,6 @@ export const VALUE_MATRIX: MatrixCategory[] = [
           team: text('Standard'),
           community: text('Community'),
           license: text('Standard — email'),
-          enterprise: text('Named business-hours (Standard) · 24×7 SLA (Plus)'),
         },
       },
       {
@@ -118,7 +109,6 @@ export const VALUE_MATRIX: MatrixCategory[] = [
           team: NO,
           community: text('Runs offline'),
           license: text('Runs offline'),
-          enterprise: text('Supported air-gap posture'),
         },
       },
       {
@@ -129,14 +119,13 @@ export const VALUE_MATRIX: MatrixCategory[] = [
           team: NO,
           community: text('Self-Serve Evaluation Key'),
           license: YES,
-          enterprise: NO,
         },
       },
       {
         feature: 'Deployment Safety',
         description: 'Protected environments and two-person deployment approvals',
         entitlementKey: 'deployment_safety',
-        cells: { free: NO, team: YES, community: NO, license: YES, enterprise: YES },
+        cells: { free: NO, team: YES, community: NO, license: YES },
       },
       {
         // A hosted Team capability only: a self-hosted install already runs
@@ -149,37 +138,7 @@ export const VALUE_MATRIX: MatrixCategory[] = [
           team: YES,
           community: text('Runs on your own domain'),
           license: text('Runs on your own domain'),
-          enterprise: text('Runs on your own domain'),
         },
-      },
-    ],
-  },
-  {
-    // Second deliberately (founder-directed 2026-08-20): the assistant is a
-    // flagship capability AND a genuine by-plan difference — hosted plans
-    // include it on prepaid credits today, self-hosted installs do not have
-    // it yet — so it sits with the differences at the top, right after the
-    // purchase-decision facts, never buried among the included-everywhere
-    // domains. AI is deployment-capability-gated, never packaging-gated:
-    // no entitlement key exists or is reserved for it. When self-hosted
-    // deployments gain the in-cluster engine (bring-your-own-LLM-key), the
-    // SOON cells flip to a truthful included form in the same change; if
-    // packaging ever gates AI, these rows must gain that key so the
-    // displayed-vs-enforced guard covers them. Credits are a Planton.ai
-    // construct — a self-hosted install has no wallet, so its credits cells
-    // are simply not included, never SOON.
-    category: 'AI Assistant',
-    rows: [
-      {
-        feature: 'Built-in AI Assistant',
-        description:
-          'On Planton.ai today; self-hosted installs will run it in-cluster with your own LLM provider key',
-        cells: { free: YES, team: YES, community: SOON, license: SOON, enterprise: SOON },
-      },
-      {
-        feature: 'Prepaid AI Credits with Spend Protection',
-        description: 'Transparent balance; auto-reload only within a ceiling you set',
-        cells: { free: YES, team: YES, community: NO, license: NO, enterprise: NO },
       },
     ],
   },
@@ -208,7 +167,7 @@ export const VALUE_MATRIX: MatrixCategory[] = [
     rows: [
       {
         feature: 'Multi-Cloud Catalog',
-        description: '700+ catalog kinds across AWS, GCP, Azure, Kubernetes, and more',
+        description: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} catalog kinds across AWS, Google Cloud, Azure, Kubernetes, and more`,
         cells: everywhere,
       },
       { feature: 'Guided Deployment Wizards', cells: everywhere },
@@ -218,23 +177,25 @@ export const VALUE_MATRIX: MatrixCategory[] = [
     ],
   },
   {
-    // Runners are ungated on every plan today. A `runners` entitlement key
-    // exists in the platform's vocabulary as RESERVED; if packaging ever
-    // gates runners, these rows must gain that key so the
-    // displayed-vs-enforced guard covers them.
+    // On hosted plans deploys run on Planton's runners today; a runner of
+    // the customer's own on hosted waits for a release, so those cells say
+    // Coming Soon. Self-hosted installs run their own runners now. A
+    // `runners` entitlement key exists in the platform's vocabulary as
+    // RESERVED; if packaging ever gates runners, these rows must gain that
+    // key so the displayed-vs-enforced guard covers them.
     category: 'Self-Hosted Runners',
     rows: [
       {
         feature: 'Runners in Your Own Network',
         description:
           'Runners deploy inside your private network and connect outbound-only — no inbound firewall ports, no VPN',
-        cells: unlimitedEverywhere,
+        cells: { free: SOON, team: SOON, community: text('Unlimited'), license: text('Unlimited') },
       },
       {
         feature: 'Credentials Stay in Your Environment',
         description:
           'Runners use your environment\u2019s native identity; secrets are resolved just-in-time inside the runner, never at the control plane',
-        cells: everywhere,
+        cells: { free: SOON, team: SOON, community: YES, license: YES },
       },
     ],
   },
@@ -263,32 +224,14 @@ export const VALUE_MATRIX: MatrixCategory[] = [
         feature: 'Enterprise SSO (SAML/OIDC)',
         description: 'Sign in through your own identity provider',
         entitlementKey: 'sso',
-        cells: { free: NO, team: SOON, community: NO, license: SOON, enterprise: SOON },
-      },
-      {
-        feature: 'SCIM Directory Sync',
-        description: 'Provision and deprovision users from your directory',
-        entitlementKey: 'scim',
-        cells: { free: NO, team: NO, community: NO, license: NO, enterprise: SOON },
+        cells: { free: NO, team: SOON, community: NO, license: SOON },
       },
     ],
   },
   {
-    category: 'Audit & Compliance',
+    category: 'Audit',
     rows: [
       { feature: 'Deployment History & Audit Trail', cells: everywhere },
-      {
-        feature: 'Access Transparency',
-        description: 'A log of every time vendor staff held time-boxed access inside your organization',
-        entitlementKey: 'access_transparency',
-        // Decided placement, honestly worded: the cell flips to included
-        // when the enterprise tier sells the key.
-        cells: { free: NO, team: NO, community: NO, license: NO, enterprise: SOON },
-      },
-      {
-        feature: 'Compliance Reporting',
-        cells: { free: NO, team: NO, community: NO, license: NO, enterprise: text('Enterprise package') },
-      },
     ],
   },
 ];

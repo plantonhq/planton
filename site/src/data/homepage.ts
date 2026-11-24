@@ -8,19 +8,18 @@ import type { ChapterId } from './story.ts';
 export const HOMEPAGE = {
   title: 'Cloud Infrastructure and Application Delivery',
   description:
-    'Set up cloud infrastructure, deploy applications from Git, and give your team a repeatable way to ship. See how Planton works in your cloud.',
-  eyebrow: 'THE SELF-SERVICE CLOUD PLATFORM',
+    // ch 2 (what Planton is): the one sentence and its first action.
+    'Planton deploys every push to GitHub into your own cloud, and shows the cost and permissions of every infrastructure change before it runs. Start by pasting one prompt into your coding agent.',
   headline: ['Set up your cloud.', 'Let your team ship.'],
   intro:
     'Give developers and their coding agents a repeatable path from repository to running service. Planton brings infrastructure, application delivery, and your team’s controls together—in your cloud.',
-  caption: 'AI-assisted infrastructure. Git-based delivery. Your team’s controls.',
-  seeHow: 'See how it works',
+  caption: 'Your coding agent. Your cloud. A plan before every infrastructure change.',
   illustration: 'Illustrative workflow',
   overview: {
     eyebrow: '01 / THE WHOLE PICTURE',
     title: 'One path from infrastructure to application.',
     intro:
-      'Platform engineers establish the foundation. Developers use it to get their applications running.',
+      'Your coding agent can do these three steps for you from one prompt. After that, every push deploys.',
     steps: [
       {
         title: 'Connect your cloud',
@@ -46,12 +45,12 @@ export const HOMEPAGE = {
     chapter: 'what-planton-is' as ChapterId,
   },
   agents: {
-    eyebrow: 'SELF-SERVICE DEVOPS / FROM YOUR EDITOR',
+    eyebrow: 'FROM YOUR CODING AGENT',
     title: 'Your coding agent can ship\nmore than code.',
     intro:
       'Give the agent you already use a way to create cloud infrastructure, deploy your service, and inspect what happened—with Planton carrying the configuration, access controls, and deployment records.',
     setup:
-      'Use Planton skills with the CLI in Cursor, Claude Code, or Codex. Supported agents can also connect through MCP. Connect your account and cloud before deploying; your team’s access and approval rules still apply.',
+      'On planton.ai, paste the Setup Prompt into Claude Code, Codex or Cursor from your app’s repository. The agent installs the CLI, connects your cloud and ships the first deployment, asking before anything costs money. Agents can also connect through MCP.',
     link: 'Connect your coding agent',
     href: '/docs/coding-agents',
     sources: [
@@ -67,7 +66,7 @@ export const HOMEPAGE = {
     intro:
       'Connect managed services, Kubernetes workloads, and edge applications. A reusable infrastructure template—an Infra Chart—describes the resources and their dependencies. Planton deploys them in order.',
     paragraphs: [
-      'Use the assistant to help compose the architecture, or work directly with its manifests. Review the resulting configuration before you deploy. The template stays readable and editable as your requirements change.',
+      'Write the manifests yourself, or have your coding agent write them. Review the resulting configuration before you deploy. The template stays readable and editable as your requirements change.',
       'Give development and production their own configuration without rebuilding the architecture from scratch. Planton resolves dependencies and deploys the resources in order, including the connections that let workloads reach a newly created cluster.',
     ],
     note: 'See your architecture as it deploys. Explore resource dependencies, follow live deployment status, and inspect individual resources when something needs attention.',
@@ -84,44 +83,15 @@ export const HOMEPAGE = {
       'Give every Git push a repeatable path through build, development, and production—with approval where your team requires it.',
     paragraphs: [
       'Use a detected Dockerfile, a supported Buildpacks build, or a custom pipeline. Keep deployment configuration in your repository or configure it in Planton. Your team chooses the level of control it needs.',
-      'Follow builds and logs, promote an artifact through your environments, and pause for approval where required. Each delivery records what shipped. When something fails, open the run and ask the assistant for help with the actual configuration and repository context.',
+      'Follow builds and logs, promote an artifact through your environments, and pause for approval where required. Each delivery records what shipped. When something fails, open the run and read its log and configuration.',
     ],
     note: 'Know what shipped, where it landed, and what needs attention.',
     sources: [
       'product.service-hub.console-creating-a-service.md',
       'product.service-hub.service-records-and-build-lane.md',
       'product.service-hub.console-run-view.md',
-      'product.service-hub.assistant-repository-access.md',
     ],
     chapter: 'services-ship-from-git' as ChapterId,
-  },
-  controls: {
-    eyebrow: '04 / CONTROL & VISIBILITY',
-    title: 'Give developers freedom.\nKeep changes accountable.',
-    intro:
-      'Self-service works when the boundaries are clear. Define which catalog kinds your organization can create, require approval for protected environments, and keep a record of the changes that run.',
-    points: [
-      {
-        title: 'A catalog shaped by your team',
-        text: 'Make approved catalog kinds available for new resources. The platform enforces creation restrictions at the API boundary, including requests from the CLI and agents.',
-      },
-      {
-        title: 'Evidence with its limits visible',
-        text: 'Review available cost, permission, and technical-control information. Proven, declared, and not-evaluable claims remain distinct; estimates are not your cloud bill.',
-      },
-      {
-        title: 'A record you can return to',
-        text: 'Inspect the captured configuration, execution outcome, and approval history. Later edits do not rewrite what an earlier deployment recorded.',
-      },
-    ],
-    note: 'The assistant works within the access of the person asking. Repository changes go through a reviewed pull request.',
-    sources: [
-      'product.infra-hub.catalog-curation.md',
-      'product.infra-hub.control-posture.md',
-      'product.infra-hub.infra-job.md',
-      'product.service-hub.assistant-repository-access.md',
-    ],
-    chapter: 'your-rules-hold' as ChapterId,
   },
   proof: {
     eyebrow: 'IN THEIR OWN WORDS',
@@ -129,27 +99,9 @@ export const HOMEPAGE = {
     quotes: [testimonial('Rakesh Kandhi'), testimonial('Balaji Borra')],
     chapter: 'proof-it-works' as ChapterId,
   },
-  adoption: {
-    eyebrow: '06 / YOUR CLOUD, YOUR CHOICE',
-    title: 'Fits the cloud—\nand the way—you work.',
-    intro:
-      'You can begin with an existing cloud account. Supported resources can be imported into infrastructure state without recreating them. Check the supported kind and import path before bringing a resource under management.',
-    paragraphs: [
-      'Choose hosted Planton for a shared platform, self-host it on your Kubernetes cluster, or use Desktop for an individual workspace. Connection methods and capabilities vary by deployment; the underlying resource model stays consistent.',
-      'The infrastructure modules are open source. Your manifests remain readable, and you can deploy them with the standalone open-source CLI. Your adoption path can start with one environment or service.',
-    ],
-    sources: [
-      'product.infra-hub.infra-component-import.md',
-      'product.infra-hub.planton.md',
-      'product.desktop.feature-availability.md',
-      'product.self-hosted.install-and-upgrade-lifecycle.md',
-      'product.connect.connection-methods-by-deployment.md',
-    ],
-    chapter: 'runs-where-you-decide' as ChapterId,
-  },
   faq: {
     eyebrow: 'A FEW THINGS YOU MAY BE WONDERING',
-    title: 'Before we talk.',
+    title: 'Before you start.',
     questions: [
       {
         question: 'What does Planton replace or connect?',
@@ -159,7 +111,7 @@ export const HOMEPAGE = {
       {
         question: 'Can we use infrastructure we already have?',
         answer:
-          'Yes, for supported resource kinds and import paths. Planton can track existing infrastructure and import its IaC state without recreating it. Tracking a resource is different from deploying it; we can use the demo to examine the right adoption path for your stack.',
+          'Yes, for supported resource kinds and import paths. Planton can track existing infrastructure and import its IaC state without recreating it. Tracking a resource is different from deploying it; the docs list the supported kinds and import paths.',
       },
       {
         question: 'Where does Planton run?',
@@ -172,22 +124,18 @@ export const HOMEPAGE = {
           'Depending on the deployment, connections can use short-lived identity federation, credentials issued by Vault or OpenBAO, runner-side credentials, or managed secret references. Keyless federation requires an issuer the cloud can reach; it is not offered on a loopback-only Desktop instance.',
       },
       {
-        question: 'What does the AI assistant do?',
+        question: 'How do I start?',
         answer:
-          'It helps compose infrastructure and investigate deployments using the context of the screen and the access of the person asking. It can read the relevant repository and propose changes through a pull request after review. Authorization and deployment approval requirements still apply.',
-      },
-      {
-        question: 'What will we see in the demo?',
-        answer:
-          'A walkthrough of infrastructure setup, application delivery, and deployment controls, guided by your current stack and team’s needs. Share your details, then choose an available time in the calendar. A meeting is booked only after you confirm a slot.',
+          'Start free on planton.ai: free for up to three seats, no card. Paste the Setup Prompt into your coding agent from your app’s repository.',
       },
     ],
   },
+  // ch 12 (start): hosted is the front door, and the first act is one prompt.
   close: {
     eyebrow: 'YOUR NEXT ENVIRONMENT STARTS HERE',
-    title: 'See how Planton would\nwork for your team.',
-    text: 'Bring your current stack. We’ll walk through infrastructure setup, application delivery, and the controls your team needs to ship with confidence.',
-    note: 'A technical walkthrough, shaped around your team.',
+    title: 'Start with one\nrepository.',
+    text: 'Start free on planton.ai: paste one prompt into your coding agent, and your first deployment lands in your own cloud.',
+    note: 'Free for up to three seats. No card.',
   },
 } as const;
 

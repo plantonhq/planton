@@ -62,7 +62,7 @@ export const WORKFLOWS: Record<WorkflowId, WorkflowStory> = {
       { title: 'Push a Change', text: 'A push that matches the service’s trigger rules starts a run. The source commit is captured.' },
       { title: 'Build the Artifact', text: 'The configured build produces an artifact that the deployment stages can reference.' },
       { title: 'Deploy to Development', text: 'Planton deploys the artifact with the configuration captured for development.' },
-      { title: 'Wait for a Person', text: 'Protected production waits for an authorized human decision. The assistant cannot approve this gate.' },
+      { title: 'Wait for a Person', text: 'Protected production waits for an authorized human decision. A coding agent cannot approve this gate.' },
       { title: 'Promote to Production', text: 'After approval, the same artifact deploys with the captured production configuration. Promotion does not rebuild it or copy development’s configuration.' },
       { title: 'Keep the Delivery Record', text: 'A successful deployment records the artifact and the environment’s deployed resources. Inspect execution and verification observations separately; a deployment record is not a blanket health guarantee.' },
     ],

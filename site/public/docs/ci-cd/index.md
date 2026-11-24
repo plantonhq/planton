@@ -11,7 +11,7 @@ tags:
 
 # Service Hub
 
-Service Hub is Planton's application delivery half — Vercel for Backend, In Your Own Cloud. It handles the full journey from Git push to production deployment — connecting repositories, building container images, and deploying to Kubernetes, AWS ECS, Google Cloud Run, or Cloudflare Workers.
+Service Hub is Planton's application delivery half. It handles the full journey from Git push to production deployment — connecting repositories, building container images, and deploying to Kubernetes, Google Cloud Run, or Amazon ECS in your own cloud.
 
 Pipelines are powered by Tekton and triggered automatically by Git commits. Builds use Cloud Native Buildpacks for zero-config language detection or custom Dockerfiles for full control.
 
@@ -44,7 +44,7 @@ How your code gets built into a container image. Options include Cloud Native Bu
 
 ### Deployment Targets
 
-Where your services run. Service Hub deploys to Kubernetes (EKS, GKE, AKS), AWS ECS, Google Cloud Run, and Cloudflare Workers.
+Where your services run. Service Hub deploys to Kubernetes (EKS, GKE, AKS), Google Cloud Run, and Amazon ECS.
 
 [Learn about Deployment Targets](/docs/ci-cd/deployment-targets)
 

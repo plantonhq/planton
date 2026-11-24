@@ -12,8 +12,8 @@
 
 ## Prove it
 
-1. `make -C site build`: the pricing guard, the apex guard, lint at zero warnings, typecheck, the export, the link gate, the llms generator's coverage. Green or nothing ships. (After deleting route or component folders, `rm -rf .next/types` first; a failed build also stops before the bundle copy, so never capture after a red build.)
-2. Captures. Before touching anything, `make capture OUT=/tmp/<slice>-before` from the branch tip's build. After, `make capture OUT=/tmp/<slice>-after COMPARE=/tmp/<slice>-before`. A change meant to be zero-visual is proven by every scene identical; a change meant to be seen is proven by exactly the intended scenes differing and every other scene identical, with the diff images read.
+1. `make -C site build`: the pricing guard, the apex guard, lint at zero warnings, typecheck, the export, the link gate, the llms generator's coverage. Green or nothing ships. (After deleting route or component folders, `rm -rf .next/types .next/dev/types` first; a failed build also stops before the bundle copy, so never capture after a red build.)
+2. Captures. Before touching anything, `make capture OUT=/tmp/<slice>-before` from `main`'s build. After, `make capture OUT=/tmp/<slice>-after COMPARE=/tmp/<slice>-before`. A change meant to be zero-visual is proven by every scene identical; a change meant to be seen is proven by exactly the intended scenes differing and every other scene identical, with the diff images read.
 3. The independent design reviewer (`.cursor/agents/design-reviewer.md` in the company repository): the captures at 1280 and 1680 and on the phone, the law, the reference board (`content/design-review/reference-board/`), the page's first-glance question, and the named visitor. Rounds until PASS. Minors that stand after PASS are recorded with their owners.
 4. Grep gates on the diff: no vendor name, no savings figure, no "compliant", no hex in new components, no sentence from the story's last chapter in a page export, and none of the words the handoff says the page must not claim.
 
@@ -22,4 +22,4 @@
 - The handoff's "revisions forced by the review" section, and the standing findings with owners.
 - The site `README.md` where the change touched its data table, folder map, primitive list, or health ledger.
 - The session changelog in the company repository: what changed, the review rounds and their counts, the verification and what was not verified.
-- Commit on the working branch, never rebased; the merge to `main` is the deploy and is the founder's.
+- Commit on `main` and push only after the founder has approved the page's after: the push to `main` is the deploy.

@@ -13,7 +13,7 @@ tags:
 
 # Coding Agents
 
-Planton ships its assistant's knowledge as **agent skills**: instruction files in the open [Agent Skills](https://agentskills.io) format that Cursor, Claude Code, Codex, Gemini CLI, and dozens of other coding agents load on demand. Install them once and your agent knows how to compose cloud infrastructure, validate it, wire resources together, register and deploy services, and where the lines are that it never crosses.
+Planton ships its knowledge as **agent skills**: instruction files in the open [Agent Skills](https://agentskills.io) format that Cursor, Claude Code, Codex, Gemini CLI, and dozens of other coding agents load on demand. Install them once and your agent knows how to compose cloud infrastructure, validate it, wire resources together, register and deploy services, and where the lines are that it never crosses.
 
 ## Start with the Setup Prompt
 
@@ -28,7 +28,7 @@ The rest of this page is the same setup by hand, for a machine where you want th
 
 ## Why install the skills
 
-Without them, a coding agent writes infrastructure from memory: field names it half-remembers, resources it forgets to wire together, no idea what anything costs. With them, the agent reads every schema fact from a reference page at answer time, wires resources by reference instead of pasting IDs, validates before it hands anything over, tells you the monthly cost, and asks before it applies. The same skills power the Planton Assistant in Planton Desktop and the web console, so your agent and the platform's own assistant share one craft.
+Without them, a coding agent writes infrastructure from memory: field names it half-remembers, resources it forgets to wire together, no idea what anything costs. With them, the agent reads every schema fact from a reference page at answer time, wires resources by reference instead of pasting IDs, validates before it hands anything over, tells you the monthly cost, and asks before it applies.
 
 Two skills ship together:
 
@@ -130,7 +130,7 @@ Add a scope for each area you want the agent to work in. Setting up your organiz
 
 ## Versions and updates
 
-Every commit in [plantonhq/skills](https://github.com/plantonhq/skills) is a Planton release, tagged with the release's tag. The skill files are byte-identical to the checksummed archives that release published, and they are what Planton Desktop and the hosted assistant run at that version. Update with:
+Every commit in [plantonhq/skills](https://github.com/plantonhq/skills) is a Planton release, tagged with the release's tag. The skill files are byte-identical to the checksummed archives that release published. Update with:
 
 ```bash
 npx skills update

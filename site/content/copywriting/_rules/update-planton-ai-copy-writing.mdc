@@ -4,7 +4,7 @@
 
 ## What the site is
 
-The site is data first. Every sentence that states what Planton is or does lives in `src/data/` and names the chapter of the story it mirrors; pages render records and state nothing of their own. The story is `company/marketing/positioning/the-planton-story.md` in the company repository, mirrored as `src/data/story.ts`; the page records are `trust.ts`, `product.ts`, `distributions.ts`, `personas.ts`, `compare.ts`, `desktop.ts`; the vocabulary is `positioning.ts` (the umbrella never wears an analogy; each hub has exactly one); doors are `doors.ts`; prices are `pricing.ts`; counts are `platform-stats.ts`; quotes are `testimonials.ts`. Read `README.md` at the site root before the first draft; it names every law the words obey.
+The site is data first. Every sentence that states what Planton is or does lives in `src/data/` and names the chapter of the story it mirrors; pages render records and state nothing of their own. The story is `company/marketing/positioning/the-planton-story.md` in the company repository, mirrored as `src/data/story.ts`; the page records are `trust.ts`, `product.ts`, `distributions.ts`, `desktop.ts`, `homepage.ts`; the vocabulary is `positioning.ts` (what Planton is, in one sentence; no analogy for Planton or a hub); doors are `doors.ts`; prices are `pricing.ts`; counts are `platform-stats.ts`; quotes are `testimonials.ts`. Read `README.md` at the site root before the first draft; it names every law the words obey.
 
 A copy change is therefore one of three things: a sentence in a record changes; a chapter of the story changes (and the record follows); or a new record is written for a new page. Never a sentence typed into a kind.
 

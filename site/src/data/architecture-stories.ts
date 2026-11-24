@@ -3,7 +3,7 @@ import type { ArchitectureResource, ProviderId, WorkflowStory } from './workflow
 export const PROVIDER_ORDER: readonly ProviderId[] = ['aws', 'gcp', 'azure', 'cloudflare', 'digitalocean'];
 export const PROVIDER_NAMES: Record<ProviderId, string> = { aws: 'AWS', gcp: 'GCP', azure: 'Azure', cloudflare: 'Cloudflare', digitalocean: 'DigitalOcean' };
 const resource = (id: string, label: string, kind: string, group: string, requires: string[] = [], note?: string): ArchitectureResource => ({ id, label, kind, group, requires, note });
-const scope = 'Illustrative architecture · deployment time compressed. Application code, data, and access configuration are supplied separately. The overview groups supporting resources; blue dots show deployment dependencies, not application traffic.';
+const scope = 'Illustrative architecture · deployment time compressed. Planton creates these resources; your application code, data, and access configuration are supplied separately, and pushes from GitHub deploy to Kubernetes, Google Cloud Run or Amazon ECS. The overview groups supporting resources; blue dots show deployment dependencies, not application traffic.';
 
 /** Customer architectures, not recordings of deployed stacks. The inventory
  * preserves supporting prerequisites; overview edges are curated summaries.

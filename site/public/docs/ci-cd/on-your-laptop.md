@@ -79,7 +79,7 @@ Every figure below was measured on an Apple M3 Max with Docker Desktop (8 CPUs a
 
 ## The build cluster from the terminal
 
-The desktop assistant runs on the same commands, so everything the health dashboard shows is a verb:
+Everything the health dashboard shows is a CLI verb:
 
 ```bash
 planton local build-cluster status        # phase, runtime, installed tooling, keep-warm, set-up time

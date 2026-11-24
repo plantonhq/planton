@@ -99,6 +99,13 @@ try {
       `${width}: three demo CTAs`,
       await page.$$eval('main a[href="/book-demo"]', (es) => es.length === 3)
     );
+    // Start Free leads every door pair, so each demo link has a Start Free before it.
+    check(
+      `${width}: Start Free before every demo CTA`,
+      await page.$$eval('main a[href="/book-demo"]', (es) =>
+        es.every((demo) => demo.previousElementSibling?.getAttribute('href')?.endsWith('/signup'))
+      )
+    );
     for (const theme of ['light']) {
       if (width !== 320) {
         await page.screenshot({
@@ -141,22 +148,10 @@ try {
   }
   await page.setViewport({ width: 1280, height: 900 });
   await page.goto(base, { waitUntil: 'networkidle0' });
-  await page.focus('header button[aria-haspopup="true"]');
-  await page.keyboard.press('Enter');
-  await page.waitForSelector('.MuiPopover-paper');
-  await page.waitForFunction(
-    () => getComputedStyle(document.querySelector('.MuiPopover-paper')).opacity === '1'
-  );
-  check(
-    'light desktop menu portal',
-    await page.$eval(
-      '.MuiPopover-paper',
-      (e) => getComputedStyle(e).backgroundColor === 'rgb(227, 227, 224)'
-    )
-  );
+  // One header everywhere: plain links, Sign In, and Start Free; no demo door and no menus.
+  check('header has no demo door', !(await page.$('header a[href="/book-demo"]')));
+  check('header has no menus', !(await page.$('header [aria-haspopup="true"]')));
   await page.screenshot({ path: path.join(out, 'navigation-1280-light.png') });
-  await page.keyboard.press('Escape');
-  await page.waitForSelector('.MuiPopover-root', { hidden: true });
   await page.setViewport({ width: 390, height: 844 });
   await page.click('[aria-label="Open navigation"]');
   await page.waitForSelector('.MuiDrawer-paper');
@@ -224,9 +219,8 @@ try {
   // Header and secondary routes use the same closed, non-identifying vocabulary.
   await page.goto(base, { waitUntil: 'networkidle0' });
   for (const [selector, event, location] of [
-    ['header a[href="/book-demo"]', 'demo_cta_click', 'navigation'],
-    ['header a[href="/signup"]', 'self_service_click', 'navigation'],
-    ['#controls a[href="/signup"]', 'self_service_click', 'controls'],
+    ['header a[href$="/signup"]', 'self_service_click', 'navigation'],
+    ['#controls a[href$="/signup"]', 'self_service_click', 'controls'],
     ['#coding-agents a[href="/docs/coding-agents"]', 'self_service_click', 'agents'],
   ]) {
     await page.$eval(selector, (e) =>

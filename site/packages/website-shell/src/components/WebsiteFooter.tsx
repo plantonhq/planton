@@ -27,10 +27,11 @@ function FooterLinkGroup({ title, items }: FooterGroup) {
 }
 
 /**
- * Full-width website footer with link groups, terms links, and copyright.
- * Renders a responsive grid: 3-column on mobile, 5-column on desktop.
+ * Full-width website footer with link groups, terms links, and copyright,
+ * the same on every page. Renders a responsive grid: 2-column on mobile,
+ * 5-column on desktop.
  */
-export function WebsiteFooter({ variant = 'default' }: { variant?: 'default' | 'homepage' }) {
+export function WebsiteFooter() {
   return (
     <Stack
       component="footer"
@@ -39,12 +40,8 @@ export function WebsiteFooter({ variant = 'default' }: { variant?: 'default' | '
         py: { md: 5 },
         gap: { md: 3 },
         bgcolor: tokens.surface.canvas,
-        ...(variant === 'homepage'
-          ? {
-              '& a': { fontSize: '0.875rem !important', lineHeight: 1.6 },
-              borderTop: `1px solid ${tokens.edge.default}`,
-            }
-          : {}),
+        '& a': { fontSize: '0.875rem !important', lineHeight: 1.6 },
+        borderTop: `1px solid ${tokens.edge.default}`,
       }}
     >
       {/* Main content row */}
@@ -62,51 +59,27 @@ export function WebsiteFooter({ variant = 'default' }: { variant?: 'default' | '
           <WebsiteLogo />
         </Stack>
 
-        {/* Mobile grid: 3 columns */}
+        {/* Mobile grid: 2 columns */}
         <Box
           sx={{
             display: { xs: 'grid', md: 'none' },
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: 1.5,
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            columnGap: 1.5,
+            rowGap: 3,
           }}
         >
-          <Stack sx={{ gap: 1.5 }}>
-            {footerGroups
-              .filter((g) => ['product', 'explore'].includes(g.id))
-              .map((group, index) => (
-                <Stack sx={{ gap: 1.5 }} key={group.id}>
-                  {index !== 0 && (
-                    <Divider style={{ borderBottom: `1px solid ${tokens.edge.default}` }} />
-                  )}
-                  <FooterLinkGroup {...group} />
-                </Stack>
-              ))}
-          </Stack>
-          <Stack sx={{ gap: 1.5 }}>
-            {footerGroups
-              .filter((g) => ['open_source', 'get_started'].includes(g.id))
-              .map((group, index) => (
-                <Stack sx={{ gap: 1.5 }} key={group.id}>
-                  {index !== 0 && (
-                    <Divider style={{ borderBottom: `1px solid ${tokens.edge.default}` }} />
-                  )}
-                  <FooterLinkGroup {...group} />
-                </Stack>
-              ))}
-          </Stack>
-          <Stack sx={{ gap: 1.5 }}>
-            {footerGroups
-              .filter((g) => g.id === 'resources')
-              .map((group) => (
-                <FooterLinkGroup key={group.id} {...group} />
-              ))}
-          </Stack>
+          {footerGroups.map((group) => (
+            <FooterLinkGroup key={group.id} {...group} />
+          ))}
         </Box>
 
         {/* Desktop grid: 5 columns */}
         <Box
           sx={{
             display: { xs: 'none', md: 'grid' },
+            // The groups fill the row after the logo, so their columns spread
+            // evenly at every width instead of packing against the right edge.
+            flex: 1,
             gridTemplateColumns: 'repeat(5, 1fr)',
             columnGap: 10,
             rowGap: 3,

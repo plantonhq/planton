@@ -8,13 +8,12 @@ import {
   CheckIcon,
   CloudIcon,
   CodeIcon,
-  CpuIcon,
   PrimaryButton,
   SecondaryButton,
 } from '@/components/marketing';
 import { useMarket } from '@/components/market';
 import { useHandoffEmail, withHandoffEmail } from '@/lib/console-handoff';
-import { SITE } from '@/data/site-pages';
+import { DOORS } from '@/data/doors';
 import {
   EVALUATION_DAYS,
   EVALUATION_URL,
@@ -26,8 +25,7 @@ import {
 
 /**
  * The unified plan grid: the whole self-serve story in one view — both
- * homes (Planton.ai runs it, or your own infrastructure), four plans, each
- * card carrying its own truthful AI line. Card bullets are the value
+ * homes (Planton.ai runs it, or your own infrastructure), four plans. Card bullets are the value
  * matrix's headline rows; the matrix below is the complete reference.
  * Prices come from the market-aware pricing-truth module, so a card can
  * never disagree with the catalog-authored charge.
@@ -42,14 +40,6 @@ interface PlanCardData {
   tagline: string;
   /** Plain text, or text that is itself a door (a linked bullet renders as a link). */
   bullets: Array<string | { text: string; href: string }>;
-  /**
-   * The card's AI story — per-plan data, never a shared constant. The
-   * assistant is deployment-capability-gated: Planton.ai plans include it
-   * today on prepaid credits; self-hosted deployments do not have it yet
-   * (it will run in-cluster with the customer's own LLM provider key), so
-   * their cards say Coming Soon and make no credits claim.
-   */
-  ai: { title: string; sub: string };
   /** One door per card, except where a card sells more than one size (stacked, first is primary). */
   ctas: Array<{ label: string; href: string; primary: boolean; external?: boolean }>;
   highlighted?: boolean;
@@ -69,22 +59,6 @@ const GroupHeader: FC<{ icon: ReactNode; title: string; sublabel: string }> = ({
   </Box>
 );
 
-const AiLine: FC<{ ai: PlanCardData['ai'] }> = ({ ai }) => (
-  <Box className="flex items-start gap-2 border-t border-[#c7c7c4] pt-3 mt-1">
-    <Box className="text-[#595959] mt-0.5 [&_svg]:w-4 [&_svg]:h-4">
-      <CpuIcon />
-    </Box>
-    <Box>
-      <Typography className="text-xs font-semibold text-[#171717]">
-        {ai.title}
-      </Typography>
-      <Typography className="text-xs text-[#616161]">
-        {ai.sub}
-      </Typography>
-    </Box>
-  </Box>
-);
-
 const PlanCard: FC<PlanCardData> = ({
   name,
   badge,
@@ -93,7 +67,6 @@ const PlanCard: FC<PlanCardData> = ({
   priceSub,
   tagline,
   bullets,
-  ai,
   ctas,
   highlighted,
 }) => (
@@ -150,7 +123,6 @@ const PlanCard: FC<PlanCardData> = ({
           );
         })}
       </Stack>
-      <AiLine ai={ai} />
       <Stack className="gap-2 mt-2">
         {ctas.map((cta) => (
           <Link key={cta.href} href={cta.href} target={cta.external ? '_blank' : '_self'}>
@@ -165,19 +137,6 @@ const PlanCard: FC<PlanCardData> = ({
     </Stack>
   </Box>
 );
-
-// The two truthful AI stories. Hosted plans include the credit-funded
-// assistant today; self-hosted installs do not ship an assistant engine yet,
-// so their line is Coming Soon and names the bring-your-own-key model that
-// will serve them — never a Planton-credits claim.
-const AI_INCLUDED: PlanCardData['ai'] = {
-  title: 'AI Assistant Included',
-  sub: 'Prepaid credits — spend protection on by default',
-};
-const AI_COMING_SELF_HOSTED: PlanCardData['ai'] = {
-  title: 'AI Assistant — Coming Soon',
-  sub: 'Runs in your cluster with your own LLM provider key',
-};
 
 export const PlanGrid: FC = () => {
   const { market } = useMarket();
@@ -201,8 +160,7 @@ export const PlanGrid: FC = () => {
         `Up to ${FREE_TIER_SEATS} seats — everything else unlimited`,
         'Pauses at its limit — never bills, never deletes',
       ],
-      ai: AI_INCLUDED,
-      ctas: [{ label: 'Start Free', href: `${SITE.url}/login`, primary: false }],
+      ctas: [{ label: DOORS.hosted.label, href: DOORS.hosted.href, primary: false }],
     },
     {
       name: 'Team',
@@ -218,8 +176,7 @@ export const PlanGrid: FC = () => {
         'Unlimited environments, resources & automation',
         'Cancel anytime, no forms, no calls',
       ],
-      ai: AI_INCLUDED,
-      ctas: [{ label: 'Get Started', href: `${SITE.url}/login`, primary: true }],
+      ctas: [{ label: 'Get Started', href: DOORS.hosted.href, primary: true }],
       highlighted: true,
     },
   ];
@@ -240,7 +197,6 @@ export const PlanGrid: FC = () => {
           href: withHandoffEmail(EVALUATION_URL, handoffEmail),
         },
       ],
-      ai: AI_COMING_SELF_HOSTED,
       ctas: [{ label: 'Talk to us', href: '/book-demo', primary: false }],
     },
     {
@@ -256,7 +212,6 @@ export const PlanGrid: FC = () => {
         'Key arrives by email the moment payment completes',
         'No sales call, no account required',
       ],
-      ai: AI_COMING_SELF_HOSTED,
       // One door per size, straight into the store opened on that offer
       // (carrying a console's email handoff when one arrived).
       ctas: market.licenses.map((size, index) => ({

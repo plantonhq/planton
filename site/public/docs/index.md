@@ -11,7 +11,7 @@ tags:
 
 # Planton Documentation
 
-Planton turns your own cloud account into a self-service platform. AI designs the infrastructure, verifies the cost and permissions before anything is created, and publishes it as templates your whole team can deploy. Your services then ship onto that infrastructure straight from Git. It deploys to your cloud accounts (AWS, GCP, Azure, Kubernetes) while providing a single control plane for the full software delivery lifecycle.
+Planton deploys every push to GitHub into your own cloud, and shows the cost and permissions of every infrastructure change before it runs. Start by pasting one prompt into your coding agent. It deploys to your cloud accounts (AWS, GCP, Azure, Kubernetes) while providing a single control plane for the full software delivery lifecycle.
 
 This documentation covers every shipped feature of the platform, from connecting your cloud accounts to deploying production workloads.
 
@@ -42,7 +42,7 @@ Declarative infrastructure provisioning across cloud providers. Deploy individua
 
 ## CI/CD
 
-Application CI/CD from Git push to production deployment. Build with Buildpacks or Dockerfiles, deploy to Kubernetes, ECS, Cloud Run, or Cloudflare Workers, and manage secrets and ingress configuration.
+Application CI/CD from Git push to production deployment. Build with Buildpacks or Dockerfiles, deploy to Kubernetes, ECS, or Cloud Run, and manage secrets and ingress configuration.
 
 [Explore CI/CD](/docs/ci-cd)
 

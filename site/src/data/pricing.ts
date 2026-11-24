@@ -15,14 +15,6 @@
 
 export type MarketId = 'us' | 'in';
 
-export interface EnterpriseTierDisplay {
-  name: string;
-  /** Market-native display string (e.g. "$60K", "₹30 lakh"). */
-  perYear: string;
-  seatCeiling: number;
-  support: string;
-}
-
 export interface LicenseSizeDisplay {
   /** Exact yearly print (e.g. "$3,000", "₹2,00,000") -- the one precise appearance near a charge surface. */
   perYear: string;
@@ -30,7 +22,7 @@ export interface LicenseSizeDisplay {
   perYearCompact: string;
   /**
    * The plan card's headline price, in the market's own idiom: India reads
-   * lakh at a glance ("₹2L", matching the enterprise band's "₹30L"), while
+   * lakh at a glance ("₹2L"), while
    * "$3,000" is already the US price-tag form. The exact figure still
    * prints once in the card's sub line -- headline ergonomics never remove
    * the precise number from the page.
@@ -51,11 +43,8 @@ export interface Market {
   teamSeatMonthly: number;
   /** Per seat per YEAR; the saving against twelve monthly charges is derived (annualSavingLabel), never restated. */
   teamSeatAnnual: number;
-  /** Smallest purchasable AI credit pack. */
-  creditPackStart: number;
   /** Self-hosted license sizes, smallest first (order mirrors SELF_HOSTED_LICENSE_SEAT_CEILINGS). */
   licenses: LicenseSizeDisplay[];
-  enterprise: EnterpriseTierDisplay[];
 }
 
 // Self-hosted license structure (market-invariant): the two sizes differ by
@@ -81,24 +70,9 @@ export const MARKETS: Record<MarketId, Market> = {
     symbol: '$',
     teamSeatMonthly: 20,
     teamSeatAnnual: 192,
-    creditPackStart: 10,
     licenses: [
       { perYear: '$3,000', perYearCompact: '$3K', perYearCard: '$3,000', seatCeiling: SELF_HOSTED_LICENSE_SEAT_CEILINGS[0], offerId: SELF_HOSTED_LICENSE_OFFER_IDS[0] },
       { perYear: '$8,000', perYearCompact: '$8K', perYearCard: '$8,000', seatCeiling: SELF_HOSTED_LICENSE_SEAT_CEILINGS[1], offerId: SELF_HOSTED_LICENSE_OFFER_IDS[1] },
-    ],
-    enterprise: [
-      {
-        name: 'Enterprise Standard',
-        perYear: '$60K',
-        seatCeiling: 100,
-        support: 'Named business-hours support',
-      },
-      {
-        name: 'Enterprise Plus',
-        perYear: '$120K',
-        seatCeiling: 250,
-        support: '24×7 support with SLA',
-      },
     ],
   },
   in: {
@@ -108,24 +82,9 @@ export const MARKETS: Record<MarketId, Market> = {
     symbol: '₹',
     teamSeatMonthly: 999,
     teamSeatAnnual: 9990,
-    creditPackStart: 499,
     licenses: [
       { perYear: '₹2,00,000', perYearCompact: '₹2L', perYearCard: '₹2L', seatCeiling: SELF_HOSTED_LICENSE_SEAT_CEILINGS[0], offerId: SELF_HOSTED_LICENSE_OFFER_IDS[0] },
       { perYear: '₹5,00,000', perYearCompact: '₹5L', perYearCard: '₹5L', seatCeiling: SELF_HOSTED_LICENSE_SEAT_CEILINGS[1], offerId: SELF_HOSTED_LICENSE_OFFER_IDS[1] },
-    ],
-    enterprise: [
-      {
-        name: 'Enterprise Standard',
-        perYear: '₹30L',
-        seatCeiling: 100,
-        support: 'Named business-hours support',
-      },
-      {
-        name: 'Enterprise Plus',
-        perYear: '₹60L',
-        seatCeiling: 250,
-        support: '24×7 support with SLA',
-      },
     ],
   },
 };

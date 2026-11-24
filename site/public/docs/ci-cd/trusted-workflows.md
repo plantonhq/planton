@@ -115,7 +115,6 @@ Only the people who manage access in the organization can read refusals, the sam
 
 - **in the console**: on **Trusted Workflows** and on each trust's page, each refusal with the change that fixes it. Runs refused from repositories no trust names are listed apart, with no one-click trust, because anyone can aim a signed token at any organization.
 - **from the CLI**: `planton iam refusal list` (add `--trust <slug>` for one trust) and `planton iam refusal get <id>`.
-- **through the Planton Assistant**, which reads the same records and can walk you to the fix.
 
 ## Where Trusted Workflows Work
 

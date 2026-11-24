@@ -13,7 +13,7 @@ tags:
 
 # Security
 
-Planton is a self-service cloud platform that touches some of the most sensitive parts of your infrastructure: cloud credentials, deployment secrets, production access controls, and runtime operations. The security model is designed around one premise — you should not have to trust Planton with more than you want to give it.
+Planton deploys every push to GitHub into your own cloud, and shows the cost and permissions of every infrastructure change before it runs. To do that, it touches some of the most sensitive parts of your infrastructure: cloud credentials, deployment secrets, production access controls, and runtime operations. The security model is designed around one premise — you should not have to trust Planton with more than you want to give it.
 
 This page is an overview of how security works across the platform. Each section links to the detailed documentation where the full implementation is described.
 
@@ -37,7 +37,7 @@ For full details, see [Runner Security Model](/docs/runner/security-model), [Con
 
 ### Data at Rest
 
-Secrets stored through Planton's [Secrets Manager](/docs/secrets) live in the secret backend you choose — your AWS Secrets Manager, GCP Secret Manager, Azure Key Vault, HashiCorp Vault, or OpenBAO — as native values protected by that store's own encryption, IAM, and audit. Planton's own database holds metadata, never values, so a full copy of it yields no secrets.
+Secrets stored through Planton's [Secrets Manager](/docs/secrets) can live in the secret backend you choose — your AWS Secrets Manager, GCP Secret Manager, Azure Key Vault, HashiCorp Vault, or OpenBAO — as native values protected by that store's own encryption, IAM, and audit. Planton's own database holds metadata, never values, so a full copy of it yields no secrets.
 
 Because the values are native citizens of your store, your encryption controls apply directly: customer-managed keys are your provider's own setting (for example CMEK on GCP Secret Manager or a KMS key on AWS Secrets Manager), not a platform layer between you and your data.
 
@@ -82,7 +82,7 @@ Planton uses [OpenFGA](https://openfga.dev/) — an open-source, fine-grained au
 The key properties:
 
 - **Hierarchical inheritance** — Grant a user admin access to an organization, and they automatically have admin access to every environment and resource within it. No need to assign permissions at each level individually.
-- **Resource-scoped roles** — Roles are specific to resource types. An "admin" on an organization is different from an "admin" on a service. Five standard roles apply across most resources: owner, admin, IAM admin, viewer, and member.
+- **Resource-scoped roles** — Roles are specific to resource types. An "admin" on an organization is different from an "admin" on a service. Seven built-in roles apply in an organization: Organization Owner, Access Admin, Infrastructure Admin, Developer, Release Approver, Billing Manager and Auditor.
 - **Team-based access** — Permissions granted to a team flow to all team members, including nested teams. Add someone to the Platform Engineering team, and they inherit every permission that team holds.
 - **Environment authorization for credentials** — Connections must be explicitly authorized for each environment before they can be used there. A production AWS credential cannot be accidentally used in development.
 
@@ -119,7 +119,7 @@ The Runner's network model eliminates the need for inbound firewall rules, VPN t
 |-------|-----------|---------|
 | **Credentials** | Architectural isolation via Runner | [Runner Security Model](/docs/runner/security-model) |
 | **Keyless cloud trust** | Your cloud pins Planton's issuer, the audience, and one connection's subject; no stored credential | [What Your Cloud Trusts](/docs/security/what-your-cloud-trusts) |
-| **Secrets** | Provider-native storage in your own vault; read-audited; never stored in the platform's database | [Where Secrets Live](/docs/secrets/where-secrets-live) |
+| **Secrets** | Provider-native storage, in your own vault if you choose; read-audited; never stored in the platform's database | [Where Secrets Live](/docs/secrets/where-secrets-live) |
 | **Authentication** | OAuth + PKCE (interactive), API keys (automation), service accounts (machines) | [Authentication and Authorization](/docs/security/authentication-and-authorization) |
 | **Authorization** | OpenFGA relationship-based access control | [Authentication and Authorization](/docs/security/authentication-and-authorization) |
 | **Audit** | Immutable version records with diffs | [Audit Trails](/docs/security/audit-trails) |

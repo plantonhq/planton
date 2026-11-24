@@ -67,7 +67,6 @@ export interface DesktopLanding {
     title: string;
     lede: string;
     agent: { title: string; body: string; command: string };
-    assistant: { title: string; body: readonly string[] };
     /** What Planton adds to the agent, as its own beat under the two cards. */
     addsTitle: string;
     adds: readonly string[];
@@ -75,9 +74,8 @@ export interface DesktopLanding {
     close: string;
   };
   runs: { title: string; lede: string; tiles: readonly Tile[] };
-  infraHub: { kicker: string; title: string; lede: string; points: readonly (Tile & { door?: { label: string; href: string } })[] };
+  infraHub: { title: string; lede: string; points: readonly (Tile & { door?: { label: string; href: string } })[] };
   serviceHub: {
-    kicker: string;
     title: string;
     lede: string;
     measured: { figures: readonly Measurement[]; provenance: string };
@@ -132,27 +130,20 @@ export const DESKTOP_LANDING: DesktopLanding = {
     concession: POSITIONING.desktop.concession,
   },
   ask: {
-    // Chapter 2, proof 2; the coding-agents guide; the desktop's free device lane and the bring-your-own-key choice.
-    title: 'Two Ways to Ask. The Same Skills.',
-    lede: 'Ask from inside the tool you already use, or ask the assistant built in. Both run the same skills.',
+    // Chapter 2, proof 2; the coding-agents guide.
+    title: 'Ask From Your Editor',
+    lede: 'Install the Planton skills once, and the coding agent you already use works from the real schema.',
     agent: {
       title: 'Your Coding Agent',
       body: 'Install the Planton skills once. From then on Cursor, Claude Code, or Codex composes infrastructure grounded in the real schema, validates it offline, and applies it through the platform on your laptop, while you stay in your editor.',
       command: AGENT_SKILLS_INSTALL_COMMAND,
     },
-    assistant: {
-      title: 'The Built-In Assistant',
-      body: [
-        'Open the app and ask. The Planton Assistant converses with zero keys and zero accounts; Planton funds it.',
-        'Prefer to keep everything on your machine? Bring your own Anthropic or Cursor key in the engine chooser, and the conversation and the model traffic never leave the laptop.',
-      ],
-    },
     addsTitle: 'What Planton Adds to the Agent You Already Use',
     adds: POSITIONING.desktop.whatItAdds,
-    close: 'Your agent and the platform\u2019s own assistant share the same skills, the same catalog, and the same rules about what never happens without your say-so.',
+    close: 'Your agent works from the same skills, the same catalog, and the same rules about what never happens without your say-so.',
   },
   runs: {
-    // The local runtime: the daemon supervises Postgres, Temporal, a cache, and the control plane; every downloaded artifact is verified before it is installed; tools already on the PATH are used, never replaced.
+    // The local runtime: the daemon supervises Postgres, a workflow engine, a cache, and the control plane; every downloaded artifact is verified before it is installed; tools already on the PATH are used, never replaced.
     title: 'What Actually Runs on Your Machine',
     lede: 'A full platform as ordinary processes. No containers to babysit.',
     tiles: [
@@ -161,7 +152,7 @@ export const DESKTOP_LANDING: DesktopLanding = {
         body: 'The same control plane that serves planton.ai, running as a local process, with a single runner that is ready the moment the app is. No slug to name, no registration, no credentials to hand over.',
       },
       {
-        title: 'Postgres, Temporal, and a Cache, as Native Processes',
+        title: 'Postgres, a Workflow Engine, and a Cache, as Native Processes',
         body: 'Downloaded once on first launch, verified, and supervised by the app. Docker is not required.',
       },
       {
@@ -176,14 +167,13 @@ export const DESKTOP_LANDING: DesktopLanding = {
     ],
   },
   infraHub: {
-    // The hub's one analogy lives here and nowhere else on the page; the connections guide backs the detection.
-    kicker: POSITIONING.infraHub.analogy,
+    // The connections guide backs the detection.
     title: `${POSITIONING.infraHub.name} on Your Laptop`,
     lede: POSITIONING.infraHub.line,
     points: [
       {
         title: 'Your Clouds, Found, Not Pasted',
-        body: 'Planton reads the cloud logins already on your machine (AWS profiles, gcloud configurations, az subscriptions, kubeconfig contexts) and turns each into a ready connection. Cloudflare and DigitalOcean tokens are detected from your environment and verified against the provider before they are offered. You never paste a key into a form.',
+        body: 'Planton reads the cloud logins already on your machine (AWS profiles, gcloud configurations, az subscriptions) and turns each into a ready connection. Cloudflare and DigitalOcean tokens are detected from your environment and verified against the provider before they are offered. You never paste a key into a form.',
       },
       {
         title: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} Catalog Kinds Across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} Providers`,
@@ -198,7 +188,6 @@ export const DESKTOP_LANDING: DesktopLanding = {
   },
   serviceHub: {
     // Chapter 6 on the laptop; every sentence and figure is the CI/CD-on-your-laptop guide's.
-    kicker: POSITIONING.serviceHub.analogy,
     title: `${POSITIONING.serviceHub.name} on Your Laptop`,
     lede: 'Push to GitHub. Your laptop notices, builds the commit in a pod, deploys it to the cluster or cloud you connected, and puts a status on the commit.',
     measured: {
@@ -240,14 +229,14 @@ export const DESKTOP_LANDING: DesktopLanding = {
     title: 'Why It Is Free',
     body: [
       'Planton Desktop is free for individuals, including commercial use. Not a trial, not a tier with the good parts removed: the full catalog, the wizards, the IaC pipelines, service CI/CD, and secrets management are the core product on every edition.',
-      `Here is the business model, stated plainly. Planton makes its money when a team adopts it: hosted seats beyond the ${FREE_TIER_SEATS} free ones, self-hosted licenses beyond the community edition\u2019s ${COMMUNITY_SEAT_LIMIT} seats, and prepaid AI credits. The solo developer is not a funnel stage. You are the person this was built to delight, and if you one day bring a team, nothing you built gets redone.`,
+      `Here is the business model, stated plainly. Planton makes its money when a team adopts it: hosted seats beyond the ${FREE_TIER_SEATS} free ones, and self-hosted licenses beyond the community edition\u2019s ${COMMUNITY_SEAT_LIMIT} seats. The solo developer is not a funnel stage. You are the person this was built to delight, and if you one day bring a team, nothing you built gets redone.`,
     ],
     door: { label: 'See Full Pricing', href: '/pricing' },
   },
   next: ['/product/cli', '/product/infra-hub', '/product/service-hub'],
   close: {
     title: 'Install It. Ask It Something.',
-    body: 'Download, open, pick Run on This Computer, and ask for what you need in your own words. Or install the skills and ask from your editor.',
+    body: 'Download, open, pick Run on This Computer, then install the skills and ask from your editor.',
     guide: { label: 'Read the CI/CD Guide', href: '/docs/ci-cd/on-your-laptop' },
   },
 };
@@ -264,7 +253,7 @@ export const DESKTOP_DOWNLOAD: DesktopDownload = {
     title: `The ${platform.name} Installer Returns with the Next Release`,
     body: `The build currently published for ${platform.name} is not one we would ask you to run, so the link is off until the next release replaces it. Two ways forward today:`,
     cliDoor: { label: 'Install the CLI on WSL', href: '/docs/cli' },
-    note: 'The CLI runs the same schema lookups, validation, and deploys from a terminal; the desktop app adds the assistant, the canvas, and the local instance.',
+    note: 'The CLI runs the same schema lookups, validation, and deploys from a terminal; the desktop app adds the canvas and the local instance.',
   }),
   afterInstall: {
     // First launch as the desktop wiki and the local-runtime articles describe it; the connections guide backs the third beat.
@@ -277,11 +266,11 @@ export const DESKTOP_DOWNLOAD: DesktopDownload = {
       },
       {
         title: 'Watch It Set Itself Up',
-        body: 'The app downloads its runtime once: a Java runtime, Postgres, Temporal, a cache, and the control plane. A few hundred megabytes with a real progress bar, verified against the release\u2019s checksums. Later upgrades fetch only what changed.',
+        body: 'The app downloads its runtime once: a Java runtime, Postgres, a workflow engine, a cache, and the control plane. A few hundred megabytes with a real progress bar, verified against the release\u2019s checksums. Later upgrades fetch only what changed.',
       },
       {
         title: 'Your Clouds Are Already There',
-        body: 'Planton finds the AWS, Google Cloud, Azure, and Kubernetes sign-ins on your machine and offers each as a ready connection. Then ask for what you need.',
+        body: 'Planton finds the AWS, Google Cloud and Azure sign-ins on your machine and offers each as a ready connection.',
       },
     ],
     thenTitle: 'Then, From Wherever You Work',

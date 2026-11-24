@@ -4,7 +4,7 @@ import type { FC } from 'react';
 import Link from 'next/link';
 import { Button } from '@mui/material';
 import { useLoggedIn } from '../../hooks/useLoggedIn';
-import { BOOK_DEMO, SIGN_IN, START_FREE } from '../../data/navigation';
+import { SIGN_IN, START_FREE } from '../../data/navigation';
 import { scopedTokens as tokens } from '../../theme/tokens';
 
 const ctaSx = {
@@ -18,28 +18,25 @@ const ctaSx = {
   textTransform: 'none',
 } as const;
 
-// The one true-white fill in the header: the primary door, the same as every primary button on the site.
-const whiteButtonStyle: React.CSSProperties = {
+// The header's one filled button is Start Free, the same primary door as every primary button on the site.
+const primaryStyle: React.CSSProperties = {
   backgroundColor: tokens.cta.background,
   color: tokens.cta.text,
 };
 const quietLinkStyle: React.CSSProperties = { color: tokens.text.secondary };
 
 type ActionProps = {
-  variant?: 'default' | 'homepage';
-  onPrimaryAction?: () => void;
+  /** Called when a visitor clicks Start Free, for the site's own analytics. */
   onSelfServiceAction?: () => void;
 };
-export const DesktopAuthButtons: FC<ActionProps> = ({
-  variant = 'default',
-  onPrimaryAction,
-  onSelfServiceAction,
-}) => {
+
+/** Sign In, quiet, then Start Free; a signed-in visitor sees only the way back to the console. */
+export const DesktopAuthButtons: FC<ActionProps> = ({ onSelfServiceAction }) => {
   const loggedIn = useLoggedIn();
 
   if (loggedIn) {
     return (
-      <Button LinkComponent={Link} href="/dashboard" style={whiteButtonStyle} sx={ctaSx}>
+      <Button LinkComponent={Link} href="/dashboard" style={primaryStyle} sx={ctaSx}>
         Dashboard
       </Button>
     );
@@ -65,43 +62,30 @@ export const DesktopAuthButtons: FC<ActionProps> = ({
         LinkComponent={Link}
         href={START_FREE.href}
         onClick={onSelfServiceAction}
-        style={variant === 'homepage' ? quietLinkStyle : whiteButtonStyle}
+        style={primaryStyle}
         sx={ctaSx}
       >
         {START_FREE.label}
       </Button>
-      {variant === 'homepage' && (
-        <Button
-          LinkComponent={Link}
-          href={BOOK_DEMO.href}
-          onClick={onPrimaryAction}
-          style={whiteButtonStyle}
-          sx={ctaSx}
-        >
-          {BOOK_DEMO.label}
-        </Button>
-      )}
     </>
   );
 };
 
 const ctaFullWidthSx = {
   ...ctaSx,
-  height: 40,
+  height: 44,
+  fontSize: '1rem',
   width: '100%',
   justifyContent: 'center',
 } as const;
 
-export const MobileAuthButtons: FC<ActionProps> = ({
-  variant = 'default',
-  onPrimaryAction,
-  onSelfServiceAction,
-}) => {
+/** The same two doors, full width, at the foot of the mobile drawer. */
+export const MobileAuthButtons: FC<ActionProps> = ({ onSelfServiceAction }) => {
   const loggedIn = useLoggedIn();
 
   if (loggedIn) {
     return (
-      <Button LinkComponent={Link} href="/dashboard" style={whiteButtonStyle} sx={ctaFullWidthSx}>
+      <Button LinkComponent={Link} href="/dashboard" style={primaryStyle} sx={ctaFullWidthSx}>
         Dashboard
       </Button>
     );
@@ -127,22 +111,11 @@ export const MobileAuthButtons: FC<ActionProps> = ({
         LinkComponent={Link}
         href={START_FREE.href}
         onClick={onSelfServiceAction}
-        style={variant === 'homepage' ? quietLinkStyle : whiteButtonStyle}
+        style={primaryStyle}
         sx={ctaFullWidthSx}
       >
         {START_FREE.label}
       </Button>
-      {variant === 'homepage' && (
-        <Button
-          LinkComponent={Link}
-          href={BOOK_DEMO.href}
-          onClick={onPrimaryAction}
-          style={whiteButtonStyle}
-          sx={ctaFullWidthSx}
-        >
-          {BOOK_DEMO.label}
-        </Button>
-      )}
     </>
   );
 };

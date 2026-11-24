@@ -7,7 +7,8 @@ export const OVERVIEW_VIDEO = {
   version: '2026-10-08-v3',
   title: 'Governance built in for coding agents.',
   label: 'See Planton in action.',
-  description: 'Proven infrastructure charts. Agents that work within your policies. Production approvals stay with your team.',
+  // The film itself still names charts in one chapter; it is replaced with the next render.
+  description: 'Every infrastructure change is planned, with its cost and permissions, before it runs. Agents that work within your policies. Production approvals stay with your team.',
   poster: '/_site/images/product/homepage-overview-2026-10-08-v3.webp',
   base: 'https://assets.planton.ai/videos/homepage/2026-10-08-v3',
   duration: 47,
