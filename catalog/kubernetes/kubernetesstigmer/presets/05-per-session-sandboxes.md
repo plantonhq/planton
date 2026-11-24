@@ -10,7 +10,7 @@ Each engineer's agent session in a pod of its own, through agent-sandbox, behind
 ## Key Configuration Choices
 
 - **`sandboxes.driver: agentSandbox`** — the operator installs agent-sandbox's controller when it is missing (`prerequisites.agent_sandbox: auto`, the default)
-- **`object_store`** — required by both per-session drivers
+- **`object_store`** — required by both per-session drivers; with the bundled database it also turns the archive on, so cert-manager must run on the cluster (deploy a Cert Manager first)
 - **`egress_allow_cidrs`** — the only private addresses a sandbox reaches, such as a model gateway or an MCP server on your network; a fence needs a CNI that enforces NetworkPolicy
 - **`driver: substrate`** is the other per-session choice: Agent Substrate actors, gVisor sandboxes on a pool of workers, which needs Kubernetes 1.37 with the pod-certificate APIs
 

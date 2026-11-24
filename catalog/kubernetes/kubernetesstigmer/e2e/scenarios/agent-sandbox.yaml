@@ -1,7 +1,8 @@
 # Each session in a sandbox of its own on agent-sandbox, which the operator
 # installs, behind the sandbox egress fence: the fake model's address is the
 # one private range sandboxes may reach. Per-session sandboxes move a run's
-# files through the bucket, so the catalog's S3 store is composed in. The
+# files through the bucket, so the catalog's S3 store is composed in, with
+# cert-manager for the backup plugin the bucket turns on. The
 # agent's run must execute in a Sandbox in the sandbox namespace; destroy
 # removes agent-sandbox and that namespace with the rest.
 apiVersion: kubernetes.planton.dev/v1alpha1
@@ -9,7 +10,7 @@ kind: KubernetesStigmer
 metadata:
   name: stigmer
   annotations:
-    planton.dev/e2e-prerequisites: "catalog/kubernetes/kubernetesstigmer/e2e/fixture-namespace.yaml, catalog/kubernetes/kubernetesstigmer/e2e/fixture-s3-store.yaml"
+    planton.dev/e2e-prerequisites: "KubernetesCertManager, catalog/kubernetes/kubernetesstigmer/e2e/fixture-namespace.yaml, catalog/kubernetes/kubernetesstigmer/e2e/fixture-s3-store.yaml"
     planton.dev/e2e-setup-script: "catalog/kubernetes/kubernetesstigmer/e2e/scenarios/clean-slate.setup.sh"
     planton.dev/e2e-required-env: "PLANTON_E2E_FAKE_MODEL_URL, PLANTON_E2E_FAKE_MODEL_CIDR"
 spec:

@@ -42,6 +42,8 @@ The Stigmer has no finalizer, so deleting it returns at once, and the operator's
 
 Stigmer's operator installs CloudNativePG, its backup plugin, agent-sandbox and Agent Substrate when `prerequisites` says `auto` (the default) and the cluster lacks them, and leaves a copy someone else installed alone. The only conflict is order: if the operator installs its copy first, the catalog's kind later finds it and refuses it. When the environment holds those kinds, give this one a `depends_on` relationship to each. A copy someone else runs is used as it is, so it must be at least as new as what Stigmer bundles where Stigmer relies on newer fields: the backup plugin from v0.16.0 (KubernetesCnpgBarmanCloudPlugin's default, `chart_version` 0.9.0), because with a named S3 endpoint Stigmer writes the object store's addressing style, which older releases do not declare.
 
+A bucket with the bundled database turns the database's archive on from its first minute, whatever the bucket was declared for, and the backup plugin that writes the archive needs cert-manager. The plugin is installed into CloudNativePG's namespace and the database is created only once it serves, so without cert-manager the Stigmer stays `Pending` with `WaitingForBackupPlugin` ("installing the Barman Cloud backup plugin") and never says why. Give the Stigmer a `depends_on` to a KubernetesCertManager whenever it declares `object_store` and runs the bundled database.
+
 The operator recognizes someone else's copy by its definition alone, and trusts it without asking whether anything runs it. The catalog's CloudNativePG kinds keep their definitions when destroyed, so a cluster where one was removed looks to the operator like a CloudNativePG it must leave alone, and the bundled database waits forever. In `auto` mode the plan therefore reads each definition the install needs; one a Helm release put there whose release has no Deployment left is refused, with the command that clears it. A definition installed without Helm names no controller to look for, and is trusted.
 
 ## Sizes and what they reserve
@@ -95,7 +97,7 @@ Two of the operator's checks need numbers validation cannot compare: a request a
 ## Pairs well with
 
 - **KubernetesNamespace** for the Stigmer's namespace, which must outlive the install.
-- **KubernetesSeaweedFs** (or an AwsS3Bucket) and **KubernetesCertManager** for backups.
+- **KubernetesSeaweedFs** (or an AwsS3Bucket) for the bucket, and **KubernetesCertManager** with it whenever the database is bundled: the bucket turns the archive on.
 - **KubernetesPostgres** and **KubernetesTemporal** for your own databases, with your own issuer when exposed.
 - **KubernetesClusterIssuer** or **KubernetesGateway** for the front door.
 - **KubernetesCloudNativePgOperator**, **KubernetesCnpgBarmanCloudPlugin**, **KubernetesAgentSandboxController** and **KubernetesAgentSubstrate**, ordered first with `depends_on`, on clusters that share them.

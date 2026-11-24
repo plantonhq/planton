@@ -26,7 +26,7 @@ From the Stigmer, the operator creates the server and the shared runner, Postgre
 - **The Stigmer's namespace exists** — this kind never creates or deletes it, because it holds the encryption keys. Give it a Kubernetes Namespace of its own.
 - **No other Stigmer operator** — one runs per cluster; another install is refused before anything is applied.
 - **No CloudNativePG left behind without its controller** — the definitions a destroyed CloudNativePG leaves are refused before anything is applied, with the command that clears them, because Stigmer's operator would trust them and wait forever.
-- **cert-manager** (only for backups, or a certificate issued by an issuer) — the backup plugin needs it, and nothing here installs it.
+- **cert-manager** (with a bucket and the bundled database, or a certificate issued by an issuer) — a bucket turns on the database's archive, the backup plugin that writes it needs cert-manager, and nothing here installs it. Without it the install waits at `WaitingForBackupPlugin` and never becomes Ready.
 - **An ingress controller or a Gateway** (only with a hostname).
 - **A CNI that enforces NetworkPolicy** (only for egress fences and sandbox isolation).
 
@@ -126,7 +126,7 @@ These are the most important decisions when configuring a Stigmer install. Explo
 
 **A hostname turns sign-in on** — without `ingress`, every caller acts as the owner, which is safe only while the install is reachable from inside the cluster. With it, the operator runs the bundled sign-in unless you name your own issuer, and the owner's account is created first with a one-time password. `allow_unauthenticated_exposure` exposes the install with sign-in off, deliberately.
 
-**A bucket is the gate to backups and sandboxes** — with `object_store`, files leave the shared volume, the bundled database archives every change from its first minute, and per-session sandboxes become possible. Backups also need cert-manager on the cluster.
+**A bucket is the gate to backups and sandboxes** — with `object_store`, files leave the shared volume, the bundled database archives every change from its first minute, and per-session sandboxes become possible. So with the bundled database, any bucket (one declared only for sandboxes too) needs cert-manager on the cluster.
 
 **Per-session sandboxes isolate engineers' agents** — `agentSandbox` runs each session in a pod of its own behind a network fence; `substrate` runs each in a gVisor sandbox on a pool of workers and needs Kubernetes 1.37 with the pod-certificate APIs. Stigmer Enterprise requires one of them, and your own issuer.
 

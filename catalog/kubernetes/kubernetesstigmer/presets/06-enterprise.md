@@ -10,7 +10,7 @@ Stigmer Enterprise under a license: every caller signs in through your own OpenI
 ## Key Configuration Choices
 
 - **`identity.oidc`** — required by Enterprise; the realm or tenant, the console and native clients, the audience, the owner's account and sign-up are set up in your issuer
-- **`sandboxes.driver`** — a licensed install refuses to run sessions side by side on the shared runner, so a per-session driver is required (and with it, `object_store`)
+- **`sandboxes.driver`** — a licensed install refuses to run sessions side by side on the shared runner, so a per-session driver is required (and with it, `object_store`, which with the bundled database turns the archive on: cert-manager must run on the cluster)
 - **`ingress.gateway`** — the Gateway's HTTPS listener for the hostname holds the certificate; Stigmer never edits the Gateway
 - **Temporal** — bundled here; with `temporal.external`, Enterprise requires TLS or an API key to it
 

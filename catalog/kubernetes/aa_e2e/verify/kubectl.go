@@ -259,7 +259,12 @@ func KubectlResourceAbsent(ctx context.Context, kubeconfig, kind, name, namespac
 
 // BuildKubectlArgs constructs kubectl command arguments with optional kubeconfig and namespace.
 func BuildKubectlArgs(kubeconfig, verb, kind, name, namespace string) []string {
-	args := []string{verb, kind, name}
+	// An empty name addresses every object of the kind (a list), never an
+	// empty-name argument kubectl refuses ("resource name may not be empty").
+	args := []string{verb, kind}
+	if name != "" {
+		args = append(args, name)
+	}
 	if kubeconfig != "" {
 		args = append(args, "--kubeconfig", kubeconfig)
 	}

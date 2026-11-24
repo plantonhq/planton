@@ -20,8 +20,6 @@ import (
 	sessionv1 "go.stigmer.ai/sdk/proto/ai/stigmer/agentic/session/v1"
 	"go.stigmer.ai/sdk/proto/ai/stigmer/commons/apiresource/apiresourcekind"
 	organizationv1 "go.stigmer.ai/sdk/proto/ai/stigmer/tenancy/organization/v1"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 // Stigmer's fixed names, as the kind's module writes them (iac/tf/locals.tf,
@@ -734,7 +732,9 @@ func (v *StigmerVerifier) frontDoorService(ctx context.Context, kubeconfig strin
 // not signed in.
 func verifySignInEnforced(ctx context.Context, client *stigmer.Client) error {
 	_, err := client.Organization.ListMine(ctx, &organizationv1.ListMyOrganizationsInput{})
-	if status.Code(errors.Cause(err)) == codes.Unauthenticated || strings.Contains(fmt.Sprint(err), "Unauthenticated") {
+	// The SDK wraps the server's gRPC status in its own error type, so the
+	// code is read through the SDK's predicate, never off the status or text.
+	if stigmer.IsUnauthenticated(err) {
 		fmt.Printf("  [verify] a caller who has not signed in is refused\n")
 		return nil
 	}

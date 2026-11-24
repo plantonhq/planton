@@ -3,7 +3,8 @@
 # gives it the Kubernetes APIs it needs). Substrate's egress takes DNS names,
 # so the fake model is reached by the in-cluster name the model-service
 # fixture gives it, named as a sandbox egress address. Per-session sandboxes
-# move a run's files through the bucket. The agent's run must complete; destroy
+# move a run's files through the bucket, with cert-manager for the backup
+# plugin the bucket turns on. The agent's run must complete; destroy
 # removes Substrate with the rest.
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesStigmer
@@ -11,7 +12,7 @@ metadata:
   name: stigmer
   annotations:
     planton.dev/e2e-cluster-profile: "pod-certificates"
-    planton.dev/e2e-prerequisites: "catalog/kubernetes/kubernetesstigmer/e2e/fixture-namespace.yaml, catalog/kubernetes/kubernetesstigmer/e2e/fixture-s3-store.yaml, catalog/kubernetes/kubernetesstigmer/e2e/fixture-model-service.yaml"
+    planton.dev/e2e-prerequisites: "KubernetesCertManager, catalog/kubernetes/kubernetesstigmer/e2e/fixture-namespace.yaml, catalog/kubernetes/kubernetesstigmer/e2e/fixture-s3-store.yaml, catalog/kubernetes/kubernetesstigmer/e2e/fixture-model-service.yaml"
     planton.dev/e2e-setup-script: "catalog/kubernetes/kubernetesstigmer/e2e/scenarios/clean-slate.setup.sh"
     planton.dev/e2e-required-env: "PLANTON_E2E_FAKE_MODEL_URL, PLANTON_E2E_FAKE_MODEL_IP, PLANTON_E2E_FAKE_MODEL_PORT"
 spec:
