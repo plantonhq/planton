@@ -20,13 +20,12 @@ install:
 lint: install
 	$(YARN) lint
 
-# Type and workflow contracts run before export; browser acceptance runs on out/.
+# The hero's icons are checked against their sources before export; browser acceptance runs on out/.
 typecheck: install
 	$(YARN) typecheck
 
 build: install lint typecheck
 	node --experimental-strip-types scripts/generate-workflow-icons.mjs --check
-	node --experimental-strip-types scripts/check-workflow-timeline.mjs
 	NODE_NO_WARNINGS=1 NEXT_TELEMETRY_DISABLED=1 $(YARN) build
 	mkdir -p out/_site && cp -r out/_next out/_site/_next
 

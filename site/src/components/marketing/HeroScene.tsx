@@ -55,7 +55,7 @@ const routeSet = (lanes: readonly (readonly Point[])[]) =>
   }));
 const desktopRoutes = routeSet(desktopLanes);
 const mobileRoutes = routeSet(mobileLanes);
-const providers = ['aws', 'gcp', 'azure', 'cloudflare', 'digitalocean'];
+const providers = H.providerMarks;
 
 function PersonMark({ x, y }: { x: number; y: number }) {
   return (

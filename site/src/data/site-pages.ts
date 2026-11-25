@@ -99,20 +99,7 @@ export const SITE_PAGES: readonly SitePage[] = [
     title: HOMEPAGE.title,
     description: HOMEPAGE.description,
     group: 'home',
-    chapters: [
-      'the-wall',
-      'what-planton-is',
-      'verified-before-it-exists',
-      'your-rules-hold',
-      'every-deployment-leaves-a-record',
-      'services-ship-from-git',
-      'bring-what-you-have',
-      'runs-where-you-decide',
-      'who-it-is-for',
-      'proof-it-works',
-      'how-it-compares',
-      'start',
-    ],
+    chapters: ['the-wall', 'verified-before-it-exists', 'services-ship-from-git', 'start'],
   },
 
   // Trust: the buyer's half of the story

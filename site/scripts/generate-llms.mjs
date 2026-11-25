@@ -25,10 +25,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import matter from 'gray-matter';
-import { WORKFLOWS, WORKFLOW_COPY } from '../src/data/workflow-explainers.ts';
-import { HERO, PRODUCT_PROOF, CONTROL_COPY } from '../src/data/homepage-experience.ts';
-import { OVERVIEW_VIDEO, OVERVIEW_CHAPTERS } from '../src/data/homepage-video.ts';
-import { ARCHITECTURES } from '../src/data/architecture-stories.ts';
+import { HERO } from '../src/data/homepage-experience.ts';
 
 const GENERATOR = 'llms generator';
 const siteRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -141,72 +138,20 @@ function pageMarkdown(
     '',
   ];
   if (page.path === '/') {
+    // Home, section by section, in page order, from the same records the page renders.
     const h = homepage.HOMEPAGE;
-    lines.push(`## ${h.headline.join(' ')}`, '', h.intro, '', h.caption, '');
-    lines.push(HERO.description, '');
-    lines.push(`## ${OVERVIEW_VIDEO.label}`, '', OVERVIEW_VIDEO.description, '');
-    for (const chapter of OVERVIEW_CHAPTERS) lines.push(`### ${chapter.title}`, '', chapter.transcript, '');
-    for (const key of ['overview', 'infrastructure', 'delivery', 'agents']) {
-      if (key === 'delivery') {
-        lines.push(
-          `## ${PRODUCT_PROOF.title.replaceAll('\n', ' ')}`,
-          '',
-          PRODUCT_PROOF.intro,
-          '',
-          PRODUCT_PROOF.captionLead,
-          PRODUCT_PROOF.caption,
-          ''
-        );
-        for (const note of PRODUCT_PROOF.notes) lines.push(`### ${note.title}`, '', note.text, '');
-      }
-      const section = h[key];
-      lines.push(`## ${section.title.replaceAll('\n', ' ')}`, '', section.intro, '');
-      if (!WORKFLOWS[key]) for (const p of section.paragraphs ?? []) lines.push(p, '');
-      for (const workflow of key === 'infrastructure'
-        ? Object.values(ARCHITECTURES)
-        : WORKFLOWS[key]
-          ? [WORKFLOWS[key]]
-          : []) {
-        lines.push(`### ${workflow.title}`, '', workflow.setup ?? '', '');
-        for (const phase of workflow.phases) lines.push(`- **${phase.title}** ${phase.text}`);
-        lines.push('', workflow.scope, '');
-        if (workflow.architecture) {
-          lines.push(`#### ${WORKFLOW_COPY.explore}`, '');
-          for (const resource of workflow.architecture.resources) {
-            const prerequisites =
-              resource.requires
-                .map((id) => workflow.architecture.resources.find((node) => node.id === id).label)
-                .join(', ') || WORKFLOW_COPY.resourceNone;
-            lines.push(
-              `- **${resource.label}** (${resource.kind}). ${WORKFLOW_COPY.resourceRequires} ${prerequisites}${resource.note ? `. ${resource.note}` : ''}`
-            );
-          }
-          lines.push('');
-        }
-      }
-      for (const point of section.steps ?? section.points ?? [])
-        lines.push(`- **${point.title}.** ${point.text}`);
-      if (section.setup)
-        lines.push('', section.setup, '', `[${section.link}](${site.url}${section.href})`, '');
-      if (section.note) lines.push('', section.note, '');
+    const f = h.firstApp;
+    const prompt = homepage.SETUP_PROMPT_EXAMPLE;
+    lines.push(`## ${h.headline}`, '', h.intro, '', h.caption, '', HERO.description, '');
+    lines.push(`## ${f.title}`, '', f.intro, '', `${f.promptLabel}:`, '', '```text');
+    for (const line of prompt.lines) lines.push(line.replace('{code}', prompt.code));
+    lines.push('```', '');
+    for (const side of [f.you, f.agent]) {
+      lines.push(`### ${side.title}`, '');
+      for (const step of side.steps) lines.push(`- ${step}`);
+      lines.push('');
     }
-    lines.push(`## ${CONTROL_COPY.title.replaceAll('\n', ' ')}`, '', CONTROL_COPY.intro, '');
-    for (const step of CONTROL_COPY.steps) lines.push(`- **${step.title}.** ${step.text}`);
-    for (const choice of CONTROL_COPY.choices) lines.push(`- **${choice.title}.** ${choice.text}`);
-    lines.push('', CONTROL_COPY.note, '', CONTROL_COPY.adoption, '');
-    lines.push(`## ${h.proof.title}`, '');
-    for (const q of h.proof.quotes)
-      lines.push(`> ${q.quote}`, '', `${q.name}, ${q.role}, ${q.company}`, '');
-    lines.push(`## ${h.faq.title}`, '');
-    for (const q of h.faq.questions) lines.push(`### ${q.question}`, '', q.answer, '');
-    lines.push(
-      `## ${h.close.title.replaceAll('\n', ' ')}`,
-      '',
-      h.close.text,
-      '',
-      `[Book a Demo](${site.url}/book-demo)`,
-      ''
-    );
+    lines.push(`## ${h.close.title}`, '', h.close.text, '', h.close.note, '', `[Book a Demo](${site.url}/book-demo)`, '');
     return lines.join('\n');
   }
   if (page.chapters?.length) {
@@ -385,10 +330,7 @@ async function main() {
   index.push(`# ${site.name}`, '');
   index.push(`> ${registry.sitePage('/').description}`, '');
   index.push(homepage.HOMEPAGE.intro, '');
-  index.push('## From infrastructure to application', '');
-  for (const step of homepage.HOMEPAGE.overview.steps)
-    index.push(`- **${step.title}.** ${step.text}`);
-  index.push('');
+  index.push(`## ${homepage.HOMEPAGE.firstApp.title}`, '', homepage.HOMEPAGE.firstApp.intro, '');
   index.push('## Who it is for', '', story.chapter('who-it-is-for').claim, '');
   index.push(
     '## Start',

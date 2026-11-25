@@ -5,4 +5,4 @@
  * never versioned. Only the active version stays in the tree; earlier ones
  * live in git history.
  */
-export * from './v6-2026-09-23';
+export * from './v7-2026-11-25';

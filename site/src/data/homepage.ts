@@ -1,142 +1,85 @@
-import { testimonial } from './testimonials.ts';
-import type { ChapterId } from './story.ts';
+import { FREE_TIER_SEATS } from './pricing.ts';
 
-/** Buyer-facing homepage, grounded in the wiki ledger in content/copywriting.
- * Sources are internal authoring metadata; components render only public copy.
- * Chapter links preserve the story vocabulary without repeating its old pitch.
+/**
+ * Home, one section per record, in the order the page tells the story (the
+ * story's spine, v3.0: a company with no DevOps team runs its own cloud).
+ * Each section names the chapter it mirrors; components render these records
+ * and state nothing. Home is built one or two sections per session, so the
+ * records here are the sections that exist today, in page order.
  */
 export const HOMEPAGE = {
-  title: 'Cloud Infrastructure and Application Delivery',
+  title: 'Run Your Cloud Without a DevOps Team',
   description:
-    // ch 2 (what Planton is): the one sentence and its first action.
-    'Planton deploys every push to GitHub into your own cloud, and shows the cost and permissions of every infrastructure change before it runs. Start by pasting one prompt into your coding agent.',
-  headline: ['Set up your cloud.', 'Let your team ship.'],
+    // ch 1 (a new cloud account, and no DevOps team): the stand, then the first action.
+    'Run your cloud without a DevOps team. Paste one prompt into your coding agent, and it takes your cloud account to a running app in your own cloud.',
+  // ch 1: the stand. The team the diagram beside it draws is the rest of the hero's story.
+  headline: 'Run your cloud without a DevOps team.',
   intro:
-    'Give developers and their coding agents a repeatable path from repository to running service. Planton brings infrastructure, application delivery, and your team’s controls together—in your cloud.',
-  caption: 'Your coding agent. Your cloud. A plan before every infrastructure change.',
-  illustration: 'Illustrative workflow',
-  overview: {
-    eyebrow: '01 / THE WHOLE PICTURE',
-    title: 'One path from infrastructure to application.',
+    // ch 1 (one prompt to a running app), then ch 6 (every push ships through one path).
+    'Paste one prompt into your coding agent, and your app runs in your own cloud account, even a brand-new one. Then every push ships through one path, with your team’s approvals.',
+  // ch 12 (start): the price answered at the first door. The free tier never asks for a card (the claims ledger, the price row).
+  caption: `Free for up to ${FREE_TIER_SEATS} seats. Never asks for a card.`,
+  /**
+   * ch 1: the founder's measure of the product, proven by the setup prompt
+   * itself. Paste to running app is proven on Google Cloud Run (the claims
+   * ledger, the Setup Prompt row), so no other cloud is named beside it.
+   */
+  firstApp: {
+    // A non-breaking hyphen keeps "brand-new" whole when the heading wraps.
+    title: 'From a brand\u2011new cloud account to a running app.',
     intro:
-      'Your coding agent can do these three steps for you from one prompt. After that, every push deploys.',
-    steps: [
-      {
-        title: 'Connect your cloud',
-        label: 'YOUR FOUNDATION',
-        text: 'Connect the cloud accounts your team already uses, with the access your deployment needs.',
-      },
-      {
-        title: 'Create an environment',
-        label: 'INFRA HUB',
-        text: 'Define the network, runtime, and supporting services once. Reuse the architecture with each environment’s configuration.',
-      },
-      {
-        title: 'Ship your application',
-        label: 'SERVICE HUB',
-        text: 'Connect your repository and configure its delivery path. Follow each build and deployment across your environments.',
-      },
-    ],
-    sources: [
-      'product.connect.connection-verification.md',
-      'product.infra-hub.infra-chart.rendering-pipeline.md',
-      'product.service-hub.console-creating-a-service.md',
-    ],
-    chapter: 'what-planton-is' as ChapterId,
+      'These are the exact words your coding agent reads. Planton writes them for you when you sign up, with your own one\u2011time code.',
+    promptLabel: 'An example prompt, for Neha at Slotwren, a demo company',
+    you: {
+      title: 'You',
+      steps: [
+        'Open your app’s repository in Claude Code, Codex or Cursor, and paste the prompt.',
+        'Say yes before anything changes your cloud or costs money.',
+        'Install Planton’s GitHub App, so every push after this ships the same way.',
+      ],
+    },
+    agent: {
+      title: 'Your Agent',
+      steps: [
+        'Installs the Planton CLI and signs in as you.',
+        'Connects your cloud without storing a key.',
+        'Gets your app running in your own cloud account.',
+        'Tells you what it set up, with a link to each thing.',
+      ],
+    },
   },
-  agents: {
-    eyebrow: 'FROM YOUR CODING AGENT',
-    title: 'Your coding agent can ship\nmore than code.',
-    intro:
-      'Give the agent you already use a way to create cloud infrastructure, deploy your service, and inspect what happened—with Planton carrying the configuration, access controls, and deployment records.',
-    setup:
-      'On planton.ai, paste the Setup Prompt into Claude Code, Codex or Cursor from your app’s repository. The agent installs the CLI, connects your cloud and ships the first deployment, asking before anything costs money. Agents can also connect through MCP.',
-    link: 'Connect your coding agent',
-    href: '/docs/coding-agents',
-    sources: [
-      'product.service-hub.service-records-and-build-lane.md',
-      'product.infra-hub.catalog-curation.md',
-      'product.infra-hub.infra-job.md',
-    ],
-    chapter: 'what-planton-is' as ChapterId,
-  },
-  infrastructure: {
-    eyebrow: '02 / INFRASTRUCTURE',
-    title: 'Your stack. Your cloud.\nOne deployment workflow.',
-    intro:
-      'Connect managed services, Kubernetes workloads, and edge applications. A reusable infrastructure template—an Infra Chart—describes the resources and their dependencies. Planton deploys them in order.',
-    paragraphs: [
-      'Write the manifests yourself, or have your coding agent write them. Review the resulting configuration before you deploy. The template stays readable and editable as your requirements change.',
-      'Give development and production their own configuration without rebuilding the architecture from scratch. Planton resolves dependencies and deploys the resources in order, including the connections that let workloads reach a newly created cluster.',
-    ],
-    note: 'See your architecture as it deploys. Explore resource dependencies, follow live deployment status, and inspect individual resources when something needs attention.',
-    sources: [
-      'product.infra-hub.infra-chart.rendering-pipeline.md',
-      'product.infra-hub.infra-chart.one-run-cluster-composition.md',
-    ],
-    chapter: 'what-planton-is' as ChapterId,
-  },
-  delivery: {
-    eyebrow: '03 / APPLICATION DELIVERY',
-    title: 'From a Git push\nto a running service.',
-    intro:
-      'Give every Git push a repeatable path through build, development, and production—with approval where your team requires it.',
-    paragraphs: [
-      'Use a detected Dockerfile, a supported Buildpacks build, or a custom pipeline. Keep deployment configuration in your repository or configure it in Planton. Your team chooses the level of control it needs.',
-      'Follow builds and logs, promote an artifact through your environments, and pause for approval where required. Each delivery records what shipped. When something fails, open the run and read its log and configuration.',
-    ],
-    note: 'Know what shipped, where it landed, and what needs attention.',
-    sources: [
-      'product.service-hub.console-creating-a-service.md',
-      'product.service-hub.service-records-and-build-lane.md',
-      'product.service-hub.console-run-view.md',
-    ],
-    chapter: 'services-ship-from-git' as ChapterId,
-  },
-  proof: {
-    eyebrow: 'IN THEIR OWN WORDS',
-    title: 'One customer. Both sides of the workflow.',
-    quotes: [testimonial('Rakesh Kandhi'), testimonial('Balaji Borra')],
-    chapter: 'proof-it-works' as ChapterId,
-  },
-  faq: {
-    eyebrow: 'A FEW THINGS YOU MAY BE WONDERING',
-    title: 'Before you start.',
-    questions: [
-      {
-        question: 'What does Planton replace or connect?',
-        answer:
-          'Planton connects cloud infrastructure setup, reusable environments, and application delivery. It can provide the build-and-deploy path for a service or work with repository-authored configuration and supported external CI workflows. Your cloud accounts and source repositories stay part of the workflow.',
-      },
-      {
-        question: 'Can we use infrastructure we already have?',
-        answer:
-          'Yes, for supported resource kinds and import paths. Planton can track existing infrastructure and import its IaC state without recreating it. Tracking a resource is different from deploying it; the docs list the supported kinds and import paths.',
-      },
-      {
-        question: 'Where does Planton run?',
-        answer:
-          'Use hosted Planton, run the platform on your own Kubernetes cluster, or use a local Desktop instance. Desktop is an individual workspace. Shared deployments support team collaboration. Workload placement and credential options depend on your selected infrastructure and deployment setup.',
-      },
-      {
-        question: 'How are cloud credentials handled?',
-        answer:
-          'Depending on the deployment, connections can use short-lived identity federation, credentials issued by Vault or OpenBAO, runner-side credentials, or managed secret references. Keyless federation requires an issuer the cloud can reach; it is not offered on a loopback-only Desktop instance.',
-      },
-      {
-        question: 'How do I start?',
-        answer:
-          'Start free on planton.ai: free for up to three seats, no card. Paste the Setup Prompt into your coding agent from your app’s repository.',
-      },
-    ],
-  },
-  // ch 12 (start): hosted is the front door, and the first act is one prompt.
+  // ch 12 (start): what the visitor keeps, then the first act.
   close: {
-    eyebrow: 'YOUR NEXT ENVIRONMENT STARTS HERE',
-    title: 'Start with one\nrepository.',
-    text: 'Start free on planton.ai: paste one prompt into your coding agent, and your first deployment lands in your own cloud.',
-    note: 'Free for up to three seats. No card.',
+    title: 'Your app, running in your own cloud, on your own bill.',
+    // ch 8 (runs where you decide): what the agent builds stays in the customer's account (the claims ledger, the own-cloud row).
+    text: 'What your agent builds stays in your cloud account, and your cloud provider bills you directly.',
+    note: `Free for up to ${FREE_TIER_SEATS} seats. Never asks for a card.`,
   },
+} as const;
+
+/**
+ * The setup prompt a new organization's Home hands over, as the server writes
+ * it (`SetupAgentPrompt.render` in the platform repository), for Slotwren, a
+ * demo company. The page shows the words and never a working prompt: the real
+ * one carries a personal single-use sign-in code, so `{code}` renders as a
+ * marked placeholder and there is no copy button. When the server's wording
+ * changes, this example changes with it.
+ */
+export const SETUP_PROMPT_EXAMPLE = {
+  code: '<her one-time code>',
+  /** The sentence the page sets in full ink: the agent asks before it costs anything. */
+  emphasis: 'Ask me before anything that changes my cloud or costs money; connecting a cloud account counts.',
+  lines: [
+    "Set up Planton for this repository and take it to its first deployment, in my organization slotwren on planton.ai. I'm neha@slotwren.com.",
+    '',
+    '1. Install the Planton CLI and sign it in as me. The code works once, within 15 minutes:',
+    '   curl -fsSL https://planton.ai/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh',
+    '   ~/.planton/bin/planton login --grant {code} --instance planton.ai',
+    '   Call the CLI by that full path in every command.',
+    '2. Fetch https://planton.ai/agents.md with curl, read it as written, and follow it. Skip what you already did in step 1.',
+    "3. Follow the planton skill's first-deployment guide for this repository in slotwren. Ask me before anything that changes my cloud or costs money; connecting a cloud account counts. Tick each Getting Started step as you finish it with ~/.planton/bin/planton setup done <step> (run it with no step to list them).",
+    '4. When you finish, tell me what you set up, with a link to each thing.',
+  ],
 } as const;
 
 /** Source-scoped booking copy; the form payload and existing calendar stay unchanged. */

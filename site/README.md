@@ -19,6 +19,7 @@ This is the source for the planton.ai website, living in the `site/` folder of t
 - [Health ledger](#health-ledger)
 - [Contributing](#contributing)
 - [Media management](#media-management)
+- [Home](#home)
 
 ## What this is
 
@@ -47,7 +48,8 @@ The site is data first. Every sentence that states what Planton is or does lives
 
 | File | Holds | Read by |
 |------|-------|---------|
-| `src/data/story.ts` | The thirteen chapters of the Planton story: claim, proof, never-say. Mirrors `company/marketing/positioning/the-planton-story.md` in the company repository. | the landing page, the Trust pages, `llms.txt` |
+| `src/data/story.ts` | The thirteen chapters of the Planton story: claim, proof, never-say, and its spine. Mirrors `company/marketing/positioning/the-planton-story.md` in the company repository. | the Trust and Product pages, `llms.txt` |
+| `src/data/homepage.ts` | Home, one record per section in page order, each naming its chapter; the setup prompt example; the booking page's words. | `src/components/landing-page/`, `src/components/book-demo/`, `llms.txt` |
 | `src/data/positioning.ts` | What Planton is in one sentence (never an analogy), the first action under it, and each hub's one plain line. | `story.ts`, the Product index, the 404, the hub pages |
 | `src/data/trust.ts` | The five Trust pages: lede, proof points, the illustrated record, the honesty statements, the sibling pages. | `src/components/trust/TrustPage.tsx` |
 | `src/data/product.ts` | The seven Product pages: lede, how it works, proof points, the record or the commands, the Trust pages that prove them, the siblings. | `src/components/product/ProductPage.tsx` |
@@ -113,6 +115,7 @@ packages/website-shell/  the header, footer, navigation, palette, and theme the 
 | `scripts/check-apex-routing.mjs` | every top-level path is in the router's website list and reserved as a platform handle (reads the sibling `planton-platform` checkout; skips loudly without it) |
 | `next build` with `tsc --noEmit` and `eslint --max-warnings 0` before it | types hold, and the accessibility, image, and no-`any` rules hold everywhere with zero warnings |
 | `scripts/check-internal-links.mjs` | every internal link in `out/` resolves to a page or a static file, |
+| `scripts/check-page-weight.mjs` | Home's HTML, scripts and stylesheets stay within their gzipped budget |
 | `scripts/generate-llms.mjs` | `llms.txt`, `llms-full.txt`, and one Markdown per marketing page from the same data; fails when an exported route is unregistered |
 
 ## Proving a change
@@ -148,26 +151,6 @@ What a day-one architect would not have done, and which work retires it. The bui
 ## Contributing
 
 Contributions big and small are welcome. Follow the quick start to run the site locally; for a content edit, open the file on GitHub and use the edit icon; for bugs or content ideas, open an issue at `https://github.com/plantonhq/planton/issues/new`. Keep a change focused, say what it does in the PR description, and for docs and blog posts prefer copy-pastable examples with exact paths or commands. Commit and PR conventions follow the repository-wide rules under `_rules/git/` and `_rules/pull-requests/`.
-
-## Homepage workflow explainers
-
-The homepage, infrastructure, delivery, and coding-agent diagrams animate continuously while visible. The homepage, delivery, and coding-agent stories loop; five provider stories in `src/data/architecture-stories.ts` cycle AWS → GCP → Azure → Cloudflare → DigitalOcean after each complete story and four-second hold. Visitors can choose a provider or inspect a phase without stopping playback. Hidden/offscreen time is suspended, and reduced motion uses static diagrams; without JavaScript all five architectures remain readable. `workflow-explainers.ts` owns the sequence stories and shared copy. Public resource inventories describe illustrative composition, not deployed customer stacks. `ResourceGraph` accepts the selected story, while `SequenceScene` uses a folded six-stage path with generous curved handoffs.
-
-`src/components/marketing/workflows/` separates three responsibilities:
-
-- `WorkflowScene.tsx` selects the authored resource or delivery scene and renders desktop/mobile SVG layouts from a story and a time in seconds. It has no browser APIs, timers, random state, or video dependencies.
-- `timeline.ts` samples deterministic phases. It is shared by browser playback, contract tests, and video exports. Editorial duration is not a product performance claim.
-- `useWorkflowPlayback.ts` owns visibility, reduced motion, manual inspection, and the only animation clock. Hidden and offscreen time is excluded. `WorkflowExplainer.tsx` supplies accessible controls and a complete text transcript. All notes occupy the same grid cell so phase changes cannot shift the page.
-
-The layouts are deliberately authored, not a generic graph engine. `InfrastructureScene.tsx` keeps resource cards, labeled output transfers, and deployment progress distinct; its precomputed arc-length samples give moving packets a steady speed around curves. Infrastructure runs for 24 seconds, delivery for 28 seconds. New stories should establish a real need before adding a new abstraction. Explain the ordering invariant in the content/evidence record; do not import platform execution code into the public client.
-
-Run `yarn check:workflows` against a built export. The timeline contract also runs inside `make build`; CI runs browser acceptance after export. It checks ordering, continuous playback, keyboard phase inspection, visibility suspension, reduced motion, responsive captures, text exports, and the no-JavaScript fallback. The browser harness owns its clock; no test API ships in the application.
-
-Export social video with `yarn export:workflow aws /tmp/planton-aws.mp4` (also `gcp`, `azure`, `cloudflare`, and `digitalocean`) , `yarn export:workflow delivery /tmp/planton-delivery.mp4`, or `yarn export:workflow agents /tmp/planton-agents.mp4`. `video/workflows.tsx` is the export-only Remotion adapter: 1080-square, 30 fps, H.264, with a PNG poster. The three Remotion packages are pinned together as development dependencies and are absent from the website import graph. The exporter uses Puppeteer's installed Chrome (or `PUPPETEER_EXECUTABLE_PATH`) and removes its temporary bundle.
-
-Commit source, not generated videos. The existing R2 `site/` prefix is a deletion-enabled mirror: do not upload untracked generated exports there. Video publishing is a separate explicit step. Native web playback needs no CDN video download.
-
-Analytics use the existing GA transport: `workflow_explainer_view` after one second of visible exposure and `workflow_explainer_cycle_complete` after a full timeline, each once per mounted story. Payloads contain only story id/version and motion mode. Seeking invalidates the current cycle for completion reporting; the next continuous cycle becomes eligible again. Static views never emit completion. These events measure exposure, not comprehension or attributable conversion lift.
 
 ## Media management
 
@@ -274,20 +257,18 @@ Examples:
 For detailed documentation, see `content/assets/_rules/README.md`.
 
 
-## Homepage v6
+## Home
 
-The active homepage is `v6-2026-09-23`, with copy and internal source attribution in `src/data/homepage.ts`. Its source inventory, draft, handoff, and verification record live in `content/copywriting/_stage-area/2026-09-23-homepage/`. Homepage markdown and the llms.txt introduction render the same record; the older story remains the source for other story pages.
+Home is one page that tells one story, built one or two sections at a time; the active composition is `src/components/landing-page/v7-2026-11-25/`. Its words live in `src/data/homepage.ts`, one record per section in page order, each naming the story chapter it mirrors; Home's markdown and the llms.txt introduction render the same records. Each section's draft, cold reads and handoff live under `content/copywriting/_stage-area/` (the hero and the first app: `2026-11-25-hero/`).
 
-The hero is `HeroExperience` with a pure `HeroScene`; the product example is `ProductProof`, and controls and placement share `ControlOwnership`. Their copy lives in `src/data/homepage-experience.ts`, with its source and review record under `content/copywriting/_stage-area/2026-09-23-homepage-product-story/`. The supplied product capture is kept intact and explicitly distinguished from live deployment status. The symmetric hero uses the Planton mark without repeating its name; requests and results share the same connector lanes.
+- **The hero** is the stand and the team it serves. `HeroExperience` draws the team, Planton and your cloud with a pure `HeroScene`, labelled as an illustration; its words are `HERO` in `src/data/homepage-experience.ts`. Its clock is `workflows/useWorkflowPlayback.ts` over `workflows/timeline.ts`: hidden and offscreen time is excluded, reduced motion shows the finished state, and two GA events (`workflow_explainer_view`, `workflow_explainer_cycle_complete`) carry only the story id, version and motion mode. Its marks are embedded by `scripts/generate-workflow-icons.mjs` from the canonical SVGs, and the build checks them for drift.
+- **The first app** shows the setup prompt as the server writes it (`SETUP_PROMPT_EXAMPLE`, rendered by `SetupPromptExample`): words to read, with the sign-in code as a marked placeholder and no copy button, because the real prompt carries a personal single-use code. When the server's wording changes, the example changes with it.
+- **The close** repeats the doors.
 
-`ExperienceLink` renders Start Free, the primary door in every pair, and `DemoLink` the demo door beside it; each records a fixed placement label. All public website routes share the light appearance and one header: four plain links, Sign In, and Start Free, with an optional callback that attributes Start Free clicks on `/`. A signed-in visitor sees the way back to the console instead. The demo journey uses `LightMarketingSurface`. Resource icons retain their canonical colors; the AWS light-selector lettering is derived from the same provider paths.
+`ExperienceLink` renders Start Free, the primary door in every pair, and `DemoLink` the demo door beside it; each records its placement (`hero`, `close`). All public website routes share the light appearance and one header, whose Start Free is attributed as `navigation`.
 
-The `/book-demo` payload and Cal.com destination are unchanged. The form now clearly hands off to scheduling; analytics count a booking only on the SDK's accepted, non-payment-required booking event. No customer details or calendar event payloads enter analytics.
+After `make build`, run `node scripts/check-homepage.mjs`: responsive captures, the hero's reduced-motion state and labels, the setup prompt, the door attribution, the mobile drawer, and the mocked booking journey (CI runs it on pull requests). `node scripts/preview-homepage.mjs` previews the export at port 4177; `HOMEPAGE_CAPTURES` changes the capture directory. Generate the social card with `node scripts/capture-homepage-og.mjs` and commit the PNG.
 
-After `make build`, run `node scripts/check-homepage.mjs` for responsive captures and mocked conversion checks, and `node scripts/preview-homepage.mjs` for a local preview at port 4177. `HOMEPAGE_CAPTURES` changes the capture directory. Generate the social card with `node scripts/capture-homepage-og.mjs`; commit that PNG along with its editable source components. The browser checks mock all external traffic, including form submission and the scheduler.
+`scripts/check-page-weight.mjs` runs inside the build: it sums Home's HTML and the scripts and stylesheets it references, gzipped, against a budget written in the script with its reason. A section that needs more raises the budget in the same change, with the reason beside the number.
 
 Earlier landing versions are in git history, not in the tree. Other pages do not import version-specific components.
-
-Canonical icons are selected from `catalog/<provider>/<kind>/logo.svg` and the existing provider marks. Run `node --experimental-strip-types scripts/generate-workflow-icons.mjs` after changing a story inventory; the build checks the generated `workflow-icons.ts` registry for drift. Embedded SVG bytes are shared with video exports; no runtime catalog or CDN request is needed. The layout module keeps authored positions separate from relationships. Any new relationship needs a source-backed explanation: typed output reference, explicit prerequisite, or grouped configuration dependency.
-
-Run `node scripts/check-homepage-experience.mjs` for the hero, product proof, keyboard controls, responsive captures, zoom, and static fallbacks. `node scripts/measure-homepage.mjs /tmp/homepage-lab.json` records repeatable local LCP, CLS, sampled interaction timing, and JavaScript bytes; it is not field INP or a production-network benchmark. Export the hero with `yarn export:workflow hero /tmp/planton-hero.mp4`. Generated MP4s remain outside Git.

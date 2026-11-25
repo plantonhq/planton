@@ -69,6 +69,7 @@ const events = async () =>
 try {
   for (const width of [320, 390, 768, 1280, 1680]) {
     await page.setViewport({ width, height: 900, deviceScaleFactor: 1 });
+    await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
     await page.goto(base, { waitUntil: 'networkidle0' });
     await page.evaluate(() => document.fonts.ready);
     check(
@@ -84,20 +85,48 @@ try {
       await page.evaluate(() => {
         const w = innerWidth;
         return [...document.querySelectorAll('main *')]
-          .filter((e) => !(e instanceof SVGElement) && !e.parentElement?.closest('[role=tablist]'))
+          .filter((e) => !(e instanceof SVGElement))
           .every((e) => {
             const r = e.getBoundingClientRect();
             return r.width === 0 || (r.left >= -1 && r.right <= w + 1);
           });
       })
     );
+    // Reduced motion shows the diagram's finished state, and its labels stay on its canvas.
     check(
-      `${width}: coding-agent workflow present`,
-      await page.$eval('#agents-title', (e) => e.textContent.includes('coding agent'))
+      `${width}: hero diagram complete with reduced motion`,
+      await page.$eval('[data-hero-time]', (e) => Number(e.dataset.heroTime) >= 16)
     );
     check(
-      `${width}: three demo CTAs`,
-      await page.$$eval('main a[href="/book-demo"]', (es) => es.length === 3)
+      `${width}: hero labels stay inside the diagram`,
+      await page.$eval('[data-hero-time]', (e) => {
+        const box = e.getBoundingClientRect();
+        return [...e.querySelectorAll('svg text')]
+          .filter((t) => t.getBoundingClientRect().width)
+          .every((t) => {
+            const r = t.getBoundingClientRect();
+            return r.left >= box.left - 1 && r.right <= box.right + 1;
+          });
+      })
+    );
+    check(
+      `${width}: the first app follows the hero`,
+      await page.$eval('#first-app-title', (e) => e.textContent.includes('running app'))
+    );
+    // The example prompt is words to read, never a prompt to copy: its code is a marked placeholder.
+    check(
+      `${width}: setup prompt shows a placeholder code and no copy button`,
+      await page.$eval(
+        '[aria-labelledby="setup-prompt-label"]',
+        (e) =>
+          e.textContent.includes('<her one-time code>') &&
+          !!e.querySelector('strong') &&
+          !e.closest('figure').querySelector('button')
+      )
+    );
+    check(
+      `${width}: two demo CTAs`,
+      await page.$$eval('main a[href="/book-demo"]', (es) => es.length === 2)
     );
     // Start Free leads every door pair, so each demo link has a Start Free before it.
     check(
@@ -106,46 +135,40 @@ try {
         es.every((demo) => demo.previousElementSibling?.getAttribute('href')?.endsWith('/signup'))
       )
     );
-    for (const theme of ['light']) {
-      if (width !== 320) {
-        await page.screenshot({
-          path: path.join(out, `home-${width}-${theme}.png`),
-          fullPage: true,
-        });
-        await (
-          await page.$('main section')
-        ).screenshot({ path: path.join(out, `hero-${width}-${theme}.png`) });
-      }
-      check(
-        `${width} ${theme}: readable body contrast`,
-        await page.evaluate(() => {
-          const root = document.querySelector('[data-homepage-appearance]'),
-            s = getComputedStyle(root);
-          const rgb = (v) => {
-            const el = document.createElement('span');
-            el.style.color = v;
-            root.append(el);
-            const values = getComputedStyle(el)
-              .color.match(/[\d.]+/g)
-              .slice(0, 3)
-              .map(Number);
-            el.remove();
-            return values;
-          };
-          const lum = (v) =>
-            rgb(v)
-              .map((n) => {
-                n /= 255;
-                return n <= 0.04045 ? n / 12.92 : ((n + 0.055) / 1.055) ** 2.4;
-              })
-              .reduce((sum, n, i) => sum + n * [0.2126, 0.7152, 0.0722][i], 0);
-          const a = lum(s.getPropertyValue('--hp-canvas')),
-            b = lum(s.getPropertyValue('--hp-secondary'));
-          return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05) >= 4.5;
-        })
-      );
+    if (width !== 320) {
+      await page.screenshot({ path: path.join(out, `home-${width}-light.png`), fullPage: true });
+      await (await page.$('main section')).screenshot({ path: path.join(out, `hero-${width}-light.png`) });
     }
+    check(
+      `${width}: readable body contrast`,
+      await page.evaluate(() => {
+        const root = document.querySelector('[data-homepage-appearance]'),
+          s = getComputedStyle(root);
+        const rgb = (v) => {
+          const el = document.createElement('span');
+          el.style.color = v;
+          root.append(el);
+          const values = getComputedStyle(el)
+            .color.match(/[\d.]+/g)
+            .slice(0, 3)
+            .map(Number);
+          el.remove();
+          return values;
+        };
+        const lum = (v) =>
+          rgb(v)
+            .map((n) => {
+              n /= 255;
+              return n <= 0.04045 ? n / 12.92 : ((n + 0.055) / 1.055) ** 2.4;
+            })
+            .reduce((sum, n, i) => sum + n * [0.2126, 0.7152, 0.0722][i], 0);
+        const a = lum(s.getPropertyValue('--hp-canvas')),
+          b = lum(s.getPropertyValue('--hp-secondary'));
+        return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05) >= 4.5;
+      })
+    );
   }
+  await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'no-preference' }]);
   await page.setViewport({ width: 1280, height: 900 });
   await page.goto(base, { waitUntil: 'networkidle0' });
   // One header everywhere: plain links, Sign In, and Start Free; no demo door and no menus.
@@ -169,75 +192,34 @@ try {
   await page.click('[aria-label="Close navigation"]');
   await page.waitForSelector('.MuiDrawer-root', { hidden: true });
   await page.setViewport({ width: 1280, height: 900 });
-  await page.focus('[aria-label="Architecture view explanations"] button');
-  await page.keyboard.press('Tab');
-  await page.keyboard.press('Enter');
-  check(
-    'keyboard selects product explanation',
-    await page.$eval(
-      '[aria-label="Architecture view explanations"] button[aria-pressed="true"]',
-      (e) => e.textContent.includes('See What Runs Inside')
-    )
-  );
-  check(
-    'product explanation identifies the visible self-hosted instance',
-    await page.$eval('[id$="-note"]', (e) =>
-      e.textContent.includes('Planton Platform and the Planton Operator')
-    )
-  );
-  await page.click('a[href="#how-it-works"]');
-  check('explanation anchor works', page.url().endsWith('#how-it-works'));
-  await page.focus('section[aria-labelledby=faq-title] details summary');
-  await page.keyboard.press('Enter');
-  check(
-    'FAQ keyboard expands',
-    await page.$eval('section[aria-labelledby=faq-title] details', (e) => e.open)
-  );
-  await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
-  check(
-    'reduced motion disables transitions',
-    await page.$eval(
-      'main button[aria-controls]',
-      (e) => getComputedStyle(e).transitionDuration === '0s'
-    )
-  );
-  // All three CTA locations must report their own placement.
-  for (const location of ['hero', 'controls', 'close']) {
+  // Both door pairs report their own placement.
+  for (const [index, location] of ['hero', 'close'].entries()) {
     await page.goto(base, { waitUntil: 'networkidle0' });
-    const index = ['hero', 'controls', 'close'].indexOf(location);
-    await page.evaluate((i) => {
-      document
-        .querySelectorAll('main a[href="/book-demo"]')
-        [i].addEventListener('click', (e) => e.preventDefault());
-    }, index);
-    await (await page.$$('main a[href="/book-demo"]'))[index].click();
-    check(
-      `${location}: CTA attribution`,
-      (await events()).some((e) => e[1] === 'demo_cta_click' && e[2].location === location)
-    );
+    for (const [selector, event] of [
+      ['main a[href="/book-demo"]', 'demo_cta_click'],
+      ['main a[href$="/signup"]', 'self_service_click'],
+    ]) {
+      await page.evaluate(
+        (selector, i) =>
+          document.querySelectorAll(selector)[i].addEventListener('click', (e) => e.preventDefault()),
+        selector,
+        index
+      );
+      await (await page.$$(selector))[index].click();
+      check(
+        `${location}: ${event} attribution`,
+        (await events()).some((e) => e[1] === event && e[2].location === location)
+      );
+    }
   }
-  // Header and secondary routes use the same closed, non-identifying vocabulary.
   await page.goto(base, { waitUntil: 'networkidle0' });
-  for (const [selector, event, location] of [
-    ['header a[href$="/signup"]', 'self_service_click', 'navigation'],
-    ['#controls a[href$="/signup"]', 'self_service_click', 'controls'],
-    ['#coding-agents a[href="/docs/coding-agents"]', 'self_service_click', 'agents'],
-  ]) {
-    await page.$eval(selector, (e) =>
-      e.addEventListener('click', (event) => event.preventDefault())
-    );
-    await page.click(selector);
-    check(
-      `${location}: ${event} attribution`,
-      (await events()).some((e) => e[1] === event && e[2].location === location)
-    );
-  }
-  await page.click('#living-architecture button:last-child');
+  await page.$eval('header a[href$="/signup"]', (e) =>
+    e.addEventListener('click', (event) => event.preventDefault())
+  );
+  await page.click('header a[href$="/signup"]');
   check(
-    'product example selection attribution',
-    (await events()).some(
-      (e) => e[1] === 'product_example_select' && e[2].selection === 'resources'
-    )
+    'navigation: self_service_click attribution',
+    (await events()).some((e) => e[1] === 'self_service_click' && e[2].location === 'navigation')
   );
   await page.goto(base + '/book-demo', { waitUntil: 'networkidle0' });
   check(
@@ -350,13 +332,14 @@ try {
   await page.setViewport({ width: 390, height: 844 });
   await page.goto(base + '/book-demo', { waitUntil: 'networkidle0' });
   await page.screenshot({ path: path.join(out, 'demo-390.png'), fullPage: true });
-  for (const route of ['/docs/coding-agents', '/product', '/pricing']) {
+  // Every public page shares Home's light appearance (MarketingShell).
+  for (const route of ['/docs/coding-agents', '/pricing']) {
     await page.goto(base + route, { waitUntil: 'networkidle0' });
     check(
-      `${route}: existing dark surface preserved`,
+      `${route}: shares the light appearance`,
       await page.$eval(
         '[data-marketing-appearance]',
-        (e) => e.dataset.marketingAppearance === 'dark'
+        (e) => e.dataset.marketingAppearance === 'light'
       )
     );
   }
