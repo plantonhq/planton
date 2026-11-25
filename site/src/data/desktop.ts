@@ -235,7 +235,7 @@ export const DESKTOP_LANDING: DesktopLanding = {
     ],
     door: { label: 'See Full Pricing', href: '/pricing' },
   },
-  next: ['/product/cli', '/product/infra-hub', '/product/service-hub'],
+  next: ['/docs', '/pricing', '/security'],
   close: {
     title: 'Install It. Ask It Something.',
     body: 'Download, open, pick Run on This Computer, then install the skills and ask from your editor.',

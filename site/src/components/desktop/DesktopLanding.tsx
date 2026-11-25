@@ -39,7 +39,7 @@ export const DesktopLanding: FC = () => {
   const d = DESKTOP_LANDING;
   return (
     <main className="overflow-x-hidden">
-      <PageHero eyebrow={{ label: 'Distributions', href: '/distributions' }} title={d.headline} kicker={page.title} lede={d.lede} forWhom={desktopWaysLine()}>
+      <PageHero title={d.headline} kicker={page.title} lede={d.lede} forWhom={desktopWaysLine()}>
         <Doors {...d.doors} className="justify-center mt-2" />
         <Screenshot shot={DESKTOP_SCREENSHOTS.home} priority className="max-w-4xl mx-auto mt-8" />
       </PageHero>

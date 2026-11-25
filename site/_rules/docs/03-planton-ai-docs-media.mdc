@@ -34,7 +34,6 @@ Documentation images follow the path pattern `docs/{section}/{page}/{filename}`:
 | Content Area | Path Pattern |
 |---|---|
 | Docs | `docs/{section}/{page}/{filename}` |
-| Blog | `blog/{post-slug}/{filename}` |
 | Landing page | `landing/{filename}` |
 
 ## Image Upload Workflow

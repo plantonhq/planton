@@ -9,7 +9,7 @@ export type DemoEvent =
   | 'demo_form_submit_success'
   | 'demo_scheduler_view'
   | 'demo_booking_confirmed';
-export type DemoLocation = 'hero' | 'close' | 'booking' | 'navigation';
+export type DemoLocation = 'hero' | 'close' | 'security' | 'booking' | 'navigation';
 
 /** Closed vocabulary: no form contents, calendar payloads, or identifying URLs. */
 export function trackDemo(event: DemoEvent, location: DemoLocation = 'booking') {

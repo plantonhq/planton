@@ -142,7 +142,7 @@ export const DownloadHero: FC<DownloadHeroProps> = ({ platform, onSelect, versio
 
   return (
     <>
-      <PageHero eyebrow={{ label: 'Distributions', href: '/distributions' }} title={page.title} lede={DESKTOP_DOWNLOAD.lede}>
+      <PageHero eyebrow={{ label: 'Planton Desktop', href: '/desktop' }} title={page.title} lede={DESKTOP_DOWNLOAD.lede}>
         {version && (
           <Typography className="text-xs text-fg-muted">
             Latest release <span className="font-mono text-fg-secondary">{version}</span>

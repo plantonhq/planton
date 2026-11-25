@@ -1,6 +1,6 @@
 /**
- * The first screen of a marketing page inside a section (Trust, Product,
- * Distributions): an eyebrow door back to the section's index, the page's
+ * The first screen of Pricing, Desktop and the 404: an optional eyebrow door
+ * back to the page's parent (Download's to Desktop), the page's
  * title, its lede (the chapter's claim, or the page's own opening sentence),
  * one quiet line saying who the page is for, and the doors. The hero adds no
  * sentence of its own; every string is passed in from the page's record.

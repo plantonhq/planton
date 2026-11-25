@@ -1,4 +1,5 @@
 import { FREE_TIER_SEATS } from './pricing.ts';
+import { STAND } from './story.ts';
 
 /**
  * Home, one section per record, in the order the page tells the story (the
@@ -11,9 +12,9 @@ export const HOMEPAGE = {
   title: 'Run Your Cloud Without a DevOps Team',
   description:
     // ch 1 (a new cloud account, and no DevOps team): the stand, then the first action.
-    'Run your cloud without a DevOps team. Paste one prompt into your coding agent, and it takes your cloud account to a running app in your own cloud.',
+    `${STAND} Paste one prompt into your coding agent, and it takes your cloud account to a running app in your own cloud.`,
   // ch 1: the stand. The team the diagram beside it draws is the rest of the hero's story.
-  headline: 'Run your cloud without a DevOps team.',
+  headline: STAND,
   intro:
     // ch 1 (one prompt to a running app), then ch 6 (every push ships through one path).
     'Paste one prompt into your coding agent, and your app runs in your own cloud account, even a brand-new one. Then every push ships through one path, with your team’s approvals.',

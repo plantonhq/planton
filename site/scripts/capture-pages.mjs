@@ -97,42 +97,24 @@ const UA = {
  * drawer is captured open (with `viewportOnly` and a `height`).
  */
 const SCENES = [
-  // The marketing pages a "zero visual change" commit is proven against: the
-  // landing page, the Product, Distributions, and Trust groups, pricing, the
-  // 404, and the meeting decks that ride the deck engine. Two review widths
-  // for a group's first page, one for its siblings.
+  // The pages a "zero visual change" commit is proven against: Home, Pricing,
+  // Security, the 404, the meeting decks that ride the deck engine, and
+  // Desktop. Two review widths for a page, plus a phone where it matters.
   { name: 'landing-1680', route: '/', width: 1680, ua: UA.mac },
   { name: 'landing-1280', route: '/', width: 1280, ua: UA.mac },
   { name: 'landing-phone', route: '/', width: 390, ua: UA.iphone },
   // The header's mobile drawer open: the only place the drawer's links and
   // doors are seen, so a navigation change is graded rather than eyeballed.
   { name: 'menu-phone', route: '/', width: 390, height: 800, ua: UA.iphone, viewportOnly: true, open: '[aria-label="Open navigation"]' },
-  { name: 'product-1280', route: '/product', width: 1280, ua: UA.mac },
-  { name: 'infra-hub-1680', route: '/product/infra-hub', width: 1680, ua: UA.mac },
-  { name: 'infra-hub-1280', route: '/product/infra-hub', width: 1280, ua: UA.mac },
-  { name: 'service-hub-1280', route: '/product/service-hub', width: 1280, ua: UA.mac },
-  { name: 'coding-agents-1280', route: '/product/coding-agents', width: 1280, ua: UA.mac },
-  { name: 'cli-1280', route: '/product/cli', width: 1280, ua: UA.mac },
-  { name: 'catalog-1280', route: '/product/catalog', width: 1280, ua: UA.mac },
-  { name: 'import-1280', route: '/product/import', width: 1280, ua: UA.mac },
-  { name: 'open-source-1280', route: '/product/open-source', width: 1280, ua: UA.mac },
-  { name: 'distributions-1280', route: '/distributions', width: 1280, ua: UA.mac },
-  { name: 'hosted-1680', route: '/distributions/hosted', width: 1680, ua: UA.mac },
-  { name: 'hosted-1280', route: '/distributions/hosted', width: 1280, ua: UA.mac },
-  { name: 'self-hosted-1280', route: '/distributions/self-hosted', width: 1280, ua: UA.mac },
   { name: 'pricing-1680', route: '/pricing', width: 1680, ua: UA.mac },
   { name: 'pricing-1280', route: '/pricing', width: 1280, ua: UA.mac },
+  // Security: the reviewer's answers beside the real thing behind each.
+  { name: 'security-1680', route: '/security', width: 1680, ua: UA.mac },
+  { name: 'security-1280', route: '/security', width: 1280, ua: UA.mac },
+  { name: 'security-phone', route: '/security', width: 390, ua: UA.iphone },
   // The 404 every address without a page answers, the retired pages' included.
   { name: 'not-found-1280', route: '/404', width: 1280, ua: UA.mac },
   { name: 'not-found-phone', route: '/404', width: 390, ua: UA.iphone },
-  { name: 'trust-1680', route: '/trust', width: 1680, ua: UA.mac },
-  { name: 'trust-1280', route: '/trust', width: 1280, ua: UA.mac },
-  { name: 'trust-verified-1680', route: '/trust/verified-before-deploy', width: 1680, ua: UA.mac },
-  { name: 'trust-verified-1280', route: '/trust/verified-before-deploy', width: 1280, ua: UA.mac },
-  { name: 'trust-rules-1280', route: '/trust/rules-and-approvals', width: 1280, ua: UA.mac },
-  { name: 'trust-record-1280', route: '/trust/the-record', width: 1280, ua: UA.mac },
-  { name: 'trust-posture-1280', route: '/trust/security-posture', width: 1280, ua: UA.mac },
-  { name: 'trust-keys-1280', route: '/trust/your-cloud-your-keys', width: 1280, ua: UA.mac },
   { name: 'deck-sep-1280', route: '/meets/sep', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
   { name: 'deck-nirav-1280', route: '/meets/nirav', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
   { name: 'deck-clear-route-1280', route: '/meets/clear-route', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },

@@ -2,9 +2,9 @@
  * The Planton story as data: thirteen chapters in the order every surface
  * tells them, told to one buyer, the developer who inherited ops at a team of
  * 2 to 10 with no DevOps team. Its spine (v3.0): a company with no DevOps
- * team runs its own cloud. The landing page, the Product and Trust pages, and llms.txt all
- * render from this file, so a sentence about what
- * Planton is or does appears here once and nowhere else.
+ * team runs its own cloud. Home, the Security page, the 404 and llms.txt
+ * render from this file, so a sentence about what Planton is or does appears
+ * here once and nowhere else.
  *
  * The canonical narrative lives in the company repository as
  * company/marketing/positioning/the-planton-story.md; every claim below
@@ -53,6 +53,13 @@ export interface Chapter {
   /** True for the roadmap chapter: rendered in decks with a disclosure line, never on the website. */
   decksOnly?: boolean;
 }
+
+/**
+ * The stand (chapter 1, the founder's words of 2026-11-25): why Planton
+ * exists, said plainly. Home's headline and the 404 both read it, so the two
+ * can never say different things.
+ */
+export const STAND = 'Run your cloud without a DevOps team.';
 
 /** The spine, in one sentence, for a hero or a deck cover. */
 export const STORY_SPINE =

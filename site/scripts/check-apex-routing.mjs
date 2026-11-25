@@ -65,7 +65,7 @@ async function loadRegistry() {
   return { pages: mod.SITE_PAGES, unregistered: mod.UNREGISTERED_PREFIXES };
 }
 
-/** The first path segment of a route, e.g. "/trust/the-record" -> "trust"; "/" -> null. */
+/** The first path segment of a route, e.g. "/legal/terms" -> "legal"; "/" -> null. */
 function firstSegment(route) {
   const seg = route.split('/').filter(Boolean)[0];
   return seg ?? null;

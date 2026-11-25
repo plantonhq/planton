@@ -73,7 +73,7 @@ function exportedRoutes() {
 }
 
 // ---------------------------------------------------------------------------
-// Content pages (docs, blog, tutorials, changelog) from their markdown
+// Content pages (docs, changelog) from their markdown
 // ---------------------------------------------------------------------------
 
 function contentFiles(folder) {
@@ -122,11 +122,10 @@ function pageMarkdown(
     story,
     stats,
     site,
-    product,
-    distributions,
     desktop,
     desktopDownload,
     homepage,
+    security,
   }
 ) {
   const lines = [
@@ -154,32 +153,38 @@ function pageMarkdown(
     lines.push(`## ${h.close.title}`, '', h.close.text, '', h.close.note, '', `[Book a Demo](${site.url}/book-demo)`, '');
     return lines.join('\n');
   }
+  if (page.path === '/security') {
+    // Security, answer by answer, from the records the page renders: each
+    // answer, the real thing behind it, and how to check it.
+    const sec = security.SECURITY;
+    lines.push(`## ${sec.headline}`, '', sec.lede, '');
+    for (const section of sec.sections) {
+      lines.push(`## ${section.title}`, '');
+      for (const p of section.paragraphs) lines.push(p, '');
+      const a = section.artifact;
+      if (a?.kind === 'code') lines.push(`${a.label}:`, '', `\`\`\`${a.language}`, ...a.lines, '```', '');
+      if (a?.kind === 'table') {
+        lines.push(`${a.label}:`, '', `| ${a.columns.join(' | ')} |`, `|${a.columns.map(() => '---').join('|')}|`);
+        for (const row of a.rows) lines.push(`| ${row.join(' | ')} |`);
+        lines.push('');
+      }
+      const c = section.check;
+      if (c) {
+        const href = c.href && (c.href.startsWith('http') ? c.href : `${site.url}${c.href}`);
+        lines.push(href ? `[${c.text}](${href})` : c.text, '');
+        if (c.command) lines.push('```shell', c.command, '```', '');
+      }
+    }
+    lines.push(`## ${sec.more.title}`, '');
+    for (const doc of sec.more.docs) lines.push(`- [${doc.label}](${site.url}${doc.href}.md)`);
+    lines.push('', `${sec.more.contact.text} ${sec.more.contact.address}`);
+    return lines.join('\n').trim() + '\n';
+  }
   if (page.chapters?.length) {
     lines.push('## What this page says', '');
     for (const id of page.chapters) {
       const c = story.chapter(id);
       lines.push(chapterMarkdown(c), '');
-    }
-  }
-  // A Product or Distributions page states more than its chapters: the record
-  // it renders from carries the page's own proof points and steps, so the
-  // agent reads the same sentences the person does.
-  const record =
-    product.PRODUCT_PAGES.find((p) => p.path === page.path) ??
-    distributions.DISTRIBUTION_PAGES.find((p) => p.path === page.path);
-  if (record) {
-    if (record.steps?.length) {
-      lines.push('## How it works', '');
-      record.steps.forEach((step, i) => lines.push(`${i + 1}. **${step.title}.** ${step.text}`));
-      lines.push('');
-    }
-    lines.push('## What you get', '');
-    for (const point of record.points) lines.push(`- **${point.label}.** ${point.text}`);
-    lines.push('');
-    if (record.yours?.length) {
-      lines.push('## What stays yours', '');
-      for (const line of record.yours) lines.push(`- ${line}`);
-      lines.push('');
     }
   }
   // The desktop pages state their own record: the landing's sections in the
@@ -231,7 +236,7 @@ function pageMarkdown(
       lines.push(`- **${tab.label}.** \`${tab.commands.join('; ')}\` ${tab.description}`);
     lines.push('');
   }
-  if (page.path === '/' || page.group === 'trust') {
+  if (page.path === '/') {
     lines.push(
       '## By the numbers',
       '',
@@ -254,10 +259,9 @@ async function main() {
   const homepage = await load('src/data/homepage.ts');
   const stats = await load('src/data/platform-stats.ts');
   const pricing = await load('src/data/pricing.ts');
-  const product = await load('src/data/product.ts');
-  const distributions = await load('src/data/distributions.ts');
   const desktop = await load('src/data/desktop.ts');
   const desktopDownload = await load('src/data/desktop-download.ts');
+  const security = await load('src/data/security.ts');
 
   const site = registry.SITE;
   const pages = registry.SITE_PAGES;
@@ -292,11 +296,10 @@ async function main() {
     story,
     stats,
     site,
-    product,
-    distributions,
     desktop,
     desktopDownload,
     homepage,
+    security,
   };
   for (const page of marketing) {
     const target =
@@ -310,8 +313,6 @@ async function main() {
   // ---- llms.txt -----------------------------------------------------------
   const docs = [
     ...contentFiles('docs'),
-    ...contentFiles('tutorials'),
-    ...contentFiles('blog'),
     ...contentFiles('changelog'),
   ];
   // The index lists pages under the groups the registry names, in the

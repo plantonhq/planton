@@ -1,0 +1,216 @@
+/*
+ * The Security page, in Home's grammar: the same container, headings, body
+ * sizes and code panel (composed from Home's module, never copied), so the two
+ * pages read as one site. Each answer sits left; the real thing behind it sits
+ * right, on the same two columns Home uses.
+ */
+.container {
+  composes: container from '../marketing/homepage.module.css';
+}
+.heading {
+  composes: heading from '../marketing/homepage.module.css';
+}
+.intro {
+  composes: intro from '../marketing/homepage.module.css';
+}
+.code {
+  composes: prompt from '../marketing/homepage.module.css';
+  overflow-x: auto;
+}
+.code pre {
+  margin: 0;
+  font: inherit;
+  /* Code keeps its lines and indentation; a line longer than the panel scrolls inside it. */
+  white-space: pre;
+}
+.top {
+  padding-block: 56px 64px;
+  max-width: 760px;
+}
+.top h1 {
+  text-wrap: balance;
+  font-size: clamp(44px, 4.4vw, 65px);
+  font-weight: 400;
+  line-height: 1.09;
+  letter-spacing: -0.055em;
+  margin-bottom: 26px !important;
+}
+.eyebrow {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--hp-secondary);
+  margin-bottom: 14px !important;
+}
+.contact {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--hp-body);
+  margin-top: 20px !important;
+}
+.contact a {
+  color: var(--hp-ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.top .intro {
+  max-width: 620px;
+}
+.answer {
+  border-top: 1px solid var(--hp-line);
+  padding-block: 56px;
+  display: grid;
+  grid-template-columns: 1fr 1.12fr;
+  gap: 38px;
+  align-items: start;
+}
+.answer > * {
+  min-width: 0;
+}
+.words {
+  display: grid;
+  gap: 18px;
+}
+.words .heading {
+  font-size: clamp(28px, 2.6vw, 38px);
+  margin-bottom: 4px;
+}
+.words p {
+  text-wrap: pretty;
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--hp-body);
+}
+.check {
+  font-size: 14px !important;
+  color: var(--hp-secondary) !important;
+}
+.check a {
+  color: var(--hp-ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.check code {
+  display: block;
+  white-space: nowrap;
+  overflow-x: auto;
+  margin-top: 8px;
+  font:
+    13px/1.6 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+  color: var(--hp-ink);
+}
+.label {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--hp-secondary);
+  margin-bottom: 10px !important;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--hp-panel);
+  border: 1px solid var(--hp-line);
+  border-radius: 12px;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.table th,
+.table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--hp-line);
+}
+.table tr:last-child td {
+  border-bottom: 0;
+}
+.table th {
+  font-weight: 500;
+  color: var(--hp-secondary);
+  font-size: 13px;
+}
+.table td {
+  color: var(--hp-body);
+}
+.table td:first-child {
+  color: var(--hp-ink);
+  font-weight: 500;
+}
+/* Short columns keep their words on one line; the last column, the explanation, takes the rest. */
+.table th:not(:last-child),
+.table td:not(:last-child) {
+  white-space: nowrap;
+}
+.table th:last-child,
+.table td:last-child {
+  width: 100%;
+}
+.more {
+  border-top: 1px solid var(--hp-line);
+  padding-block: 56px 90px;
+  display: grid;
+  grid-template-columns: 1fr 1.12fr;
+  gap: 38px;
+  align-items: start;
+}
+.more ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+.more li a {
+  font-size: 16px;
+  color: var(--hp-ink);
+}
+.more li a:hover {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 28px;
+}
+@media (max-width: 1100px) {
+  .answer,
+  .more {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+@media (max-width: 760px) {
+  .top {
+    padding-block: 36px 44px;
+  }
+  .top h1 {
+    font-size: clamp(38px, 8.4vw, 58px);
+  }
+  .answer {
+    padding-block: 44px;
+  }
+  .words .heading {
+    font-size: 28px;
+  }
+  .table {
+    font-size: 13px;
+  }
+  .table th,
+  .table td {
+    padding: 10px 12px;
+  }
+  .table th:not(:last-child),
+  .table td:not(:last-child) {
+    white-space: normal;
+  }
+  .actions {
+    gap: 16px;
+  }
+}

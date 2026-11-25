@@ -29,27 +29,23 @@ flowchart LR
     subgraph website [Website URL]
         W1[planton.ai/docs/service-hub/deployment-environments]
         W2[planton.ai/docs/platform/connections]
-        W3[planton.ai/blog/my-post]
         W4[planton.ai/]
     end
     
     subgraph images [Image Folder]
         I1[images/docs/service-hub/deployment-environments/]
         I2[images/docs/platform/connections/]
-        I3[images/blog/my-post/]
         I4[images/landing/]
     end
     
     subgraph r2 [R2 URL]
         R1[assets.planton.ai/site/images/docs/service-hub/deployment-environments/]
         R2[assets.planton.ai/site/images/docs/platform/connections/]
-        R3[assets.planton.ai/site/images/blog/my-post/]
         R4[assets.planton.ai/site/images/landing/]
     end
     
     W1 --> I1 --> R1
     W2 --> I2 --> R2
-    W3 --> I3 --> R3
     W4 --> I4 --> R4
 ```
 
@@ -60,7 +56,6 @@ flowchart LR
 | `planton.ai/docs/service-hub/deployment-environments` | `content/assets/images/docs/service-hub/deployment-environments/` | `assets.planton.ai/site/images/docs/service-hub/deployment-environments/` |
 | `planton.ai/docs/platform/connections` | `content/assets/images/docs/platform/connections/` | `assets.planton.ai/site/images/docs/platform/connections/` |
 | `planton.ai/docs/service-hub/kubernetes-dashboard` | `content/assets/images/docs/service-hub/kubernetes-dashboard/` | `assets.planton.ai/site/images/docs/service-hub/kubernetes-dashboard/` |
-| `planton.ai/blog/2025-01-my-post` | `content/assets/images/blog/2025-01-my-post/` | `assets.planton.ai/site/images/blog/2025-01-my-post/` |
 | `planton.ai/` (landing) | `content/assets/images/landing/` | `assets.planton.ai/site/images/landing/` |
 
 ### Why This Matters
@@ -200,8 +195,6 @@ content/assets/
     │   └── service-hub/
     │       ├── deployment-environments/
     │       └── kubernetes-dashboard/
-    ├── blog/                       # Blog posts
-    │   └── 2025-01-my-post/
     └── landing/                    # Landing page
 ```
 

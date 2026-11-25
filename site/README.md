@@ -1,9 +1,9 @@
-# planton.ai — Website, docs, and blog
+# planton.ai — Website and docs
 
 This is the source for the planton.ai website, living in the `site/` folder of the Planton open-source repository. It contains:
 
-- All written content and visuals for the public website: product pages, docs, blog, case studies, tutorials, and marketing pages
-- File system–based content for docs and blog (Markdown/MDX) alongside the components, templates, and logic used to render them
+- All written content and visuals for the public website: Home, Security, Pricing, Planton Desktop, the docs, the changelog and the legal pages
+- File system–based content for the docs and the changelog (Markdown/MDX) alongside the components, templates, and logic used to render them
 - All the components, styling, and configurations used to run the site as an application
 
 ## Table of contents
@@ -48,26 +48,22 @@ The site is data first. Every sentence that states what Planton is or does lives
 
 | File | Holds | Read by |
 |------|-------|---------|
-| `src/data/story.ts` | The thirteen chapters of the Planton story: claim, proof, never-say, and its spine. Mirrors `company/marketing/positioning/the-planton-story.md` in the company repository. | the Trust and Product pages, `llms.txt` |
+| `src/data/story.ts` | The thirteen chapters of the Planton story: claim, proof, never-say, its spine, and the stand (`STAND`, Home's headline and the 404's sentence). Mirrors `company/marketing/positioning/the-planton-story.md` in the company repository. | `homepage.ts`, `not-found.ts`, the registry's chapters, `llms.txt` |
 | `src/data/homepage.ts` | Home, one record per section in page order, each naming its chapter; the setup prompt example; the booking page's words. | `src/components/landing-page/`, `src/components/book-demo/`, `llms.txt` |
-| `src/data/positioning.ts` | What Planton is in one sentence (never an analogy), the first action under it, and each hub's one plain line. | `story.ts`, the Product index, the 404, the hub pages |
-| `src/data/trust.ts` | The five Trust pages: lede, proof points, the illustrated record, the honesty statements, the sibling pages. | `src/components/trust/TrustPage.tsx` |
-| `src/data/product.ts` | The seven Product pages: lede, how it works, proof points, the record or the commands, the Trust pages that prove them, the siblings. | `src/components/product/ProductPage.tsx` |
-| `src/data/distributions.ts` | The hosted and self-hosted pages: lede, proof points, the record or the install, what stays yours. | `src/components/distributions/DistributionPage.tsx` |
+| `src/data/positioning.ts` | What Planton is in one sentence (never an analogy), the first action under it, and each hub's one plain line. | `story.ts`, `desktop.ts` |
+| `src/data/security.ts` | The Security page: each question a reviewer asks, its answer, the real artifact behind it (a permission list, a trust policy, a table), and how to check it; each sentence names its chapter and claims-ledger row. | `src/components/security/SecurityPage.tsx`, `llms.txt` |
 | `src/data/desktop.ts` | Planton Desktop's landing and download pages: every section's words, the measured figures with their provenance, the first-launch beats and follow-ons; each sentence names its chapter or document. | `src/components/desktop/`, `llms.txt` |
 | `src/data/desktop-download.ts` | The one source for what can be downloaded: platforms, installers, install steps, one-command installs, verify commands, the CDN pointers, the platform detector, and the ways line derived from them. | `src/components/desktop/`, `doors.ts` |
 | `src/data/desktop-screenshots.ts` | The desktop pages' screenshot slots: a real capture of the app or `null`, never a placeholder. | `src/components/desktop/` |
 | `src/data/doors.ts` | Every call to action once: label and destination by key; Start Free leads every pair. | the `Doors` primitive; a record names its pair |
-| `src/data/not-found.ts` | The 404's words and doors; the sentence read from `positioning.ts`. | `src/app/not-found.tsx` |
-| `src/data/page-shapes.ts` | The shapes the page records share: a proof point, a record or commands artifact, a step; and the one footer vocabulary every illustrated record uses (`illustratedFooter`). | `trust.ts`, `product.ts`, `distributions.ts` |
+| `src/data/not-found.ts` | The 404's words and doors; the stand read from `story.ts`. | `src/app/not-found.tsx` |
 | `src/data/site-pages.ts` | The route registry: every non-content page with its title, description, group, chapters, and index flag; and the heading each group gets in `llms.txt` (`PAGE_GROUP_HEADINGS`), so a new group cannot be forgotten by the index. | `sitemap.ts`, `robots.ts`, `lib/page-metadata.ts`, `generate-llms.mjs`, `check-apex-routing.mjs` |
 | `src/data/pricing.ts` | Every price, cap, and free tier. | the pricing page and any sentence that names a price |
-| `src/data/platform-stats.ts` | The counts a page prints, with how each was counted. | the proof strip, `llms.txt` |
-| `src/data/testimonials.ts` | Customer quotes, verbatim, attributed, with approval on record; `testimonial(name)` throws on a name not on record. | the proof section |
+| `src/data/platform-stats.ts` | The counts a page prints, with how each was counted. | `PlatformCounts`, `llms.txt` |
 
 Data files import each other with `.ts` extensions so Node can run them directly (the generators do); `tsconfig.json` allows it.
 
-Components come from one library, `src/components/marketing/`, on the palette's role classes (`bg-canvas`, `bg-card`, `text-fg-secondary`, `border-edge`, `text-ok`). The library holds the primitives (card, badge, buttons, record window) and the page sections every story page composes (`PageHero`, `ProofList`, `PageCard`, `PageArtifact`, `Doors`, `CommandBlock`, `ProviderStrip`, `ChapterSection`, `PlatformCounts`, `QuestionCard`, `CommandTabs`); a page template is a thin composition of those in its reader's order and states nothing. The palette is defined once in `packages/website-shell/src/theme/tokens.ts` and projected into the MUI theme and Tailwind; a component never types a hex. The published law is `public/branding/design-system.md`.
+Components come from one library, `src/components/marketing/`, on the palette's role classes (`bg-canvas`, `bg-card`, `text-fg-secondary`, `border-edge`, `text-ok`). The library holds the primitives (card, badge, buttons, metric, step) and the page sections Pricing and Desktop compose (`PageHero`, `PageCard`, `Doors`, `CommandBlock`, `CommandTabs`, `PlatformCounts`); a page template is a thin composition of those in its reader's order and states nothing. Home and Security are the story pages: each has its own CSS module, and Security's composes Home's (`components/marketing/homepage.module.css`) rather than copying it. The website's palette is `src/theme/homepage.ts`, published as CSS variables on every page; the shell's own dark appearance is `packages/website-shell/src/theme/tokens.ts`; a component never types a hex. The design law, which the design reviewer grades every page against, is `design-system.md` beside this README.
 
 The landing page is versioned: `src/components/landing-page/v<N>-<date>/` holds only that version's section composition, and `src/components/landing-page/index.ts` points at the active one. Only the active version stays in the tree; earlier ones live in git history. Nothing outside a versioned folder imports from inside one.
 
@@ -93,17 +89,16 @@ src/app/sitemap.ts       generated from the registry and the content folders
 src/app/robots.ts        generated
 src/components/marketing/   the primitive library
 src/components/landing-page/ the versioned landing compositions
-src/components/trust/    the Trust template and index
-src/components/product/  the Product template and index
+src/components/security/ the Security page and its CSS module
 src/components/desktop/  the Planton Desktop landing and download templates and their sections
-src/components/distributions/ the Distributions template and index
+src/components/content/  the docs' author and table-of-contents pieces
 src/components/deck/     the deck engine and the meeting decks' slide kit
 src/components/meetings/ meeting decks and their registry
 src/data/                every claim, price, count, route
 src/lib/                 page-metadata, content-routes, assets, console-handoff
 scripts/                 the guards and generators (below)
 content/                 legal markdown, copywriting stage areas, design-review board and captures, the image inbox
-public/docs, blog, changelog, tutorials   content pages, walked by the sitemap and llms generator
+public/docs, changelog   content pages, walked by the sitemap and llms generator
 packages/website-shell/  the header, footer, navigation, palette, and theme the console also consumes
 ```
 
@@ -140,7 +135,7 @@ What a day-one architect would not have done, and which work retires it. The bui
 
 | Legacy | Where | Retired by |
 |--------|-------|-----------|
-| Hex literals in components; MUI icons beside lucide; `'use client'` on components with no hooks | `pricing`, `blog`, `docs`, `tutorials`, `changelog`, `common`, `book-demo`, `legal`, `branding`, `invest` | each of these page groups' own rebuild (pricing is data-driven and refreshed 2026-08-20; the content pages are the docs follow-up's; book-demo and legal are small standalone slices; invest is named below) |
+| Hex literals in components; MUI icons beside lucide; `'use client'` on components with no hooks | `pricing`, `docs`, `content` (the docs' author and contents pieces), `changelog`, `common`, `book-demo`, `legal`, `invest` | each of these page groups' own rebuild (pricing is data-driven and refreshed 2026-08-20; the content pages are the docs follow-up's; book-demo and legal are small standalone slices; invest is named below) |
 | The investor deck and explainer on their own primitive set (including the deck's own button, which came from the retired tour's kit), and the one Tailwind color the pricing FAQ still reads (`text.secondary`) | `components/invest`, `tailwind.config.ts`, `components/pricing/faqs.tsx` | invest onto the deck engine, by the founder's decision a later slice; the color with pricing's rebuild |
 | The meeting decks' slide kit types its own colors and gradients (`deck/primitives.tsx`, `meets/meets.css`) | `components/deck/primitives.tsx`, `app/(standalone)/meets/meets.css` | the meeting decks' convergence onto the marketing primitives |
 | Images under `public/_site/` instead of the asset CDN; 87 literal `/_site/` paths, in the investor pages, the meeting decks, and the content pages | `public/_site/images`, `src/**` | invest and the meeting decks with their convergence slices; the content pages with the docs follow-up; the Open Graph posters and the logo stay under the prefix `lib/assets.ts` names once |
@@ -193,7 +188,7 @@ assets.planton.ai/site/
    - Moves to appropriate folder
    - Uploads to R2
 
-4. **Use the R2 URL** in docs/blog:
+4. **Use the R2 URL** in the docs:
    ```md
    ![Pipeline overview](https://assets.planton.ai/site/images/service-hub/2025-12-31-103045-service-hub-pipeline-overview.png)
    ```
@@ -267,8 +262,12 @@ Home is one page that tells one story, built one or two sections at a time; the 
 
 `ExperienceLink` renders Start Free, the primary door in every pair, and `DemoLink` the demo door beside it; each records its placement (`hero`, `close`). All public website routes share the light appearance and one header, whose Start Free is attributed as `navigation`.
 
-After `make build`, run `node scripts/check-homepage.mjs`: responsive captures, the hero's reduced-motion state and labels, the setup prompt, the door attribution, the mobile drawer, and the mocked booking journey (CI runs it on pull requests). `node scripts/preview-homepage.mjs` previews the export at port 4177; `HOMEPAGE_CAPTURES` changes the capture directory. Generate the social card with `node scripts/capture-homepage-og.mjs` and commit the PNG.
+After `make build`, run `node scripts/check-homepage.mjs`: responsive captures, the hero's reduced-motion state and labels, the setup prompt, the door attribution, the mobile drawer, and the mocked booking journey (CI runs it on pull requests). `node scripts/preview-homepage.mjs` previews the export at port 4177; `HOMEPAGE_CAPTURES` changes the capture directory. Generate the social card with `node scripts/capture-homepage-og.mjs` and commit the PNG: the hero, with the header's mark and the site's name set above it, since the card hides the header. It is also the default card for every page without its own (`SITE.defaultOgImage`).
 
 `scripts/check-page-weight.mjs` runs inside the build: it sums Home's HTML and the scripts and stylesheets it references, gzipped, against a budget written in the script with its reason. A section that needs more raises the budget in the same change, with the reason beside the number.
 
 Earlier landing versions are in git history, not in the tree. Other pages do not import version-specific components.
+
+## Security
+
+`/security` answers what a reviewer asks before anyone connects a cloud: what Planton can touch, that it stores no keys, where the work runs and what Planton keeps, what the GitHub App sees, who approves what, the record, and how to cut Planton off. Each answer sits beside the real thing behind it (a catalog permission list, the trust policy the setup writes, a table) and a way to check it. Its words live in `src/data/security.ts`, each naming its chapter and claims-ledger row; the page's Markdown twin renders the same records. Its draft and cold reads are in `content/copywriting/_stage-area/2026-11-25-frame/`. When a fact behind an answer changes (the GitHub App's permissions, a cloud's revoke step), the record changes with it, and the claims ledger is re-checked first.

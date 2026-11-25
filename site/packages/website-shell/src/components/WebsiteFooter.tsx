@@ -29,7 +29,7 @@ function FooterLinkGroup({ title, items }: FooterGroup) {
 /**
  * Full-width website footer with link groups, terms links, and copyright,
  * the same on every page. Renders a responsive grid: 2-column on mobile,
- * 5-column on desktop.
+ * one column per group on desktop.
  */
 export function WebsiteFooter() {
   return (
@@ -73,14 +73,14 @@ export function WebsiteFooter() {
           ))}
         </Box>
 
-        {/* Desktop grid: 5 columns */}
+        {/* Desktop grid: one column per group */}
         <Box
           sx={{
             display: { xs: 'none', md: 'grid' },
             // The groups fill the row after the logo, so their columns spread
             // evenly at every width instead of packing against the right edge.
             flex: 1,
-            gridTemplateColumns: 'repeat(5, 1fr)',
+            gridTemplateColumns: `repeat(${footerGroups.length}, 1fr)`,
             columnGap: 10,
             rowGap: 3,
           }}
