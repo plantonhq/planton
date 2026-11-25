@@ -303,4 +303,20 @@ message GcpBillingBudgetSpec {
     message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
     expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
   }];
+
+  // The project the Budget API bills its quota to, as a project ID or a
+  // GcpProject reference. A budget lives on a billing account, so its API
+  // calls name no project of their own: a service account or keyless
+  // identity bills them to its own project, but a person's own gcloud
+  // sign-in has none, and Google refuses with "requires a quota project".
+  // Set it when the deploying credential is a person's sign-in; leave it
+  // empty otherwise. The Budget API (billingbudgets.googleapis.com) must be
+  // enabled in this project, and the deploying identity needs
+  // serviceusage.services.use on it. The project only carries the calls'
+  // quota: it is not what the budget measures (that is budget_filter).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef quota_project_id = 9 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id",
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true
+  ];
 }

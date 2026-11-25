@@ -14,4 +14,13 @@ terraform {
   }
 }
 
-provider "google" {}
+# A budget lives on a billing account, so the provider names no project. A
+# person's own gcloud sign-in has no project to bill the Budget API's quota
+# to, so spec.quota_project_id names one: user_project_override sends it as
+# the quota project on every call. Unset, the deploying identity's own
+# project carries the quota, which is how a service account or keyless
+# identity bills it.
+provider "google" {
+  user_project_override = local.quota_project_id != null
+  billing_project       = local.quota_project_id
+}

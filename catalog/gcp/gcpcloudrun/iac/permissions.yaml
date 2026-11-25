@@ -41,6 +41,15 @@ spec:
         condition:
           spec_field_set: allow_unauthenticated
         notes: Covers google_cloud_run_v2_service_iam_member -- the roles/run.invoker grant to allUsers, created only when spec.allow_unauthenticated is true (the 01-public-api-service preset). IAM member resources read the current policy before modifying it, so getIamPolicy rides along. Not needed for authenticated-only services. Proven 2026-11-20 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines.
+      - purpose: DisableInvokerCheck
+        permissions:
+          - run.services.setIamPolicy
+        provenance: derived
+        reach: target
+        privilege: ordinary
+        condition:
+          spec_field_set: invoker_iam_disabled
+        notes: "Covers spec.invoker_iam_disabled (google_cloud_run_v2_service invoker_iam_disabled; Pulumi InvokerIamDisabled): turning the Cloud Run Invoker IAM check off makes the service callable by anyone without granting allUsers, which domain-restricted sharing refuses. Google's public-access guide (https://docs.cloud.google.com/run/docs/authenticating/public) requires run.services.setIamPolicy beside create and update to switch the check off. An organization enforcing constraints/run.requireInvokerIam refuses the setting whatever the caller holds. Deployed and destroyed on 2026-11-26 on both engines (the own-identity scenario) by an identity holding only this manifest."
       - purpose: ApplyResourceManagerTags
         permissions:
           - run.services.createTagBinding

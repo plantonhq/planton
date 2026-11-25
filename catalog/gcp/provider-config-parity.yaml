@@ -21,6 +21,8 @@ mappings:
 moduleOwned:
   - arg: user_project_override
     reason: quota-project attribution for APIs that bill the user project -- set by the modules of the kinds whose APIs demand a quota project on user-credential calls (the Identity Platform kinds on the Identity Toolkit API, GcpApiKey on the API Keys API, the Firebase kinds on the Firebase Management API), each with the recorded justification in its provider.tf comments; a config-level override would silently change billing attribution for every kind
+  - arg: billing_project
+    reason: the project user_project_override bills calls to when a call carries no project of its own -- set by the modules that need one under a person's own credential (GcpApiKey and the Firebase kinds from their spec's project, GcpBillingBudget from spec.quota_project_id), each explained in its provider.tf; a config-level value would bill every kind's calls to one project, whose APIs would all have to be enabled there
   - arg: project
     reason: the component's own project, which its spec names -- every module whose resources take a project from the spec hands it to its provider (null when the spec names none), so an import whose ID carries no project (a bucket by its name) still records it and the next preview never replaces the resource; the kinds without a project of its own are listed, with their reasons, in the provider-block guard (pkg/iac/iacinput/providerenvvars); a connection-level project stays out by design -- it would make manifests ambiguous across projects
 
@@ -29,8 +31,6 @@ exclusions:
     reason: region is a resource property in every GCP spec; the provider-level default is never consulted
   - arg: zone
     reason: zone is a resource property in every GCP spec; the provider-level default is never consulted
-  - arg: billing_project
-    reason: billing-project attribution beyond user_project_override is demand-driven; no catalog surface bills a separate project today
   - arg: impersonate_service_account
     reason: service-account impersonation as a provider argument is demand-driven -- the credential-broker's impersonated-account path covers the enterprise impersonation ask at the connection level
   - arg: impersonate_service_account_delegates

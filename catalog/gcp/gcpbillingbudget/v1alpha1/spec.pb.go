@@ -601,6 +601,17 @@ type GcpBillingBudgetSpec struct {
 	//	             depends on
 	//	"ABANDON" -- the budget leaves management but keeps alerting
 	DeletionPolicy string `protobuf:"bytes,8,opt,name=deletion_policy,json=deletionPolicy,proto3" json:"deletion_policy,omitempty"`
+	// The project the Budget API bills its quota to, as a project ID or a
+	// GcpProject reference. A budget lives on a billing account, so its API
+	// calls name no project of their own: a service account or keyless
+	// identity bills them to its own project, but a person's own gcloud
+	// sign-in has none, and Google refuses with "requires a quota project".
+	// Set it when the deploying credential is a person's sign-in; leave it
+	// empty otherwise. The Budget API (billingbudgets.googleapis.com) must be
+	// enabled in this project, and the deploying identity needs
+	// serviceusage.services.use on it. The project only carries the calls'
+	// quota: it is not what the budget measures (that is budget_filter).
+	QuotaProjectId *v1.StringValueOrRef `protobuf:"bytes,9,opt,name=quota_project_id,json=quotaProjectId,proto3" json:"quota_project_id,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -691,6 +702,13 @@ func (x *GcpBillingBudgetSpec) GetDeletionPolicy() string {
 	return ""
 }
 
+func (x *GcpBillingBudgetSpec) GetQuotaProjectId() *v1.StringValueOrRef {
+	if x != nil {
+		return x.QuotaProjectId
+	}
+	return nil
+}
+
 var File_catalog_gcp_gcpbillingbudget_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpbillingbudget_v1alpha1_spec_proto_rawDesc = "" +
@@ -747,8 +765,7 @@ const file_catalog_gcp_gcpbillingbudget_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0eschema_version\x18\x05 \x01(\tB\\\xbaHR\xba\x01O\n" +
 	"\x14valid_schema_version\x12\x1aschema_version must be 1.0\x1a\x1bthis == '' || this == '1.0'\x8a\xa6\x1d\x031.0H\x00R\rschemaVersion\x88\x01\x01:\xf7\x01\xbaH\xf3\x01\x1a\xf0\x01\n" +
 	"\x1anotifications_at_least_one\x12;set pubsub_topic, monitoring_notification_channels, or both\x1a\x94\x01(has(this.pubsub_topic) && (this.pubsub_topic.value != '' || has(this.pubsub_topic.value_from))) || this.monitoring_notification_channels.size() > 0B\x11\n" +
-	"\x0f_schema_version\"\xf5\n" +
-	"\n" +
+	"\x0f_schema_version\"\xfc\v\n" +
 	"\x14GcpBillingBudgetSpec\x12\x8c\x02\n" +
 	"\x0fbilling_account\x18\x01 \x01(\tB\xe2\x01\xbaH\xde\x01\xba\x01\xd7\x01\n" +
 	"\x15valid_billing_account\x12tbilling_account must be a billing account ID such as 012345-6789AB-CDEF01, optionally prefixed with billingAccounts/\x1aHthis.matches('^(billingAccounts/)?[A-Z0-9]{6}-[A-Z0-9]{6}-[A-Z0-9]{6}$')\xc8\x01\x01R\x0ebillingAccount\x12*\n" +
@@ -760,7 +777,8 @@ const file_catalog_gcp_gcpbillingbudget_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0fownership_scope\x18\a \x01(\tB\x8d\x01\xbaH\x89\x01\xba\x01\x85\x01\n" +
 	"\x15valid_ownership_scope\x124ownership_scope must be ALL_USERS or BILLING_ACCOUNT\x1a6this == '' || this in ['ALL_USERS', 'BILLING_ACCOUNT']R\x0eownershipScope\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\b \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
-	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy:\xfb\x01\xbaH\xf7\x01\x1a\xf4\x01\n" +
+	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x12\x84\x01\n" +
+	"\x10quota_project_id\x18\t \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_id\x98\xd4a\x01R\x0equotaProjectId:\xfb\x01\xbaH\xf7\x01\x1a\xf4\x01\n" +
 	"(last_period_amount_needs_calendar_period\x12alast_period_amount budgets the previous calendar period, so the filter must not set custom_period\x1ae!this.amount.last_period_amount || !has(this.budget_filter) || !has(this.budget_filter.custom_period)B\xe0\x02\n" +
 	"-com.dev.planton.gcp.gcpbillingbudget.v1alpha1B\tSpecProtoP\x01Z[github.com/plantonhq/planton/catalog/gcp/gcpbillingbudget/v1alpha1;gcpbillingbudgetv1alpha1\xa2\x02\x04DPGG\xaa\x02)Dev.Planton.Gcp.Gcpbillingbudget.V1alpha1\xca\x02)Dev\\Planton\\Gcp\\Gcpbillingbudget\\V1alpha1\xe2\x025Dev\\Planton\\Gcp\\Gcpbillingbudget\\V1alpha1\\GPBMetadata\xea\x02-Dev::Planton::Gcp::Gcpbillingbudget::V1alpha1b\x06proto3"
 
@@ -803,11 +821,12 @@ var file_catalog_gcp_gcpbillingbudget_v1alpha1_spec_proto_depIdxs = []int32{
 	5,  // 10: dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetSpec.budget_filter:type_name -> dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetFilter
 	2,  // 11: dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetSpec.threshold_rules:type_name -> dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetThresholdRule
 	6,  // 12: dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetSpec.notifications:type_name -> dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetNotifications
-	13, // [13:13] is the sub-list for method output_type
-	13, // [13:13] is the sub-list for method input_type
-	13, // [13:13] is the sub-list for extension type_name
-	13, // [13:13] is the sub-list for extension extendee
-	0,  // [0:13] is the sub-list for field type_name
+	9,  // 13: dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetSpec.quota_project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	14, // [14:14] is the sub-list for method output_type
+	14, // [14:14] is the sub-list for method input_type
+	14, // [14:14] is the sub-list for extension type_name
+	14, // [14:14] is the sub-list for extension extendee
+	0,  // [0:14] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpbillingbudget_v1alpha1_spec_proto_init() }

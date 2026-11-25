@@ -114,6 +114,7 @@ spec:
 | `spec.notifications.schemaVersion` | `string` |  | `1.0` |  |
 | `spec.ownershipScope` | `string` |  |  |  |
 | `spec.deletionPolicy` | `string` |  |  |  |
+| `spec.quotaProjectId` | `string \| valueFrom` |  |  | GcpProject (`status.outputs.project_id`) |
 
 ## Field Details
 
@@ -433,6 +434,24 @@ What destroy does to the budget:
 
 - rule: deletion_policy must be one of: DELETE, PREVENT, ABANDON
 
+### spec.quotaProjectId
+
+`string | valueFrom`
+
+The project the Budget API bills its quota to, as a project ID or a
+GcpProject reference. A budget lives on a billing account, so its API
+calls name no project of their own: a service account or keyless
+identity bills them to its own project, but a person's own gcloud
+sign-in has none, and Google refuses with "requires a quota project".
+Set it when the deploying credential is a person's sign-in; leave it
+empty otherwise. The Budget API (billingbudgets.googleapis.com) must be
+enabled in this project, and the deploying identity needs
+serviceusage.services.use on it. The project only carries the calls'
+quota: it is not what the budget measures (that is budget_filter).
+
+- references: GcpProject (`status.outputs.project_id`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpProject, name: <that resource's name>, fieldPath: status.outputs.project_id}} -- a bare string does not parse
+
 ## Validation Rules
 
 - `last_period_amount_needs_calendar_period`: last_period_amount budgets the previous calendar period, so the filter must not set custom_period
@@ -457,6 +476,7 @@ Fields that can point at another resource's outputs:
 | `spec.budgetFilter.resourceAncestors` | GcpFolder | `status.outputs.name` |
 | `spec.notifications.pubsubTopic` | GcpPubSubTopic | `status.outputs.topic_id` |
 | `spec.notifications.monitoringNotificationChannels` | GcpMonitoringNotificationChannel | `status.outputs.channel_name` |
+| `spec.quotaProjectId` | GcpProject | `status.outputs.project_id` |
 
 ## See Also
 

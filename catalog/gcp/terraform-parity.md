@@ -31,7 +31,7 @@ how far that has progressed.
 | Supporting schema (pinned by this catalog's modules) | `google-beta@8.7.0` |
 | Kinds in the catalog | 186 |
 | Distinct provider resources consumed | 311 |
-| Spec fields authored across all kinds | 6395 |
+| Spec fields authored across all kinds | 6396 |
 | Module pins on `google` | `~> 8.3` × 186 |
 | Module pins on `google-beta` | `~> 8.3` × 7 |
 | Module pins on `random` | `~> 3.6` × 1 |
@@ -70,7 +70,7 @@ catalog modules' own provider blocks must carry that judgment too.
 
 | Provider-block args | Matched | Mapped | Module-owned | Excluded | Open gaps | Accounted |
 |---|---|---|---|---|---|---|
-| 208 | 1 | 4 | 2 | 201 | 0 | ✅ |
+| 208 | 1 | 4 | 3 | 200 | 0 | ✅ |
 
 ## Depth: per-kind accounting
 

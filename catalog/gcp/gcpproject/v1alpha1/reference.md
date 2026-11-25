@@ -223,6 +223,7 @@ Fields on other kinds that can point at this resource:
 | GcpBigtableInstance | `spec.projectId` | `status.outputs.project_id` |
 | GcpBigtableTable | `spec.projectId` | `status.outputs.project_id` |
 | GcpBillingBudget | `spec.budgetFilter.projects` | `status.outputs.project_number` |
+| GcpBillingBudget | `spec.quotaProjectId` | `status.outputs.project_id` |
 | GcpBinaryAuthorizationAttestor | `spec.projectId` | `status.outputs.project_id` |
 | GcpBinaryAuthorizationPolicy | `spec.projectId` | `status.outputs.project_id` |
 | GcpCertManagerCert | `spec.projectId` | `status.outputs.project_id` |

@@ -14,3 +14,12 @@ resources:
       # below the subtree.
       - spec: spec.notifications
         arg: all_updates_rule
+
+specExclusions:
+  - field: spec.quota_project_id
+    reason: >-
+      configures the provider block, not the budget: it becomes the provider's
+      billing_project with user_project_override, the quota project every
+      Budget API call is billed to under a person's own credential
+      (catalog/gcp/provider-config-parity.yaml lists billing_project as
+      module-owned).

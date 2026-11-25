@@ -9,6 +9,9 @@ spec:
   # identity holding only this kind's permissions manifest, with the re-plan
   # clean. The Terraform resource keeps the revision that was ready when its
   # plan was made, so the revision output reads the service after the apply.
+  # The own-identity scenario (2026-11-26, both engines) runs the service as a
+  # service account created just before it, made public with the invoker
+  # check switched off, under the same manifest-only identity.
   tier: 1
   #
   # Proven live on both engines on the committed shape. The sandbox templates

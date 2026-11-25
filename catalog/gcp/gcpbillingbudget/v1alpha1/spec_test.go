@@ -82,6 +82,9 @@ var _ = ginkgo.Describe("GcpBillingBudgetSpec", func() {
 			SchemaVersion:                  proto.String("1.0"),
 		}
 		msg.Spec.DeletionPolicy = "PREVENT"
+		msg.Spec.QuotaProjectId = nameRef("platform-prod")
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		msg.Spec.QuotaProjectId = litRef("platform-prod")
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 	})
 

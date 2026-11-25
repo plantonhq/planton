@@ -23,6 +23,15 @@ spec:
         privilege: ordinary
         predefined_role: roles/billing.costsManager
         notes: "Covers google_billing_budget (Pulumi billing.Budget): create on first apply, get on every refresh, update when any field but the billing account changes in place, delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). These are BILLING ACCOUNT permissions -- granted on the account (roles/billing.costsManager or roles/billing.admin contain all four), never on a project. Publishing notifications to the Pub/Sub topic is the Billing service agent's permission on the topic (roles/pubsub.publisher), arranged on the topic, not the runner. Proven 2026-11-22 -- an identity holding only this manifest deployed, updated and destroyed the kind on both engines."
+      - purpose: BillQuotaToProject
+        permissions:
+          - serviceusage.services.use
+        provenance: derived
+        reach: target
+        privilege: ordinary
+        condition:
+          spec_field_set: quota_project_id
+        notes: "Covers the quota project spec.quota_project_id names: the provider sends it as the X-Goog-User-Project of every Budget API call (user_project_override with billing_project in OpenTofu, GetWithQuotaProject in Pulumi), and Google requires serviceusage.services.use on that project from the caller (roles/serviceusage.serviceUsageConsumer). Needed only when the field is set, which is the case under a person's own gcloud sign-in; a service account or keyless identity bills its own project and never exercises it. The Budget API must also be enabled in that project (billingbudgets.googleapis.com), which this kind does not do itself."
       - purpose: LinkMonitoringNotificationChannels
         permissions:
           - monitoring.notificationChannels.get

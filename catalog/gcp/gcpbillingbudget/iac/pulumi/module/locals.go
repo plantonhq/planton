@@ -19,6 +19,10 @@ type Locals struct {
 	// DisplayName is the spec's display_name, or metadata.name when the
 	// spec leaves it empty — the same naming basis every kind uses.
 	DisplayName string
+
+	// QuotaProjectID is the project the Budget API's calls bill their quota
+	// to; empty lets the deploying identity's own project carry it.
+	QuotaProjectID string
 }
 
 func initializeLocals(_ *pulumi.Context, iacInput *gcpbillingbudgetv1alpha1.GcpBillingBudgetIacInput) *Locals {
@@ -33,5 +37,6 @@ func initializeLocals(_ *pulumi.Context, iacInput *gcpbillingbudgetv1alpha1.GcpB
 		GcpBillingBudget: target,
 		BillingAccount:   strings.TrimPrefix(target.Spec.BillingAccount, "billingAccounts/"),
 		DisplayName:      displayName,
+		QuotaProjectID:   target.Spec.GetQuotaProjectId().GetValue(),
 	}
 }

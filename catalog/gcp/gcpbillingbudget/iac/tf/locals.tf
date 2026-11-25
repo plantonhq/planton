@@ -18,4 +18,8 @@ locals {
   ] : []
 
   deletion_policy = var.spec.deletion_policy != "" ? var.spec.deletion_policy : null
+
+  # The project the Budget API's calls bill their quota to, or null to let
+  # the deploying identity's own project carry them (provider.tf).
+  quota_project_id = var.spec.quota_project_id != "" ? var.spec.quota_project_id : null
 }

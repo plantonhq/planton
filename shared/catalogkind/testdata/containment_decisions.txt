@@ -959,6 +959,7 @@ exempt    dev.planton.gcp.gcpbigqueryreservation.v1alpha1.GcpBigQueryReservation
 exempt    dev.planton.gcp.gcpbigqueryreservation.v1alpha1.GcpBigQueryReservationAssignee.project_id -> GcpProject
 exempt    dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetFilter.projects -> GcpProject
 exempt    dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetFilter.resource_ancestors -> GcpFolder
+exempt    dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetSpec.quota_project_id -> GcpProject
 exempt    dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1.GcpCertManagerIssuanceConfigSpec.ca_pool -> GcpPrivateCaPool
 exempt    dev.planton.gcp.gcpcloudbuildworkerpool.v1alpha1.GcpCloudBuildWorkerPoolNetworkConfig.peered_network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionDirectVpcNetworkInterface.network -> GcpVpcNetwork

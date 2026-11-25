@@ -160,5 +160,12 @@ variable "spec" {
     #                depends on
     #   "ABANDON" -- the budget leaves management but keeps alerting
     deletion_policy = optional(string, "")
+
+    # The project the Budget API bills its quota to. Needed under a person's
+    # own gcloud sign-in, which has no project of its own; empty bills the
+    # calls to the deploying identity's own project. Accepts a literal value
+    # or a reference in the manifest; the CLI resolves it to a plain string
+    # before the module runs.
+    quota_project_id = optional(string, "")
   })
 }

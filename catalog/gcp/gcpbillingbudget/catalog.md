@@ -14,6 +14,7 @@ When you deploy this Infra Component, the IaC module provisions:
 
 - **GCP Provider Connection** — an active connection in the Connect module whose principal holds `roles/billing.costsManager` on the billing account (a project role does not reach the account). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
+- **A quota project, when the connection signs in as a person** — a connection that uses a person's own gcloud sign-in has no project to bill the Budget API's calls to, so set `quotaProjectId` to a project with `billingbudgets.googleapis.com` enabled, where the person holds `serviceusage.services.use`. A service account or keyless connection bills its own project and needs nothing here.
 
 ### GCP Billing
 

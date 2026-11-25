@@ -49,3 +49,13 @@ The deploying principal needs `roles/billing.costsManager` (or
 budget outlives the projects it filters on, so an environment teardown
 leaves it alerting on nothing until it is removed; `deletionPolicy:
 PREVENT` protects a production guardrail from a careless destroy.
+
+## Who pays for the Budget API's calls
+
+A budget's API calls name no project, so Google bills their quota to the
+caller's own project. A service account or keyless identity has one; a
+person's own gcloud sign-in does not, and Google refuses with "requires a
+quota project". Set `quotaProjectId` for that case: the module sends it as
+the quota project on every call. The Budget API must be enabled in that
+project, and the person needs `serviceusage.services.use` on it. It only
+carries the calls; what the budget measures is still `budgetFilter`.
