@@ -6,10 +6,11 @@ spec:
   # Attaching a service project needs an organization holding both the host
   # (the harness project) and a second project
   # (PLANTON_E2E_GCP_SECOND_PROJECT_ID). Proven live on both engines
-  # (2026-11-23, test organization planton-e2e.com): detach-on-destroy runs
-  # as the declared identity, granted on the organization and on BOTH
-  # projects (planton.dev/e2e-identity-project names the two), since Google
-  # reads each through Resource Manager before attaching; it detaches on
+  # (2026-11-26, test organization planton-e2e.com): detach-on-destroy runs
+  # as the declared identity, granted on the organization alone -- Google
+  # reads both projects through Resource Manager before attaching, and the
+  # organization's grant is the one that reaches both, as a connection's
+  # does (permissions.GcpKindsJoiningTwoProjects); it detaches on
   # destroy, so the host prerequisite can be disabled after it. No second
   # act: both projects recreate the attachment, so the kind proves by deploy
   # and destroy. The abandon arm leaves its attachment by design, which blocks

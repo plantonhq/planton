@@ -131,6 +131,36 @@ func GcpKindLivesAboveAProject(kindDir string) bool {
 	return false
 }
 
+// GcpKindsJoiningTwoProjects are the GCP kinds whose one resource always
+// joins two projects, so every call it makes reaches a project other than
+// the one a connection points at. A connection's project role is bound on its
+// own project only; the one grant that reaches both projects is the
+// organization's. Any group of such a kind may therefore be granted at reach
+// organization, whatever the inventory's narrowest scope for its permissions.
+// A list rather than a property of the manifest, holding only kinds that
+// join two projects by their nature: a kind that merely may point at another
+// project (a VPC peering, a DNS zone's peering network, an HA VPN peer) is a
+// one-project kind like any other. Each entry says why (reviewed 2026-11-26
+// against the modules and Google's Shared VPC documentation).
+var GcpKindsJoiningTwoProjects = map[string]bool{
+	// Attaching a service project to a Shared VPC host: the provider reads
+	// both projects through Resource Manager before it attaches, reads the
+	// host's attachments with compute.projects.get, and polls the host's
+	// operation; the host and the service project are always two projects.
+	"GcpSharedVpcServiceProject": true,
+}
+
+// GcpKindJoinsTwoProjects reports whether the kind whose manifest lives in
+// kindDir (its lowercase catalog directory) is on GcpKindsJoiningTwoProjects.
+func GcpKindJoinsTwoProjects(kindDir string) bool {
+	for kind := range GcpKindsJoiningTwoProjects {
+		if strings.ToLower(kind) == kindDir {
+			return true
+		}
+	}
+	return false
+}
+
 // GcpScopeConditionReach is the reach a group's condition implies when it
 // names the scope the shape lives at: a spec path ending in organization_id
 // or folder_id is a shape Google authorizes on the organization or folder, a

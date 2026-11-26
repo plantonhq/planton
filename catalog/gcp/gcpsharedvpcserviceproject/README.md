@@ -12,7 +12,7 @@ When you deploy this Infra Component, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module whose identity holds `roles/compute.xpnAdmin` on the organization (or a folder above both projects).
+- **GCP Provider Connection** -- an active connection in the Connect module with Organization Access. Its organization role carries the attachment's permissions (those `roles/compute.xpnAdmin` holds) and the reads of both projects the attachment joins, which only an organization grant reaches.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Shared VPC Host and Project

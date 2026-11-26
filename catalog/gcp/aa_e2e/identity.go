@@ -75,8 +75,10 @@ import (
 //
 // Which project: the harness's own, unless the scenario names the projects
 // its kind targets with provider.IdentityProjectAnnotation (a policy that
-// lives in the second test project; both projects a Shared VPC attachment
-// joins). The custom role is written and bound in each, since Google binds a
+// lives in the second test project). A kind whose one resource joins two
+// projects needs no such list: its groups sit at the organization
+// (permissions.GcpKindsJoiningTwoProjects). The custom role is written and
+// bound in each, since Google binds a
 // project's custom role only inside that project; the account itself always
 // lives in the harness's project, where CleanLaneIdentities finds a crashed
 // lane's leftovers.

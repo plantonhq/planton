@@ -416,14 +416,15 @@ func TestCloudflareGroupsExist(t *testing.T) {
 // Google authorizes it, never narrower than Google's own scope-typed
 // inventory. A group's permissions share one reach. It equals the reach the
 // snapshot records for each permission, and rises above a project-level
-// inventory reach in exactly two machine-checked cases: the shape the group
+// inventory reach in exactly three machine-checked cases: the shape the group
 // covers lives above the project (its condition names the scope, or the
-// kind's resource never lives in a project), or Google authorizes the
-// permission above a project only. A connection's project role can never
-// hold an organization or billing permission, and a project role holding a
-// permission Google checks on the organization never passes that check, so
-// a wrong reach is a role that fails at creation or a check that asks the
-// project about something it cannot answer for.
+// kind's resource never lives in a project), Google authorizes the
+// permission above a project only, or the kind's one resource joins two
+// projects, which only an organization grant reaches. A connection's project
+// role can never hold an organization or billing permission, and a project
+// role holding a permission Google checks on the organization never passes
+// that check, so a wrong reach is a role that fails at creation or a check
+// that asks the project about something it cannot answer for.
 func TestGcpPermissionReach(t *testing.T) {
 	inv, err := LoadGcp(packageDir(t))
 	if err != nil {
@@ -456,6 +457,9 @@ func gcpGroupReachProblems(inv *Inventory, kindDir string, group *permissionsv1.
 	if !shapeAbove && permissions.GcpKindLivesAboveAProject(kindDir) {
 		shapeReach, shapeAbove = permissionsv1.PermissionReach_organization, true
 	}
+	// Case 3: the kind's one resource joins two projects, and a connection's
+	// project role reaches only one of them.
+	joinsTwoProjects := permissions.GcpKindJoinsTwoProjects(kindDir)
 	for _, permission := range group.GetPermissions() {
 		reach, ok := inv.Reach(permission)
 		if !ok {
@@ -472,10 +476,14 @@ func gcpGroupReachProblems(inv *Inventory, kindDir string, group *permissionsv1.
 			if permissions.GcpPermissionsGrantedAboveAProject[permission] && group.GetReach() == permissionsv1.PermissionReach_organization {
 				continue
 			}
+			if joinsTwoProjects && group.GetReach() == permissionsv1.PermissionReach_organization {
+				continue
+			}
 		}
 		problems = append(problems, fmt.Sprintf("%s is granted at %s, but the group's reach is %s -- split the group or correct its reach "+
 			"(a reach rises above a project only for a shape above the project, named by a condition ending in organization_id, folder_id "+
-			"or billing_account or by a kind on permissions.GcpKindsAboveAProject, or for a permission on permissions.GcpPermissionsGrantedAboveAProject)",
+			"or billing_account or by a kind on permissions.GcpKindsAboveAProject, for a permission on permissions.GcpPermissionsGrantedAboveAProject, "+
+			"or for a kind on permissions.GcpKindsJoiningTwoProjects)",
 			permission, reach, declared))
 	}
 	return problems
@@ -563,6 +571,25 @@ func TestGcpReachRisesForAKindThatNeverLivesInAProject(t *testing.T) {
 	}
 	if problems := gcpGroupReachProblems(inv, "gcpproject", group); len(problems) == 0 {
 		t.Error("the same group in GcpProject's manifest was accepted at organization")
+	}
+}
+
+// A kind whose one resource joins two projects
+// (permissions.GcpKindsJoiningTwoProjects) grants its project reads at the
+// organization, the one grant that reaches both projects. The same group in a
+// one-project kind's manifest stays at target.
+func TestGcpReachRisesForAKindThatJoinsTwoProjects(t *testing.T) {
+	inv, err := LoadGcp(packageDir(t))
+	if err != nil {
+		t.Fatalf("loading inventory: %v", err)
+	}
+	group := reachGroup(permissionsv1.PermissionReach_organization, "",
+		"resourcemanager.projects.get", "compute.projects.get", "compute.globalOperations.get")
+	if problems := gcpGroupReachProblems(inv, "gcpsharedvpcserviceproject", group); len(problems) != 0 {
+		t.Errorf("GcpSharedVpcServiceProject's project reads at organization were refused: %v", problems)
+	}
+	if problems := gcpGroupReachProblems(inv, "gcpsharedvpchost", group); len(problems) == 0 {
+		t.Error("the same group in GcpSharedVpcHost's manifest, a one-project kind, was accepted at organization")
 	}
 }
 
