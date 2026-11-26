@@ -1,4 +1,5 @@
-import { HOMEPAGE as H } from '@/data/homepage';
+import { HOMEPAGE as H, SELF_HOSTED_WALK } from '@/data/homepage';
+import { Artifact } from '@/components/marketing/Artifact';
 import { HomepageAppearance } from '@/components/marketing/HomepageAppearance';
 import { HeroExperience } from '@/components/marketing/HeroExperience';
 import { SetupPromptExample } from '@/components/marketing/SetupPromptExample';
@@ -12,10 +13,13 @@ import styles from '@/components/marketing/homepage.module.css';
  * Home, told as one story and built one or two sections at a time: the stand
  * and the team it serves (the hero), a brand-new cloud account to a running
  * app (the first app), infrastructure asked of a coding agent (what it writes
- * and what already deploys it), and the start (the close).
+ * and what already deploys it), the same Planton on the visitor's own
+ * Kubernetes cluster (run it yourself), and the start (the close). Later
+ * sections go in above "run it yourself", which stays last before the close.
  */
 export function Homepage() {
   const F = H.firstApp;
+  const S = H.selfHosted;
   return (
     <HomepageAppearance>
       <main>
@@ -60,6 +64,29 @@ export function Homepage() {
               </div>
             </section>
             <InfrastructureSection />
+            <section
+              id="run-it-yourself"
+              className={`${styles.section} ${styles.split}`}
+              aria-labelledby="run-it-yourself-title"
+            >
+              <div className={`${styles.words} ${styles.lead}`}>
+                <h2 id="run-it-yourself-title" className={styles.heading}>
+                  {S.title}
+                </h2>
+                <p className={styles.intro}>{S.intro}</p>
+                <p>{S.setup}</p>
+                <p>{S.same}</p>
+              </div>
+              <div className={styles.artifacts}>
+                <Artifact artifact={SELF_HOSTED_WALK.install} id="run-it-yourself-install" />
+                <Artifact artifact={SELF_HOSTED_WALK.status} id="run-it-yourself-status" />
+              </div>
+              <div className={`${styles.words} ${styles.proof}`}>
+                <p>{S.seats}</p>
+                <p className={styles.note}>{S.requirements}</p>
+                <ExperienceLink door="selfHostedDocs" location="self-hosted" />
+              </div>
+            </section>
             <section className={styles.close} aria-labelledby="close-title">
               <h2 id="close-title" className={styles.heading}>
                 {H.close.title}

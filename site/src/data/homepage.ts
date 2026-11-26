@@ -1,7 +1,7 @@
 import type { CodeArtifact, Check, TableArtifact } from './artifact.ts';
 import type { CloudId } from './clouds.ts';
 import { PLATFORM_STATS } from './platform-stats.ts';
-import { FREE_TIER_SEATS } from './pricing.ts';
+import { COMMUNITY_SEAT_LIMIT, FREE_TIER_SEATS } from './pricing.ts';
 import { STAND } from './story.ts';
 
 /**
@@ -22,7 +22,8 @@ export const HOMEPAGE = {
     // ch 1 (one prompt to a running app), then ch 6 (every push ships through one path).
     'Paste one prompt into your coding agent, and your app runs in your own cloud account, even a brand-new one. Then every push ships through one path, with your team’s approvals.',
   // ch 12 (start): the price answered at the first door. The free tier never asks for a card (the claims ledger, the price row).
-  caption: `Free for up to ${FREE_TIER_SEATS} seats. Never asks for a card.`,
+  // Names planton.ai, as the close does, because Home's self-hosted section carries the Community edition's own count.
+  caption: `Free on planton.ai for up to ${FREE_TIER_SEATS} seats. Never asks for a card.`,
   /**
    * ch 1: the founder's measure of the product, proven by the setup prompt
    * itself. Paste to running app is proven on Google Cloud Run (the claims
@@ -67,12 +68,33 @@ export const HOMEPAGE = {
     // The picker that sets the visitor's cloud for this section and every one below it.
     pickerLabel: 'Your Cloud',
   },
+  /**
+   * ch 8 (runs where you decide), proof: the self-hosted install and the
+   * Community edition (the claims ledger's install and Community rows,
+   * 2026-11-26). The artifacts are SELF_HOSTED_WALK's. The section is the
+   * same on every cloud, so it reads no cloud choice.
+   */
+  selfHosted: {
+    title: 'Already on Kubernetes? Run all of Planton there.',
+    intro:
+      'Two Helm commands install the whole platform on your cluster: infrastructure management and CI/CD, with the console, sign\u2011in, secrets and databases they run on.',
+    // The setup code comes first: the first person in is the administrator only because they hold the cluster.
+    setup:
+      'There is nothing to set first: no license key, admin account or values file. A setup code read from your cluster makes the first person to open the console its administrator.',
+    // ch 8, proof: the same manifests and the same model on every shape.
+    same: 'The manifests your agent writes deploy the same way here.',
+    // Each free-seat count names where it runs; the close's names planton.ai.
+    seats: `On your own cluster, the Community edition is free for up to ${COMMUNITY_SEAT_LIMIT} seats.`,
+    // The install row's condition, said rather than hidden.
+    requirements: 'Needs amd64 nodes, a default StorageClass and about 8 GiB allocatable.',
+  },
   // ch 12 (start): what the visitor keeps, then the first act.
   close: {
     title: 'Your app, running in your own cloud, on your own bill.',
     // ch 8 (runs where you decide): what the agent builds stays in the customer's account (the claims ledger, the own-cloud row).
     text: 'What your agent builds stays in your cloud account, and your cloud provider bills you directly.',
-    note: `Free for up to ${FREE_TIER_SEATS} seats. Never asks for a card.`,
+    // Names planton.ai, because the self-hosted section above it carries the Community edition's own count.
+    note: `Free on planton.ai for up to ${FREE_TIER_SEATS} seats. Never asks for a card.`,
   },
 } as const;
 
@@ -436,6 +458,51 @@ export const AGENT_RUNS: Record<CloudId, AgentRun> = {
     ],
     // ch 10: the count, only from platform-stats.ts; the example names what a kind is.
     reach: `AzurePostgresqlFlexibleServer is one of ${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} kinds in the catalog, across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} providers, from AWS, Google Cloud and Azure to Cloudflare and Kubernetes.`,
+  },
+};
+
+/**
+ * The docs' two Helm commands as a real install ran them on a fresh Kubernetes
+ * cluster from ghcr.io (2026-11-26; the commands, the timings, the watch and
+ * the first sign-in are kept in the platform repository's website research),
+ * and the status the same cluster printed once Ready. Both versions are pinned
+ * so the commands stay valid: an operator refuses releases below its floor.
+ * Replaced by a new walk, never edited by hand.
+ */
+export const SELF_HOSTED_WALK: { install: CodeArtifact; status: CodeArtifact } = {
+  install: {
+    kind: 'code',
+    label: 'Install · as run on a fresh Kubernetes cluster',
+    language: 'shell',
+    /*
+     * One flag group per line, with the shell's own continuations, so every
+     * line fits a desktop panel whole. On a phone the one line longer than the
+     * panel (the operator chart's address) wraps and hangs under its own text.
+     */
+    wrap: true,
+    lines: [
+      '$ helm install planton-operator \\',
+      '    oci://ghcr.io/plantonhq/charts/planton-operator \\',
+      '    --version 0.29.0 \\',
+      '    --namespace planton --create-namespace',
+      '',
+      '$ helm install planton \\',
+      '    oci://ghcr.io/plantonhq/charts/planton \\',
+      '    --version 0.4.2 \\',
+      '    --namespace planton \\',
+      '    --set platform.spec.version=v0.0.164',
+    ],
+  },
+  status: {
+    kind: 'code',
+    label: 'Status · the same cluster, once Ready',
+    language: 'shell',
+    // The command scrolls inside the panel: a column list has no place to break, and the table under it fits.
+    lines: [
+      '$ kubectl get plantonplatform -n planton -o custom-columns=NAME:.metadata.name,PHASE:.status.phase,VERSION:.status.version,LICENSE:.status.license',
+      'NAME      PHASE   VERSION    LICENSE',
+      'planton   Ready   v0.0.164   Community',
+    ],
   },
 };
 

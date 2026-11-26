@@ -139,7 +139,7 @@ function checkMarkdown(c, siteUrl) {
 
 function pageMarkdown(
   page,
-  { story, stats, site, desktop, desktopDownload, homepage, clouds, security }
+  { story, stats, site, desktop, desktopDownload, homepage, clouds, security, doors }
 ) {
   const lines = [
     `# ${page.title}`,
@@ -177,6 +177,12 @@ function pageMarkdown(
       for (const check of run.checks) lines.push(...checkMarkdown(check, site.url));
       lines.push(run.reach, '');
     }
+    const y = h.selfHosted;
+    const walk = homepage.SELF_HOSTED_WALK;
+    lines.push(`## ${y.title}`, '', y.intro, '', y.setup, '', y.same, '');
+    lines.push(...artifactMarkdown(walk.install), ...artifactMarkdown(walk.status));
+    const docs = doors.DOORS.selfHostedDocs;
+    lines.push(y.seats, '', y.requirements, '', `[${docs.label}](${site.url}${docs.href})`, '');
     lines.push(
       `## ${h.close.title}`,
       '',
@@ -288,6 +294,7 @@ async function main() {
   const desktop = await load('src/data/desktop.ts');
   const desktopDownload = await load('src/data/desktop-download.ts');
   const security = await load('src/data/security.ts');
+  const doors = await load('src/data/doors.ts');
 
   const site = registry.SITE;
   const pages = registry.SITE_PAGES;
@@ -319,6 +326,7 @@ async function main() {
   const marketing = pages.filter((p) => p.index !== false && p.group !== 'content');
   // Everything a page's markdown may quote: the story and the records the pages render from.
   const data = {
+    doors,
     story,
     stats,
     site,
@@ -362,6 +370,7 @@ async function main() {
     homepage.HOMEPAGE.infrastructure.intro,
     ''
   );
+  index.push(`## ${homepage.HOMEPAGE.selfHosted.title}`, '', homepage.HOMEPAGE.selfHosted.intro, '');
   index.push('## Who it is for', '', story.chapter('who-it-is-for').claim, '');
   index.push(
     '## Start',

@@ -144,6 +144,31 @@ try {
           !e.querySelector('button')
       )
     );
+    // Run it yourself is the last section before the close: the two commands a real install ran, the
+    // status that cluster printed, the docs, no copy button, and never what an install left unconfigured.
+    check(
+      `${width}: run it yourself follows infrastructure and precedes the close`,
+      await page.evaluate(() => {
+        const infra = document.querySelector('#infrastructure');
+        const own = document.querySelector('#run-it-yourself');
+        const close = document.querySelector('[aria-labelledby="close-title"]');
+        const after = (a, b) => a.compareDocumentPosition(b) === Node.DOCUMENT_POSITION_FOLLOWING;
+        return !!infra && !!own && !!close && after(infra, own) && after(own, close);
+      })
+    );
+    check(
+      `${width}: run it yourself shows the pinned commands, the Ready status and the docs, no copy button`,
+      await page.$eval(
+        '#run-it-yourself',
+        (e) =>
+          e.textContent.includes('charts/planton-operator') &&
+          e.textContent.includes('platform.spec.version=v') &&
+          /Ready\s+v\d+\.\d+\.\d+\s+Community/.test(e.textContent) &&
+          !!e.querySelector('a[href="/docs/self-hosting"]') &&
+          !/NotConfigured/.test(e.textContent) &&
+          !e.querySelector('button')
+      )
+    );
     // The visitor picks a cloud once: the section shows that cloud's run, and the choice survives a reload.
     if (width === 1280) {
       const showsKind = (kind) =>
@@ -260,6 +285,18 @@ try {
       );
     }
   }
+  // The self-hosting docs door reports its own placement too.
+  await page.goto(base, { waitUntil: 'networkidle0' });
+  await page.$eval('#run-it-yourself a[href="/docs/self-hosting"]', (e) =>
+    e.addEventListener('click', (event) => event.preventDefault())
+  );
+  await page.click('#run-it-yourself a[href="/docs/self-hosting"]');
+  check(
+    'self-hosted: self_service_click attribution',
+    (await events()).some(
+      (e) => e[1] === 'self_service_click' && e[2].location === 'self-hosted' && e[2].door === 'selfHostedDocs'
+    )
+  );
   await page.goto(base, { waitUntil: 'networkidle0' });
   await page.$eval('header a[href$="/signup"]', (e) =>
     e.addEventListener('click', (event) => event.preventDefault())

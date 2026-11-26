@@ -1,7 +1,7 @@
 /**
  * The Planton story as data: thirteen chapters in the order every surface
  * tells them, told to one buyer, the developer who inherited ops at a team of
- * 2 to 10 with no DevOps team. Its spine (v3.1): a company with no DevOps
+ * 2 to 10 with no DevOps team. Its spine (v3.2): a company with no DevOps
  * team runs its own cloud. Home, the Security page, the 404 and llms.txt
  * render from this file, so a sentence about what Planton is or does appears
  * here once and nowhere else.
@@ -189,6 +189,7 @@ export const CHAPTERS: readonly Chapter[] = [
     proof: [
       'Connections can be keyless: a short-lived, connection-scoped identity token is minted at the moment of use and exchanged by the cloud for temporary credentials. Nothing is stored, nothing is rotated, and the trust is yours to revoke.',
       'Every infrastructure module is open source under Apache 2.0. If you leave, you take your manifests and keep deploying them with the open-source CLI.',
+      `Self-hosted is two Helm commands on your own cluster: the operator, then the platform at the release you name. There is no license key, admin account, database or values file to set, and it runs free as the Community edition for up to ${COMMUNITY_SEAT_LIMIT} seats.`,
       'On the desktop, secrets are encrypted locally with the key in your OS keychain and resolved on the runner at the moment of use.',
       'The same manifests and the same model run on all three shapes, so nothing is redone when a person becomes a team.',
     ],

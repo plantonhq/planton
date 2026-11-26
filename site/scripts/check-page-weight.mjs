@@ -24,9 +24,14 @@ const out = path.join(site, 'out');
  * measured then (24.1 KB of HTML, 290.1 KB of scripts, 14.6 KB of styles) plus
  * about 10%. The scripts are mostly the site shell every page shares (React,
  * Next and MUI); Home's own sections add little to them.
+ *
+ * Home is built a section at a time, and each section raises the HTML line by
+ * what it measured, never by a guess: "ask your coding agent for
+ * infrastructure" fit under the first line (26.3 KB); "run it yourself" took
+ * Home to 27.7 KB on 2026-11-26, so HTML is that plus about 10%.
  */
 const BUDGET = {
-  html: 27 * 1024,
+  html: 30 * 1024,
   scripts: 320 * 1024,
   styles: 16 * 1024,
 };
