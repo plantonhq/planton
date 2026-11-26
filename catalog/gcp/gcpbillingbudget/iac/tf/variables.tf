@@ -161,11 +161,17 @@ variable "spec" {
     #   "ABANDON" -- the budget leaves management but keeps alerting
     deletion_policy = optional(string, "")
 
-    # The project the Budget API bills its quota to. Needed under a person's
-    # own gcloud sign-in, which has no project of its own; empty bills the
-    # calls to the deploying identity's own project. Accepts a literal value
-    # or a reference in the manifest; the CLI resolves it to a plain string
-    # before the module runs.
+    # The project the Budget API bills its quota to, as a project ID or a
+    # GcpProject reference. A budget lives on a billing account, so its API
+    # calls name no project of their own: a service account or keyless
+    # identity bills them to its own project, but a person's own gcloud
+    # sign-in has none, and Google refuses with "requires a quota project".
+    # Set it when the deploying credential is a person's sign-in; leave it
+    # empty otherwise. The Budget API (billingbudgets.googleapis.com) must be
+    # enabled in this project, and the deploying identity needs
+    # serviceusage.services.use on it. The project only carries the calls'
+    # quota: it is not what the budget measures (that is budget_filter).
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     quota_project_id = optional(string, "")
   })
 }
