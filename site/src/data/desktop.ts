@@ -175,7 +175,7 @@ export const DESKTOP_LANDING: DesktopLanding = {
     points: [
       {
         title: 'Your Clouds, Found, Not Pasted',
-        body: 'Planton reads the cloud logins already on your machine (AWS profiles, gcloud configurations, az subscriptions) and turns each into a ready connection. Cloudflare and DigitalOcean tokens are detected from your environment and verified against the provider before they are offered. You never paste a key into a form.',
+        body: 'Planton reads the cloud logins already on your machine (AWS profiles, gcloud configurations, az subscriptions) and turns each into a ready connection, with no key to paste. Cloudflare and DigitalOcean tokens you already export are found too, and verified against the provider before they are offered.',
       },
       {
         title: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} Catalog Kinds Across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} Providers`,

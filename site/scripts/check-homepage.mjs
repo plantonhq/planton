@@ -367,6 +367,18 @@ try {
         e[2].door === 'selfHostedDocs'
     )
   );
+  // The close's second way in, for one person: Desktop's door, under the team's start, reporting its placement.
+  await page.goto(base, { waitUntil: 'networkidle0' });
+  const desktopDoor = '[aria-labelledby="close-title"] a[href="/desktop/download"]';
+  check('the close offers Planton Desktop to one person', !!(await page.$(desktopDoor)));
+  await page.$eval(desktopDoor, (e) => e.addEventListener('click', (event) => event.preventDefault()));
+  await page.click(desktopDoor);
+  check(
+    'close: Desktop self_service_click attribution',
+    (await events()).some(
+      (e) => e[1] === 'self_service_click' && e[2].location === 'close' && e[2].door === 'desktop'
+    )
+  );
   await page.goto(base, { waitUntil: 'networkidle0' });
   await page.$eval('header a[href$="/signup"]', (e) =>
     e.addEventListener('click', (event) => event.preventDefault())

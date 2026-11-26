@@ -202,6 +202,9 @@ function pageMarkdown(
       h.close.note,
       '',
       `[Book a Demo](${site.url}/book-demo)`,
+      '',
+      // The second way in, for one person, with its door.
+      `${h.close.alone} [${doors.DOORS.desktop.label}](${site.url}${doors.DOORS.desktop.href})`,
       ''
     );
     return lines.join('\n');

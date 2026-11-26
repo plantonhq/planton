@@ -120,6 +120,14 @@ export const HOMEPAGE = {
     text: 'What your agent builds stays in your cloud account, and your cloud provider bills you directly.',
     // Names planton.ai, because the self-hosted section above it carries the Community edition's own count.
     note: `Free on planton.ai for up to ${FREE_TIER_SEATS} seats. Never asks for a card.`,
+    /*
+     * ch 8 (runs where you decide) and ch 12 (start): the second way in, for one person, after the team's
+     * start (the project's decision 003, 2026-11-26). Start Free stays the one filled door; this line names
+     * who it is for, so a team reader passes it and a solo developer finds theirs, in /desktop's own words. The logins are the AWS,
+     * Google Cloud and Azure ones Desktop detects; it deploys to the reader's own cloud. Its door is Desktop's.
+     */
+    alone:
+      'Working alone? Planton Desktop runs the whole platform on your laptop and deploys to your own cloud with the logins already on your machine. No account. Free for individuals, including commercial use.',
   },
 } as const;
 

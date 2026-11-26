@@ -127,6 +127,8 @@ export function Homepage() {
                 <DemoLink location="close" />
               </div>
               <small>{H.close.note}</small>
+              <p className={styles.closeAlone}>{H.close.alone}</p>
+              <ExperienceLink door="desktop" location="close" />
             </section>
           </div>
         </CloudChoiceProvider>
