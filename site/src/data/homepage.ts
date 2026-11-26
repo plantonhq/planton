@@ -122,7 +122,7 @@ export const HOMEPAGE = {
     note: `Free on planton.ai for up to ${FREE_TIER_SEATS} seats. Never asks for a card.`,
     /*
      * ch 8 (runs where you decide) and ch 12 (start): the second way in, for one person, after the team's
-     * start (the project's decision 003, 2026-11-26). Start Free stays the one filled door; this line names
+     * start (the founder, 2026-11-26). Start Free stays the one filled door; this line names
      * who it is for, so a team reader passes it and a solo developer finds theirs, in /desktop's own words. The logins are the AWS,
      * Google Cloud and Azure ones Desktop detects; it deploys to the reader's own cloud. Its door is Desktop's.
      */
