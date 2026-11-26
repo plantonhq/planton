@@ -47,6 +47,7 @@ A GHCR connection that pushes through a GitHub connection has no long-lived logi
 These are the providers' rules, not the catalog's, and no field on the target changes them:
 
 - **Cloud Run / Cloud Run Jobs**: private images only from Artifact Registry (public Docker Hub and GHCR images deploy directly). The service wizard warns at authoring time when the registry is anything else; the deploy says it again.
+- **Cloud Run pulling from another project's Artifact Registry** (one repository in staging's project, production in its own): production's Cloud Run service agent (`service-<project number>@serverless-robot-prod.iam.gserviceaccount.com`) and the identity production's connection deploys as each need `roles/artifactregistry.reader` on the repository. The run names both before the production gate, with the commands, as **Image Pull Needs a Grant**; it cannot tell whether they were already made, so a team that made them sees the reminder and can ignore it. Declare the agent's grant with the repository (`GcpArtifactRegistryRepo` `iam_members`) so it lives beside the repository it opens.
 - **App Runner**: ECR or ECR Public only (private ECR needs the access role on the spec).
 - **Lambda** container images: ECR in the same account and Region only.
 - **ECS**: ECR with the task execution role; any other registry with the Secrets Manager credential the task definition itself declares (`repositoryCredentialsSecretArn`).

@@ -56,7 +56,7 @@ Follow `references/service.detection-first-registration.md` for what to propose 
 
   | Cloud | Target | What it needs first |
   |---|---|---|
-  | Google Cloud | Cloud Run (`GcpCloudRun`) | Nothing more: the project is enough. The shortest first deployment. |
+  | Google Cloud | Cloud Run (`GcpCloudRun`) | Nothing more: the project is enough. Name it on the service (`spec.projectId`), say who may call it (`invokerIamDisabled: true` for a public API or site, which works under Google's default domain-restricted sharing), and give it a service account of its own. The shortest first deployment. |
   | AWS | ECS service (`AwsEcsService`) | An ECS cluster in a VPC, with a load balancer for an address. On an empty account, build those first as a small chart (`references/infra.worked-example.md`), with its own plan and yes. |
   | Azure, or any cloud with a Kubernetes cluster | Kubernetes Deployment (`KubernetesDeployment`) | The cluster, connected. |
 
