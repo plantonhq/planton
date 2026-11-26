@@ -105,3 +105,15 @@
     white-space: normal;
   }
 }
+
+/*
+ * A word in a CLI's status line that holds a hyphen moves to the next line
+ * whole rather than breaking at the hyphen; only a word wider than the panel
+ * (a narrow phone) breaks inside itself. It starts at its own left edge, not
+ * the line's hanging indent.
+ */
+.whole {
+  display: inline-block;
+  max-width: 100%;
+  text-indent: 0;
+}

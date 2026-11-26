@@ -28,10 +28,12 @@ const out = path.join(site, 'out');
  * Home is built a section at a time, and each section raises the HTML line by
  * what it measured, never by a guess: "ask your coding agent for
  * infrastructure" fit under the first line (26.3 KB); "run it yourself" took
- * Home to 27.7 KB on 2026-11-26, so HTML is that plus about 10%.
+ * Home to 27.7 KB on 2026-11-26; the open-source section (one agent's walk and
+ * the catalog's open-source projects) took it to 31.6 KB the same day, so HTML
+ * is that plus about 10%.
  */
 const BUDGET = {
-  html: 30 * 1024,
+  html: 34 * 1024,
   scripts: 320 * 1024,
   styles: 16 * 1024,
 };

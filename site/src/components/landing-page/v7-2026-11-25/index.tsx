@@ -1,5 +1,5 @@
-import { HOMEPAGE as H, SELF_HOSTED_WALK } from '@/data/homepage';
-import { Artifact } from '@/components/marketing/Artifact';
+import { HOMEPAGE as H, OSS_WALK, SELF_HOSTED_WALK } from '@/data/homepage';
+import { Artifact, Check } from '@/components/marketing/Artifact';
 import { HomepageAppearance } from '@/components/marketing/HomepageAppearance';
 import { HeroExperience } from '@/components/marketing/HeroExperience';
 import { SetupPromptExample } from '@/components/marketing/SetupPromptExample';
@@ -13,12 +13,15 @@ import styles from '@/components/marketing/homepage.module.css';
  * Home, told as one story and built one or two sections at a time: the stand
  * and the team it serves (the hero), a brand-new cloud account to a running
  * app (the first app), infrastructure asked of a coding agent (what it writes
- * and what already deploys it), the same Planton on the visitor's own
- * Kubernetes cluster (run it yourself), and the start (the close). Later
- * sections go in above "run it yourself", which stays last before the close.
+ * and what already deploys it), open-source projects on the visitor's own
+ * cluster in place of managed services (open source), the same Planton on
+ * that cluster (run it yourself), and the start (the close). Later sections
+ * go in above "open source", in the story's order; "run it yourself" stays
+ * last before the close.
  */
 export function Homepage() {
   const F = H.firstApp;
+  const O = H.openSource;
   const S = H.selfHosted;
   return (
     <HomepageAppearance>
@@ -64,6 +67,33 @@ export function Homepage() {
               </div>
             </section>
             <InfrastructureSection />
+            <section
+              id="open-source"
+              className={`${styles.section} ${styles.split}`}
+              aria-labelledby="open-source-title"
+            >
+              <div className={`${styles.words} ${styles.lead}`}>
+                <h2 id="open-source-title" className={styles.heading}>
+                  {O.title}
+                </h2>
+                <p className={styles.intro}>{O.intro}</p>
+                <figure className={styles.ask}>
+                  <figcaption>{O.askLabel}</figcaption>
+                  <blockquote>{O.ask}</blockquote>
+                </figure>
+              </div>
+              <div className={styles.artifacts}>
+                <Artifact artifact={OSS_WALK.apply} id="open-source-apply" />
+                <Artifact artifact={OSS_WALK.answers} id="open-source-answers" />
+                <Artifact artifact={OSS_WALK.wiring} id="open-source-wiring" />
+              </div>
+              <div className={`${styles.words} ${styles.proof}`}>
+                <Artifact artifact={OSS_WALK.catalog} id="open-source-catalog" />
+                {OSS_WALK.checks.map((check) => (
+                  <Check key={check.text} check={check} />
+                ))}
+              </div>
+            </section>
             <section
               id="run-it-yourself"
               className={`${styles.section} ${styles.split}`}

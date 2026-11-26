@@ -177,6 +177,17 @@ function pageMarkdown(
       for (const check of run.checks) lines.push(...checkMarkdown(check, site.url));
       lines.push(run.reach, '');
     }
+    // The open-source walk is the same on every cloud: the ask, the command, the answers, the wiring, the catalog's reach.
+    const o = h.openSource;
+    const oss = homepage.OSS_WALK;
+    lines.push(`## ${o.title}`, '', o.intro, '', `${o.askLabel} ${o.ask}`, '');
+    lines.push(
+      ...artifactMarkdown(oss.apply),
+      ...artifactMarkdown(oss.answers),
+      ...artifactMarkdown(oss.wiring),
+      ...artifactMarkdown(oss.catalog)
+    );
+    for (const check of oss.checks) lines.push(...checkMarkdown(check, site.url));
     const y = h.selfHosted;
     const walk = homepage.SELF_HOSTED_WALK;
     lines.push(`## ${y.title}`, '', y.intro, '', y.setup, '', y.same, '');
@@ -370,6 +381,7 @@ async function main() {
     homepage.HOMEPAGE.infrastructure.intro,
     ''
   );
+  index.push(`## ${homepage.HOMEPAGE.openSource.title}`, '', homepage.HOMEPAGE.openSource.intro, '');
   index.push(`## ${homepage.HOMEPAGE.selfHosted.title}`, '', homepage.HOMEPAGE.selfHosted.intro, '');
   index.push('## Who it is for', '', story.chapter('who-it-is-for').claim, '');
   index.push(

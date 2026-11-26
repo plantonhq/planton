@@ -1,6 +1,6 @@
 import type { CodeArtifact, Check, TableArtifact } from './artifact.ts';
 import type { CloudId } from './clouds.ts';
-import { PLATFORM_STATS } from './platform-stats.ts';
+import { KUBERNETES_OPEN_SOURCE_PROJECTS, OPEN_SOURCE_PROJECT_TOTAL, PLATFORM_STATS } from './platform-stats.ts';
 import { COMMUNITY_SEAT_LIMIT, FREE_TIER_SEATS } from './pricing.ts';
 import { STAND } from './story.ts';
 
@@ -67,6 +67,26 @@ export const HOMEPAGE = {
     next: 'When you say so, Planton deploys it into your own cloud account with those modules.',
     // The picker that sets the visitor's cloud for this section and every one below it.
     pickerLabel: 'Your Cloud',
+  },
+  /**
+   * ch 8 (runs where you decide), proof: open source on your own cluster (the
+   * claims ledger's set-deploy and open-source rows, 2026-11-26). The artifacts
+   * are OSS_WALK's. Everything here runs with the open-source CLI and no
+   * account, and the words say so: signed in, the same command takes another
+   * path. The section is the same on every cloud, so it reads no cloud choice.
+   */
+  openSource: {
+    // The why in one clause (the bill), bounded to what the walk showed: three services, three bills.
+    // Its subject is the reader's own services; the self-hosted section below has Planton itself as
+    // its subject, which keeps the two apart.
+    title: 'Your database, cache and sign\u2011in on your own Kubernetes cluster, instead of three managed bills.',
+    intro:
+      // ch 8, proof: one ask, the catalog's kinds, the CLI's ordered set (the claims ledger's set-deploy row).
+      'Ask your coding agent for them, and it writes their manifests from Planton\u2019s catalog, already wired together. The Planton CLI deploys them in order with its open\u2011source engine: no account, no Planton install on your cluster, and no password in any file.',
+    // "dev" is the ask's own scope, said where the ask is quoted.
+    askLabel: 'One developer\u2019s ask, for a dev environment, to Claude Code:',
+    // The ask excerpted with marked ellipses; the whole ask is in the walk's record.
+    ask: '\u201c\u2026Our dev environment pays for a managed Postgres, a managed Redis-style cache and a hosted sign-in service, and those bills add up. We already have a Kubernetes cluster for dev (kubectl context `dev`). Use Planton to run Postgres, Valkey and Keycloak on that cluster instead, with Keycloak keeping its data in that Postgres. Don\u2019t sign in to Planton; deploy it straight to the cluster. Then show me it\u2019s running.\u201d',
   },
   /**
    * ch 8 (runs where you decide), proof: the self-hosted install and the
@@ -504,6 +524,102 @@ export const SELF_HOSTED_WALK: { install: CodeArtifact; status: CodeArtifact } =
       'planton   Ready   v0.0.164   Community',
     ],
   },
+};
+
+/**
+ * What a real coding agent did with one ask for Postgres, Valkey and Keycloak
+ * on a fresh Kubernetes cluster: headless Claude Code with the released
+ * Planton CLI and skills, signed out, wrote six files from the catalog and
+ * deployed them with one command; the cluster's answers were then read by
+ * hand (2026-11-26; the ask, the files, the whole log and every check are kept
+ * in the platform repository's website research). Lines are cut only where a
+ * panel shows `⋯`. Replaced by a new walk, never edited by hand.
+ */
+export const OSS_WALK: {
+  apply: CodeArtifact;
+  answers: TableArtifact;
+  wiring: CodeArtifact;
+  catalog: TableArtifact;
+  checks: readonly Check[];
+} = {
+  wiring: {
+    kind: 'code',
+    label: 'keycloak.yaml \u00b7 one of the six manifests, reading its database from Postgres',
+    language: 'yaml',
+    // Deeply nested keys: a long value scrolls inside the panel rather than hanging past its key.
+    lines: [
+      'db:',
+      '  vendor: postgres',
+      '  host:',
+      '    valueFrom:',
+      '      kind: KubernetesPostgres',
+      '      name: postgres',
+      '      fieldPath: status.outputs.rw_service',
+      '  database: keycloak',
+      '  \u22ef',
+      '  passwordSecret:',
+      '    name:',
+      '      valueFrom:',
+      '        kind: KubernetesPostgres',
+      '        name: postgres',
+      '        fieldPath: status.outputs.password_secret.name',
+      '    key: password',
+    ],
+  },
+  apply: {
+    kind: 'code',
+    label: 'One command \u00b7 the Planton CLI with no account, on its open\u2011source engine',
+    language: 'shell',
+    wrap: true,
+    lines: [
+      // The command as run, split with the shell's own continuations so no flag ever wraps apart.
+      '$ PLANTON_BACKEND=none planton apply \\',
+      '    -f infrastructure/ \\',
+      '    --kube-context dev --auto-approve',
+      '\u2139 No backend configured -- running with the Planton open-source engine. Run `planton login` to connect to planton.ai.',
+      '\u22ef',
+      // The CLI's own proof that it worked out the order from the files, operators first.
+      '\u2714 deploy order: KubernetesCloudNativePgOperator/cnpg -> KubernetesNamespace/dev-services -> KubernetesKeycloakOperator/keycloak-operator -> KubernetesPostgres/postgres -> KubernetesKeycloak/keycloak -> KubernetesValkey/valkey',
+      '\u22ef',
+      '\u2714 KubernetesCloudNativePgOperator/cnpg deployed',
+      '\u2714 KubernetesNamespace/dev-services deployed',
+      '\u2714 KubernetesKeycloakOperator/keycloak-operator deployed',
+      '\u2714 KubernetesPostgres/postgres deployed',
+      '\u2714 KubernetesKeycloak/keycloak deployed',
+      '\u2714 KubernetesValkey/valkey deployed',
+      '\u2714 All 6 resources deployed',
+    ],
+  },
+  answers: {
+    kind: 'table',
+    label: 'Your cluster, after \u00b7 what each service answered',
+    columns: ['Instead of', 'On Your Cluster', 'Answered'],
+    rows: [
+      ['A managed Postgres', 'Postgres', 'Cluster in healthy state, with Keycloak\u2019s 100 tables'],
+      ['A managed cache', 'Valkey', 'NOAUTH without its password, PONG with it'],
+      ['A hosted sign-in service', 'Keycloak', 'Ready, and its master realm answers 200'],
+    ],
+  },
+  // ch 10: the names and their count come only from platform-stats.ts, by its written rule.
+  catalog: {
+    kind: 'table',
+    // The whole list is shown, so its count is exact: the list's own length, never a typed number.
+    label: `Postgres, Valkey and Keycloak are three of the ${OPEN_SOURCE_PROJECT_TOTAL} open\u2011source projects the catalog runs on Kubernetes, each deployed, checked and torn down by its own test`,
+    columns: ['Kind of Work', 'Projects'],
+    rows: KUBERNETES_OPEN_SOURCE_PROJECTS.map(({ work, projects }) => [work, projects.join(', ')]),
+  },
+  checks: [
+    // The section's own way in: the CLI the agent used, from the same installer the docs give.
+    {
+      text: 'Install the Planton CLI; with no account it runs the open\u2011source engine:',
+      command: 'curl -fsSL https://planton.ai/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh',
+    },
+    { text: 'Every kind in the catalog, offline:', command: 'planton explain --list' },
+    {
+      text: 'The Kubernetes kinds and their modules, on GitHub',
+      href: 'https://github.com/plantonhq/planton/tree/main/catalog/kubernetes',
+    },
+  ],
 };
 
 /** Source-scoped booking copy; the form payload and existing calendar stay unchanged. */

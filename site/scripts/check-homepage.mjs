@@ -144,16 +144,45 @@ try {
           !e.querySelector('button')
       )
     );
+    // Open source on your own cluster: the agent's one command with the CLI's own open-source-engine line
+    // and the order it worked out (operators first), what each service answered, the installer that is the
+    // section's way in, and never a $secret/ reference (signed out, the CLI refuses them) or a copy button.
+    check(
+      `${width}: open source follows infrastructure`,
+      await page.evaluate(() => {
+        const infra = document.querySelector('#infrastructure');
+        const oss = document.querySelector('#open-source');
+        return !!infra && !!oss && infra.compareDocumentPosition(oss) === Node.DOCUMENT_POSITION_FOLLOWING;
+      })
+    );
+    check(
+      `${width}: open source shows the open-source engine, the operator first, the services answering, no copy button`,
+      await page.$eval('#open-source', (e) => {
+        // What a reader copies is exactly what the CLI printed: no inserted character anywhere.
+        const text = e.textContent;
+        if (text.includes('\u2060')) return false;
+        return (
+          text.includes('running with the Planton open-source engine') &&
+          /deploy order: KubernetesCloudNativePgOperator\//.test(text) &&
+          text.includes('All 6 resources deployed') &&
+          text.includes('PONG') &&
+          text.includes('Cluster in healthy state') &&
+          text.includes('planton.ai/install.sh') &&
+          !text.includes('$secret/') &&
+          !e.querySelector('button')
+        );
+      })
+    );
     // Run it yourself is the last section before the close: the two commands a real install ran, the
     // status that cluster printed, the docs, no copy button, and never what an install left unconfigured.
     check(
-      `${width}: run it yourself follows infrastructure and precedes the close`,
+      `${width}: run it yourself follows open source and precedes the close`,
       await page.evaluate(() => {
-        const infra = document.querySelector('#infrastructure');
+        const oss = document.querySelector('#open-source');
         const own = document.querySelector('#run-it-yourself');
         const close = document.querySelector('[aria-labelledby="close-title"]');
         const after = (a, b) => a.compareDocumentPosition(b) === Node.DOCUMENT_POSITION_FOLLOWING;
-        return !!infra && !!own && !!close && after(infra, own) && after(own, close);
+        return !!oss && !!own && !!close && after(oss, own) && after(own, close);
       })
     );
     check(

@@ -9,22 +9,42 @@ function linkProps(href: string) {
 
 /**
  * One line of a wrapped code artifact. A continuation hangs where the line's
- * own text starts: past a `# ` comment or `$ ` command marker, past a list's
- * `- `, and past a `key: ` so a wrapped value never reads as a sibling key.
+ * own text starts: past a `# ` comment or `$ ` command marker, past a CLI's
+ * `✓ `, `✔ ` or `ℹ ` status mark, past a list's `- `, and past a `key: ` so a
+ * wrapped value never reads as a sibling key.
  */
 function hangOf(line: string): number {
   const lead = line.match(/^ */)?.[0].length ?? 0;
   const rest = line.slice(lead);
-  const marker = rest.match(/^(?:[#$] |- )/)?.[0].length ?? 0;
+  const marker = rest.match(/^(?:[#$✓✔ℹ] |- )/)?.[0].length ?? 0;
   const key = rest.slice(marker).match(/^[\w.-]+: (?=\S)/)?.[0].length ?? 0;
   return lead + marker + key;
+}
+
+/**
+ * A CLI's status line (`✓`, `✔`, `ℹ`) wraps only between words: each word
+ * holding a hyphen (`keycloak-operator`, an arrow `->`) is kept whole by
+ * style, never by an inserted character, so the text a reader copies is
+ * exactly what the CLI printed. Commands keep their own `\` continuations,
+ * and files wrap as written.
+ */
+function StatusWords({ line }: { line: string }) {
+  return line.split(/(\s+)/).map((part, i) =>
+    part.includes('-') ? (
+      <span key={i} className={styles.whole}>
+        {part}
+      </span>
+    ) : (
+      part
+    )
+  );
 }
 
 function WrappedLine({ line }: { line: string }) {
   const hang = hangOf(line);
   return (
     <span className={styles.line} style={{ paddingLeft: `${hang}ch`, textIndent: `-${hang}ch` }}>
-      {line || '\u00a0'}
+      {/^\s*[✓✔ℹ] /.test(line) && line.includes('-') ? <StatusWords line={line} /> : line || '\u00a0'}
     </span>
   );
 }
