@@ -80,9 +80,8 @@ try {
       )) && !(await page.$('[aria-label="Light appearance"]'))
     );
     check(`${width}: one h1`, await page.$$eval('h1', (es) => es.length === 1));
-    check(
-      `${width}: no overflowing content`,
-      await page.evaluate(() => {
+    const fits = () =>
+      page.evaluate(() => {
         const w = innerWidth;
         return [...document.querySelectorAll('main *')]
           .filter((e) => !(e instanceof SVGElement))
@@ -90,8 +89,15 @@ try {
             const r = e.getBoundingClientRect();
             return r.width === 0 || (r.left >= -1 && r.right <= w + 1);
           });
-      })
-    );
+      });
+    check(`${width}: no overflowing content`, await fits());
+    // Every cloud's run fits the narrowest phone, not only the default one.
+    if (width === 320) {
+      for (const cloud of ['aws', 'azure', 'gcp']) {
+        await page.click(`#infrastructure input[value="${cloud}"]`);
+        check(`320: no overflowing content with ${cloud} chosen`, await fits());
+      }
+    }
     // Reduced motion shows the diagram's finished state, and its labels stay on its canvas.
     check(
       `${width}: hero diagram complete with reduced motion`,
@@ -113,6 +119,44 @@ try {
       `${width}: the first app follows the hero`,
       await page.$eval('#first-app-title', (e) => e.textContent.includes('running app'))
     );
+    check(
+      `${width}: infrastructure follows the first app`,
+      await page.evaluate(() => {
+        const first = document.querySelector('#first-app');
+        const infra = document.querySelector('#infrastructure');
+        return (
+          !!first &&
+          !!infra &&
+          first.compareDocumentPosition(infra) === Node.DOCUMENT_POSITION_FOLLOWING
+        );
+      })
+    );
+    // What the agent wrote is a real file to read, with its check beside it: never a copy button.
+    check(
+      `${width}: the agent's manifest, its check, its module and its test, no copy button`,
+      await page.$eval(
+        '#infrastructure',
+        (e) =>
+          e.textContent.includes('kind: GcpCloudSql') &&
+          e.textContent.includes('manifest is valid') &&
+          !!e.querySelector('a[href*="/catalog/gcp/gcpcloudsql/iac"]') &&
+          !!e.querySelector('a[href*="/catalog/gcp/gcpcloudsql/e2e"]') &&
+          !e.querySelector('button')
+      )
+    );
+    // The visitor picks a cloud once: the section shows that cloud's run, and the choice survives a reload.
+    if (width === 1280) {
+      const showsKind = (kind) =>
+        page.$eval('#infrastructure', (e, k) => e.textContent.includes(`kind: ${k}`), kind);
+      await page.click('#infrastructure input[value="aws"]');
+      check('picking AWS shows the AWS run', await showsKind('AwsRdsInstance'));
+      await page.reload({ waitUntil: 'networkidle0' });
+      check('the chosen cloud is remembered', await showsKind('AwsRdsInstance'));
+      await page.click('#infrastructure input[value="azure"]');
+      check('picking Azure shows the Azure run', await showsKind('AzurePostgresqlFlexibleServer'));
+      await page.click('#infrastructure input[value="gcp"]');
+      check('picking Google Cloud shows its run again', await showsKind('GcpCloudSql'));
+    }
     // The example prompt is words to read, never a prompt to copy: its code is a marked placeholder.
     check(
       `${width}: setup prompt shows a placeholder code and no copy button`,
@@ -137,7 +181,9 @@ try {
     );
     if (width !== 320) {
       await page.screenshot({ path: path.join(out, `home-${width}-light.png`), fullPage: true });
-      await (await page.$('main section')).screenshot({ path: path.join(out, `hero-${width}-light.png`) });
+      await (
+        await page.$('main section')
+      ).screenshot({ path: path.join(out, `hero-${width}-light.png`) });
     }
     check(
       `${width}: readable body contrast`,
@@ -201,7 +247,9 @@ try {
     ]) {
       await page.evaluate(
         (selector, i) =>
-          document.querySelectorAll(selector)[i].addEventListener('click', (e) => e.preventDefault()),
+          document
+            .querySelectorAll(selector)
+            [i].addEventListener('click', (e) => e.preventDefault()),
         selector,
         index
       );

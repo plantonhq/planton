@@ -1,7 +1,7 @@
 /**
  * The Planton story as data: thirteen chapters in the order every surface
  * tells them, told to one buyer, the developer who inherited ops at a team of
- * 2 to 10 with no DevOps team. Its spine (v3.0): a company with no DevOps
+ * 2 to 10 with no DevOps team. Its spine (v3.1): a company with no DevOps
  * team runs its own cloud. Home, the Security page, the 404 and llms.txt
  * render from this file, so a sentence about what Planton is or does appears
  * here once and nowhere else.
@@ -93,6 +93,7 @@ export const CHAPTERS: readonly Chapter[] = [
       `${POSITIONING.infraHub.name}: ${POSITIONING.infraHub.line}`,
       `${POSITIONING.serviceHub.name}: ${POSITIONING.serviceHub.line}`,
       'Your coding agent reaches Planton through the Planton skills and the Planton MCP server, or through the CLI. It sits beside the tools you already use; nothing about how you work changes.',
+      'Asked for infrastructure, your coding agent writes a manifest from Planton\u2019s catalog and checks it before anything exists. It never writes the Terraform or Pulumi: every kind\u2019s module is already written, in the open.',
     ],
     neverSay: [
       '"The Self-Service Cloud Platform"',
@@ -215,6 +216,7 @@ export const CHAPTERS: readonly Chapter[] = [
       'Teams have run production on Planton since 2023. Here is what the people running it say, in their own words.',
     proof: [
       'Catalog kinds, providers, and controls are counted from the open-source tree, and the date of the count is printed beside the numbers.',
+      'The modules are proven by deploying into real cloud accounts: each kind\u2019s own module deployed into a test account, checked with the provider\u2019s tools, destroyed and checked clean, with the date in its profile.',
       'Every testimonial is verbatim and attributed to the person who said it.',
       'Planton runs on Planton: its own infrastructure and the pipelines that ship it go through the platform.',
     ],
@@ -231,6 +233,7 @@ export const CHAPTERS: readonly Chapter[] = [
       'The agent writes the change; Planton keeps deploying after the chat ends.',
       'Every infrastructure change is a plan with its cost and permissions, applied only as reviewed.',
       'Every change records who asked and which coding agent made it.',
+      'What deploys is not Terraform written in that chat: the agent writes a manifest from the catalog, and the module that deploys it was written and proven before anyone asked.',
     ],
     neverSay: ['any vendor name', 'DevSecOps platform', 'FinOps', 'a feature table with a competitor column', 'that the agent is the problem'],
   },

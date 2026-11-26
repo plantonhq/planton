@@ -12,35 +12,8 @@
  * Relative imports carry their `.ts` extension so Node can execute this file
  * for the build-time generators without a bundler.
  */
+import type { Artifact, Check } from './artifact.ts';
 import type { ChapterId } from './story.ts';
-
-/** A real file, policy or command output, shown flat and readable. */
-export interface SecurityCode {
-  kind: 'code';
-  /** What the reader is looking at and where it comes from. */
-  label: string;
-  language: 'yaml' | 'json' | 'shell';
-  lines: readonly string[];
-}
-
-/** A small table of facts (a permission and its use, a role and whether it may act). */
-export interface SecurityTable {
-  kind: 'table';
-  label: string;
-  columns: readonly string[];
-  rows: readonly (readonly string[])[];
-}
-
-export type SecurityArtifact = SecurityCode | SecurityTable;
-
-/** How a reader proves an answer without taking the page's word for it. */
-export interface SecurityCheck {
-  text: string;
-  /** A command they can run, shown in monospace. */
-  command?: string;
-  /** A page that shows the same thing. */
-  href?: string;
-}
 
 export interface SecuritySection {
   /** The anchor and the Markdown twin's heading id. */
@@ -49,8 +22,8 @@ export interface SecuritySection {
   title: string;
   chapter: ChapterId;
   paragraphs: readonly string[];
-  artifact?: SecurityArtifact;
-  check?: SecurityCheck;
+  artifact?: Artifact;
+  check?: Check;
 }
 
 /** The example connection every artifact uses, so one name runs through the page. */

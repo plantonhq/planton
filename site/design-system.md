@@ -14,7 +14,7 @@ The website is a calm, light page that tells one story and shows the product wor
 - **Monochrome chrome.** Header, footer, buttons, links, tables and code panels are ink on a warm off-white. Color appears only where it carries meaning: a status, a provider's logo, the dark product diagram in Home's hero.
 - **Hierarchy by size and ink, not weight.** Headings are large and regular (400), never bold. Weight is reserved for small labels.
 - **Borders, not backgrounds.** Sections are separated by one hairline (`--hp-line`). Panels sit one step darker than the canvas, with a border.
-- **The product is the illustration.** Real artifacts are shown flat, at full size, in a code panel or a table, from a demo company (Acme). A drawn diagram is allowed only when it is labelled as an explanation, as Home's team diagram is.
+- **The product is the illustration.** Real artifacts are shown flat, at full size, in a code panel or a table, from a demo company, never a customer. A drawn diagram is allowed only when it is labelled as an explanation, as Home's team diagram is.
 
 ---
 
@@ -93,7 +93,7 @@ Headings use `text-wrap: balance`; paragraphs use `text-wrap: pretty`.
 ## Layout
 
 - **One container.** `max-width: 1280px` plus a gutter of `clamp(20px, 4vw, 64px)` on each side (`.container`).
-- **Two columns, one line.** A story section puts its words left and its artifact right on `1fr 1.12fr` with a 38px gap, so every right-hand column starts on one vertical line down the page. Below 1100px the columns stack.
+- **Two columns, one line.** A story section puts its words left and its artifact right on `1fr 1.12fr` with a 38px gap, so every right-hand column starts on one vertical line down the page. Below 1100px the columns stack. A section whose words come in two parts, the claim with what was asked and the proof under it (`.lead`, `.proof` in `.split`), keeps the artifact beside both; on one column the artifact follows the claim it answers, then the proof.
 - **Sections** open with a hairline rule and breathe with 56 to 80px of block padding (44 to 60px on a phone).
 
 ---
@@ -104,10 +104,14 @@ Headings use `text-wrap: balance`; paragraphs use `text-wrap: pretty`.
 |---|---|---|
 | Primary door | Ink fill, white text, 8px radius, 52px tall, a `↗` | `ExperienceLink primary` |
 | Secondary door | Ink text, no box, underline on hover, a `↗` | `ExperienceLink`, `DemoLink` |
-| Code panel | Panel fill, line border, 12px radius, 20 × 22px padding, body-colored monospace; lines and indentation kept, a longer line scrolls inside the panel | `.prompt` (Home), composed as `.code` (Security) |
-| Table | Panel fill, line border, 12px radius, header row in secondary at 500, the first column in ink at 500 | `.table` (Security) |
-| Artifact label | 13px secondary caption above the artifact, saying what it is and where it comes from | `figcaption` |
-| A check | 14px secondary line; a link in ink, underlined; a command in monospace | Security's "check it yourself" |
+| Code panel | Panel fill, line border, 12px radius, 20 × 22px padding, body-colored monospace; lines and indentation kept, a longer line scrolls inside the panel, or, for a file a person reads (`wrap`), wraps where the line's own text starts (past a `# `, `$ `, `- ` or `key: `) | `.prompt` (Home), composed as `.code` in `Artifact` |
+| Table | Panel fill, line border, 12px radius, header row in secondary at 500, the first column in ink at 500 | `Artifact` (a table record) |
+| Artifact label | 13px secondary caption above the artifact, saying what it is and where it comes from | `Artifact`'s `figcaption` |
+| A check | 14px secondary line: either a link in ink, underlined, or a sentence over a command in monospace (kept whole on one line; a long one scrolls); one check per line | `Check` |
+| Cloud picker | One row of segments in a line border with the controls' 8px radius, 14px at 500 in secondary; the chosen one in ink on the panel fill; native radios, a visible focus ring | `CloudPicker`, first in the first section that differs by cloud, so the cloud is chosen before any artifact; every section below reads the same choice |
+| Quoted ask | What a person typed to their agent: a 13px secondary line naming who, then their words at 15px in ink, behind one left hairline; words, never a second code panel | `.ask` (Home) |
+
+`Artifact` and `Check` (`components/marketing/Artifact.tsx`, records typed in `src/data/artifact.ts`) are how every story page shows a real thing beside its words; a page never draws its own panel, table or check.
 
 ---
 

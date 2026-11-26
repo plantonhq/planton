@@ -116,17 +116,30 @@ function chapterMarkdown(chapter) {
   return lines.join('\n');
 }
 
+/** A page's artifact (src/data/artifact.ts) as Markdown: its label, then the code or the table. */
+function artifactMarkdown(a) {
+  if (a.kind === 'code') return [`${a.label}:`, '', `\`\`\`${a.language}`, ...a.lines, '```', ''];
+  return [
+    `${a.label}:`,
+    '',
+    `| ${a.columns.join(' | ')} |`,
+    `|${a.columns.map(() => '---').join('|')}|`,
+    ...a.rows.map((row) => `| ${row.join(' | ')} |`),
+    '',
+  ];
+}
+
+/** A page's check (src/data/artifact.ts) as Markdown: the link or the sentence, then the command. */
+function checkMarkdown(c, siteUrl) {
+  const href = c.href && (c.href.startsWith('http') ? c.href : `${siteUrl}${c.href}`);
+  const lines = [href ? `[${c.text}](${href})` : c.text, ''];
+  if (c.command) lines.push('```shell', c.command, '```', '');
+  return lines;
+}
+
 function pageMarkdown(
   page,
-  {
-    story,
-    stats,
-    site,
-    desktop,
-    desktopDownload,
-    homepage,
-    security,
-  }
+  { story, stats, site, desktop, desktopDownload, homepage, clouds, security }
 ) {
   const lines = [
     `# ${page.title}`,
@@ -150,7 +163,30 @@ function pageMarkdown(
       for (const step of side.steps) lines.push(`- ${step}`);
       lines.push('');
     }
-    lines.push(`## ${h.close.title}`, '', h.close.text, '', h.close.note, '', `[Book a Demo](${site.url}/book-demo)`, '');
+    // The page shows one cloud at a time; its Markdown twin shows every cloud's run, in the picker's order.
+    const i = h.infrastructure;
+    lines.push(`## ${i.title}`, '', i.intro, '', i.next, '');
+    for (const c of clouds.CLOUDS) {
+      const run = homepage.AGENT_RUNS[c.id];
+      lines.push(`### ${c.name}`, '', `${run.askLabel} ${run.ask}`, '');
+      lines.push(
+        ...artifactMarkdown(run.manifest),
+        ...artifactMarkdown(run.validation),
+        ...artifactMarkdown(run.proven)
+      );
+      for (const check of run.checks) lines.push(...checkMarkdown(check, site.url));
+      lines.push(run.reach, '');
+    }
+    lines.push(
+      `## ${h.close.title}`,
+      '',
+      h.close.text,
+      '',
+      h.close.note,
+      '',
+      `[Book a Demo](${site.url}/book-demo)`,
+      ''
+    );
     return lines.join('\n');
   }
   if (page.path === '/security') {
@@ -161,19 +197,8 @@ function pageMarkdown(
     for (const section of sec.sections) {
       lines.push(`## ${section.title}`, '');
       for (const p of section.paragraphs) lines.push(p, '');
-      const a = section.artifact;
-      if (a?.kind === 'code') lines.push(`${a.label}:`, '', `\`\`\`${a.language}`, ...a.lines, '```', '');
-      if (a?.kind === 'table') {
-        lines.push(`${a.label}:`, '', `| ${a.columns.join(' | ')} |`, `|${a.columns.map(() => '---').join('|')}|`);
-        for (const row of a.rows) lines.push(`| ${row.join(' | ')} |`);
-        lines.push('');
-      }
-      const c = section.check;
-      if (c) {
-        const href = c.href && (c.href.startsWith('http') ? c.href : `${site.url}${c.href}`);
-        lines.push(href ? `[${c.text}](${href})` : c.text, '');
-        if (c.command) lines.push('```shell', c.command, '```', '');
-      }
+      if (section.artifact) lines.push(...artifactMarkdown(section.artifact));
+      if (section.check) lines.push(...checkMarkdown(section.check, site.url));
     }
     lines.push(`## ${sec.more.title}`, '');
     for (const doc of sec.more.docs) lines.push(`- [${doc.label}](${site.url}${doc.href}.md)`);
@@ -257,6 +282,7 @@ async function main() {
   const registry = await load('src/data/site-pages.ts');
   const story = await load('src/data/story.ts');
   const homepage = await load('src/data/homepage.ts');
+  const clouds = await load('src/data/clouds.ts');
   const stats = await load('src/data/platform-stats.ts');
   const pricing = await load('src/data/pricing.ts');
   const desktop = await load('src/data/desktop.ts');
@@ -299,6 +325,7 @@ async function main() {
     desktop,
     desktopDownload,
     homepage,
+    clouds,
     security,
   };
   for (const page of marketing) {
@@ -311,10 +338,7 @@ async function main() {
   }
 
   // ---- llms.txt -----------------------------------------------------------
-  const docs = [
-    ...contentFiles('docs'),
-    ...contentFiles('changelog'),
-  ];
+  const docs = [...contentFiles('docs'), ...contentFiles('changelog')];
   // The index lists pages under the groups the registry names, in the
   // registry's order. A marketing page whose group has no heading would be
   // built, exported, and silently absent from the index, so it fails here.
@@ -332,6 +356,12 @@ async function main() {
   index.push(`> ${registry.sitePage('/').description}`, '');
   index.push(homepage.HOMEPAGE.intro, '');
   index.push(`## ${homepage.HOMEPAGE.firstApp.title}`, '', homepage.HOMEPAGE.firstApp.intro, '');
+  index.push(
+    `## ${homepage.HOMEPAGE.infrastructure.title}`,
+    '',
+    homepage.HOMEPAGE.infrastructure.intro,
+    ''
+  );
   index.push('## Who it is for', '', story.chapter('who-it-is-for').claim, '');
   index.push(
     '## Start',

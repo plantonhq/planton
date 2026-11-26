@@ -1,4 +1,4 @@
-/* Home: the hero (its diagram owns a dark palette; page text stays light), the first app, the close. */
+/* Home: the hero (its diagram owns a dark palette; page text stays light), the middle sections, the close. */
 .home {
   position: relative;
   background: var(--hp-canvas);
@@ -116,26 +116,27 @@
   font-weight: 400;
   white-space: pre-line;
 }
-.firstApp {
+/* Every middle section (the first app, then each value in the story's order) opens with a hairline and draws from these classes. */
+.section {
   border-top: 1px solid var(--hp-line);
   padding-block: 72px;
 }
-/* The first app shares the hero's two columns, so every right-hand column starts on one line. */
-.firstAppHeader,
+/* A middle section shares the hero's two columns, so every right-hand column starts on one line. */
+.sectionHeader,
 .who {
   display: grid;
   grid-template-columns: 1fr 1.12fr;
   gap: 38px;
   align-items: start;
 }
-.firstAppHeader > *,
+.sectionHeader > *,
 .who > * {
   min-width: 0;
 }
-.promptFigure {
+.figure {
   margin-top: 40px !important;
 }
-.promptLabel {
+.label {
   font-size: 13px;
   line-height: 1.6;
   color: var(--hp-secondary);
@@ -177,6 +178,130 @@
 }
 .who {
   margin-top: 36px;
+}
+/*
+ * A section whose words sit left and whose real artifacts sit right, on the
+ * hero's two columns. The words come in two parts, the lead (the claim and
+ * what was asked) and the proof under it, so on one column the artifact
+ * follows the ask it answers and the proof follows the artifact.
+ */
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1.12fr;
+  grid-template-rows: auto 1fr;
+  column-gap: 38px;
+  row-gap: 28px;
+  align-items: start;
+}
+.lead {
+  grid-column: 1;
+  grid-row: 1;
+}
+.split > .artifacts {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+.proof {
+  grid-column: 1;
+  grid-row: 2;
+}
+.split > * {
+  min-width: 0;
+}
+.words {
+  display: grid;
+  /* minmax(0, …) lets a wide code line scroll inside its panel instead of widening the column. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+}
+.words p {
+  text-wrap: pretty;
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--hp-body);
+}
+.words .intro {
+  font-size: 17px;
+  line-height: 1.8;
+}
+.artifacts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 28px;
+}
+/* The ask a person typed, quoted quietly: words, never a second prompt panel. */
+.ask {
+  border-left: 1px solid var(--hp-line);
+  padding-left: 18px;
+}
+.ask figcaption {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--hp-secondary);
+  margin-bottom: 6px;
+}
+.ask blockquote {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--hp-ink);
+  text-wrap: pretty;
+}
+/* The visitor's cloud (CloudChoice): one row of segments, chosen once for every section below. */
+.cloudPicker {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+}
+.cloudPicker legend {
+  padding: 0;
+  margin-bottom: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--hp-secondary);
+}
+.cloudPicker > div {
+  display: inline-flex;
+  flex-wrap: wrap;
+  width: fit-content;
+  max-width: 100%;
+  border: 1px solid var(--hp-line);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 3px;
+}
+.cloudPicker label {
+  position: relative;
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 7px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--hp-secondary);
+}
+.cloudPicker label[data-checked] {
+  background: var(--hp-panel);
+  color: var(--hp-ink);
+}
+.cloudPicker input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.cloudPicker label:has(input:focus-visible) {
+  outline: 2px solid var(--hp-ink);
+  outline-offset: 2px;
+}
+.words .note {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--hp-secondary);
 }
 .who h3 {
   font-size: 16px;
@@ -273,10 +398,20 @@
   .intro {
     max-width: 600px;
   }
-  .firstAppHeader,
-  .who {
+  .sectionHeader,
+  .who,
+  .split {
     grid-template-columns: 1fr;
     gap: 24px;
+  }
+  .split {
+    grid-template-rows: none;
+  }
+  .lead,
+  .split > .artifacts,
+  .proof {
+    grid-column: auto;
+    grid-row: auto;
   }
 }
 @media (max-width: 760px) {
@@ -295,7 +430,7 @@
   .heroCaption {
     font-size: 13px !important;
   }
-  .firstApp {
+  .section {
     padding-block: 52px;
   }
   .heading {

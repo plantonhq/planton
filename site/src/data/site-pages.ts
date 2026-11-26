@@ -94,7 +94,7 @@ export const SITE_PAGES: readonly SitePage[] = [
     title: HOMEPAGE.title,
     description: HOMEPAGE.description,
     group: 'home',
-    chapters: ['the-wall', 'verified-before-it-exists', 'services-ship-from-git', 'start'],
+    chapters: ['the-wall', 'what-planton-is', 'proof-it-works', 'how-it-compares', 'verified-before-it-exists', 'services-ship-from-git', 'start'],
   },
 
   // Pricing

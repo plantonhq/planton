@@ -2,65 +2,9 @@ import Link from 'next/link';
 import { HomepageAppearance } from '@/components/marketing/HomepageAppearance';
 import { ExperienceLink } from '@/components/marketing/ExperienceLink';
 import { DemoLink } from '@/components/marketing/DemoLink';
-import { SECURITY as S, type SecurityArtifact, type SecurityCheck } from '@/data/security';
+import { Artifact, Check } from '@/components/marketing/Artifact';
+import { SECURITY as S } from '@/data/security';
 import styles from './security.module.css';
-
-/** An outside page opens in a new tab; a page of this site stays in this one. */
-function linkProps(href: string) {
-  return href.startsWith('http') ? { target: '_blank', rel: 'noreferrer' } : {};
-}
-
-function Artifact({ artifact, id }: { artifact: SecurityArtifact; id: string }) {
-  const labelId = `${id}-artifact`;
-  return (
-    <figure aria-labelledby={labelId}>
-      <figcaption id={labelId} className={styles.label}>
-        {artifact.label}
-      </figcaption>
-      {artifact.kind === 'code' ? (
-        <div className={styles.code}>
-          <pre>{artifact.lines.join('\n')}</pre>
-        </div>
-      ) : (
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              {artifact.columns.map((c) => (
-                <th key={c} scope="col">
-                  {c}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {artifact.rows.map((row) => (
-              <tr key={row[0]}>
-                {row.map((cell, i) => (
-                  <td key={i}>{cell}</td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </figure>
-  );
-}
-
-function Check({ check }: { check: SecurityCheck }) {
-  return (
-    <p className={styles.check}>
-      {check.href ? (
-        <Link href={check.href} {...linkProps(check.href)}>
-          {check.text}
-        </Link>
-      ) : (
-        check.text
-      )}
-      {check.command && <code>{check.command}</code>}
-    </p>
-  );
-}
 
 /**
  * The Security page: each answer beside the real thing behind it (a
