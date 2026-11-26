@@ -1,6 +1,6 @@
 # Planton Desktop in the close (draft 1)
 
-The close is Home's start (story chapter 12). The founder decided on 2026-11-26 (the project's decision 003) that Home links Planton Desktop there, as a second way to start: planton.ai for a team, Desktop for one person. His word that Desktop works stands as its proof (2026-11-26). The site already pairs the two (`START_DOORS`). This draft finds the words.
+The close is Home's start (story chapter 12). The founder decided on 2026-11-26 that Home links Planton Desktop there, as a second way to start: planton.ai for a team, Desktop for one person. His word that Desktop works stands as its proof (2026-11-26). The site already pairs the two (`START_DOORS`). This draft finds the words.
 
 ## The close today
 

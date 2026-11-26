@@ -15,5 +15,5 @@
 - a walked release: Desktop's proof is the founder's word, 2026-11-26, and the ledger says so.
 
 **Open:**
-- **The hero's first door.** The solo reader who won't sign up decides there, and "no account" is answered only at the close. Moving a Desktop mention higher is the founder's call; it is outside decision 003.
+- **The hero's first door.** The solo reader who won't sign up decides there, and "no account" is answered only at the close. Moving a Desktop mention higher is the founder's call; it is outside what he decided on 2026-11-26.
 - **`/desktop`'s build section and its figures** are unwalked.
