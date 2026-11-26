@@ -9,7 +9,7 @@ Draft 1's recommendation (v1, below as it stands on the after) was shown to the 
 - Right, in order: keycloak.yaml's db: block (16 lines); the deploy (command, the open-source line, the deploy-order line, six deployed lines); "Your cluster, after" (Instead of | On your cluster | Answered).
 
 ## v2 (the lead's recommendation)
-- **Heading:** Run open source on your own Kubernetes cluster, instead of paying for managed services. *(decision 002 value 8; ch 8 proof)*
+- **Heading:** Run open source on your own Kubernetes cluster, instead of paying for managed services. *(the founder's value 8; ch 8 proof)*
 - **Line:** Ask your coding agent for the database, cache or sign-in your app needs. It writes them from Planton's catalog, already wired together, and the open-source CLI deploys them in order, with no account and no password in any file. *(ch 8 proof; ledger set-deploy row)*
 - **Left:** the ask, labelled "One developer's ask, for a dev environment, to Claude Code:"; then "Just the CLI: nothing of Planton is installed on your cluster."
 - **Right, in order (the story a film would tell):**
