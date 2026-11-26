@@ -246,6 +246,8 @@
   line-height: 1.7;
   color: var(--hp-ink);
   text-wrap: pretty;
+  /* An identifier in an ask (a 32-character account ID) breaks rather than running past a phone's edge. */
+  overflow-wrap: anywhere;
 }
 /* The visitor's cloud (CloudChoice): one row of segments, chosen once for every section below. */
 .cloudPicker {
@@ -282,6 +284,20 @@
   font-weight: 500;
   line-height: 1.4;
   color: var(--hp-secondary);
+}
+/*
+ * Four clouds need about 350px in one row. Narrower than that they would wrap
+ * into a ragged second row, so on a phone they sit two by two in equal cells.
+ */
+@media (max-width: 480px) {
+  .cloudPicker > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+  .cloudPicker label {
+    text-align: center;
+  }
 }
 .cloudPicker label[data-checked] {
   background: var(--hp-panel);

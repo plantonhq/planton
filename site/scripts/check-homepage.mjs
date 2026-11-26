@@ -87,16 +87,48 @@ try {
           .filter((e) => !(e instanceof SVGElement))
           .every((e) => {
             const r = e.getBoundingClientRect();
-            return r.width === 0 || (r.left >= -1 && r.right <= w + 1);
+            if (r.width !== 0 && (r.left < -1 || r.right > w + 1)) return false;
+            // Text can run past a box that itself fits (a long unbroken word); only a box that
+            // scrolls by design (a code panel), or sits inside one, may hold more than it shows.
+            for (let n = e; n && n !== document.body; n = n.parentElement) {
+              if (/auto|scroll/.test(getComputedStyle(n).overflowX)) return true;
+            }
+            return e.clientWidth === 0 || e.scrollWidth <= e.clientWidth + 1;
           });
       });
     check(`${width}: no overflowing content`, await fits());
+    // The clouds the page offers, read from its own picker, so a cloud is never added without its checks.
+    const clouds = await page.$$eval('#infrastructure input[name="home-cloud"]', (inputs) =>
+      inputs.map((input) => input.value)
+    );
+    // The picker is one row of segments, or two by two when four don't fit: never a ragged row.
+    check(
+      `${width}: the cloud picker is one row or a full two-by-two grid`,
+      await page.$$eval('#infrastructure input[name="home-cloud"]', (inputs) => {
+        const tops = [
+          ...new Set(inputs.map((i) => Math.round(i.closest('label').getBoundingClientRect().top))),
+        ];
+        if (tops.length === 1) return true;
+        const lefts = [
+          ...new Set(
+            inputs.map((i) => Math.round(i.closest('label').getBoundingClientRect().left))
+          ),
+        ];
+        return inputs.length === 4 && tops.length === 2 && lefts.length === 2;
+      })
+    );
     // Every cloud's run fits the narrowest phone, not only the default one.
     if (width === 320) {
-      for (const cloud of ['aws', 'azure', 'gcp']) {
+      const chosen = await page.$eval(
+        '#infrastructure input[name="home-cloud"]:checked',
+        (i) => i.value
+      );
+      for (const cloud of clouds) {
         await page.click(`#infrastructure input[value="${cloud}"]`);
         check(`320: no overflowing content with ${cloud} chosen`, await fits());
       }
+      // Leave the choice as it was, so the checks below read the default cloud's run.
+      await page.click(`#infrastructure input[value="${chosen}"]`);
     }
     // Reduced motion shows the diagram's finished state, and its labels stay on its canvas.
     check(
@@ -152,7 +184,11 @@ try {
       await page.evaluate(() => {
         const infra = document.querySelector('#infrastructure');
         const oss = document.querySelector('#open-source');
-        return !!infra && !!oss && infra.compareDocumentPosition(oss) === Node.DOCUMENT_POSITION_FOLLOWING;
+        return (
+          !!infra &&
+          !!oss &&
+          infra.compareDocumentPosition(oss) === Node.DOCUMENT_POSITION_FOLLOWING
+        );
       })
     );
     check(
@@ -208,6 +244,8 @@ try {
       check('the chosen cloud is remembered', await showsKind('AwsRdsInstance'));
       await page.click('#infrastructure input[value="azure"]');
       check('picking Azure shows the Azure run', await showsKind('AzurePostgresqlFlexibleServer'));
+      await page.click('#infrastructure input[value="cloudflare"]');
+      check('picking Cloudflare shows the Cloudflare run', await showsKind('CloudflareWorker'));
       await page.click('#infrastructure input[value="gcp"]');
       check('picking Google Cloud shows its run again', await showsKind('GcpCloudSql'));
     }
@@ -323,7 +361,10 @@ try {
   check(
     'self-hosted: self_service_click attribution',
     (await events()).some(
-      (e) => e[1] === 'self_service_click' && e[2].location === 'self-hosted' && e[2].door === 'selfHostedDocs'
+      (e) =>
+        e[1] === 'self_service_click' &&
+        e[2].location === 'self-hosted' &&
+        e[2].door === 'selfHostedDocs'
     )
   );
   await page.goto(base, { waitUntil: 'networkidle0' });

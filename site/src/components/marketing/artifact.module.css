@@ -29,6 +29,15 @@
 .line {
   display: block;
 }
+/*
+ * A table wider than its column (a long kind name on the narrowest phone)
+ * scrolls inside its own box, as a code panel does, rather than running past
+ * the column; a table that fits never shows a scrollbar.
+ */
+.tableScroll {
+  max-width: 100%;
+  overflow-x: auto;
+}
 .table {
   width: 100%;
   border-collapse: collapse;

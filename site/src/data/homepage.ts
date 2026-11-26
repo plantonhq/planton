@@ -1,6 +1,10 @@
 import type { CodeArtifact, Check, TableArtifact } from './artifact.ts';
 import type { CloudId } from './clouds.ts';
-import { KUBERNETES_OPEN_SOURCE_PROJECTS, OPEN_SOURCE_PROJECT_TOTAL, PLATFORM_STATS } from './platform-stats.ts';
+import {
+  KUBERNETES_OPEN_SOURCE_PROJECTS,
+  OPEN_SOURCE_PROJECT_TOTAL,
+  PLATFORM_STATS,
+} from './platform-stats.ts';
 import { COMMUNITY_SEAT_LIMIT, FREE_TIER_SEATS } from './pricing.ts';
 import { STAND } from './story.ts';
 
@@ -79,7 +83,8 @@ export const HOMEPAGE = {
     // The why in one clause (the bill), bounded to what the walk showed: three services, three bills.
     // Its subject is the reader's own services; the self-hosted section below has Planton itself as
     // its subject, which keeps the two apart.
-    title: 'Your database, cache and sign\u2011in on your own Kubernetes cluster, instead of three managed bills.',
+    title:
+      'Your database, cache and sign\u2011in on your own Kubernetes cluster, instead of three managed bills.',
     intro:
       // ch 8, proof: one ask, the catalog's kinds, the CLI's ordered set (the claims ledger's set-deploy row).
       'Ask your coding agent for them, and it writes their manifests from Planton\u2019s catalog, already wired together. The Planton CLI deploys them in order with its open\u2011source engine: no account, no Planton install on your cluster, and no password in any file.',
@@ -149,7 +154,7 @@ export interface AgentRun {
   askLabel: string;
   /** The person's ask, excerpted with marked ellipses; the whole ask is in the run's record. */
   ask: string;
-  /** The set's main file, verbatim. */
+  /** The set's main file, verbatim; a long inline program is cut only where the panel shows `⋯`. */
   manifest: CodeArtifact;
   /** The check the agent ran on every file, as the CLI printed it. */
   validation: CodeArtifact;
@@ -166,12 +171,15 @@ export interface AgentRun {
 
 /**
  * What a real coding agent wrote when a person at each cloud's demo company
- * asked it for a Postgres database: headless Claude Code with the released
- * Planton CLI and skills, signed in to nothing (2026-11-25; every ask, command,
- * file and check is kept in the platform repository's website research).
- * Slotwren carries Google Cloud, 4Corner Pay AWS, Northmere 1887 Azure. When a
- * kind's fields or the CLI's output change, the run is repeated and its record
- * replaced, never edited by hand.
+ * asked it for a database behind their app: headless Claude Code with the
+ * released Planton CLI and skills, signed in to nothing (2026-11-25 and, for
+ * Cloudflare, 2026-11-26; every ask, command, file and check is kept in the
+ * platform repository's website research). Slotwren carries Google Cloud,
+ * 4Corner Pay AWS, Northmere 1887 Azure, and Kiln29 Cloudflare, in its own
+ * account (a real one, since every Cloudflare kind names its account). A file
+ * is shown verbatim; a long inline program is cut only where the panel shows
+ * `⋯`. When a kind's fields or the CLI's output change, the run is repeated
+ * and its record replaced, never edited by hand.
  */
 export const AGENT_RUNS: Record<CloudId, AgentRun> = {
   aws: {
@@ -479,6 +487,87 @@ export const AGENT_RUNS: Record<CloudId, AgentRun> = {
     // ch 10: the count, only from platform-stats.ts; the example names what a kind is.
     reach: `AzurePostgresqlFlexibleServer is one of ${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} kinds in the catalog, across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} providers, from AWS, Google Cloud and Azure to Cloudflare and Kubernetes.`,
   },
+  cloudflare: {
+    askLabel: 'Ravi, an engineer at Kiln29, a demo company, to Claude Code:',
+    ask: '\u201c\u2026Our site\u2019s contact form needs a small API: a Cloudflare Worker on its workers.dev address, with a D1 database that keeps each message. It goes in our Cloudflare account (account ID c84a2ed3553f2c03ed2b9c416ee1e6fe)\u2026 Don\u2019t sign in and don\u2019t deploy anything yet; I\u2019ll review what you write first.\u201d',
+    manifest: {
+      kind: 'code',
+      label:
+        'infrastructure/contact-api.yaml, written by Claude Code from Ravi\u2019s ask (one of two files; its code is cut at \u22ef)',
+      language: 'yaml',
+      // Its wiring sits five keys deep: on a phone those values scroll rather than hang in a sliver at the right.
+      lines: [
+        '# Contact-form API: a Worker on <worker>.<account-subdomain>.workers.dev',
+        '# that accepts POST /contact and stores each message in the D1 database.',
+        'apiVersion: cloudflare.planton.dev/v1alpha1',
+        'kind: CloudflareWorker',
+        'metadata:',
+        '  name: contact-api',
+        'spec:',
+        '  accountId: c84a2ed3553f2c03ed2b9c416ee1e6fe',
+        '  workerName: kiln29-contact-api',
+        '  compatibilityDate: "2025-01-15"',
+        '  mainModule: index.js',
+        '  workersDev:',
+        '    enabled: true',
+        '  observability:',
+        '    enabled: true',
+        '  d1Databases:',
+        '    - name: DB',
+        '      databaseId:',
+        '        valueFrom:',
+        '          kind: CloudflareD1Database',
+        '          name: contact-db',
+        '          fieldPath: status.outputs.database_id',
+        '  vars:',
+        '    # Origin allowed to call the API from the browser. "*" until the site\'s',
+        '    # address is confirmed -- tighten to e.g. "https://www.example.com".',
+        '    ALLOWED_ORIGIN: "*"',
+        '  content: |',
+        '    ⋯',
+      ],
+    },
+    validation: {
+      kind: 'code',
+      label: 'The check it ran on both files, before anything exists',
+      language: 'shell',
+      wrap: true,
+      lines: [
+        '$ planton validate infrastructure/contact-api.yaml',
+        '\u2713 manifest is valid',
+        '$ planton validate infrastructure/contact-db.yaml',
+        '\u2713 manifest is valid',
+      ],
+    },
+    proven: {
+      kind: 'table',
+      label:
+        'What deploys them: each kind\u2019s own open-source module, deployed and torn down in a real Cloudflare account by Planton\u2019s tests',
+      columns: ['Kind', 'Proven On'],
+      rows: [
+        ['CloudflareWorker', 'Terraform, Pulumi'],
+        ['CloudflareD1Database', 'Terraform, Pulumi'],
+      ],
+    },
+    checks: [
+      {
+        text: 'Read the module that deploys CloudflareWorker',
+        href: 'https://github.com/plantonhq/planton/tree/main/catalog/cloudflare/cloudflareworker/iac',
+      },
+      {
+        text: 'Read the test that deploys CloudflareWorker into a real Cloudflare account and destroys it',
+        href: 'https://github.com/plantonhq/planton/tree/main/catalog/cloudflare/cloudflareworker/e2e',
+      },
+      {
+        text: 'List every field the agent chose from, offline:',
+        command: 'planton explain CloudflareWorker',
+      },
+    ],
+    // ch 2 (proof: the agent writes manifests from one catalog on every cloud) and ch 10 (the count, only from
+    // platform-stats.ts). A Workers developer's first question is what this adds over the tool they use;
+    // the answer is what the run itself shows: the wiring by reference, and one catalog on every cloud.
+    reach: `The database\u2019s ID reaches the Worker by reference, never copied by hand. The same agent, catalog and check work on AWS, Google Cloud and Azure, and CloudflareWorker is one of ${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} kinds across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} providers.`,
+  },
 };
 
 /**
@@ -595,7 +684,11 @@ export const OSS_WALK: {
     label: 'Your cluster, after \u00b7 what each service answered',
     columns: ['Instead of', 'On Your Cluster', 'Answered'],
     rows: [
-      ['A managed Postgres', 'Postgres', 'Cluster in healthy state, with Keycloak\u2019s 100 tables'],
+      [
+        'A managed Postgres',
+        'Postgres',
+        'Cluster in healthy state, with Keycloak\u2019s 100 tables',
+      ],
       ['A managed cache', 'Valkey', 'NOAUTH without its password, PONG with it'],
       ['A hosted sign-in service', 'Keycloak', 'Ready, and its master realm answers 200'],
     ],
@@ -612,7 +705,8 @@ export const OSS_WALK: {
     // The section's own way in: the CLI the agent used, from the same installer the docs give.
     {
       text: 'Install the Planton CLI; with no account it runs the open\u2011source engine:',
-      command: 'curl -fsSL https://planton.ai/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh',
+      command:
+        'curl -fsSL https://planton.ai/install.sh -o /tmp/planton-install.sh && sh /tmp/planton-install.sh',
     },
     { text: 'Every kind in the catalog, offline:', command: 'planton explain --list' },
     {

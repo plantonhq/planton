@@ -44,7 +44,11 @@ function WrappedLine({ line }: { line: string }) {
   const hang = hangOf(line);
   return (
     <span className={styles.line} style={{ paddingLeft: `${hang}ch`, textIndent: `-${hang}ch` }}>
-      {/^\s*[✓✔ℹ] /.test(line) && line.includes('-') ? <StatusWords line={line} /> : line || '\u00a0'}
+      {/^\s*[✓✔ℹ] /.test(line) && line.includes('-') ? (
+        <StatusWords line={line} />
+      ) : (
+        line || '\u00a0'
+      )}
     </span>
   );
 }
@@ -74,26 +78,28 @@ export function Artifact({ artifact, id }: { artifact: ArtifactRecord; id: strin
           )}
         </div>
       ) : (
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              {artifact.columns.map((c) => (
-                <th key={c} scope="col">
-                  {c}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {artifact.rows.map((row) => (
-              <tr key={row[0]}>
-                {row.map((cell, i) => (
-                  <td key={i}>{cell}</td>
+        <div className={styles.tableScroll}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                {artifact.columns.map((c) => (
+                  <th key={c} scope="col">
+                    {c}
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {artifact.rows.map((row) => (
+                <tr key={row[0]}>
+                  {row.map((cell, i) => (
+                    <td key={i}>{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </figure>
   );
