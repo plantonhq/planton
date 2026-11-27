@@ -2,7 +2,7 @@
 
 *Effective date: March 25, 2026*
 
-*Last updated: November 19, 2026*
+*Last updated: November 27, 2026*
 
 ## Introduction
 
@@ -166,7 +166,7 @@ You approve once, and Planton uses that approval only to set up a keyless trust 
 
 Your Google access token is used only during the setup request it was issued for and is never stored. Planton requests online access only, so Google issues no refresh token, and no service account key is created. From then on, Planton reaches the project through the keyless trust, which you can remove in your own project at any time.
 
-The email address of the Google account that approved the setup may appear in our service logs. To end the permission on Google's side, remove Planton at your [Google Account permissions page](https://myaccount.google.com/permissions). To remove the trust itself, delete the OIDC provider, the custom role and the service account Planton created in your project; when you delete the connection in Planton, it shows exactly what stays in your project and a script that removes it.
+The email address of the Google account that approved the setup may appear in our service logs. To end the permission on Google's side, remove Planton at your [Google Account permissions page](https://myaccount.google.com/permissions). To remove the trust itself, delete the OIDC provider and the custom role Planton created in your project (and the service account, if no other Planton connection uses it); when you delete the connection in Planton, it shows exactly what stays in your project and a script that removes it.
 
 We use data received through this Google Cloud permission only to set up, and later update, the trust you asked for.
 
