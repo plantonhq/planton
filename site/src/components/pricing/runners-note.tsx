@@ -24,7 +24,7 @@ export const RunnersNote: FC = () => {
           minutes are never billed. A runner of your own, inside your
           network, is included on self-hosted and coming soon on hosted.{' '}
           <Link
-            href="/distributions/hosted"
+            href="/docs/runner/planton-hosted-runners"
             className="text-[#454545] underline underline-offset-4 hover:text-[#171717] transition-colors"
           >
             Learn About Runner

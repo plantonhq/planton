@@ -1,12 +1,13 @@
 /**
- * The planton.ai palette, defined once.
- *
- * Every color the website paints comes from this object. The MUI theme
+ * The shell's own palette: its dark appearance, the default for a host that
+ * passes no theme (the console's signed-out pages). The MUI theme
  * (`websiteTheme.ts`) and the site's Tailwind config both read it, so a hex
- * value appears in exactly one file and a component never types one. The
- * design law behind the values is `public/branding/design-system.md`:
- * monochrome chrome, hierarchy by luminance, color only where it carries
- * meaning.
+ * value appears in one file and a component never types one.
+ *
+ * planton.ai itself never paints these values: every public page passes the
+ * site's light palette (`site/src/theme/homepage.ts`), published as the CSS
+ * variables these roles resolve first, so here they are only fallbacks. The
+ * design law for both appearances is `site/design-system.md`.
  *
  * Naming is by role, never by shade: a component asks for the canvas or a
  * card, not for "#151515", so the palette can move without touching the

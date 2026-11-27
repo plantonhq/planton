@@ -13,7 +13,7 @@ export function ExperienceLink({
   primary = false,
 }: {
   door: DoorId;
-  location: DemoLocation | 'agents';
+  location: DemoLocation;
   primary?: boolean;
 }) {
   return (

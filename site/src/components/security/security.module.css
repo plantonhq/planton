@@ -1,0 +1,127 @@
+/*
+ * The Security page, in Home's grammar: the same container, headings and body
+ * sizes (composed from Home's module, never copied), so the two pages read as
+ * one site. Each answer sits left; the real thing behind it sits right, on the
+ * same two columns Home uses, drawn by the shared Artifact and Check.
+ */
+.container {
+  composes: container from '../marketing/homepage.module.css';
+}
+.heading {
+  composes: heading from '../marketing/homepage.module.css';
+}
+.intro {
+  composes: intro from '../marketing/homepage.module.css';
+}
+.top {
+  padding-block: 56px 64px;
+  max-width: 760px;
+}
+.top h1 {
+  text-wrap: balance;
+  font-size: clamp(44px, 4.4vw, 65px);
+  font-weight: 400;
+  line-height: 1.09;
+  letter-spacing: -0.055em;
+  margin-bottom: 26px !important;
+}
+.eyebrow {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--hp-secondary);
+  margin-bottom: 14px !important;
+}
+.contact {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--hp-body);
+  margin-top: 20px !important;
+}
+.contact a {
+  color: var(--hp-ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.top .intro {
+  max-width: 620px;
+}
+.answer {
+  border-top: 1px solid var(--hp-line);
+  padding-block: 56px;
+  display: grid;
+  grid-template-columns: 1fr 1.12fr;
+  gap: 38px;
+  align-items: start;
+}
+.answer > * {
+  min-width: 0;
+}
+.words {
+  display: grid;
+  gap: 18px;
+}
+.words .heading {
+  font-size: clamp(28px, 2.6vw, 38px);
+  margin-bottom: 4px;
+}
+.words p {
+  text-wrap: pretty;
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--hp-body);
+}
+.more {
+  border-top: 1px solid var(--hp-line);
+  padding-block: 56px 90px;
+  display: grid;
+  grid-template-columns: 1fr 1.12fr;
+  gap: 38px;
+  align-items: start;
+}
+.more ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+.more li a {
+  font-size: 16px;
+  color: var(--hp-ink);
+}
+.more li a:hover {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 28px;
+}
+@media (max-width: 1100px) {
+  .answer,
+  .more {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+@media (max-width: 760px) {
+  .top {
+    padding-block: 36px 44px;
+  }
+  .top h1 {
+    font-size: clamp(38px, 8.4vw, 58px);
+  }
+  .answer {
+    padding-block: 44px;
+  }
+  .words .heading {
+    font-size: 28px;
+  }
+  .actions {
+    gap: 16px;
+  }
+}

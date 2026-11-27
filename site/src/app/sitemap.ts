@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { INDEXED_PAGES, SITE } from '@/data/site-pages';
+import { INDEXED_PAGES, SITE, type PageGroup } from '@/data/site-pages';
 import { contentRoutes } from '@/lib/content-routes';
 
 /**
@@ -10,14 +10,12 @@ import { contentRoutes } from '@/lib/content-routes';
  */
 export const dynamic = 'force-static';
 
-const PRIORITY: Record<string, number> = {
+const PRIORITY: Record<PageGroup, number> = {
   home: 1,
-  product: 0.9,
-  trust: 0.9,
-  solutions: 0.8,
   pricing: 0.9,
+  security: 0.9,
+  desktop: 0.8,
   content: 0.7,
-  company: 0.4,
   legal: 0.3,
   standalone: 0.3,
 };

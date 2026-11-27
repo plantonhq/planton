@@ -29,7 +29,6 @@ This is the most important organizational principle. It makes the system determi
 | `planton.ai/docs/service-hub/deployment-environments` | `images/docs/service-hub/deployment-environments/` | `assets.planton.ai/site/images/docs/service-hub/deployment-environments/` |
 | `planton.ai/docs/platform/connections` | `images/docs/platform/connections/` | `assets.planton.ai/site/images/docs/platform/connections/` |
 | `planton.ai/docs/service-hub/kubernetes-dashboard` | `images/docs/service-hub/kubernetes-dashboard/` | `assets.planton.ai/site/images/docs/service-hub/kubernetes-dashboard/` |
-| `planton.ai/blog/my-post` | `images/blog/my-post/` | `assets.planton.ai/site/images/blog/my-post/` |
 | `planton.ai/` (landing page) | `images/landing/` | `assets.planton.ai/site/images/landing/` |
 
 ### Why This Matters
@@ -83,8 +82,6 @@ content/assets/images/
 │   └── service-hub/                # /docs/service-hub/*
 │       ├── deployment-environments/
 │       └── kubernetes-dashboard/
-├── blog/                           # Blog posts (planton.ai/blog/*)
-│   └── 2025-12-31-my-post/
 └── landing/                        # Landing page (planton.ai/)
 ```
 
@@ -115,7 +112,6 @@ actions:
 
       3. Key mapping rules:
          - `/docs/*` pages → `images/docs/*`
-         - `/blog/*` posts → `images/blog/*`
          - Landing page (`/`) → `images/landing/`
          - Features page → `images/features/`
 

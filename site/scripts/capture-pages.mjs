@@ -50,6 +50,7 @@ const require = createRequire(import.meta.url);
 const puppeteer = require('puppeteer');
 const { PNG } = require('pngjs');
 const pixelmatch = (await import('pixelmatch')).default;
+const { siteAsset } = await import('./site-assets.mjs');
 
 /** Virtual milliseconds every scene runs before its screenshot; long enough for every entrance animation to finish. */
 const VIRTUAL_TIME_BUDGET_MS = 20000;
@@ -63,7 +64,9 @@ const flag = (name) => args.includes(`--${name}`);
 
 const OUT_DIR = arg('out');
 if (!OUT_DIR) {
-  console.error('usage: capture-pages.mjs --out <dir> [--only a,b] [--tag before] [--publish-og] [--base URL]');
+  console.error(
+    'usage: capture-pages.mjs --out <dir> [--only a,b] [--tag before] [--publish-og] [--base URL]'
+  );
   process.exit(2);
 }
 const ONLY = arg('only', '')
@@ -83,9 +86,11 @@ const ogDir = path.join(siteRoot, 'public/_site/images/og');
 // platform when present (Chromium). Both paths are exercised below.
 const UA = {
   mac: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15',
-  windows: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+  windows:
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
   linux: 'Mozilla/5.0 (X11; Linux x86_64; rv:129.0) Gecko/20100101 Firefox/129.0',
-  iphone: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1',
+  iphone:
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1',
 };
 
 /**
@@ -97,56 +102,120 @@ const UA = {
  * drawer is captured open (with `viewportOnly` and a `height`).
  */
 const SCENES = [
-  // The marketing pages a "zero visual change" commit is proven against: the
-  // landing page, the Product, Distributions, and Trust groups, pricing, the
-  // 404, and the meeting decks that ride the deck engine. Two review widths
-  // for a group's first page, one for its siblings.
+  // The pages a "zero visual change" commit is proven against: Home, Pricing,
+  // Security, the 404, the meeting decks that ride the deck engine, and
+  // Desktop. Two review widths for a page, plus a phone where it matters.
   { name: 'landing-1680', route: '/', width: 1680, ua: UA.mac },
   { name: 'landing-1280', route: '/', width: 1280, ua: UA.mac },
   { name: 'landing-phone', route: '/', width: 390, ua: UA.iphone },
   // The header's mobile drawer open: the only place the drawer's links and
   // doors are seen, so a navigation change is graded rather than eyeballed.
-  { name: 'menu-phone', route: '/', width: 390, height: 800, ua: UA.iphone, viewportOnly: true, open: '[aria-label="Open navigation"]' },
-  { name: 'product-1280', route: '/product', width: 1280, ua: UA.mac },
-  { name: 'infra-hub-1680', route: '/product/infra-hub', width: 1680, ua: UA.mac },
-  { name: 'infra-hub-1280', route: '/product/infra-hub', width: 1280, ua: UA.mac },
-  { name: 'service-hub-1280', route: '/product/service-hub', width: 1280, ua: UA.mac },
-  { name: 'coding-agents-1280', route: '/product/coding-agents', width: 1280, ua: UA.mac },
-  { name: 'cli-1280', route: '/product/cli', width: 1280, ua: UA.mac },
-  { name: 'catalog-1280', route: '/product/catalog', width: 1280, ua: UA.mac },
-  { name: 'import-1280', route: '/product/import', width: 1280, ua: UA.mac },
-  { name: 'open-source-1280', route: '/product/open-source', width: 1280, ua: UA.mac },
-  { name: 'distributions-1280', route: '/distributions', width: 1280, ua: UA.mac },
-  { name: 'hosted-1680', route: '/distributions/hosted', width: 1680, ua: UA.mac },
-  { name: 'hosted-1280', route: '/distributions/hosted', width: 1280, ua: UA.mac },
-  { name: 'self-hosted-1280', route: '/distributions/self-hosted', width: 1280, ua: UA.mac },
+  {
+    name: 'menu-phone',
+    route: '/',
+    width: 390,
+    height: 800,
+    ua: UA.iphone,
+    viewportOnly: true,
+    open: '[aria-label="Open navigation"]',
+  },
   { name: 'pricing-1680', route: '/pricing', width: 1680, ua: UA.mac },
   { name: 'pricing-1280', route: '/pricing', width: 1280, ua: UA.mac },
+  // Security: the reviewer's answers beside the real thing behind each.
+  { name: 'security-1680', route: '/security', width: 1680, ua: UA.mac },
+  { name: 'security-1280', route: '/security', width: 1280, ua: UA.mac },
+  { name: 'security-phone', route: '/security', width: 390, ua: UA.iphone },
   // The 404 every address without a page answers, the retired pages' included.
   { name: 'not-found-1280', route: '/404', width: 1280, ua: UA.mac },
   { name: 'not-found-phone', route: '/404', width: 390, ua: UA.iphone },
-  { name: 'trust-1680', route: '/trust', width: 1680, ua: UA.mac },
-  { name: 'trust-1280', route: '/trust', width: 1280, ua: UA.mac },
-  { name: 'trust-verified-1680', route: '/trust/verified-before-deploy', width: 1680, ua: UA.mac },
-  { name: 'trust-verified-1280', route: '/trust/verified-before-deploy', width: 1280, ua: UA.mac },
-  { name: 'trust-rules-1280', route: '/trust/rules-and-approvals', width: 1280, ua: UA.mac },
-  { name: 'trust-record-1280', route: '/trust/the-record', width: 1280, ua: UA.mac },
-  { name: 'trust-posture-1280', route: '/trust/security-posture', width: 1280, ua: UA.mac },
-  { name: 'trust-keys-1280', route: '/trust/your-cloud-your-keys', width: 1280, ua: UA.mac },
-  { name: 'deck-sep-1280', route: '/meets/sep', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
-  { name: 'deck-nirav-1280', route: '/meets/nirav', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
-  { name: 'deck-clear-route-1280', route: '/meets/clear-route', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
-  { name: 'deck-rahul-gulati-1280', route: '/meets/rahul-gulati', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
-  { name: 'download-1680', route: '/desktop/download', width: 1680, ua: UA.mac, expectTab: 'macOS' },
-  { name: 'download-1280', route: '/desktop/download', width: 1280, ua: UA.mac, expectTab: 'macOS' },
-  { name: 'download-windows', route: '/desktop/download', width: 1280, ua: UA.windows, uaPlatform: 'Windows', expectTab: 'Windows' },
-  { name: 'download-linux', route: '/desktop/download', width: 1280, ua: UA.linux, expectTab: 'Linux' },
-  { name: 'download-phone', route: '/desktop/download', width: 390, ua: UA.iphone, expectTab: 'macOS' },
-  { name: 'download-og', route: '/desktop/download', width: 1200, height: 630, ua: UA.mac, og: 'download.png' },
+  {
+    name: 'deck-sep-1280',
+    route: '/meets/sep',
+    width: 1280,
+    height: 800,
+    ua: UA.mac,
+    viewportOnly: true,
+  },
+  {
+    name: 'deck-nirav-1280',
+    route: '/meets/nirav',
+    width: 1280,
+    height: 800,
+    ua: UA.mac,
+    viewportOnly: true,
+  },
+  {
+    name: 'deck-clear-route-1280',
+    route: '/meets/clear-route',
+    width: 1280,
+    height: 800,
+    ua: UA.mac,
+    viewportOnly: true,
+  },
+  {
+    name: 'deck-rahul-gulati-1280',
+    route: '/meets/rahul-gulati',
+    width: 1280,
+    height: 800,
+    ua: UA.mac,
+    viewportOnly: true,
+  },
+  {
+    name: 'download-1680',
+    route: '/desktop/download',
+    width: 1680,
+    ua: UA.mac,
+    expectTab: 'macOS',
+  },
+  {
+    name: 'download-1280',
+    route: '/desktop/download',
+    width: 1280,
+    ua: UA.mac,
+    expectTab: 'macOS',
+  },
+  {
+    name: 'download-windows',
+    route: '/desktop/download',
+    width: 1280,
+    ua: UA.windows,
+    uaPlatform: 'Windows',
+    expectTab: 'Windows',
+  },
+  {
+    name: 'download-linux',
+    route: '/desktop/download',
+    width: 1280,
+    ua: UA.linux,
+    expectTab: 'Linux',
+  },
+  {
+    name: 'download-phone',
+    route: '/desktop/download',
+    width: 390,
+    ua: UA.iphone,
+    expectTab: 'macOS',
+  },
+  {
+    name: 'download-og',
+    route: '/desktop/download',
+    width: 1200,
+    height: 630,
+    ua: UA.mac,
+    og: 'download.png',
+  },
   { name: 'desktop-1680', route: '/desktop', width: 1680, ua: UA.mac },
   { name: 'desktop-1280', route: '/desktop', width: 1280, ua: UA.mac },
   { name: 'desktop-phone', route: '/desktop', width: 390, ua: UA.iphone },
-  { name: 'desktop-og', route: '/desktop', width: 1200, height: 630, ua: UA.mac, og: 'desktop.png', ogTitleSize: 44 },
+  {
+    name: 'desktop-og',
+    route: '/desktop',
+    width: 1200,
+    height: 630,
+    ua: UA.mac,
+    og: 'desktop.png',
+    ogTitleSize: 44,
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -174,7 +243,11 @@ function resolveFile(urlPath) {
   const candidates =
     clean === '/'
       ? [path.join(exportDir, 'index.html')]
-      : [path.join(exportDir, clean), path.join(exportDir, `${clean}.html`), path.join(exportDir, clean, 'index.html')];
+      : [
+          path.join(exportDir, clean),
+          path.join(exportDir, `${clean}.html`),
+          path.join(exportDir, clean, 'index.html'),
+        ];
   for (const c of candidates) {
     if (c.startsWith(exportDir) && fs.existsSync(c) && fs.statSync(c).isFile()) return c;
   }
@@ -197,7 +270,9 @@ function serveExport() {
     fs.createReadStream(file).pipe(res);
   });
   return new Promise((resolve) => {
-    server.listen(0, '127.0.0.1', () => resolve({ server, base: `http://127.0.0.1:${server.address().port}` }));
+    server.listen(0, '127.0.0.1', () =>
+      resolve({ server, base: `http://127.0.0.1:${server.address().port}` })
+    );
   });
 }
 
@@ -212,7 +287,9 @@ function serveExport() {
  */
 async function startVirtualTime(page) {
   const client = await page.createCDPSession();
-  const expired = new Promise((resolve) => client.once('Emulation.virtualTimeBudgetExpired', resolve));
+  const expired = new Promise((resolve) =>
+    client.once('Emulation.virtualTimeBudgetExpired', resolve)
+  );
   await client.send('Emulation.setVirtualTimePolicy', {
     policy: 'pauseIfNetworkFetchesPending',
     budget: VIRTUAL_TIME_BUDGET_MS,
@@ -228,7 +305,9 @@ async function startVirtualTime(page) {
       await client.send('Emulation.setVirtualTimePolicy', { policy: 'pause' });
       await client.detach();
       if (outcome !== 'expired') {
-        throw new Error(`virtual time did not reach its budget in ${Date.now() - started}ms of real time; the capture is not deterministic`);
+        throw new Error(
+          `virtual time did not reach its budget in ${Date.now() - started}ms of real time; the capture is not deterministic`
+        );
       }
     },
   };
@@ -262,14 +341,22 @@ function compareWithBefore(scene, afterFile) {
   const before = PNG.sync.read(fs.readFileSync(beforeFile));
   const after = PNG.sync.read(fs.readFileSync(afterFile));
   if (before.width !== after.width || before.height !== after.height) {
-    return { status: 'size', detail: `${before.width}x${before.height} -> ${after.width}x${after.height}` };
+    return {
+      status: 'size',
+      detail: `${before.width}x${before.height} -> ${after.width}x${after.height}`,
+    };
   }
   const diff = new PNG({ width: before.width, height: before.height });
-  const mismatched = pixelmatch(before.data, after.data, diff.data, before.width, before.height, { threshold: 0.1 });
+  const mismatched = pixelmatch(before.data, after.data, diff.data, before.width, before.height, {
+    threshold: 0.1,
+  });
   if (mismatched > 0) {
     const diffFile = path.join(OUT_DIR, `${scene.name}-diff.png`);
     fs.writeFileSync(diffFile, PNG.sync.write(diff));
-    return { status: 'differs', detail: `${mismatched} px, see ${path.relative(process.cwd(), diffFile)}` };
+    return {
+      status: 'differs',
+      detail: `${mismatched} px, see ${path.relative(process.cwd(), diffFile)}`,
+    };
   }
   return { status: 'identical' };
 }
@@ -282,25 +369,39 @@ async function capture(browser, base, scene) {
     // Chromium exposes navigator.userAgentData; give the page the hint a real
     // Chromium on that platform would send, so the Client Hints path is tested.
     await page.evaluateOnNewDocument((platform) => {
-      Object.defineProperty(navigator, 'userAgentData', { value: { platform }, configurable: true });
+      Object.defineProperty(navigator, 'userAgentData', {
+        value: { platform },
+        configurable: true,
+      });
     }, scene.uaPlatform);
   }
   await page.emulateMediaFeatures([
     { name: 'prefers-color-scheme', value: 'dark' },
     { name: 'prefers-reduced-motion', value: 'reduce' },
   ]);
+  // A page's images are answered from the branch's content/assets/, so a capture shows the image the branch holds.
+  await page.setRequestInterception(true);
+  page.on('request', (request) => {
+    const asset = siteAsset(request.url());
+    return asset ? request.respond(asset) : request.continue();
+  });
   await page.goto(base + scene.route, { waitUntil: 'networkidle0', timeout: 45000 });
   // CSS keyframe animations and transitions run on the compositor thread and
   // ignore the virtual clock (a pulsing cursor was the one moving pixel between
   // two identical builds; a menu's opening is a transition). Stop both at their
   // resting value; JS-driven motion still runs under virtual time and settles
   // deterministically.
-  await page.addStyleTag({ content: '*, *::before, *::after { animation: none !important; transition: none !important; }' });
+  await page.addStyleTag({
+    content: '*, *::before, *::after { animation: none !important; transition: none !important; }',
+  });
   if (scene.open) {
     // Open a menu or drawer in real time, before the clock starts, and wait
     // for its panel to be in the document; the frozen clock then holds it open.
     await page.click(scene.open);
-    await page.waitForSelector('[role="menu"], [role="dialog"], .MuiDrawer-paper', { visible: true, timeout: 5000 });
+    await page.waitForSelector('[role="menu"], [role="dialog"], .MuiDrawer-paper', {
+      visible: true,
+      timeout: 5000,
+    });
   }
   // Full-page screenshots reveal the whole document at once, which fires every
   // scroll-triggered entrance mid-frame. Walk the page first (real time) so
@@ -335,8 +436,13 @@ async function capture(browser, base, scene) {
   }
   let verdict = null;
   if (scene.expectTab) {
-    const selected = await page.$eval('[role="tab"][aria-selected="true"]', (el) => el.textContent?.trim()).catch(() => null);
-    verdict = selected === scene.expectTab ? `ok (${selected})` : `FAIL expected ${scene.expectTab}, got ${selected}`;
+    const selected = await page
+      .$eval('[role="tab"][aria-selected="true"]', (el) => el.textContent?.trim())
+      .catch(() => null);
+    verdict =
+      selected === scene.expectTab
+        ? `ok (${selected})`
+        : `FAIL expected ${scene.expectTab}, got ${selected}`;
   }
 
   const suffix = TAG ? `-${TAG}` : '';
@@ -353,7 +459,9 @@ async function capture(browser, base, scene) {
 async function main() {
   const scenes = ONLY.length ? SCENES.filter((s) => ONLY.includes(s.name)) : SCENES;
   if (!scenes.length) {
-    console.error(`no scenes match --only ${ONLY.join(',')}; known: ${SCENES.map((s) => s.name).join(', ')}`);
+    console.error(
+      `no scenes match --only ${ONLY.join(',')}; known: ${SCENES.map((s) => s.name).join(', ')}`
+    );
     process.exit(2);
   }
   fs.mkdirSync(OUT_DIR, { recursive: true });
@@ -375,7 +483,9 @@ async function main() {
         comparison = `  [${result.status}${result.detail ? `: ${result.detail}` : ''}]`;
         if (result.status === 'differs' || result.status === 'size') differs += 1;
       }
-      console.log(`${path.relative(process.cwd(), file)}${verdict ? `  ${verdict}` : ''}${comparison}`);
+      console.log(
+        `${path.relative(process.cwd(), file)}${verdict ? `  ${verdict}` : ''}${comparison}`
+      );
     }
   } finally {
     await browser.close();
@@ -386,7 +496,9 @@ async function main() {
     process.exit(1);
   }
   if (differs) {
-    console.error(`${differs} scene(s) differ from ${COMPARE_DIR}; this is not a zero-visual-change build`);
+    console.error(
+      `${differs} scene(s) differ from ${COMPARE_DIR}; this is not a zero-visual-change build`
+    );
     process.exit(1);
   }
   if (COMPARE_DIR) console.log(`all ${scenes.length} scenes identical to ${COMPARE_DIR}`);

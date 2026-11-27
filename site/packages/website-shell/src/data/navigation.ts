@@ -32,12 +32,15 @@ export interface FooterGroup {
 // Header
 // ---------------------------------------------------------------------------
 
-/** The header's links, in the order a stranger needs them: what it is, what it costs, how to use it, what shipped. */
+/**
+ * The header's links, in the order a stranger needs them once Home has told
+ * the story: how to use it, what it costs, and what it can touch in their
+ * cloud. Sign In and Start Free follow as the header's doors.
+ */
 export const headerLinks: MenuItem[] = [
-  { label: 'Product', href: '/product' },
-  { label: 'Pricing', href: '/pricing' },
   { label: 'Docs', href: '/docs' },
-  { label: 'Changelog', href: '/changelog' },
+  { label: 'Pricing', href: '/pricing' },
+  { label: 'Security', href: '/security' },
 ];
 
 /** The one primary door: a new organization, whose first step is the Setup Prompt. */
@@ -53,30 +56,22 @@ export const STATUS_URL = 'https://status.planton.ai';
 
 export const footerGroups: FooterGroup[] = [
   {
-    // What Planton is and what it costs, plus the one page a cautious reader
-    // looks for before anything else: what Planton can and cannot do in their cloud.
-    id: 'product',
-    title: 'Product',
+    // The site's own pages beyond Home: what it costs, what it can touch in
+    // your cloud, what shipped, and the free laptop edition.
+    id: 'planton',
+    title: 'Planton',
     items: [
-      { label: 'Overview', href: '/product' },
       { label: 'Pricing', href: '/pricing' },
-      { label: 'Trust', href: '/trust' },
+      { label: 'Security', href: '/security' },
       { label: 'Changelog', href: '/changelog' },
+      { label: 'Planton Desktop', href: '/desktop' },
     ],
   },
   {
+    // The two ways in: a new organization, or the docs that teach it.
     id: 'get_started',
     title: 'Get Started',
-    items: [START_FREE, { label: 'Planton Desktop', href: '/desktop' }],
-  },
-  {
-    id: 'learn',
-    title: 'Learn',
-    items: [
-      { label: 'Docs', href: '/docs' },
-      { label: 'Blog', href: '/blog' },
-      { label: 'Tutorials', href: '/tutorials' },
-    ],
+    items: [START_FREE, { label: 'Docs', href: '/docs' }],
   },
   {
     // What is on GitHub, for the reader who wants the source rather than the page about it.

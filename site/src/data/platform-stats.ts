@@ -11,6 +11,15 @@
  *   control profiles  = kinds carrying a controls.yaml (851)
  *   controls          = the control catalog's entries (17, in 6 categories)
  *
+ * Counted 2026-11-26 against plantonhq/planton:
+ *   open-source projects = the Kubernetes kinds in the catalog's `kubernetes_open_source_software`
+ *                          service group (shared/catalogkind/catalog_kind.proto; 46 kinds), one per
+ *                          project: a project's own resources count with it (a Kafka topic, user,
+ *                          connector, Connect cluster or MirrorMaker 2 with Kafka; a flag file with
+ *                          its flag service), Planton's own kinds are left out, and a kind is named
+ *                          only while its e2e/profile.yaml reads `status: green` (36; Jenkins is
+ *                          deferred). KUBERNETES_OPEN_SOURCE_PROJECTS below is that list.
+ *
  * Planton ships no Infra Charts of its own: every chart belongs to an organization, so no chart count is kept.
  *
  * Rounded figures ("850+") are what a page prints; the exact counts are the
@@ -25,6 +34,26 @@ export const PLATFORM_STATS = {
   /** The year the first customer went to production on Planton. */
   IN_PRODUCTION_SINCE: '2023',
 } as const;
+
+/**
+ * The open-source projects the catalog runs on a Kubernetes cluster, by the
+ * kind of work each does, counted by the rule in this file's header. A page
+ * that names them reads this list, and one that shows the whole list prints
+ * OPEN_SOURCE_PROJECT_TOTAL, its exact length, since a rounded figure beside a
+ * list a reader can count reads as a slip.
+ */
+export const KUBERNETES_OPEN_SOURCE_PROJECTS = [
+  { work: 'Databases', projects: ['Postgres', 'MySQL', 'MongoDB', 'ClickHouse', 'Neo4j', 'Qdrant'] },
+  { work: 'Caches and Messaging', projects: ['Valkey', 'Kafka', 'Karapace', 'Kafka UI', 'RabbitMQ', 'NATS'] },
+  { work: 'Search and Analytics', projects: ['OpenSearch', 'Solr', 'Trino', 'Superset'] },
+  { work: 'Data and AI', projects: ['Airflow', 'Ray', 'Flink', 'JupyterHub', 'MLflow', 'Langfuse'] },
+  { work: 'Sign-In and Secrets', projects: ['Keycloak', 'OpenBao', 'OpenFGA'] },
+  { work: 'Observability', projects: ['Grafana', 'Loki', 'Tempo', 'SigNoz'] },
+  {
+    work: 'Delivery and Storage',
+    projects: ['Temporal', 'Harbor', 'GitHub Actions runners', 'SeaweedFS', 'Locust', 'flagd', 'GO Feature Flag'],
+  },
+] as const;
 
 /**
  * The providers the catalog covers, in the order the folders sit under
@@ -44,6 +73,11 @@ export const CLOUD_PROVIDERS = [
   { name: 'OpenFGA' },
 ] as const;
 
+export const OPEN_SOURCE_PROJECT_TOTAL = KUBERNETES_OPEN_SOURCE_PROJECTS.reduce(
+  (total, group) => total + group.projects.length,
+  0
+);
+
 /** Exact counts behind the printed figures, for the record and for llms.txt. */
 export const PLATFORM_COUNTS = {
   catalogKinds: 852,
@@ -52,4 +86,5 @@ export const PLATFORM_COUNTS = {
   controls: 17,
   controlCategories: 6,
   countedOn: '2026-11-24',
+
 } as const;

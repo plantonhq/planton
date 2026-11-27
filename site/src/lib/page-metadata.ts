@@ -7,7 +7,7 @@ import { SITE, sitePage } from '@/data/site-pages';
  * decision are all facts about the route, so they live in one record and
  * every page reads them the same way:
  *
- *   export const metadata = pageMetadata('/trust/the-record');
+ *   export const metadata = pageMetadata('/security');
  *
  * A page with a genuinely page-specific card (its own Open Graph image, a
  * JSON-LD block) spreads this and adds to it; it never restates the title.

@@ -1,0 +1,187 @@
+/*
+ * A real artifact beside the words that state it (site/design-system.md,
+ * "Components"): a label saying what it is and where it comes from, then the
+ * thing itself, flat. Home's sections and the Security page render every
+ * artifact through Artifact.tsx, so the panel, the table and the check look
+ * the same on every page. The code panel composes Home's, never copies it.
+ */
+.label {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--hp-secondary);
+  margin-bottom: 10px !important;
+}
+.code {
+  composes: prompt from './homepage.module.css';
+  overflow-x: auto;
+}
+.code pre {
+  margin: 0;
+  font: inherit;
+  /* Code keeps its lines and indentation; a line longer than the panel scrolls inside it. */
+  white-space: pre;
+}
+/* A wrapped artifact keeps every line whole; a long line wraps under its own text (WrappedLine). */
+.code pre.wrapped {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.line {
+  display: block;
+}
+/*
+ * A table wider than its column (a long kind name on the narrowest phone)
+ * scrolls inside its own box, as a code panel does, rather than running past
+ * the column; a table that fits never shows a scrollbar.
+ */
+.tableScroll {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--hp-panel);
+  border: 1px solid var(--hp-line);
+  border-radius: 12px;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.table th,
+.table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--hp-line);
+}
+.table tr:last-child td {
+  border-bottom: 0;
+}
+.table th {
+  font-weight: 500;
+  color: var(--hp-secondary);
+  font-size: 13px;
+}
+.table td {
+  color: var(--hp-body);
+}
+.table td:first-child {
+  color: var(--hp-ink);
+  font-weight: 500;
+}
+/* Short columns keep their words on one line; the last column, the explanation, takes the rest. */
+.table th:not(:last-child),
+.table td:not(:last-child) {
+  white-space: nowrap;
+}
+.table th:last-child,
+.table td:last-child {
+  width: 100%;
+}
+/* A screen of the product: flat, full size, one hairline frame; never tilted, shadowed or redrawn. */
+.screen {
+  max-width: var(--screen-width);
+  border: 1px solid var(--hp-line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+.screen img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+/*
+ * A folded artifact: its label is the summary line, an underlined link-like
+ * line with a turning mark, and inside it the artifact repeats nothing but
+ * the thing itself (its own label is hidden, since the summary already says it).
+ */
+.folded > summary {
+  cursor: pointer;
+  list-style: none;
+  /* The mark hangs in the gutter, so the label starts on the column's line and wraps under itself. */
+  display: flex;
+  align-items: baseline;
+  margin-left: -1.2em;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--hp-ink);
+}
+/* Only the label is underlined; the mark beside it turns and never carries a piece of the line. */
+.folded > summary > span {
+  text-wrap: balance;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.folded > summary::-webkit-details-marker {
+  display: none;
+}
+.folded > summary::before {
+  content: '\25B8';
+  display: inline-block;
+  flex: none;
+  width: 1.2em;
+  text-decoration: none;
+  transition: transform 120ms ease;
+}
+.folded[open] > summary::before {
+  transform: rotate(90deg);
+}
+.folded > figure {
+  margin-top: 14px;
+}
+.folded > figure > figcaption {
+  display: none;
+}
+.check {
+  font-size: 14px !important;
+  color: var(--hp-secondary) !important;
+}
+.check a {
+  color: var(--hp-ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.check code {
+  display: block;
+  /* A command stays whole on one line, as a person would paste it; a long one scrolls. */
+  white-space: nowrap;
+  overflow-x: auto;
+  margin-top: 8px;
+  font:
+    13px/1.6 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+  color: var(--hp-ink);
+}
+@media (max-width: 760px) {
+  /* The phone's crop, at most at its own size; the media query matches the picture's phone source. */
+  .screen {
+    max-width: var(--screen-phone-width);
+  }
+  .table {
+    font-size: 13px;
+  }
+  .table th,
+  .table td {
+    padding: 10px 12px;
+  }
+  .table th:not(:last-child),
+  .table td:not(:last-child) {
+    white-space: normal;
+  }
+}
+
+/*
+ * A word in a CLI's status line that holds a hyphen moves to the next line
+ * whole rather than breaking at the hyphen; only a word wider than the panel
+ * (a narrow phone) breaks inside itself. It starts at its own left edge, not
+ * the line's hanging indent.
+ */
+.whole {
+  display: inline-block;
+  max-width: 100%;
+  text-indent: 0;
+}

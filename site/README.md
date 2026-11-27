@@ -1,9 +1,9 @@
-# planton.ai — Website, docs, and blog
+# planton.ai — Website and docs
 
 This is the source for the planton.ai website, living in the `site/` folder of the Planton open-source repository. It contains:
 
-- All written content and visuals for the public website: product pages, docs, blog, case studies, tutorials, and marketing pages
-- File system–based content for docs and blog (Markdown/MDX) alongside the components, templates, and logic used to render them
+- All written content and visuals for the public website: Home, Security, Pricing, Planton Desktop, the docs, the changelog and the legal pages
+- File system–based content for the docs and the changelog (Markdown/MDX) alongside the components, templates, and logic used to render them
 - All the components, styling, and configurations used to run the site as an application
 
 ## Table of contents
@@ -19,6 +19,7 @@ This is the source for the planton.ai website, living in the `site/` folder of t
 - [Health ledger](#health-ledger)
 - [Contributing](#contributing)
 - [Media management](#media-management)
+- [Home](#home)
 
 ## What this is
 
@@ -47,25 +48,23 @@ The site is data first. Every sentence that states what Planton is or does lives
 
 | File | Holds | Read by |
 |------|-------|---------|
-| `src/data/story.ts` | The thirteen chapters of the Planton story: claim, proof, never-say. Mirrors `company/marketing/positioning/the-planton-story.md` in the company repository. | the landing page, the Trust pages, `llms.txt` |
-| `src/data/positioning.ts` | What Planton is in one sentence (never an analogy), the first action under it, and each hub's one plain line. | `story.ts`, the Product index, the 404, the hub pages |
-| `src/data/trust.ts` | The five Trust pages: lede, proof points, the illustrated record, the honesty statements, the sibling pages. | `src/components/trust/TrustPage.tsx` |
-| `src/data/product.ts` | The seven Product pages: lede, how it works, proof points, the record or the commands, the Trust pages that prove them, the siblings. | `src/components/product/ProductPage.tsx` |
-| `src/data/distributions.ts` | The hosted and self-hosted pages: lede, proof points, the record or the install, what stays yours. | `src/components/distributions/DistributionPage.tsx` |
+| `src/data/story.ts` | The thirteen chapters of the Planton story: claim, proof, never-say, its spine, and the stand (`STAND`, Home's headline and the 404's sentence). Mirrors `company/marketing/positioning/the-planton-story.md` in the company repository. | `homepage.ts`, `not-found.ts`, the registry's chapters, `llms.txt` |
+| `src/data/homepage.ts` | Home, one record per section in page order, each naming its chapter; the setup prompt example; each cloud's agent run; the booking page's words. | `src/components/landing-page/`, `src/components/book-demo/`, `llms.txt` |
+| `src/data/positioning.ts` | What Planton is in one sentence (never an analogy), the first action under it, and each hub's one plain line. | `story.ts`, `desktop.ts` |
+| `src/data/security.ts` | The Security page: each question a reviewer asks, its answer, the real artifact behind it (a permission list, a trust policy, a table), and how to check it; each sentence names its chapter and claims-ledger row. | `src/components/security/SecurityPage.tsx`, `llms.txt` |
 | `src/data/desktop.ts` | Planton Desktop's landing and download pages: every section's words, the measured figures with their provenance, the first-launch beats and follow-ons; each sentence names its chapter or document. | `src/components/desktop/`, `llms.txt` |
 | `src/data/desktop-download.ts` | The one source for what can be downloaded: platforms, installers, install steps, one-command installs, verify commands, the CDN pointers, the platform detector, and the ways line derived from them. | `src/components/desktop/`, `doors.ts` |
-| `src/data/desktop-screenshots.ts` | The desktop pages' screenshot slots: a real capture of the app or `null`, never a placeholder. | `src/components/desktop/` |
 | `src/data/doors.ts` | Every call to action once: label and destination by key; Start Free leads every pair. | the `Doors` primitive; a record names its pair |
-| `src/data/not-found.ts` | The 404's words and doors; the sentence read from `positioning.ts`. | `src/app/not-found.tsx` |
-| `src/data/page-shapes.ts` | The shapes the page records share: a proof point, a record or commands artifact, a step; and the one footer vocabulary every illustrated record uses (`illustratedFooter`). | `trust.ts`, `product.ts`, `distributions.ts` |
+| `src/data/not-found.ts` | The 404's words and doors; the stand read from `story.ts`. | `src/app/not-found.tsx` |
+| `src/data/artifact.ts` | The shapes of the real things story pages show beside their words: a code artifact, a table, a screen of the product (cropped from a demo universe scene it names), and the check a reader can run. | `components/marketing/Artifact.tsx`, `homepage.ts`, `security.ts`, `llms.txt` |
+| `src/data/clouds.ts` | The clouds Home's picker offers, in order, and the default. | `CloudChoice`, `llms.txt` |
 | `src/data/site-pages.ts` | The route registry: every non-content page with its title, description, group, chapters, and index flag; and the heading each group gets in `llms.txt` (`PAGE_GROUP_HEADINGS`), so a new group cannot be forgotten by the index. | `sitemap.ts`, `robots.ts`, `lib/page-metadata.ts`, `generate-llms.mjs`, `check-apex-routing.mjs` |
 | `src/data/pricing.ts` | Every price, cap, and free tier. | the pricing page and any sentence that names a price |
-| `src/data/platform-stats.ts` | The counts a page prints, with how each was counted. | the proof strip, `llms.txt` |
-| `src/data/testimonials.ts` | Customer quotes, verbatim, attributed, with approval on record; `testimonial(name)` throws on a name not on record. | the proof section |
+| `src/data/platform-stats.ts` | The counts a page prints, with how each was counted. | `PlatformCounts`, `llms.txt` |
 
 Data files import each other with `.ts` extensions so Node can run them directly (the generators do); `tsconfig.json` allows it.
 
-Components come from one library, `src/components/marketing/`, on the palette's role classes (`bg-canvas`, `bg-card`, `text-fg-secondary`, `border-edge`, `text-ok`). The library holds the primitives (card, badge, buttons, record window) and the page sections every story page composes (`PageHero`, `ProofList`, `PageCard`, `PageArtifact`, `Doors`, `CommandBlock`, `ProviderStrip`, `ChapterSection`, `PlatformCounts`, `QuestionCard`, `CommandTabs`); a page template is a thin composition of those in its reader's order and states nothing. The palette is defined once in `packages/website-shell/src/theme/tokens.ts` and projected into the MUI theme and Tailwind; a component never types a hex. The published law is `public/branding/design-system.md`.
+Components come from one library, `src/components/marketing/`, on the palette's role classes (`bg-canvas`, `bg-card`, `text-fg-secondary`, `border-edge`, `text-ok`). The library holds the primitives (card, badge, buttons, metric, step) and the page sections Pricing and Desktop compose (`PageHero`, `PageCard`, `Doors`, `CommandBlock`, `CommandTabs`, `PlatformCounts`); a page template is a thin composition of those in its reader's order and states nothing. Home and Security are the story pages: each has its own CSS module, and Security's composes Home's (`components/marketing/homepage.module.css`) rather than copying it. The website's palette is `src/theme/homepage.ts`, published as CSS variables on every page; the shell's own dark appearance is `packages/website-shell/src/theme/tokens.ts`; a component never types a hex. The design law, which the design reviewer grades every page against, is `design-system.md` beside this README.
 
 The landing page is versioned: `src/components/landing-page/v<N>-<date>/` holds only that version's section composition, and `src/components/landing-page/index.ts` points at the active one. Only the active version stays in the tree; earlier ones live in git history. Nothing outside a versioned folder imports from inside one.
 
@@ -91,17 +90,16 @@ src/app/sitemap.ts       generated from the registry and the content folders
 src/app/robots.ts        generated
 src/components/marketing/   the primitive library
 src/components/landing-page/ the versioned landing compositions
-src/components/trust/    the Trust template and index
-src/components/product/  the Product template and index
+src/components/security/ the Security page and its CSS module
 src/components/desktop/  the Planton Desktop landing and download templates and their sections
-src/components/distributions/ the Distributions template and index
+src/components/content/  the docs' author and table-of-contents pieces
 src/components/deck/     the deck engine and the meeting decks' slide kit
 src/components/meetings/ meeting decks and their registry
 src/data/                every claim, price, count, route
 src/lib/                 page-metadata, content-routes, assets, console-handoff
 scripts/                 the guards and generators (below)
 content/                 legal markdown, copywriting stage areas, design-review board and captures, the image inbox
-public/docs, blog, changelog, tutorials   content pages, walked by the sitemap and llms generator
+public/docs, changelog   content pages, walked by the sitemap and llms generator
 packages/website-shell/  the header, footer, navigation, palette, and theme the console also consumes
 ```
 
@@ -113,6 +111,7 @@ packages/website-shell/  the header, footer, navigation, palette, and theme the 
 | `scripts/check-apex-routing.mjs` | every top-level path is in the router's website list and reserved as a platform handle (reads the sibling `planton-platform` checkout; skips loudly without it) |
 | `next build` with `tsc --noEmit` and `eslint --max-warnings 0` before it | types hold, and the accessibility, image, and no-`any` rules hold everywhere with zero warnings |
 | `scripts/check-internal-links.mjs` | every internal link in `out/` resolves to a page or a static file, |
+| `scripts/check-page-weight.mjs` | Home's HTML, scripts and stylesheets stay within their gzipped budget |
 | `scripts/generate-llms.mjs` | `llms.txt`, `llms-full.txt`, and one Markdown per marketing page from the same data; fails when an exported route is unregistered |
 
 ## Proving a change
@@ -137,7 +136,7 @@ What a day-one architect would not have done, and which work retires it. The bui
 
 | Legacy | Where | Retired by |
 |--------|-------|-----------|
-| Hex literals in components; MUI icons beside lucide; `'use client'` on components with no hooks | `pricing`, `blog`, `docs`, `tutorials`, `changelog`, `common`, `book-demo`, `legal`, `branding`, `invest` | each of these page groups' own rebuild (pricing is data-driven and refreshed 2026-08-20; the content pages are the docs follow-up's; book-demo and legal are small standalone slices; invest is named below) |
+| Hex literals in components; MUI icons beside lucide; `'use client'` on components with no hooks | `pricing`, `docs`, `content` (the docs' author and contents pieces), `changelog`, `common`, `book-demo`, `legal`, `invest` | each of these page groups' own rebuild (pricing is data-driven and refreshed 2026-08-20; the content pages are the docs follow-up's; book-demo and legal are small standalone slices; invest is named below) |
 | The investor deck and explainer on their own primitive set (including the deck's own button, which came from the retired tour's kit), and the one Tailwind color the pricing FAQ still reads (`text.secondary`) | `components/invest`, `tailwind.config.ts`, `components/pricing/faqs.tsx` | invest onto the deck engine, by the founder's decision a later slice; the color with pricing's rebuild |
 | The meeting decks' slide kit types its own colors and gradients (`deck/primitives.tsx`, `meets/meets.css`) | `components/deck/primitives.tsx`, `app/(standalone)/meets/meets.css` | the meeting decks' convergence onto the marketing primitives |
 | Images under `public/_site/` instead of the asset CDN; 87 literal `/_site/` paths, in the investor pages, the meeting decks, and the content pages | `public/_site/images`, `src/**` | invest and the meeting decks with their convergence slices; the content pages with the docs follow-up; the Open Graph posters and the logo stay under the prefix `lib/assets.ts` names once |
@@ -148,26 +147,6 @@ What a day-one architect would not have done, and which work retires it. The bui
 ## Contributing
 
 Contributions big and small are welcome. Follow the quick start to run the site locally; for a content edit, open the file on GitHub and use the edit icon; for bugs or content ideas, open an issue at `https://github.com/plantonhq/planton/issues/new`. Keep a change focused, say what it does in the PR description, and for docs and blog posts prefer copy-pastable examples with exact paths or commands. Commit and PR conventions follow the repository-wide rules under `_rules/git/` and `_rules/pull-requests/`.
-
-## Homepage workflow explainers
-
-The homepage, infrastructure, delivery, and coding-agent diagrams animate continuously while visible. The homepage, delivery, and coding-agent stories loop; five provider stories in `src/data/architecture-stories.ts` cycle AWS → GCP → Azure → Cloudflare → DigitalOcean after each complete story and four-second hold. Visitors can choose a provider or inspect a phase without stopping playback. Hidden/offscreen time is suspended, and reduced motion uses static diagrams; without JavaScript all five architectures remain readable. `workflow-explainers.ts` owns the sequence stories and shared copy. Public resource inventories describe illustrative composition, not deployed customer stacks. `ResourceGraph` accepts the selected story, while `SequenceScene` uses a folded six-stage path with generous curved handoffs.
-
-`src/components/marketing/workflows/` separates three responsibilities:
-
-- `WorkflowScene.tsx` selects the authored resource or delivery scene and renders desktop/mobile SVG layouts from a story and a time in seconds. It has no browser APIs, timers, random state, or video dependencies.
-- `timeline.ts` samples deterministic phases. It is shared by browser playback, contract tests, and video exports. Editorial duration is not a product performance claim.
-- `useWorkflowPlayback.ts` owns visibility, reduced motion, manual inspection, and the only animation clock. Hidden and offscreen time is excluded. `WorkflowExplainer.tsx` supplies accessible controls and a complete text transcript. All notes occupy the same grid cell so phase changes cannot shift the page.
-
-The layouts are deliberately authored, not a generic graph engine. `InfrastructureScene.tsx` keeps resource cards, labeled output transfers, and deployment progress distinct; its precomputed arc-length samples give moving packets a steady speed around curves. Infrastructure runs for 24 seconds, delivery for 28 seconds. New stories should establish a real need before adding a new abstraction. Explain the ordering invariant in the content/evidence record; do not import platform execution code into the public client.
-
-Run `yarn check:workflows` against a built export. The timeline contract also runs inside `make build`; CI runs browser acceptance after export. It checks ordering, continuous playback, keyboard phase inspection, visibility suspension, reduced motion, responsive captures, text exports, and the no-JavaScript fallback. The browser harness owns its clock; no test API ships in the application.
-
-Export social video with `yarn export:workflow aws /tmp/planton-aws.mp4` (also `gcp`, `azure`, `cloudflare`, and `digitalocean`) , `yarn export:workflow delivery /tmp/planton-delivery.mp4`, or `yarn export:workflow agents /tmp/planton-agents.mp4`. `video/workflows.tsx` is the export-only Remotion adapter: 1080-square, 30 fps, H.264, with a PNG poster. The three Remotion packages are pinned together as development dependencies and are absent from the website import graph. The exporter uses Puppeteer's installed Chrome (or `PUPPETEER_EXECUTABLE_PATH`) and removes its temporary bundle.
-
-Commit source, not generated videos. The existing R2 `site/` prefix is a deletion-enabled mirror: do not upload untracked generated exports there. Video publishing is a separate explicit step. Native web playback needs no CDN video download.
-
-Analytics use the existing GA transport: `workflow_explainer_view` after one second of visible exposure and `workflow_explainer_cycle_complete` after a full timeline, each once per mounted story. Payloads contain only story id/version and motion mode. Seeking invalidates the current cycle for completion reporting; the next continuous cycle becomes eligible again. Static views never emit completion. These events measure exposure, not comprehension or attributable conversion lift.
 
 ## Media management
 
@@ -210,7 +189,7 @@ assets.planton.ai/site/
    - Moves to appropriate folder
    - Uploads to R2
 
-4. **Use the R2 URL** in docs/blog:
+4. **Use the R2 URL** in the docs:
    ```md
    ![Pipeline overview](https://assets.planton.ai/site/images/service-hub/2025-12-31-103045-service-hub-pipeline-overview.png)
    ```
@@ -274,20 +253,28 @@ Examples:
 For detailed documentation, see `content/assets/_rules/README.md`.
 
 
-## Homepage v6
+## Home
 
-The active homepage is `v6-2026-09-23`, with copy and internal source attribution in `src/data/homepage.ts`. Its source inventory, draft, handoff, and verification record live in `content/copywriting/_stage-area/2026-09-23-homepage/`. Homepage markdown and the llms.txt introduction render the same record; the older story remains the source for other story pages.
+Home is one page that tells one story, built one or two sections at a time; the active composition is `src/components/landing-page/v7-2026-11-25/`. Its words live in `src/data/homepage.ts`, one record per section in page order, each naming the story chapter it mirrors; Home's markdown and the llms.txt introduction render the same records. Each section's draft, cold reads and handoff live under `content/copywriting/_stage-area/` (the hero and the first app: `2026-11-25-hero/`; infrastructure: `2026-11-25-any-infrastructure/`; open source on your own cluster: `2026-11-26-oss-on-kubernetes/`; run it yourself: `2026-11-26-run-it-yourself/`; the run: `2026-11-27-watch-it-deploy/`).
 
-The hero is `HeroExperience` with a pure `HeroScene`; the product example is `ProductProof`, and controls and placement share `ControlOwnership`. Their copy lives in `src/data/homepage-experience.ts`, with its source and review record under `content/copywriting/_stage-area/2026-09-23-homepage-product-story/`. The supplied product capture is kept intact and explicitly distinguished from live deployment status. The symmetric hero uses the Planton mark without repeating its name; requests and results share the same connector lanes.
+- **The hero** is the stand and the team it serves. `HeroExperience` draws the team, Planton and your cloud with a pure `HeroScene`, labelled as an illustration; its words are `HERO` in `src/data/homepage-experience.ts`. Its clock is `workflows/useWorkflowPlayback.ts` over `workflows/timeline.ts`: hidden and offscreen time is excluded, reduced motion shows the finished state, and two GA events (`workflow_explainer_view`, `workflow_explainer_cycle_complete`) carry only the story id, version and motion mode. Its marks are embedded by `scripts/generate-workflow-icons.mjs` from the canonical SVGs, and the build checks them for drift.
+- **The first app** shows the setup prompt as the server writes it (`SETUP_PROMPT_EXAMPLE`, rendered by `SetupPromptExample`): words to read, with the sign-in code as a marked placeholder and no copy button, because the real prompt carries a personal single-use code. When the server's wording changes, the example changes with it.
+- **Infrastructure** shows what a real coding agent wrote when a person at a demo company asked it for a database behind their app, on the visitor's cloud (`AGENT_RUNS`, rendered by `InfrastructureSection`): Slotwren on Google Cloud, 4Corner Pay on AWS, Northmere 1887 on Azure, and Kiln29 on Cloudflare, a Worker with D1 in Kiln29's own account (every Cloudflare kind names its account, so the ID is real). The section shows the ask, the set's main file verbatim (a long inline program cut only where the panel shows `⋯`), the check it ran, and every kind in the set with its open-source module, deployed and torn down in a real account. Each cloud's record comes from a real run (the released CLI and skills, signed in to nothing); when a kind's fields or the CLI's output change, the run is repeated and the record replaced. The section carries the cloud picker (`CloudPicker`, `src/data/clouds.ts`): the visitor's pick is remembered in their browser and every section below reads it through `useCloud`; a section with no real artifact for the chosen cloud shows the default cloud's and says so. A cloud joins the picker when its run exists, and the homepage checks read the picker's own clouds, so a new one is checked at every width without a typed list.
+- **The run** follows infrastructure: the files the agent wrote there, deployed as one stack by Neha's coding agent on demo.planton.ai, signed in as her (`WATCH_RUN`, rendered by `WatchSection`). It is the first section led by a screen of the product: the run's page as Neha saw it, cropped from the demo universe scene its record names, then the record line and the plan she said yes to, folded. The run is Google Cloud's, so a reader who chose another cloud is told. When the console's run page changes, recapture the scene (`make e2e-universe env=demo ARGS="capture slotwren"` in the company repository) and redo the crop; when a teammate can open the run, Ben's view of it joins as a second screen.
+- **Open source on your own cluster** sits above run it yourself, and the sections the story puts before it go in above it. It shows one coding agent's walk with the open-source CLI and no account (`OSS_WALK`): the one command as run, the order the CLI worked out with the operators first, what each service answered on the cluster, and the file that wires Keycloak to Postgres, then the open-source projects the catalog runs, read from `platform-stats.ts` (`KUBERNETES_OPEN_SOURCE_PROJECTS`, counted by the rule in its header). Its words name the open-source CLI because the same command takes another path once signed in, and its subject is the reader's own services, which keeps it apart from run it yourself, whose subject is Planton. It reads no cloud choice. A panel cuts lines only where it shows `⋯`, and a new walk replaces the record, never a hand edit.
+- **Run it yourself** is the last section before the close, and later sections go in above it. It shows the self-hosting docs' two Helm commands as a real install ran them on a fresh cluster, with both chart and release pinned so the commands stay valid, and the status that cluster printed once Ready (`SELF_HOSTED_WALK`). It is the same on every cloud, so it reads no cloud choice. When a release moves the operator's floor past the pinned pair, the walk is repeated and the record replaced, never edited by hand. Its seat count reads `COMMUNITY_SEAT_LIMIT`, and the close's note says planton.ai, so the two free tiers never read as one contradicted number.
+- **The close** repeats the doors: Start Free, the one filled door, for a team, and Book a Demo. Under its note, one line names the second way in for one person, Planton Desktop on a laptop with no account, and gives it Desktop's own door (`HOMEPAGE.close.alone`; the founder, 2026-11-26). Its words follow `/desktop`'s lede, so a visitor who clicks through reads the same promise.
 
-`ExperienceLink` renders Start Free, the primary door in every pair, and `DemoLink` the demo door beside it; each records a fixed placement label. All public website routes share the light appearance and one header: four plain links, Sign In, and Start Free, with an optional callback that attributes Start Free clicks on `/`. A signed-in visitor sees the way back to the console instead. The demo journey uses `LightMarketingSurface`. Resource icons retain their canonical colors; the AWS light-selector lettering is derived from the same provider paths.
+`ExperienceLink` renders Start Free, the primary door in every pair, and `DemoLink` the demo door beside it; each records its placement (`hero`, `close`). All public website routes share the light appearance and one header, whose Start Free is attributed as `navigation`.
 
-The `/book-demo` payload and Cal.com destination are unchanged. The form now clearly hands off to scheduling; analytics count a booking only on the SDK's accepted, non-payment-required booking event. No customer details or calendar event payloads enter analytics.
+After `make build`, run `node scripts/check-homepage.mjs`: responsive captures, the hero's reduced-motion state and labels, the setup prompt, the infrastructure section on every cloud (the pick, its memory across a reload, a 320 px phone), the run (its place, its screen loaded with alt text, the plan folded, the Google Cloud line when another cloud is chosen), open source (the open-source engine's line, the operator first, the services answering, no `$secret/`), run it yourself (its place before the close, the pinned commands, the Ready status, no copy button), the door attribution, the mobile drawer, and the mocked booking journey (CI runs it on pull requests). `node scripts/preview-homepage.mjs` previews the export at port 4177; `HOMEPAGE_CAPTURES` changes the capture directory. Generate the social card with `node scripts/capture-homepage-og.mjs` and commit the PNG: the hero, with the header's mark and the site's name set above it, since the card hides the header. It is also the default card for every page without its own (`SITE.defaultOgImage`).
 
-After `make build`, run `node scripts/check-homepage.mjs` for responsive captures and mocked conversion checks, and `node scripts/preview-homepage.mjs` for a local preview at port 4177. `HOMEPAGE_CAPTURES` changes the capture directory. Generate the social card with `node scripts/capture-homepage-og.mjs`; commit that PNG along with its editable source components. The browser checks mock all external traffic, including form submission and the scheduler.
+`scripts/check-page-weight.mjs` runs inside the build: it sums Home's HTML and the scripts and stylesheets it references, gzipped, and weighs each screen's image, against budgets written in the script with their reasons. A section that needs more raises the budget in the same change, with the reason beside the number.
+
+**Screens of the product** are crops of demo universe scenes, never captures taken by hand: each `screen` record names its scene, and `scripts/check-scenes.mjs` (in the build) refuses a screen whose scene isn't in the universe (read from the platform checkout beside this repository; skipped with a notice in CI, where there is none) or whose image isn't under `content/assets/`. The images are committed there, at twice their shown width, compressed by the image tool's settings (`pngquant --quality 80-95`), and uploaded by `make process-images`, which uploads without deleting. Never run `make sync-assets` from a branch: it mirrors `content/assets/` to the bucket with `--delete`, and removes every image the branch lacks. The captures and the homepage checks answer `assets.planton.ai/site/*` from `content/assets/` (`scripts/site-assets.mjs`), so they judge the branch's own images before they're uploaded.
 
 Earlier landing versions are in git history, not in the tree. Other pages do not import version-specific components.
 
-Canonical icons are selected from `catalog/<provider>/<kind>/logo.svg` and the existing provider marks. Run `node --experimental-strip-types scripts/generate-workflow-icons.mjs` after changing a story inventory; the build checks the generated `workflow-icons.ts` registry for drift. Embedded SVG bytes are shared with video exports; no runtime catalog or CDN request is needed. The layout module keeps authored positions separate from relationships. Any new relationship needs a source-backed explanation: typed output reference, explicit prerequisite, or grouped configuration dependency.
+## Security
 
-Run `node scripts/check-homepage-experience.mjs` for the hero, product proof, keyboard controls, responsive captures, zoom, and static fallbacks. `node scripts/measure-homepage.mjs /tmp/homepage-lab.json` records repeatable local LCP, CLS, sampled interaction timing, and JavaScript bytes; it is not field INP or a production-network benchmark. Export the hero with `yarn export:workflow hero /tmp/planton-hero.mp4`. Generated MP4s remain outside Git.
+`/security` answers what a reviewer asks before anyone connects a cloud: what Planton can touch, that it stores no keys, where the work runs and what Planton keeps, what the GitHub App sees, who approves what, the record, and how to cut Planton off. Each answer sits beside the real thing behind it (a catalog permission list, the trust policy the setup writes, a table) and a way to check it. Its words live in `src/data/security.ts`, each naming its chapter and claims-ledger row; the page's Markdown twin renders the same records. Its draft and cold reads are in `content/copywriting/_stage-area/2026-11-25-frame/`. When a fact behind an answer changes (the GitHub App's permissions, a cloud's revoke step), the record changes with it, and the claims ledger is re-checked first.

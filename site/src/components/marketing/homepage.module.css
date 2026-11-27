@@ -1,4 +1,4 @@
-/* Homepage composition. Product canvases own their dark palette; page text stays light. */
+/* Home: the hero (its diagram owns a dark palette; page text stays light), the middle sections, the close. */
 .home {
   position: relative;
   background: var(--hp-canvas);
@@ -35,15 +35,6 @@
   margin-inline: auto;
   padding-inline: var(--hp-gutter);
 }
-.eyebrow {
-  font:
-    12px/1.6 ui-monospace,
-    SFMono-Regular,
-    monospace;
-  letter-spacing: 0.09em;
-  color: var(--hp-secondary);
-  margin-bottom: 22px !important;
-}
 .hero {
   display: grid;
   grid-template-columns: 1fr 1.12fr;
@@ -55,19 +46,15 @@
   min-width: 0;
 }
 .hero h1 {
+  text-wrap: balance;
   font-size: clamp(44px, 4.4vw, 65px);
   font-weight: 400;
   line-height: 1.09;
   letter-spacing: -0.055em;
   margin-bottom: 26px;
 }
-.hero h1 span {
-  display: block;
-}
-.hero h1 span:last-child {
-  color: var(--hp-secondary);
-}
 .intro {
+  text-wrap: pretty;
   font-size: 17px;
   line-height: 1.8;
   max-width: 500px;
@@ -122,194 +109,264 @@
   max-width: 420px;
 }
 .heading {
+  text-wrap: balance;
   font-size: clamp(32px, 3.2vw, 46px);
   line-height: 1.18;
   letter-spacing: -0.045em;
   font-weight: 400;
   white-space: pre-line;
 }
-.overview {
+/* Every middle section (the first app, then each value in the story's order) opens with a hairline and draws from these classes. */
+.section {
   border-top: 1px solid var(--hp-line);
   padding-block: 72px;
-  scroll-margin-top: 95px;
 }
-.overviewHeader {
+/* A middle section shares the hero's two columns, so every right-hand column starts on one line. */
+.sectionHeader,
+.who {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 55px;
-  align-items: end;
-}
-.overviewHeader p {
-  color: var(--hp-secondary);
-  font-size: 17px;
-  line-height: 1.8;
-  max-width: 560px;
-}
-.steps {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  margin-top: 40px;
+  grid-template-columns: 1fr 1.12fr;
   gap: 38px;
-  list-style: none;
-  padding: 0;
+  align-items: start;
 }
-.stepHeader {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  margin-bottom: 20px;
+.sectionHeader > *,
+.who > * {
+  min-width: 0;
 }
-.stepHeader:after {
-  content: '';
-  height: 1px;
-  background: var(--hp-line);
-  flex: 1;
+.figure {
+  margin-top: 40px !important;
 }
-.stepNumber {
-  font:
-    12px ui-monospace,
-    monospace;
+.label {
+  font-size: 13px;
+  line-height: 1.6;
   color: var(--hp-secondary);
-  width: 34px;
-  height: 34px;
+  margin-bottom: 10px !important;
+}
+.prompt {
+  background: var(--hp-panel);
   border: 1px solid var(--hp-line);
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
+  border-radius: 12px;
+  padding: 20px 22px;
+  font:
+    13px/1.62 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+  color: var(--hp-body);
 }
-.steps h3 {
-  font-size: 21px;
-  font-weight: 500;
-  margin-bottom: 10px;
+/* The box spans the section; its lines stop at a readable length inside it. */
+.prompt p {
+  max-width: 108ch;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  min-height: 1.62em;
 }
-.steps p {
-  font-size: 16px;
-  line-height: 1.8;
-  color: var(--hp-secondary);
-}
-.proof {
-  padding-block: 50px 64px;
-  border-top: 1px solid var(--hp-line);
-}
-.proof .heading {
-  font-size: 30px;
-}
-.quotes {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 50px;
-  margin-top: 32px;
-}
-.quotes blockquote {
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-  padding-left: 22px;
-  border-left: 2px solid var(--hp-line);
-}
-.quotes blockquote p {
-  flex: 1;
-  font-size: 17px;
-  line-height: 1.8;
-  color: var(--hp-secondary);
-}
-.quotes footer {
-  margin-top: 20px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  font-size: 14px;
-  color: var(--hp-secondary);
-}
-.quotePortrait {
-  width: 64px;
-  height: 64px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  object-fit: cover;
-}
-.quoteAttribution {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-.quotes footer strong {
-  font-size: 15px;
-  font-weight: 500;
+.prompt strong {
   color: var(--hp-ink);
+  font-weight: 600;
 }
-.agents {
-  border-top: 1px solid var(--hp-line);
-  padding-block: 72px;
+.promptCode {
+  border: 1px dashed var(--hp-line);
+  border-radius: 4px;
+  padding: 0 4px;
+  background: var(--hp-canvas);
+  color: var(--hp-ink);
+  white-space: nowrap;
 }
-.agents > figure {
+.promptToken {
+  white-space: nowrap;
+}
+.who {
   margin-top: 36px;
 }
-.agentSetup {
-  display: flex;
-  align-items: start;
-  justify-content: space-between;
-  gap: 35px;
-  margin-top: 26px;
-  border-top: 1px solid var(--hp-line);
-  padding-top: 24px;
-}
-.agentSetup p {
-  font-size: 15px;
-  line-height: 1.8;
-  color: var(--hp-secondary);
-  max-width: 740px;
-}
-.agentSetup a {
-  flex-shrink: 0;
-}
-.adoptionNote {
-  max-width: 850px;
-  margin-top: 26px !important;
-  font-size: 16px;
-  line-height: 1.8;
-  color: var(--hp-secondary);
-}
-.faq {
-  padding-block: 72px;
-  border-top: 1px solid var(--hp-line);
+/*
+ * A section whose words sit left and whose real artifacts sit right, on the
+ * hero's two columns. The words come in two parts, the lead (the claim and
+ * what was asked) and the proof under it, so on one column the artifact
+ * follows the ask it answers and the proof follows the artifact.
+ */
+.split {
   display: grid;
-  grid-template-columns: 1fr 1.25fr;
-  gap: 8%;
+  grid-template-columns: 1fr 1.12fr;
+  grid-template-rows: auto 1fr;
+  column-gap: 38px;
+  row-gap: 28px;
+  align-items: start;
 }
-.questions details {
-  border-bottom: 1px solid var(--hp-line);
+.lead {
+  grid-column: 1;
+  grid-row: 1;
 }
-.questions details:first-child {
-  border-top: 1px solid var(--hp-line);
+.split > .artifacts {
+  grid-column: 2;
+  grid-row: 1 / span 2;
 }
-.questions summary {
-  cursor: pointer;
-  font-size: 17px;
-  padding: 22px 32px 22px 0;
-  position: relative;
-  list-style: none;
-  line-height: 1.5;
+.proof {
+  grid-column: 1;
+  grid-row: 2;
 }
-.questions summary::-webkit-details-marker {
-  display: none;
+.split > * {
+  min-width: 0;
 }
-.questions summary:after {
-  content: '+';
-  position: absolute;
-  right: 0;
-  top: 20px;
-  font-size: 22px;
-  color: var(--hp-secondary);
+/*
+ * A section that leads with a screen of the product: the heading and the
+ * words on the two columns' line, then the screen across both, wide enough
+ * for the console's own text to read, then the record and the folded proof
+ * on the same line again.
+ */
+.screenFirst {
+  display: grid;
+  grid-template-columns: 1fr 1.12fr;
+  column-gap: 38px;
+  row-gap: 32px;
+  align-items: start;
 }
-.questions details[open] summary:after {
-  content: '−';
+.screenFirst > * {
+  min-width: 0;
 }
-.questions p {
-  color: var(--hp-secondary);
+.screenFirst > .wide {
+  grid-column: 1 / -1;
+}
+.words {
+  display: grid;
+  /* minmax(0, …) lets a wide code line scroll inside its panel instead of widening the column. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+}
+.words p {
+  text-wrap: pretty;
   font-size: 16px;
+  line-height: 1.75;
+  color: var(--hp-body);
+}
+.words .intro {
+  font-size: 17px;
   line-height: 1.8;
-  padding: 0 20px 24px 0;
+}
+.artifacts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 28px;
+}
+/* The ask a person typed, quoted quietly: words, never a second prompt panel. */
+.ask {
+  border-left: 1px solid var(--hp-line);
+  padding-left: 18px;
+}
+.ask figcaption {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--hp-secondary);
+  margin-bottom: 6px;
+}
+.ask blockquote {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--hp-ink);
+  text-wrap: pretty;
+  /* An identifier in an ask (a 32-character account ID) breaks rather than running past a phone's edge. */
+  overflow-wrap: anywhere;
+}
+/* The visitor's cloud (CloudChoice): one row of segments, chosen once for every section below. */
+.cloudPicker {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+}
+.cloudPicker legend {
+  padding: 0;
+  margin-bottom: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--hp-secondary);
+}
+.cloudPicker > div {
+  display: inline-flex;
+  flex-wrap: wrap;
+  width: fit-content;
+  max-width: 100%;
+  border: 1px solid var(--hp-line);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 3px;
+}
+.cloudPicker label {
+  position: relative;
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 7px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--hp-secondary);
+}
+/*
+ * Four clouds need about 350px in one row. Narrower than that they would wrap
+ * into a ragged second row, so on a phone they sit two by two in equal cells.
+ */
+@media (max-width: 480px) {
+  .cloudPicker > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+  .cloudPicker label {
+    text-align: center;
+  }
+}
+.cloudPicker label[data-checked] {
+  background: var(--hp-panel);
+  color: var(--hp-ink);
+}
+.cloudPicker input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.cloudPicker label:has(input:focus-visible) {
+  outline: 2px solid var(--hp-ink);
+  outline-offset: 2px;
+}
+.words .note {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--hp-secondary);
+}
+.who h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--hp-ink);
+  margin-bottom: 12px;
+}
+.who ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+.who li {
+  text-wrap: pretty;
+  position: relative;
+  padding-left: 18px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--hp-body);
+}
+.who li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.8em;
+  width: 6px;
+  height: 1px;
+  background: var(--hp-secondary);
 }
 .close {
   text-align: center;
@@ -317,20 +374,31 @@
   padding-block: 80px 90px;
 }
 .close .heading {
-  font-size: clamp(36px, 4vw, 58px);
+  max-width: 760px;
+  margin-inline: auto;
 }
-.close > p:not(.eyebrow) {
+.close > p {
   font-size: 17px;
   line-height: 1.8;
   color: var(--hp-secondary);
   max-width: 640px;
   margin: 24px auto 28px;
+  text-wrap: pretty;
 }
 .close small {
   display: block;
   font-size: 14px;
   color: var(--hp-secondary);
   margin-top: 20px;
+  text-wrap: pretty;
+}
+/* The second way in, for one person: body size, under the team's start, never a second filled door. Its door follows on its own line. */
+.close .closeAlone {
+  font-size: 16px;
+  line-height: 1.7;
+  max-width: 600px;
+  margin: 32px auto 8px;
+  text-wrap: pretty;
 }
 .closeActions {
   display: flex;
@@ -375,12 +443,21 @@
   .intro {
     max-width: 600px;
   }
-  .overviewHeader {
-    gap: 32px;
+  .sectionHeader,
+  .who,
+  .split,
+  .screenFirst {
+    grid-template-columns: 1fr;
+    gap: 24px;
   }
-  .agentSetup {
-    flex-direction: column;
-    gap: 15px;
+  .split {
+    grid-template-rows: none;
+  }
+  .lead,
+  .split > .artifacts,
+  .proof {
+    grid-column: auto;
+    grid-row: auto;
   }
 }
 @media (max-width: 760px) {
@@ -396,59 +473,29 @@
     font-size: 16px;
     line-height: 1.8;
   }
-  .hero .eyebrow {
-    font-size: 11px;
-  }
   .heroCaption {
     font-size: 13px !important;
   }
-  .overview,
-  .agents,
-  .faq {
+  .section {
     padding-block: 52px;
-  }
-  .overviewHeader {
-    grid-template-columns: 1fr;
-    gap: 20px;
   }
   .heading {
     font-size: 34px;
   }
-  .overviewHeader p {
-    font-size: 16px;
+  .prompt {
+    font-size: 11.5px;
+    padding: 14px;
   }
-  .steps {
-    grid-template-columns: 1fr;
-    margin-top: 30px;
-    gap: 24px;
-  }
-  .stepHeader {
-    margin-bottom: 12px;
-  }
-  .proof {
-    padding-block: 40px;
-  }
-  .quotes {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-  .quotes blockquote {
-    padding-left: 18px;
-  }
-  .quotes blockquote p {
-    font-size: 16px;
-  }
-  .faq {
-    grid-template-columns: 1fr;
+  .who {
     gap: 28px;
   }
   .close {
     padding-block: 60px;
   }
   .close .heading {
-    font-size: 38px;
+    font-size: 32px;
   }
-  .close > p:not(.eyebrow) {
+  .close > p {
     font-size: 16px;
   }
   .actions {
@@ -460,9 +507,6 @@
   }
   .textLink {
     font-size: 14px;
-  }
-  .eyebrow {
-    margin-bottom: 18px !important;
   }
   .closeActions {
     gap: 16px;
@@ -485,7 +529,7 @@
     font-size: 13px;
   }
   .close .heading {
-    font-size: 34px;
+    font-size: 29px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

@@ -1,9 +1,10 @@
 /**
  * The Planton story as data: thirteen chapters in the order every surface
  * tells them, told to one buyer, the developer who inherited ops at a team of
- * 2 to 10. The landing page, the Product and Trust pages, and llms.txt all
- * render from this file, so a sentence about what
- * Planton is or does appears here once and nowhere else.
+ * 2 to 10 with no DevOps team. Its spine (v3.2): a company with no DevOps
+ * team runs its own cloud. Home, the Security page, the 404 and llms.txt
+ * render from this file, so a sentence about what Planton is or does appears
+ * here once and nowhere else.
  *
  * The canonical narrative lives in the company repository as
  * company/marketing/positioning/the-planton-story.md; every claim below
@@ -53,33 +54,34 @@ export interface Chapter {
   decksOnly?: boolean;
 }
 
+/**
+ * The stand (chapter 1, the founder's words of 2026-11-25): why Planton
+ * exists, said plainly. Home's headline and the 404 both read it, so the two
+ * can never say different things.
+ */
+export const STAND = 'Run your cloud without a DevOps team.';
+
 /** The spine, in one sentence, for a hero or a deck cover. */
 export const STORY_SPINE =
-  'Proof at creation, not observation after: every infrastructure change Planton deploys is planned before it exists, with its cost and the coverage of that cost stated, judged against a budget, held to your rules, and left behind as an immutable record.';
-
-/** The first sentence of every demo (chapter 1): the desktop line in full. */
-export const OPENING_LINE = POSITIONING.desktop.line;
-
-/**
- * The landing hero's headline: the opening line up to its dash, so the
- * headline is two sentences and the three words after the dash (your
- * account, your laptop, free) are said once more in the fine print under
- * the doors rather than in the headline. Derived, never retyped.
- */
-export const HERO_HEADLINE = `${OPENING_LINE.split(' \u2014 ')[0]}.`;
+  'A company with no DevOps team runs its own cloud. One prompt in its coding agent takes a brand-new account to a running app, and every infrastructure change after that is planned with its cost and permissions before it runs, and recorded.';
 
 export const CHAPTERS: readonly Chapter[] = [
   {
     // Chapter 1
     id: 'the-wall',
     number: 1,
-    title: 'What the Agent Leaves Behind',
+    title: 'A New Cloud Account, and No DevOps Team',
     claim:
-      'Your coding agent can already create cloud infrastructure. What it creates is unverified, unrecorded, and unrepeatable: nobody priced it, nobody checked the permissions, nothing remembers what was made, and the next environment starts from a blank prompt.',
+      'You have an app, a few engineers and a brand-new cloud account, and no DevOps team. Planton’s purpose is to help you operate without one. Paste one prompt into your coding agent, and it takes that account to a running app in your own cloud, asking you before anything changes your cloud or costs money.',
     proof: [
-      'Developers still wait and platform teams still queue, and the agent that was meant to end the wait has added a new kind of risk.',
+      'A new organization’s Home hands over the setup prompt. Pasted into Claude Code, Codex or Cursor from the app’s repository, it has the agent install the CLI, sign in through a single-use code, connect the cloud without a stored key and ship the first deployment; installing Planton’s GitHub App is the one browser step left to the person.',
     ],
-    neverSay: ['agents are bad at infrastructure', 'eliminate DevOps engineers', 'any waiting-time or salary figure'],
+    neverSay: [
+      'contempt for the people who do DevOps work',
+      'that it is hands-off',
+      '"running app" beside a cloud whose walk is not proven',
+      'any waiting-time, salary or savings figure',
+    ],
   },
   {
     // Chapter 2
@@ -91,6 +93,7 @@ export const CHAPTERS: readonly Chapter[] = [
       `${POSITIONING.infraHub.name}: ${POSITIONING.infraHub.line}`,
       `${POSITIONING.serviceHub.name}: ${POSITIONING.serviceHub.line}`,
       'Your coding agent reaches Planton through the Planton skills and the Planton MCP server, or through the CLI. It sits beside the tools you already use; nothing about how you work changes.',
+      'Asked for infrastructure, your coding agent writes a manifest from Planton\u2019s catalog and checks it before anything exists. It never writes the Terraform or Pulumi: every kind\u2019s module is already written, in the open.',
     ],
     neverSay: [
       '"The Self-Service Cloud Platform"',
@@ -186,6 +189,7 @@ export const CHAPTERS: readonly Chapter[] = [
     proof: [
       'Connections can be keyless: a short-lived, connection-scoped identity token is minted at the moment of use and exchanged by the cloud for temporary credentials. Nothing is stored, nothing is rotated, and the trust is yours to revoke.',
       'Every infrastructure module is open source under Apache 2.0. If you leave, you take your manifests and keep deploying them with the open-source CLI.',
+      `Self-hosted is two Helm commands on your own cluster: the operator, then the platform at the release you name. There is no license key, admin account, database or values file to set, and it runs free as the Community edition for up to ${COMMUNITY_SEAT_LIMIT} seats.`,
       'On the desktop, secrets are encrypted locally with the key in your OS keychain and resolved on the runner at the moment of use.',
       'The same manifests and the same model run on all three shapes, so nothing is redone when a person becomes a team.',
     ],
@@ -213,6 +217,7 @@ export const CHAPTERS: readonly Chapter[] = [
       'Teams have run production on Planton since 2023. Here is what the people running it say, in their own words.',
     proof: [
       'Catalog kinds, providers, and controls are counted from the open-source tree, and the date of the count is printed beside the numbers.',
+      'The modules are proven by deploying into real cloud accounts: each kind\u2019s own module deployed into a test account, checked with the provider\u2019s tools, destroyed and checked clean, with the date in its profile.',
       'Every testimonial is verbatim and attributed to the person who said it.',
       'Planton runs on Planton: its own infrastructure and the pipelines that ship it go through the platform.',
     ],
@@ -229,6 +234,7 @@ export const CHAPTERS: readonly Chapter[] = [
       'The agent writes the change; Planton keeps deploying after the chat ends.',
       'Every infrastructure change is a plan with its cost and permissions, applied only as reviewed.',
       'Every change records who asked and which coding agent made it.',
+      'What deploys is not Terraform written in that chat: the agent writes a manifest from the catalog, and the module that deploys it was written and proven before anyone asked.',
     ],
     neverSay: ['any vendor name', 'DevSecOps platform', 'FinOps', 'a feature table with a competitor column', 'that the agent is the problem'],
   },

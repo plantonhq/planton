@@ -20,9 +20,7 @@ import {
 } from '@/components/marketing';
 import { DESKTOP_LANDING } from '@/data/desktop';
 import { DESKTOP_LANDING_PATH, desktopWaysLine } from '@/data/desktop-download';
-import { DESKTOP_SCREENSHOTS } from '@/data/desktop-screenshots';
 import { sitePage } from '@/data/site-pages';
-import { Screenshot } from './Screenshot';
 
 /**
  * Planton Desktop's landing, rendered from src/data/desktop.ts. The order is
@@ -39,9 +37,8 @@ export const DesktopLanding: FC = () => {
   const d = DESKTOP_LANDING;
   return (
     <main className="overflow-x-hidden">
-      <PageHero eyebrow={{ label: 'Distributions', href: '/distributions' }} title={d.headline} kicker={page.title} lede={d.lede} forWhom={desktopWaysLine()}>
+      <PageHero title={d.headline} kicker={page.title} lede={d.lede} forWhom={desktopWaysLine()}>
         <Doors {...d.doors} className="justify-center mt-2" />
-        <Screenshot shot={DESKTOP_SCREENSHOTS.home} priority className="max-w-4xl mx-auto mt-8" />
       </PageHero>
       <Box className="max-w-5xl mx-auto -mt-10 mb-4 px-4">
         <PlatformCounts />
@@ -122,7 +119,6 @@ export const DesktopLanding: FC = () => {
             <SectionTitle>{d.infraHub.title}</SectionTitle>
             <SectionSubtitle className="mx-auto !max-w-3xl">{d.infraHub.lede}</SectionSubtitle>
           </Box>
-          <Screenshot shot={DESKTOP_SCREENSHOTS.studio} className="max-w-4xl mx-auto mb-10" />
           <Grid cols={3}>
             {d.infraHub.points.map((point) => (
               <Card key={point.title} hover={false}>

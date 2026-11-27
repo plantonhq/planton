@@ -25,10 +25,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import matter from 'gray-matter';
-import { WORKFLOWS, WORKFLOW_COPY } from '../src/data/workflow-explainers.ts';
-import { HERO, PRODUCT_PROOF, CONTROL_COPY } from '../src/data/homepage-experience.ts';
-import { OVERVIEW_VIDEO, OVERVIEW_CHAPTERS } from '../src/data/homepage-video.ts';
-import { ARCHITECTURES } from '../src/data/architecture-stories.ts';
+import { HERO } from '../src/data/homepage-experience.ts';
 
 const GENERATOR = 'llms generator';
 const siteRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -76,7 +73,7 @@ function exportedRoutes() {
 }
 
 // ---------------------------------------------------------------------------
-// Content pages (docs, blog, tutorials, changelog) from their markdown
+// Content pages (docs, changelog) from their markdown
 // ---------------------------------------------------------------------------
 
 function contentFiles(folder) {
@@ -119,18 +116,35 @@ function chapterMarkdown(chapter) {
   return lines.join('\n');
 }
 
+/**
+ * A page's artifact (src/data/artifact.ts) as Markdown: its label, then the
+ * code, the table, or the screen as an image whose alt text carries what it
+ * shows. A folded artifact prints open: an agent reads everything.
+ */
+function artifactMarkdown(a) {
+  if (a.kind === 'code') return [`${a.label}:`, '', `\`\`\`${a.language}`, ...a.lines, '```', ''];
+  if (a.kind === 'screen') return [`${a.label}:`, '', `![${a.alt}](${a.src})`, ''];
+  return [
+    `${a.label}:`,
+    '',
+    `| ${a.columns.join(' | ')} |`,
+    `|${a.columns.map(() => '---').join('|')}|`,
+    ...a.rows.map((row) => `| ${row.join(' | ')} |`),
+    '',
+  ];
+}
+
+/** A page's check (src/data/artifact.ts) as Markdown: the link or the sentence, then the command. */
+function checkMarkdown(c, siteUrl) {
+  const href = c.href && (c.href.startsWith('http') ? c.href : `${siteUrl}${c.href}`);
+  const lines = [href ? `[${c.text}](${href})` : c.text, ''];
+  if (c.command) lines.push('```shell', c.command, '```', '');
+  return lines;
+}
+
 function pageMarkdown(
   page,
-  {
-    story,
-    stats,
-    site,
-    product,
-    distributions,
-    desktop,
-    desktopDownload,
-    homepage,
-  }
+  { story, stats, site, desktop, desktopDownload, homepage, clouds, security, doors }
 ) {
   const lines = [
     `# ${page.title}`,
@@ -141,100 +155,96 @@ function pageMarkdown(
     '',
   ];
   if (page.path === '/') {
+    // Home, section by section, in page order, from the same records the page renders.
     const h = homepage.HOMEPAGE;
-    lines.push(`## ${h.headline.join(' ')}`, '', h.intro, '', h.caption, '');
-    lines.push(HERO.description, '');
-    lines.push(`## ${OVERVIEW_VIDEO.label}`, '', OVERVIEW_VIDEO.description, '');
-    for (const chapter of OVERVIEW_CHAPTERS) lines.push(`### ${chapter.title}`, '', chapter.transcript, '');
-    for (const key of ['overview', 'infrastructure', 'delivery', 'agents']) {
-      if (key === 'delivery') {
-        lines.push(
-          `## ${PRODUCT_PROOF.title.replaceAll('\n', ' ')}`,
-          '',
-          PRODUCT_PROOF.intro,
-          '',
-          PRODUCT_PROOF.captionLead,
-          PRODUCT_PROOF.caption,
-          ''
-        );
-        for (const note of PRODUCT_PROOF.notes) lines.push(`### ${note.title}`, '', note.text, '');
-      }
-      const section = h[key];
-      lines.push(`## ${section.title.replaceAll('\n', ' ')}`, '', section.intro, '');
-      if (!WORKFLOWS[key]) for (const p of section.paragraphs ?? []) lines.push(p, '');
-      for (const workflow of key === 'infrastructure'
-        ? Object.values(ARCHITECTURES)
-        : WORKFLOWS[key]
-          ? [WORKFLOWS[key]]
-          : []) {
-        lines.push(`### ${workflow.title}`, '', workflow.setup ?? '', '');
-        for (const phase of workflow.phases) lines.push(`- **${phase.title}** ${phase.text}`);
-        lines.push('', workflow.scope, '');
-        if (workflow.architecture) {
-          lines.push(`#### ${WORKFLOW_COPY.explore}`, '');
-          for (const resource of workflow.architecture.resources) {
-            const prerequisites =
-              resource.requires
-                .map((id) => workflow.architecture.resources.find((node) => node.id === id).label)
-                .join(', ') || WORKFLOW_COPY.resourceNone;
-            lines.push(
-              `- **${resource.label}** (${resource.kind}). ${WORKFLOW_COPY.resourceRequires} ${prerequisites}${resource.note ? `. ${resource.note}` : ''}`
-            );
-          }
-          lines.push('');
-        }
-      }
-      for (const point of section.steps ?? section.points ?? [])
-        lines.push(`- **${point.title}.** ${point.text}`);
-      if (section.setup)
-        lines.push('', section.setup, '', `[${section.link}](${site.url}${section.href})`, '');
-      if (section.note) lines.push('', section.note, '');
+    const f = h.firstApp;
+    const prompt = homepage.SETUP_PROMPT_EXAMPLE;
+    lines.push(`## ${h.headline}`, '', h.intro, '', h.caption, '', HERO.description, '');
+    lines.push(`## ${f.title}`, '', f.intro, '', `${f.promptLabel}:`, '', '```text');
+    for (const line of prompt.lines) lines.push(line.replace('{code}', prompt.code));
+    lines.push('```', '');
+    for (const side of [f.you, f.agent]) {
+      lines.push(`### ${side.title}`, '');
+      for (const step of side.steps) lines.push(`- ${step}`);
+      lines.push('');
     }
-    lines.push(`## ${CONTROL_COPY.title.replaceAll('\n', ' ')}`, '', CONTROL_COPY.intro, '');
-    for (const step of CONTROL_COPY.steps) lines.push(`- **${step.title}.** ${step.text}`);
-    for (const choice of CONTROL_COPY.choices) lines.push(`- **${choice.title}.** ${choice.text}`);
-    lines.push('', CONTROL_COPY.note, '', CONTROL_COPY.adoption, '');
-    lines.push(`## ${h.proof.title}`, '');
-    for (const q of h.proof.quotes)
-      lines.push(`> ${q.quote}`, '', `${q.name}, ${q.role}, ${q.company}`, '');
-    lines.push(`## ${h.faq.title}`, '');
-    for (const q of h.faq.questions) lines.push(`### ${q.question}`, '', q.answer, '');
+    // The page shows one cloud at a time; its Markdown twin shows every cloud's run, in the picker's order.
+    const i = h.infrastructure;
+    lines.push(`## ${i.title}`, '', i.intro, '', i.next, '');
+    for (const c of clouds.CLOUDS) {
+      const run = homepage.AGENT_RUNS[c.id];
+      lines.push(`### ${c.name}`, '', `${run.askLabel} ${run.ask}`, '');
+      lines.push(
+        ...artifactMarkdown(run.manifest),
+        ...artifactMarkdown(run.validation),
+        ...artifactMarkdown(run.proven)
+      );
+      for (const check of run.checks) lines.push(...checkMarkdown(check, site.url));
+      lines.push(run.reach, '');
+    }
+    // The run is Google Cloud's on every cloud: the words, the screen, the record, the plan.
+    const w = h.watch;
+    const watchRun = homepage.WATCH_RUN;
+    lines.push(`## ${w.title}`, '', w.intro, '');
     lines.push(
-      `## ${h.close.title.replaceAll('\n', ' ')}`,
+      ...artifactMarkdown(watchRun.screen),
+      w.record,
+      '',
+      ...artifactMarkdown(watchRun.plan)
+    );
+    // The open-source walk is the same on every cloud: the ask, the command, the answers, the wiring, the catalog's reach.
+    const o = h.openSource;
+    const oss = homepage.OSS_WALK;
+    lines.push(`## ${o.title}`, '', o.intro, '', `${o.askLabel} ${o.ask}`, '');
+    lines.push(
+      ...artifactMarkdown(oss.apply),
+      ...artifactMarkdown(oss.answers),
+      ...artifactMarkdown(oss.wiring),
+      ...artifactMarkdown(oss.catalog)
+    );
+    for (const check of oss.checks) lines.push(...checkMarkdown(check, site.url));
+    const y = h.selfHosted;
+    const walk = homepage.SELF_HOSTED_WALK;
+    lines.push(`## ${y.title}`, '', y.intro, '', y.setup, '', y.same, '');
+    lines.push(...artifactMarkdown(walk.install), ...artifactMarkdown(walk.status));
+    const docs = doors.DOORS.selfHostedDocs;
+    lines.push(y.seats, '', y.requirements, '', `[${docs.label}](${site.url}${docs.href})`, '');
+    lines.push(
+      `## ${h.close.title}`,
       '',
       h.close.text,
       '',
+      h.close.note,
+      '',
       `[Book a Demo](${site.url}/book-demo)`,
+      '',
+      // The second way in, for one person, with its door.
+      `${h.close.alone} [${doors.DOORS.desktop.label}](${site.url}${doors.DOORS.desktop.href})`,
       ''
     );
     return lines.join('\n');
+  }
+  if (page.path === '/security') {
+    // Security, answer by answer, from the records the page renders: each
+    // answer, the real thing behind it, and how to check it.
+    const sec = security.SECURITY;
+    lines.push(`## ${sec.headline}`, '', sec.lede, '');
+    for (const section of sec.sections) {
+      lines.push(`## ${section.title}`, '');
+      for (const p of section.paragraphs) lines.push(p, '');
+      if (section.artifact) lines.push(...artifactMarkdown(section.artifact));
+      if (section.check) lines.push(...checkMarkdown(section.check, site.url));
+    }
+    lines.push(`## ${sec.more.title}`, '');
+    for (const doc of sec.more.docs) lines.push(`- [${doc.label}](${site.url}${doc.href}.md)`);
+    lines.push('', `${sec.more.contact.text} ${sec.more.contact.address}`);
+    return lines.join('\n').trim() + '\n';
   }
   if (page.chapters?.length) {
     lines.push('## What this page says', '');
     for (const id of page.chapters) {
       const c = story.chapter(id);
       lines.push(chapterMarkdown(c), '');
-    }
-  }
-  // A Product or Distributions page states more than its chapters: the record
-  // it renders from carries the page's own proof points and steps, so the
-  // agent reads the same sentences the person does.
-  const record =
-    product.PRODUCT_PAGES.find((p) => p.path === page.path) ??
-    distributions.DISTRIBUTION_PAGES.find((p) => p.path === page.path);
-  if (record) {
-    if (record.steps?.length) {
-      lines.push('## How it works', '');
-      record.steps.forEach((step, i) => lines.push(`${i + 1}. **${step.title}.** ${step.text}`));
-      lines.push('');
-    }
-    lines.push('## What you get', '');
-    for (const point of record.points) lines.push(`- **${point.label}.** ${point.text}`);
-    lines.push('');
-    if (record.yours?.length) {
-      lines.push('## What stays yours', '');
-      for (const line of record.yours) lines.push(`- ${line}`);
-      lines.push('');
     }
   }
   // The desktop pages state their own record: the landing's sections in the
@@ -286,7 +296,7 @@ function pageMarkdown(
       lines.push(`- **${tab.label}.** \`${tab.commands.join('; ')}\` ${tab.description}`);
     lines.push('');
   }
-  if (page.path === '/' || page.group === 'trust') {
+  if (page.path === '/') {
     lines.push(
       '## By the numbers',
       '',
@@ -307,12 +317,13 @@ async function main() {
   const registry = await load('src/data/site-pages.ts');
   const story = await load('src/data/story.ts');
   const homepage = await load('src/data/homepage.ts');
+  const clouds = await load('src/data/clouds.ts');
   const stats = await load('src/data/platform-stats.ts');
   const pricing = await load('src/data/pricing.ts');
-  const product = await load('src/data/product.ts');
-  const distributions = await load('src/data/distributions.ts');
   const desktop = await load('src/data/desktop.ts');
   const desktopDownload = await load('src/data/desktop-download.ts');
+  const security = await load('src/data/security.ts');
+  const doors = await load('src/data/doors.ts');
 
   const site = registry.SITE;
   const pages = registry.SITE_PAGES;
@@ -344,14 +355,15 @@ async function main() {
   const marketing = pages.filter((p) => p.index !== false && p.group !== 'content');
   // Everything a page's markdown may quote: the story and the records the pages render from.
   const data = {
+    doors,
     story,
     stats,
     site,
-    product,
-    distributions,
     desktop,
     desktopDownload,
     homepage,
+    clouds,
+    security,
   };
   for (const page of marketing) {
     const target =
@@ -363,12 +375,7 @@ async function main() {
   }
 
   // ---- llms.txt -----------------------------------------------------------
-  const docs = [
-    ...contentFiles('docs'),
-    ...contentFiles('tutorials'),
-    ...contentFiles('blog'),
-    ...contentFiles('changelog'),
-  ];
+  const docs = [...contentFiles('docs'), ...contentFiles('changelog')];
   // The index lists pages under the groups the registry names, in the
   // registry's order. A marketing page whose group has no heading would be
   // built, exported, and silently absent from the index, so it fails here.
@@ -385,10 +392,26 @@ async function main() {
   index.push(`# ${site.name}`, '');
   index.push(`> ${registry.sitePage('/').description}`, '');
   index.push(homepage.HOMEPAGE.intro, '');
-  index.push('## From infrastructure to application', '');
-  for (const step of homepage.HOMEPAGE.overview.steps)
-    index.push(`- **${step.title}.** ${step.text}`);
-  index.push('');
+  index.push(`## ${homepage.HOMEPAGE.firstApp.title}`, '', homepage.HOMEPAGE.firstApp.intro, '');
+  index.push(
+    `## ${homepage.HOMEPAGE.infrastructure.title}`,
+    '',
+    homepage.HOMEPAGE.infrastructure.intro,
+    ''
+  );
+  index.push(`## ${homepage.HOMEPAGE.watch.title}`, '', homepage.HOMEPAGE.watch.intro, '');
+  index.push(
+    `## ${homepage.HOMEPAGE.openSource.title}`,
+    '',
+    homepage.HOMEPAGE.openSource.intro,
+    ''
+  );
+  index.push(
+    `## ${homepage.HOMEPAGE.selfHosted.title}`,
+    '',
+    homepage.HOMEPAGE.selfHosted.intro,
+    ''
+  );
   index.push('## Who it is for', '', story.chapter('who-it-is-for').claim, '');
   index.push(
     '## Start',

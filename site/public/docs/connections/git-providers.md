@@ -68,8 +68,8 @@ The App path is an installation flow, never a credential you paste:
 
 Advantages of the App identity:
 
-- **Scoped permissions** — the App requests only what it needs (repository read, webhooks, commit status).
-- **Organization-level** — one installation covers every repository in the organization.
+- **Scoped permissions** — the App asks for what Planton's features use: Contents and Pull requests (read and write: clone your code to build it, build a preview for each pull request, and open pull requests for you), Checks and Deployments (write: report each build as a check, and each deploy as a GitHub deployment), Actions (read and write: show your GitHub Actions runs, and re-run or cancel them for you), and Metadata (read). It hears pushes, pull requests, and GitHub Actions runs and jobs.
+- **Repositories you choose** — on GitHub's install screen you pick all repositories or only some; the App sees only those.
 - **No token rotation** — GitHub mints short-lived installation tokens; nothing to rotate by hand.
 - **Audit trail** — GitHub logs every API call the installation makes.
 

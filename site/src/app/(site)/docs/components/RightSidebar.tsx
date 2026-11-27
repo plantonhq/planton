@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { Author } from '@/lib/mdx';
-import AuthorSection from '@/components/blog/AuthorSection';
-import TableOfContents from '@/components/blog/TableOfContents';
+import AuthorSection from '@/components/content/AuthorSection';
+import TableOfContents from '@/components/content/TableOfContents';
 
 interface RightSidebarProps {
   author: Author[];

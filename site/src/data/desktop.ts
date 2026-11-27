@@ -24,7 +24,7 @@ import { DOORS } from './doors.ts';
 import { PLATFORM_COUNTS, PLATFORM_STATS } from './platform-stats.ts';
 import { POSITIONING } from './positioning.ts';
 import { COMMUNITY_SEAT_LIMIT, FREE_TIER_SEATS } from './pricing.ts';
-import { HERO_HEADLINE, chapter } from './story.ts';
+import { chapter } from './story.ts';
 
 const runs = chapter('runs-where-you-decide');
 /** A short Title Case title over one or two sentences. */
@@ -107,7 +107,9 @@ export interface DesktopDownload {
 }
 
 export const DESKTOP_LANDING: DesktopLanding = {
-  headline: HERO_HEADLINE,
+  // The desktop line up to its dash: the words after it (your account, your
+  // laptop, free) are said once more in the fine print under the doors.
+  headline: `${POSITIONING.desktop.line.split(' \u2014 ')[0]}.`,
   // Chapters 8 and 12
   lede: 'The whole Planton platform runs on your laptop and deploys to your cloud with the logins already on your machine. No account. Free for individuals, including commercial use.',
   doors: { primary: 'desktop', secondary: 'codingAgentsDocs' },
@@ -173,7 +175,7 @@ export const DESKTOP_LANDING: DesktopLanding = {
     points: [
       {
         title: 'Your Clouds, Found, Not Pasted',
-        body: 'Planton reads the cloud logins already on your machine (AWS profiles, gcloud configurations, az subscriptions) and turns each into a ready connection. Cloudflare and DigitalOcean tokens are detected from your environment and verified against the provider before they are offered. You never paste a key into a form.',
+        body: 'Planton reads the cloud logins already on your machine (AWS profiles, gcloud configurations, az subscriptions) and turns each into a ready connection, with no key to paste. Cloudflare and DigitalOcean tokens you already export are found too, and verified against the provider before they are offered.',
       },
       {
         title: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} Catalog Kinds Across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} Providers`,
@@ -233,7 +235,7 @@ export const DESKTOP_LANDING: DesktopLanding = {
     ],
     door: { label: 'See Full Pricing', href: '/pricing' },
   },
-  next: ['/product/cli', '/product/infra-hub', '/product/service-hub'],
+  next: ['/docs', '/pricing', '/security'],
   close: {
     title: 'Install It. Ask It Something.',
     body: 'Download, open, pick Run on This Computer, then install the skills and ask from your editor.',
