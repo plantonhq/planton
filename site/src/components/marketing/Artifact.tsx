@@ -1,5 +1,10 @@
 import Link from 'next/link';
-import type { Artifact as ArtifactRecord, Check as CheckRecord } from '@/data/artifact';
+import type { CSSProperties } from 'react';
+import type {
+  Artifact as ArtifactRecord,
+  Check as CheckRecord,
+  ScreenArtifact,
+} from '@/data/artifact';
 import styles from './artifact.module.css';
 
 /** An outside page opens in a new tab; a page of this site stays in this one. */
@@ -54,9 +59,51 @@ function WrappedLine({ line }: { line: string }) {
 }
 
 /**
+ * A screen of the product, flat and untouched, in a hairline frame. A phone
+ * gets the record's narrower crop when it has one, so the console's own text
+ * stays readable. Sized from the record, so the page never shifts as it loads;
+ * a plain img, because the site is a static export and the image is already
+ * compressed at twice its shown width.
+ */
+function Screen({ screen }: { screen: ScreenArtifact }) {
+  return (
+    // Never wider than half its crop (the phone's own on a phone): the console is shown at most at its own size, never enlarged.
+    <div
+      className={styles.screen}
+      style={
+        {
+          '--screen-width': `${screen.width / 2}px`,
+          '--screen-phone-width': `${(screen.phone ?? screen).width / 2}px`,
+        } as CSSProperties
+      }
+    >
+      <picture>
+        {screen.phone && (
+          <source
+            media="(max-width: 760px)"
+            srcSet={screen.phone.src}
+            width={screen.phone.width}
+            height={screen.phone.height}
+          />
+        )}
+        <img
+          src={screen.src}
+          alt={screen.alt}
+          width={screen.width}
+          height={screen.height}
+          loading="lazy"
+          decoding="async"
+        />
+      </picture>
+    </div>
+  );
+}
+
+/**
  * A real artifact, flat and labelled: a file or a command's output in the
- * code panel, or a small table of facts. The label says what it is and where
- * it comes from; the artifact states nothing the record does not hold.
+ * code panel, a small table of facts, or a screen of the product. The label
+ * says what it is and where it comes from; the artifact states nothing the
+ * record does not hold.
  */
 export function Artifact({ artifact, id }: { artifact: ArtifactRecord; id: string }) {
   const labelId = `${id}-artifact`;
@@ -65,7 +112,9 @@ export function Artifact({ artifact, id }: { artifact: ArtifactRecord; id: strin
       <figcaption id={labelId} className={styles.label}>
         {artifact.label}
       </figcaption>
-      {artifact.kind === 'code' ? (
+      {artifact.kind === 'screen' ? (
+        <Screen screen={artifact} />
+      ) : artifact.kind === 'code' ? (
         <div className={styles.code}>
           {artifact.wrap ? (
             <pre className={styles.wrapped}>
@@ -102,6 +151,22 @@ export function Artifact({ artifact, id }: { artifact: ArtifactRecord; id: strin
         </div>
       )}
     </figure>
+  );
+}
+
+/**
+ * An artifact one click away: the proof a doubting reader opens, kept out of
+ * the path of everyone else. A native details element, so it opens with the
+ * keyboard and in find-in-page, and the Markdown twin prints it open.
+ */
+export function Folded({ artifact, id }: { artifact: ArtifactRecord; id: string }) {
+  return (
+    <details className={styles.folded}>
+      <summary>
+        <span>{artifact.label}</span>
+      </summary>
+      <Artifact artifact={artifact} id={id} />
+    </details>
   );
 }
 

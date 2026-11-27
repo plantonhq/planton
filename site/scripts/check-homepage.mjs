@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import puppeteer from 'puppeteer';
 import { createPreviewServer } from './preview-homepage.mjs';
+import { siteAsset } from './site-assets.mjs';
 
 const out = process.env.HOMEPAGE_CAPTURES ?? '/private/tmp/planton-homepage-review';
 fs.mkdirSync(out, { recursive: true });
@@ -28,6 +29,9 @@ page.on('request', (request) => {
   const url = request.url();
   if (url.startsWith(base) || url.startsWith('data:') || url.startsWith('blob:'))
     return request.continue();
+  // The page's images are the branch's own files, before they are uploaded.
+  const asset = siteAsset(url);
+  if (asset) return request.respond(asset);
   if (url === 'https://webhooks.planton.ai/demo') {
     if (request.method() === 'OPTIONS')
       return request.respond({
@@ -117,6 +121,18 @@ try {
         return inputs.length === 4 && tops.length === 2 && lefts.length === 2;
       })
     );
+    // The run is Google Cloud's: another cloud's reader is told, the default cloud's isn't.
+    if (width === 1280) {
+      const said = () =>
+        page.$eval('#watch', (e) => e.textContent.includes('Shown on Google Cloud'));
+      await page.click('#infrastructure input[value="aws"]');
+      const withAws = await said();
+      await page.click('#infrastructure input[value="gcp"]');
+      check(
+        "1280: the run says it is Google Cloud's when another cloud is chosen",
+        withAws && !(await said())
+      );
+    }
     // Every cloud's run fits the narrowest phone, not only the default one.
     if (width === 320) {
       const chosen = await page.$eval(
@@ -175,6 +191,46 @@ try {
           !!e.querySelector('a[href*="/catalog/gcp/gcpcloudsql/e2e"]') &&
           !e.querySelector('button')
       )
+    );
+    // The run the agent's files became: after the infrastructure section, before open source; its
+    // screen loaded (scrolled into view, since it loads lazily) with words for a reader who can't see
+    // it; the plan folded one click away and opening on a click; no copy button.
+    check(
+      `${width}: the run follows infrastructure and precedes open source`,
+      await page.evaluate(() => {
+        const infra = document.querySelector('#infrastructure');
+        const watch = document.querySelector('#watch');
+        const oss = document.querySelector('#open-source');
+        return (
+          !!infra &&
+          !!watch &&
+          !!oss &&
+          infra.compareDocumentPosition(watch) === Node.DOCUMENT_POSITION_FOLLOWING &&
+          watch.compareDocumentPosition(oss) === Node.DOCUMENT_POSITION_FOLLOWING
+        );
+      })
+    );
+    await page.$eval('#watch img', (img) => img.scrollIntoView());
+    await page.waitForFunction(() => document.querySelector('#watch img')?.complete);
+    check(
+      `${width}: the run's screen loaded, with words for a reader who can't see it`,
+      await page.$eval(
+        '#watch img',
+        (img) => img.naturalWidth > 0 && img.alt.includes('neha and claude')
+      )
+    );
+    check(
+      `${width}: the plan is folded, opens on a click, and has no copy button`,
+      await (async () => {
+        const closed = await page.$eval('#watch details', (d) => !d.open);
+        await page.click('#watch details > summary');
+        const opened = await page.$eval(
+          '#watch details',
+          (d) => d.open && d.textContent.includes('Added Permissions')
+        );
+        await page.click('#watch details > summary');
+        return closed && opened && !(await page.$('#watch button'));
+      })()
     );
     // Open source on your own cluster: the agent's one command with the CLI's own open-source-engine line
     // and the order it worked out (operators first), what each service answered, the installer that is the
@@ -371,7 +427,9 @@ try {
   await page.goto(base, { waitUntil: 'networkidle0' });
   const desktopDoor = '[aria-labelledby="close-title"] a[href="/desktop/download"]';
   check('the close offers Planton Desktop to one person', !!(await page.$(desktopDoor)));
-  await page.$eval(desktopDoor, (e) => e.addEventListener('click', (event) => event.preventDefault()));
+  await page.$eval(desktopDoor, (e) =>
+    e.addEventListener('click', (event) => event.preventDefault())
+  );
   await page.click(desktopDoor);
   check(
     'close: Desktop self_service_click attribution',

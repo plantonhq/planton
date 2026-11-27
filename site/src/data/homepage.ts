@@ -1,4 +1,4 @@
-import type { CodeArtifact, Check, TableArtifact } from './artifact.ts';
+import type { CodeArtifact, Check, ScreenArtifact, TableArtifact } from './artifact.ts';
 import type { CloudId } from './clouds.ts';
 import {
   KUBERNETES_OPEN_SOURCE_PROJECTS,
@@ -72,6 +72,31 @@ export const HOMEPAGE = {
     // The picker that sets the visitor's cloud for this section and every one below it.
     pickerLabel: 'Your Cloud',
   },
+  /**
+   * ch 4 (the team sees it happen) and ch 5 (every deployment leaves a record),
+   * proof: Slotwren's real stack run on demo, the files the section above wrote,
+   * deployed by Neha's coding agent (the claims ledger's run rows, 2026-11-27).
+   * The first section that leads with a screen of the product: the screen is
+   * WATCH_RUN's, the words only say what the screen can't. Google Cloud is the
+   * only cloud with a run, so another choice shows it and says so (the design
+   * law's page-wide picker rule).
+   */
+  watch: {
+    // Seven cold readers chose this over "Watch it deploy" 6 to 1: a still doesn't move, and the
+    // split of who writes and who deploys is the answer to "Claude plus the AWS CLI".
+    title: 'Your agent writes it. Planton deploys it and keeps the record.',
+    intro:
+      // ch 4, proof: the plan before anything runs, and only that plan applied (the claims ledger, the plan row
+      // and the stack-run row of 2026-11-27); the agent held no cloud key (the walk's sandbox proof); the
+      // agent stopped at Neha's own cost limit, as the walk's record shows.
+      'Neha asked her coding agent to deploy those files. Before anything runs, Planton plans every resource, its monthly cost and the cloud permissions, and then applies only that plan. Her agent stopped at the cost and asked her, and she said yes. The agent never held a cloud key, and nobody wrote a pipeline.',
+    // ch 5, proof: the run names the person and the agent (the claims ledger, the person-and-agent row).
+    record:
+      'Every run is kept: who started it, which coding agent, how each resource ended and how long it took.',
+    // The page-wide picker's rule: a cloud with no run of its own sees Google Cloud's, and is told.
+    otherCloud: 'Shown on Google Cloud, with the files Neha\u2019s agent wrote there.',
+  },
+
   /**
    * ch 8 (runs where you decide), proof: open source on your own cluster (the
    * claims ledger's set-deploy and open-source rows, 2026-11-26). The artifacts
@@ -754,3 +779,73 @@ export const DEMO_COPY = {
   confirmationText:
     'Look for the calendar invitation in your email. We look forward to learning about your team.',
 } as const;
+
+/**
+ * "Watch it deploy": Slotwren's run of staging's Postgres on demo.planton.ai,
+ * the stack booking-db that Neha's coding agent deployed from the section
+ * above's three files (a headless Claude Code with the released CLI and
+ * skills, signed in as Neha; its record is the website's walk of 2026-11-27).
+ * The screen is a crop of the universe scene it names, below the run's title;
+ * the plan is the CLI's own output before the first run, excerpted to its
+ * summary, cost and permissions. The stack was undeployed after, so nothing
+ * runs, and the run keeps its own graph, so the scene recaptures the same.
+ */
+export const WATCH_RUN: { screen: ScreenArtifact; plan: CodeArtifact } = {
+  screen: {
+    kind: 'screen',
+    label:
+      'Slotwren\u2019s run in Planton, applied in its own Google Cloud by Neha and her coding agent',
+    scene: 'slotwren.staging-database.run.applied',
+    src: 'https://assets.planton.ai/site/images/landing/2026-11-27-074925-landing-watch-run-applied.png',
+    alt: 'Planton\u2019s run page for the stack booking-db in staging: applied, ran 6 minutes 25 seconds, started by neha and claude. Its resource graph shows the Cloud SQL instance staging-booking-db holding the user staging-booking-db-api-user and the database staging-booking-db-bookings, each with a green check; 3 succeeded.',
+    width: 2778,
+    height: 1171,
+    phone: {
+      src: 'https://assets.planton.ai/site/images/landing/2026-11-27-074925-landing-watch-run-applied-phone.png',
+      width: 444,
+      height: 118,
+    },
+  },
+  plan: {
+    kind: 'code',
+    label: 'The plan Neha said yes to, before anything ran',
+    language: 'shell',
+    // Opened across the section's full width, the permission rows fit whole as the CLI printed them,
+    // and the two explanatory sentences wrap under their own text.
+    wrap: true,
+    lines: [
+      'Plan · booking-db in staging',
+      'Creates the stack',
+      'Create 3',
+      '~$100.3230-$428.4920 a month · Adds 16 Permissions',
+      '',
+      'Create (3)',
+      '  New; its job creates it.',
+      '  + GcpCloudSqlUser/staging-booking-db-api-user  New',
+      '  + GcpCloudSqlDatabase/staging-booking-db-bookings  New',
+      '  + GcpCloudSql/staging-booking-db  New',
+      'Cost',
+      "  This new stack costs $100.323 to $428.492 a month across the catalog's verified presets. 2 resources have no published price and aren't counted.",
+      '',
+      'Added Permissions (16)',
+      "  This stack's resources didn't need these before. Planton can't see what a credential holds, so check that each provider's credential allows them.",
+      '  GCP',
+      '    cloudsql.users.create         for GcpCloudSqlUser/staging-booking-db-api-user',
+      '    cloudsql.users.list           for GcpCloudSqlUser/staging-booking-db-api-user and GcpCloudSql/staging-booking-db',
+      '    cloudsql.users.update         for GcpCloudSqlUser/staging-booking-db-api-user',
+      '    cloudsql.users.delete         for GcpCloudSqlUser/staging-booking-db-api-user and GcpCloudSql/staging-booking-db',
+      '    cloudsql.instances.get        for GcpCloudSqlUser/staging-booking-db-api-user and GcpCloudSql/staging-booking-db',
+      '    cloudsql.databases.create     for GcpCloudSqlDatabase/staging-booking-db-bookings',
+      '    cloudsql.databases.get        for GcpCloudSqlDatabase/staging-booking-db-bookings',
+      '    cloudsql.databases.update     for GcpCloudSqlDatabase/staging-booking-db-bookings',
+      '    cloudsql.databases.delete     for GcpCloudSqlDatabase/staging-booking-db-bookings',
+      '    serviceusage.services.enable  for GcpCloudSql/staging-booking-db',
+      '    serviceusage.services.get     for GcpCloudSql/staging-booking-db',
+      '    serviceusage.services.list    for GcpCloudSql/staging-booking-db',
+      '    resourcemanager.projects.get  for GcpCloudSql/staging-booking-db',
+      '    cloudsql.instances.create     for GcpCloudSql/staging-booking-db',
+      '    cloudsql.instances.update     for GcpCloudSql/staging-booking-db',
+      '    cloudsql.instances.delete     for GcpCloudSql/staging-booking-db',
+    ],
+  },
+};

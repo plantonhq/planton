@@ -11,7 +11,7 @@
     "dev": "yarn build:packages && yarn generate:desktop-release && next dev",
     "build:packages": "yarn workspace @planton/website-shell build",
     "generate:desktop-release": "node --experimental-strip-types scripts/generate-desktop-release.mjs",
-    "build": "node scripts/check-displayed-vs-enforced.mjs && node --experimental-strip-types scripts/check-apex-routing.mjs && yarn build:packages && node scripts/generate-recent-changelog.mjs && yarn generate:desktop-release && next build && node --experimental-strip-types scripts/check-internal-links.mjs && node scripts/check-page-weight.mjs && node --experimental-strip-types scripts/generate-llms.mjs && pagefind --site out --output-path out/_pagefind --exclude-selectors 'pre,code'",
+    "build": "node scripts/check-displayed-vs-enforced.mjs && node --experimental-strip-types scripts/check-scenes.mjs && node --experimental-strip-types scripts/check-apex-routing.mjs && yarn build:packages && node scripts/generate-recent-changelog.mjs && yarn generate:desktop-release && next build && node --experimental-strip-types scripts/check-internal-links.mjs && node scripts/check-page-weight.mjs && node --experimental-strip-types scripts/generate-llms.mjs && pagefind --site out --output-path out/_pagefind --exclude-selectors 'pre,code'",
     "check:displayed-vs-enforced": "node scripts/check-displayed-vs-enforced.mjs",
     "start": "next start",
     "lint": "eslint . --max-warnings 0",

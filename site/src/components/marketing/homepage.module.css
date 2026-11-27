@@ -208,6 +208,25 @@
 .split > * {
   min-width: 0;
 }
+/*
+ * A section that leads with a screen of the product: the heading and the
+ * words on the two columns' line, then the screen across both, wide enough
+ * for the console's own text to read, then the record and the folded proof
+ * on the same line again.
+ */
+.screenFirst {
+  display: grid;
+  grid-template-columns: 1fr 1.12fr;
+  column-gap: 38px;
+  row-gap: 32px;
+  align-items: start;
+}
+.screenFirst > * {
+  min-width: 0;
+}
+.screenFirst > .wide {
+  grid-column: 1 / -1;
+}
 .words {
   display: grid;
   /* minmax(0, …) lets a wide code line scroll inside its panel instead of widening the column. */
@@ -426,7 +445,8 @@
   }
   .sectionHeader,
   .who,
-  .split {
+  .split,
+  .screenFirst {
     grid-template-columns: 1fr;
     gap: 24px;
   }

@@ -79,6 +79,61 @@
 .table td:last-child {
   width: 100%;
 }
+/* A screen of the product: flat, full size, one hairline frame; never tilted, shadowed or redrawn. */
+.screen {
+  max-width: var(--screen-width);
+  border: 1px solid var(--hp-line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+.screen img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+/*
+ * A folded artifact: its label is the summary line, an underlined link-like
+ * line with a turning mark, and inside it the artifact repeats nothing but
+ * the thing itself (its own label is hidden, since the summary already says it).
+ */
+.folded > summary {
+  cursor: pointer;
+  list-style: none;
+  /* The mark hangs in the gutter, so the label starts on the column's line and wraps under itself. */
+  display: flex;
+  align-items: baseline;
+  margin-left: -1.2em;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--hp-ink);
+}
+/* Only the label is underlined; the mark beside it turns and never carries a piece of the line. */
+.folded > summary > span {
+  text-wrap: balance;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.folded > summary::-webkit-details-marker {
+  display: none;
+}
+.folded > summary::before {
+  content: '\25B8';
+  display: inline-block;
+  flex: none;
+  width: 1.2em;
+  text-decoration: none;
+  transition: transform 120ms ease;
+}
+.folded[open] > summary::before {
+  transform: rotate(90deg);
+}
+.folded > figure {
+  margin-top: 14px;
+}
+.folded > figure > figcaption {
+  display: none;
+}
 .check {
   font-size: 14px !important;
   color: var(--hp-secondary) !important;
@@ -102,6 +157,10 @@
   color: var(--hp-ink);
 }
 @media (max-width: 760px) {
+  /* The phone's crop, at most at its own size; the media query matches the picture's phone source. */
+  .screen {
+    max-width: var(--screen-phone-width);
+  }
   .table {
     font-size: 13px;
   }

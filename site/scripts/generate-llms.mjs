@@ -116,9 +116,14 @@ function chapterMarkdown(chapter) {
   return lines.join('\n');
 }
 
-/** A page's artifact (src/data/artifact.ts) as Markdown: its label, then the code or the table. */
+/**
+ * A page's artifact (src/data/artifact.ts) as Markdown: its label, then the
+ * code, the table, or the screen as an image whose alt text carries what it
+ * shows. A folded artifact prints open: an agent reads everything.
+ */
 function artifactMarkdown(a) {
   if (a.kind === 'code') return [`${a.label}:`, '', `\`\`\`${a.language}`, ...a.lines, '```', ''];
+  if (a.kind === 'screen') return [`${a.label}:`, '', `![${a.alt}](${a.src})`, ''];
   return [
     `${a.label}:`,
     '',
@@ -177,6 +182,16 @@ function pageMarkdown(
       for (const check of run.checks) lines.push(...checkMarkdown(check, site.url));
       lines.push(run.reach, '');
     }
+    // The run is Google Cloud's on every cloud: the words, the screen, the record, the plan.
+    const w = h.watch;
+    const watchRun = homepage.WATCH_RUN;
+    lines.push(`## ${w.title}`, '', w.intro, '');
+    lines.push(
+      ...artifactMarkdown(watchRun.screen),
+      w.record,
+      '',
+      ...artifactMarkdown(watchRun.plan)
+    );
     // The open-source walk is the same on every cloud: the ask, the command, the answers, the wiring, the catalog's reach.
     const o = h.openSource;
     const oss = homepage.OSS_WALK;
@@ -384,8 +399,19 @@ async function main() {
     homepage.HOMEPAGE.infrastructure.intro,
     ''
   );
-  index.push(`## ${homepage.HOMEPAGE.openSource.title}`, '', homepage.HOMEPAGE.openSource.intro, '');
-  index.push(`## ${homepage.HOMEPAGE.selfHosted.title}`, '', homepage.HOMEPAGE.selfHosted.intro, '');
+  index.push(`## ${homepage.HOMEPAGE.watch.title}`, '', homepage.HOMEPAGE.watch.intro, '');
+  index.push(
+    `## ${homepage.HOMEPAGE.openSource.title}`,
+    '',
+    homepage.HOMEPAGE.openSource.intro,
+    ''
+  );
+  index.push(
+    `## ${homepage.HOMEPAGE.selfHosted.title}`,
+    '',
+    homepage.HOMEPAGE.selfHosted.intro,
+    ''
+  );
   index.push('## Who it is for', '', story.chapter('who-it-is-for').claim, '');
   index.push(
     '## Start',

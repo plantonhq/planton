@@ -5,6 +5,7 @@ import { HeroExperience } from '@/components/marketing/HeroExperience';
 import { SetupPromptExample } from '@/components/marketing/SetupPromptExample';
 import { CloudChoiceProvider } from '@/components/marketing/CloudChoice';
 import { InfrastructureSection } from './InfrastructureSection';
+import { WatchSection } from './WatchSection';
 import { DemoLink } from '@/components/marketing/DemoLink';
 import { ExperienceLink } from '@/components/marketing/ExperienceLink';
 import styles from '@/components/marketing/homepage.module.css';
@@ -13,7 +14,8 @@ import styles from '@/components/marketing/homepage.module.css';
  * Home, told as one story and built one or two sections at a time: the stand
  * and the team it serves (the hero), a brand-new cloud account to a running
  * app (the first app), infrastructure asked of a coding agent (what it writes
- * and what already deploys it), open-source projects on the visitor's own
+ * and what already deploys it), those files deployed as one stack and the
+ * record it leaves (the run), open-source projects on the visitor's own
  * cluster in place of managed services (open source), the same Planton on
  * that cluster (run it yourself), and the start (the close). Later sections
  * go in above "open source", in the story's order; "run it yourself" stays
@@ -67,6 +69,7 @@ export function Homepage() {
               </div>
             </section>
             <InfrastructureSection />
+            <WatchSection />
             <section
               id="open-source"
               className={`${styles.section} ${styles.split}`}

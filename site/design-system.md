@@ -14,7 +14,7 @@ The website is a calm, light page that tells one story and shows the product wor
 - **Monochrome chrome.** Header, footer, buttons, links, tables and code panels are ink on a warm off-white. Color appears only where it carries meaning: a status, a provider's logo, the dark product diagram in Home's hero.
 - **Hierarchy by size and ink, not weight.** Headings are large and regular (400), never bold. Weight is reserved for small labels.
 - **Borders, not backgrounds.** Sections are separated by one hairline (`--hp-line`). Panels sit one step darker than the canvas, with a border.
-- **The product is the illustration.** Real artifacts are shown flat, at full size, in a code panel or a table, from a demo company, never a customer. A drawn diagram is allowed only when it is labelled as an explanation, as Home's team diagram is.
+- **The product is the illustration.** Real artifacts are shown flat, at full size, in a code panel, a table or a screen of the product itself, from a demo company, never a customer. A drawn diagram is allowed only when it is labelled as an explanation, as Home's team diagram is.
 
 ---
 
@@ -109,9 +109,12 @@ Headings use `text-wrap: balance`; paragraphs use `text-wrap: pretty`.
 | Artifact label | 13px secondary caption above the artifact, saying what it is and where it comes from | `Artifact`'s `figcaption` |
 | A check | 14px secondary line: either a link in ink, underlined, or a sentence over a command in monospace (kept whole on one line; a long one scrolls); one check per line | `Check` |
 | Cloud picker | One row of segments in a line border with the controls' 8px radius, 14px at 500 in secondary; the chosen one in ink on the panel fill; native radios, a visible focus ring. When the clouds don't fit one row (four on a phone), two by two in equal cells under the same border, never a ragged row | `CloudPicker`, first in the first section that differs by cloud, so the cloud is chosen before any artifact; every section below reads the same choice, and one with no real artifact for that cloud shows the default cloud's and says so |
+| A screen of the product | A crop of one demo universe scene (`demo-universe/<company>/company.yaml`), never drawn, tilted, shadowed or edited: flat on white in one hairline frame with a 12px radius, under its 13px secondary label; cropped with the same inset on every side, never through a panel's edge; shown at most at its own size (half the crop's pixels), never enlarged, at most 300 KB; a phone gets a narrower crop of the same scene where the whole screen's text would be too small to read; alt text that carries what the screen shows | `Artifact` with a `screen` record, whose `scene` names its source (`scripts/check-scenes.mjs`) |
+| A folded artifact | The proof a doubting reader opens: a 14px underlined line in ink with a turning mark, the artifact's label; open, the artifact itself without its label repeated; a native details element | `Folded` |
+| A section led by a screen | The heading and the words on the two columns' line, the screen across both columns, the closing words on the line again, then any folded proof, which opens across both columns; one column below 1100px | `.screenFirst`, `.wide` (Home) |
 | Quoted ask | What a person typed to their agent: a 13px secondary line naming who, then their words at 15px in ink, behind one left hairline; words, never a second code panel | `.ask` (Home) |
 
-`Artifact` and `Check` (`components/marketing/Artifact.tsx`, records typed in `src/data/artifact.ts`) are how every story page shows a real thing beside its words; a page never draws its own panel, table or check.
+`Artifact`, `Folded` and `Check` (`components/marketing/Artifact.tsx`, records typed in `src/data/artifact.ts`) are how every story page shows a real thing beside its words; a page never draws its own panel, table, screen or check.
 
 ---
 
